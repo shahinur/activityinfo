@@ -526,9 +526,19 @@
 
   <profiles>
 
-    <!-- This Continuous Integration (CI) profile is used when building
+    <!-- This Continuous Integration (CI) profiles is used when building
          from Jenkins and includes the build number in the version displayed
          to the user -->
+    <profile>
+      <id>ci-dev</id>
+      <properties>
+	<gae.version>1.9.3</gae.version>
+	<appengine.target.version>1.9.3</appengine.target.version>
+        <display.version>Build ${BUILD_NUMBER}</display.version>
+        <gae.application>bdd-dev</gae.application>
+        <gae.application.version>ci-dev</gae.application.version>
+      </properties>
+    </profile>
     <profile>
       <id>ci</id>
       <properties>
