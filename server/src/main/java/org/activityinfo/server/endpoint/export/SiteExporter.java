@@ -297,7 +297,7 @@ public class SiteExporter {
             createCell(row, column++, site.getLocationAxe());
 
             for (Integer indicatorId : indicators) {
-                createIndicatorValueCell(row, column++, site.getIndicatorValue(indicatorId));
+                createIndicatorValueCell(row, column++, site.getIndicatorDoubleValue(indicatorId));
             }
 
             for (Integer attribId : attributes) {

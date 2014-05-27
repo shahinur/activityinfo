@@ -55,7 +55,7 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
     public boolean meetsCriteria(SiteDTO site) {
         if (layer.getIndicatorIds().size() != 0) {
             for (Integer indicatorId : layer.getIndicatorIds()) {
-                Double indicatorValue = site.getIndicatorValue(indicatorId);
+                Double indicatorValue = site.getIndicatorDoubleValue(indicatorId);
                 if (indicatorValue != null && indicatorValue > 0) {
                     return true;
                 }

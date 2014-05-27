@@ -31,6 +31,7 @@ import com.bedatadriven.rebar.sql.client.util.RowHandler;
 import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.fp.client.Promise;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.GetSchema;
@@ -456,6 +457,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
         public Promise<Void> loadIndicators() {
             SqlQuery query = SqlQuery.select("indicatorId",
                     "name",
+                    "type",
                     "category",
                     "listHeader",
                     "description",
@@ -478,6 +480,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     IndicatorDTO indicator = new IndicatorDTO();
                     indicator.setId(rs.getInt("indicatorId"));
                     indicator.setName(rs.getString("name"));
+                    indicator.setType(FormFieldType.valueOfSilently(rs.getString("type")));
                     indicator.setCategory(rs.getString("category"));
                     indicator.setListHeader(rs.getString("listHeader"));
                     indicator.setDescription(rs.getString("description"));

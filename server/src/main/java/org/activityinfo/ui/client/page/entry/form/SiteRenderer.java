@@ -122,7 +122,7 @@ public class SiteRenderer {
             if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
                 value = 1.0;
             } else {
-                value = site.getIndicatorValue(indicator);
+                value = site.getIndicatorDoubleValue(indicator);
             }
 
             if (showEmptyRows ||

@@ -82,7 +82,7 @@ public class UpdateSiteTest extends CommandTestCase {
         Assert.assertEquals("site.comments", modified.getComments(),
                 secondRead.getComments());
         Assert.assertEquals("site.reportingPeriod[0].indicatorValue[0]", 995,
-                secondRead.getIndicatorValue(2).intValue());
+                ((Double) secondRead.getIndicatorValue(2)).intValue());
 
         Assert.assertEquals("site.attribute[1]", true,
                 modified.getAttributeValue(1));

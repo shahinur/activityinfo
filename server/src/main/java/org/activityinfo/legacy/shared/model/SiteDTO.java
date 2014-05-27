@@ -357,7 +357,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
      * @param indicatorId the Id of the indicator
      * @param value       the total value for all ReportingPeriods
      */
-    public void setIndicatorValue(int indicatorId, Double value) {
+    public void setIndicatorValue(int indicatorId, Object value) {
         set(IndicatorDTO.getPropertyName(indicatorId), value);
     }
 
@@ -366,7 +366,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
      * @return the total value of the given indicator for this Site, across all
      * ReportingPeriods
      */
-    public Double getIndicatorValue(int indicatorId) {
+    public <T> T getIndicatorValue(int indicatorId) {
         return get(IndicatorDTO.getPropertyName(indicatorId));
     }
 
@@ -375,8 +375,29 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
      * @return the total value of the given indicator for this Site, across all
      * ReportingPeriods
      */
-    public Double getIndicatorValue(IndicatorDTO indicator) {
+    public <T> T getIndicatorValue(IndicatorDTO indicator) {
         return getIndicatorValue(indicator.getId());
+    }
+
+    /**
+     * Returns indicator value if it has type double, otherwise null.
+     *
+     * @param indicator indicator dto
+     * @return indicator value if it has type double, otherwise null
+     */
+    public Double getIndicatorDoubleValue(IndicatorDTO indicator) {
+        return getIndicatorDoubleValue(indicator.getId());
+    }
+
+    /**
+     * Returns indicator value if it has type double, otherwise null.
+     *
+     * @param indicatorId indicator id
+     * @return indicator value if it has type double, otherwise null
+     */
+    public Double getIndicatorDoubleValue(int indicatorId) {
+        Object value = getIndicatorValue(indicatorId);
+        return value instanceof Double ? (Double) value : null;
     }
 
     /**

@@ -23,6 +23,7 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.legacy.shared.command.Month;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
@@ -47,6 +48,9 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public static final int UNITS_MAX_LENGTH = 15;
     public static final int MAX_LIST_HEADER_LENGTH = 29;
     public static final int MAX_CATEGORY_LENGTH = 50;
+
+    // ensure that serializer/deserializer is generated for FormFieldType
+    private FormFieldType type;
 
     public IndicatorDTO() {
         super();
@@ -146,6 +150,17 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public String getDescription() {
         return get("description");
+    }
+
+    @JsonProperty @JsonView(DTOViews.Schema.class)
+    public FormFieldType getType() {
+//        return get("type");
+        return type;
+    }
+
+    public void setType(FormFieldType type) {
+//        set("type", type);
+        this.type = type;
     }
 
     public void setMandatory(boolean mandatory) {

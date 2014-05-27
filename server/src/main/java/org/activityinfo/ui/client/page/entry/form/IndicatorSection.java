@@ -28,11 +28,15 @@ import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.common.collect.Lists;
+import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
@@ -43,7 +47,7 @@ import java.util.List;
 
 public class IndicatorSection extends LayoutContainer implements FormSection<SiteDTO> {
 
-    private List<NumberField> indicatorFields = Lists.newArrayList();
+    private List<Field> indicatorFields = Lists.newArrayList();
 
     public IndicatorSection(ActivityDTO activity) {
 
@@ -92,14 +96,51 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         indicatorLabel.setStyleAttribute("fontSize", "9pt");
         add(indicatorLabel);
 
-        NumberField indicatorField = new NumberField();
-        indicatorField.setName(indicator.getPropertyName());
-        indicatorField.setWidth(50);
-        indicatorField.setFormat(IndicatorNumberFormat.INSTANCE);
-        indicatorField.setStyleAttribute("textAlign", "right");
-        if (indicator.isMandatory()) {
-            indicatorField.setAllowBlank(false);
+        FormFieldType type = indicator.getType();
+
+        Field indicatorField = new NumberField();
+
+        if (type == FormFieldType.QUANTITY) {
+            NumberField numberField = new NumberField();
+            indicatorField = numberField;
+
+            numberField.setFormat(IndicatorNumberFormat.INSTANCE);
+            numberField.setWidth(50);
+            numberField.setStyleAttribute("textAlign", "right");
+            if (indicator.isMandatory()) {
+                numberField.setAllowBlank(false);
+            }
+
+            add(numberField);
+
+            Text unitLabel = new Text(indicator.getUnits());
+            unitLabel.setStyleAttribute("fontSize", "9pt");
+
+            add(unitLabel);
+        } else if (type == FormFieldType.FREE_TEXT) {
+            TextField textField = new TextField();
+
+            indicatorField = textField;
+
+            textField.setAutoWidth(true);
+            if (indicator.isMandatory()) {
+                textField.setAllowBlank(false);
+            }
+            add(textField);
+            add(new Text()); // avoid layout shift
+        } else if (type == FormFieldType.NARRATIVE) {
+            TextArea textArea = new TextArea();
+            indicatorField = textArea;
+
+            textArea.setAutoWidth(true);
+            if (indicator.isMandatory()) {
+                textArea.setAllowBlank(false);
+            }
+            add(textArea);
+            add(new Text()); // avoid layout shift
         }
+
+        indicatorField.setName(indicator.getPropertyName());
 
         if (indicator.getDescription() != null && !indicator.getDescription().isEmpty()) {
             ToolTipConfig tip = new ToolTipConfig();
@@ -110,20 +151,13 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
             indicatorField.setToolTip(tip);
         }
 
-        add(indicatorField);
-
-        Text unitLabel = new Text(indicator.getUnits());
-        unitLabel.setStyleAttribute("fontSize", "9pt");
-
-        add(unitLabel);
-
         indicatorFields.add(indicatorField);
     }
 
     @Override
     public boolean validate() {
         boolean valid = true;
-        for (NumberField field : indicatorFields) {
+        for (Field field : indicatorFields) {
             valid &= field.validate();
         }
         return valid;
@@ -131,15 +165,15 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
 
     @Override
     public void updateModel(SiteDTO m) {
-        for (NumberField field : indicatorFields) {
+        for (Field field : indicatorFields) {
             m.set(field.getName(), field.getValue());
         }
     }
 
     @Override
     public void updateForm(SiteDTO m) {
-        for (NumberField field : indicatorFields) {
-            field.setValue((Number) m.get(field.getName()));
+        for (Field field : indicatorFields) {
+            field.setValue(m.get(field.getName()));
         }
     }
 

@@ -193,7 +193,7 @@ public class PiechartLayerGenerator extends PointLayerGenerator<PiechartMapLayer
 
         for (Slice slice : layer.getSlices()) {
             EntityCategory indicatorCategory = new EntityCategory(slice.getIndicatorId());
-            Double value = site.getIndicatorValue(slice.getIndicatorId());
+            Double value = site.getIndicatorDoubleValue(slice.getIndicatorId());
             if (value != null && value != 0) {
                 PieMapMarker.SliceValue sliceValue = new PieMapMarker.SliceValue();
 

@@ -61,7 +61,7 @@ public class SiteDTOs {
         Assert.assertEquals("site.attribute[1]", true,
                 secondRead.getAttributeValue(1));
         Assert.assertEquals("site.reportingPeriod[0].indicatorValue[0]", 996.0,
-                secondRead.getIndicatorValue(1), 0.1);
+                (Double) secondRead.getIndicatorValue(1), 0.1);
         Assert.assertEquals("site.comments", newSite.getComments(),
                 secondRead.getComments());
         Assert.assertEquals("site.partner", newSite.getPartner().getId(),

@@ -24,11 +24,15 @@ package org.activityinfo.ui.client.page.config.design;
 
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.core.shared.form.FormFieldTypeLables;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
@@ -60,6 +64,15 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
 
+        MappingComboBox<FormFieldType> typeCombo = new MappingComboBox<>();
+        typeCombo.setFieldLabel(constants.type());
+        typeCombo.add(FormFieldType.QUANTITY, FormFieldTypeLables.getFormFieldType(FormFieldType.QUANTITY));
+        typeCombo.add(FormFieldType.FREE_TEXT, FormFieldTypeLables.getFormFieldType(FormFieldType.FREE_TEXT));
+        typeCombo.add(FormFieldType.NARRATIVE, FormFieldTypeLables.getFormFieldType(FormFieldType.NARRATIVE));
+//        typeCombo.add(FormFieldType.LOCAL_DATE, FormFieldTypeLables.getFormFieldType(FormFieldType.LOCAL_DATE));
+        binding.addFieldBinding(new MappingComboBoxBinding(typeCombo, "type"));
+        this.add(typeCombo);
+
         TextField<String> categoryField = new TextField<String>();
         categoryField.setName("category");
         categoryField.setFieldLabel(constants.category());
@@ -67,7 +80,7 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new FieldBinding(categoryField, "category"));
         this.add(categoryField);
 
-        TextField<String> unitsField = new TextField<String>();
+        final TextField<String> unitsField = new TextField<String>();
         unitsField.setName("units");
         unitsField.setFieldLabel(constants.units());
         unitsField.setAllowBlank(false);
@@ -75,13 +88,31 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new FieldBinding(unitsField, "units"));
         this.add(unitsField);
 
-        MappingComboBox aggregationCombo = new MappingComboBox();
+        final MappingComboBox aggregationCombo = new MappingComboBox();
         aggregationCombo.setFieldLabel(constants.aggregationMethod());
         aggregationCombo.add(IndicatorDTO.AGGREGATE_SUM, constants.sum());
         aggregationCombo.add(IndicatorDTO.AGGREGATE_AVG, constants.average());
         aggregationCombo.add(IndicatorDTO.AGGREGATE_SITE_COUNT, constants.siteCount());
         binding.addFieldBinding(new MappingComboBoxBinding(aggregationCombo, "aggregation"));
         this.add(aggregationCombo);
+
+        typeCombo.addSelectionChangedListener(new SelectionChangedListener<MappingComboBox.Wrapper<FormFieldType>>() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent<MappingComboBox.Wrapper<FormFieldType>> wrapperSelectionChangedEvent) {
+                if (wrapperSelectionChangedEvent.getSelectedItem() != null) {
+                    FormFieldType selectedType = wrapperSelectionChangedEvent.getSelectedItem().getWrappedValue();
+
+                    unitsField.setVisible(selectedType == FormFieldType.QUANTITY);
+                    unitsField.setAllowBlank(selectedType != FormFieldType.QUANTITY);
+                    if (selectedType != FormFieldType.QUANTITY) {
+                        unitsField.setValue("");
+                    }
+
+                    aggregationCombo.setVisible(selectedType == FormFieldType.QUANTITY);
+                }
+            }
+        });
+
 
         TextField<String> listHeaderField = new TextField<String>();
         listHeaderField.setFieldLabel(constants.listHeader());

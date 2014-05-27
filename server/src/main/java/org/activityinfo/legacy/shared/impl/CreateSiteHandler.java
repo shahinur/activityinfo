@@ -25,6 +25,7 @@ package org.activityinfo.legacy.shared.impl;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlUpdate;
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.client.KeyGenerator;
@@ -131,11 +132,20 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
         for (Entry<String, Object> property : cmd.getProperties().getTransientMap().entrySet()) {
             if (property.getKey().startsWith(IndicatorDTO.PROPERTY_PREFIX) && property.getValue() != null) {
 
-                SqlInsert.insertInto(Tables.INDICATOR_VALUE)
-                         .value("IndicatorId", IndicatorDTO.indicatorIdForPropertyName(property.getKey()))
-                         .value("ReportingPeriodId", cmd.getReportingPeriodId())
-                         .value("Value", property.getValue())
-                         .execute(tx);
+                Object value = property.getValue();
+
+                SqlInsert sqlInsert = SqlInsert.insertInto(Tables.INDICATOR_VALUE)
+                        .value("IndicatorId", IndicatorDTO.indicatorIdForPropertyName(property.getKey()))
+                        .value("ReportingPeriodId", cmd.getReportingPeriodId());
+                if (value instanceof Double) {
+                    sqlInsert.value("Value", value).execute(tx);
+                } else if (value instanceof String) {
+                    sqlInsert.value("TextValue", value).execute(tx);
+                } else if (value instanceof Date) {
+                    sqlInsert.value("DateValue", value).execute(tx);
+                } else if (value instanceof LocalDate) {
+                    sqlInsert.value("DateValue", value).execute(tx);
+                }
             }
         }
     }

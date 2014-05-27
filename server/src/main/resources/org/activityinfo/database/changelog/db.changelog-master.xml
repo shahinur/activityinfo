@@ -45,5 +45,6 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
   <include file="org/activityinfo/database/changelog/db.changelog-018-import.xml"/>
   <include file="org/activityinfo/database/changelog/db.changelog-019-domains.xml"/>
   <include file="org/activityinfo/database/changelog/db.changelog-020-locations.xml"/>
+  <include file="org/activityinfo/database/changelog/db.changelog-021-narrative-indicators.xml"/>
 
 </databaseChangeLog> 

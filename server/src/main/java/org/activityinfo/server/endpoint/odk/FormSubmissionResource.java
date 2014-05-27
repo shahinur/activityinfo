@@ -105,7 +105,7 @@ public class FormSubmissionResource extends ODKResource {
         // set indicators
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
             for (FormIndicator formIndicator : data.getIndicators()) {
-                site.setIndicatorValue(formIndicator.getId(), formIndicator.getDoubleValue());
+                site.setIndicatorValue(formIndicator.getId(), formIndicator.getValue());
             }
         }
 

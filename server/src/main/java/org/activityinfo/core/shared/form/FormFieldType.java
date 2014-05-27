@@ -23,7 +23,7 @@ public enum FormFieldType {
 
     /**
      * A longish block of text
-     *
+     * <p/>
      * Note: Defined exact length to differ between FREE_TEXT type.
      * {@link #FREE_TEXT_LENGTH}
      */
@@ -36,10 +36,9 @@ public enum FormFieldType {
 
     /**
      * Short free text field
-     *
+     * <p/>
      * Note: Defined exact length to differ between NARRATIVE type.
      * {@link #FREE_TEXT_LENGTH}
-     *
      */
     FREE_TEXT {
         @Override
@@ -88,4 +87,13 @@ public enum FormFieldType {
     }
 
     public abstract Set<FormFieldType> getAllowedConvertTo();
+
+    public static FormFieldType valueOfSilently(String name) {
+        try {
+            return valueOf(name.toUpperCase());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

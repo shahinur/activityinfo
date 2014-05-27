@@ -26,7 +26,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 /**
- * Defines an Indicator, a numeric value that can change over time.
+ * Defines an Indicator, a value (numeric or string) that can change over time.
  *
  * @author Alex Bertram
  */
@@ -51,6 +51,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
 
     private int sortOrder;
     private String listHeader;
+    private String type;
 
     public Indicator() {
     }
@@ -68,6 +69,15 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
      */
     public void setId(int indicatorId) {
         this.id = indicatorId;
+    }
+
+    @Column(name = "Type", nullable = false, length = 30)
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**

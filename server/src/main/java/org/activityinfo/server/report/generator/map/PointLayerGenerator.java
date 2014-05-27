@@ -119,7 +119,7 @@ public abstract class PointLayerGenerator<T extends PointMapLayer> implements La
         if (indicator != null && indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
             return 1d;
         }
-        return site.getIndicatorValue(indicatorId);
+        return site.getIndicatorDoubleValue(indicatorId);
     }
 
     protected Double getValue(SiteDTO site, List<Integer> indicatorIds) {

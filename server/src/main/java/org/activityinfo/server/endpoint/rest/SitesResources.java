@@ -1,5 +1,6 @@
 package org.activityinfo.server.endpoint.rest;
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -136,7 +137,14 @@ public class SitesResources {
             if (!indicatorIds.isEmpty()) {
                 json.writeObjectFieldStart("indicatorValues");
                 for (Integer indicatorId : indicatorIds) {
-                    json.writeNumberField(Integer.toString(indicatorId), site.getIndicatorValue(indicatorId));
+                    Object indicatorValue = site.getIndicatorValue(indicatorId);
+                    if (indicatorValue instanceof Double) {
+                        json.writeNumberField(Integer.toString(indicatorId), (Double) indicatorValue);
+                    } else if (indicatorValue instanceof String) {
+                        json.writeStringField(Integer.toString(indicatorId), (String) indicatorValue);
+                    } else if (indicatorValue instanceof LocalDate) {
+                        json.writeStringField(Integer.toString(indicatorId), ((LocalDate) indicatorValue).toString());
+                    }
                 }
                 json.writeEndObject();
             }
@@ -197,11 +205,13 @@ public class SitesResources {
                 for (String propertyName : site.getPropertyNames()) {
                     if (propertyName.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
                         Object value = site.get(propertyName);
+                        final int indicatorId = IndicatorDTO.indicatorIdForPropertyName(propertyName);
+                        final IndicatorDTO dto = schemaDTO.getIndicatorById(indicatorId);
                         if (value instanceof Number) {
-                            final int indicatorId = IndicatorDTO.indicatorIdForPropertyName(propertyName);
-                            final IndicatorDTO dto = schemaDTO.getIndicatorById(indicatorId);
                             final double doubleValue = ((Number) value).doubleValue();
                             indicatorsMap.put(dto.getName(), doubleValue);
+                        } else if (value instanceof String || value instanceof LocalDate) {
+                            indicatorsMap.put(dto.getName(), value);
                         }
                     } else if (propertyName.startsWith(AttributeDTO.PROPERTY_PREFIX)) {
                         Object value = site.get(propertyName);

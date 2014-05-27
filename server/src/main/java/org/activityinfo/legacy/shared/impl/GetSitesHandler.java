@@ -36,6 +36,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
@@ -542,7 +543,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                                  .appendColumn("I.ActivityId", "SourceActivityId")
                                  .appendColumn("D.IndicatorId", "DestIndicatorId")
                                  .appendColumn("D.ActivityId", "DestActivityId")
+                                 .appendColumn("I.Type")
                                  .appendColumn("V.Value")
+                                 .appendColumn("V.TextValue")
+                                 .appendColumn("V.DateValue")
                                  .from(Tables.REPORTING_PERIOD, "P")
                                  .innerJoin(Tables.INDICATOR_VALUE, "V")
                                  .on("P.ReportingPeriodId = V.ReportingPeriodId")
@@ -565,7 +569,17 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 Log.trace("Received results for join indicators");
 
                 for (SqlResultSetRow row : results.getRows()) {
-                    double indicatorValue = row.getDouble("Value");
+                    FormFieldType indicatorType = FormFieldType.valueOfSilently(row.getString("Type"));
+
+                    Object indicatorValue = null;
+                    if (indicatorType == FormFieldType.QUANTITY) {
+                        indicatorValue = row.getDouble("Value");
+                    } else if (indicatorType == FormFieldType.FREE_TEXT || indicatorType == FormFieldType.NARRATIVE) {
+                        indicatorValue = row.getString("TextValue");
+                    } else if (indicatorType == FormFieldType.LOCAL_DATE) {
+                        indicatorValue = row.getDate("DateValue");
+                    }
+
                     int sourceActivityid = row.getInt("SourceActivityId");
 
                     for (SiteDTO site : siteMap.get(row.getInt("SiteId"))) {

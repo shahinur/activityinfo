@@ -131,7 +131,7 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
         assertThat(lastSite.getAdminEntity(TERRITOIRE_LEVEL).getName(), equalTo("Masisi"));
         assertThat(lastSite.getAdminEntity(SECTEUR_LEVEL).getName(), equalTo("Masisi"));
 
-        assertThat(lastSite.getIndicatorValue(NUMBER_MENAGES), equalTo(348.0));
+        assertThat((Double) lastSite.getIndicatorValue(NUMBER_MENAGES), equalTo(348.0));
 
         assertThat(lastSite.getAttributeValue(ECHO), equalTo(false));
         assertThat(lastSite.getAttributeValue(DEPLACEMENT), equalTo(true));

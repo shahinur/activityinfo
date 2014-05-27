@@ -25,6 +25,7 @@ package org.activityinfo.server.report.generator;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
+import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
@@ -183,6 +184,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
             IndicatorDTO indicatorDTO = new IndicatorDTO();
             indicatorDTO.setId(indicator.getId());
             indicatorDTO.setName(indicator.getName());
+            indicatorDTO.setType(FormFieldType.valueOfSilently(indicator.getType()));
 
             indicatorDTOs.add(indicatorDTO);
         }
