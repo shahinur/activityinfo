@@ -24,8 +24,7 @@ package org.activityinfo.ui.client.page.config.design;
 
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
@@ -40,7 +39,10 @@ import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
 
 class IndicatorForm extends AbstractDesignForm {
 
-    private FormBinding binding;
+    private final FormBinding binding;
+    private final MappingComboBox<FormFieldType> typeCombo;
+    private final TextField<String> unitsField;
+    private final MappingComboBox aggregationCombo;
 
     public IndicatorForm() {
         super();
@@ -58,13 +60,13 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new FieldBinding(idField, "id"));
         add(idField);
 
-        TextField<String> nameField = new TextField<String>();
+        TextField<String> nameField = new TextField<>();
         nameField.setFieldLabel(constants.name());
         nameField.setAllowBlank(false);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
 
-        MappingComboBox<FormFieldType> typeCombo = new MappingComboBox<>();
+        typeCombo = new MappingComboBox<>();
         typeCombo.setFieldLabel(constants.type());
         typeCombo.add(FormFieldType.QUANTITY, FormFieldTypeLables.getFormFieldType(FormFieldType.QUANTITY));
         typeCombo.add(FormFieldType.FREE_TEXT, FormFieldTypeLables.getFormFieldType(FormFieldType.FREE_TEXT));
@@ -73,14 +75,14 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new MappingComboBoxBinding(typeCombo, "type"));
         this.add(typeCombo);
 
-        TextField<String> categoryField = new TextField<String>();
+        TextField<String> categoryField = new TextField<>();
         categoryField.setName("category");
         categoryField.setFieldLabel(constants.category());
         categoryField.setMaxLength(IndicatorDTO.MAX_CATEGORY_LENGTH);
         binding.addFieldBinding(new FieldBinding(categoryField, "category"));
         this.add(categoryField);
 
-        final TextField<String> unitsField = new TextField<String>();
+        unitsField = new TextField<>();
         unitsField.setName("units");
         unitsField.setFieldLabel(constants.units());
         unitsField.setAllowBlank(false);
@@ -88,7 +90,7 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new FieldBinding(unitsField, "units"));
         this.add(unitsField);
 
-        final MappingComboBox aggregationCombo = new MappingComboBox();
+        aggregationCombo = new MappingComboBox();
         aggregationCombo.setFieldLabel(constants.aggregationMethod());
         aggregationCombo.add(IndicatorDTO.AGGREGATE_SUM, constants.sum());
         aggregationCombo.add(IndicatorDTO.AGGREGATE_AVG, constants.average());
@@ -99,17 +101,7 @@ class IndicatorForm extends AbstractDesignForm {
         typeCombo.addSelectionChangedListener(new SelectionChangedListener<MappingComboBox.Wrapper<FormFieldType>>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<MappingComboBox.Wrapper<FormFieldType>> wrapperSelectionChangedEvent) {
-                if (wrapperSelectionChangedEvent.getSelectedItem() != null) {
-                    FormFieldType selectedType = wrapperSelectionChangedEvent.getSelectedItem().getWrappedValue();
-
-                    unitsField.setVisible(selectedType == FormFieldType.QUANTITY);
-                    unitsField.setAllowBlank(selectedType != FormFieldType.QUANTITY);
-                    if (selectedType != FormFieldType.QUANTITY) {
-                        unitsField.setValue("");
-                    }
-
-                    aggregationCombo.setVisible(selectedType == FormFieldType.QUANTITY);
-                }
+                setState();
             }
         });
 
@@ -132,6 +124,28 @@ class IndicatorForm extends AbstractDesignForm {
 
         hideFieldWhenNull(idField);
 
+        binding.addListener(Events.Bind, new Listener<BindingEvent>() {
+
+            @Override
+            public void handleEvent(BindingEvent be) {
+                setState();
+            }
+        });
+
+    }
+
+    private void setState() {
+        if (typeCombo.getValue() != null) {
+            FormFieldType selectedType = typeCombo.getValue().getWrappedValue();
+
+            unitsField.setVisible(selectedType == FormFieldType.QUANTITY);
+            unitsField.setAllowBlank(selectedType != FormFieldType.QUANTITY);
+            if (selectedType != FormFieldType.QUANTITY) {
+                unitsField.setValue("");
+            }
+
+            aggregationCombo.setVisible(selectedType == FormFieldType.QUANTITY);
+        }
     }
 
     @Override

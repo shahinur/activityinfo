@@ -47,6 +47,9 @@ import java.util.List;
 
 public class IndicatorSection extends LayoutContainer implements FormSection<SiteDTO> {
 
+    public static final int NUMBER_FIELD_WIDTH = 50;
+    public static final int TEXT_FIELD_WIDTH = 3 * NUMBER_FIELD_WIDTH;
+
     private List<Field> indicatorFields = Lists.newArrayList();
 
     public IndicatorSection(ActivityDTO activity) {
@@ -105,7 +108,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
             indicatorField = numberField;
 
             numberField.setFormat(IndicatorNumberFormat.INSTANCE);
-            numberField.setWidth(50);
+            numberField.setWidth(NUMBER_FIELD_WIDTH);
             numberField.setStyleAttribute("textAlign", "right");
             if (indicator.isMandatory()) {
                 numberField.setAllowBlank(false);
@@ -122,7 +125,8 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
 
             indicatorField = textField;
 
-            textField.setAutoWidth(true);
+            textField.setWidth(TEXT_FIELD_WIDTH);
+//            textField.setAutoWidth(true);
             if (indicator.isMandatory()) {
                 textField.setAllowBlank(false);
             }
@@ -132,7 +136,8 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
             TextArea textArea = new TextArea();
             indicatorField = textArea;
 
-            textArea.setAutoWidth(true);
+            textArea.setWidth(TEXT_FIELD_WIDTH);
+//            textArea.setAutoWidth(true);
             if (indicator.isMandatory()) {
                 textArea.setAllowBlank(false);
             }

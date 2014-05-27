@@ -154,13 +154,11 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public FormFieldType getType() {
-//        return get("type");
-        return type;
+        return get("type");
     }
 
     public void setType(FormFieldType type) {
-//        set("type", type);
-        this.type = type;
+        set("type", type);
     }
 
     public void setMandatory(boolean mandatory) {

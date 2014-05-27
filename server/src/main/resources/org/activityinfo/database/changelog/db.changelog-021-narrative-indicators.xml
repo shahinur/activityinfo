@@ -49,7 +49,7 @@
     </addColumn>
 
     <!-- Value is used to keep Double value. In case indicator has string value 'Value' column can be null -->
-    <dropNotNullConstraint tableName="indicatorvalue" columnName="Value"/>
+    <dropNotNullConstraint tableName="indicatorvalue" columnName="Value" columnDataType="DOUBLE"/>
 
   </changeSet>
 
