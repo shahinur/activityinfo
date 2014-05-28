@@ -30,10 +30,10 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.ui.client.page.common.columns.EditableLocalDateColumn;
 import org.activityinfo.ui.client.page.common.columns.ReadTextColumn;
 
@@ -148,27 +148,43 @@ public class ColumnModelBuilder {
         indicatorColumn.setEditor(new CellEditor(indicatorField));
         indicatorColumn.setAlignment(Style.HorizontalAlignment.RIGHT);
 
-        // For SUM indicators, don't show ZEROs in the Grid
-        // (it looks better if we don't)
-        if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SUM) {
-            indicatorColumn.setRenderer(new GridCellRenderer() {
-                @Override
-                public Object render(ModelData model,
-                                     String property,
-                                     ColumnData config,
-                                     int rowIndex,
-                                     int colIndex,
-                                     ListStore listStore,
-                                     Grid grid) {
-                    Double value = model.get(property);
-                    if (value != null && value != 0) {
-                        return IndicatorNumberFormat.INSTANCE.format(value);
-                    } else {
-                        return "";
+        if (indicator.getType() == FormFieldType.QUANTITY) {
+            // For SUM indicators, don't show ZEROs in the Grid
+            // (it looks better if we don't)
+            if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SUM) {
+                indicatorColumn.setRenderer(new GridCellRenderer() {
+                    @Override
+                    public Object render(ModelData model,
+                                         String property,
+                                         ColumnData config,
+                                         int rowIndex,
+                                         int colIndex,
+                                         ListStore listStore,
+                                         Grid grid) {
+                        Object value = model.get(property);
+                        if (value instanceof Double && (Double) value != 0) {
+                            return IndicatorNumberFormat.INSTANCE.format((Double) value);
+                        } else {
+                            return "";
+                        }
                     }
-                }
-            });
-        } else if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
+                });
+            } else if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
+                indicatorColumn.setRenderer(new GridCellRenderer() {
+                    @Override
+                    public Object render(ModelData model,
+                                         String property,
+                                         ColumnData config,
+                                         int rowIndex,
+                                         int colIndex,
+                                         ListStore listStore,
+                                         Grid grid) {
+
+                        return "1"; // the value of a site count indicator a single site is always 1
+                    }
+                });
+            }
+        } else if (indicator.getType() == FormFieldType.FREE_TEXT || indicator.getType() == FormFieldType.NARRATIVE) {
             indicatorColumn.setRenderer(new GridCellRenderer() {
                 @Override
                 public Object render(ModelData model,
@@ -178,8 +194,8 @@ public class ColumnModelBuilder {
                                      int colIndex,
                                      ListStore listStore,
                                      Grid grid) {
-
-                    return "1"; // the value of a site count indicator a single site is always 1
+                    Object value = model.get(property);
+                    return value instanceof String ? value : "";
                 }
             });
         }
@@ -331,8 +347,9 @@ public class ColumnModelBuilder {
     }
 
     public ColumnModelBuilder maybeAddProjectColumn(UserDatabaseDTO database) {
-        if(database.getProjects().size() > 1) {
-            addProjectColumn();;
+        if (database.getProjects().size() > 1) {
+            addProjectColumn();
+            ;
         }
         return this;
     }
