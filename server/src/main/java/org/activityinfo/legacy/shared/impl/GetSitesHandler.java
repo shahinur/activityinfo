@@ -31,6 +31,7 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
+import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
@@ -544,6 +545,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                                  .appendColumn("D.IndicatorId", "DestIndicatorId")
                                  .appendColumn("D.ActivityId", "DestActivityId")
                                  .appendColumn("I.Type")
+                                 .appendColumn("I.Expression")
                                  .appendColumn("V.Value")
                                  .appendColumn("V.TextValue")
                                  .appendColumn("V.DateValue")
@@ -570,14 +572,19 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
                 for (SqlResultSetRow row : results.getRows()) {
                     FormFieldType indicatorType = FormFieldType.valueOfSilently(row.getString("Type"));
-
+                    String expression = row.getString("Expression");
+                    boolean isCalculatedIndicator = !Strings.isNullOrEmpty(expression);
                     Object indicatorValue = null;
-                    if (indicatorType == FormFieldType.QUANTITY) {
-                        indicatorValue = row.getDouble("Value");
-                    } else if (indicatorType == FormFieldType.FREE_TEXT || indicatorType == FormFieldType.NARRATIVE) {
-                        indicatorValue = row.getString("TextValue");
-                    } else if (indicatorType == FormFieldType.LOCAL_DATE) {
-                        indicatorValue = row.getDate("DateValue");
+                    if (isCalculatedIndicator) {
+                        // todo
+                    } else { // if indicator is no calculated then assign value directly
+                        if (indicatorType == FormFieldType.QUANTITY) {
+                            indicatorValue = row.getDouble("Value");
+                        } else if (indicatorType == FormFieldType.FREE_TEXT || indicatorType == FormFieldType.NARRATIVE) {
+                            indicatorValue = row.getString("TextValue");
+                        } else if (indicatorType == FormFieldType.LOCAL_DATE) {
+                            indicatorValue = row.getDate("DateValue");
+                        }
                     }
 
                     int sourceActivityid = row.getInt("SourceActivityId");

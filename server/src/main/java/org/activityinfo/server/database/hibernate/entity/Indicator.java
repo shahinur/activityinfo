@@ -52,6 +52,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
     private int sortOrder;
     private String listHeader;
     private String type;
+    private String expression;
 
     public Indicator() {
     }
@@ -69,6 +70,15 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
      */
     public void setId(int indicatorId) {
         this.id = indicatorId;
+    }
+
+    @Column(name = "Expression", nullable = true, length = 999)
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
     }
 
     @Column(name = "Type", nullable = false, length = 30)

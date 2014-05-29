@@ -185,6 +185,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
             indicatorDTO.setId(indicator.getId());
             indicatorDTO.setName(indicator.getName());
             indicatorDTO.setType(FormFieldType.valueOfSilently(indicator.getType()));
+            indicatorDTO.setExpression(indicator.getExpression());
 
             indicatorDTOs.add(indicatorDTO);
         }

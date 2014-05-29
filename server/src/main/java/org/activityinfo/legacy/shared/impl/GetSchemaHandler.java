@@ -458,6 +458,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
             SqlQuery query = SqlQuery.select("indicatorId",
                     "name",
                     "type",
+                    "expression",
                     "category",
                     "listHeader",
                     "description",
@@ -481,6 +482,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     indicator.setId(rs.getInt("indicatorId"));
                     indicator.setName(rs.getString("name"));
                     indicator.setType(FormFieldType.valueOfSilently(rs.getString("type")));
+                    indicator.setExpression(rs.getString("expression"));
                     indicator.setCategory(rs.getString("category"));
                     indicator.setListHeader(rs.getString("listHeader"));
                     indicator.setDescription(rs.getString("description"));

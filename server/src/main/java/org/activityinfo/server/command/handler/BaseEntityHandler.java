@@ -61,6 +61,10 @@ public class BaseEntityHandler {
             }
         }
 
+        if (changes.containsKey("expression")) {
+            indicator.setExpression(trim(changes.get("expression")));
+        }
+
         if (changes.containsKey("aggregation")) {
             indicator.setAggregation((Integer) changes.get("aggregation"));
         }

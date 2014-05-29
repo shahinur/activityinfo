@@ -90,6 +90,9 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
     }
 
     private void addIndicator(IndicatorDTO indicator) {
+        if (indicator.isCalculated()) {
+            return; // it's not allowed to specify value for calculated indicators
+        }
 
         String name = indicator.getName();
         if (indicator.isMandatory()) {
@@ -101,11 +104,38 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
 
         FormFieldType type = indicator.getType();
 
-        Field indicatorField = new NumberField();
+        Field indicatorField = addIndicatorField(indicator, type);
 
-        if (type == FormFieldType.QUANTITY) {
+        indicatorField.setName(indicator.getPropertyName());
+
+        if (indicator.getDescription() != null && !indicator.getDescription().isEmpty()) {
+            ToolTipConfig tip = new ToolTipConfig();
+            tip.setDismissDelay(0);
+            tip.setShowDelay(100);
+            tip.setText(indicator.getDescription());
+
+            indicatorField.setToolTip(tip);
+        }
+
+        indicatorFields.add(indicatorField);
+    }
+
+    private Field addIndicatorField(IndicatorDTO indicator, FormFieldType type) {
+        if (type == FormFieldType.NARRATIVE) {
+
+            TextArea textArea = new TextArea();
+
+            textArea.setEnabled(!indicator.isCalculated());
+            textArea.setWidth(TEXT_FIELD_WIDTH);
+//            textArea.setAutoWidth(true);
+            if (indicator.isMandatory()) {
+                textArea.setAllowBlank(false);
+            }
+            add(textArea);
+            add(new Text()); // avoid layout shift
+            return textArea;
+        } else if (type == FormFieldType.QUANTITY) {
             NumberField numberField = new NumberField();
-            indicatorField = numberField;
 
             numberField.setFormat(IndicatorNumberFormat.INSTANCE);
             numberField.setWidth(NUMBER_FIELD_WIDTH);
@@ -120,10 +150,9 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
             unitLabel.setStyleAttribute("fontSize", "9pt");
 
             add(unitLabel);
+            return numberField;
         } else if (type == FormFieldType.FREE_TEXT) {
             TextField textField = new TextField();
-
-            indicatorField = textField;
 
             textField.setWidth(TEXT_FIELD_WIDTH);
 //            textField.setAutoWidth(true);
@@ -132,31 +161,9 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
             }
             add(textField);
             add(new Text()); // avoid layout shift
-        } else if (type == FormFieldType.NARRATIVE) {
-            TextArea textArea = new TextArea();
-            indicatorField = textArea;
-
-            textArea.setWidth(TEXT_FIELD_WIDTH);
-//            textArea.setAutoWidth(true);
-            if (indicator.isMandatory()) {
-                textArea.setAllowBlank(false);
-            }
-            add(textArea);
-            add(new Text()); // avoid layout shift
+            return textField;
         }
-
-        indicatorField.setName(indicator.getPropertyName());
-
-        if (indicator.getDescription() != null && !indicator.getDescription().isEmpty()) {
-            ToolTipConfig tip = new ToolTipConfig();
-            tip.setDismissDelay(0);
-            tip.setShowDelay(100);
-            tip.setText(indicator.getDescription());
-
-            indicatorField.setToolTip(tip);
-        }
-
-        indicatorFields.add(indicatorField);
+        return new NumberField();
     }
 
     @Override

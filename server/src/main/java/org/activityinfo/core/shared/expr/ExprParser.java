@@ -61,8 +61,7 @@ public class ExprParser {
             return new ConstantExpr(Double.parseDouble(token.getString()));
 
         } else {
-            throw new ExprSyntaxException(String.format("Unexpected token '%s' at position %d'",
-                    token.getString(), token.getTokenStart()));
+            throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");
         }
     }
 
@@ -79,10 +78,7 @@ public class ExprParser {
     private Token expectNext(TokenType expectedType, String description) {
         Token token = lexer.next();
         if (token.getType() != expectedType) {
-            throw new ExprSyntaxException(String.format("Syntax error at %d: expected %s but found '%s'",
-                    token.getTokenStart(),
-                    description,
-                    token.getString()));
+            throw new ExprSyntaxException("Syntax error at " + token.getTokenStart() + ": expected " + description + " but found '" + token.getString() + "'");
         }
         return token;
     }

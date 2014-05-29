@@ -25,11 +25,11 @@ package org.activityinfo.ui.client.page.config.design;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.event.*;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.gwt.core.client.GWT;
+import org.activityinfo.core.shared.expr.ExprLexer;
+import org.activityinfo.core.shared.expr.ExprNode;
+import org.activityinfo.core.shared.expr.ExprParser;
 import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.core.shared.form.FormFieldTypeLables;
 import org.activityinfo.i18n.shared.UiConstants;
@@ -43,13 +43,14 @@ class IndicatorForm extends AbstractDesignForm {
     private final MappingComboBox<FormFieldType> typeCombo;
     private final TextField<String> unitsField;
     private final MappingComboBox aggregationCombo;
+    private final TextField<String> expressionField;
 
     public IndicatorForm() {
         super();
 
         binding = new FormBinding(this);
 
-        UiConstants constants = GWT.create(UiConstants.class);
+        final UiConstants constants = GWT.create(UiConstants.class);
 
         this.setLabelWidth(150);
         this.setFieldWidth(200);
@@ -105,8 +106,27 @@ class IndicatorForm extends AbstractDesignForm {
             }
         });
 
+        expressionField = new TextField<>();
+        expressionField.setFieldLabel(constants.expression());
+        expressionField.setToolTip(constants.calculatedIndicatorExplanation());
+        expressionField.setValidator(new Validator() {
+            @Override
+            public String validate(Field<?> field, String value) {
+                try {
+                    ExprLexer lexer = new ExprLexer(value);
+                    ExprParser parser = new ExprParser(lexer);
+                    ExprNode expr = parser.parse();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // ignore : expression is invalid
+                }
+                return constants.expressionIsInvalid();
+            }
+        });
+        binding.addFieldBinding(new FieldBinding(expressionField, "expression"));
+        this.add(expressionField);
 
-        TextField<String> listHeaderField = new TextField<String>();
+        TextField<String> listHeaderField = new TextField<>();
         listHeaderField.setFieldLabel(constants.listHeader());
         listHeaderField.setMaxLength(IndicatorDTO.MAX_LIST_HEADER_LENGTH);
         binding.addFieldBinding(new FieldBinding(listHeaderField, "listHeader"));
