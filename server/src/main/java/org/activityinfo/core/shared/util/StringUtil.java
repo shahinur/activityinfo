@@ -21,12 +21,25 @@ package org.activityinfo.core.shared.util;
  * #L%
  */
 
+import com.google.gwt.regexp.shared.RegExp;
+
 /**
  * @author yuriyz on 5/7/14.
  */
 public class StringUtil {
 
+    private static final RegExp AT_LEAST_ONE_ALPHANUMS = RegExp.compile("^[a-zA-Z0-9]{1,}$");
+
     private StringUtil() {
+    }
+
+    public static boolean isWhitespace(char ch) {
+        //Character.isWhitespace()
+        return Character.isSpace(ch);
+    }
+
+    public static boolean isAlphabetic(char s) {
+        return AT_LEAST_ONE_ALPHANUMS.test("" + s);
     }
 
     // copy from http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#Java

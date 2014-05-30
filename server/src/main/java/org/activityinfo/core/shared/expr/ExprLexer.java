@@ -2,6 +2,7 @@ package org.activityinfo.core.shared.expr;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
+import org.activityinfo.core.shared.util.StringUtil;
 
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         } else if (c == ')') {
             return finishToken(TokenType.PAREN_END);
 
-        } else if (Character.isWhitespace(c)) {
+        } else if (StringUtil.isWhitespace(c)) {
             return readWhitespace();
 
         } else if (isNumberPart(c)) {
@@ -98,7 +99,7 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
     }
 
     private boolean isSymbolChar(char c) {
-        return c == '_' || Character.isAlphabetic(c) || Character.isDigit(c);
+        return c == '_' || StringUtil.isAlphabetic(c) || Character.isDigit(c);
     }
 
     private boolean isNumberPart(char c) {
@@ -106,7 +107,7 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
     }
 
     private Token readWhitespace() {
-        while (!isEndOfInput() && Character.isWhitespace(peekChar())) {
+        while (!isEndOfInput() && StringUtil.isWhitespace(peekChar())) {
             consumeChar();
         }
         return finishToken(TokenType.WHITESPACE);

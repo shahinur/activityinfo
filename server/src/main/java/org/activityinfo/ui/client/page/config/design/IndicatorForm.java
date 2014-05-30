@@ -117,6 +117,7 @@ class IndicatorForm extends AbstractDesignForm {
                     ExprLexer lexer = new ExprLexer(value);
                     ExprParser parser = new ExprParser(lexer);
                     ExprNode expr = parser.parse();
+                    return null;
                 } catch (Exception e) {
                     e.printStackTrace();
                     // ignore : expression is invalid

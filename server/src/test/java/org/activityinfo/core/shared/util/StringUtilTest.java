@@ -21,20 +21,32 @@ package org.activityinfo.core.shared.util;
  * #L%
  */
 
-import org.junit.Assert;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static org.activityinfo.core.shared.util.StringUtil.getLevenshteinDistance;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author yuriyz on 5/7/14.
  */
 public class StringUtilTest {
+
+    @Test
+    public void isAlphabetic() {
+        assertThat(StringUtil.isAlphabetic('a'), Matchers.equalTo(true));
+        assertThat(StringUtil.isAlphabetic('A'), Matchers.equalTo(true));
+        assertThat(StringUtil.isAlphabetic('1'), Matchers.equalTo(true));
+        assertThat(StringUtil.isAlphabetic('4'), Matchers.equalTo(true));
+        assertThat(StringUtil.isAlphabetic('_'), Matchers.equalTo(false));
+        assertThat(StringUtil.isAlphabetic('*'), Matchers.equalTo(false));
+    }
+
     @Test
     public void testLevenshteinDistance() {
-        Assert.assertThat(getLevenshteinDistance("a", "b"), equalTo(1));
-        Assert.assertThat(getLevenshteinDistance("ab", "bb"), equalTo(1));
-        Assert.assertThat(getLevenshteinDistance("ab ", " bb"), equalTo(2));
+        assertThat(getLevenshteinDistance("a", "b"), equalTo(1));
+        assertThat(getLevenshteinDistance("ab", "bb"), equalTo(1));
+        assertThat(getLevenshteinDistance("ab ", " bb"), equalTo(2));
     }
 }
