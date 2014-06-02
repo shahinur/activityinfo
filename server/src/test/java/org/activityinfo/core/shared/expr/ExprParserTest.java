@@ -77,6 +77,16 @@ public class ExprParserTest {
                 new Token(TokenType.SYMBOL, 26, "class3_i3"),
                 new Token(TokenType.BRACE_END, 35, "}")
         );
+
+        expect("{s000002_i0009ls}+{s000002_i0009lt}",
+                new Token(TokenType.BRACE_START, 0, "{"),
+                new Token(TokenType.SYMBOL, 1, "s000002_i0009ls"),
+                new Token(TokenType.BRACE_END, 16, "}"),
+                new Token(TokenType.OPERATOR, 17, "+"),
+                new Token(TokenType.BRACE_START, 18, "{"),
+                new Token(TokenType.SYMBOL, 19, "s000002_i0009lt"),
+                new Token(TokenType.BRACE_END, 44, "}")
+        );
     }
 
     @Test
@@ -113,6 +123,12 @@ public class ExprParserTest {
                                         new PlaceholderExpr("class1_i1"),
                                         new PlaceholderExpr("class2_i2"))
                         ), new PlaceholderExpr("class3_i3")));
+
+        expect("{s000002_i0009ls}+{s000002_i0009lt}",
+                new FunctionCallNode(ArithmeticFunctions.BINARY_PLUS,
+                        new PlaceholderExpr("s000002_i0009ls"),
+                        new PlaceholderExpr("s000002_i0009lt"))
+        );
     }
 
     @Test

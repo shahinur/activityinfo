@@ -109,7 +109,7 @@
   <indicator IndicatorId="675" Aggregation="2" Category="outputs" description="Kivu description" ListHeader="distribs" name="A kivu thing" SortOrder="3" Units="distributions" ActivityId="1" mandatory="false" Type="QUANTITY"/>
   <indicator IndicatorId="12448" Aggregation="0" name="indicator1" SortOrder="1" Units="count" ActivityId="2" mandatory="false" Type="QUANTITY"/>
   <indicator IndicatorId="12449" Aggregation="0" name="indicator2" SortOrder="1" Units="count" ActivityId="2" mandatory="false" Type="QUANTITY"/>
-  <indicator IndicatorId="12450" Aggregation="0" name="calculatedIndicator_sum" SortOrder="3" Units="count" ActivityId="2" mandatory="false" Type="QUANTITY" Expression="{2_12448}+{2_12449}"/>
+  <indicator IndicatorId="12450" Aggregation="0" name="calculatedIndicator_sum" SortOrder="3" Units="count" ActivityId="2" mandatory="false" Type="QUANTITY" Expression="{s000002_i0009ls}+{s000002_i0009lt}"/>
   <indicatorlink/>
   <indicatorvalue IndicatorId="1" ReportingPeriodId="1" Value="1500.0"/>
   <indicatorvalue IndicatorId="1" ReportingPeriodId="2" Value="3600.0"/>
