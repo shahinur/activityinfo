@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <activity ActivityId="1" AllowEdit="true" category="NFI Cluster" Name="NFI" ReportingFrequency="0" SortOrder="1" DatabaseId="1" LocationTypeId="1" published="0" cacheKey="0"/>
+  <activity ActivityId="2" AllowEdit="true" Name="Distribution de Kits Scolaire" ReportingFrequency="0" SortOrder="1" DatabaseId="1" LocationTypeId="1" published="0" cacheKey="0"/>
+  <activity ActivityId="3" AllowEdit="true" Name="Appui aux centres de sant&#233;" ReportingFrequency="1" SortOrder="1" DatabaseId="2" LocationTypeId="1" published="0" cacheKey="0"/>
+  <activity ActivityId="4" AllowEdit="true" Name="Reunification of child soliders" ReportingFrequency="1" SortOrder="1" DatabaseId="2" LocationTypeId="3" published="0" cacheKey="0"/>
+  <activity ActivityId="5" AllowEdit="true" Name="Kivu water distribution" ReportingFrequency="1" SortOrder="1" DatabaseId="2" LocationTypeId="3" published="0" cacheKey="0"/>
+  <activity ActivityId="41" AllowEdit="true" Name="Public Activity" ReportingFrequency="1" SortOrder="1" DatabaseId="4" LocationTypeId="3" published="2" cacheKey="0"/>
+  <adminentity AdminEntityId="1" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="10" Name="Kinshasa" AdminLevelId="1" deleted="false"/>
+  <adminentity AdminEntityId="2" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="20" Name="Sud Kivu" AdminLevelId="1" deleted="false"/>
+  <adminentity AdminEntityId="3" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="30" Name="Nord Kivu" AdminLevelId="1" deleted="false"/>
+  <adminentity AdminEntityId="4" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="40" Name="Ituri" AdminLevelId="1" deleted="false"/>
+  <adminentity AdminEntityId="10" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="203" Name="Bukavu" AdminLevelId="2" AdminEntityParentId="4" deleted="false"/>
+  <adminentity AdminEntityId="11" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="201" Name="Walungu" AdminLevelId="2" AdminEntityParentId="2" deleted="false"/>
+  <adminentity AdminEntityId="12" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="202" Name="Shabunda" AdminLevelId="2" AdminEntityParentId="2" deleted="false"/>
+  <adminentity AdminEntityId="13" x1="-44.0" x2="33.5" y1="-22.0" y2="40.0" Code="203" Name="Kalehe" AdminLevelId="2" AdminEntityParentId="2" deleted="false"/>
+  <adminentity AdminEntityId="21" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="203" Name="Irumu" AdminLevelId="2" AdminEntityParentId="4" deleted="false"/>
+  <adminentity_soundex/>
+  <adminlevel AdminLevelId="1" Name="Province" CountryId="1" polygons="true" version="1" deleted="false"/>
+  <adminlevel AdminLevelId="2" Name="Territoire" CountryId="1" ParentId="1" polygons="true" version="1" deleted="false"/>
+  <adminlevelversion/>
+  <attribute AttributeId="1" Name="Catastrophe Naturelle" SortOrder="2" AttributeGroupId="1"/>
+  <attribute AttributeId="2" Name="Deplacement" SortOrder="1" AttributeGroupId="1"/>
+  <attribute AttributeId="3" Name="Casserole" SortOrder="1" AttributeGroupId="2"/>
+  <attribute AttributeId="4" Name="Soap" SortOrder="2" AttributeGroupId="2"/>
+  <attributegroup AttributeGroupId="1" multipleAllowed="true" name="cause" sortOrder="2" mandatory="false"/>
+  <attributegroup AttributeGroupId="2" multipleAllowed="true" name="contenu du kit" sortOrder="1" mandatory="false"/>
+  <attributegroup AttributeGroupId="3" multipleAllowed="true" name="Something about Kivu" sortOrder="1" mandatory="false"/>
+  <attributegroup AttributeGroupId="991" dateDeleted="2011-01-01 00:00:00.0" multipleAllowed="true" name="Deleted" sortOrder="1" mandatory="false"/>
+  <attributegroupinactivity AttributeGroupId="1" ActivityId="1"/>
+  <attributegroupinactivity AttributeGroupId="2" ActivityId="1"/>
+  <attributegroupinactivity AttributeGroupId="3" ActivityId="1"/>
+  <attributegroupinactivity AttributeGroupId="991" ActivityId="1"/>
+  <attributegroupinactivity AttributeGroupId="1" ActivityId="2"/>
+  <attributevalue AttributeId="1" SiteId="1" Value="false"/>
+  <attributevalue AttributeId="1" SiteId="2" Value="false"/>
+  <attributevalue AttributeId="1" SiteId="3" Value="true"/>
+  <attributevalue AttributeId="2" SiteId="1" Value="false"/>
+  <attributevalue AttributeId="2" SiteId="2" Value="true"/>
+  <attributevalue AttributeId="2" SiteId="3" Value="false"/>
+  <authentication AuthToken="e015924e7d39a1f5b2a75def989050ed" dateCreated="2014-06-02 17:43:45.0" dateLastActive="2014-06-02 17:43:45.0" UserId="3"/>
+  <basemap/>
+  <country CountryId="1" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Name="Rdc"/>
+  <databasechangelog ID="001" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-001.xml" DATEEXECUTED="2014-05-30 12:40:08.0" ORDEREXECUTED="2" EXECTYPE="EXECUTED" MD5SUM="3:8f697965f0d0b78466455fbd6be72542" DESCRIPTION="Drop Column (x10)" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="001-2" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-001.xml" DATEEXECUTED="2014-05-30 12:40:09.0" ORDEREXECUTED="3" EXECTYPE="EXECUTED" MD5SUM="3:f891f65f1727e70e6a4034cde5f1116f" DESCRIPTION="Drop Not-Null Constraint" COMMENTS="Not sure why this was incorrectly marked as not-null, but it should be nullable." LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="001-3" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-001.xml" DATEEXECUTED="2014-05-30 12:40:10.0" ORDEREXECUTED="4" EXECTYPE="EXECUTED" MD5SUM="3:4f2155c3ddadbc51653bbfa1f2273ebe" DESCRIPTION="Drop Column" COMMENTS="Not used." LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="001-4" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-001.xml" DATEEXECUTED="2014-05-30 12:40:23.0" ORDEREXECUTED="5" EXECTYPE="EXECUTED" MD5SUM="3:fb1333004dfa117cc38ab8d5c231069e" DESCRIPTION="Drop Column (x4)" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="002-01" AUTHOR="abid" FILENAME="org/activityinfo/database/changelog/db.changelog-002.xml" DATEEXECUTED="2014-05-30 12:40:24.0" ORDEREXECUTED="6" EXECTYPE="EXECUTED" MD5SUM="3:e661bc29349b92e74c7d1f105a5a5ea8" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="002-02" AUTHOR="abid" FILENAME="org/activityinfo/database/changelog/db.changelog-002.xml" DATEEXECUTED="2014-05-30 12:40:25.0" ORDEREXECUTED="7" EXECTYPE="EXECUTED" MD5SUM="3:ec2b5b9059fb391fa44264d7a5f775dd" DESCRIPTION="Create Table (x2)" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="002-03" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-002.xml" DATEEXECUTED="2014-05-30 12:40:26.0" ORDEREXECUTED="8" EXECTYPE="EXECUTED" MD5SUM="3:1e4d8654d510887fdbf5e4c27e86b867" DESCRIPTION="Update Data, Add Not-Null Constraint, Add Default Value" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="002-04" AUTHOR="abid" FILENAME="org/activityinfo/database/changelog/db.changelog-002.xml" DATEEXECUTED="2014-05-30 12:40:26.0" ORDEREXECUTED="9" EXECTYPE="EXECUTED" MD5SUM="3:107801c92b429ccf838b21d78e67181c" DESCRIPTION="Create Table" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="003-01" AUTHOR="umad" FILENAME="org/activityinfo/database/changelog/db.changelog-003.xml" DATEEXECUTED="2014-05-30 12:40:27.0" ORDEREXECUTED="10" EXECTYPE="EXECUTED" MD5SUM="3:fe77f726ebab2c617cfee6668c2f1589" DESCRIPTION="Create Table" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="003-02" AUTHOR="umad" FILENAME="org/activityinfo/database/changelog/db.changelog-003.xml" DATEEXECUTED="2014-05-30 12:40:28.0" ORDEREXECUTED="11" EXECTYPE="EXECUTED" MD5SUM="3:03407e0c1f3ce2d36bafc5af261a7c6a" DESCRIPTION="Modify data type, Add Column (x2)" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="003-03" AUTHOR="umad" FILENAME="org/activityinfo/database/changelog/db.changelog-003.xml" DATEEXECUTED="2014-05-30 12:40:28.0" ORDEREXECUTED="12" EXECTYPE="EXECUTED" MD5SUM="3:1bcb39b23147692527be935007067dc9" DESCRIPTION="Modify data type" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="003-04" AUTHOR="umad" FILENAME="org/activityinfo/database/changelog/db.changelog-003.xml" DATEEXECUTED="2014-05-30 12:40:29.0" ORDEREXECUTED="13" EXECTYPE="EXECUTED" MD5SUM="3:05cbc647e9500f2ef86e503e917bd237" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="003-05" AUTHOR="umad" FILENAME="org/activityinfo/database/changelog/db.changelog-003.xml" DATEEXECUTED="2014-05-30 12:40:31.0" ORDEREXECUTED="14" EXECTYPE="EXECUTED" MD5SUM="3:48e0dc623e2a2fe9ac2ea91ccad6e273" DESCRIPTION="Drop Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="003-06" AUTHOR="umad" FILENAME="org/activityinfo/database/changelog/db.changelog-003.xml" DATEEXECUTED="2014-05-30 12:40:31.0" ORDEREXECUTED="15" EXECTYPE="EXECUTED" MD5SUM="3:cb385b4afd7dd305cfce0ac393cc645f" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="004-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-004-timestamps.xml" DATEEXECUTED="2014-05-30 12:40:32.0" ORDEREXECUTED="16" EXECTYPE="EXECUTED" MD5SUM="3:08fdbafdaf6502792bd86491756d9e1c" DESCRIPTION="Add Column, Custom SQL" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="004-02" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-004-timestamps.xml" DATEEXECUTED="2014-05-30 12:40:36.0" ORDEREXECUTED="17" EXECTYPE="EXECUTED" MD5SUM="3:e0a96e0be9276ef5a472d04c3457f755" DESCRIPTION="Add Column, Custom SQL" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="005-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-005-subscriptions.xml" DATEEXECUTED="2014-05-30 12:40:38.0" ORDEREXECUTED="18" EXECTYPE="EXECUTED" MD5SUM="3:9adb725122ff79af2733ac52047dc355" DESCRIPTION="Rename Column, Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="006-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-006-report-vis.xml" DATEEXECUTED="2014-05-30 12:40:38.0" ORDEREXECUTED="19" EXECTYPE="EXECUTED" MD5SUM="3:41dba44d626020121561cf8cac8ce272" DESCRIPTION="Create Table" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="006-02" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-006-report-vis.xml" DATEEXECUTED="2014-05-30 12:40:42.0" ORDEREXECUTED="20" EXECTYPE="EXECUTED" MD5SUM="3:9ed74446ca5da3a03930af4566ab669b" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="006-03" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-006-report-vis.xml" DATEEXECUTED="2014-05-30 12:40:44.0" ORDEREXECUTED="21" EXECTYPE="EXECUTED" MD5SUM="3:861774626d94405938941f1d433837a1" DESCRIPTION="Drop Column (x2)" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="007-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-007-fieldcleanup.xml" DATEEXECUTED="2014-05-30 12:40:45.0" ORDEREXECUTED="22" EXECTYPE="EXECUTED" MD5SUM="3:2e19c6a73c5ceb204b23892104c4ab48" DESCRIPTION="Drop Column (x2), Add Unique Constraint" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="008-01-changed" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-008-charsets.xml" DATEEXECUTED="2014-05-30 12:40:47.0" ORDEREXECUTED="23" EXECTYPE="EXECUTED" MD5SUM="3:33c66a7ffe637694f6d6ce60d309a6fe" DESCRIPTION="Modify data type (x2), Custom SQL" COMMENTS="Shortens string keys because MySQL reserves 4-bytes for each character&#xA;&#09;&#09;&#09;when using utfmb4 and imposes a maximum key length of 1000." LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="009-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-009-schema-updates.xml" DATEEXECUTED="2014-05-30 12:40:50.0" ORDEREXECUTED="24" EXECTYPE="EXECUTED" MD5SUM="3:9f29d5539ce051a9e7cba97a73359a91" DESCRIPTION="Add Column (x2), Add Default Value (x2), Custom SQL" COMMENTS="We&apos;re using the timeEdited field as a rough versioning mechanism to detect&#xA;&#09;&#09;&#09;when users need to synchronize, so we want pretty good resolution, and &#xA;&#09;&#09;&#09;we don&apos;t need MySQL mucking around with the timestamps" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="010-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-010-indicator.xml" DATEEXECUTED="2014-05-30 12:40:50.0" ORDEREXECUTED="25" EXECTYPE="EXECUTED" MD5SUM="3:3537b62e59d0a73eb5eddd6358d6213a" DESCRIPTION="Modify data type" COMMENTS="Increase the length of allowable indicator names" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="011-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-011-polygons.xml" DATEEXECUTED="2014-05-30 12:40:51.0" ORDEREXECUTED="26" EXECTYPE="EXECUTED" MD5SUM="3:f761c5d1038ff95906ea9b22782f0873" DESCRIPTION="Add Column" COMMENTS="Increase the length of allowable indicator names" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="011-02" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-011-polygons.xml" DATEEXECUTED="2014-05-30 12:40:52.0" ORDEREXECUTED="27" EXECTYPE="EXECUTED" MD5SUM="3:f286ba875bd6f27dedb49ce594d344c2" DESCRIPTION="Drop Column" COMMENTS="Cleans up disused field" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="012-01" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-012-email-notifications.xml" DATEEXECUTED="2014-05-30 12:40:53.0" ORDEREXECUTED="28" EXECTYPE="EXECUTED" MD5SUM="3:908fbdff278d02b7987f1001c455c703" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="013-01" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-013-site-history.xml" DATEEXECUTED="2014-05-30 12:40:54.0" ORDEREXECUTED="29" EXECTYPE="EXECUTED" MD5SUM="3:e4da8bd097bae99b04317dec4d2d01ce" DESCRIPTION="Create Table" COMMENTS="Creates the sitehistory table, storing sitedata as json" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="013-02" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-013-site-history.xml" DATEEXECUTED="2014-05-30 12:40:54.0" ORDEREXECUTED="30" EXECTYPE="EXECUTED" MD5SUM="3:03fc747c1d50381690edf0bece2b5ade" DESCRIPTION="Modify data type" COMMENTS="Alters the sitehistory table, changing the json column to varchar(5000)" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="013-03" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-013-site-history.xml" DATEEXECUTED="2014-05-30 12:40:55.0" ORDEREXECUTED="31" EXECTYPE="EXECUTED" MD5SUM="3:9f85d8f710b843aec3b2035327430803" DESCRIPTION="Modify data type" COMMENTS="Alters the sitehistory table, changing the json column back to longtext following&#xA;&#09;&#09;&#09;fix in rebar library" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="014-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-014-refine.xml" DATEEXECUTED="2014-05-30 12:40:55.0" ORDEREXECUTED="32" EXECTYPE="EXECUTED" MD5SUM="3:fd70bd00055e6bac2111f3e2f7d9abe6" DESCRIPTION="Create Table" COMMENTS="Creates an index table for admin entities" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="015-02" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-015-geoadmin.xml" DATEEXECUTED="2014-05-30 12:40:56.0" ORDEREXECUTED="33" EXECTYPE="EXECUTED" MD5SUM="3:b0a500bbd4b06d1a558be365fe764b7d" DESCRIPTION="Custom SQL" COMMENTS="Updates locationtype table to be autoincrement. We have to first remove a &#xA;      record with id=0 that was somehow added in the past. There is actually data &#xA;      bound to it out there, so we can drop it completely, but we can remove it long&#xA;      eno..." LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="015-03" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-015-geoadmin.xml" DATEEXECUTED="2014-05-30 12:40:57.0" ORDEREXECUTED="34" EXECTYPE="EXECUTED" MD5SUM="3:da401a86b0212cd3efbb8e414e56916c" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="015-04" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-015-geoadmin.xml" DATEEXECUTED="2014-05-30 12:40:57.0" ORDEREXECUTED="35" EXECTYPE="EXECUTED" MD5SUM="3:b8ad32334a83faa75efceed4831f1d2e" DESCRIPTION="Create Table" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="015-05" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-015-geoadmin.xml" DATEEXECUTED="2014-05-30 12:40:59.0" ORDEREXECUTED="36" EXECTYPE="EXECUTED" MD5SUM="3:aa0bd2e0628fefd0bc360b95f65ae206" DESCRIPTION="Add Column (x2)" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="015-06" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-015-geoadmin.xml" DATEEXECUTED="2014-05-30 12:41:05.0" ORDEREXECUTED="37" EXECTYPE="EXECUTED" MD5SUM="3:8c1de2079bf0fbfe8fbdfed3e243bb35" DESCRIPTION="Add Column (x5)" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="015-07" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-015-geoadmin.xml" DATEEXECUTED="2014-05-30 12:41:05.0" ORDEREXECUTED="38" EXECTYPE="EXECUTED" MD5SUM="3:0b9e3ed044545cc305fdd97eddd4d53e" DESCRIPTION="Add Foreign Key Constraint" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="015-08" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-015-geoadmin.xml" DATEEXECUTED="2014-05-30 12:41:06.0" ORDEREXECUTED="39" EXECTYPE="EXECUTED" MD5SUM="3:02e813502881a5cb1cec42c98af77c17" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="016-01" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-016-issues.xml" DATEEXECUTED="2014-05-30 12:41:07.0" ORDEREXECUTED="40" EXECTYPE="EXECUTED" MD5SUM="3:72b2c98f8c3e86224f75c3ec6377850b" DESCRIPTION="Add Column" COMMENTS="#47050153 - Adds &apos;mandatory&apos; flag to the indicator table." LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="016-02" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-016-issues.xml" DATEEXECUTED="2014-05-30 12:41:07.0" ORDEREXECUTED="41" EXECTYPE="EXECUTED" MD5SUM="3:6563e3101c33fcc9d8546cb1c0ed382a" DESCRIPTION="Add Column" COMMENTS="#47050153 - Adds &apos;mandatory&apos; flag to the attributegroup table." LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="017-01" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-017-opensignup.xml" DATEEXECUTED="2014-05-30 12:41:09.0" ORDEREXECUTED="42" EXECTYPE="EXECUTED" MD5SUM="3:023b69d74029d3f5a1631462b4982508" DESCRIPTION="Add Column (x2), Drop Column (x2)" COMMENTS="#46186875 Open signup - Cleaning up userlogin table" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="017-02" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-017-opensignup.xml" DATEEXECUTED="2014-05-30 12:41:10.0" ORDEREXECUTED="43" EXECTYPE="EXECUTED" MD5SUM="3:45d44c9d8b622df593c8262a8bd4ad28" DESCRIPTION="Add Column" COMMENTS="[#49384031] Record inviting user in UserLogin" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="017-03" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-017-opensignup.xml" DATEEXECUTED="2014-05-30 12:41:11.0" ORDEREXECUTED="44" EXECTYPE="EXECUTED" MD5SUM="3:d1f44e30a4fbb9f8510e2e986db0ce77" DESCRIPTION="Add Column" COMMENTS="Record account creation date" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="018-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-018-import.xml" DATEEXECUTED="2014-05-30 12:41:11.0" ORDEREXECUTED="45" EXECTYPE="EXECUTED" MD5SUM="3:a21d5834f6f20c5a18a67207bddb5d11" DESCRIPTION="Drop Unique Constraint" COMMENTS="Batch import" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="019-01" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-019-domains.xml" DATEEXECUTED="2014-05-30 12:41:11.0" ORDEREXECUTED="46" EXECTYPE="EXECUTED" MD5SUM="3:bec9b62823154802d134f8e014d8b095" DESCRIPTION="Create Table" COMMENTS="Creates the domain table" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="019-02" AUTHOR="jasper" FILENAME="org/activityinfo/database/changelog/db.changelog-019-domains.xml" DATEEXECUTED="2014-05-30 12:41:12.0" ORDEREXECUTED="47" EXECTYPE="EXECUTED" MD5SUM="3:4484452b847c21f820d2a41bbb6b1cc8" DESCRIPTION="Custom SQL, Add Foreign Key Constraint" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="019-04" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-019-domains.xml" DATEEXECUTED="2014-05-30 12:41:12.0" ORDEREXECUTED="48" EXECTYPE="EXECUTED" MD5SUM="3:db6538083d69d9fbd8796c47d186ac1c" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="019-05" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-019-domains.xml" DATEEXECUTED="2014-05-30 12:41:12.0" ORDEREXECUTED="49" EXECTYPE="EXECUTED" MD5SUM="3:3fbfee675b572939a2e5286da025ed18" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="019-06" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-019-domains.xml" DATEEXECUTED="2014-05-30 12:41:12.0" ORDEREXECUTED="50" EXECTYPE="EXECUTED" MD5SUM="3:cb91f6186587e23803db4eccf26fd76c" DESCRIPTION="Drop Not-Null Constraint" COMMENTS="Precursor to dropping the column" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="019-07" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-019-domains.xml" DATEEXECUTED="2014-05-30 12:41:13.0" ORDEREXECUTED="51" EXECTYPE="EXECUTED" MD5SUM="3:b30eee629500bf7adcf647f7c639363c" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="020-01" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-020-locations.xml" DATEEXECUTED="2014-05-30 12:41:15.0" ORDEREXECUTED="52" EXECTYPE="EXECUTED" MD5SUM="3:cd09a554788372b6c2144ba9764d4215" DESCRIPTION="Add Column (x2)" COMMENTS="Spike for workflows. While these will initially be hardcorded, the next&#xA;      step will be to allow users to define their own workflows." LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="020-02" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-020-locations.xml" DATEEXECUTED="2014-05-30 12:41:16.0" ORDEREXECUTED="53" EXECTYPE="EXECUTED" MD5SUM="3:21b4f28ce84df2084e3ed8dd04661cd4" DESCRIPTION="Add Column" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="020-03" AUTHOR="alex" FILENAME="org/activityinfo/database/changelog/db.changelog-020-locations.xml" DATEEXECUTED="2014-05-30 12:41:16.0" ORDEREXECUTED="54" EXECTYPE="EXECUTED" MD5SUM="3:241423c66937df0f5d2ed741c1df9692" DESCRIPTION="Custom SQL" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="021-01" AUTHOR="yuriyz" FILENAME="org/activityinfo/database/changelog/db.changelog-021-narrative-indicators.xml" DATEEXECUTED="2014-05-30 12:41:17.0" ORDEREXECUTED="55" EXECTYPE="EXECUTED" MD5SUM="3:f94667639f767f1d7ac35afb48ee72c3" DESCRIPTION="Add Column" COMMENTS="Define indicator type" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="021-02" AUTHOR="yuriyz" FILENAME="org/activityinfo/database/changelog/db.changelog-021-narrative-indicators.xml" DATEEXECUTED="2014-05-30 12:41:20.0" ORDEREXECUTED="56" EXECTYPE="EXECUTED" MD5SUM="3:9ff937b1eb575ece9ad70e2d599ec5c7" DESCRIPTION="Add Column (x2), Drop Not-Null Constraint" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="022-01" AUTHOR="yuriyz" FILENAME="org/activityinfo/database/changelog/db.changelog-022-calculated-indicators.xml" DATEEXECUTED="2014-05-30 12:41:21.0" ORDEREXECUTED="57" EXECTYPE="EXECUTED" MD5SUM="3:fd4a8008cf7f764fe005a2db3d094da8" DESCRIPTION="Add Column" COMMENTS="Calculated indicator : added expression column" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="022-02" AUTHOR="yuriyz" FILENAME="org/activityinfo/database/changelog/db.changelog-022-calculated-indicators.xml" DATEEXECUTED="2014-05-30 12:41:22.0" ORDEREXECUTED="58" EXECTYPE="EXECUTED" MD5SUM="3:56deb3cba9b2c73d5b70bfc8e5722061" DESCRIPTION="Add Column" COMMENTS="Activity : added cache key column. Each time any site rows is changed (created/updated/deleted), cache key must be changed." LIQUIBASE="2.0.2-bdd"/>
+  <databasechangelog ID="initial-20111102" AUTHOR="alex (generated)" FILENAME="org/activityinfo/database/changelog/db.changelog-000-initial.xml" DATEEXECUTED="2014-05-30 12:39:48.0" ORDEREXECUTED="1" EXECTYPE="EXECUTED" MD5SUM="3:d114cf0b8219d6e803dbd4da4433a532" DESCRIPTION="Create Table (x27), Add Primary Key (x6), Add Foreign Key Constraint, Create Index (x47)" COMMENTS="" LIQUIBASE="2.0.2-bdd"/>
+  <databasechangeloglock ID="1" LOCKED="false"/>
+  <domain/>
+  <indicator IndicatorId="1" Aggregation="0" Category="inputs" description="falling in lve" ListHeader="no header really" name="beneficiaries" SortOrder="2" Units="menages" ActivityId="1" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="2" Aggregation="0" Category="outputs" description="desc" ListHeader="header" name="baches" SortOrder="1" Units="menages" ActivityId="1" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="5" Aggregation="1" Category="outputs" description="desc" ListHeader="header" name="Utilisaton rate" SortOrder="1" Units="nc/hab/month" ActivityId="3" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="6" Aggregation="1" description="desc" ListHeader="kids" name="Number of children" SortOrder="1" Units="children" ActivityId="4" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="103" Aggregation="2" Category="outputs" description="Nomber of distributions effectuees" ListHeader="distribs" name="Nb. of distributions" SortOrder="3" Units="distributions" ActivityId="1" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="675" Aggregation="2" Category="outputs" description="Kivu description" ListHeader="distribs" name="A kivu thing" SortOrder="3" Units="distributions" ActivityId="1" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="12448" Aggregation="0" name="indicator1" SortOrder="1" Units="count" ActivityId="2" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="12449" Aggregation="0" name="indicator2" SortOrder="1" Units="count" ActivityId="2" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="12450" Aggregation="0" name="calculatedIndicator_sum" SortOrder="3" Units="count" ActivityId="2" mandatory="false" Type="QUANTITY" Expression="{2_12448}+{2_12449}"/>
+  <indicatorlink/>
+  <indicatorvalue IndicatorId="1" ReportingPeriodId="1" Value="1500.0"/>
+  <indicatorvalue IndicatorId="1" ReportingPeriodId="2" Value="3600.0"/>
+  <indicatorvalue IndicatorId="1" ReportingPeriodId="3" Value="10000.0"/>
+  <indicatorvalue IndicatorId="2" ReportingPeriodId="1" Value="500.0"/>
+  <indicatorvalue IndicatorId="2" ReportingPeriodId="2" Value="1200.0"/>
+  <indicatorvalue IndicatorId="2" ReportingPeriodId="3" Value="500.0"/>
+  <indicatorvalue IndicatorId="5" ReportingPeriodId="91" Value="0.1"/>
+  <indicatorvalue IndicatorId="5" ReportingPeriodId="92" Value="0.3"/>
+  <indicatorvalue IndicatorId="5" ReportingPeriodId="93" Value="0.4"/>
+  <indicatorvalue IndicatorId="6" ReportingPeriodId="601" Value="35.0"/>
+  <indicatorvalue IndicatorId="6" ReportingPeriodId="602" Value="70.0"/>
+  <location LocationID="1" Name="Penekusu Kivu" X="1.532" Y="27.323" LocationTypeID="1" timeEdited="1" workflowStatusId="validated"/>
+  <location LocationID="2" Name="Ngshwe" X="1.323" Y="28.232" LocationTypeID="1" timeEdited="2" workflowStatusId="validated"/>
+  <location LocationID="3" Name="Boga" LocationTypeID="1" timeEdited="300" workflowStatusId="validated"/>
+  <location LocationID="4" Name="Boga" X="3.323" Y="27.232" LocationTypeID="1" timeEdited="500" workflowStatusId="validated"/>
+  <location LocationID="6" Name="Walungu" LocationTypeID="3" timeEdited="550" workflowStatusId="validated"/>
+  <location LocationID="7" Name="Shabunda" LocationTypeID="3" timeEdited="600" workflowStatusId="validated"/>
+  <location LocationID="9" Name="CS Ngweshe" X="3.23" Y="27.232" LocationTypeID="2" timeEdited="400" workflowStatusId="validated"/>
+  <locationadminlink AdminEntityId="2" LocationId="1"/>
+  <locationadminlink AdminEntityId="12" LocationId="1"/>
+  <locationadminlink AdminEntityId="2" LocationId="2"/>
+  <locationadminlink AdminEntityId="11" LocationId="2"/>
+  <locationadminlink AdminEntityId="4" LocationId="3"/>
+  <locationadminlink AdminEntityId="21" LocationId="3"/>
+  <locationadminlink AdminEntityId="2" LocationId="4"/>
+  <locationadminlink AdminEntityId="10" LocationId="4"/>
+  <locationadminlink AdminEntityId="3" LocationId="6"/>
+  <locationadminlink AdminEntityId="11" LocationId="6"/>
+  <locationadminlink AdminEntityId="3" LocationId="7"/>
+  <locationadminlink AdminEntityId="12" LocationId="7"/>
+  <locationadminlink AdminEntityId="2" LocationId="9"/>
+  <locationadminlink AdminEntityId="11" LocationId="9"/>
+  <locationtype locationtypeid="1" Name="localite" Reuse="true" CountryId="1" workflowId="open"/>
+  <locationtype locationtypeid="2" Name="Health Center" Reuse="true" CountryId="1" workflowId="open"/>
+  <locationtype locationtypeid="3" Name="Territorie" Reuse="true" BoundAdminLevelId="2" CountryId="1" workflowId="open"/>
+  <lockedperiod LockedPeriodId="1" FromDate="2009-01-01 00:00:00.0" Name="woei" ToDate="2009-01-02 00:00:00.0" UserDatabaseId="1" enabled="true"/>
+  <lockedperiod LockedPeriodId="2" FromDate="2009-01-01 00:00:00.0" Name="lala" ToDate="2009-01-12 00:00:00.0" enabled="true" ProjectId="1"/>
+  <lockedperiod LockedPeriodId="3" FromDate="2009-01-01 00:00:00.0" Name="whoa" ToDate="2009-01-22 00:00:00.0" enabled="true" ActivityId="1"/>
+  <lockedperiod LockedPeriodId="4" FromDate="2009-01-01 00:00:00.0" Name="yey" ToDate="2009-01-24 00:00:00.0" UserDatabaseId="2" enabled="true"/>
+  <partner PartnerId="1" Name="NRC"/>
+  <partner PartnerId="2" Name="Solidarites"/>
+  <partner PartnerId="3" Name="Kivu Help"/>
+  <partnerindatabase PartnerId="1" DatabaseId="1"/>
+  <partnerindatabase PartnerId="2" DatabaseId="1"/>
+  <partnerindatabase PartnerId="3" DatabaseId="1"/>
+  <partnerindatabase PartnerId="1" DatabaseId="2"/>
+  <project ProjectId="1" description="A project" name="Project X" DatabaseId="3"/>
+  <project ProjectId="2" name="RRMP" DatabaseId="1"/>
+  <project ProjectId="3" name="USAID" DatabaseId="1"/>
+  <project ProjectId="4" name="Kivu water" DatabaseId="1"/>
+  <projectreportmodel/>
+  <reportingperiod ReportingPeriodId="1" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="1"/>
+  <reportingperiod ReportingPeriodId="2" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="2"/>
+  <reportingperiod ReportingPeriodId="3" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="3"/>
+  <reportingperiod ReportingPeriodId="91" Date1="2009-01-01" Date2="2009-01-31" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="9"/>
+  <reportingperiod ReportingPeriodId="92" Date1="2009-02-01" Date2="2009-02-28" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="9"/>
+  <reportingperiod ReportingPeriodId="93" Date1="2009-03-01" Date2="2009-03-30" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="9"/>
+  <reportingperiod ReportingPeriodId="601" Date1="2009-01-01" Date2="2009-01-31" DateCreated="2009-01-01 00:00:00.0" DateEdited="2009-01-01 00:00:00.0" SiteId="6"/>
+  <reportingperiod ReportingPeriodId="602" Date1="2009-02-01" Date2="2009-02-28" DateCreated="2009-01-01 00:00:00.0" DateEdited="2009-01-01 00:00:00.0" SiteId="6"/>
+  <reportsubscription/>
+  <reporttemplate/>
+  <reportvisibility/>
+  <site SiteId="1" comments="He said &apos;booyah&apos;" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="1" LocationId="1" PartnerId="1" ProjectId="1" timeEdited="3"/>
+  <site SiteId="2" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="1" LocationId="2" PartnerId="1" ProjectId="1" timeEdited="3"/>
+  <site SiteId="3" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="1" LocationId="3" PartnerId="2" ProjectId="2" timeEdited="330"/>
+  <site SiteId="4" Date1="2008-10-06" Date2="2008-11-06" DateCreated="2009-10-05 00:00:00.0" DateEdited="2009-10-05 00:00:00.0" ActivityId="2" LocationId="4" PartnerId="2" timeEdited="510"/>
+  <site SiteId="5" Date1="2008-10-05" Date2="2008-10-05" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="2" LocationId="3" PartnerId="1" timeEdited="530"/>
+  <site SiteId="6" Date1="2009-01-01" Date2="2009-01-31" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="4" LocationId="6" PartnerId="1" timeEdited="570"/>
+  <site SiteId="7" Date1="2009-01-01" Date2="2009-01-31" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="4" LocationId="7" PartnerId="1" timeEdited="660"/>
+  <site SiteId="9" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01 00:00:00.0" DateEdited="2009-01-01 00:00:00.0" ActivityId="3" LocationId="9" PartnerId="1" timeEdited="420"/>
+  <siteattachment/>
+  <sitehistory id="1" siteid="1" userid="1" timecreated="1355342502769" initial="true" json="{&apos;id&apos;:{&apos;type&apos;:&apos;Integer&apos;,&apos;value&apos;:1},&apos;I4925&apos;:{&apos;type&apos;:&apos;Double&apos;,&apos;value&apos;:54.0},&apos;comments&apos;:{&apos;type&apos;:&apos;String&apos;,&apos;value&apos;:&apos;site 1 my first comment&apos;}}"/>
+  <sitehistory id="2" siteid="1" userid="3" timecreated="1355342502792" initial="false" json="{&apos;comments&apos;:{&apos;type&apos;:&apos;String&apos;,&apos;value&apos;:&apos;site 1 changed comment&apos;}}"/>
+  <sitehistory id="3" siteid="2" userid="1" timecreated="1355342502769" initial="false" json="{&apos;id&apos;:{&apos;type&apos;:&apos;Integer&apos;,&apos;value&apos;:1},&apos;I4925&apos;:{&apos;type&apos;:&apos;Double&apos;,&apos;value&apos;:54.0},&apos;comments&apos;:{&apos;type&apos;:&apos;String&apos;,&apos;value&apos;:&apos;site 2 my first comment&apos;}}"/>
+  <sitehistory id="4" siteid="2" userid="3" timecreated="1355342502792" initial="false" json="{&apos;comments&apos;:{&apos;type&apos;:&apos;String&apos;,&apos;value&apos;:&apos;site 2 changed comment&apos;}}"/>
+  <target/>
+  <targetvalue/>
+  <userdatabase DatabaseId="1" lastSchemaUpdate="2009-01-01 00:00:00.0" Name="PEAR" CountryId="1" OwnerUserId="1" version="1401721594485"/>
+  <userdatabase DatabaseId="2" lastSchemaUpdate="2009-01-01 00:00:00.0" Name="PEAR Plus" CountryId="1" OwnerUserId="1" version="0"/>
+  <userdatabase DatabaseId="3" lastSchemaUpdate="2009-01-01 00:00:00.0" Name="Alpha" CountryId="1" OwnerUserId="1" version="0"/>
+  <userdatabase DatabaseId="4" lastSchemaUpdate="2009-01-01 00:00:00.0" Name="Public" CountryId="1" OwnerUserId="4" version="0"/>
+  <userlogin UserId="1" Email="akbertram@gmail.com" Password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." Locale="fr" Name="Alex" emailnotification="true" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="2" Email="bavon@nrc.org" Password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." Locale="fr" Name="Bavon" emailnotification="false" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="3" Email="lisa@solidarites" Password="xyz" Locale="fr" Name="Lisa" emailnotification="false" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="4" Email="marlene@solidarites" Password="xyz" Locale="en" Name="Marlene" emailnotification="true" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="5" Email="christian@nrc.org" Password="xyz" Locale="fr" Name="Christian" emailnotification="false" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="21" Email="pacifique@nrc.org" Password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." Locale="fr" Name="Pacifique" emailnotification="false" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userpermission UserPermissionId="1" AllowDesign="false" AllowEdit="true" AllowEditAll="false" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="false" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="1" PartnerId="1" UserId="2" version="0"/>
+  <userpermission UserPermissionId="2" AllowDesign="false" AllowEdit="false" AllowEditAll="false" allowManageAllUsers="false" allowManageUsers="false" AllowView="false" AllowViewAll="false" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="1" PartnerId="1" UserId="5" version="0"/>
+  <userpermission UserPermissionId="3" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="false" allowManageUsers="true" AllowView="true" AllowViewAll="false" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="1" PartnerId="2" UserId="3" version="0"/>
+  <userpermission UserPermissionId="4" AllowDesign="true" AllowEdit="false" AllowEditAll="true" allowManageAllUsers="false" allowManageUsers="false" AllowView="true" AllowViewAll="false" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="1" PartnerId="2" UserId="4" version="0"/>
+  <userpermission UserPermissionId="91" AllowDesign="false" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="true" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="2" PartnerId="1" UserId="2" version="0"/>
+  <userpermission UserPermissionId="8884" AllowDesign="false" AllowEdit="true" AllowEditAll="false" allowManageAllUsers="false" allowManageUsers="false" AllowView="true" AllowViewAll="true" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="2" PartnerId="1" UserId="21" version="0"/>
+</dataset>
