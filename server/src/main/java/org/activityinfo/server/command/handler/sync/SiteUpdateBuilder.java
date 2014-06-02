@@ -139,6 +139,8 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                        .appendColumn("iv.IndicatorId")
                        .appendColumn("iv.ReportingPeriodId")
                        .appendColumn("iv.Value")
+                       .appendColumn("iv.TextValue")
+                       .appendColumn("iv.DateValue")
                        .where("a.DatabaseId")
                        .equalTo(databaseId)
                        .where("s.timeEdited")

@@ -54,7 +54,6 @@ import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.ProgressListener;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.Warning;
-import org.activityinfo.legacy.shared.model.LockedPeriodSet;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -287,7 +286,16 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         syria = execute(new GetSchema()).getDatabaseById(syria.getId());
 
-        assertThat(syria.getActivities().get(0).getAttributeGroups().size(), equalTo(3));
+        ActivityDTO cash = syria.getActivities().get(0);
+
+        for(AttributeGroupDTO group : cash.getAttributeGroups()) {
+            System.out.println(group.getName());
+        }
+
+        assertThat(cash.getName(), equalTo("1.Provision of urgent cash assistance"));
+        assertThat(cash.getAttributeGroups().size(), equalTo(3));
+
+
 
         SchemaCsvWriter writer = new SchemaCsvWriter();
         writer.write(syria);
