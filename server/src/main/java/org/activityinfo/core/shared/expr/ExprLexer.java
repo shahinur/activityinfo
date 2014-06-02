@@ -73,6 +73,12 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         } else if (c == ')') {
             return finishToken(TokenType.PAREN_END);
 
+        } else if (c == '{') {
+            return finishToken(TokenType.BRACE_START);
+
+        } else if (c == '}') {
+            return finishToken(TokenType.BRACE_END);
+
         } else if (StringUtil.isWhitespace(c)) {
             return readWhitespace();
 
@@ -80,13 +86,13 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
             return readNumber();
 
         } else if (isOperator(c)) {
-            return finishToken(TokenType.SYMBOL);
+            return finishToken(TokenType.OPERATOR);
 
         } else if (isSymbolStart(c)) {
             return readSymbol();
 
         } else {
-            throw new RuntimeException();
+            throw new RuntimeException("Symbol '" + c + "' is not supported");
         }
     }
 
