@@ -58,7 +58,10 @@ public class SchemaMigration {
             "ALTER TABLE UserLogin ADD COLUMN dateCreated REAL",
             "ALTER TABLE Location ADD COLUMN workflowStatusId",
             "ALTER TABLE LocationType ADD COLUMN workflowId",
-            "ALTER TABLE LocationType ADD COLUMN databaseId"};
+            "ALTER TABLE LocationType ADD COLUMN databaseId",
+            "ALTER TABLE IndicatorValue ADD COLUMN TextValue," +
+            "ALTER TABLE IndicatorValue ADD COLUMN DateValue",
+            "ALTER TABLE Indicator ADD COLUMN type"};
 
     @Inject
     public SchemaMigration(SqlDatabase database) {

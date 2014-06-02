@@ -52,7 +52,7 @@ public class SiteTableUpdateBuilder implements UpdateBuilder {
                     "create table if not exists AttributeValue (SiteId integer, AttributeId integer, Value integer)");
             builder.executeStatement(
                     "create table if not exists IndicatorValue (ReportingPeriodId integer, IndicatorId integer, " +
-                    "Value real)");
+                    "Value real, TextValue text, DateValue text)");
 
             builder.executeStatement(
                     "create table if not exists sitehistory (id integer, siteid integer, userid integer, " +
