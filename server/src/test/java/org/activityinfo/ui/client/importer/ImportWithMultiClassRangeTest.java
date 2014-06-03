@@ -4,7 +4,6 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
@@ -86,19 +85,16 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
 
         importModel = new ImportModel(formTree);
         importer = new Importer(resourceLocator, formTree, FieldImportStrategies.get(JvmConverterFactory.get()));
-//        ColumnChoicePresenter choicePresenter = new ColumnChoicePresenter(
-//
-//        for (FieldModel fieldModel : choicePresenter.getOptions()) {
-//            System.out.println(fieldModel.getLabel());
-//        }
 
         // Step 1: User pastes in data to import
         PastedTable source = new PastedTable(
                 Resources.toString(getResource("org/activityinfo/core/shared/importing/nfi.csv"), Charsets.UTF_8));
+        source.parseAllRows();
+
         importModel.setSource(source);
 
         dumpList("COLUMNS", source.getColumns());
-
+        importModel.setColumnAction(columnIndex("Date1"), target("Start Date"));
         importModel.setColumnAction(columnIndex("Date2"), target("End Date"));
         importModel.setColumnAction(columnIndex("Partner"), target("Partner Name"));
         importModel.setColumnAction(columnIndex("Localité"), target("Localité Name"));
@@ -108,7 +104,8 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
         importModel.setColumnAction(columnIndex("Secteur"), target("Secteur Name"));
         importModel.setColumnAction(columnIndex("Groupement"), target("Groupement Name"));
         importModel.setColumnAction(columnIndex("Zone de Santé"), target("Zone de Santé Name"));
-        importModel.setColumnAction(columnIndex("Nombre de ménages ayant reçu une assistance en NFI"), target("Nombre de ménages ayant reçu une assistance en NFI"));
+        importModel.setColumnAction(columnIndex("Nombre de ménages ayant reçu une assistance en NFI"),
+                target("Nombre de ménages ayant reçu une assistance en NFI"));
 
         ValidatedRowTable validatedResult = assertResolves(importer.validateRows(importModel));
         showValidationGrid(validatedResult);
@@ -121,8 +118,6 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
         SiteResult result = execute(query);
         assertThat(result.getTotalLength(), equalTo(651));
 
-        System.out.println(Joiner.on("\n").join(result.getData()));
-
         SiteDTO lastSite = result.getData().get(0);
         assertThat(lastSite.getDate2(), equalTo(new LocalDate(2013,4,30)));
         assertThat(lastSite.getLocationName(), equalTo("Kilimani Camp"));
@@ -132,9 +127,7 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
         assertThat(lastSite.getAdminEntity(SECTEUR_LEVEL).getName(), equalTo("Masisi"));
 
         assertThat((Double) lastSite.getIndicatorValue(NUMBER_MENAGES), equalTo(348.0));
-
         assertThat(lastSite.getAttributeValue(ECHO), equalTo(false));
-        assertThat(lastSite.getAttributeValue(DEPLACEMENT), equalTo(true));
     }
 
     @Test
