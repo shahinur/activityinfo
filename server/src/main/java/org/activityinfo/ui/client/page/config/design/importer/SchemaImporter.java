@@ -138,6 +138,7 @@ public class SchemaImporter {
 
     public boolean parseColumns(SourceTable source) {
         this.source = source;
+        this.source.parseAllRows();
         findColumns();
         return !fatalError;
     }
