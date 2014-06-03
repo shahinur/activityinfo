@@ -14,8 +14,13 @@ public class ExprParser {
     private static final Set<String> INFIX_OPERATORS = Sets.newHashSet("+", "-", "*", "/");
 
     private PeekingIterator<Token> lexer;
+    private PlaceholderExprResolver placeholderExprResolver;
 
     public ExprParser(Iterator<Token> tokens) {
+        this(tokens, null);
+    }
+
+    public ExprParser(Iterator<Token> tokens, PlaceholderExprResolver placeholderExprResolver) {
         this.lexer = Iterators.peekingIterator(Iterators.filter(tokens, new Predicate<Token>() {
 
             @Override
@@ -23,6 +28,7 @@ public class ExprParser {
                 return token.getType() != TokenType.WHITESPACE;
             }
         }));
+        this.placeholderExprResolver = placeholderExprResolver;
     }
 
     public ExprNode parse() {
@@ -77,7 +83,7 @@ public class ExprParser {
     private ExprNode parsePlaceholder() {
         Token token = lexer.next();
         expectNext(TokenType.BRACE_END, "'}'");
-        return new PlaceholderExpr(token.getString());
+        return new PlaceholderExpr(token.getString(), placeholderExprResolver);
     }
 
     /**

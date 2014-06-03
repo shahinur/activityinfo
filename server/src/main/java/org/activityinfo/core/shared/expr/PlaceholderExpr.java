@@ -27,15 +27,25 @@ package org.activityinfo.core.shared.expr;
 public class PlaceholderExpr extends ExprNode {
 
     private final String placeholder;
+    private final PlaceholderExprResolver resolver;
 
     private Double value = null;
 
     public PlaceholderExpr(String placeholder) {
+        this(placeholder, null);
+    }
+
+    public PlaceholderExpr(String placeholder, PlaceholderExprResolver resolver) {
         this.placeholder = placeholder;
+        this.resolver = resolver;
     }
 
     @Override
     public double evalReal() {
+        // try to resolve value if it's not resolved yet
+        if (value == null && resolver != null) {
+            resolver.resolve(this);
+        }
         if (value == null) {
             throw new IllegalArgumentException("Placeholder is not resolved.");
         }
@@ -44,6 +54,10 @@ public class PlaceholderExpr extends ExprNode {
 
     public String getPlaceholder() {
         return placeholder;
+    }
+
+    public Placeholder getPlaceholderObj() {
+        return new Placeholder(placeholder);
     }
 
     public Double getValue() {

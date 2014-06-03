@@ -17,7 +17,7 @@ public class SiteProjector implements Function<ListResult<SiteDTO>, List<Project
 
     private final List<ProjectionUpdater<LocationDTO>> locationProjectors;
     private final List<ProjectionUpdater<PartnerDTO>> partnerProjectors = Lists.newArrayList();
-    private final List<ProjectionUpdater<Double>> indicatorProjectors = Lists.newArrayList();
+    private final List<IndicatorProjectionUpdater> indicatorProjectors = Lists.newArrayList();
     private final List<ProjectionUpdater<SiteDTO>> siteProjectors = Lists.newArrayList();
     private final List<ProjectionUpdater<AttributeDTO>> attributeProjectors = Lists.newArrayList();
     private final List<ProjectionUpdater<ProjectDTO>> projectProjectors = Lists.newArrayList();
@@ -37,7 +37,8 @@ public class SiteProjector implements Function<ListResult<SiteDTO>, List<Project
                 int fieldIndex = CuidAdapter.getBlock(fieldId, 1);
                 partnerProjectors.add(new PartnerProjectionUpdater(path, databaseId, fieldIndex));
             } else if (fieldId.getDomain() == CuidAdapter.INDICATOR_DOMAIN) {
-                indicatorProjectors.add(new PrimitiveProjectionUpdater<Double>(path));
+                int indicatorId = CuidAdapter.getLegacyIdFromCuid(fieldId);
+                indicatorProjectors.add(new IndicatorProjectionUpdater(path, indicatorId));
             } else if (fieldId.getDomain() == CuidAdapter.ACTIVITY_DOMAIN) {
                 int fieldIndex = CuidAdapter.getBlock(fieldId, 1);
                 siteProjectors.add(new SiteProjectionUpdater(path, fieldIndex));
@@ -70,8 +71,10 @@ public class SiteProjector implements Function<ListResult<SiteDTO>, List<Project
                     Object value = site.get(propertyName);
                     if (value instanceof Number) {
                         final double doubleValue = ((Number) value).doubleValue();
-                        for (ProjectionUpdater<Double> projector : indicatorProjectors) {
-                            projector.update(projection, doubleValue);
+                        for (IndicatorProjectionUpdater projector : indicatorProjectors) {
+                            if (projector.getIndicatorId() == IndicatorDTO.indicatorIdForPropertyName(propertyName)) {
+                                projector.update(projection, doubleValue);
+                            }
                         }
                     }
                 } else if (propertyName.startsWith(AttributeDTO.PROPERTY_PREFIX) &&

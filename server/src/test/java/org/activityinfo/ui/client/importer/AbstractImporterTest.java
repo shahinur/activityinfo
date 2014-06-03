@@ -13,7 +13,6 @@ import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.strategy.FieldImporterColumn;
 import org.activityinfo.core.shared.importing.strategy.ImportTarget;
-import org.activityinfo.core.shared.importing.validation.ValidatedResult;
 import org.activityinfo.core.shared.importing.validation.ValidatedRow;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;

@@ -22,6 +22,8 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
+import org.activityinfo.core.shared.form.FormFieldType;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -51,7 +53,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
 
     private int sortOrder;
     private String listHeader;
-    private String type;
+    private String type = FormFieldType.QUANTITY.name();
     private String expression;
 
     public Indicator() {

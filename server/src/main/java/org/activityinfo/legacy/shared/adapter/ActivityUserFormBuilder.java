@@ -123,6 +123,7 @@ public class ActivityUserFormBuilder {
             field.setDescription(new LocalizedString(indicator.getDescription()));
             field.setType(FormFieldType.QUANTITY);
             field.setUnit(new LocalizedString(indicator.getUnits()));
+            field.setCalculation(indicator.getExpression());
             container.addElement(field);
         }
     }
