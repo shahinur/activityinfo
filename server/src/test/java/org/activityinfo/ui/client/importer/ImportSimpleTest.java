@@ -62,6 +62,9 @@ public class ImportSimpleTest extends AbstractImporterTest {
         // Step 1: User pastes in data to import
         PastedTable source = new PastedTable(
                 Resources.toString(getResource("org/activityinfo/core/shared/importing/qis.csv"), Charsets.UTF_8));
+        source.parseAllRows();
+
+        assertThat(source.getRows().size(), equalTo(63));
 
         importModel.setSource(source);
         importer = new Importer(resourceLocator, formTree, FieldImportStrategies.get(JvmConverterFactory.get()));
