@@ -55,6 +55,7 @@ import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.ProgressListener;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.Warning;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,7 +67,7 @@ import java.util.Map;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.core.client.PromiseMatchers.resolvesTo;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
@@ -87,31 +88,33 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertThat("database count", schema.getDatabases().size(), equalTo(3));
-        assertThat("database list is sorted", schema.getDatabases().get(0)
-                .getName(), equalTo("Alpha"));
+        assertThat("database count", schema.getDatabases(), hasSize(3));
+        assertThat("database list is sorted", schema.getDatabases().get(0).getName(), equalTo("Alpha"));
 
         assertTrue("ALEX(owner) in PEAR", schema.getDatabaseById(1) != null); // PEAR
-        assertTrue("ALEX can design", schema.getDatabaseById(1)
-                .isDesignAllowed());
-        assertTrue("Alex can edit all", schema.getDatabaseById(1)
-                .isEditAllowed());
-        assertTrue("object graph is preserved", schema.getDatabaseById(1)
-                .getCountry() == schema.getDatabaseById(2).getCountry());
+        assertTrue("ALEX can design", schema.getDatabaseById(1).isDesignAllowed());
+        assertTrue("Alex can edit all", schema.getDatabaseById(1).isEditAllowed());
+        assertTrue("object graph is preserved",
+                schema.getDatabaseById(1).getCountry() ==
+                schema.getDatabaseById(2).getCountry());
+
+
+        ActivityDTO nfi = schema.getDatabaseById(1).getActivities().get(0);
+
         assertTrue("object graph is preserved (database-activity)",
-                schema.getDatabaseById(1) ==
-                        schema.getDatabaseById(1).getActivities().get(0).getDatabase());
-        AdminLevelDTO adminLevel = schema.getCountries().get(0)
-                .getAdminLevels().get(0);
-        assertThat("CountryId is not null", adminLevel.getCountryId(),
-                not(equalTo(0)));
+                schema.getDatabaseById(1) == nfi.getDatabase());
+        assertThat(nfi.getLocationTypeId(), equalTo(1));
+        assertThat(nfi.<Integer>get("locationTypeId"), equalTo(1));
+
+        AdminLevelDTO adminLevel = schema.getCountries().get(0).getAdminLevels().get(0);
+        assertThat("CountryId is not null", adminLevel.getCountryId(), not(equalTo(0)));
         assertThat("CountryId is not null", adminLevel.getId(), not(equalTo(0)));
 
-        assertTrue("CountryId is not null", schema.getCountries().get(0)
-                .getAdminLevels().get(0).getCountryId() != 0);
+        assertTrue("CountryId is not null",
+                schema.getCountries().get(0).getAdminLevels().get(0).getCountryId() != 0);
 
-        assertThat("deleted attribute is not present", schema
-                .getActivityById(1).getAttributeGroups().size(), equalTo(3));
+        assertThat("deleted attribute is not present",
+                schema.getActivityById(1).getAttributeGroups().size(), equalTo(3));
     }
 
     @Test
@@ -175,24 +178,18 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertTrue("no indicators case",
-                schema.getActivityById(2).getIndicators().size() == 0);
+        assertTrue("no indicators case", schema.getActivityById(2).getIndicators().size() == 0);
 
         ActivityDTO nfi = schema.getActivityById(1);
 
-        assertThat("indicators are present", nfi.getIndicators().size(),
-                equalTo(4));
+        assertThat("indicators are present", nfi.getIndicators().size(), equalTo(4));
 
         IndicatorDTO test = nfi.getIndicatorById(2);
-        assertThat("property:name", test.getName(), equalTo("baches"));
-        assertThat("property:units", test.getUnits(), equalTo("menages"));
-        assertThat("property:aggregation", test.getAggregation(),
-                equalTo(IndicatorDTO.AGGREGATE_SUM));
-        assertThat("property:category", test.getCategory(), equalTo("outputs"));
-        assertThat("property:listHeader", test.getListHeader(),
-                equalTo("header"));
-        assertThat("property:description", test.getDescription(),
-                equalTo("desc"));
+        assertThat(test, Matchers.hasProperty("name", equalTo("baches")));
+        assertThat(test, Matchers.hasProperty("aggregation", equalTo(IndicatorDTO.AGGREGATE_SUM)));
+        assertThat(test, Matchers.hasProperty("category", equalTo("outputs")));
+        assertThat(test, Matchers.hasProperty("listheader", equalTo("header")));
+        assertThat(test, Matchers.hasProperty("description", equalTo("desc")));
     }
 
     @Test

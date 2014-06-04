@@ -448,6 +448,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                         throw new IllegalStateException("No location type for " + locationTypeId);
                     }
                     activity.setLocationType(locationType);
+                    activity.set("locationTypeId", locationType.getId());
 
                     activities.put(activity.getId(), activity);
                 }
