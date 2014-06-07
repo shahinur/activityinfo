@@ -188,7 +188,7 @@ public class GetSchemaTest extends CommandTestCase2 {
         assertThat(test, Matchers.hasProperty("name", equalTo("baches")));
         assertThat(test, Matchers.hasProperty("aggregation", equalTo(IndicatorDTO.AGGREGATE_SUM)));
         assertThat(test, Matchers.hasProperty("category", equalTo("outputs")));
-        assertThat(test, Matchers.hasProperty("listheader", equalTo("header")));
+        assertThat(test, Matchers.hasProperty("listHeader", equalTo("header")));
         assertThat(test, Matchers.hasProperty("description", equalTo("desc")));
     }
 
