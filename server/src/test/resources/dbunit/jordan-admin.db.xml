@@ -14,6 +14,9 @@
   <adminlevel AdminLevelId="1526" Name="Subdistrict" CountryId="360" ParentId="1525" polygons="false" version="0" deleted="false"/>
   <adminlevel AdminLevelId="1527" Name="Refugee Camps" CountryId="360" ParentId="1360" polygons="false" version="1" deleted="false"/>
   <adminlevel AdminLevelId="1528" Name="Camp Districts" CountryId="360" ParentId="1527" polygons="false" version="0" deleted="false"/>
+  <adminentity AdminEntityId="323215" AdminLevelId="1520" Name="North"/>
+  <adminentity AdminEntityId="323216" AdminLevelId="1520" Name="Central"/>
+  <adminentity AdminEntityId="323217" AdminLevelId="1520" Name="South"/>
   <adminentity AdminEntityId="1701" AdminEntityParentId="323215" AdminLevelId="1360" Name="Ajlun"/>
   <adminentity AdminEntityId="1702" AdminEntityParentId="323216" AdminLevelId="1360" Name="Al Balqa"/>
   <adminentity AdminEntityId="1703" AdminEntityParentId="323217" AdminLevelId="1360" Name="Aqaba"/>
@@ -26,9 +29,6 @@
   <adminentity AdminEntityId="1710" AdminEntityParentId="323216" AdminLevelId="1360" Name="Madaba"/>
   <adminentity AdminEntityId="1711" AdminEntityParentId="323215" AdminLevelId="1360" Name="Mafraq"/>
   <adminentity AdminEntityId="1712" AdminEntityParentId="323216" AdminLevelId="1360" Name="Zarqa"/>
-  <adminentity AdminEntityId="323215" AdminLevelId="1520" Name="North"/>
-  <adminentity AdminEntityId="323216" AdminLevelId="1520" Name="Central"/>
-  <adminentity AdminEntityId="323217" AdminLevelId="1520" Name="South"/>
   <adminentity AdminEntityId="325550" AdminEntityParentId="1702" AdminLevelId="1525" Name="Ash Shuna Al Janoubyah"/>
   <adminentity AdminEntityId="325551" AdminEntityParentId="1704" AdminLevelId="1525" Name="Aghwar Janoobiyah"/>
   <adminentity AdminEntityId="325552" AdminEntityParentId="1707" AdminLevelId="1525" Name="Bani Kinana"/>
