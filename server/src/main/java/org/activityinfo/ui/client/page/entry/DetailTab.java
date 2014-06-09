@@ -71,6 +71,6 @@ public class DetailTab extends TabItem {
 
     private void render(SchemaDTO schema, SiteDTO site) {
         SiteRenderer renderer = new SiteRenderer(new IndicatorNumberFormat());
-        content.setHtml(renderer.renderSite(site, schema.getActivityById(site.getActivityId()), false, true));
+        content.setHtml(renderer.renderSite(site, schema.getActivityById(site.getActivityId()), true));
     }
 }
