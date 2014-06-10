@@ -28,7 +28,6 @@ import com.bedatadriven.rebar.sql.client.query.SqlUpdate;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
@@ -60,10 +59,9 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
 
         // we only create a reporting period if this is a one-off activity
         Integer reportingPeriodId = cmd.getReportingPeriodId();
-        if (reportingPeriodId == null) {
-            cmd.getProperties().put("reportingPeriodId", new KeyGenerator().generateInt());
+        if (reportingPeriodId != null) {
+            insertReportingPeriod(context.getTransaction(), cmd);
         }
-        insertReportingPeriod(context.getTransaction(), cmd);
 
         callback.onSuccess(new CreateResult(cmd.getSiteId()));
     }

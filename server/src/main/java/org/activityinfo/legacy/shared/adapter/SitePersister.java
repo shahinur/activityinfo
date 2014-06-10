@@ -5,6 +5,7 @@ import com.google.common.base.Preconditions;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.fp.client.Promise;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.adapter.bindings.SiteBinding;
 import org.activityinfo.legacy.shared.adapter.bindings.SiteBindingFactory;
 import org.activityinfo.legacy.shared.command.*;
@@ -48,6 +49,9 @@ public class SitePersister {
 
         Map<String, Object> siteProperties = siteBinding.toChangePropertyMap(instance);
         siteProperties.put("activityId", siteBinding.getActivity().getId());
+        if (siteProperties.get("reportingPeriodId") == null) {  // indicators are not saved if report id is not set
+            siteProperties.put("reportingPeriodId", new KeyGenerator().generateInt());
+        }
 
         final CreateSite createSite = new CreateSite(siteProperties);
 
