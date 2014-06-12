@@ -22,13 +22,12 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetAdminEntities;
 import org.activityinfo.legacy.shared.command.result.AdminEntityResult;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.ui.client.page.entry.admin.AdminEntityProxy;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -89,6 +88,19 @@ public class GetAdminEntitiesHandlerTest extends CommandTestCase2 {
         cmd.setFilter(Filter.filter().onActivity(2));
 
         AdminEntityResult result = execute(cmd);
+
+        assertThat(result.getData().size(), equalTo(2));
+    }
+
+    @Test
+    public void testSiteDbQuery() {
+        GetAdminEntities cmd = new GetAdminEntities();
+        cmd.setParentId(GetAdminEntities.ROOT);
+        cmd.setFilter(Filter.filter().onDatabase(1));
+
+        AdminEntityResult result = execute(cmd);
+
+        System.out.println(result.getData());
 
         assertThat(result.getData().size(), equalTo(2));
     }
