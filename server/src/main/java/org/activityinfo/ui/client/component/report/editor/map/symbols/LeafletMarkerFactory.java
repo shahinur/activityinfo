@@ -19,11 +19,7 @@ import org.discotools.gwt.leaflet.client.types.IconOptions;
 import org.discotools.gwt.leaflet.client.types.LatLng;
 import org.discotools.gwt.leaflet.client.types.Point;
 
-import java.util.List;
-
 public class LeafletMarkerFactory {
-
-    public static final String SITES_JS_FIELD_NAME = "sites";
 
     public static Marker create(MapMarker mapMarker, final EventHandler... markerEventHandlers) {
         final Marker marker;
@@ -35,7 +31,7 @@ public class LeafletMarkerFactory {
             marker = createBubbleMapMarker((BubbleMapMarker) mapMarker);
         } else {
             final Options options = new Options();
-            options.setProperty(SITES_JS_FIELD_NAME, createSiteIdsJSObject(mapMarker.getSiteIds()));
+            setModel(options.getJSObject(), mapMarker);
             marker = new Marker(toLatLng(mapMarker), options);
         }
 
@@ -45,14 +41,6 @@ public class LeafletMarkerFactory {
             }
         }
         return marker;
-    }
-
-    public static JSObject createSiteIdsJSObject(List<Integer> siteIds) {
-        final JSObject sitesJson = JSObject.createJSObject();
-        for (Integer siteId : siteIds) {
-            sitesJson.setProperty(siteId.toString(), siteId);
-        }
-        return sitesJson;
     }
 
 
@@ -70,7 +58,7 @@ public class LeafletMarkerFactory {
 
         Options markerOptions = new MarkerOptions();
         markerOptions.setProperty("icon", new Icon(iconOptions));
-        markerOptions.setProperty(SITES_JS_FIELD_NAME, createSiteIdsJSObject(model.getSiteIds()));
+        setModel(markerOptions.getJSObject(), model);
 
         return new Marker(toLatLng(model), markerOptions);
     }
@@ -88,7 +76,7 @@ public class LeafletMarkerFactory {
         options.setProperty("fillOpacity", marker.getAlpha());
         options.setProperty("color", LeafletUtil.color(marker.getColor())); // stroke color
         options.setProperty("opacity", 0.8); // stroke opacity
-        options.setProperty(SITES_JS_FIELD_NAME, createSiteIdsJSObject(marker.getSiteIds()));
+        setModel(options.getJSObject(), marker);
 
         return new CircleMarker(toLatLng(marker), options);
     }
@@ -110,9 +98,17 @@ public class LeafletMarkerFactory {
 
         Options markerOptions = new MarkerOptions();
         markerOptions.setProperty("icon", new Icon(iconOptions));
-        markerOptions.setProperty(SITES_JS_FIELD_NAME, createSiteIdsJSObject(marker.getSiteIds()));
+        setModel(markerOptions.getJSObject(), marker);
 
         return new Marker(toLatLng(marker), markerOptions);
     }
+
+    public static native void setModel(JSObject options, MapMarker model) /*-{
+      options.model = model;
+    }-*/;
+
+    public static native MapMarker getModel(JSObject options) /*-{
+      return options.model;
+    }-*/;
 
 }

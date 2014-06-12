@@ -24,6 +24,9 @@ package org.activityinfo.legacy.shared.reports.content;
 
 import org.activityinfo.legacy.shared.reports.model.MapIcon;
 
+import java.util.Collections;
+import java.util.Set;
+
 /**
  * @author Alex Bertram
  */
@@ -48,4 +51,8 @@ public class IconMapMarker extends MapMarker {
         this.indicatorId = indicatorId;
     }
 
+    @Override
+    public Set<Integer> getIndicatorIds() {
+        return Collections.singleton(indicatorId);
+    }
 }
