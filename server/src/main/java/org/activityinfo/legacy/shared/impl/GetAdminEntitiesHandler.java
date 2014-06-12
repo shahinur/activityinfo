@@ -30,11 +30,11 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.shared.command.DimensionType;
+import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetAdminEntities;
 import org.activityinfo.legacy.shared.command.result.AdminEntityResult;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
-import org.activityinfo.legacy.shared.util.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,18 +79,31 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
             }
         }
 
-        if (cmd.getFilter() != null && cmd.getFilter().isRestricted(DimensionType.Activity)) {
-            SqlQuery subQuery = SqlQuery
-                    .select("link.AdminEntityId")
-                    .from(Tables.SITE, "site")
-                    .leftJoin(Tables.LOCATION, "Location")
-                       .on("Location.LocationId = site.LocationId")
-                    .leftJoin(Tables.LOCATION_ADMIN_LINK, "link")
-                        .on("link.LocationId = Location.LocationId")
-                    .where("site.ActivityId")
-                        .in(cmd.getFilter().getRestrictions(DimensionType.Activity));
+        if (cmd.getFilter() != null) {
+            Filter filter = cmd.getFilter();
+            if(filter.isRestricted(DimensionType.Activity) ||
+               filter.isRestricted(DimensionType.Database)) {
 
-            query.where("AdminEntity.AdminEntityId").in(subQuery);
+                SqlQuery subQuery = SqlQuery
+                        .select("link.AdminEntityId")
+                        .from(Tables.SITE, "site")
+                        .leftJoin(Tables.LOCATION, "Location")
+                           .on("Location.LocationId = site.LocationId")
+                        .leftJoin(Tables.LOCATION_ADMIN_LINK, "link")
+                           .on("link.LocationId = Location.LocationId");
+
+                if(filter.isRestricted(DimensionType.Activity)) {
+                    subQuery.where("site.ActivityId")
+                            .in(filter.getRestrictions(DimensionType.Activity));
+                }
+                if(filter.isRestricted(DimensionType.Database)) {
+                    subQuery.leftJoin(Tables.ACTIVITY, "activity")
+                            .on("site.ActivityId=activity.ActivityId")
+                            .where("activity.DatabaseId")
+                            .in(filter.getRestrictions(DimensionType.Database));
+                }
+                query.where("AdminEntity.AdminEntityId").in(subQuery);
+            }
         }
 
         if (cmd.getFilter() != null && cmd.getFilter().isRestricted(DimensionType.AdminLevel)) {
