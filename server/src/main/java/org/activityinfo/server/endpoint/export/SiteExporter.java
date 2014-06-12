@@ -38,10 +38,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Exports sites in Excel format
@@ -297,7 +294,7 @@ public class SiteExporter {
             createCell(row, column++, site.getLocationAxe());
 
             for (Integer indicatorId : indicators) {
-                createIndicatorValueCell(row, column++, site.getIndicatorDoubleValue(indicatorId));
+                createIndicatorValueCell(row, column++, site.getIndicatorValue(indicatorId));
             }
 
             for (Integer attribId : attributes) {
@@ -377,11 +374,19 @@ public class SiteExporter {
         cell.setCellStyle(dateStyle);
     }
 
-    private void createIndicatorValueCell(Row row, int columnIndex, Double value) {
+    private void createIndicatorValueCell(Row row, int columnIndex, Object value) {
         if (value != null) {
             Cell cell = row.createCell(columnIndex);
-            cell.setCellValue(value);
             cell.setCellStyle(indicatorValueStyle);
+            if (value instanceof Double) {
+                cell.setCellValue((Double) value);
+            } else if (value instanceof String) {
+                cell.setCellValue((String) value);
+            } else if (value instanceof Date) {
+                cell.setCellValue((Date) value);
+            } else if (value instanceof LocalDate) {
+                cell.setCellValue(((LocalDate) value).atMidnightInMyTimezone());
+            }
         }
     }
 
