@@ -29,6 +29,8 @@ import com.google.inject.Singleton;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * GXT state provider that either takes advantage of the HTML5 LocalStorage or
@@ -39,6 +41,9 @@ import java.util.Map;
  */
 @Singleton
 public final class SafeStateProvider extends Provider {
+
+    private static final Logger LOGGER = Logger.getLogger(SafeStateProvider.class.getName());
+
     private Map<String, String> stateMap = new HashMap<String, String>();
 
     public SafeStateProvider() {
@@ -51,12 +56,21 @@ public final class SafeStateProvider extends Provider {
 
     @Override
     protected void setValue(String name, String value) {
-        stateMap.put(name, value);
+        try {
+            stateMap.put(name, value);
+        } catch(Exception e) {
+            LOGGER.log(Level.WARNING, "setValue() failed", e);
+        }
     }
 
     @Override
     protected String getValue(String name) {
-        return stateMap.get(name);
+        try {
+            return stateMap.get(name);
+        } catch(Exception e) {
+            LOGGER.log(Level.WARNING, "getValue() failed", e);
+            return null;
+        }
     }
 
     @Override
