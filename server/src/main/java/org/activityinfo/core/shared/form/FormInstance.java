@@ -27,8 +27,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.core.shared.Cuid;
 import org.activityinfo.core.shared.Resource;
-import org.activityinfo.core.shared.form.has.HasHashCode;
-import org.activityinfo.core.shared.hash.HashCode;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.DTO;
 
@@ -42,13 +40,12 @@ import java.util.Set;
 /**
  * @author yuriyz on 1/29/14.
  */
-public class FormInstance implements Resource, HasHashCode {
+public class FormInstance implements Resource {
 
     private Cuid id;
     private Cuid classId;
     private final Map<Cuid, Object> valueMap = Maps.newHashMap();
     private Cuid parentId;
-    private HashCode hashCode;
 
     /**
      * Constructs a new FormInstance. To obtain an id for a new instance
@@ -163,14 +160,6 @@ public class FormInstance implements Resource, HasHashCode {
             return (AiLatLng) value;
         }
         return null;
-    }
-
-    public HashCode getHashCode() {
-        return hashCode;
-    }
-
-    public void setHashCode(HashCode hashCode) {
-        this.hashCode = hashCode;
     }
 
     @Override

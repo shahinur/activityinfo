@@ -67,11 +67,6 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     }
 
     @Override
-    public Promise<Integer> countInstances(Criteria criteria) {
-        return Promise.rejected(new UnsupportedOperationException());
-    }
-
-    @Override
     public Promise<List<FormInstance>> queryInstances(Criteria criteria) {
         return new QueryExecutor(dispatcher, criteria).execute();
     }

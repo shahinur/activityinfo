@@ -35,12 +35,6 @@ public interface ResourceLocator {
 
     Promise<Void> persist(List<? extends Resource> resources);
 
-    /**source
-     * Counts the form instances that match the given criteria.
-     * @param criteria
-     */
-    Promise<Integer> countInstances(Criteria criteria);
-
     /**
      * Retrieves the form instances that match the given criteria.
      * @param criteria

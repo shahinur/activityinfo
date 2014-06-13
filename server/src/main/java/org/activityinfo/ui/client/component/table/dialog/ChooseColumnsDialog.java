@@ -45,7 +45,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import org.activityinfo.core.shared.form.key.SelfKeyProvider;
+import com.google.gwt.view.client.SimpleKeyProvider;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.client.component.table.FieldColumn;
 import org.activityinfo.ui.client.component.table.InstanceTableStyle;
@@ -70,12 +70,12 @@ public class ChooseColumnsDialog {
 
     private final ListDataProvider<FieldColumn> selectedTableDataProvider = new ListDataProvider<>();
     private final MultiSelectionModel<FieldColumn> selectedSelectionModel = new MultiSelectionModel<>(
-            new SelfKeyProvider<FieldColumn>());
+            new SimpleKeyProvider<FieldColumn>());
     private final DataGrid<FieldColumn> selectedTable;
 
     private final ListDataProvider<FieldColumn> tableDataProvider = new ListDataProvider<>();
     private final MultiSelectionModel<FieldColumn> selectionModel = new MultiSelectionModel<>(
-            new SelfKeyProvider<FieldColumn>());
+            new SimpleKeyProvider<FieldColumn>());
     private final DataGrid<FieldColumn> table;
 
     @UiField

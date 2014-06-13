@@ -1,11 +1,8 @@
 package org.activityinfo.ui.client.component.form.model;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import org.activityinfo.core.client.InMemResourceLocator;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormField;
 import org.activityinfo.core.shared.form.FormFieldCardinality;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.form.tree.FormTree;
