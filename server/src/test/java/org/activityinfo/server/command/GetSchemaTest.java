@@ -24,11 +24,6 @@ package org.activityinfo.server.command;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Maps;
-import com.google.common.io.Files;
-import com.google.common.io.Resources;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Cuid;
@@ -44,26 +39,18 @@ import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fp.client.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
-import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
-import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
-import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.ProgressListener;
-import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.Warning;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.core.client.PromiseMatchers.resolvesTo;
@@ -221,83 +208,6 @@ public class GetSchemaTest extends CommandTestCase2 {
         writer.write(schema.getDatabaseById(1));
 
         System.out.println(writer.toString());
-    }
-
-    @Test
-    public void importCsv() throws IOException {
-
-        String csv = Resources.toString(Resources.getResource("schema_1064.csv"), Charsets.UTF_8);
-        PastedTable source = new PastedTable(csv);
-
-        Map<String, Object> dbProps = Maps.newHashMap();
-        dbProps.put("name", "Syria");
-        dbProps.put("countryId", 1);
-
-        execute(new CreateEntity("UserDatabase", dbProps));
-
-        SchemaDTO schema = execute(new GetSchema());
-        UserDatabaseDTO syria = null;
-        for (UserDatabaseDTO db : schema.getDatabases()) {
-            if (db.getName().equals("Syria")) {
-                syria = db;
-                break;
-            }
-        }
-        if (syria == null) {
-            throw new AssertionError("database not created");
-        }
-
-        SchemaImporter importer = new SchemaImporter(getDispatcher(), syria);
-        importer.setProgressListener(new ProgressListener() {
-
-            @Override
-            public void submittingBatch(int batchNumber, int batchCount) {
-                System.out.println("Submitting batch " + batchNumber + " of " + batchCount);
-            }
-        });
-        boolean success = importer.parseColumns(source);
-        if (success) {
-            importer.processRows();
-        }
-
-        for (Warning warning : importer.getWarnings()) {
-            System.err.println(warning);
-        }
-
-        if (!success) {
-            throw new AssertionError("there were fatal errors");
-        }
-
-        importer.persist(new AsyncCallback<Void>() {
-
-            @Override
-            public void onSuccess(Void result) {
-                System.out.println("Success");
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                throw new AssertionError(caught);
-            }
-        });
-
-        syria = execute(new GetSchema()).getDatabaseById(syria.getId());
-
-        ActivityDTO cash = syria.getActivities().get(0);
-
-        for(AttributeGroupDTO group : cash.getAttributeGroups()) {
-            System.out.println(group.getName());
-        }
-
-        assertThat(cash.getName(), equalTo("1.Provision of urgent cash assistance"));
-        assertThat(cash.getAttributeGroups().size(), equalTo(3));
-
-
-
-        SchemaCsvWriter writer = new SchemaCsvWriter();
-        writer.write(syria);
-
-        Files.write(writer.toString(), new File("target/syria.csv"), Charsets.UTF_8);
     }
 
     @Test

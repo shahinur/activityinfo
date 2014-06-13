@@ -1,8 +1,11 @@
 package org.activityinfo.ui.client.page.config.design.importer;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import com.google.common.collect.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.shared.importing.source.SourceColumn;
 import org.activityinfo.core.shared.importing.source.SourceRow;
@@ -18,37 +21,32 @@ import org.activityinfo.legacy.shared.model.*;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SchemaImporter {
+
+
+
+    interface WarningTemplates extends SafeHtmlTemplates {
+
+        @Template("<li>Truncated <code>{0}<strike>{1}</strike></code> (Maximum length: {2} characters)</li>")
+        SafeHtml truncatedValue(String retained, String truncated, int maxLen);
+
+        @Template("<li>There is no LocationType named <code>{0}</code>, using default <code>{1}</code></li>")
+        SafeHtml invalidLocationType(String name, String defaultValue);
+
+        @Template("<li>Using default LocationType <code>{0}</code>, for activity <code>{1}</code></li>")
+        SafeHtml defaultLocationType(String defaultLocationType, String activityName);
+
+        @Template("<li>You didn't provide a column named <code>{0}</code>, " +
+                  "so we'll default to <code>{1}</code>.</li>")
+        SafeHtml missingColumn(String columnName, String defaultValue);
+    }
 
     public interface ProgressListener {
         void submittingBatch(int batchNumber, int batchCount);
     }
 
-    public static class Warning {
-        private String message;
-        private boolean fatal;
-
-        public Warning(String message, boolean fatal) {
-            super();
-            this.message = message;
-            this.fatal = fatal;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public boolean isFatal() {
-            return fatal;
-        }
-
-        @Override
-        public String toString() {
-            return (fatal ? "ERROR" : "WARN") + ": " + message;
-        }
-
-    }
 
     private Dispatcher dispatcher;
     private UserDatabaseDTO db;
@@ -65,32 +63,49 @@ public class SchemaImporter {
     private List<AttributeGroupDTO> newAttributeGroups = Lists.newArrayList();
     private List<AttributeDTO> newAttributes = Lists.newArrayList();
 
+    private Set<SafeHtml> warnings = Sets.newHashSet();
 
-    private static boolean REQUIRED = true;
-    private static boolean OPTIONAL = false;
 
-    private class Column {
+    public class Column {
         private int index;
         private String name;
         private int maxLength;
+        private String defaultValue;
 
-        public Column(int index, String name, int maxLength) {
+        public Column(int index, String name, String defaultValue, int maxLength) {
             super();
             this.index = index;
             this.name = name;
+            this.defaultValue = defaultValue;
             this.maxLength = maxLength;
         }
 
         public String get(SourceRow row) {
             if (index < 0) {
-                return null;
+                return Strings.emptyToNull(defaultValue);
             }
             String value = row.getColumnValue(index);
-            if (value.length() > maxLength) {
-                warn("Truncating value '" + value + "' for column '" + name + "': max length is " + maxLength);
-                value = value.substring(0, maxLength);
+            if (value.length() <= maxLength) {
+                return Strings.emptyToNull(value);
+
+            } else {
+                String retainedValue = value.substring(0, maxLength);
+                String truncatedValue = value.substring(maxLength);
+                warnings.add(templates.truncatedValue(retainedValue, truncatedValue, maxLength));
+                return retainedValue;
             }
-            return value;
+        }
+
+        public boolean isMissing() {
+            return index < 0;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getMaxLength() {
+            return maxLength;
         }
     }
 
@@ -113,14 +128,17 @@ public class SchemaImporter {
     private int batchNumber;
     private int batchCount;
 
-    private List<Warning> warnings = Lists.newArrayList();
+    private List<String> missingColumns = Lists.newArrayList();
 
     private LocationTypeDTO defaultLocationType;
     private boolean fatalError;
 
-    public SchemaImporter(Dispatcher dispatcher, UserDatabaseDTO db) {
+    private final WarningTemplates templates;
+
+    SchemaImporter(Dispatcher dispatcher, UserDatabaseDTO db, WarningTemplates templates) {
         this.dispatcher = dispatcher;
         this.db = db;
+        this.templates = templates;
 
         for (ActivityDTO activity : db.getActivities()) {
             activityMap.put(activity.getName() + activity.getCategory(), activity);
@@ -129,6 +147,10 @@ public class SchemaImporter {
             locationTypeMap.put(locationType.getName().toLowerCase(), locationType.getId());
         }
         defaultLocationType = db.getCountry().getLocationTypes().iterator().next();
+    }
+
+    public SchemaImporter(Dispatcher service, UserDatabaseDTO db) {
+        this(service, db, GWT.<WarningTemplates>create(WarningTemplates.class));
     }
 
     public void setProgressListener(ProgressListener listener) {
@@ -140,16 +162,16 @@ public class SchemaImporter {
         this.source = source;
         this.source.parseAllRows();
         findColumns();
-        return !fatalError;
+        return missingColumns.isEmpty();
+    }
+
+    public List<String> getMissingColumns() {
+        return missingColumns;
     }
 
     public boolean processRows() {
         processRows(source);
         return !fatalError;
-    }
-
-    public List<Warning> getWarnings() {
-        return warnings;
     }
 
     private void processRows(SourceTable source) {
@@ -196,7 +218,6 @@ public class SchemaImporter {
         }
     }
 
-
     private AttributeDTO findAttrib(AttributeGroupDTO group, String attribName) {
         for (AttributeDTO attrib : group.getAttributes()) {
             if (attrib.getName().equals(attribName)) {
@@ -204,6 +225,11 @@ public class SchemaImporter {
             }
         }
         return null;
+    }
+
+
+    public Set<SafeHtml> getWarnings() {
+        return warnings;
     }
 
     private boolean isTruthy(String columnValue) {
@@ -239,33 +265,24 @@ public class SchemaImporter {
         }
 
         return activity;
-
     }
 
     private int findLocationType(ActivityDTO activity, SourceRow row) {
         String name = locationType.get(row);
         if (Strings.isNullOrEmpty(name)) {
-            warn("No location type given for Activity " + activity.getName());
+            warnings.add(templates.defaultLocationType(defaultLocationType.getName(), activity.getName()));
             return defaultLocationType.getId();
+        } else {
+            Integer typeId = locationTypeMap.get(name.toLowerCase());
+            if (typeId == null) {
+                warnings.add(templates.invalidLocationType(name, defaultLocationType.getName()));
+                return defaultLocationType.getId();
+            }
+            return typeId;
         }
-        Integer typeId = locationTypeMap.get(name.toLowerCase());
-        if (typeId == null) {
-            warn("Invalid location type '%s' given for Activity " + activity.getName());
-            return defaultLocationType.getId();
-        }
-        return typeId;
     }
 
-    private void warn(String message) {
-        warnings.add(new Warning(message, false));
-    }
-
-    private void error(String message) {
-        warnings.add(new Warning(message, true));
-        fatalError = true;
-    }
-
-    private int findColumn(String name) {
+    private int findColumnIndex(String name) {
         for (SourceColumn col : source.getColumns()) {
             if (col.getHeader().equalsIgnoreCase(name)) {
                 return col.getIndex();
@@ -274,36 +291,44 @@ public class SchemaImporter {
         return -1;
     }
 
-    private Column findColumn(String name, boolean required) {
-        return findColumn(name, required, Integer.MAX_VALUE);
+    private Column findColumn(String name) {
+        return findColumn(name, null, Integer.MAX_VALUE);
     }
 
-    private Column findColumn(String name, boolean required, int maxLength) {
-        int col = findColumn(name);
+    private Column findColumn(String name, String defaultValue) {
+        return findColumn(name, defaultValue, Integer.MAX_VALUE);
+    }
+
+    private Column findColumn(String name, int maxLength) {
+        return findColumn(name, null, maxLength);
+    }
+
+    private Column findColumn(String name, String defaultValue, int maxLength) {
+        int col = findColumnIndex(name);
         if (col == -1) {
-            if (required) {
-                error("Required column not found: " + name);
-            } else {
-                warn("Optional column not found: " + name);
+            if (defaultValue == null) {
+                missingColumns.add(name);
+            } else if(!Strings.isNullOrEmpty(defaultValue)) {
+                warnings.add(templates.missingColumn(name, defaultValue));
             }
         }
-        return new Column(col, col == -1 ? name : source.getColumnHeader(col), maxLength);
+        return new Column(col, col == -1 ? name : source.getColumnHeader(col), defaultValue, maxLength);
     }
 
-
     private void findColumns() {
-        activityCategory = findColumn("ActivityCategory", OPTIONAL, 255);
-        activityName = findColumn("ActivityName", REQUIRED, 45);
-        locationType = findColumn("LocationType", OPTIONAL);
-        formFieldType = findColumn("FormFieldType", REQUIRED);
-        fieldName = findColumn("Name", REQUIRED);
-        fieldCategory = findColumn("Category", OPTIONAL, 50);
-        fieldDescription = findColumn("Description", OPTIONAL);
-        fieldUnits = findColumn("Units", REQUIRED, 15);
-        fieldMandatory = findColumn("Mandatory", OPTIONAL);
-        multipleAllowed = findColumn("multipleAllowed", OPTIONAL);
-        attributeValue = findColumn("AttributeValue", REQUIRED, 50);
-        reportingFrequency = findColumn("ReprotingFrequency", OPTIONAL);
+        missingColumns.clear();
+        activityCategory = findColumn("ActivityCategory", "", 255);
+        activityName = findColumn("ActivityName", 45);
+        locationType = findColumn("LocationType", defaultLocationType.getName());
+        formFieldType = findColumn("FormFieldType", "quantity");
+        fieldName = findColumn("Name");
+        fieldCategory = findColumn("Category", "", 50);
+        fieldDescription = findColumn("Description", "");
+        fieldUnits = findColumn("Units", 15);
+        fieldMandatory = findColumn("Mandatory", "false");
+        multipleAllowed = findColumn("multipleAllowed", "false");
+        attributeValue = findColumn("AttributeValue", 50);
+        reportingFrequency = findColumn("ReportingFrequency", "once");
     }
 
     public void persist(AsyncCallback<Void> callback) {

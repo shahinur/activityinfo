@@ -399,7 +399,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "&laquo; Back"
      */
-    @DefaultStringValue("&laquo; Back")
+    @DefaultStringValue("« Back")
     @Key("backButton")
     String backButton();
 
@@ -3234,6 +3234,9 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Import this column as a new field")
     String importNewColumnAction();
 
+    @DefaultStringValue("Import Schema")
+    String importSchemaDialogTitle();
+
     @DefaultStringValue("Add new section")
     @Key("addSection")
     String addSection();
@@ -3530,4 +3533,17 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Parsing rows...")
     String parsingRows();
+
+    @DefaultStringValue("Looks great!")
+    String validSchemaImport();
+
+    @DefaultStringValue("Copy and paste into the box above to continue.")
+    String schemaImportEmpty();
+
+    @DefaultStringValue("Hmmm... Doesn't look like you've pasted a table. Copy and paste a table from Excel or " +
+                        "another spreadsheet program, including the column headers.")
+    String invalidTableData();
+
+    @DefaultStringValue("Import anyway")
+    String ignoreImportWarnings();
 }

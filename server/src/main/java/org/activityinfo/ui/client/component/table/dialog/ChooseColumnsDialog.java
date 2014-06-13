@@ -101,7 +101,7 @@ public class ChooseColumnsDialog {
 
         dialog = new ModalDialog(uiBinder.createAndBindUi(this));
         dialog.setDialogTitle(I18N.CONSTANTS.chooseColumns());
-        dialog.getOkButton().addClickHandler(new ClickHandler() {
+        dialog.getPrimaryButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 onOk();

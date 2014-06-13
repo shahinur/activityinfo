@@ -46,6 +46,8 @@ public class PastedTable implements SourceTable {
             if (!rows.isEmpty()) {
                 columns = new ColumnParser(rows.get(0)).parseColumns();
                 rows.remove(0); // remove header row
+            } else {
+                columns = Lists.newArrayList();
             }
         }
     }
