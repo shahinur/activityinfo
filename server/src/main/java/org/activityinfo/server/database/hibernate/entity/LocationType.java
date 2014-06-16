@@ -88,7 +88,7 @@ public class LocationType implements Serializable {
         this.country = country;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "DatabaseId", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "DatabaseId", nullable = true)
     public UserDatabase getDatabase() {
         return this.database;
     }
