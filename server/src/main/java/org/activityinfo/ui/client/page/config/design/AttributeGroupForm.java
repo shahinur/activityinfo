@@ -41,6 +41,8 @@ import java.util.List;
 
 class AttributeGroupForm extends AbstractDesignForm {
 
+    public static final AttributeDTO NONE_ATTRIBUTE = new AttributeDTO();
+
     private FormBinding binding;
 
     public AttributeGroupForm() {
@@ -100,7 +102,7 @@ class AttributeGroupForm extends AbstractDesignForm {
                 if (wrapper instanceof MappingComboBox.Wrapper) {
                     MappingComboBox.Wrapper<AttributeDTO> attributeDTO = (MappingComboBox.Wrapper) wrapper;
                     AttributeDTO wrappedValue = attributeDTO.getWrappedValue();
-                    if (wrappedValue != null) {
+                    if (wrappedValue != null && wrappedValue != NONE_ATTRIBUTE) {
                         return wrappedValue.getId();
                     }
                 }
@@ -115,11 +117,14 @@ class AttributeGroupForm extends AbstractDesignForm {
                 defaultValueField.getStore().removeAll();
                 AttributeGroupDTO model = (AttributeGroupDTO) binding.getModel();
                 List<AttributeDTO> attributes = model.getAttributes();
+                defaultValueField.add(NONE_ATTRIBUTE, I18N.CONSTANTS.none());
                 if (attributes != null) {
-                    defaultValueField.add(new AttributeDTO(), I18N.CONSTANTS.none());
                     for (AttributeDTO attr : attributes) {
                         defaultValueField.add(attr, attr.getName());
                     }
+                }
+                if (model.getDefaultValue() == null) {
+                    defaultValueField.setValue(defaultValueField.wrap(NONE_ATTRIBUTE));
                 }
             }
         });
