@@ -52,6 +52,9 @@ public class AttributeGroup implements Serializable, Deleteable, Orderable {
 
     private boolean mandatory;
 
+    private Integer defaultValue;
+
+    private boolean workflow;
 
     public AttributeGroup() {
 
@@ -124,6 +127,24 @@ public class AttributeGroup implements Serializable, Deleteable, Orderable {
 
     public void setDateDeleted(Date date) {
         this.dateDeleted = date;
+    }
+
+    @Column(name="defaultValue", nullable = true)
+    public Integer getDefaultValue() {
+        return this.defaultValue;
+    }
+
+    public void setDefaultValue(Integer defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    @Column(name="workflow")
+    public boolean isWorkflow() {
+        return workflow;
+    }
+
+    public void setWorkflow(boolean workflow) {
+        this.workflow = workflow;
     }
 
     /**

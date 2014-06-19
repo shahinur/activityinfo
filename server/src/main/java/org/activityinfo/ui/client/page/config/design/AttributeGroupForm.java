@@ -22,15 +22,22 @@ package org.activityinfo.ui.client.page.config.design;
  * #L%
  */
 
+import com.extjs.gxt.ui.client.binding.Converter;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
+import com.extjs.gxt.ui.client.event.BindingEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.legacy.shared.model.AttributeDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
+
+import java.util.List;
 
 class AttributeGroupForm extends AbstractDesignForm {
 
@@ -64,6 +71,59 @@ class AttributeGroupForm extends AbstractDesignForm {
         mandatoryCB.setFieldLabel(I18N.CONSTANTS.mandatory());
         binding.addFieldBinding(new FieldBinding(mandatoryCB, "mandatory"));
         this.add(mandatoryCB);
+
+        CheckBox workflowCB = new CheckBox();
+        workflowCB.setFieldLabel(I18N.CONSTANTS.partOfWorkflow());
+        binding.addFieldBinding(new FieldBinding(workflowCB, "workflow"));
+        this.add(workflowCB);
+
+
+        final MappingComboBox<AttributeDTO> defaultValueField = new MappingComboBox<>();
+        defaultValueField.setFieldLabel(I18N.CONSTANTS.defaultValue());
+        defaultValueField.setAllowBlank(true);
+
+        final MappingComboBoxBinding defaultValueBinding = new MappingComboBoxBinding(defaultValueField, "defaultValue");
+        defaultValueBinding.setConverter(new Converter() {
+            @Override
+            public Object convertModelValue(Object value) {
+                if (value instanceof Integer) {
+                    AttributeDTO attributeById = ((AttributeGroupDTO) defaultValueBinding.getModel()).getAttributeById((Integer) value);
+                    // create new object (do not use combobox.wrap() because store may not be filled yet)
+                    return new MappingComboBox.Wrapper<>(attributeById, attributeById.getName());
+                }
+                return super.convertModelValue(value);
+            }
+
+            @Override
+            public Integer convertFieldValue(Object value) {
+                Object wrapper = super.convertFieldValue(value);
+                if (wrapper instanceof MappingComboBox.Wrapper) {
+                    MappingComboBox.Wrapper<AttributeDTO> attributeDTO = (MappingComboBox.Wrapper) wrapper;
+                    AttributeDTO wrappedValue = attributeDTO.getWrappedValue();
+                    if (wrappedValue != null) {
+                        return wrappedValue.getId();
+                    }
+                }
+                return null;
+            }
+        });
+        binding.addFieldBinding(defaultValueBinding);
+        binding.addListener(Events.Bind, new Listener<BindingEvent>() {
+
+            @Override
+            public void handleEvent(BindingEvent be) {
+                defaultValueField.getStore().removeAll();
+                AttributeGroupDTO model = (AttributeGroupDTO) binding.getModel();
+                List<AttributeDTO> attributes = model.getAttributes();
+                if (attributes != null) {
+                    defaultValueField.add(new AttributeDTO(), I18N.CONSTANTS.none());
+                    for (AttributeDTO attr : attributes) {
+                        defaultValueField.add(attr, attr.getName());
+                    }
+                }
+            }
+        });
+        this.add(defaultValueField);
 
         hideFieldWhenNull(idField);
 

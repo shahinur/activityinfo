@@ -93,6 +93,23 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
         return get("mandatory", false);
     }
 
+    public Integer getDefaultValue() {
+        return get("defaultValue", null);
+    }
+
+    public void setDefaultValue(Integer defaultValue) {
+        set("defaultValue", defaultValue);
+    }
+
+    public void setWorkflow(boolean workflow) {
+        set("workflow", workflow);
+    }
+
+    @JsonProperty @JsonView(DTOViews.Schema.class)
+    public boolean isWorkflow() {
+        return get("workflow", false);
+    }
+
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public List<AttributeDTO> getAttributes() {
         return attributes;

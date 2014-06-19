@@ -116,6 +116,12 @@ public class BaseEntityHandler {
         if (changes.containsKey("mandatory")) {
             group.setMandatory((Boolean) changes.get("mandatory"));
         }
+        if (changes.containsKey("defaultValue")) {
+            group.setDefaultValue((Integer) changes.get("defaultValue"));
+        }
+        if (changes.containsKey("workflow")) {
+            group.setWorkflow((Boolean) changes.get("workflow"));
+        }
     }
 
     protected void updateLockedPeriodProperties(LockedPeriod lockedPeriod, Map<String, Object> changes) {

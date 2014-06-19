@@ -3530,4 +3530,10 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Parsing rows...")
     String parsingRows();
+
+    @DefaultStringValue("Default value")
+    String defaultValue();
+
+    @DefaultStringValue("Part of workflow")
+    String partOfWorkflow();
 }

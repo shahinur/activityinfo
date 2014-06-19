@@ -503,6 +503,8 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                                      .appendColumn("Name", "name")
                                      .appendColumn("multipleAllowed")
                                      .appendColumn("mandatory")
+                                     .appendColumn("defaultValue")
+                                     .appendColumn("workflow")
                                      .from("attributegroup")
                                      .orderBy("SortOrder");
 
@@ -529,6 +531,10 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     group.setName(rs.getString("name"));
                     group.setMultipleAllowed(rs.getBoolean("multipleAllowed"));
                     group.setMandatory(rs.getBoolean("mandatory"));
+                    if (!rs.isNull("defaultValue")) { // if null it throws NPE
+                        group.setDefaultValue(rs.getInt("defaultValue"));
+                    }
+                    group.setWorkflow(rs.getBoolean("workflow"));
 
                     attributeGroups.put(group.getId(), group);
                 }
