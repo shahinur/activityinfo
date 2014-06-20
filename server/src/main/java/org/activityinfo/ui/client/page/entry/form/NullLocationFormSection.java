@@ -42,7 +42,7 @@ public class NullLocationFormSection implements LocationFormSection {
 
 
     @Override
-    public void updateForm(SiteDTO m) {
+    public void updateForm(SiteDTO m, boolean isNew) {
 
     }
 

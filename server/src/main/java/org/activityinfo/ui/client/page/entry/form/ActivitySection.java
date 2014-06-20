@@ -132,7 +132,7 @@ public class ActivitySection extends FormSectionWithFormLayout<SiteDTO> {
     }
 
     @Override
-    public void updateForm(SiteDTO m) {
+    public void updateForm(SiteDTO m, boolean isNew) {
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
             dateField1.setValue(m.getDate1() == null ? null : m.getDate1().atMidnightInMyTimezone());
             dateField2.setValue(m.getDate2() == null ? null : m.getDate2().atMidnightInMyTimezone());

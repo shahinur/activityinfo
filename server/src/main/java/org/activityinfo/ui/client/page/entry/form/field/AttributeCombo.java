@@ -31,6 +31,8 @@ import org.activityinfo.legacy.shared.model.SiteDTO;
 
 public class AttributeCombo extends ComboBox<AttributeDTO> implements AttributeField {
 
+    AttributeDTO defaultValue = null;
+
     public AttributeCombo(AttributeGroupDTO attributeGroup) {
         super();
         String name = attributeGroup.getName();
@@ -47,17 +49,25 @@ public class AttributeCombo extends ComboBox<AttributeDTO> implements AttributeF
         store.add(attributeGroup.getAttributes());
 
         setStore(store);
+
+        if (attributeGroup.getDefaultValue() != null) {
+            defaultValue = attributeGroup.getAttributeById(attributeGroup.getDefaultValue());
+        }
     }
 
     @Override
-    public void updateForm(SiteDTO site) {
+    public void updateForm(SiteDTO site, boolean isNew) {
         for (AttributeDTO attribute : getStore().getModels()) {
             if (site.getAttributeValue(attribute.getId())) {
                 setValue(attribute);
                 return;
             }
         }
-        setValue(null);
+        if (isNew) {
+            setValue(defaultValue);
+        } else {
+            setValue(null);
+        }
     }
 
     @Override

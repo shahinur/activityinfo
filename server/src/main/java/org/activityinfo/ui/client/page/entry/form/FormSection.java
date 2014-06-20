@@ -30,7 +30,7 @@ public interface FormSection<Model> {
 
     void updateModel(Model m);
 
-    void updateForm(Model m);
+    void updateForm(Model m, boolean isNew);
 
     Component asComponent();
 }

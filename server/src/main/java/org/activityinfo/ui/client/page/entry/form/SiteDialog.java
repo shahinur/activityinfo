@@ -170,7 +170,7 @@ public class SiteDialog extends Window {
         this.newSite = true;
         this.callback = callback;
         locationForm.updateForm(location, locationIsNew);
-        updateForms(site);
+        updateForms(site, true);
         show();
     }
 
@@ -182,13 +182,13 @@ public class SiteDialog extends Window {
         location.setLocationTypeId(activity.getLocationTypeId());
 
         locationForm.updateForm(location, false);
-        updateForms(site);
+        updateForms(site, false);
         show();
     }
 
-    private void updateForms(SiteDTO site) {
+    private void updateForms(SiteDTO site, boolean isNew) {
         for (FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
-            section.getSection().updateForm(site);
+            section.getSection().updateForm(site, isNew);
         }
     }
 

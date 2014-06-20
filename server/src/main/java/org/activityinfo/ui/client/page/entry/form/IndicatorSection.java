@@ -176,7 +176,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
     }
 
     @Override
-    public void updateForm(SiteDTO m) {
+    public void updateForm(SiteDTO m, boolean isNew) {
         for (Field field : indicatorFields) {
             field.setValue(m.get(field.getName()));
         }

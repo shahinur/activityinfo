@@ -62,7 +62,7 @@ public class CommentSection extends FormSectionWithFormLayout<SiteDTO> {
     }
 
     @Override
-    public void updateForm(SiteDTO m) {
+    public void updateForm(SiteDTO m, boolean isNew) {
         commentField.setValue(m.getComments());
     }
 

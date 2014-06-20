@@ -36,7 +36,9 @@ import org.activityinfo.legacy.shared.model.SiteDTO;
 import java.util.List;
 
 public class AttributeCheckBoxGroup extends CheckBoxGroup implements AttributeField {
+
     private List<CheckBox> checkBoxes = Lists.newArrayList();
+    private CheckBox checkBoxWithDefaultValue = null;
 
     public AttributeCheckBoxGroup(AttributeGroupDTO group) {
         assert group != null;
@@ -64,15 +66,22 @@ public class AttributeCheckBoxGroup extends CheckBoxGroup implements AttributeFi
             box.setBoxLabel(attrib.getName());
             box.setName(attrib.getPropertyName());
 
+            if (group.getDefaultValue() != null && attrib.getId() == group.getDefaultValue()) {
+                checkBoxWithDefaultValue = box;
+            }
+
             this.add(box);
             checkBoxes.add(box);
         }
     }
 
     @Override
-    public void updateForm(SiteDTO site) {
+    public void updateForm(SiteDTO site, boolean isNew) {
         for (CheckBox checkBox : checkBoxes) {
-            checkBox.setValue((Boolean) site.get(checkBox.getName()));
+            checkBox.setValue(site.<Boolean>get(checkBox.getName()));
+        }
+        if (isNew && checkBoxWithDefaultValue != null) {
+            checkBoxWithDefaultValue.setValue(true);
         }
     }
 

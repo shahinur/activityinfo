@@ -128,7 +128,7 @@ public class BoundLocationSection extends FormSectionWithFormLayout<SiteDTO> imp
     }
 
     @Override
-    public void updateForm(SiteDTO m) {
+    public void updateForm(SiteDTO m, boolean isNew) {
 
     }
 }

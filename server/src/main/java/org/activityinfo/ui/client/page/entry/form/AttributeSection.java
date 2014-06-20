@@ -77,9 +77,9 @@ public class AttributeSection extends FormSectionWithFormLayout<SiteDTO> {
     }
 
     @Override
-    public void updateForm(SiteDTO m) {
+    public void updateForm(SiteDTO m, boolean isNew) {
         for (AttributeField field : fields) {
-            field.updateForm(m);
+            field.updateForm(m, isNew);
         }
     }
 }

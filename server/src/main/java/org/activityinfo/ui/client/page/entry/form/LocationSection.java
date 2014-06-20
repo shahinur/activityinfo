@@ -139,9 +139,7 @@ public class LocationSection extends FormSectionWithFormLayout<SiteDTO> implemen
     }
 
     @Override
-    public void updateForm(SiteDTO m) {
-        // TODO Auto-generated method stub
-
+    public void updateForm(SiteDTO m, boolean isNew) {
     }
 
     private void changeLocation() {
