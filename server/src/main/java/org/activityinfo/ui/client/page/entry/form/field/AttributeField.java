@@ -31,4 +31,6 @@ public interface AttributeField {
     void updateModel(SiteDTO site);
 
     boolean validate();
+
+    void setReadOnly(boolean readOnly);
 }

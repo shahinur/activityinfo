@@ -56,6 +56,8 @@ public class AttributeSection extends FormSectionWithFormLayout<SiteDTO> {
                 field = combo;
             }
 
+            field.setReadOnly(attributeGroup.isWorkflow() && !activity.getDatabase().isDesignAllowed());
+
             fields.add(field);
         }
     }
