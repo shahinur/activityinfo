@@ -123,6 +123,7 @@ final class FlatSiteGridPanel extends ContentPanel implements SiteGridPanelView 
         this.currentFilter = filter;
 
         loader.load();
+        new QuickTip(editorGrid);
     }
 
     @Override

@@ -69,6 +69,7 @@ public class ReadLockedPeriodTypeColumn extends ColumnConfig {
             }
         };
         setHeaderText(I18N.CONSTANTS.type());
+        setToolTip(I18N.CONSTANTS.type());
         setWidth(48);
         setRowHeader(true);
         setRenderer(iconRenderer);

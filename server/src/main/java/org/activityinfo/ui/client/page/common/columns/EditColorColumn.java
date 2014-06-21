@@ -36,6 +36,7 @@ public class EditColorColumn extends ColumnConfig {
      */
     public EditColorColumn() {
         super("color", I18N.CONSTANTS.color(), 50);
+        setToolTip(I18N.CONSTANTS.color());
         final ColorField colorField = new ColorField();
 
         GridCellRenderer<NamedSlice> colorRenderer = new GridCellRenderer<PiechartLayerOptions.NamedSlice>() {

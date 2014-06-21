@@ -36,6 +36,7 @@ import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.ui.client.page.common.columns.EditableLocalDateColumn;
 import org.activityinfo.ui.client.page.common.columns.ReadTextColumn;
+import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class ColumnModelBuilder {
 
     public ColumnModelBuilder addActivityColumn(final UserDatabaseDTO database) {
         ColumnConfig config = new ColumnConfig("activityId", I18N.CONSTANTS.activity(), 100);
+        config.setToolTip(I18N.CONSTANTS.activity());
         config.setRenderer(new GridCellRenderer<SiteDTO>() {
 
             @Override
@@ -60,7 +62,7 @@ public class ColumnModelBuilder {
                                  Grid<SiteDTO> grid) {
 
                 ActivityDTO activity = database.getActivityById(model.getActivityId());
-                return activity == null ? "" : activity.getName();
+                return GwtUtil.valueWithTooltip(activity == null ? "" : activity.getName());
             }
         });
         columns.add(config);
@@ -69,6 +71,7 @@ public class ColumnModelBuilder {
 
     public ColumnModelBuilder addActivityColumn(final SchemaDTO schema) {
         ColumnConfig config = new ColumnConfig("activityId", I18N.CONSTANTS.activity(), 100);
+        config.setToolTip(I18N.CONSTANTS.activity());
         config.setRenderer(new GridCellRenderer<SiteDTO>() {
 
             @Override
@@ -81,7 +84,7 @@ public class ColumnModelBuilder {
                                  Grid<SiteDTO> grid) {
 
                 ActivityDTO activity = schema.getActivityById(model.getActivityId());
-                return activity == null ? "" : activity.getName();
+                return GwtUtil.valueWithTooltip(activity == null ? "" : activity.getName());
             }
         });
         columns.add(config);
@@ -90,6 +93,7 @@ public class ColumnModelBuilder {
 
     public ColumnModelBuilder addDatabaseColumn(final SchemaDTO schema) {
         ColumnConfig config = new ColumnConfig("activityId", I18N.CONSTANTS.database(), 100);
+        config.setToolTip(I18N.CONSTANTS.database());
         config.setRenderer(new GridCellRenderer<SiteDTO>() {
 
             @Override
@@ -102,7 +106,7 @@ public class ColumnModelBuilder {
                                  Grid<SiteDTO> grid) {
 
                 ActivityDTO activity = schema.getActivityById(model.getActivityId());
-                return activity == null ? "" : activity.getDatabaseName();
+                return GwtUtil.valueWithTooltip(activity == null ? "" : activity.getDatabaseName());
             }
         });
         columns.add(config);
@@ -140,9 +144,12 @@ public class ColumnModelBuilder {
         NumberField indicatorField = new NumberField();
         indicatorField.getPropertyEditor().setFormat(IndicatorNumberFormat.INSTANCE);
 
+        String columnName = SafeHtmlUtils.fromString(header).asString();
         ColumnConfig indicatorColumn = new ColumnConfig(indicator.getPropertyName(),
-                SafeHtmlUtils.fromString(header).asString(),
-                50);
+                columnName, 50);
+
+        indicatorColumn.setToolTip(columnName);
+
 
         indicatorColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
         indicatorColumn.setEditor(new CellEditor(indicatorField));
@@ -163,7 +170,7 @@ public class ColumnModelBuilder {
                                          Grid grid) {
                         Object value = model.get(property);
                         if (value instanceof Double && (Double) value != 0) {
-                            return IndicatorNumberFormat.INSTANCE.format((Double) value);
+                            return GwtUtil.valueWithTooltip(IndicatorNumberFormat.INSTANCE.format((Double) value));
                         } else {
                             return "";
                         }
@@ -180,7 +187,7 @@ public class ColumnModelBuilder {
                                          ListStore listStore,
                                          Grid grid) {
 
-                        return "1"; // the value of a site count indicator a single site is always 1
+                        return GwtUtil.valueWithTooltip("1"); // the value of a site count indicator a single site is always 1
                     }
                 });
             }
@@ -195,7 +202,7 @@ public class ColumnModelBuilder {
                                      ListStore listStore,
                                      Grid grid) {
                     Object value = model.get(property);
-                    return value instanceof String ? value : "";
+                    return value instanceof String ? GwtUtil.valueWithTooltip((String) value) : "";
                 }
             });
         }
@@ -236,6 +243,7 @@ public class ColumnModelBuilder {
 
     public ColumnModelBuilder addSingleAdminColumn(ActivityDTO activity) {
         ColumnConfig admin = new ColumnConfig("admin", I18N.CONSTANTS.location(), 100);
+        admin.setToolTip(I18N.CONSTANTS.location());
         admin.setRenderer(new AdminColumnRenderer(activity.getAdminLevels()));
         columns.add(admin);
         return this;
@@ -243,7 +251,10 @@ public class ColumnModelBuilder {
 
     public ColumnModelBuilder addAdminLevelColumns(List<AdminLevelDTO> adminLevels) {
         for (AdminLevelDTO level : adminLevels) {
-            columns.add(new ColumnConfig(AdminLevelDTO.getPropertyName(level.getId()), level.getName(), 100));
+            ColumnConfig column = new ColumnConfig(AdminLevelDTO.getPropertyName(level.getId()), level.getName(), 100);
+            column.setToolTip(level.getName());
+            column.setRenderer(new StringWithTooltipRenderer());
+            columns.add(column);
         }
 
         return this;
@@ -267,7 +278,10 @@ public class ColumnModelBuilder {
     }
 
     public ColumnModelBuilder addPartnerColumn() {
-        columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
+        ColumnConfig column = new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100);
+        column.setToolTip(I18N.CONSTANTS.partner());
+        column.setRenderer(new StringWithTooltipRenderer());
+        columns.add(column);
         return this;
     }
 
@@ -318,6 +332,7 @@ public class ColumnModelBuilder {
 
     public ColumnModelBuilder addTreeNameColumn() {
         ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.location(), 200);
+        name.setToolTip(I18N.CONSTANTS.location());
         name.setRenderer(new TreeGridCellRenderer<ModelData>() {
 
             @Override
@@ -349,7 +364,6 @@ public class ColumnModelBuilder {
     public ColumnModelBuilder maybeAddProjectColumn(UserDatabaseDTO database) {
         if (database.getProjects().size() > 1) {
             addProjectColumn();
-            ;
         }
         return this;
     }

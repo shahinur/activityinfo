@@ -30,7 +30,7 @@ public class EditCheckColumnConfig extends CheckColumnConfig {
 
     public EditCheckColumnConfig(String id, String name, int width) {
         super(id, name, width);
-
+        setToolTip(name);
         setEditor(new CellEditor(new CheckBox()));
     }
 }

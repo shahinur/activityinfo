@@ -33,7 +33,9 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.Filter;
@@ -84,6 +86,12 @@ final class SiteTreeGrid extends EditorTreeGrid<ModelData> implements SiteGridPa
         setSelectionModel(sm);
 
         getLoader().setFilter(filter);
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                new QuickTip(SiteTreeGrid.this);
+            }
+        });
     }
 
     private static TreeStore<ModelData> createStore(Dispatcher dispatcher, GroupingModel groupingModel) {

@@ -75,4 +75,8 @@ public class GwtUtil {
             }
         }
     }
+
+    public static String valueWithTooltip(String value) {
+        return "<span qtip='" + value + "'>" + value + "</span>";
+    }
 }

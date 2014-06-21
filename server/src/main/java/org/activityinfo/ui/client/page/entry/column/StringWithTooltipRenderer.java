@@ -1,5 +1,4 @@
 package org.activityinfo.ui.client.page.entry.column;
-
 /*
  * #%L
  * ActivityInfo Server
@@ -27,37 +26,20 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.ui.client.util.GwtUtil;
 
-public class LocationColumnRenderer implements GridCellRenderer<ModelData> {
-
+/**
+ * @author yuriyz on 6/20/14.
+ */
+public class StringWithTooltipRenderer implements GridCellRenderer {
     @Override
-    public Object render(ModelData model,
-                         String property,
-                         ColumnData config,
-                         int rowIndex,
-                         int colIndex,
-                         ListStore<ModelData> store,
-                         Grid<ModelData> grid) {
-
-        if (model instanceof SiteDTO) {
-            return render((SiteDTO) model);
-        } else {
-            return "";
+    public Object render(ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+        Object value = model.get(property);
+        if (value instanceof String) {
+            return GwtUtil.valueWithTooltip((String) value);
+        } else if (value != null) {
+            return GwtUtil.valueWithTooltip(value.toString());
         }
+        return "";
     }
-
-    public Object render(SiteDTO model) {
-
-        String name = model.getLocationName();
-        String axe = model.getLocationAxe();
-
-        if (axe == null) {
-            return GwtUtil.valueWithTooltip(name);
-        } else {
-            return ColumnTemplates.INSTANCE.locationCell(model.getLocationName(), model.getLocationAxe()).asString();
-        }
-    }
-
 }
