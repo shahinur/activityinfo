@@ -44,6 +44,7 @@ class IndicatorForm extends AbstractDesignForm {
     private final TextField<String> unitsField;
     private final MappingComboBox aggregationCombo;
     private final TextField<String> expressionField;
+    private final TextField<String> variableField;
 
     public IndicatorForm() {
         super();
@@ -125,6 +126,12 @@ class IndicatorForm extends AbstractDesignForm {
         });
         binding.addFieldBinding(new FieldBinding(expressionField, "expression"));
         this.add(expressionField);
+
+        variableField = new TextField<>();
+        variableField.setFieldLabel(constants.nameInExpression());
+        variableField.setToolTip(constants.nameInExpressionTooltip());
+        binding.addFieldBinding(new FieldBinding(variableField, "variable"));
+        this.add(variableField);
 
         TextField<String> listHeaderField = new TextField<>();
         listHeaderField.setFieldLabel(constants.listHeader());

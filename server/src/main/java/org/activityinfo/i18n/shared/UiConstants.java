@@ -1220,7 +1220,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Filter by project")
     @Key("filterByProject")
     String filterByProject();
-    
+
     /**
      * Translated "Filter by location".
      *
@@ -1742,10 +1742,10 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("New Database")
     @Key("newDatabase")
     String newDatabase();
-    
+
     /**
      * Translated "Rename Database"
-     * 
+     *
      * @return translated "Database"
      */
     @DefaultStringValue("Rename Database")
@@ -3249,7 +3249,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Section label")
     @Key("sectionLabel")
     String sectionLabel();
-    
+
     @DefaultStringValue("Unknown Group")
     @Key("unknownGroup")
     String unknownGroup();
@@ -3557,4 +3557,10 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Expression is invalid")
     String expressionIsInvalid();
+
+    @DefaultStringValue("Name in expression")
+    String nameInExpression();
+
+    @DefaultStringValue("Name which is used in expression")
+    String nameInExpressionTooltip();
 }
