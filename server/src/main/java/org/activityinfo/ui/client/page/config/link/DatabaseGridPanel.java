@@ -34,6 +34,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
@@ -41,6 +42,7 @@ import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
+import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -72,7 +74,7 @@ public class DatabaseGridPanel extends ContentPanel {
         loader.load();
 
         IndicatorLinkResources.INSTANCE.style().ensureInjected();
-
+        new QuickTip(grid);
     }
 
     public void addMouseOverListener(Listener<GridEvent<UserDatabaseDTO>> listener) {
@@ -118,6 +120,7 @@ public class DatabaseGridPanel extends ContentPanel {
         });
 
         ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.database(), 150);
+        name.setToolTip(I18N.CONSTANTS.database());
         name.setSortable(false);
         name.setMenuDisabled(true);
         name.setRenderer(new GridCellRenderer<UserDatabaseDTO>() {
@@ -132,11 +135,9 @@ public class DatabaseGridPanel extends ContentPanel {
                                  Grid<UserDatabaseDTO> grid) {
 
                 if (hasPermission(model)) {
-                    return model.getName();
+                    return GwtUtil.valueWithTooltip(model.getName());
                 } else {
-                    StringBuilder html = new StringBuilder();
-                    html.append("<span style=\"color: gray\">").append(model.getName()).append("</span>");
-                    return html.toString();
+                    return ("<span style=\"color: gray\" qtip=\"" + model.getName() + "\">") + model.getName() + "</span>";
                 }
 
             }

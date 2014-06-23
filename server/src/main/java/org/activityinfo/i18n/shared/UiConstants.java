@@ -3536,4 +3536,16 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Part of workflow")
     String partOfWorkflow();
+
+    @DefaultStringValue("Switch to page view")
+    String switchToPageVeiw();
+
+    @DefaultStringValue("Pin to dashboard")
+    String pinToDashboard();
+
+    @DefaultStringValue("Clustered bar")
+    String clusteredBar();
+
+    @DefaultStringValue("Line")
+    String line();
 }

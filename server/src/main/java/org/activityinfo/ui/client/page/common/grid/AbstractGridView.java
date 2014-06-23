@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.CellSelectionModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridSelectionModel;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.AsyncMonitor;
@@ -58,6 +59,7 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
         createToolBar();
 
         grid = createGridAndAddToContainer(store);
+        new QuickTip(grid);
 
         initGridListeners(grid);
 

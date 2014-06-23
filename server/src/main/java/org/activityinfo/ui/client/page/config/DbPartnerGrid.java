@@ -38,6 +38,7 @@ import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.ui.client.page.common.grid.AbstractGridView;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.form.PartnerForm;
+import org.activityinfo.ui.client.page.entry.column.StringWithTooltipRenderer;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 import java.util.ArrayList;
@@ -81,8 +82,16 @@ public class DbPartnerGrid extends AbstractGridView<PartnerDTO, DbPartnerEditor>
     protected ColumnModel createColumnModel() {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        columns.add(new ColumnConfig("name", messages.name(), 150));
-        columns.add(new ColumnConfig("fullName", messages.fullName(), 300));
+        ColumnConfig name = new ColumnConfig("name", messages.name(), 150);
+        name.setToolTip(messages.name());
+        name.setRenderer(new StringWithTooltipRenderer());
+
+        ColumnConfig fullName = new ColumnConfig("fullName", messages.fullName(), 300);
+        fullName.setToolTip(messages.fullName());
+        fullName.setRenderer(new StringWithTooltipRenderer());
+
+        columns.add(name);
+        columns.add(fullName);
 
         return new ColumnModel(columns);
     }

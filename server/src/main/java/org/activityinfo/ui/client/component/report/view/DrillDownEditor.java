@@ -33,6 +33,7 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.type.DateUtilGWTImpl;
@@ -44,6 +45,7 @@ import org.activityinfo.legacy.shared.reports.content.PivotTableData;
 import org.activityinfo.legacy.shared.reports.model.PivotReportElement;
 import org.activityinfo.legacy.shared.reports.util.DateUtil;
 import org.activityinfo.ui.client.page.common.Shutdownable;
+import org.activityinfo.ui.client.page.entry.column.StringWithTooltipRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,21 +147,37 @@ public class DrillDownEditor implements Shutdownable {
                 top = -1;
             }
         });
+        new QuickTip(grid);
     }
 
     private ColumnModel buildColumnModel() {
-        List<ColumnConfig> config = new ArrayList<>();
-        config.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100));
-        config.add(new ColumnConfig("location", I18N.CONSTANTS.location(), 100));
-        config.add(new ColumnConfig("date", I18N.CONSTANTS.date(), 100));
-
+        ColumnConfig partnerColumn = new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100);
+        ColumnConfig locationColumn = new ColumnConfig("location", I18N.CONSTANTS.location(), 100);
+        ColumnConfig dateColumn = new ColumnConfig("date", I18N.CONSTANTS.date(), 100);
         ColumnConfig indicatorNameColumn = new ColumnConfig("indicator", I18N.CONSTANTS.indicator(), 100);
-        indicatorNameColumn.setHidden(true);
-        config.add(indicatorNameColumn);
-
         ColumnConfig valueColumn = new ColumnConfig("value", I18N.CONSTANTS.value(), 100);
+
+        partnerColumn.setToolTip(I18N.CONSTANTS.partner());
+        locationColumn.setToolTip(I18N.CONSTANTS.location());
+        dateColumn.setToolTip(I18N.CONSTANTS.date());
+        indicatorNameColumn.setToolTip(I18N.CONSTANTS.indicator());
+        valueColumn.setToolTip(I18N.CONSTANTS.value());
+
+        partnerColumn.setRenderer(new StringWithTooltipRenderer());
+        locationColumn.setRenderer(new StringWithTooltipRenderer());
+        dateColumn.setRenderer(new StringWithTooltipRenderer());
+        indicatorNameColumn.setRenderer(new StringWithTooltipRenderer());
+        valueColumn.setRenderer(new StringWithTooltipRenderer());
+
+        indicatorNameColumn.setHidden(true);
         valueColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
         valueColumn.setAlignment(Style.HorizontalAlignment.RIGHT);
+
+        List<ColumnConfig> config = new ArrayList<>();
+        config.add(partnerColumn);
+        config.add(locationColumn);
+        config.add(dateColumn);
+        config.add(indicatorNameColumn);
         config.add(valueColumn);
 
         return new ColumnModel(config);

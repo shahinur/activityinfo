@@ -44,11 +44,11 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
 import com.extjs.gxt.ui.client.widget.treegrid.CellTreeGridSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
@@ -60,6 +60,7 @@ import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.ui.client.page.common.grid.AbstractEditorTreeGridView;
 import org.activityinfo.ui.client.page.common.grid.ImprovedCellTreeGridSelectionModel;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
+import org.activityinfo.ui.client.page.entry.column.TreeGridCellTooltipRenderer;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 import java.util.ArrayList;
@@ -163,6 +164,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         });
 
         add(tree, new BorderLayoutData(Style.LayoutRegion.CENTER));
+        new QuickTip(tree);
 
         TreeGridDragSource source = new TreeGridDragSource(tree);
         source.addDNDListener(new DNDListener() {
@@ -303,8 +305,9 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         nameField.setAllowBlank(false);
 
         ColumnConfig nameColumn = new ColumnConfig("name", I18N.CONSTANTS.name(), 150);
+        nameColumn.setToolTip(I18N.CONSTANTS.name());
         nameColumn.setEditor(new CellEditor(nameField));
-        nameColumn.setRenderer(new TreeGridCellRenderer());
+        nameColumn.setRenderer(new TreeGridCellTooltipRenderer());
 
         columns.add(nameColumn);
 

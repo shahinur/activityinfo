@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.AsyncMonitor;
@@ -41,7 +42,9 @@ import org.activityinfo.ui.client.page.PageId;
 import org.activityinfo.ui.client.page.PageState;
 import org.activityinfo.ui.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
+import org.activityinfo.ui.client.page.entry.column.StringWithTooltipRenderer;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
+import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,15 +98,30 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
         });
 
         add(grid);
+        new QuickTip(grid);
     }
 
     private ColumnModel createColumnModel() {
+        ColumnConfig nameColumn = new ColumnConfig("name", I18N.CONSTANTS.name(), 100);
+        ColumnConfig fullNameColumn = new ColumnConfig("fullName", I18N.CONSTANTS.fullName(), 150);
+        ColumnConfig ownerNameColumn = new ColumnConfig("ownerName", I18N.CONSTANTS.ownerName(), 150);
+
+        nameColumn.setToolTip(I18N.CONSTANTS.name());
+        fullNameColumn.setToolTip(I18N.CONSTANTS.fullName());
+        ownerNameColumn.setToolTip(I18N.CONSTANTS.ownerName());
+
+        nameColumn.setRenderer(new StringWithTooltipRenderer());
+        fullNameColumn.setRenderer(new StringWithTooltipRenderer());
+        ownerNameColumn.setRenderer(new StringWithTooltipRenderer());
+
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("name", I18N.CONSTANTS.name(), 100));
-        columns.add(new ColumnConfig("fullName", I18N.CONSTANTS.fullName(), 150));
-        columns.add(new ColumnConfig("ownerName", I18N.CONSTANTS.ownerName(), 150));
+        columns.add(nameColumn);
+        columns.add(fullNameColumn);
+        columns.add(ownerNameColumn);
+
         ColumnConfig countryColumn = new ColumnConfig();
         countryColumn.setHeaderText(I18N.CONSTANTS.country());
+        countryColumn.setToolTip(I18N.CONSTANTS.country());
         countryColumn.setWidth(150);
         countryColumn.setRenderer(new GridCellRenderer<UserDatabaseDTO>() {
             @Override
@@ -114,7 +132,7 @@ public class DbListPage extends ContentPanel implements DbListPresenter.View, Pa
                                  int colIndex,
                                  ListStore<UserDatabaseDTO> store,
                                  Grid<UserDatabaseDTO> grid) {
-                return model.getCountry().getName();
+                return GwtUtil.valueWithTooltip(model.getCountry().getName());
             }
         });
         columns.add(countryColumn);

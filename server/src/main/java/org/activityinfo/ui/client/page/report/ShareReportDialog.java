@@ -30,6 +30,7 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -43,6 +44,7 @@ import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.reports.model.Report;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
+import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -73,7 +75,7 @@ public class ShareReportDialog extends Dialog {
         add(grid);
 
         setLayout(new FitLayout());
-
+        new QuickTip(grid);
     }
 
     private ColumnModel createColumnModel() {
@@ -97,6 +99,7 @@ public class ShareReportDialog extends Dialog {
         });
 
         ColumnConfig name = new ColumnConfig("databaseName", I18N.CONSTANTS.group(), 150);
+        name.setToolTip(I18N.CONSTANTS.group());
         name.setRenderer(new GridCellRenderer<ReportVisibilityDTO>() {
 
             @Override
@@ -107,16 +110,16 @@ public class ShareReportDialog extends Dialog {
                                  int colIndex,
                                  ListStore<ReportVisibilityDTO> store,
                                  Grid<ReportVisibilityDTO> grid) {
-
-                return model.getDatabaseName() + " Users";
-
+                return GwtUtil.valueWithTooltip(model.getDatabaseName() + " Users");
             }
         });
 
         visibleColumn = new CheckColumnConfig("visible", I18N.CONSTANTS.shared(), 75);
+        visibleColumn.setToolTip(I18N.CONSTANTS.shared());
         visibleColumn.setDataIndex("visible");
 
         dashboardColumn = new CheckColumnConfig("defaultDashboard", I18N.CONSTANTS.defaultDashboard(), 75);
+        dashboardColumn.setToolTip(I18N.CONSTANTS.defaultDashboard());
         dashboardColumn.setDataIndex("defaultDashboard");
 
         ColumnModel columnModel = new ColumnModel(Arrays.asList(icon, name, visibleColumn, dashboardColumn));

@@ -35,6 +35,7 @@ import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
@@ -63,6 +64,7 @@ import org.activityinfo.ui.client.page.common.toolbar.ActionListener;
 import org.activityinfo.ui.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.form.UserForm;
+import org.activityinfo.ui.client.page.entry.column.StringWithTooltipRenderer;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 import java.util.ArrayList;
@@ -146,9 +148,21 @@ public class DbUserEditor extends ContentPanel implements DbPage, ActionListener
 
         final List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        columns.add(new ColumnConfig("name", I18N.CONSTANTS.name(), 100));
-        columns.add(new ColumnConfig("email", I18N.CONSTANTS.email(), 150));
-        columns.add(new ColumnConfig("partner", I18N.CONSTANTS.partner(), 150));
+        ColumnConfig nameColumn = new ColumnConfig("name", I18N.CONSTANTS.name(), 100);
+        ColumnConfig emailColumn = new ColumnConfig("email", I18N.CONSTANTS.email(), 150);
+        ColumnConfig partnerColumn = new ColumnConfig("partner", I18N.CONSTANTS.partner(), 150);
+
+        nameColumn.setToolTip(I18N.CONSTANTS.name());
+        emailColumn.setToolTip(I18N.CONSTANTS.email());
+        partnerColumn.setToolTip(I18N.CONSTANTS.partner());
+
+        nameColumn.setRenderer(new StringWithTooltipRenderer());
+        emailColumn.setRenderer(new StringWithTooltipRenderer());
+        partnerColumn.setRenderer(new StringWithTooltipRenderer());
+
+        columns.add(nameColumn);
+        columns.add(emailColumn);
+        columns.add(partnerColumn);
 
         PermissionCheckConfig allowView = new PermissionCheckConfig("allowViewSimple", I18N.CONSTANTS.allowView(), 75);
         allowView.setDataIndex("allowView");
@@ -172,13 +186,13 @@ public class DbUserEditor extends ContentPanel implements DbPage, ActionListener
         allowEditAll.setToolTip(I18N.CONSTANTS.allowEditAllLong());
         columns.add(allowEditAll);
 
-        PermissionCheckConfig allowManageUsers = null;
-        allowManageUsers = new PermissionCheckConfig("allowManageUsers", I18N.CONSTANTS.allowManageUsers(), 150);
+        PermissionCheckConfig allowManageUsers = new PermissionCheckConfig("allowManageUsers", I18N.CONSTANTS.allowManageUsers(), 150);
+        allowManageUsers.setToolTip(I18N.CONSTANTS.allowManageUsers());
         columns.add(allowManageUsers);
 
         PermissionCheckConfig allowManageAllUsers = new PermissionCheckConfig("allowManageAllUsers",
-                I18N.CONSTANTS.manageAllUsers(),
-                150);
+                I18N.CONSTANTS.manageAllUsers(), 150);
+        allowManageAllUsers.setToolTip(I18N.CONSTANTS.manageAllUsers());
         columns.add(allowManageAllUsers);
 
         // only users with the right to design them selves can change the design
@@ -204,6 +218,7 @@ public class DbUserEditor extends ContentPanel implements DbPage, ActionListener
         grid.addPlugin(allowManageAllUsers);
         grid.addPlugin(allowDesign);
         add(grid);
+        new QuickTip(grid);
     }
 
     private void createPagingToolBar() {

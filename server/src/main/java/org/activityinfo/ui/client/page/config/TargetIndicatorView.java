@@ -35,8 +35,8 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
@@ -47,7 +47,9 @@ import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.ui.client.page.common.grid.AbstractEditorTreeGridView;
 import org.activityinfo.ui.client.page.common.grid.ImprovedCellTreeGridSelectionModel;
 import org.activityinfo.ui.client.page.common.nav.Link;
+import org.activityinfo.ui.client.page.entry.column.TreeGridCellTooltipRenderer;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
+import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +118,7 @@ public class TargetIndicatorView extends AbstractEditorTreeGridView<ModelData, T
         addAfterEditListener();
 
         add(tree, new BorderLayoutData(Style.LayoutRegion.CENTER));
-
+        new QuickTip(tree);
         return tree;
     }
 
@@ -165,13 +167,15 @@ public class TargetIndicatorView extends AbstractEditorTreeGridView<ModelData, T
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
         ColumnConfig nameColumn = new ColumnConfig("name", I18N.CONSTANTS.indicator(), 250);
-        nameColumn.setRenderer(new TreeGridCellRenderer());
+        nameColumn.setToolTip(I18N.CONSTANTS.indicator());
+        nameColumn.setRenderer(new TreeGridCellTooltipRenderer());
         columns.add(nameColumn);
 
         TextField<String> valueField = new TextField<String>();
         valueField.setAllowBlank(true);
 
         ColumnConfig valueColumn = new ColumnConfig("value", I18N.CONSTANTS.targetValue(), 150);
+        valueColumn.setToolTip(I18N.CONSTANTS.targetValue());
         valueColumn.setEditor(new CellEditor(valueField));
         valueColumn.setRenderer(new TargetValueCellRenderer());
         columns.add(valueColumn);
@@ -195,11 +199,14 @@ public class TargetIndicatorView extends AbstractEditorTreeGridView<ModelData, T
 
             if (model instanceof TargetValueDTO && model.get("value") == null) {
                 config.style = "color:gray;font-style:italic;";
-                return I18N.CONSTANTS.noTarget();
+                return GwtUtil.valueWithTooltip(I18N.CONSTANTS.noTarget());
 
             } else if (model.get("value") != null) {
-
-                return model.get("value");
+                Object value = model.get("value");
+                if (value instanceof String) {
+                    return GwtUtil.valueWithTooltip((String) value);
+                }
+                return value;
             }
 
             return "";
