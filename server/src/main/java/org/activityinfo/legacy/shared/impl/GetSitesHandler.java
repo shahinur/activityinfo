@@ -35,10 +35,13 @@ import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.activityinfo.core.shared.expr.*;
 import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
@@ -534,7 +537,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 });
     }
 
-    private void joinIndicatorValues(GetSites command, SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
+    private void joinIndicatorValues(final GetSites command, SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
 
         Log.trace("Starting joinIndicatorValues()");
 
@@ -570,13 +573,13 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             public void onSuccess(SqlTransaction tx, SqlResultSet results) {
                 Log.trace("Received results for join indicators");
 
-                for (SqlResultSetRow row : results.getRows()) {
+                for (final SqlResultSetRow row : results.getRows()) {
                     FormFieldType indicatorType = FormFieldType.valueOfSilently(row.getString("Type"));
                     String expression = row.getString("Expression");
                     boolean isCalculatedIndicator = !Strings.isNullOrEmpty(expression);
                     Object indicatorValue = null;
                     if (isCalculatedIndicator) {
-                        // todo
+                        // ignore -> see joinCalculatedIndicatorValues
                     } else { // if indicator is no calculated then assign value directly
                         if (indicatorType == FormFieldType.QUANTITY) {
                             indicatorValue = row.getDouble("Value");
@@ -604,8 +607,72 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 }
                 Log.trace("Done populating dtos for join indicators");
 
+                // after normal indicators are evaluated try to calculate indicators with expression
+                joinCalculatedIndicatorValues(command, tx, siteMap);
             }
         });
+    }
+
+    private void joinCalculatedIndicatorValues(GetSites command, SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
+        Log.trace("Starting joinIndicatorValues()");
+
+        final Set<Integer> activityIds = Sets.newHashSet();
+        for (SiteDTO siteDTO : siteMap.values()) {
+            activityIds.add(siteDTO.getActivityId());
+        }
+
+        SqlQuery query = SqlQuery.select()
+                .appendColumn("I.IndicatorId")
+                .appendColumn("I.ActivityId")
+                .appendColumn("I.Type")
+                .appendColumn("I.Expression")
+                .from(Tables.INDICATOR, "I")
+                .where("I.ActivityId")
+                .in(activityIds)
+                .and("I.dateDeleted IS NULL")
+                .and("I.Expression IS NOT NULL");
+
+        Log.info(query.toString());
+
+        query.execute(tx, new SqlResultCallback() {
+            @Override
+            public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+                Log.trace("Received results for join indicators");
+
+                for (final SqlResultSetRow row : results.getRows()) {
+                    for (final SiteDTO site : siteMap.values()) {
+                        if (site.getActivityId() == row.getInt("ActivityId")) {
+                            String expression = row.getString("Expression");
+                            ExprParser parser = new ExprParser(new ExprLexer(expression), new PlaceholderExprResolver() {
+
+                                @Override
+                                public void resolve(PlaceholderExpr placeholderExpr) {
+                                    Placeholder placeholder = placeholderExpr.getPlaceholderObj();
+                                    if (placeholder.isRowLevel()) {
+                                        int indicatorId = CuidAdapter.getLegacyIdFromCuid(placeholder.getFieldId());
+                                        double value = site.getIndicatorDoubleValue(indicatorId);
+                                        placeholderExpr.setValue(value);
+                                        return;
+                                    }
+
+                                    throw new UnsupportedOperationException("Placeholder is not supported: " + placeholder);
+
+                                }
+                            });
+
+                            try {
+                                ExprNode exprNode = parser.parse();
+                                double calculatedValue = exprNode.evalReal();
+                                site.setIndicatorValue(row.getInt("IndicatorId"), calculatedValue);
+                            } catch (Exception e) {
+                                Log.error(e.getMessage(), e);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     private void joinAttributeValues(SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
