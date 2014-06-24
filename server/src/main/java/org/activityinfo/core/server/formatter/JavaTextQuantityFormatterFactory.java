@@ -22,9 +22,13 @@ public class JavaTextQuantityFormatterFactory implements QuantityFormatterFactor
             @Override
             public Double parse(String valueAsString) {
                 try {
+                    // consider strings with '-' not at the start as invalid
+                    // e.g. "2012-12-18" is not 2012.0
+                    if (valueAsString.indexOf("-") > 1 || valueAsString.contains("/")) {
+                        return null;
+                    }
                     return format.parse(valueAsString).doubleValue();
                 } catch (ParseException e) {
-                 //  e.printStackTrace(); // todo log exception
                     return null;
                 }
             }
