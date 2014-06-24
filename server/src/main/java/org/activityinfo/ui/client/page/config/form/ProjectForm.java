@@ -32,6 +32,8 @@ import org.activityinfo.i18n.shared.UiConstants;
 
 public class ProjectForm extends FormPanel {
 
+    public static final int PROJECT_MAX_LENGTH = 32;
+
     private FormBinding binding;
 
     public ProjectForm() {
@@ -43,7 +45,7 @@ public class ProjectForm extends FormPanel {
 
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(constants.name());
-        nameField.setMaxLength(16);
+        nameField.setMaxLength(PROJECT_MAX_LENGTH);
         nameField.setAllowBlank(false);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
