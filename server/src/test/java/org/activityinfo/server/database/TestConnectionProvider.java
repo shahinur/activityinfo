@@ -51,7 +51,11 @@ public class TestConnectionProvider implements Provider<Connection> {
 
     private static final String DEFAULT_PASSWORD = "adminpwd";
     private static final String DEFAULT_USERNAME = "root";
-    private static final String DEFAULT_URL = "jdbc:mysql://localhost/activityinfo-test?useUnicode=true&characterEncoding=utf8";
+//    private static final String DEFAULT_URL = "jdbc:mysql://localhost/activityinfo-test?useUnicode=true&characterEncoding=utf8";
+
+    // Use java style encoding name as stated here:
+    //http://dev.mysql.com/doc/connector-j/en/connector-j-reference-charsets.html
+    private static final String DEFAULT_URL = "jdbc:mysql://localhost/activityinfo-test?useUnicode=true&characterEncoding=UTF-8";
 
     public static String URL, USERNAME, PASSWORD;
 
