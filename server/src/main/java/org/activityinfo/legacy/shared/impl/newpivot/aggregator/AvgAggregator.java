@@ -22,15 +22,31 @@ package org.activityinfo.legacy.shared.impl.newpivot.aggregator;
  */
 
 /**
- * @author yuriyz on 6/26/14.
+ * @author yuriyz on 6/27/14.
  */
-public interface Aggregator {
+public class AvgAggregator implements Aggregator {
 
-    public void aggregate(double value);
+    private double sum = 0;
+    private int count = 0;
 
-    double value();
+    @Override
+    public void aggregate(double value) {
+        if (!Double.isNaN(value)) {
+            sum += value;
+            count++;
+        }
+    }
 
-    int count();
+    @Override
+    public double value() {
+        return sum / count;
+    }
 
-    double sum();
+    public int count() {
+        return count;
+    }
+
+    public double sum() {
+        return sum;
+    }
 }

@@ -45,4 +45,8 @@ public class SumAggregator implements Aggregator {
     public int count() {
         return count;
     }
+
+    public double sum() {
+        return sum;
+    }
 }

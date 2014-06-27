@@ -25,6 +25,7 @@ package org.activityinfo.legacy.shared.impl.newpivot.aggregator;
  * @author yuriyz on 6/27/14.
  */
 public class AggregatorFactory {
+
     private AggregatorFactory() {
     }
 
@@ -32,6 +33,8 @@ public class AggregatorFactory {
         switch (type) {
             case SUM:
                 return new SumAggregator();
+            case AVG:
+                return new AvgAggregator();
         }
         throw new UnsupportedOperationException();
     }
