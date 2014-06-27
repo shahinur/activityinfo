@@ -34,7 +34,6 @@ import org.activityinfo.legacy.shared.impl.pivot.PivotQueryContext;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author yuriyz on 6/27/14.
@@ -52,12 +51,6 @@ public class SourceRowFetcher implements Function<IndicatorAnalyzer.Indicators, 
     @Nonnull
     @Override
     public Promise<List<SourceRow>> apply(IndicatorAnalyzer.Indicators indicators) {
-        Map<Integer,SqlResultSetRow> map = pureIndicators ? indicators.getPureIndicators() : indicators.getCalculatedIndicators();
-        Set<Integer> indicatorIds = map.keySet();
-        if (indicatorIds.isEmpty()) {
-            throw new RuntimeException("Indicator id list is empty.");
-        }
-
         SqlQuery query = new SqlQuery();
         query.from(Tables.INDICATOR_VALUE, "V");
         query.leftJoin(Tables.REPORTING_PERIOD, "Period").on("Period.ReportingPeriodId = V.ReportingPeriodId");
@@ -65,12 +58,14 @@ public class SourceRowFetcher implements Function<IndicatorAnalyzer.Indicators, 
         query.leftJoin(Tables.INDICATOR, "Indicator").on("Indicator.IndicatorId = V.IndicatorId");
         query.leftJoin(Tables.ACTIVITY, "Activity").on("Indicator.ActivityId = Activity.ActivityId");
         query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId");
+
+        Map<Integer,SqlResultSetRow> map = pureIndicators ? indicators.getPureIndicators() : indicators.getCalculatedIndicators();
+
         query.where("Indicator.DateDeleted is NULL");
         query.where("Site.dateDeleted").isNull();
         query.where("Activity.dateDeleted").isNull();
         query.where("UserDatabase.dateDeleted").isNull();
-
-        query.where("Indicator.IndicatorId").in(indicatorIds);
+        query.where("Indicator.IndicatorId").in(map.keySet());
 
         query.appendColumn("V.Value");
         query.appendColumn("Indicator.IndicatorId");

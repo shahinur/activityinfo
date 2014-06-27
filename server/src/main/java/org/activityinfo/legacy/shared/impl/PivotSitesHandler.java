@@ -46,9 +46,7 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
 
     private static final Logger LOGGER = Logger.getLogger(PivotSitesHandler.class.getName());
 
-    private final List<BaseTable> baseTables = Lists.newArrayList();
-
-    private boolean isResultPublished = false;
+    private List<BaseTable> baseTables = Lists.newArrayList();
 
     @Inject
     public PivotSitesHandler(SqlDialect dialect) {
@@ -80,8 +78,11 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
 
         // in memory calculation for indicators : move away from sql because it brings
         // quite complex queries for calculated indicators
-        final PivotIndicatorHandler indicatorHandler = new PivotIndicatorHandler(queryContext, callback, this);
-        indicatorHandler.execute();
+        if (false && command.getValueType() == PivotSites.ValueType.INDICATOR && command.getFilter().hasRestrictions() && !command.getFilter().getRestrictions(DimensionType.Indicator).isEmpty()) {
+            PivotIndicatorHandler handler = new PivotIndicatorHandler(queryContext, callback);
+            handler.execute();
+            return;
+        }
 
         final List<PivotQuery> queries = Lists.newArrayList();
 
@@ -92,8 +93,7 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
         }
 
         if (queries.isEmpty()) {
-            publishResult(callback, queryContext, indicatorHandler);
-            return;
+            callback.onSuccess(new PivotResult(Lists.<Bucket>newArrayList()));
         }
 
         final Set<PivotQuery> remaining = Sets.newHashSet(queries);
@@ -107,7 +107,7 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
                     if (errors.isEmpty()) {
                         remaining.remove(query);
                         if (remaining.isEmpty()) {
-                            publishResult(callback, queryContext, indicatorHandler);
+                            callback.onSuccess(new PivotResult(queryContext.getBuckets()));
                         }
                     }
                 }
@@ -121,20 +121,6 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
                 }
             });
         }
-    }
-
-    private void publishResult(AsyncCallback<PivotResult> callback, PivotQueryContext queryContext, PivotIndicatorHandler indicatorHandler) {
-        isResultPublished = true;
-        if (indicatorHandler.isReadyToPublish()) {
-            callback.onSuccess(new PivotResult(queryContext.getBuckets()));
-        } else {
-            indicatorHandler.parentHandlerIsReadyToPublish();
-        }
-
-    }
-
-    public boolean isResultPublished() {
-        return isResultPublished;
     }
 
     /**

@@ -29,7 +29,6 @@ import com.google.common.collect.Maps;
 import org.activityinfo.fp.client.Promise;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.impl.Tables;
-import org.activityinfo.legacy.shared.impl.newpivot.aggregator.AggregationType;
 import org.activityinfo.legacy.shared.impl.pivot.PivotQueryContext;
 
 import javax.annotation.Nonnull;
@@ -83,10 +82,6 @@ public class IndicatorAnalyzer implements Function<Void, Promise<IndicatorAnalyz
                 for (SqlResultSetRow row : results.getRows()) {
                     int id = row.getInt("IndicatorId");
                     String expression = row.getString("Expression");
-                    AggregationType aggregationType = AggregationType.fromValue(row.getInt("Aggregation"));
-                    if (aggregationType == AggregationType.SITE_COUNT) {
-                        continue; // let SQL pivot handler handle it
-                    }
                     if (Strings.isNullOrEmpty(expression)) {
                         result.getPureIndicators().put(id, row);
                     } else {

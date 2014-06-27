@@ -29,7 +29,7 @@ import org.activityinfo.legacy.shared.model.IndicatorDTO;
 public enum AggregationType {
     SUM(IndicatorDTO.AGGREGATE_SUM),
     AVG(IndicatorDTO.AGGREGATE_AVG),
-    SITE_COUNT(IndicatorDTO.AGGREGATE_SITE_COUNT);
+    COUNT(IndicatorDTO.AGGREGATE_SITE_COUNT);
 
     // references org.activityinfo.legacy.shared.model.IndicatorDTO.AGGREGATE_XXX
     private int value;
