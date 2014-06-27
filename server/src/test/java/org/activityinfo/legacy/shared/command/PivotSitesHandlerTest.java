@@ -105,9 +105,19 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     }
 
     @Test
+    public void testBasicWithCalculatedIndicators() {
+        withIndicatorAsDimension();
+        filter.addRestriction(DimensionType.Indicator, 1);
+
+        execute();
+        // todo !!!
+        assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
+    }
+
+    @Test
     public void testTotalSiteCount() {
         forTotalSiteCounts();
-        filteringOnDatabases(1,2,3,4,5);
+        filteringOnDatabases(1, 2, 3, 4, 5);
 
         execute();
 

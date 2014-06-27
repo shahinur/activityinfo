@@ -293,6 +293,8 @@
   <attributeValue siteId="1" attributeId="1" value="0"/>
   <attributeValue siteId="1" attributeId="2" value="0"/>
 
+  <indicator indicatorId="12451" aggregation="0" name="calculated" sortOrder="5" units="calculated" activityId="1" mandatory="false" expression="{i000001}+{i000002}"/>
+
   <reportingPeriod reportingPeriodId="1" siteId="1"
                    date1="2009-01-01" date2="2009-01-02" DateCreated="2009-02-01"
                    DateEdited="2009-02-01"/>
