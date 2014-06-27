@@ -26,6 +26,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.PivotSites;
 import org.activityinfo.legacy.shared.command.result.Bucket;
+import org.activityinfo.legacy.shared.impl.PivotSitesHandler;
 import org.activityinfo.legacy.shared.impl.newpivot.source.SourceRowFetcher;
 import org.activityinfo.legacy.shared.impl.pivot.PivotQueryContext;
 
@@ -33,7 +34,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Model based pivot sites handler.
+ * Pivot indicator handler : handled calculated indicators for now! Maybe it will be changed in future.
  *
  * @author yuriyz on 6/26/14.
  */
@@ -42,37 +43,57 @@ public class PivotIndicatorHandler {
     private final PivotQueryContext queryContext;
     private final AsyncCallback<PivotSites.PivotResult> callback;
     private final AsyncCallback<List<Bucket>> forwardCallback;
+    private boolean readyToPublish = false;
+    private boolean parentHandlerIsReadyToPublish = false;
 
-    public PivotIndicatorHandler(PivotQueryContext queryContext, AsyncCallback<PivotSites.PivotResult> callback) {
+    public PivotIndicatorHandler(PivotQueryContext queryContext, AsyncCallback<PivotSites.PivotResult> callback, final PivotSitesHandler pivotSitesHandler) {
         this.queryContext = queryContext;
         this.callback = callback;
         this.forwardCallback = new AsyncCallback<List<Bucket>>() {
             @Override
             public void onFailure(Throwable caught) {
+                readyToPublish = true;
                 PivotIndicatorHandler.this.callback.onFailure(caught);
             }
 
             @Override
             public void onSuccess(List<Bucket> result) {
-                // todo : take into account remaining callbacks !
-                PivotIndicatorHandler.this.callback.onSuccess(new PivotSites.PivotResult(PivotIndicatorHandler.this.queryContext.getBuckets()));
+                readyToPublish = true;
+                if (parentHandlerIsReadyToPublish) {
+                    PivotIndicatorHandler.this.callback.onSuccess(new PivotSites.PivotResult(PivotIndicatorHandler.this.queryContext.getBuckets()));
+                }
             }
         };
     }
 
     public void execute() {
-        if (queryContext.getCommand().getValueType() == PivotSites.ValueType.INDICATOR && queryContext.getCommand().getFilter().getRestrictedDimensions().contains(DimensionType.Indicator)) {
+        if (queryContext.getCommand().getValueType() == PivotSites.ValueType.INDICATOR && queryContext.getCommand().getFilter().hasRestrictions() && queryContext.getCommand().getFilter().getRestrictedDimensions().contains(DimensionType.Indicator)) {
             new IndicatorAnalyzer(queryContext).apply(null).then(new Function<IndicatorAnalyzer.Indicators, Object>() {
                 @Nullable
                 @Override
                 public Object apply(@Nullable IndicatorAnalyzer.Indicators input) {
-                    new SourceRowFetcher(queryContext, true).apply(input).then(new PureIndicatorsFunction(queryContext)).then(forwardCallback);
-                    new SourceRowFetcher(queryContext, false).apply(input).then(new CalculatedIndicatorsFunction(queryContext)).then(forwardCallback);
+                    try {
+                        // skip normal indicator: it is handled by SQL handler
+                        // new SourceRowFetcher(queryContext, true).apply(input).then(new PureIndicatorsFunction(queryContext)).then(forwardCallback);
+                        new SourceRowFetcher(queryContext, false).apply(input).then(new CalculatedIndicatorsFunction(queryContext)).then(forwardCallback);
+                    } catch (Exception e) {
+                        readyToPublish = true;
+//                        forwardCallback.onFailure(e);
+                    }
                     return null;
                 }
             });
         } else {
-            throw new UnsupportedOperationException();
+            readyToPublish = true;
         }
+    }
+
+    public boolean isReadyToPublish() {
+        return readyToPublish;
+    }
+
+    public void parentHandlerIsReadyToPublish() {
+        this.parentHandlerIsReadyToPublish = true;
+
     }
 }
