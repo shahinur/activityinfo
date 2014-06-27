@@ -181,7 +181,7 @@ public class GetSchemaTest extends CommandTestCase2 {
         ActivityDTO nfi = schema.getActivityById(1);
 
         assertThat("indicators are present", nfi.getIndicators().size(),
-                equalTo(4));
+                equalTo(5));
 
         IndicatorDTO test = nfi.getIndicatorById(2);
         assertThat("property:name", test.getName(), equalTo("baches"));
