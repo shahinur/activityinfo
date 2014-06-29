@@ -536,24 +536,15 @@
          from Jenkins and includes the build number in the version displayed
          to the user -->
     <profile>
-      <id>ci-dev</id>
+      <id>ci</id>
       <properties>
-	<gae.version>1.9.3</gae.version>
-	<appengine.target.version>1.9.3</appengine.target.version>
+        <gae.version>1.9.3</gae.version>
+        <appengine.target.version>1.9.3</appengine.target.version>
         <display.version>Build ${BUILD_NUMBER}</display.version>
-        <gae.application>bdd-dev</gae.application>
+        <gae.application>ai-dev</gae.application>
         <gae.application.version>ci-dev</gae.application.version>
       </properties>
     </profile>
-    <profile>
-      <id>ci</id>
-      <properties>
-        <display.version>Build ${BUILD_NUMBER}</display.version>
-        <gae.application>ai-staging</gae.application>
-        <gae.application.version>ci</gae.application.version>
-      </properties>
-    </profile>
-
 
     <!-- Run a more time-intensive check periodically to
          monitor code quality -->
@@ -609,39 +600,6 @@
       </build>
     </profile>
 
-    <profile>
-      <id>bracinfo</id>
-      <properties>
-        <!-- Required by AppScale -->
-        <gae.application>bracinfo</gae.application>
-        <gae.application.version>1</gae.application.version>
-        <display.version>build ${BUILD_NUMBER}</display.version>
-        <gae.version>1.8.0</gae.version>
-        <display.version>Build ${BUILD_NUMBER}</display.version>
-      </properties>
-
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>activityinfo-compile</id>
-                <configuration>
-                  <modules>
-                    <module>org.activityinfo.ui.BracInfo</module>
-                  </modules>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-        </plugins>
-
-      </build>
-
-    </profile>
 
     <profile>
       <id>reset-test-db</id>
