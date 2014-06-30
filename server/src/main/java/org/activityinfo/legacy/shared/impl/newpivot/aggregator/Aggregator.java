@@ -33,4 +33,5 @@ public interface Aggregator {
     int count();
 
     double sum();
+
 }

@@ -1,4 +1,4 @@
-package org.activityinfo.legacy.shared.impl.newpivot.aggregator;
+package org.activityinfo.legacy.shared.impl.newpivot.source;
 /*
  * #%L
  * ActivityInfo Server
@@ -22,13 +22,7 @@ package org.activityinfo.legacy.shared.impl.newpivot.aggregator;
  */
 
 /**
- * @author yuriyz on 6/27/14.
+ * @author yuriyz on 6/28/14.
  */
-public class AvgAggregator extends SumAggregator {
-
-    @Override
-    public double value() {
-        return sum() / count();
-    }
-
+public class SourceRowIndicatorValueFetcher {
 }

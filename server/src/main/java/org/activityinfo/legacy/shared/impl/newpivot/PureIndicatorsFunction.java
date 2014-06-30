@@ -55,14 +55,22 @@ public class PureIndicatorsFunction implements Function<List<SourceRow>, List<Bu
     public List<Bucket> apply(List<SourceRow> input) {
         final Map<SourceRow, Aggregator> indicatorIdToAggregator = Maps.newHashMap();
         for (SourceRow row : input) {
+            AggregationType type = AggregationType.fromValue(row.getAggregation());
+
             if (!indicatorIdToAggregator.containsKey(row)) {
-                indicatorIdToAggregator.put(row, AggregatorFactory.create(AggregationType.fromValue(row.getAggregation())));
+                indicatorIdToAggregator.put(row, AggregatorFactory.create(type));
             }
 
             indicatorIdToAggregator.get(row).aggregate(row.getValue());
+            indicatorIdToAggregator.get(row).siteId(row.getSiteId());
+            if (type == AggregationType.SUM || type == AggregationType.AVG) {
+
+            } else if (type == AggregationType.SITE_COUNT) {
+
+            }
         }
 
-        for (Map.Entry<SourceRow,Aggregator> entry : indicatorIdToAggregator.entrySet()) {
+        for (Map.Entry<SourceRow, Aggregator> entry : indicatorIdToAggregator.entrySet()) {
             final SourceRow row = entry.getKey();
             Aggregator aggregator = entry.getValue();
 

@@ -21,9 +21,38 @@ package org.activityinfo.legacy.shared.impl.newpivot.aggregator;
  * #L%
  */
 
-/**
- * @author yuriyz on 6/27/14.
- */
-public interface IndicatorAggregator {
+import com.google.common.collect.Sets;
 
+import java.util.Set;
+
+/**
+ * @author yuriyz on 6/28/14.
+ */
+public class SiteCountAggregator implements Aggregator {
+
+    private Set<Integer> siteIds = Sets.newHashSet();
+
+    @Override
+    public void aggregate(double value) {
+        siteIds.add(Double.valueOf(value).intValue());
+    }
+
+    @Override
+    public double value() {
+        return siteIds.size();
+    }
+
+    @Override
+    public int count() {
+        return siteIds.size();
+    }
+
+    @Override
+    public double sum() {
+        return 0;
+    }
+
+    public Set<Integer> getSiteIds() {
+        return siteIds;
+    }
 }

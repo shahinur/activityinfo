@@ -35,6 +35,8 @@ public class AggregatorFactory {
                 return new SumAggregator();
             case AVG:
                 return new AvgAggregator();
+            case SITE_COUNT:
+                return new SiteCountAggregator();
         }
         throw new UnsupportedOperationException();
     }
