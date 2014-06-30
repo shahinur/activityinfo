@@ -61,12 +61,10 @@ public class PureIndicatorsFunction implements Function<List<SourceRow>, List<Bu
                 indicatorIdToAggregator.put(row, AggregatorFactory.create(type));
             }
 
-            indicatorIdToAggregator.get(row).aggregate(row.getValue());
-            indicatorIdToAggregator.get(row).siteId(row.getSiteId());
             if (type == AggregationType.SUM || type == AggregationType.AVG) {
-
+                indicatorIdToAggregator.get(row).aggregate(row.getValue());
             } else if (type == AggregationType.SITE_COUNT) {
-
+                indicatorIdToAggregator.get(row).aggregate(row.getSiteId());
             }
         }
 
