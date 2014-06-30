@@ -3290,7 +3290,7 @@ public interface UiConstants extends Constants {
     @Key("fieldTypeGeographicPoint")
     String fieldTypeGeographicPoint();
 
-    @DefaultStringValue("Big text")
+    @DefaultStringValue("Narrative")
     @Key("fieldTypeBigText")
     String fieldTypeBigText();
 
@@ -3534,7 +3534,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Default value")
     String defaultValue();
 
-    @DefaultStringValue("Part of workflow")
+    @DefaultStringValue("Allow editing ONLY by users with 'design' privileges")
     String partOfWorkflow();
 
     @DefaultStringValue("Switch to page view")
