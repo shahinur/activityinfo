@@ -32,7 +32,7 @@ import org.activityinfo.i18n.shared.UiConstants;
 
 public class ProjectForm extends FormPanel {
 
-    public static final int PROJECT_MAX_LENGTH = 32;
+    public static final int PROJECT_MAX_LENGTH = 900;
 
     private FormBinding binding;
 
