@@ -238,6 +238,9 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
 
     public void setLocationType(LocationTypeDTO locationType) {
         this.locationType = locationType;
+
+        // for form binding. uck.
+        set("locationTypeId", locationType.getId());
     }
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
