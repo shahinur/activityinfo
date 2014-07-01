@@ -38,6 +38,8 @@ import org.codehaus.jackson.map.annotate.JsonView;
 @JsonAutoDetect(JsonMethod.NONE)
 public final class PartnerDTO extends BaseModelData implements DTO, ProvidesKey {
 
+    public static final int NAME_MAX_LENGTH = 255;
+
     public PartnerDTO() {
 
     }

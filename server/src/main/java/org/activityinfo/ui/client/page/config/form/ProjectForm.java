@@ -32,7 +32,7 @@ import org.activityinfo.i18n.shared.UiConstants;
 
 public class ProjectForm extends FormPanel {
 
-    public static final int PROJECT_MAX_LENGTH = 900;
+    public static final int PROJECT_MAX_LENGTH = 255;
 
     private FormBinding binding;
 
@@ -50,11 +50,11 @@ public class ProjectForm extends FormPanel {
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
 
-        TextArea textareaDescription = new TextArea();
-        textareaDescription.setFieldLabel(constants.fullName());
-        textareaDescription.setMaxLength(250);
-        binding.addFieldBinding(new FieldBinding(textareaDescription, "description"));
-        this.add(textareaDescription);
+        TextArea descriptionTextArea = new TextArea();
+        descriptionTextArea.setFieldLabel(constants.fullName());
+        descriptionTextArea.setMaxLength(250);
+        binding.addFieldBinding(new FieldBinding(descriptionTextArea, "description"));
+        this.add(descriptionTextArea);
     }
 
     public FormBinding getBinding() {

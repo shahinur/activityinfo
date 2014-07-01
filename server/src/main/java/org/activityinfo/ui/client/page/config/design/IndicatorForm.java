@@ -77,6 +77,10 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new MappingComboBoxBinding(typeCombo, "type"));
         this.add(typeCombo);
 
+        this.add(new LabelField("Please note: text and narrative indicators are not yet " +
+                                "available for activities with monthly reporting. " +
+                                "(We're working on it!)"));
+
         TextField<String> categoryField = new TextField<>();
         categoryField.setName("category");
         categoryField.setFieldLabel(constants.category());
@@ -133,6 +137,7 @@ class IndicatorForm extends AbstractDesignForm {
         variableField.setToolTip(constants.nameInExpressionTooltip());
         binding.addFieldBinding(new FieldBinding(variableField, "variable"));
         this.add(variableField);
+
 
         TextField<String> listHeaderField = new TextField<>();
         listHeaderField.setFieldLabel(constants.listHeader());

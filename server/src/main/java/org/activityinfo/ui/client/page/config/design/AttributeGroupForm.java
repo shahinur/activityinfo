@@ -126,6 +126,9 @@ class AttributeGroupForm extends AbstractDesignForm {
                 if (model.getDefaultValue() == null) {
                     defaultValueField.setValue(defaultValueField.wrap(NONE_ATTRIBUTE));
                 }
+                // only show the field if the user has a choice
+                defaultValueField.setVisible( model.getAttributes() != null &&
+                                             !model.getAttributes().isEmpty());
             }
         });
         this.add(defaultValueField);
