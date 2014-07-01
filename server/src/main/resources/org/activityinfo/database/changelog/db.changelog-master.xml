@@ -48,5 +48,6 @@ xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liqui
   <include file="org/activityinfo/database/changelog/db.changelog-021-narrative-indicators.xml"/>
   <include file="org/activityinfo/database/changelog/db.changelog-022-attrgroup-defalutvalue-workflow.xml"/>
   <include file="org/activityinfo/database/changelog/db.changelog-023-calculated-indicators.xml"/>
+  <include file="org/activityinfo/database/changelog/db.changelog-024-field-lengths.xml"/>
 
 </databaseChangeLog> 
