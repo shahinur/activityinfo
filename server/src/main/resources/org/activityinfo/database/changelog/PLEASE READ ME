@@ -28,3 +28,4 @@ HOW TO UPDATE THE SCHEMA
 
 
 (sometimes you need to do 'mvn test -P reset-test-db' to force maven to pick up your changes).
+
