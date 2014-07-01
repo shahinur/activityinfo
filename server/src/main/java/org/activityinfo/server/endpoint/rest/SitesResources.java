@@ -3,19 +3,15 @@ package org.activityinfo.server.endpoint.rest;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import org.activityinfo.legacy.shared.command.DimensionType;
-import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.command.GetSites;
+import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.result.MonthlyReportResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.server.command.DispatcherSync;
 import org.codehaus.jackson.JsonGenerator;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -58,6 +54,7 @@ public class SitesResources {
 
         return writer.toString();
     }
+
 
     @GET @Path("/points")
     public Response queryPoints(@QueryParam("activity") List<Integer> activityIds,
@@ -283,4 +280,58 @@ public class SitesResources {
         }
         return ids;
     }
+
+    @GET
+    @Path("{id}/monthlyReports")
+    public String queryMonthlyReports(@PathParam("id") int siteId) throws IOException {
+
+        GetMonthlyReports command = new GetMonthlyReports(siteId, new Month(0,1), new Month(Integer.MAX_VALUE, 12));
+        MonthlyReportResult result = dispatcher.execute(command);
+
+        // list all months
+        Set<String> monthNames = Sets.newHashSet();
+        for(IndicatorRowDTO row : result.getData()) {
+            for(String propertyName : row.getPropertyNames()) {
+                if(propertyName.startsWith("M")) {
+                    monthNames.add(propertyName);
+                }
+            }
+        }
+
+        // write out results per month
+        StringWriter writer = new StringWriter();
+        JsonGenerator json = Jackson.createJsonFactory(writer);
+
+        json.writeStartObject();
+        for(String monthName : monthNames) {
+            json.writeArrayFieldStart(formatMonth(monthName));
+
+            for(IndicatorRowDTO row : result.getData()) {
+                if(row.get(monthName) instanceof Number) {
+                    json.writeStartObject();
+                    Number value = row.get(monthName);
+                    json.writeNumberField("indicatorId", row.getIndicatorId());
+                    json.writeStringField("indicatorName", row.getIndicatorName());
+                    json.writeNumberField("value", value.doubleValue());
+                    json.writeEndObject();
+                }
+            }
+            json.writeEndArray();
+        }
+        json.writeEndObject();
+        json.close();
+
+        return writer.toString();
+    }
+
+    private String formatMonth(String propertyName) {
+        Month month = Month.parseMonth(propertyName.substring(1));
+        String monthName = month.getYear() + "-";
+        if(month.getMonth() < 10) {
+            monthName += "0";
+        }
+        monthName += month.getMonth();
+        return monthName;
+    }
+
 }
