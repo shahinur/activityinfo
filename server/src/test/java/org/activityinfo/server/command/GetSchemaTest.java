@@ -24,11 +24,6 @@ package org.activityinfo.server.command;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Maps;
-import com.google.common.io.Files;
-import com.google.common.io.Resources;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Cuid;
@@ -44,30 +39,23 @@ import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fp.client.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
-import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
-import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
-import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.ProgressListener;
-import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.Warning;
-import org.activityinfo.legacy.shared.model.LockedPeriodSet;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.core.client.PromiseMatchers.resolvesTo;
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
@@ -167,8 +155,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertTrue("STEFAN does not have access to RRM",
-                schema.getDatabaseById(2) == null);
+        assertTrue("STEFAN does not have access to RRM", schema.getDatabaseById(2) == null);
     }
 
     @Test
@@ -200,8 +187,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertTrue("no attributes case", schema.getActivityById(3)
-                .getAttributeGroups().size() == 0);
+        assertTrue("no attributes case", schema.getActivityById(3).getAttributeGroups().size() == 0);
 
         ActivityDTO nfi = schema.getActivityById(1);
         AttributeDTO[] attributes = nfi.getAttributeGroupById(1)

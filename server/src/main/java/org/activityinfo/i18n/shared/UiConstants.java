@@ -3576,4 +3576,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Calculate automatically")
     String calculateAutomatically();
+
+    @DefaultStringValue("Import schema")
+    String importSchemaDialogTitle();
 }
