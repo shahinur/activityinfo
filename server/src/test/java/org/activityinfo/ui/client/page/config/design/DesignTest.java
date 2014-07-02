@@ -225,6 +225,7 @@ public class DesignTest {
         // selected
         resetToDefault(view);
         view.setActionEnabled(UIActions.DELETE, true);
+        view.setActionEnabled(UIActions.OPEN_TABLE, true);
         replay(view);
 
         designer.onSelectionChanged(schema.getActivityById(91));
@@ -233,6 +234,7 @@ public class DesignTest {
 
         // Verify that the delete command is disabled when a folder is selected
         reset(view);
+        view.setActionEnabled(UIActions.OPEN_TABLE, false);
         view.setActionEnabled(UIActions.DELETE, false);
         replay(view);
 
