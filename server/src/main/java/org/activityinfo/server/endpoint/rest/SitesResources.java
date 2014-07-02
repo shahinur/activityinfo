@@ -283,6 +283,7 @@ public class SitesResources {
 
     @GET
     @Path("{id}/monthlyReports")
+    @Produces("application/json")
     public String queryMonthlyReports(@PathParam("id") int siteId) throws IOException {
 
         GetMonthlyReports command = new GetMonthlyReports(siteId, new Month(0,1), new Month(Integer.MAX_VALUE, 12));
