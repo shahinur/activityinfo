@@ -35,14 +35,14 @@ public interface TableHeaderAction {
     public static final String ACTION_ATTRIBUTE = "header_action";
 
     public interface Template extends SafeHtmlTemplates {
-        @SafeHtmlTemplates.Template("<button class='btn btn-default btn-xs' type='button' tabindex='-1' header_action='{0}'><span class='{1}'>{2}</span></button>")
+        @SafeHtmlTemplates.Template("<button class='btn btn-default btn-xs' type='button' tabindex='-1' header_action='{0}'><span class='{1}'></span> {2}</button>")
         SafeHtml enabled(String uniqueId, String icon, String text);
 
-        @SafeHtmlTemplates.Template("<button class='btn btn-default btn-xs' type='button' tabindex='-1' disabled='disabled' header_action='{0}'><span class='{1}'>{2}</span></button>")
+        @SafeHtmlTemplates.Template("<button class='btn btn-default btn-xs' type='button' tabindex='-1' disabled='disabled' header_action='{0}'><span class='{1}'></span> {2}</button>")
         SafeHtml disabled(String uniqueId, String icon, String text);
 
         @SafeHtmlTemplates.Template("<div class='pull-right'>" +
-                "<button class='btn btn-default btn-xs' type='button' tabindex='-1' header_action='{0}'><span class='{1}'>{2}</span></button>" +
+                "<button class='btn btn-default btn-xs' type='button' tabindex='-1' header_action='{0}'><span class='{1}'></span> {2}</button>" +
                 "</div>")
         SafeHtml rightAlignedButton(String uniqueId, String icon, String text);
     }

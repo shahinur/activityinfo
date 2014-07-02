@@ -16,27 +16,11 @@
 
       <div class="row">
 
-          <div class="col-md-4">
+          <div class="col-md-12">
 
               <a:LoadingPanel ui:field="instanceList"/>
           </div>
-          <div class="col-md-4">
 
-              <h2>Recent Activity</h2>
-
-          </div>
-          <div class="col-md-4">
-              <h2>Help</h2>
-
-              <p>Welcome to ActivityInfo! This is some helpful help text to
-                  get you started with using ActivityInfo.</p>
-
-              <h2>Common Tasks</h2>
-              <ul>
-                 <a:Button ui:field="newFormButton" style="DEFAULT" text="Create a new Form"/>
-                 <a:Button ui:field="newFolderButton" style="DEFAULT" text="Create a new Folder"/>
-              </ul>
-          </div>
       </div>
     </g:HTMLPanel>
 </ui:UiBinder>
