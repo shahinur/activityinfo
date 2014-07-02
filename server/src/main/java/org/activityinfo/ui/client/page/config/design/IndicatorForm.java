@@ -131,7 +131,7 @@ class IndicatorForm extends AbstractDesignForm {
         variableField = new TextField<>();
         variableField.setFieldLabel(constants.nameInExpression());
         variableField.setToolTip(constants.nameInExpressionTooltip());
-        binding.addFieldBinding(new FieldBinding(variableField, "variable"));
+        binding.addFieldBinding(new FieldBinding(variableField, "nameInExpression"));
         this.add(variableField);
 
         TextField<String> listHeaderField = new TextField<>();

@@ -55,6 +55,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
     private String listHeader;
     private String type = FormFieldType.QUANTITY.name();
     private String expression;
+    private String nameInExpression;
 
     public Indicator() {
     }
@@ -81,6 +82,15 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
 
     public void setExpression(String expression) {
         this.expression = expression;
+    }
+
+    @Column(name = "nameInExpression", nullable = true, length = 999)
+    public String getNameInExpression() {
+        return nameInExpression;
+    }
+
+    public void setNameInExpression(String nameInExpression) {
+        this.nameInExpression = nameInExpression;
     }
 
     @Column(name = "Type", nullable = false, length = 30)

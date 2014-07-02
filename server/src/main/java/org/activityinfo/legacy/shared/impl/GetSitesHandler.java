@@ -626,33 +626,50 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .appendColumn("I.ActivityId")
                 .appendColumn("I.Type")
                 .appendColumn("I.Expression")
+                .appendColumn("I.nameInExpression")
                 .from(Tables.INDICATOR, "I")
                 .where("I.ActivityId")
                 .in(activityIds)
-                .and("I.dateDeleted IS NULL")
-                .and("I.Expression IS NOT NULL");
+                .and("I.dateDeleted IS NULL");
+//                .and("I.Expression IS NOT NULL");
 
         Log.info(query.toString());
 
         query.execute(tx, new SqlResultCallback() {
             @Override
-            public void onSuccess(SqlTransaction tx, SqlResultSet results) {
+            public void onSuccess(SqlTransaction tx, final SqlResultSet results) {
                 Log.trace("Received results for join indicators");
 
                 for (final SqlResultSetRow row : results.getRows()) {
                     for (final SiteDTO site : siteMap.values()) {
                         if (site.getActivityId() == row.getInt("ActivityId")) {
                             String expression = row.getString("Expression");
+                            if (Strings.isNullOrEmpty(expression)) {
+                                continue;
+                            }
+
                             ExprParser parser = new ExprParser(new ExprLexer(expression), new PlaceholderExprResolver() {
 
                                 @Override
                                 public void resolve(PlaceholderExpr placeholderExpr) {
                                     Placeholder placeholder = placeholderExpr.getPlaceholderObj();
                                     if (placeholder.isRowLevel()) {
-                                        int indicatorId = CuidAdapter.getLegacyIdFromCuid(placeholder.getFieldId());
-                                        double value = site.getIndicatorDoubleValue(indicatorId);
-                                        placeholderExpr.setValue(value);
-                                        return;
+                                        try {
+                                            int indicatorId = CuidAdapter.getLegacyIdFromCuid(placeholder.getFieldId());
+                                            double value = site.getIndicatorDoubleValue(indicatorId);
+                                            placeholderExpr.setValue(value);
+                                            return;
+                                        } catch (NumberFormatException e) {
+                                            // it seems we don't have valid indicator id, try to check 'name in expression'
+                                            for (final SqlResultSetRow row : results.getRows()) {
+                                                String placeholderString = placeholder.getPlaceholder();
+                                                if (placeholderString.equals(row.getString("nameInExpression"))) {
+                                                    double value = site.getIndicatorDoubleValue(row.getInt("IndicatorId"));
+                                                    placeholderExpr.setValue(value);
+                                                    return;
+                                                }
+                                            }
+                                        }
                                     }
 
                                     throw new UnsupportedOperationException("Placeholder is not supported: " + placeholder);
