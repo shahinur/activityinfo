@@ -38,9 +38,13 @@ public class JsonRpcClientTest {
         try {
 //        String endpoint = "https://www.activityinfo.org/command";
 //        String username = "support@bedatadriven.com";
-//        String password = "";
+//        String password = "mf64_34KFmvGlde";
 
-            String endpoint = "https://ai-dev.appspot.com/command";
+//            String endpoint = "https://ai-dev.appspot.com/command";
+//            String username = "test@test.org";
+//            String password = "testing123";
+
+            String endpoint = "http://127.0.0.1:8888/command";
             String username = "test@test.org";
             String password = "testing123";
 

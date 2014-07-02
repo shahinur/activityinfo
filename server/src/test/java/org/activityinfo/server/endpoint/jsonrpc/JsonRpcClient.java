@@ -26,10 +26,10 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.api.json.JSONConfiguration;
 import org.activityinfo.legacy.shared.command.Command;
 import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.module.SimpleModule;
 
 import javax.ws.rs.core.MediaType;
@@ -61,9 +61,10 @@ public class JsonRpcClient {
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(module);
+        objectMapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
 
         ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+//        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
 //        clientConfig.getClasses().add(ObjectMapperProvider.class);
 
         client = Client.create(clientConfig);
@@ -73,6 +74,8 @@ public class JsonRpcClient {
     }
 
     public Object execute(Command command) throws IOException {
-        return client.resource(uri).entity(objectMapper.writeValueAsString(command), MediaType.APPLICATION_JSON_TYPE).post(Object.class);
+        String entity = objectMapper.writeValueAsString(new CommandRequest(command));
+        System.out.println(entity);
+        return client.resource(uri).entity(entity, MediaType.APPLICATION_JSON_TYPE).post(Object.class);
     }
 }
