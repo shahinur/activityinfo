@@ -58,6 +58,7 @@ public interface IconImageBundle extends ImageBundle {
 
     AbstractImagePrototype excel();
 
+    @Resource("application_form.png")
     AbstractImagePrototype activity();
 
     AbstractImagePrototype addActivity();
@@ -75,7 +76,7 @@ public interface IconImageBundle extends ImageBundle {
 
     AbstractImagePrototype deleteUser();
 
-    /**
+    /*
      * @return Icon for a user group
      */
     AbstractImagePrototype group();
@@ -295,4 +296,15 @@ public interface IconImageBundle extends ImageBundle {
 
     AbstractImagePrototype text();
 
+    @Resource(value = "application_form_add.png")
+    AbstractImagePrototype addForm();
+
+    @Resource(value = "application_form.png")
+    AbstractImagePrototype form();
+
+    @Resource(value = "application_form_delete.png")
+    AbstractImagePrototype deleteForm();
+
+    @Resource(value = "application_form_edit.png")
+    AbstractImagePrototype editForm();
 }

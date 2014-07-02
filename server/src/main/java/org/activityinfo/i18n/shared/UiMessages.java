@@ -156,7 +156,7 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("For query \"{0}\", found {1} databases, {2} activities and {3} indicators")
     String searchResultsFound(String arg0, String arg1, String arg2, String arg3);
 
-    @DefaultMessage("Add new intervention for activity ''{0}''")
+    @DefaultMessage("Add new entry for form ''{0}''")
     String addNewSiteForActivity(String activityName);
 
     @DefaultMessage("{0,number} matching sites")
@@ -183,10 +183,10 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("You are not the owner of this report.<br/>Do you want to save a new copy?")
     String confirmSaveCopy();
 
-    @DefaultMessage("The activity \"{0}\" has not been marked as public by the database owner and so cannot be embedded in a public web page. Please contact the database owner and request that the activity be published.")
+    @DefaultMessage("The form \"{0}\" has not been marked as public by the database owner and so cannot be embedded in a public web page. Please contact the database owner and request that the activity be published.")
     String activityNotPublic(String name);
 
-    @DefaultMessage("In order to embed this sheet in a public web page, the activity \"{0}\" must be made public. Do you want to make this activity public now?")
+    @DefaultMessage("In order to embed this sheet in a public web page, the form \"{0}\" must be made public. Do you want to make this form public now?")
     String promptPublishActivity(String name);
 
     @DefaultMessage("{0} minutes ago")
@@ -228,16 +228,16 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Best regards,<br>The ActivityInfo Team")
     String sitechangeSignature();
 
-    @DefaultMessage("{0,date,dd-MM-yyyy - HH:mm} {1} ({2}) created the site.")
+    @DefaultMessage("{0,date,dd-MM-yyyy - HH:mm} {1} ({2}) added the entry.")
     String siteHistoryCreated(Date date, String userName, String userEmail);
 
-    @DefaultMessage("{0,date,dd-MM-yyyy - HH:mm} {1} ({2}) updated the site:")
+    @DefaultMessage("{0,date,dd-MM-yyyy - HH:mm} {1} ({2}) updated the entry:")
     String siteHistoryUpdated(Date date, String userName, String userEmail);
 
-    @DefaultMessage("No history is available for this site.")
+    @DefaultMessage("No history is available for this form entry.")
     String siteHistoryNotAvailable();
 
-    @DefaultMessage("History on sites is only available from {0,date,dd MMMM yyyy} onward.")
+    @DefaultMessage("History on form entries is only available from {0,date,dd MMMM yyyy} onward.")
     String siteHistoryAvailableFrom(Date date);
 
     @DefaultMessage("was: {0}")

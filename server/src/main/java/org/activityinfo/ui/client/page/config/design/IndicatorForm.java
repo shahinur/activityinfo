@@ -90,6 +90,22 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new MappingComboBoxBinding(typeCombo, "type"));
         this.add(typeCombo);
 
+        unitsField = new TextField<>();
+        unitsField.setName("units");
+        unitsField.setFieldLabel(constants.units());
+        unitsField.setAllowBlank(false);
+        unitsField.setMaxLength(IndicatorDTO.UNITS_MAX_LENGTH);
+        binding.addFieldBinding(new FieldBinding(unitsField, "units"));
+        this.add(unitsField);
+
+        aggregationCombo = new MappingComboBox();
+        aggregationCombo.setFieldLabel(constants.aggregationMethod());
+        aggregationCombo.add(IndicatorDTO.AGGREGATE_SUM, constants.sum());
+        aggregationCombo.add(IndicatorDTO.AGGREGATE_AVG, constants.average());
+        aggregationCombo.add(IndicatorDTO.AGGREGATE_SITE_COUNT, constants.siteCount());
+        binding.addFieldBinding(new MappingComboBoxBinding(aggregationCombo, "aggregation"));
+        this.add(aggregationCombo);
+
         this.add(new LabelField("Please note: text and narrative indicators are not yet " +
                                 "available for activities with monthly reporting. " +
                                 "(We're working on it!)"));
@@ -137,21 +153,6 @@ class IndicatorForm extends AbstractDesignForm {
         binding.addFieldBinding(new FieldBinding(categoryField, "category"));
         this.add(categoryField);
 
-        unitsField = new TextField<>();
-        unitsField.setName("units");
-        unitsField.setFieldLabel(constants.units());
-        unitsField.setAllowBlank(false);
-        unitsField.setMaxLength(IndicatorDTO.UNITS_MAX_LENGTH);
-        binding.addFieldBinding(new FieldBinding(unitsField, "units"));
-        this.add(unitsField);
-
-        aggregationCombo = new MappingComboBox();
-        aggregationCombo.setFieldLabel(constants.aggregationMethod());
-        aggregationCombo.add(IndicatorDTO.AGGREGATE_SUM, constants.sum());
-        aggregationCombo.add(IndicatorDTO.AGGREGATE_AVG, constants.average());
-        aggregationCombo.add(IndicatorDTO.AGGREGATE_SITE_COUNT, constants.siteCount());
-        binding.addFieldBinding(new MappingComboBoxBinding(aggregationCombo, "aggregation"));
-        this.add(aggregationCombo);
 
         TextField<String> listHeaderField = new TextField<>();
         listHeaderField.setFieldLabel(constants.listHeader());
