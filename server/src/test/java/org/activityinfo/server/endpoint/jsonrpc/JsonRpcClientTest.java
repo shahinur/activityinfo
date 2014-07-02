@@ -21,20 +21,40 @@ package org.activityinfo.server.endpoint.jsonrpc;
  * #L%
  */
 
+import org.activityinfo.legacy.shared.command.DimensionType;
+import org.activityinfo.legacy.shared.command.Filter;
+import org.activityinfo.legacy.shared.command.GetSites;
 import org.junit.Test;
+
+import java.io.IOException;
 
 /**
  * @author yuriyz on 6/24/14.
  */
 public class JsonRpcClientTest {
 
+    public static final int ACTIVITY_ID = 1077;
+
     @Test
-    public void getSites() {
-        String endpoint = "https://www.activityinfo.org/command";
-        String username = "support@bedatadriven.com";
-        String password = "mf64_34KFmvGlde";
+    public void getSites() throws IOException {
+//        String endpoint = "https://www.activityinfo.org/command";
+//        String username = "support@bedatadriven.com";
+//        String password = "mf64_34KFmvGlde";
+
+        String endpoint = "https://ai-dev.appspot.com/command";
+        String username = "test@test.org";
+        String password = "testing123";
+
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, ACTIVITY_ID);
+
+        GetSites getSites = new GetSites();
+        getSites.setFilter(filter);
+
         JsonRpcClient client = JsonRpcClientBuilder.builder().
                 endpoint(endpoint).username(username).password(password).build();
-        client.execute();
+        Object response = client.execute(getSites);
+        System.out.println(response);
+
     }
 }

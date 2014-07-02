@@ -22,6 +22,17 @@ package org.activityinfo.server.endpoint.jsonrpc;
  */
 
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.api.json.JSONConfiguration;
+import org.activityinfo.legacy.shared.command.Command;
+import org.activityinfo.server.endpoint.rest.Jackson;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+import java.io.IOException;
+import java.net.URI;
 
 /**
  * @author yuriyz on 6/24/14.
@@ -33,14 +44,24 @@ public class JsonRpcClient {
     private final String password;
 
     private Client client;
+    private URI uri;
 
     public JsonRpcClient(String endpoint, String username, String password) {
         this.endpoint = endpoint;
         this.username = username;
         this.password = password;
+
+        ClientConfig clientConfig = new DefaultClientConfig();
+        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+//        clientConfig.getClasses().add(ObjectMapperProvider.class);
+
+        client = Client.create(clientConfig);
+        client.addFilter(new HTTPBasicAuthFilter(username, password));
+
+        uri = UriBuilder.fromUri(endpoint).build();
     }
 
-    public void execute() {
-
+    public Object execute(Command command) throws IOException {
+        return client.resource(uri).accept(MediaType.APPLICATION_JSON_TYPE).entity(Jackson.asJson(command)).post(Object.class);
     }
 }
