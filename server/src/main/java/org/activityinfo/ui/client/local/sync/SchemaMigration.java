@@ -61,7 +61,13 @@ public class SchemaMigration {
             "ALTER TABLE LocationType ADD COLUMN databaseId",
             "ALTER TABLE IndicatorValue ADD COLUMN TextValue," +
             "ALTER TABLE IndicatorValue ADD COLUMN DateValue",
-            "ALTER TABLE Indicator ADD COLUMN type"};
+            "ALTER TABLE Indicator ADD COLUMN type",
+            "ALTER TABLE Indicator ADD COLUMN expression",
+            "ALTER TABLE Indicator ADD COLUMN calculatedAutomatically",
+            "ALTER TABLE Indicator ADD COLUMN nameInExpression",
+            "ALTER TABLE AttributeGroup ADD COLUMN defaultValue",
+            "ALTER TABLE AttributeGroup ADD COLUMN workflow"
+    };
 
     @Inject
     public SchemaMigration(SqlDatabase database) {
