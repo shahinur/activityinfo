@@ -23,6 +23,7 @@ package org.activityinfo.server.command.handler;
  */
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import com.google.common.base.Strings;
 import com.google.inject.util.Providers;
 import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
@@ -156,7 +157,8 @@ public class BaseEntityHandler {
 
     private String trim(Object value) {
         if (value instanceof String) {
-            return ((String) value).toString();
+            String stringValue = (String)value;
+            return Strings.emptyToNull(stringValue.trim());
         } else {
             return null;
         }

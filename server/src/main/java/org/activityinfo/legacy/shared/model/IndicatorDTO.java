@@ -230,6 +230,9 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
      * Sets this Indicator's category
      */
     public void setCategory(String category) {
+        if(category != null && category.trim().length() == 0) {
+            category = null;
+        }
         set("category", category);
     }
 

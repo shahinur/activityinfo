@@ -86,7 +86,7 @@ public class SchemaImporter {
             }
             String value = row.getColumnValue(index);
             if (value.length() <= maxLength) {
-                return Strings.emptyToNull(value);
+                return Strings.emptyToNull(value.trim());
 
             } else {
                 String retainedValue = value.substring(0, maxLength);

@@ -298,6 +298,9 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
      * Sets this Activity's category
      */
     public void setCategory(String category) {
+        if(category != null && category.trim().length() == 0) {
+            category = null;
+        }
         set("category", category);
     }
 
