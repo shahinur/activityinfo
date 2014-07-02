@@ -29,6 +29,7 @@ import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
 import org.activityinfo.server.command.handler.crud.ActivityPolicy;
+import org.activityinfo.server.command.handler.crud.LocationTypePolicy;
 import org.activityinfo.server.command.handler.crud.PropertyMap;
 import org.activityinfo.server.command.handler.crud.UserDatabasePolicy;
 import org.activityinfo.server.database.hibernate.entity.*;
@@ -83,6 +84,11 @@ public class UpdateEntityHandler extends BaseEntityHandler implements CommandHan
 
         } else if ("Target".equals(cmd.getEntityName())) {
             updateTarget(user, cmd, changes);
+
+        } else if ("LocationType".equals(cmd.getEntityName())) {
+            LocationTypePolicy policy = injector.getInstance(LocationTypePolicy.class);
+            policy.update(user, cmd.getId(), changeMap);
+
         } else {
             throw new RuntimeException("unknown entity type");
         }

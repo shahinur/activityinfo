@@ -29,6 +29,8 @@ package org.activityinfo.ui.client.page.common.toolbar;
  */
 public final class UIActions {
 
+    public static final String OPEN_TABLE = "table";
+
     private UIActions() {
     }
 

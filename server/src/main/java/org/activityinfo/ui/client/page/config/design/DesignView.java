@@ -136,7 +136,6 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         tree.setAutoExpandColumn("name");
         tree.setHideHeaders(true);
         tree.setLoadMask(true);
-        // tree.setContextMenu(createContextMenu());
 
         tree.setIconProvider(new ModelIconProvider<ModelData>() {
             @Override
@@ -151,6 +150,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
                     return IconImageBundle.ICONS.attribute();
                 } else if (model instanceof IndicatorDTO) {
                     return IconImageBundle.ICONS.indicator();
+                } else if (model instanceof LocationTypeDTO) {
+                    return IconImageBundle.ICONS.marker();
                 } else {
                     return null;
                 }
@@ -217,6 +218,9 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         toolBar.addImportButton();
         toolBar.addExcelExportButton();
 
+        toolBar.add(new SeparatorMenuItem());
+
+        toolBar.addButton(UIActions.OPEN_TABLE, "Open Table", IconImageBundle.ICONS.table());
     }
 
     protected void initNewMenu(Menu menu, SelectionListener<MenuEvent> listener) {
@@ -224,6 +228,12 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         MenuItem newActivity = new MenuItem(I18N.CONSTANTS.newActivity(), IconImageBundle.ICONS.activity(), listener);
         newActivity.setItemId("Activity");
         menu.add(newActivity);
+
+        MenuItem newLocationType = new MenuItem(
+                I18N.CONSTANTS.newLocationType(),
+                IconImageBundle.ICONS.marker(), listener);
+        newLocationType.setItemId("LocationType");
+        menu.add(newLocationType);
 
         final MenuItem newAttributeGroup = newMenuItem("AttributeGroup",
                 I18N.CONSTANTS.newAttributeGroup(),
@@ -263,23 +273,6 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         final MenuItem newAttribute = new MenuItem(label, icon, listener);
         newAttribute.setItemId(itemId);
         return newAttribute;
-    }
-
-    protected void initRemoveMenu(Menu menu) {
-        final MenuItem removeItem = new MenuItem(I18N.CONSTANTS.delete(), IconImageBundle.ICONS.delete());
-        removeItem.setItemId(UIActions.DELETE);
-        menu.add(removeItem);
-
-    }
-
-    protected Menu createContextMenu() {
-        Menu menu = new Menu();
-
-        initNewMenu(menu, null);
-        menu.add(new SeparatorMenuItem());
-        initRemoveMenu(menu);
-
-        return menu;
     }
 
     private void createFormContainer() {
@@ -324,6 +317,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             return IndicatorForm.class;
         } else if (sel instanceof AttributeDTO) {
             return AttributeForm.class;
+        } else if (sel instanceof LocationTypeDTO) {
+            return LocationTypeForm.class;
         }
 
         return null;
@@ -339,6 +334,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             return new AttributeForm();
         } else if (sel instanceof IndicatorDTO) {
             return new IndicatorForm();
+        } else if (sel instanceof LocationTypeDTO) {
+            return new LocationTypeForm();
         }
 
         return null;
@@ -362,7 +359,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             return;
         } else {
 
-            if (currentForm == null || (currentForm != null && !formClass.equals(currentForm.getClass()))) {
+            if (currentForm == null || (!formClass.equals(currentForm.getClass()))) {
 
                 if (currentForm != null) {
                     formContainer.removeAll();
@@ -405,6 +402,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             dlg.setHeadingText(I18N.CONSTANTS.newAttribute());
         } else if (entity instanceof IndicatorDTO) {
             dlg.setHeadingText(I18N.CONSTANTS.newIndicator());
+        } else if (entity instanceof LocationTypeDTO) {
+            dlg.setHeadingText(I18N.CONSTANTS.newLocationType());
         }
 
         dlg.show(callback);

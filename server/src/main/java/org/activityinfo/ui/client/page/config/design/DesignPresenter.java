@@ -44,6 +44,8 @@ import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.ui.client.AppEvents;
 import org.activityinfo.ui.client.EventBus;
+import org.activityinfo.ui.client.page.NavigationEvent;
+import org.activityinfo.ui.client.page.NavigationHandler;
 import org.activityinfo.ui.client.page.PageId;
 import org.activityinfo.ui.client.page.PageState;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogCallback;
@@ -55,9 +57,12 @@ import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
+import org.activityinfo.ui.client.page.instance.InstancePage;
+import org.activityinfo.ui.client.page.instance.InstancePlace;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Presenter for the Design Page, which enables the user to define UserDatabases
@@ -164,6 +169,12 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                 }
             }
         }
+
+        for(LocationTypeDTO locationType : db.getCountry().getLocationTypes()) {
+            if(Objects.equals(locationType.getDatabaseId(), db.getId())) {
+                treeStore.add(locationType, false);
+            }
+        }
     }
 
     @Override
@@ -200,6 +211,11 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                     return null;
                 }
             });
+        } else if(UIActions.OPEN_TABLE.equals(actionId)) {
+            IsFormClass formClass = (IsFormClass) view.getSelection();
+            eventBus.fireEvent(new NavigationEvent(
+                    NavigationHandler.NAVIGATION_REQUESTED,
+                    new InstancePlace(formClass.getResourceId())));
         }
     }
 
@@ -225,6 +241,11 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
         if ("Activity".equals(entityName)) {
             newEntity = new ActivityDTO(db);
+            newEntity.set("databaseId", db.getId());
+            parent = null;
+
+        } else if ("LocationType".equals(entityName)) {
+            newEntity = new LocationTypeDTO();
             newEntity.set("databaseId", db.getId());
             parent = null;
 
@@ -368,6 +389,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     @Override
     public void onSelectionChanged(ModelData selectedItem) {
         view.setActionEnabled(UIActions.DELETE, this.db.isDesignAllowed() && selectedItem instanceof EntityDTO);
+        view.setActionEnabled(UIActions.OPEN_TABLE, selectedItem instanceof IsFormClass);
     }
 
     @Override

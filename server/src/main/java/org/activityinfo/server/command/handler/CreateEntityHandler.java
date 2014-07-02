@@ -30,6 +30,7 @@ import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
 import org.activityinfo.server.command.handler.crud.ActivityPolicy;
+import org.activityinfo.server.command.handler.crud.LocationTypePolicy;
 import org.activityinfo.server.command.handler.crud.PropertyMap;
 import org.activityinfo.server.command.handler.crud.UserDatabasePolicy;
 import org.activityinfo.server.database.hibernate.entity.*;
@@ -66,6 +67,9 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
             return createAttribute(cmd, properties);
         } else if ("Indicator".equals(cmd.getEntityName())) {
             return createIndicator(user, cmd, properties);
+        } else if ("LocationType".equals(cmd.getEntityName())) {
+            LocationTypePolicy policy = injector.getInstance(LocationTypePolicy.class);
+            return new CreateResult(policy.create(user, propertyMap));
         } else {
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }

@@ -3579,4 +3579,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Import schema")
     String importSchemaDialogTitle();
+
+    @DefaultStringValue("New Location Type")
+    String newLocationType();
 }

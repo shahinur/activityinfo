@@ -25,6 +25,8 @@ package org.activityinfo.legacy.shared.model;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.LockedPeriodDTO.HasLockedPeriod;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -40,7 +42,7 @@ import java.util.*;
  * @author Alex Bertram
  */
 @JsonAutoDetect(JsonMethod.NONE)
-public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLockedPeriod, ProvidesKey {
+public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLockedPeriod, ProvidesKey, IsFormClass {
 
     public static final String ENTITY_NAME = "Activity";
 
@@ -71,6 +73,11 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
      */
     public ActivityDTO(Map<String, Object> properties) {
         super(properties);
+    }
+
+    @Override
+    public Cuid getResourceId() {
+        return CuidAdapter.activityFormClass(getId());
     }
 
     /**
@@ -435,4 +442,5 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
     public LockedPeriodSet getLockedPeriodSet() {
         return new LockedPeriodSet(this);
     }
+
 }

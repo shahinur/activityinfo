@@ -23,12 +23,17 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonView;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.util.List;
 
 /**
@@ -39,8 +44,9 @@ import java.util.List;
  * @author Alex Bertram
  */
 @JsonAutoDetect(JsonMethod.NONE)
-public final class LocationTypeDTO extends BaseModelData implements DTO {
+public final class LocationTypeDTO extends BaseModelData implements EntityDTO, IsFormClass {
 
+    public static int NAME_MAX_LENGTH = 50;
     private Integer databaseId;
     private List<AdminLevelDTO> adminLevels;
     private Extents countryBounds;
@@ -53,14 +59,24 @@ public final class LocationTypeDTO extends BaseModelData implements DTO {
         setName(name);
     }
 
+    @Override
+    public Cuid getResourceId() {
+        return CuidAdapter.locationFormClass(getId());
+    }
 
     public void setId(int id) {
         set("id", id);
     }
 
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public int getId() {
         return (Integer) get("id");
+    }
+
+    @Override
+    public String getEntityName() {
+        return "LocationType";
     }
 
     public void setName(String value) {
@@ -121,4 +137,6 @@ public final class LocationTypeDTO extends BaseModelData implements DTO {
     public void setCountryBounds(Extents countryBounds) {
         this.countryBounds = countryBounds;
     }
+
+
 }

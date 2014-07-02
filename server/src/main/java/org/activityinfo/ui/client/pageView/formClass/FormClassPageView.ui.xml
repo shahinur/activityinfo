@@ -11,11 +11,11 @@
 
         <div ui:field="breadCrumbElement"/>
 
-        <ul class="nav nav-tabs">
-          <li><a href="#"><span class="{icons.overview}"/> Overview</a></li>
-          <li class="active"><a href="#"><span class="{icons.table}"/> Table</a></li>
-          <li><a href="#"><span class="{icons.map}"/> Map</a></li>
-        </ul>
+        <!--<ul class="nav nav-tabs">-->
+          <!--<li><a href="#"><span class="{icons.overview}"/> Overview</a></li>-->
+          <!--<li class="active"><a href="#"><span class="{icons.table}"/> Table</a></li>-->
+          <!--<li><a href="#"><span class="{icons.map}"/> Map</a></li>-->
+        <!--</ul>-->
 
         <a:LoadingPanel ui:field="contentPanel"/>
 
