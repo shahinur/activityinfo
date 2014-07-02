@@ -26,7 +26,6 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.reports.model.PivotChartReportElement;
 import org.activityinfo.legacy.shared.reports.model.PivotChartReportElement.Type;
 import org.activityinfo.ui.client.EventBus;
@@ -59,9 +58,9 @@ public class ChartTypeGroup extends BaseObservable implements HasReportElement<P
 
     public ChartTypeGroup(EventBus eventBus) {
         this.reportEventBus = new ReportEventBus(eventBus, this);
-        addButton(Type.ClusteredBar, I18N.CONSTANTS.clusteredBar(), IconImageBundle.ICONS.barChart());
-        addButton(Type.Line, I18N.CONSTANTS.line(), IconImageBundle.ICONS.curveChart());
-        addButton(Type.Pie, I18N.CONSTANTS.pieChart(), IconImageBundle.ICONS.pieChart());
+        addButton(Type.ClusteredBar, IconImageBundle.ICONS.barChart());
+        addButton(Type.Line, IconImageBundle.ICONS.curveChart());
+        addButton(Type.Pie, IconImageBundle.ICONS.pieChart());
 
         this.reportEventBus.listen(new ReportChangeHandler() {
 
@@ -72,9 +71,8 @@ public class ChartTypeGroup extends BaseObservable implements HasReportElement<P
         });
     }
 
-    private void addButton(Type type, String tooltip, AbstractImagePrototype icon) {
+    private void addButton(Type type, AbstractImagePrototype icon) {
         ToggleButton button = new ToggleButton("", icon);
-        button.setToolTip(tooltip);
         button.setToggleGroup(TYPE_DATA);
         button.setData(TYPE_DATA, type);
         button.addSelectionListener(listener);

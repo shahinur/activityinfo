@@ -39,7 +39,6 @@ import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.ui.client.page.common.grid.AbstractGridView;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.form.ProjectForm;
-import org.activityinfo.ui.client.page.entry.column.StringWithTooltipRenderer;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 import java.util.ArrayList;
@@ -72,16 +71,8 @@ public class DbProjectGrid extends AbstractGridView<ProjectDTO, DbProjectEditor>
     protected ColumnModel createColumnModel() {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig name = new ColumnConfig("name", messages.name(), 150);
-        name.setToolTip(messages.name());
-        name.setRenderer(new StringWithTooltipRenderer());
-
-        ColumnConfig description = new ColumnConfig("description", messages.description(), 300);
-        description.setToolTip(messages.description());
-        description.setRenderer(new StringWithTooltipRenderer());
-
-        columns.add(name);
-        columns.add(description);
+        columns.add(new ColumnConfig("name", messages.name(), 150));
+        columns.add(new ColumnConfig("description", messages.description(), 300));
 
         return new ColumnModel(columns);
     }

@@ -27,7 +27,6 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
-import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -356,11 +355,6 @@ public class ColumnModelBuilder {
                 }
             }
 
-            @Override
-            protected String getText(TreeGrid<ModelData> grid, ModelData model, String property, int rowIndex, int colIndex) {
-                String text = super.getText(grid, model, property, rowIndex, colIndex);
-                return GwtUtil.valueWithTooltip(text);
-            }
         });
         columns.add(name);
 

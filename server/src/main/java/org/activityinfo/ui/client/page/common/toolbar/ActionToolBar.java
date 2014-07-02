@@ -72,7 +72,6 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     public Button addButton(String actionId, String text, AbstractImagePrototype icon) {
         Button button = new Button(text, icon);
         button.setItemId(actionId);
-        button.setToolTip(text);
         button.addListener(Events.Select, this);
         add(button);
 
@@ -88,7 +87,6 @@ public class ActionToolBar extends ToolBar implements Listener<ButtonEvent> {
     public ToggleButton addToggleButton(String actionId, String text, AbstractImagePrototype icon) {
         ToggleButton button = new ToggleButton(text, icon);
         button.setItemId(actionId);
-        button.setToolTip(text);
         button.addListener(Events.Select, this);
         add(button);
 

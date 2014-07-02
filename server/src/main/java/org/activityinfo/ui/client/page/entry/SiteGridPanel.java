@@ -28,7 +28,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
@@ -156,7 +155,7 @@ public final class SiteGridPanel extends ContentPanel {
         removeAll();
         add(grid.asComponent());
         layout();
-        new QuickTip(grid.asComponent());
+
         grid.addSelectionChangeListener(new SelectionChangedListener<SiteDTO>() {
 
             @Override

@@ -399,7 +399,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "&laquo; Back"
      */
-    @DefaultStringValue("« Back")
+    @DefaultStringValue("&laquo; Back")
     @Key("backButton")
     String backButton();
 
@@ -1699,11 +1699,11 @@ public interface UiConstants extends Constants {
     String name();
 
     /**
-     * Translated "New Form".
+     * Translated "New Activity".
      *
-     * @return translated "New Form"
+     * @return translated "New Activity"
      */
-    @DefaultStringValue("New Form")
+    @DefaultStringValue("New Activity")
     @Key("newActivity")
     String newActivity();
 
@@ -1742,10 +1742,10 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("New Database")
     @Key("newDatabase")
     String newDatabase();
-
+    
     /**
      * Translated "Rename Database"
-     *
+     * 
      * @return translated "Database"
      */
     @DefaultStringValue("Rename Database")
@@ -1798,11 +1798,11 @@ public interface UiConstants extends Constants {
     String newProjectName();
 
     /**
-     * Translated "New Entry".
+     * Translated "New Site".
      *
      * @return translated "New Site"
      */
-    @DefaultStringValue("New Entry")
+    @DefaultStringValue("New Site")
     @Key("newSite")
     String newSite();
 
@@ -1875,7 +1875,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Coodinates must have at least one number"
      */
-    @DefaultStringValue("Coordinates must have at least one number")
+    @DefaultStringValue("Coodinates must have at least one number")
     @Key("noNumber")
     String noNumber();
 
@@ -2688,7 +2688,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Choose the site of this intervention"
      */
-    @DefaultStringValue("Choose the location of this intervention")
+    @DefaultStringValue("Choose the site of this intervention")
     @Key("siteDialogSiteDesc")
     String siteDialogSiteDesc();
 
@@ -2697,7 +2697,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Sorry, the selected site falls within a time period locked by the database owner and cannot be edited."
      */
-    @DefaultStringValue("Sorry, the selected form entry falls within a time period locked by the database owner and cannot be edited.")
+    @DefaultStringValue("Sorry, the selected site falls within a time period locked by the database owner and cannot be edited.")
     @Key("siteIsLocked")
     String siteIsLocked();
 
@@ -3249,7 +3249,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Section label")
     @Key("sectionLabel")
     String sectionLabel();
-
+    
     @DefaultStringValue("Unknown Group")
     @Key("unknownGroup")
     String unknownGroup();
@@ -3290,7 +3290,7 @@ public interface UiConstants extends Constants {
     @Key("fieldTypeGeographicPoint")
     String fieldTypeGeographicPoint();
 
-    @DefaultStringValue("Narrative")
+    @DefaultStringValue("Big text")
     @Key("fieldTypeBigText")
     String fieldTypeBigText();
 

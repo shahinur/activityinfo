@@ -48,7 +48,6 @@ import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.ui.client.page.common.grid.AbstractGridView;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.form.TargetForm;
-import org.activityinfo.ui.client.page.entry.column.StringWithTooltipRenderer;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 import java.util.ArrayList;
@@ -87,26 +86,10 @@ public class DbTargetGrid extends AbstractGridView<TargetDTO, DbTargetEditor> im
     protected ColumnModel createColumnModel() {
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig name = new ColumnConfig("name", messages.name(), 150);
-        name.setToolTip(messages.name());
-        name.setRenderer(new StringWithTooltipRenderer());
-
-        ColumnConfig project = new ColumnConfig("project", messages.project(), 150);
-        project.setToolTip(messages.project());
-        project.setRenderer(new StringWithTooltipRenderer());
-
-        ColumnConfig partner = new ColumnConfig("partner", messages.partner(), 150);
-        partner.setToolTip(messages.partner());
-        partner.setRenderer(new StringWithTooltipRenderer());
-
-        TimePeriodColumn timePeriod = new TimePeriodColumn("timePeriod", messages.timePeriod(), 300);
-        timePeriod.setToolTip(messages.timePeriod());
-        timePeriod.setRenderer(new StringWithTooltipRenderer());
-
-        columns.add(name);
-        columns.add(project);
-        columns.add(partner);
-        columns.add(timePeriod);
+        columns.add(new ColumnConfig("name", messages.name(), 150));
+        columns.add(new ColumnConfig("project", messages.project(), 150));
+        columns.add(new ColumnConfig("partner", messages.partner(), 150));
+        columns.add(new TimePeriodColumn("timePeriod", messages.timePeriod(), 300));
 
         return new ColumnModel(columns);
     }

@@ -34,13 +34,11 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
 import org.activityinfo.legacy.shared.reports.content.PivotTableData;
 import org.activityinfo.legacy.shared.reports.model.PivotReportElement;
-import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,9 +128,8 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
 
         add(grid);
 
-        layout();
 
-        new QuickTip(grid);
+        layout();
     }
 
     private void addRows(PivotTableData.Axis parent, int depth) {
@@ -182,7 +179,6 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
             }
             ColumnConfig column = new ColumnConfig(id, label, 75);
 
-            column.setToolTip(label);
             column.setNumberFormat(IndicatorNumberFormat.INSTANCE);
             column.setAlignment(Style.HorizontalAlignment.RIGHT);
             column.setSortable(false);
@@ -203,7 +199,7 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
                         return null;
                     } else {
                         config.cellAttr = "data-pivot='value'";
-                        return GwtUtil.valueWithTooltip(IndicatorNumberFormat.INSTANCE.format(value));
+                        return IndicatorNumberFormat.INSTANCE.format(value);
                     }
                 }
             });

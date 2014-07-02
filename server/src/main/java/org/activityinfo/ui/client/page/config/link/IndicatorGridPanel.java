@@ -31,7 +31,6 @@ import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.google.gwt.dom.client.Element;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
@@ -79,7 +78,7 @@ public class IndicatorGridPanel extends ContentPanel {
         });
         setLayout(new FitLayout());
         add(grid);
-        new QuickTip(grid);
+
     }
 
     public HighlightingGridView getGridView() {
@@ -130,7 +129,6 @@ public class IndicatorGridPanel extends ContentPanel {
         });
 
         ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.name(), 150);
-        name.setToolTip(I18N.CONSTANTS.name());
         name.setRenderer(new GridCellRenderer<ModelData>() {
 
             @Override

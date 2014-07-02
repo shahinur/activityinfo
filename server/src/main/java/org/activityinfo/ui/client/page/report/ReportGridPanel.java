@@ -34,7 +34,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid.ClicksToEdit;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
@@ -52,7 +51,6 @@ import org.activityinfo.ui.client.page.common.toolbar.ActionListener;
 import org.activityinfo.ui.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
-import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.Arrays;
 
@@ -116,7 +114,6 @@ public class ReportGridPanel extends ContentPanel implements ActionListener {
         updateToolbarState(null);
 
         loader.load();
-        new QuickTip(grid);
     }
 
     private void onSelectionChanged(ReportMetadataDTO selectedItem) {
@@ -154,11 +151,7 @@ public class ReportGridPanel extends ContentPanel implements ActionListener {
         });
 
         ColumnConfig title = new ColumnConfig("title", I18N.CONSTANTS.title(), 150);
-        title.setToolTip(I18N.CONSTANTS.title());
-
         ColumnConfig owner = new ColumnConfig("ownerName", I18N.CONSTANTS.ownerName(), 100);
-        owner.setToolTip(I18N.CONSTANTS.ownerName());
-
         owner.setRenderer(new GridCellRenderer<ReportMetadataDTO>() {
 
             @Override
@@ -170,18 +163,15 @@ public class ReportGridPanel extends ContentPanel implements ActionListener {
                                  ListStore<ReportMetadataDTO> store,
                                  Grid<ReportMetadataDTO> grid) {
 
-                final String value;
                 if (model.getAmOwner()) {
-                    value = "Me";
+                    return "Me";
                 } else {
-                    value = model.getOwnerName();
+                    return model.getOwnerName();
                 }
-                return GwtUtil.valueWithTooltip(value);
             }
         });
 
         ColumnConfig email = new ColumnConfig("email", I18N.CONSTANTS.emailSubscription(), 100);
-        email.setToolTip(I18N.CONSTANTS.emailSubscription());
         email.setRenderer(new GridCellRenderer<ReportMetadataDTO>() {
 
             @Override
@@ -193,17 +183,15 @@ public class ReportGridPanel extends ContentPanel implements ActionListener {
                                  ListStore<ReportMetadataDTO> store,
                                  Grid<ReportMetadataDTO> grid) {
 
-                String value;
                 switch (model.getEmailDelivery()) {
                     case NONE:
-                        value = "<i>" + I18N.CONSTANTS.none() + "</i>";
+                        return "<i>" + I18N.CONSTANTS.none() + "</i>";
                     case MONTHLY:
-                        value = I18N.CONSTANTS.monthly();
+                        return I18N.CONSTANTS.monthly();
                     case WEEKLY:
                     default:
-                        value = I18N.CONSTANTS.weekly();
+                        return I18N.CONSTANTS.weekly();
                 }
-                return GwtUtil.valueWithTooltip(value);
             }
         });
 

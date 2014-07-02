@@ -36,7 +36,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.tips.QuickTip;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -103,7 +102,6 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
         ColumnConfig columnEnabled = new EditCheckColumnConfig("enabled", I18N.CONSTANTS.enabledColumn(), 55);
-        columnEnabled.setToolTip(I18N.CONSTANTS.enabledColumn());
         columnEnabled.setSortable(false);
 
         ColumnConfig columnPeriodType = new ReadLockedPeriodTypeColumn();
@@ -127,7 +125,6 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
         });
 
         add(lockedPeriodGrid);
-        new QuickTip(lockedPeriodGrid);
     }
 
     private void initializeComponent() {
