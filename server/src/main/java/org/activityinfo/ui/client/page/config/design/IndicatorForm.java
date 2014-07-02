@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.form.*;
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import org.activityinfo.core.shared.expr.ExprLexer;
 import org.activityinfo.core.shared.expr.ExprNode;
@@ -33,6 +34,7 @@ import org.activityinfo.core.shared.expr.ExprParser;
 import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.core.shared.form.FormFieldTypeLables;
 import org.activityinfo.i18n.shared.UiConstants;
+import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
@@ -44,7 +46,9 @@ class IndicatorForm extends AbstractDesignForm {
     private final TextField<String> unitsField;
     private final MappingComboBox aggregationCombo;
     private final TextField<String> expressionField;
-    private final TextField<String> variableField;
+    private final TextField<String> codeField;
+    private final NumberField idField;
+    private final LabelField calculatedExpressionLabelDesc;
 
     public IndicatorForm() {
         super();
@@ -56,11 +60,19 @@ class IndicatorForm extends AbstractDesignForm {
         this.setLabelWidth(150);
         this.setFieldWidth(200);
 
-        NumberField idField = new NumberField();
+        idField = new NumberField();
         idField.setFieldLabel("ID");
         idField.setReadOnly(true);
         binding.addFieldBinding(new FieldBinding(idField, "id"));
         add(idField);
+
+        codeField = new TextField<>();
+        codeField.setFieldLabel(constants.codeFieldLabel());
+        codeField.setToolTip(constants.codeFieldLabel());
+        binding.addFieldBinding(new FieldBinding(codeField, "nameInExpression"));
+        this.add(codeField);
+
+        this.add(new LabelField(constants.nameInExpressionTooltip()));
 
         TextField<String> nameField = new TextField<>();
         nameField.setFieldLabel(constants.name());
@@ -112,7 +124,7 @@ class IndicatorForm extends AbstractDesignForm {
         });
 
         expressionField = new TextField<>();
-        expressionField.setFieldLabel(constants.expression());
+        expressionField.setFieldLabel(constants.calculation());
         expressionField.setToolTip(constants.calculatedIndicatorExplanation());
         expressionField.setValidator(new Validator() {
             @Override
@@ -126,18 +138,14 @@ class IndicatorForm extends AbstractDesignForm {
                     e.printStackTrace();
                     // ignore : expression is invalid
                 }
-                return constants.expressionIsInvalid();
+                return constants.calculationExpressionIsInvalid();
             }
         });
         binding.addFieldBinding(new FieldBinding(expressionField, "expression"));
         this.add(expressionField);
 
-        variableField = new TextField<>();
-        variableField.setFieldLabel(constants.nameInExpression());
-        variableField.setToolTip(constants.nameInExpressionTooltip());
-        binding.addFieldBinding(new FieldBinding(variableField, "nameInExpression"));
-        this.add(variableField);
-
+        calculatedExpressionLabelDesc = new LabelField(constants.calculatedIndicatorExplanation());
+        this.add(calculatedExpressionLabelDesc);
 
         TextField<String> listHeaderField = new TextField<>();
         listHeaderField.setFieldLabel(constants.listHeader());
@@ -177,7 +185,14 @@ class IndicatorForm extends AbstractDesignForm {
                 unitsField.setValue("");
             }
 
+            expressionField.setEnabled(selectedType == FormFieldType.QUANTITY);
+            calculatedExpressionLabelDesc.setEnabled(selectedType == FormFieldType.QUANTITY);
+
             aggregationCombo.setVisible(selectedType == FormFieldType.QUANTITY);
+
+            if (idField.getValue() != null && Strings.isNullOrEmpty(codeField.getValue())) {
+                codeField.setValue(CuidAdapter.indicatorField(idField.getValue().intValue()).asString());
+            }
         }
     }
 

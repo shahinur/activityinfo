@@ -3549,18 +3549,15 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Line")
     String line();
 
-    @DefaultStringValue("Set expression if you would like to calculate indicator value dynamically (otherwise leave blank)")
+    @DefaultStringValue("Set expression if you would like to calculate indicator value dynamically (otherwise leave blank). Example: [A]+[B]+([C]/[D])")
     String calculatedIndicatorExplanation();
 
-    @DefaultStringValue("Expression")
-    String expression();
+    @DefaultStringValue("Calculation")
+    String calculation();
 
-    @DefaultStringValue("Expression is invalid")
-    String expressionIsInvalid();
+    @DefaultStringValue("Calculation expression is invalid")
+    String calculationExpressionIsInvalid();
 
-    @DefaultStringValue("Name in expression")
-    String nameInExpression();
-
-    @DefaultStringValue("Name which is used in expression")
+    @DefaultStringValue("An (optional) short code for this indicator. This code can be used to refer to the indicatorin calculated expressions.")
     String nameInExpressionTooltip();
 }
