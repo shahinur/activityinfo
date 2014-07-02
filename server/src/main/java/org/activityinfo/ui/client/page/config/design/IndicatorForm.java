@@ -119,7 +119,13 @@ class IndicatorForm extends AbstractDesignForm {
 
         calculateAutomatically = new CheckBox();
         calculateAutomatically.setFieldLabel(constants.calculateAutomatically());
-        binding.addFieldBinding(new FieldBinding(calculateAutomatically, "calculateAutomatically"));
+        calculateAutomatically.addListener(Events.Change, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                expressionField.setEnabled(calculateAutomatically.getValue());
+            }
+        });
+        binding.addFieldBinding(new FieldBinding(calculateAutomatically, "calculatedAutomatically"));
         this.add(calculateAutomatically);
 
         expressionField = new TextField<>();
@@ -192,9 +198,9 @@ class IndicatorForm extends AbstractDesignForm {
                 unitsField.setValue("");
             }
 
-            expressionField.setEnabled(selectedType == FormFieldType.QUANTITY);
             calculatedExpressionLabelDesc.setEnabled(selectedType == FormFieldType.QUANTITY);
             calculateAutomatically.setEnabled(selectedType == FormFieldType.QUANTITY);
+            expressionField.setEnabled(selectedType == FormFieldType.QUANTITY && calculateAutomatically.getValue());
 
             aggregationCombo.setVisible(selectedType == FormFieldType.QUANTITY);
 
