@@ -20,8 +20,8 @@
 
     <gwtVersion>2.6.0-rc3</gwtVersion>
     <rebarVersion>2.4.1</rebarVersion>
-    <gae.version>1.8.8</gae.version>
-    <jersey.version>1.17</jersey.version>
+    <gae.version>1.9.6</gae.version>
+    <jersey.version>1.17</jersey.versi7on>
     <appengine.export.version>0.1.1</appengine.export.version>
   </properties>
 
