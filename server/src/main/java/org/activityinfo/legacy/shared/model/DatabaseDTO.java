@@ -29,6 +29,8 @@ import java.util.List;
 
 public final class DatabaseDTO extends BaseModelData implements DTO {
 
+    public static final int MAX_NAME_LENGTH = 255;
+
     private UserDatabaseDTO database = new UserDatabaseDTO();
 
     public DatabaseDTO() {

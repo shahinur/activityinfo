@@ -38,7 +38,7 @@ import org.codehaus.jackson.map.annotate.JsonView;
 public final class AttributeDTO extends BaseModelData implements EntityDTO {
 
     public static final String PROPERTY_PREFIX = "ATTRIB";
-    public static final int NAME_MAX_LENGTH = 50;
+    public static final int NAME_MAX_LENGTH = 255;
 
     public AttributeDTO() {
 

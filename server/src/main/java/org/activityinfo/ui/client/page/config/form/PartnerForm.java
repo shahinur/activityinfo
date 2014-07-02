@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.core.client.GWT;
 import org.activityinfo.i18n.shared.UiConstants;
+import org.activityinfo.legacy.shared.model.PartnerDTO;
 
 public class PartnerForm extends FormPanel {
 
@@ -42,7 +43,7 @@ public class PartnerForm extends FormPanel {
 
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(constants.name());
-        nameField.setMaxLength(16);
+        nameField.setMaxLength(PartnerDTO.NAME_MAX_LENGTH);
         nameField.setAllowBlank(false);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);

@@ -28,15 +28,14 @@ import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.MonthlyReportResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
+import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
 import org.activityinfo.legacy.shared.model.IndicatorRowDTO;
-import org.activityinfo.server.database.hibernate.entity.Indicator;
-import org.activityinfo.server.database.hibernate.entity.IndicatorValue;
-import org.activityinfo.server.database.hibernate.entity.ReportingPeriod;
-import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.server.database.hibernate.entity.*;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * See GetMonthlyReports
@@ -45,15 +44,27 @@ import java.util.List;
  */
 public class GetMonthlyReportsHandler implements CommandHandler<GetMonthlyReports> {
 
+    private static final Logger LOGGER = Logger.getLogger(GetMonthlyReportsHandler.class.getName());
+
     private final EntityManager em;
+    private final PermissionOracle permissionOracle;
 
     @Inject
-    public GetMonthlyReportsHandler(EntityManager em) {
+    public GetMonthlyReportsHandler(EntityManager em, PermissionOracle permissionOracle) {
         this.em = em;
+        this.permissionOracle = permissionOracle;
     }
 
     @Override
     public CommandResult execute(GetMonthlyReports cmd, User user) throws CommandException {
+
+        Site site = em.find(Site.class, cmd.getSiteId());
+        if(!permissionOracle.isViewAllowed(site, user)) {
+            LOGGER.severe("User " + user.getEmail() + " has no view privs on site " + site.getId() + "," +
+                          "partner = " + site.getPartner().getName() + " " + site.getPartner().getId());
+            throw new IllegalAccessCommandException();
+        }
+
 
         List<ReportingPeriod> periods = em.createQuery("select p from ReportingPeriod p where p.site.id = ?1")
                                           .setParameter(1, cmd.getSiteId())
@@ -95,7 +106,5 @@ public class GetMonthlyReportsHandler implements CommandHandler<GetMonthlyReport
         }
 
         return new MonthlyReportResult(list);
-
     }
-
 }

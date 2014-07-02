@@ -84,6 +84,26 @@ public class PermissionOracle {
         return false;
     }
 
+    /**
+     * Returns true if the given user is allowed to edit the values of the
+     * given site.
+     */
+    public boolean isViewAllowed(Site site, User user) {
+        UserPermission permission = getPermissionByUser(site.getActivity().getDatabase(), user);
+
+        if (permission.isAllowViewAll()) {
+            return true;
+        }
+
+        if (permission.isAllowView()) {
+            // without AllowViewAll, edit permission is contingent on the site's partner
+            return site.getPartner().getId() == permission.getPartner().getId();
+        }
+
+        return false;
+    }
+
+
     public boolean isEditAllowed(Site site, AuthenticatedUser user) {
         return isEditAllowed(site, em.get().getReference(User.class, user.getId()));
     }

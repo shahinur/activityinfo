@@ -47,7 +47,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
     public static final int REPORT_ONCE = 0;
     public static final int REPORT_MONTHLY = 1;
 
-    public static final int NAME_MAX_LENGTH = 45;
+    public static final int NAME_MAX_LENGTH = 255;
     public static final int CATEGORY_MAX_LENGTH = 255;
 
     private UserDatabaseDTO database;
