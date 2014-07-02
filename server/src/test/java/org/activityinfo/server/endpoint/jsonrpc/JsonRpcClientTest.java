@@ -36,10 +36,6 @@ public class JsonRpcClientTest {
     @Test
     public void getSites() {
         try {
-//        String endpoint = "https://www.activityinfo.org/command";
-//        String username = "support@bedatadriven.com";
-//        String password = "mf64_34KFmvGlde";
-
 //            String endpoint = "https://ai-dev.appspot.com/command";
 //            String username = "test@test.org";
 //            String password = "testing123";
