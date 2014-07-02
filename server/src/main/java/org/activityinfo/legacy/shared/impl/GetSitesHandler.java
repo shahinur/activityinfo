@@ -627,6 +627,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .appendColumn("I.Type")
                 .appendColumn("I.Expression")
                 .appendColumn("I.nameInExpression")
+                .appendColumn("I.calculatedAutomatically")
                 .from(Tables.INDICATOR, "I")
                 .where("I.ActivityId")
                 .in(activityIds)
@@ -644,7 +645,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                     for (final SiteDTO site : siteMap.values()) {
                         if (site.getActivityId() == row.getInt("ActivityId")) {
                             String expression = row.getString("Expression");
-                            if (Strings.isNullOrEmpty(expression)) {
+                            Boolean calculatedAutomatically = row.getBoolean("calculatedAutomatically");
+                            if (Strings.isNullOrEmpty(expression) || calculatedAutomatically == null || !calculatedAutomatically) {
                                 continue;
                             }
 

@@ -69,6 +69,10 @@ public class BaseEntityHandler {
             indicator.setNameInExpression(trim(changes.get("nameInExpression")));
         }
 
+        if (changes.containsKey("calculatedAutomatically")) {
+            indicator.setCalculatedAutomatically((Boolean) changes.get("calculatedAutomatically"));
+        }
+
         if (changes.containsKey("aggregation")) {
             indicator.setAggregation((Integer) changes.get("aggregation"));
         }

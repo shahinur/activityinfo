@@ -3560,4 +3560,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("An (optional) short code for this indicator. This code can be used to refer to the indicatorin calculated expressions.")
     String nameInExpressionTooltip();
+
+    @DefaultStringValue("Calculate automatically")
+    String calculateAutomatically();
 }

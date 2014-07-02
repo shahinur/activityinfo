@@ -35,5 +35,15 @@
       </column>
     </addColumn>
   </changeSet>
+  <changeSet author="yuriyz" id="025-02">
+    <comment>
+      Calculated indicator : added calculated automatically
+    </comment>
+    <addColumn tableName="indicator">
+      <column name="calculatedAutomatically" type="bit" defaultValueBoolean="false">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
 
 </databaseChangeLog>

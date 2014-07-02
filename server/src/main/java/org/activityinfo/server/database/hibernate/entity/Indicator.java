@@ -56,6 +56,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
     private String type = FormFieldType.QUANTITY.name();
     private String expression;
     private String nameInExpression;
+    private boolean calculatedAutomatically;
 
     public Indicator() {
     }
@@ -92,6 +93,16 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
     public void setNameInExpression(String nameInExpression) {
         this.nameInExpression = nameInExpression;
     }
+
+    @Column(name = "calculatedAutomatically", nullable = false)
+    public boolean getCalculatedAutomatically() {
+        return calculatedAutomatically;
+    }
+
+    public void setCalculatedAutomatically(boolean calculatedAutomatically) {
+        this.calculatedAutomatically = calculatedAutomatically;
+    }
+
 
     @Column(name = "Type", nullable = false, length = 30)
     public String getType() {
@@ -286,5 +297,4 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
     public boolean isDeleted() {
         return getDateDeleted() == null;
     }
-
 }

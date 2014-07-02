@@ -49,6 +49,7 @@ class IndicatorForm extends AbstractDesignForm {
     private final TextField<String> codeField;
     private final NumberField idField;
     private final LabelField calculatedExpressionLabelDesc;
+    private final CheckBox calculateAutomatically;
 
     public IndicatorForm() {
         super();
@@ -93,35 +94,17 @@ class IndicatorForm extends AbstractDesignForm {
                                 "available for activities with monthly reporting. " +
                                 "(We're working on it!)"));
 
-        TextField<String> categoryField = new TextField<>();
-        categoryField.setName("category");
-        categoryField.setFieldLabel(constants.category());
-        categoryField.setMaxLength(IndicatorDTO.MAX_CATEGORY_LENGTH);
-        binding.addFieldBinding(new FieldBinding(categoryField, "category"));
-        this.add(categoryField);
-
-        unitsField = new TextField<>();
-        unitsField.setName("units");
-        unitsField.setFieldLabel(constants.units());
-        unitsField.setAllowBlank(false);
-        unitsField.setMaxLength(IndicatorDTO.UNITS_MAX_LENGTH);
-        binding.addFieldBinding(new FieldBinding(unitsField, "units"));
-        this.add(unitsField);
-
-        aggregationCombo = new MappingComboBox();
-        aggregationCombo.setFieldLabel(constants.aggregationMethod());
-        aggregationCombo.add(IndicatorDTO.AGGREGATE_SUM, constants.sum());
-        aggregationCombo.add(IndicatorDTO.AGGREGATE_AVG, constants.average());
-        aggregationCombo.add(IndicatorDTO.AGGREGATE_SITE_COUNT, constants.siteCount());
-        binding.addFieldBinding(new MappingComboBoxBinding(aggregationCombo, "aggregation"));
-        this.add(aggregationCombo);
-
         typeCombo.addSelectionChangedListener(new SelectionChangedListener<MappingComboBox.Wrapper<FormFieldType>>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<MappingComboBox.Wrapper<FormFieldType>> wrapperSelectionChangedEvent) {
                 setState();
             }
         });
+
+        calculateAutomatically = new CheckBox();
+        calculateAutomatically.setFieldLabel(constants.calculateAutomatically());
+        binding.addFieldBinding(new FieldBinding(calculateAutomatically, "calculateAutomatically"));
+        this.add(calculateAutomatically);
 
         expressionField = new TextField<>();
         expressionField.setFieldLabel(constants.calculation());
@@ -146,6 +129,29 @@ class IndicatorForm extends AbstractDesignForm {
 
         calculatedExpressionLabelDesc = new LabelField(constants.calculatedIndicatorExplanation());
         this.add(calculatedExpressionLabelDesc);
+
+        TextField<String> categoryField = new TextField<>();
+        categoryField.setName("category");
+        categoryField.setFieldLabel(constants.category());
+        categoryField.setMaxLength(IndicatorDTO.MAX_CATEGORY_LENGTH);
+        binding.addFieldBinding(new FieldBinding(categoryField, "category"));
+        this.add(categoryField);
+
+        unitsField = new TextField<>();
+        unitsField.setName("units");
+        unitsField.setFieldLabel(constants.units());
+        unitsField.setAllowBlank(false);
+        unitsField.setMaxLength(IndicatorDTO.UNITS_MAX_LENGTH);
+        binding.addFieldBinding(new FieldBinding(unitsField, "units"));
+        this.add(unitsField);
+
+        aggregationCombo = new MappingComboBox();
+        aggregationCombo.setFieldLabel(constants.aggregationMethod());
+        aggregationCombo.add(IndicatorDTO.AGGREGATE_SUM, constants.sum());
+        aggregationCombo.add(IndicatorDTO.AGGREGATE_AVG, constants.average());
+        aggregationCombo.add(IndicatorDTO.AGGREGATE_SITE_COUNT, constants.siteCount());
+        binding.addFieldBinding(new MappingComboBoxBinding(aggregationCombo, "aggregation"));
+        this.add(aggregationCombo);
 
         TextField<String> listHeaderField = new TextField<>();
         listHeaderField.setFieldLabel(constants.listHeader());
@@ -187,6 +193,7 @@ class IndicatorForm extends AbstractDesignForm {
 
             expressionField.setEnabled(selectedType == FormFieldType.QUANTITY);
             calculatedExpressionLabelDesc.setEnabled(selectedType == FormFieldType.QUANTITY);
+            calculateAutomatically.setEnabled(selectedType == FormFieldType.QUANTITY);
 
             aggregationCombo.setVisible(selectedType == FormFieldType.QUANTITY);
 

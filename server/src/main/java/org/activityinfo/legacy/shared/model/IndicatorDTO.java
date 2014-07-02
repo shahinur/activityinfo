@@ -171,6 +171,16 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         set("nameInExpression", nameInExpression);
     }
 
+    @JsonProperty @JsonView(DTOViews.Schema.class)
+    public Boolean getCalculatedAutomatically() {
+        return get("calculatedAutomatically");
+    }
+
+    public void setCalculatedAutomatically(Boolean calculatedAutomatically) {
+        set("calculatedAutomatically", calculatedAutomatically);
+    }
+
+
     public boolean isCalculated() {
         return !Strings.isNullOrEmpty(getExpression());
     }
