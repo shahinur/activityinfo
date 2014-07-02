@@ -26,11 +26,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Bertram
  */
-public class MapMarker implements Serializable {
+public abstract class MapMarker implements Serializable {
 
     private int x;
     private int y;
@@ -82,6 +83,8 @@ public class MapMarker implements Serializable {
     public void setSiteIds(List<Integer> siteIds) {
         this.siteIds = siteIds;
     }
+
+    public abstract Set<Integer> getIndicatorIds();
 
     public int getSize() {
         return 0;

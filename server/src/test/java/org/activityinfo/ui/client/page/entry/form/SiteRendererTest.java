@@ -1,6 +1,7 @@
 package org.activityinfo.ui.client.page.entry.form;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
+import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
@@ -40,20 +41,35 @@ public class SiteRendererTest {
         indicator2.setName("Second indicator");
         indicator2.setCategory("Second group");
 
+
+        IndicatorDTO indicator3 = new IndicatorDTO();
+        indicator3.setAggregation(IndicatorDTO.AGGREGATE_SUM);
+        indicator3.setType(FormFieldType.NARRATIVE);
+        indicator3.setId(3);
+        indicator3.setName("Third indicator");
+        indicator3.setCategory("Second group");
+
+
         ActivityDTO activity = new ActivityDTO();
         activity.setId(1);
         activity.getIndicators().add(indicator1);
         activity.getIndicators().add(indicator2);
+        activity.getIndicators().add(indicator3);
 
         SiteDTO site = new SiteDTO();
         site.setIndicatorValue(1, 1000d);
         site.setIndicatorValue(2, 2000d);
+        site.setIndicatorValue(3, "Some help but not a huge amount.\nHowever there was " +
+                                  "some other information that I'd like to present in " +
+                                  "second paragraph.");
 
-        String html = siteRenderer.renderSite(site, activity, false, true);
+        String html = siteRenderer.renderSite(site, activity, true);
+
+        System.out.println(html);
 
         assertTrue(html.contains(indicator1.getName()));
         assertTrue(html.contains(indicator2.getName()));
-
+        assertTrue(html.contains(indicator3.getName()));
     }
 
 }

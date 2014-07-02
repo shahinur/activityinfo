@@ -112,7 +112,7 @@ public class ConfirmDialog  {
         dialog.getModalBody().add(failedMessageContainer);
         dialog.getModalBody().add(messageContainer);
 
-        dialog.getOkButton().addClickHandler(new ClickHandler() {
+        dialog.getPrimaryButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 tryAction();
@@ -128,7 +128,7 @@ public class ConfirmDialog  {
             INSTANCE = new ConfirmDialog();
         }
         INSTANCE.action = action;
-        INSTANCE.dialog.getOkButton().setStyleName("btn btn-" + action.getPrimaryButtonStyle().name().toLowerCase());
+        INSTANCE.dialog.getPrimaryButton().setStyleName("btn btn-" + action.getPrimaryButtonStyle().name().toLowerCase());
         INSTANCE.updateState(State.CONFIRM, null);
         INSTANCE.dialog.show();
     }
@@ -170,7 +170,7 @@ public class ConfirmDialog  {
         // asynchronous action to complete. We have no reliable way of cancelling
         // a delete action that has been sent to the server for example.
 
-        dialog.getOkButton().setEnabled(state != State.PROGRESS);
+        dialog.getPrimaryButton().setEnabled(state != State.PROGRESS);
         dialog.getCancelButton().setEnabled(state != State.PROGRESS);
 
         failedMessageContainer.setVisible(state == State.FAILED);
@@ -196,9 +196,9 @@ public class ConfirmDialog  {
         messageContainer.setHTML(messages.getMessageText());
 
         if(state == State.PROGRESS) {
-            dialog.getOkButton().setHTML(Templates.OK_BTN_TEMPLATE.html(messages.getPrimaryButtonText()));
+            dialog.getPrimaryButton().setHTML(Templates.OK_BTN_TEMPLATE.html(messages.getPrimaryButtonText()));
         } else {
-            dialog.getOkButton().setText(messages.getPrimaryButtonText());
+            dialog.getPrimaryButton().setText(messages.getPrimaryButtonText());
         }
     }
 }

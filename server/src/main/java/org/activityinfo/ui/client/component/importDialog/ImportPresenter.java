@@ -83,7 +83,7 @@ public class ImportPresenter {
                 if (invalidRowsCount > 0) {
                     final ModalDialog confirmDialog = new ModalDialog();
                     confirmDialog.getModalBody().add(new HTML(I18N.MESSAGES.continueImportWithInvalidRows(invalidRowsCount)));
-                    confirmDialog.getOkButton().addClickHandler(new ClickHandler() {
+                    confirmDialog.getPrimaryButton().addClickHandler(new ClickHandler() {
                         @Override
                         public void onClick(ClickEvent event) {
                             confirmDialog.hide();

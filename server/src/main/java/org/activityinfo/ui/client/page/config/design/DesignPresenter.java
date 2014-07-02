@@ -26,13 +26,17 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.google.common.base.Function;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
 import org.activityinfo.legacy.client.state.StateProvider;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
@@ -49,9 +53,10 @@ import org.activityinfo.ui.client.page.common.grid.TreeGridView;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
-import org.activityinfo.ui.client.page.config.design.importer.ImportSchemaDialog;
+import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -96,7 +101,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
         this.db = db;
 
-        treeStore = new TreeStore<ModelData>();
+        treeStore = new TreeStore<>();
         fillStore(messages);
 
         initListeners(treeStore, null);
@@ -105,12 +110,30 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         this.view.setActionEnabled(UIActions.DELETE, false);
     }
 
+    public void refresh() {
+        service.execute(new GetSchema(), new MaskingAsyncMonitor((ContentPanel)view, I18N.CONSTANTS.loading()),
+                new AsyncCallback<SchemaDTO>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        //handled by masking async monitor
+                    }
+
+                    @Override
+                    public void onSuccess(SchemaDTO result) {
+                        db = result.getDatabaseById(db.getId());
+                        fillStore(messages);
+                    }
+                });
+    }
+
     @Override
     public void shutdown() {
 
     }
 
     private void fillStore(UiConstants messages) {
+
+        treeStore.removeAll();
 
         for (ActivityDTO activity : db.getActivities()) {
             ActivityDTO activityNode = new ActivityDTO(activity);
@@ -168,8 +191,15 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
         } else if (UIActions.IMPORT.equals(actionId)) {
             SchemaImporter importer = new SchemaImporter(service, db);
-            ImportSchemaDialog dialog = new ImportSchemaDialog(importer);
-            dialog.show();
+            SchemaImportDialog dialog = new SchemaImportDialog(importer);
+            dialog.show().then(new Function<Void, Object>() {
+                @Nullable
+                @Override
+                public Object apply(@Nullable Void input) {
+                    refresh();
+                    return null;
+                }
+            });
         }
     }
 
@@ -353,10 +383,5 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     @Override
     protected void onSaved() {
         eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
-    }
-
-    public void onImport(String item) {
-        // TODO Auto-generated method stub
-
     }
 }

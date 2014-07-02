@@ -78,6 +78,9 @@ public class RowParser {
     }
 
     private boolean advanceToNextColumn() {
+        if(currentPos >= text.length()) {
+            return false;
+        }
         if(text.charAt(currentPos) == QUOTE_CHAR) {
             currentPos++;
             return advanceThroughQuotedColumn();

@@ -23,6 +23,7 @@ package org.activityinfo.server.report.generator.map;
  */
 
 import junit.framework.Assert;
+import org.activityinfo.legacy.shared.reports.content.BubbleMapMarker;
 import org.activityinfo.legacy.shared.reports.content.MapMarker;
 import org.junit.Test;
 
@@ -38,19 +39,19 @@ public class LRTBComparatorTest {
     @Test
     public void testComparator() {
 
-        MapMarker ul = new MapMarker();
+        MapMarker ul = new BubbleMapMarker();
         ul.setX(1);
         ul.setY(1);
 
-        MapMarker ul2 = new MapMarker();
+        MapMarker ul2 = new BubbleMapMarker();
         ul2.setX(60);
         ul2.setY(0);
 
-        MapMarker c = new MapMarker();
+        MapMarker c = new BubbleMapMarker();
         c.setX(30);
         c.setY(50);
 
-        MapMarker ll = new MapMarker();
+        MapMarker ll = new BubbleMapMarker();
         ll.setX(0);
         ll.setY(80);
 

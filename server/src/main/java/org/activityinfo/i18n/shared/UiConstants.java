@@ -210,7 +210,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to modify activities, indicators, and attributes"
      */
-    @DefaultStringValue("Allow user to modify the structure of forms")
+    @DefaultStringValue("Allow user to modify activities, indicators, and attributes")
     @Key("allowDesignLong")
     String allowDesignLong();
 
@@ -237,7 +237,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to edit activities of all partners"
      */
-    @DefaultStringValue("Allow user to edit form entries of all partners")
+    @DefaultStringValue("Allow user to edit activities of all partners")
     @Key("allowEditAllLong")
     String allowEditAllLong();
 
@@ -246,7 +246,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to edit activities"
      */
-    @DefaultStringValue("Allow user to edit form entries")
+    @DefaultStringValue("Allow user to edit activities")
     @Key("allowEditLong")
     String allowEditLong();
 
@@ -291,7 +291,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to view activity lists of all partners"
      */
-    @DefaultStringValue("Allow user to view form entries of all partners")
+    @DefaultStringValue("Allow user to view activity lists of all partners")
     @Key("allowViewAllLong")
     String allowViewAllLong();
 
@@ -300,7 +300,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to view activity list"
      */
-    @DefaultStringValue("Allow user to view form entries list")
+    @DefaultStringValue("Allow user to view activity list")
     @Key("allowViewLong")
     String allowViewLong();
 
@@ -399,7 +399,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "&laquo; Back"
      */
-    @DefaultStringValue("&laquo; Back")
+    @DefaultStringValue("« Back")
     @Key("backButton")
     String backButton();
 
@@ -556,10 +556,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Here you can choose the site where your intervention takes place. Use the filters below to find sites where interventions have already been added. This will make it possible to to link your activities results to other interventions inside and outside of your organization."
      */
-    @DefaultStringValue("Here you can choose the site where your intervention takes place. " +
-                        "Use the filters below to find sites where interventions have already been added. " +
-                        "This will make it possible to to link your activities results to other " +
-                        "interventions inside and outside of your organization.")
+    @DefaultStringValue("Here you can choose the site where your intervention takes place. Use the filters below to find sites where interventions have already been added. This will make it possible to to link your activities results to other interventions inside and outside of your organization.")
     @Key("chooseLocationDescription")
     String chooseLocationDescription();
 
@@ -892,11 +889,11 @@ public interface UiConstants extends Constants {
     String deleteLockedPeriodTitle();
 
     /**
-     * Translated "Delete".
+     * Translated "Delete Site".
      *
-     * @return translated "Delete"
+     * @return translated "Delete Site"
      */
-    @DefaultStringValue("Delete")
+    @DefaultStringValue("Delete Site")
     @Key("deleteSite")
     String deleteSite();
 
@@ -1223,7 +1220,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Filter by project")
     @Key("filterByProject")
     String filterByProject();
-
+    
     /**
      * Translated "Filter by location".
      *
@@ -1634,7 +1631,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Mandatory"
      */
-    @DefaultStringValue("Required")
+    @DefaultStringValue("Mandatory")
     @Key("mandatory")
     String mandatory();
 
@@ -2646,7 +2643,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Choose the attributes of this intervention"
      */
-    @DefaultStringValue("Choose the attributes of this form entry")
+    @DefaultStringValue("Choose the attributes of this intervention")
     @Key("siteDialogAttributes")
     String siteDialogAttributes();
 
@@ -2655,7 +2652,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Add additional comments for this intervention"
      */
-    @DefaultStringValue("Add additional comments for this form entry")
+    @DefaultStringValue("Add additional comments for this intervention")
     @Key("siteDialogComments")
     String siteDialogComments();
 
@@ -2664,7 +2661,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Enter indicator results for this site"
      */
-    @DefaultStringValue("Enter indicator results for this form entry")
+    @DefaultStringValue("Enter indicator results for this site")
     @Key("siteDialogIndicators")
     String siteDialogIndicators();
 
@@ -3533,6 +3530,19 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Parsing rows...")
     String parsingRows();
+
+    @DefaultStringValue("Looks great!")
+    String validSchemaImport();
+
+    @DefaultStringValue("Copy and paste into the box above to continue.")
+    String schemaImportEmpty();
+
+    @DefaultStringValue("Hmmm... Doesn't look like you've pasted a table. Copy and paste a table from Excel or " +
+                        "another spreadsheet program, including the column headers.")
+    String invalidTableData();
+
+    @DefaultStringValue("Import anyway")
+    String ignoreImportWarnings();
 
     @DefaultStringValue("Default value")
     String defaultValue();

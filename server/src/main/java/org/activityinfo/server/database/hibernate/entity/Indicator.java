@@ -22,8 +22,6 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
-import org.activityinfo.core.shared.form.FormFieldType;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -297,4 +295,5 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
     public boolean isDeleted() {
         return getDateDeleted() == null;
     }
+
 }

@@ -21,16 +21,14 @@ package org.activityinfo.ui.client.component.report.editor.map.symbols;
  * #L%
  */
 
-import com.google.common.collect.Lists;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
+import org.activityinfo.legacy.shared.reports.content.MapMarker;
 import org.activityinfo.ui.client.component.report.view.DrillDownEditor;
 import org.discotools.gwt.leaflet.client.events.Event;
 import org.discotools.gwt.leaflet.client.events.handler.EventHandler;
 import org.discotools.gwt.leaflet.client.jsobject.JSObject;
-
-import java.util.List;
 
 /**
  * @author yuriyz on 4/23/14.
@@ -46,24 +44,13 @@ public class LeafletMarkerDrilldownEventHandler implements EventHandler<Event> {
     @Override
     public void handle(Event event) {
         final JSObject targetOptions = event.getTarget().getProperty("options");
-        final Filter effectiveFilter = new Filter();
-        final JSObject siteIdJsObject = targetOptions.getProperty(LeafletMarkerFactory.SITES_JS_FIELD_NAME);
-        effectiveFilter.addRestriction(DimensionType.Site, getSiteIds(siteIdJsObject));
-        drillDownEditor.drillDown(effectiveFilter);
-    }
+        MapMarker markerModel = LeafletMarkerFactory.getModel(targetOptions);
 
-    private static List<Integer> getSiteIds(JSObject jsObject) {
-        final List<Integer> siteIds = Lists.newArrayList();
-        final String propertyNames = jsObject.getPropertyNames();
-        final String[] propertyNamesArray = propertyNames.split(",");
-        for (String propertyName : propertyNamesArray) {
-            try {
-                siteIds.add(Integer.parseInt(propertyName));
-            } catch (Exception e) {
-                // ignore
-            }
-        }
-        return siteIds;
+        final Filter effectiveFilter = new Filter();
+        effectiveFilter.addRestriction(DimensionType.Site, markerModel.getSiteIds());
+        effectiveFilter.addRestriction(DimensionType.Indicator, markerModel.getIndicatorIds());
+
+        drillDownEditor.drillDown(effectiveFilter);
     }
 
     public void setPosition(int bottomX, int bottomY) {

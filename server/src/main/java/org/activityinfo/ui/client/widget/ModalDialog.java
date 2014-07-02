@@ -60,15 +60,18 @@ public class ModalDialog  {
     DivElement contentDiv;
 
     @UiField
-    Button okButton;
+    Button primaryButton;
 
     @UiField
     HTMLPanel modalFooter;
 
     @UiField
     Button cancelButton;
+
     @UiField
     InlineLabel statusLabel;
+
+    @UiField Button backButton;
 
     public ModalDialog() {
         BaseStylesheet.INSTANCE.ensureInjected();
@@ -88,7 +91,6 @@ public class ModalDialog  {
         this(content);
         setDialogTitle(dialogTitle);
     }
-
 
     public IsWidget getContent() {
         return content;
@@ -127,9 +129,35 @@ public class ModalDialog  {
         this.title.setInnerHTML(dialogTitle);
     }
 
-    public Button getOkButton() {
-        return okButton;
+    public Button getPrimaryButton() {
+        return primaryButton;
     }
+
+    public Button getBackButton() {
+        return backButton;
+    }
+
+
+    public void enablePrimaryButton() {
+        primaryButton.setEnabled(true);
+    }
+
+    public void disablePrimaryButton() {
+        primaryButton.setEnabled(false);
+    }
+
+    public void disableCancelButton() {
+        cancelButton.setEnabled(false);
+    }
+
+    public void hideCancelButton() {
+        cancelButton.setVisible(false);
+    }
+
+    public void hideBackButton() {
+        backButton.setVisible(false);
+    }
+
 
     @UiHandler("closeButton")
     public void onClose(ClickEvent event) {
@@ -143,14 +171,6 @@ public class ModalDialog  {
 
     public FlowPanel getModalBody() {
         return modalBody;
-    }
-
-    public HTMLPanel getModalFooter() {
-        return modalFooter;
-    }
-
-    public DivElement getContentDiv() {
-        return contentDiv;
     }
 
     public Button getCancelButton() {

@@ -23,12 +23,16 @@ package org.activityinfo.ui.client.page.entry.form;
  */
 
 import com.google.common.base.Strings;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import org.activityinfo.core.shared.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.type.IndicatorValueFormatter;
 
 import java.util.List;
 import java.util.Map.Entry;
+
+import static com.google.gwt.safehtml.shared.SafeHtmlUtils.htmlEscape;
 
 public class SiteRenderer {
 
@@ -67,7 +71,7 @@ public class SiteRenderer {
         return html.toString();
     }
 
-    public String renderSite(SiteDTO site, ActivityDTO activity, boolean showEmptyRows, boolean renderComments) {
+    public String renderSite(SiteDTO site, ActivityDTO activity, boolean renderComments) {
         StringBuilder html = new StringBuilder();
 
         if (renderComments && site.getComments() != null) {
@@ -83,13 +87,13 @@ public class SiteRenderer {
         renderAttributes(html, site, activity);
 
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-            html.append(renderIndicators(site, activity, showEmptyRows));
+            html.append(renderIndicators(site, activity));
         }
 
         return html.toString();
     }
 
-    private String renderIndicators(SiteDTO site, ActivityDTO activity, boolean showEmptyRows) {
+    private String renderIndicators(SiteDTO site, ActivityDTO activity) {
         StringBuilder html = new StringBuilder();
         html.append("<br/><p><span class='groupName'>");
         html.append(I18N.CONSTANTS.indicators());
@@ -97,7 +101,7 @@ public class SiteRenderer {
         html.append("<table class='indicatorTable' cellspacing='0'>");
         boolean hasContent = false;
         for (IndicatorGroup group : activity.groupIndicators()) {
-            boolean groupHasContent = renderIndicatorGroup(html, group, site, showEmptyRows);
+            boolean groupHasContent = renderIndicatorGroup(html, group, site);
             hasContent = hasContent || groupHasContent;
         }
         html.append("</table>");
@@ -107,26 +111,20 @@ public class SiteRenderer {
 
     private boolean renderIndicatorGroup(StringBuilder html,
                                          IndicatorGroup group,
-                                         SiteDTO site,
-                                         boolean showEmptyRows) {
+                                         SiteDTO site) {
         StringBuilder groupHtml = new StringBuilder();
         boolean empty = true;
 
         if (group.getName() != null) {
-            groupHtml.append("<tr><td class='indicatorGroupHeading'>").append(group.getName()).
-                    append("</td><td>&nbsp;</td></tr>");
+            groupHtml.append("<tr><td class='indicatorGroupHeading'>")
+                     .append(htmlEscape(group.getName()))
+                     .append("</td><td>&nbsp;</td></tr>");
         }
         for (IndicatorDTO indicator : group.getIndicators()) {
 
-            Double value;
-            if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
-                value = 1.0;
-            } else {
-                value = site.getIndicatorDoubleValue(indicator);
-            }
+            Object value = getIndicatorValue(site, indicator);
 
-            if (showEmptyRows ||
-                (value != null && (indicator.getAggregation() != IndicatorDTO.AGGREGATE_SUM || value != 0))) {
+            if (value != null) {
 
                 groupHtml.append("<tr><td class='indicatorHeading");
                 if (group.getName() != null) {
@@ -134,16 +132,27 @@ public class SiteRenderer {
                 }
 
                 groupHtml.append("'>")
-                         .append(indicator.getName())
-                         .append("</td><td class='indicatorValue'>")
+                         .append(htmlEscape(indicator.getName()))
+                         .append("</td>");
+
+                if(indicator.getType() == FormFieldType.QUANTITY) {
+                    groupHtml
+                         .append("<td class='indicatorValue'>")
                          .append(formatValue(indicator, value))
                          .append("</td><td class='indicatorUnits'>")
                          .append(indicator.getUnits())
-                         .append("</td></tr>");
+                         .append("</td>");
+                } else {
+                    groupHtml
+                         .append("<td colspan=2>")
+                         .append(formatValue(indicator, value))
+                         .append("</td>");
+                }
+                groupHtml.append("</tr>");
                 empty = false;
             }
         }
-        if (showEmptyRows || !empty) {
+        if (!empty) {
             html.append(groupHtml.toString());
             return true;
         } else {
@@ -151,12 +160,42 @@ public class SiteRenderer {
         }
     }
 
-    protected String formatValue(IndicatorDTO indicator, Double value) {
-        if (value == null) {
-            return "-";
+    private Object getIndicatorValue(SiteDTO site, IndicatorDTO indicator) {
+        if (indicator.getType() == FormFieldType.QUANTITY) {
+            if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
+                return 1.0;
+            } else if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SUM) {
+                Double value = site.getIndicatorDoubleValue(indicator);
+                if(value == null || value == 0.0) {
+                    return null;
+                } else {
+                    return value;
+                }
+            } else {
+                return site.getIndicatorValue(indicator);
+            }
         } else {
-            return indicatorValueFormatter.format(value);
+            return site.getIndicatorValue(indicator);
         }
+    }
+
+    protected String formatValue(IndicatorDTO indicator, Object value) {
+        if(indicator.getType() == FormFieldType.QUANTITY) {
+            if (value instanceof Double) {
+                return indicatorValueFormatter.format((Double) value);
+            }
+        } else if(indicator.getType() == FormFieldType.FREE_TEXT) {
+            if (value instanceof String) {
+                return htmlEscape((String) value);
+            }
+        } else if(indicator.getType() == FormFieldType.NARRATIVE) {
+            if (value instanceof String) {
+                SafeHtmlBuilder html = new SafeHtmlBuilder();
+                html.appendEscapedLines((String)value);
+                return html.toSafeHtml().asString();
+            }
+        }
+        return "-";
     }
 
     protected void renderAttributes(StringBuilder html, SiteDTO site, ActivityDTO activity) {

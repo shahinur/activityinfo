@@ -197,7 +197,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         StringBuilder html = new StringBuilder();
         html.append(siteRenderer.renderLocation(site, activity));
-        html.append(siteRenderer.renderSite(site, activity, false, true));
+        html.append(siteRenderer.renderSite(site, activity, true));
         return html.toString();
     }
 

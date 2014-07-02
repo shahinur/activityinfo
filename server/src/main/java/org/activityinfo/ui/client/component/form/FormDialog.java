@@ -63,9 +63,9 @@ public class FormDialog {
         loadingPanel = new LoadingPanel<>(new PageLoadingPanel());
         loadingPanel.setDisplayWidget(formPanel);
         dialog = new ModalDialog(loadingPanel);
-        dialog.getOkButton().setText(I18N.CONSTANTS.save());
-        dialog.getOkButton().setStyleName("btn btn-primary");
-        dialog.getOkButton().addClickHandler(new ClickHandler() {
+        dialog.getPrimaryButton().setText(I18N.CONSTANTS.save());
+        dialog.getPrimaryButton().setStyleName("btn btn-primary");
+        dialog.getPrimaryButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 save();
@@ -85,13 +85,13 @@ public class FormDialog {
 
     public void save() {
         dialog.getStatusLabel().setText(I18N.CONSTANTS.saving());
-        dialog.getOkButton().setEnabled(false);
+        dialog.getPrimaryButton().setEnabled(false);
         resourceLocator.persist(formPanel.getInstance()).then(new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
                 dialog.getStatusLabel().setText(ExceptionOracle.getExplanation(caught));
-                        dialog.getOkButton().setEnabled(true);
+                        dialog.getPrimaryButton().setEnabled(true);
             }
 
             @Override

@@ -54,6 +54,7 @@ import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.ProgressListener;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.Warning;
+import org.activityinfo.legacy.shared.model.LockedPeriodSet;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,31 +88,33 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertThat("database count", schema.getDatabases().size(), equalTo(3));
-        assertThat("database list is sorted", schema.getDatabases().get(0)
-                .getName(), equalTo("Alpha"));
+        assertThat("database count", schema.getDatabases(), hasSize(3));
+        assertThat("database list is sorted", schema.getDatabases().get(0).getName(), equalTo("Alpha"));
 
         assertTrue("ALEX(owner) in PEAR", schema.getDatabaseById(1) != null); // PEAR
-        assertTrue("ALEX can design", schema.getDatabaseById(1)
-                .isDesignAllowed());
-        assertTrue("Alex can edit all", schema.getDatabaseById(1)
-                .isEditAllowed());
-        assertTrue("object graph is preserved", schema.getDatabaseById(1)
-                .getCountry() == schema.getDatabaseById(2).getCountry());
+        assertTrue("ALEX can design", schema.getDatabaseById(1).isDesignAllowed());
+        assertTrue("Alex can edit all", schema.getDatabaseById(1).isEditAllowed());
+        assertTrue("object graph is preserved",
+                schema.getDatabaseById(1).getCountry() ==
+                schema.getDatabaseById(2).getCountry());
+
+
+        ActivityDTO nfi = schema.getDatabaseById(1).getActivities().get(0);
+
         assertTrue("object graph is preserved (database-activity)",
-                schema.getDatabaseById(1) ==
-                        schema.getDatabaseById(1).getActivities().get(0).getDatabase());
-        AdminLevelDTO adminLevel = schema.getCountries().get(0)
-                .getAdminLevels().get(0);
-        assertThat("CountryId is not null", adminLevel.getCountryId(),
-                not(equalTo(0)));
+                schema.getDatabaseById(1) == nfi.getDatabase());
+        assertThat(nfi.getLocationTypeId(), equalTo(1));
+        assertThat(nfi.<Integer>get("locationTypeId"), equalTo(1));
+
+        AdminLevelDTO adminLevel = schema.getCountries().get(0).getAdminLevels().get(0);
+        assertThat("CountryId is not null", adminLevel.getCountryId(), not(equalTo(0)));
         assertThat("CountryId is not null", adminLevel.getId(), not(equalTo(0)));
 
-        assertTrue("CountryId is not null", schema.getCountries().get(0)
-                .getAdminLevels().get(0).getCountryId() != 0);
+        assertTrue("CountryId is not null",
+                schema.getCountries().get(0).getAdminLevels().get(0).getCountryId() != 0);
 
-        assertThat("deleted attribute is not present", schema
-                .getActivityById(1).getAttributeGroups().size(), equalTo(3));
+        assertThat("deleted attribute is not present",
+                schema.getActivityById(1).getAttributeGroups().size(), equalTo(3));
     }
 
     @Test
@@ -175,8 +178,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertTrue("no indicators case",
-                schema.getActivityById(2).getIndicators().size() == 0);
+        assertTrue("no indicators case", schema.getActivityById(2).getIndicators().size() == 0);
 
         ActivityDTO nfi = schema.getActivityById(1);
 
@@ -184,15 +186,11 @@ public class GetSchemaTest extends CommandTestCase2 {
                 equalTo(5));
 
         IndicatorDTO test = nfi.getIndicatorById(2);
-        assertThat("property:name", test.getName(), equalTo("baches"));
-        assertThat("property:units", test.getUnits(), equalTo("menages"));
-        assertThat("property:aggregation", test.getAggregation(),
-                equalTo(IndicatorDTO.AGGREGATE_SUM));
-        assertThat("property:category", test.getCategory(), equalTo("outputs"));
-        assertThat("property:listHeader", test.getListHeader(),
-                equalTo("header"));
-        assertThat("property:description", test.getDescription(),
-                equalTo("desc"));
+        assertThat(test, Matchers.hasProperty("name", equalTo("baches")));
+        assertThat(test, Matchers.hasProperty("aggregation", equalTo(IndicatorDTO.AGGREGATE_SUM)));
+        assertThat(test, Matchers.hasProperty("category", equalTo("outputs")));
+        assertThat(test, Matchers.hasProperty("listHeader", equalTo("header")));
+        assertThat(test, Matchers.hasProperty("description", equalTo("desc")));
     }
 
     @Test
@@ -224,83 +222,6 @@ public class GetSchemaTest extends CommandTestCase2 {
         writer.write(schema.getDatabaseById(1));
 
         System.out.println(writer.toString());
-    }
-
-    @Test
-    public void importCsv() throws IOException {
-
-        String csv = Resources.toString(Resources.getResource("schema_1064.csv"), Charsets.UTF_8);
-        PastedTable source = new PastedTable(csv);
-
-        Map<String, Object> dbProps = Maps.newHashMap();
-        dbProps.put("name", "Syria");
-        dbProps.put("countryId", 1);
-
-        execute(new CreateEntity("UserDatabase", dbProps));
-
-        SchemaDTO schema = execute(new GetSchema());
-        UserDatabaseDTO syria = null;
-        for (UserDatabaseDTO db : schema.getDatabases()) {
-            if (db.getName().equals("Syria")) {
-                syria = db;
-                break;
-            }
-        }
-        if (syria == null) {
-            throw new AssertionError("database not created");
-        }
-
-        SchemaImporter importer = new SchemaImporter(getDispatcher(), syria);
-        importer.setProgressListener(new ProgressListener() {
-
-            @Override
-            public void submittingBatch(int batchNumber, int batchCount) {
-                System.out.println("Submitting batch " + batchNumber + " of " + batchCount);
-            }
-        });
-        boolean success = importer.parseColumns(source);
-        if (success) {
-            importer.processRows();
-        }
-
-        for (Warning warning : importer.getWarnings()) {
-            System.err.println(warning);
-        }
-
-        if (!success) {
-            throw new AssertionError("there were fatal errors");
-        }
-
-        importer.persist(new AsyncCallback<Void>() {
-
-            @Override
-            public void onSuccess(Void result) {
-                System.out.println("Success");
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-                throw new AssertionError(caught);
-            }
-        });
-
-        syria = execute(new GetSchema()).getDatabaseById(syria.getId());
-
-        ActivityDTO cash = syria.getActivities().get(0);
-
-        for(AttributeGroupDTO group : cash.getAttributeGroups()) {
-            System.out.println(group.getName());
-        }
-
-        assertThat(cash.getName(), equalTo("1.Provision of urgent cash assistance"));
-        assertThat(cash.getAttributeGroups().size(), equalTo(3));
-
-
-
-        SchemaCsvWriter writer = new SchemaCsvWriter();
-        writer.write(syria);
-
-        Files.write(writer.toString(), new File("target/syria.csv"), Charsets.UTF_8);
     }
 
     @Test
