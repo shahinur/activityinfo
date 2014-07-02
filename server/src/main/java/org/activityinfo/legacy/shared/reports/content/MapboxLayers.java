@@ -5,14 +5,14 @@ import org.activityinfo.legacy.shared.model.TileBaseMap;
 
 public class MapboxLayers {
 
-    public static final String MAPBOX_STREETS = "http://{s}.tiles.mapbox.com/v3/activityinfo.gc3n5efh/{z}/{x}/{y}.png";
+    public static final String MAPBOX_STREETS = "https://{s}.tiles.mapbox.com/v3/activityinfo.gc3n5efh/{z}/{x}/{y}.png";
 
-    public static final String MAPBOX_TERRAIN = "http://{s}.tiles.mapbox.com/v3/activityinfo.gcg3g01h/{z}/{x}/{y}.png";
+    public static final String MAPBOX_TERRAIN = "https://{s}.tiles.mapbox.com/v3/activityinfo.gcg3g01h/{z}/{x}/{y}.png";
 
-    public static final String MAPBOX_SATELLITE = "http://{s}.tiles.mapbox.com/v3/activityinfo.gcg3l5eb/{z}/{x}/{y}" +
+    public static final String MAPBOX_SATELLITE = "https://{s}.tiles.mapbox.com/v3/activityinfo.gcg3l5eb/{z}/{x}/{y}" +
                                                   ".png";
 
-    public static final String MAPBOX_HYBRID = "http://{s}.tiles.mapbox.com/v3/activityinfo.gcg4ei82/{z}/{x}/{y}.png";
+    public static final String MAPBOX_HYBRID = "https://{s}.tiles.mapbox.com/v3/activityinfo.gcg4ei82/{z}/{x}/{y}.png";
 
     public static TileBaseMap toTileBaseMap(BaseMap baseMap) {
         if (baseMap instanceof TileBaseMap) {
