@@ -71,6 +71,7 @@ public class SchemaCache implements DispatchListener {
         schemaEntityTypes.add("Indicator");
         schemaEntityTypes.add("AttributeGroup");
         schemaEntityTypes.add("AttributeDimension");
+        schemaEntityTypes.add("Attribute");
         schemaEntityTypes.add("Partner");
         schemaEntityTypes.add("Project");
         schemaEntityTypes.add("LockedPeriod");
