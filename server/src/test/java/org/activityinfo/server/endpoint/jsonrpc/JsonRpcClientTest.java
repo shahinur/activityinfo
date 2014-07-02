@@ -26,8 +26,6 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.junit.Test;
 
-import java.io.IOException;
-
 /**
  * @author yuriyz on 6/24/14.
  */
@@ -36,25 +34,28 @@ public class JsonRpcClientTest {
     public static final int ACTIVITY_ID = 1077;
 
     @Test
-    public void getSites() throws IOException {
+    public void getSites() {
+        try {
 //        String endpoint = "https://www.activityinfo.org/command";
 //        String username = "support@bedatadriven.com";
-//        String password = "mf64_34KFmvGlde";
+//        String password = "";
 
-        String endpoint = "https://ai-dev.appspot.com/command";
-        String username = "test@test.org";
-        String password = "testing123";
+            String endpoint = "https://ai-dev.appspot.com/command";
+            String username = "test@test.org";
+            String password = "testing123";
 
-        Filter filter = new Filter();
-        filter.addRestriction(DimensionType.Activity, ACTIVITY_ID);
+            Filter filter = new Filter();
+            filter.addRestriction(DimensionType.Activity, ACTIVITY_ID);
 
-        GetSites getSites = new GetSites();
-        getSites.setFilter(filter);
+            GetSites getSites = new GetSites();
+            getSites.setFilter(filter);
 
-        JsonRpcClient client = JsonRpcClientBuilder.builder().
-                endpoint(endpoint).username(username).password(password).build();
-        Object response = client.execute(getSites);
-        System.out.println(response);
-
+            JsonRpcClient client = JsonRpcClientBuilder.builder().
+                    endpoint(endpoint).username(username).password(password).build();
+            Object response = client.execute(getSites);
+            System.out.println(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

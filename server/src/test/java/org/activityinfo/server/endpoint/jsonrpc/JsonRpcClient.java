@@ -21,13 +21,16 @@ package org.activityinfo.server.endpoint.jsonrpc;
  * #L%
  */
 
+import com.extjs.gxt.ui.client.data.RpcMap;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.api.json.JSONConfiguration;
 import org.activityinfo.legacy.shared.command.Command;
-import org.activityinfo.server.endpoint.rest.Jackson;
+import org.codehaus.jackson.Version;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.module.SimpleModule;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -45,11 +48,19 @@ public class JsonRpcClient {
 
     private Client client;
     private URI uri;
+    private ObjectMapper objectMapper;
 
     public JsonRpcClient(String endpoint, String username, String password) {
         this.endpoint = endpoint;
         this.username = username;
         this.password = password;
+
+        SimpleModule module = new SimpleModule("Command", new Version(1, 0, 0, null));
+        module.addDeserializer(Command.class, new CommandDeserializer());
+        module.addDeserializer(RpcMap.class, new RpcMapDeserializer());
+
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(module);
 
         ClientConfig clientConfig = new DefaultClientConfig();
         clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
@@ -62,6 +73,6 @@ public class JsonRpcClient {
     }
 
     public Object execute(Command command) throws IOException {
-        return client.resource(uri).accept(MediaType.APPLICATION_JSON_TYPE).entity(Jackson.asJson(command)).post(Object.class);
+        return client.resource(uri).entity(objectMapper.writeValueAsString(command), MediaType.APPLICATION_JSON_TYPE).post(Object.class);
     }
 }
