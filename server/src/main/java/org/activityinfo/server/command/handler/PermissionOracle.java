@@ -89,6 +89,11 @@ public class PermissionOracle {
      * given site.
      */
     public boolean isViewAllowed(Site site, User user) {
+
+        if(site.getActivity().getPublished() == 1) {
+            return true;
+        }
+
         UserPermission permission = getPermissionByUser(site.getActivity().getDatabase(), user);
 
         if (permission.isAllowViewAll()) {
