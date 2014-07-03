@@ -36,6 +36,14 @@
   <sessions-enabled>false</sessions-enabled>
   <precompilation-enabled>false</precompilation-enabled>
   <threadsafe>true</threadsafe>
+  <instance-class>F2</instance-class>
+  <automatic-scaling>
+    <min-idle-instances>5</min-idle-instances>
+    <max-idle-instances>automatic</max-idle-instances>
+    <min-pending-latency>automatic</min-pending-latency>
+    <max-pending-latency>30ms</max-pending-latency>
+    <max-concurrent-requests>50</max-concurrent-requests>
+  </automatic-scaling>
 
   <static-error-handlers>
     <handler file="error.html"/>
