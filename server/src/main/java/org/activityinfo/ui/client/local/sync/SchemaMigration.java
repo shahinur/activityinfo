@@ -59,7 +59,7 @@ public class SchemaMigration {
             "ALTER TABLE Location ADD COLUMN workflowStatusId",
             "ALTER TABLE LocationType ADD COLUMN workflowId",
             "ALTER TABLE LocationType ADD COLUMN databaseId",
-            "ALTER TABLE IndicatorValue ADD COLUMN TextValue," +
+            "ALTER TABLE IndicatorValue ADD COLUMN TextValue",
             "ALTER TABLE IndicatorValue ADD COLUMN DateValue",
             "ALTER TABLE Indicator ADD COLUMN type",
             "ALTER TABLE Indicator ADD COLUMN expression",
