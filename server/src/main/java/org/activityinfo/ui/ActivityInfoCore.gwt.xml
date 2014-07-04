@@ -36,6 +36,7 @@
   <inherits name="com.google.gwt.gears.Gears"/>
   <inherits name="com.google.gwt.inject.Inject"/>
   <inherits name="com.extjs.gxt.charts.Chart"/>
+  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
 
   <inherits name="com.google.common.collect.Collect"/>
 

@@ -21,42 +21,28 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.ResizeComposite;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.client.widget.FullScreenOverlay;
 
 /**
- * @author yuriyz on 7/4/14.
+ * @author yuriyz on 07/04/2014.
  */
-public class FormDesignerDialog extends ResizeComposite {
+public class FormDesignerPanel extends Composite {
 
     private static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
 
-    interface OurUiBinder extends UiBinder<Widget, FormDesignerDialog> {
+    interface OurUiBinder extends UiBinder<Widget, FormDesignerPanel> {
     }
 
-    private FullScreenOverlay overlay = new FullScreenOverlay();
+    private final PickupDragController dragController;
 
-    @UiField
-    FormDesignerPanel contentPanel;
-
-    public FormDesignerDialog() {
+    public FormDesignerPanel() {
         initWidget(uiBinder.createAndBindUi(this));
+        dragController = new PickupDragController(RootPanel.get(), true);
     }
-
-    public void show() {
-        overlay.show(this);
-    }
-
-    @UiHandler("cancelButton")
-    public void onCancel(ClickEvent event) {
-        overlay.hide();
-    }
-
 }
