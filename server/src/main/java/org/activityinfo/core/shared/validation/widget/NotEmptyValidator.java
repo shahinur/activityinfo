@@ -24,7 +24,7 @@ package org.activityinfo.core.shared.validation.widget;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.HasValue;
-import org.activityinfo.core.shared.LocalizedString;
+import java.lang.String;
 import org.activityinfo.core.shared.validation.ValidationFailure;
 import org.activityinfo.core.shared.validation.ValidationMessage;
 import org.activityinfo.core.shared.validation.ValidationUtils;
@@ -66,7 +66,7 @@ public class NotEmptyValidator implements Validator {
                 final ValidationFailure failure = new ValidationFailure();
                 final String message = Strings.isNullOrEmpty(controlName) ? I18N.CONSTANTS.validationControlIsEmpty() :
                         ValidationUtils.format(controlName, I18N.CONSTANTS.validationControlIsEmpty());
-                failure.setMessage(new ValidationMessage(new LocalizedString(message)));
+                failure.setMessage(new ValidationMessage(message));
                 failure.setControl(control);
                 return Lists.newArrayList(failure);
             }

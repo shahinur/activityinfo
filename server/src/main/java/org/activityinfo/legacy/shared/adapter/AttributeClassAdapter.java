@@ -2,7 +2,7 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
 import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.LocalizedString;
+import java.lang.String;
 import org.activityinfo.core.shared.form.FormClass;
 import org.activityinfo.core.shared.form.FormField;
 import org.activityinfo.core.shared.form.FormFieldType;
@@ -28,11 +28,11 @@ public class AttributeClassAdapter implements Function<SchemaDTO, FormClass> {
         AttributeGroupDTO group = schema.getAttributeGroupById(attributeGroupId);
         Cuid classId = CuidAdapter.attributeGroupFormClass(group);
         FormClass formClass = new FormClass(classId);
-        formClass.setLabel(new LocalizedString(group.getName()));
+        formClass.setLabel(group.getName());
 
         // attributes have only one field- the label
         FormField labelField = new FormField(CuidAdapter.field(classId, CuidAdapter.NAME_FIELD));
-        labelField.setLabel(new LocalizedString(I18N.CONSTANTS.labelFieldLabel()));
+        labelField.setLabel(I18N.CONSTANTS.labelFieldLabel());
         labelField.setType(FormFieldType.FREE_TEXT);
         labelField.setRequired(true);
         formClass.addElement(labelField);

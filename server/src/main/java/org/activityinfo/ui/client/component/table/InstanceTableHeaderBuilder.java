@@ -96,7 +96,7 @@ public class InstanceTableHeaderBuilder extends AbstractHeaderOrFooterBuilder<Pr
         setTdWidth(th, row, 0);
 
         final SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        sb.append(SafeHtmlUtils.fromString(table.getRootFormClass().getLabel().getValue()));
+        sb.append(SafeHtmlUtils.fromString(table.getRootFormClass().getLabel()));
         sb.append(SafeHtmlUtils.fromTrustedString("&nbsp;"));
         for (TableHeaderAction buttonAction : table.getHeaderActions()) {
             final ButtonActionCell cell = new ButtonActionCell(buttonAction);

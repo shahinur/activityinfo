@@ -36,7 +36,7 @@ public class Level {
     }
 
     public String getLabel() {
-        return formClass.getLabel().getValue();
+        return formClass.getLabel();
     }
 
     public FormClass getFormClass() {

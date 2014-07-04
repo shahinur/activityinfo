@@ -3,7 +3,7 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.LocalizedString;
+import java.lang.String;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.form.FormClass;
@@ -56,17 +56,17 @@ public class LocationClassAdapter implements Function<SchemaDTO, FormClass> {
         LocationTypeDTO locationType = country.getLocationTypeById(locationTypeId);
 
         FormClass formClass = new FormClass(classId);
-        formClass.setLabel(new LocalizedString(locationType.getName()));
+        formClass.setLabel(locationType.getName());
 
         FormField nameField = new FormField(getNameFieldId(classId));
-        nameField.setLabel(new LocalizedString(I18N.CONSTANTS.name()));
+        nameField.setLabel(I18N.CONSTANTS.name());
         nameField.setType(FormFieldType.FREE_TEXT);
         nameField.setRequired(true);
         nameField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
         formClass.addElement(nameField);
 
         FormField axeField = new FormField(getAxeFieldId(classId));
-        axeField.setLabel(new LocalizedString(I18N.CONSTANTS.alternateName()));
+        axeField.setLabel(I18N.CONSTANTS.alternateName());
         axeField.setType(FormFieldType.FREE_TEXT);
         formClass.addElement(axeField);
 
@@ -77,7 +77,7 @@ public class LocationClassAdapter implements Function<SchemaDTO, FormClass> {
         }
 
         FormField adminField = new FormField(getAdminFieldId(classId));
-        adminField.setLabel(new LocalizedString(I18N.CONSTANTS.adminEntities()));
+        adminField.setLabel(I18N.CONSTANTS.adminEntities());
         adminField.setType(FormFieldType.REFERENCE);
         adminField.setCardinality(FormFieldCardinality.MULTIPLE);
         adminField.setRange(ClassCriteria.union(adminRange));
@@ -85,7 +85,7 @@ public class LocationClassAdapter implements Function<SchemaDTO, FormClass> {
         formClass.addElement(adminField);
 
         FormField pointField = new FormField(getPointFieldId(classId));
-        pointField.setLabel(new LocalizedString(I18N.CONSTANTS.geographicCoordinatesFieldLabel()));
+        pointField.setLabel(I18N.CONSTANTS.geographicCoordinatesFieldLabel());
         pointField.setType(FormFieldType.GEOGRAPHIC_POINT);
         formClass.addElement(pointField);
 

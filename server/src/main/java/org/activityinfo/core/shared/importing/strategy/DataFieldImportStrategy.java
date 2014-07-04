@@ -53,6 +53,6 @@ public class DataFieldImportStrategy implements FieldImportStrategy {
     }
 
     private ImportTarget target(FormTree.Node node) {
-        return new ImportTarget(node.getField(), VALUE, node.getField().getLabel().getValue(), node.getDefiningFormClass().getId());
+        return new ImportTarget(node.getField(), VALUE, node.getField().getLabel(), node.getDefiningFormClass().getId());
     }
 }

@@ -166,7 +166,7 @@ public class InstanceTableView implements IsWidget, RequiresResize {
     public String getFormClassLabel() {
         if (rootFormClasses != null && !rootFormClasses.isEmpty()) {
             final FormClass formClass = rootFormClasses.iterator().next();
-            return formClass.getLabel().getValue();
+            return formClass.getLabel();
         }
         return "";
     }

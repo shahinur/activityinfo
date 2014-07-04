@@ -133,7 +133,7 @@ public class SimpleFormPanel implements DisplayWidget<FormViewModel> {
         StringBuilder html = new StringBuilder();
         String hn = "h" + (3+depth);
         html.append("<").append(hn).append(">")
-            .append(SafeHtmlUtils.htmlEscape(section.getLabel().getValue()))
+            .append(SafeHtmlUtils.htmlEscape(section.getLabel()))
             .append("</").append(hn).append(">");
         return new HTML(html.toString());
     }

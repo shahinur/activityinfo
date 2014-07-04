@@ -5,7 +5,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.LocalizedString;
+import java.lang.String;
 import org.activityinfo.core.shared.Resource;
 
 import javax.validation.constraints.NotNull;
@@ -39,7 +39,7 @@ public class FormClass implements Resource, FormElementContainer {
     private Cuid id;
     private Cuid parentId;
 
-    private LocalizedString label;
+    private String label;
     private List<FormElement> elements = Lists.newArrayList();
 
     public FormClass(Cuid id) {
@@ -108,11 +108,11 @@ public class FormClass implements Resource, FormElementContainer {
         this.id = id;
     }
 
-    public LocalizedString getLabel() {
+    public String getLabel() {
         return label;
     }
 
-    public void setLabel(LocalizedString label) {
+    public void setLabel(String label) {
         this.label = label;
     }
 

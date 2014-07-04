@@ -25,7 +25,7 @@ public class QuantityFieldWidget implements FormFieldWidget {
 
         panel = new FlowPanel();
         panel.add(box);
-        panel.add(new Label(field.getUnit().getValue()));
+        panel.add(new Label(field.getUnit()));
     }
 
     @Override

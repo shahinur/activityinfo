@@ -74,9 +74,9 @@ public class FieldColumn extends Column<Projection, String> {
 
     private String composeHeader(FormTree.Node node) {
         if (node.getPath().isNested()) {
-            return node.getDefiningFormClass().getLabel().getValue() + " " + node.getField().getLabel().getValue();
+            return node.getDefiningFormClass().getLabel() + " " + node.getField().getLabel();
         } else {
-            return node.getField().getLabel().getValue();
+            return node.getField().getLabel();
         }
     }
 

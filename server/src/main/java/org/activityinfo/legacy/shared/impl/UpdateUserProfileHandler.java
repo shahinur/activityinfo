@@ -41,7 +41,7 @@ public class UpdateUserProfileHandler implements CommandHandlerAsync<UpdateUserP
                  .where("userId", model.getUserId())
                  .value("name", model.getName())
                  .value("organization", model.getOrganization()).value("jobtitle", model.getJobtitle())
-                // .value("locale", model.getLocale())
+                // .value("locale", model.toString())
                 .value("emailNotification", model.isEmailNotification()).execute(context.getTransaction());
 
         callback.onSuccess(new VoidResult());

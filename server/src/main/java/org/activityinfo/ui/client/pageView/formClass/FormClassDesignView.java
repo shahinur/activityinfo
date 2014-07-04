@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.LocalizedString;
+import java.lang.String;
 import org.activityinfo.core.shared.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.fp.client.Promise;
@@ -56,7 +56,7 @@ public class FormClassDesignView implements InstancePageView{
                     @Override
                     public Void apply(@Nullable FormClass formClass) {
                         FormClassDesignView.this.formClass = formClass;
-                        formHeader.setValue(formClass.getLabel().getValue());
+                        formHeader.setValue(formClass.getLabel());
 //                        formPanel.setFormClass(formClass);
 //                        formPanel.setDesignEnabled(true);
                         return null;
@@ -71,7 +71,7 @@ public class FormClassDesignView implements InstancePageView{
 
     @UiHandler("formHeader")
     public void onChange(ValueChangeEvent<String> event){
-        formClass.setLabel(new LocalizedString(event.getValue()));
+        formClass.setLabel(event.getValue());
         resourceLocator.persist(formClass);
     }
 

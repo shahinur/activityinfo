@@ -47,11 +47,11 @@ public class VerticalFieldContainer implements FieldContainer {
         this.fieldWidget = fieldWidget;
         formGroup = ourUiBinder.createAndBindUi(this);
 
-        label.setInnerText(formField.getLabel().getValue());
+        label.setInnerText(formField.getLabel());
 
-        if(!Strings.isNullOrEmpty(formField.getDescription().getValue())) {
+        if(!Strings.isNullOrEmpty(formField.getDescription())) {
             helpText.removeClassName("hide");
-            helpText.setInnerText(formField.getDescription().getValue());
+            helpText.setInnerText(formField.getDescription());
         }
     }
 

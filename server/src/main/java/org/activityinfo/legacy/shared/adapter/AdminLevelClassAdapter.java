@@ -2,7 +2,7 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
 import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.LocalizedString;
+import java.lang.String;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.form.FormClass;
 import org.activityinfo.core.shared.form.FormField;
@@ -35,14 +35,14 @@ public class AdminLevelClassAdapter implements Function<SchemaDTO, FormClass> {
 
         Cuid classId = adminLevelFormClass(adminLevelId);
         FormClass formClass = new FormClass(classId);
-        formClass.setLabel(new LocalizedString(adminLevel.getName()));
+        formClass.setLabel(adminLevel.getName());
 
         if (adminLevel.isRoot()) {
             // TODO add country field
         } else {
             AdminLevelDTO parentLevel = schema.getAdminLevelById(adminLevel.getParentLevelId());
             FormField parentField = new FormField(CuidAdapter.field(classId, CuidAdapter.ADMIN_PARENT_FIELD));
-            parentField.setLabel(new LocalizedString(parentLevel.getName()));
+            parentField.setLabel(parentLevel.getName());
             parentField.setSuperProperty(ApplicationProperties.PARENT_PROPERTY);
             parentField.setRange(adminLevelFormClass(adminLevel.getParentLevelId()));
             parentField.setType(FormFieldType.REFERENCE);
@@ -51,7 +51,7 @@ public class AdminLevelClassAdapter implements Function<SchemaDTO, FormClass> {
         }
 
         FormField nameField = new FormField(getNameFieldId(classId));
-        nameField.setLabel(new LocalizedString(I18N.CONSTANTS.name()));
+        nameField.setLabel(I18N.CONSTANTS.name());
         nameField.setType(FormFieldType.FREE_TEXT);
         nameField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
         nameField.setRequired(true);

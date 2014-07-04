@@ -89,8 +89,8 @@ public class TargetCollector {
     }
 
     private String label(FormTree.Node fieldNode) {
-        return fieldNode.getDefiningFormClass().getLabel().getValue() + " " +
-                fieldNode.getField().getLabel().getValue();
+        return fieldNode.getDefiningFormClass().getLabel() + " " +
+               fieldNode.getField().getLabel();
     }
 
     public Map<FieldPath, Integer> getPathMap(Map<TargetSiteId, ColumnAccessor> mappings, List<ColumnAccessor> sourceColumns) {

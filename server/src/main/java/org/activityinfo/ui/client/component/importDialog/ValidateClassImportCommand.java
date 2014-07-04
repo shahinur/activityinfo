@@ -51,7 +51,7 @@ public class ValidateClassImportCommand implements ImportCommand<List<Validation
         // Class based validation : check whether all mandatory fields has mapped
         for (FormTree.Node node : model.getFormTree().getRootFields()) {
             if (node.getField().isRequired() && model.getMapExistingActions(node.getField().getId()).isEmpty()) {
-                final String fieldLabel = node.getField().getLabel().getValue();
+                final String fieldLabel = node.getField().getLabel();
                 validationResults.add(ValidationResult.error(I18N.MESSAGES.fieldIsMandatory(fieldLabel)));
             }
         }
