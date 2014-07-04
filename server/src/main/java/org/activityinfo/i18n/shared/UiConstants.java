@@ -210,7 +210,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to modify activities, indicators, and attributes"
      */
-    @DefaultStringValue("Allow user to modify activities, indicators, and attributes")
+    @DefaultStringValue("Allow user to modify the structure of forms")
     @Key("allowDesignLong")
     String allowDesignLong();
 
@@ -237,7 +237,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to edit activities of all partners"
      */
-    @DefaultStringValue("Allow user to edit activities of all partners")
+    @DefaultStringValue("Allow user to edit form submissions of all partners")
     @Key("allowEditAllLong")
     String allowEditAllLong();
 
@@ -246,7 +246,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to edit activities"
      */
-    @DefaultStringValue("Allow user to edit activities")
+    @DefaultStringValue("Allow user to create and edit form submissions")
     @Key("allowEditLong")
     String allowEditLong();
 
@@ -291,7 +291,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to view activity lists of all partners"
      */
-    @DefaultStringValue("Allow user to view activity lists of all partners")
+    @DefaultStringValue("Allow user to view form submissions of all partners")
     @Key("allowViewAllLong")
     String allowViewAllLong();
 
@@ -300,7 +300,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Allow user to view activity list"
      */
-    @DefaultStringValue("Allow user to view activity list")
+    @DefaultStringValue("Allow user to view form submissions list")
     @Key("allowViewLong")
     String allowViewLong();
 
@@ -556,7 +556,10 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Here you can choose the site where your intervention takes place. Use the filters below to find sites where interventions have already been added. This will make it possible to to link your activities results to other interventions inside and outside of your organization."
      */
-    @DefaultStringValue("Here you can choose the site where your intervention takes place. Use the filters below to find sites where interventions have already been added. This will make it possible to to link your activities results to other interventions inside and outside of your organization.")
+    @DefaultStringValue("Here you can choose the location of your form submission. " +
+                        "Use the filters below to find locations linked to existing form submissions. " +
+                        "This will make it possible to to link your form submissions to other " +
+                        "forms inside and outside of your organization.")
     @Key("chooseLocationDescription")
     String chooseLocationDescription();
 
@@ -893,7 +896,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Delete Site"
      */
-    @DefaultStringValue("Delete Site")
+    @DefaultStringValue("Delete")
     @Key("deleteSite")
     String deleteSite();
 
@@ -1631,7 +1634,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Mandatory"
      */
-    @DefaultStringValue("Mandatory")
+    @DefaultStringValue("Required")
     @Key("mandatory")
     String mandatory();
 
@@ -1699,11 +1702,11 @@ public interface UiConstants extends Constants {
     String name();
 
     /**
-     * Translated "New Activity".
+     * Translated "New Form".
      *
-     * @return translated "New Activity"
+     * @return translated "New Form"
      */
-    @DefaultStringValue("New Activity")
+    @DefaultStringValue("New Form")
     @Key("newActivity")
     String newActivity();
 
@@ -1802,7 +1805,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "New Site"
      */
-    @DefaultStringValue("New Site")
+    @DefaultStringValue("New Submission")
     @Key("newSite")
     String newSite();
 
@@ -1875,7 +1878,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Coodinates must have at least one number"
      */
-    @DefaultStringValue("Coodinates must have at least one number")
+    @DefaultStringValue("Coordinates must have at least one number")
     @Key("noNumber")
     String noNumber();
 
@@ -2643,7 +2646,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Choose the attributes of this intervention"
      */
-    @DefaultStringValue("Choose the attributes of this intervention")
+    @DefaultStringValue("Choose the attributes of this form submission")
     @Key("siteDialogAttributes")
     String siteDialogAttributes();
 
@@ -2652,7 +2655,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Add additional comments for this intervention"
      */
-    @DefaultStringValue("Add additional comments for this intervention")
+    @DefaultStringValue("Add additional comments for this form submission")
     @Key("siteDialogComments")
     String siteDialogComments();
 
@@ -2661,7 +2664,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Enter indicator results for this site"
      */
-    @DefaultStringValue("Enter indicator results for this site")
+    @DefaultStringValue("Enter indicator results for this form submission")
     @Key("siteDialogIndicators")
     String siteDialogIndicators();
 
@@ -2688,7 +2691,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Choose the site of this intervention"
      */
-    @DefaultStringValue("Choose the site of this intervention")
+    @DefaultStringValue("Choose the location linked to this form submission")
     @Key("siteDialogSiteDesc")
     String siteDialogSiteDesc();
 
@@ -2697,7 +2700,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Sorry, the selected site falls within a time period locked by the database owner and cannot be edited."
      */
-    @DefaultStringValue("Sorry, the selected site falls within a time period locked by the database owner and cannot be edited.")
+    @DefaultStringValue("Sorry, the selected form submission falls within a time period locked by the database owner and cannot be edited.")
     @Key("siteIsLocked")
     String siteIsLocked();
 
@@ -2706,7 +2709,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "site(s) are missing geographic coordinates"
      */
-    @DefaultStringValue("site(s) are missing geographic coordinates")
+    @DefaultStringValue("form submissions(s) are missing geographic coordinates")
     @Key("siteLackCoordiantes")
     String siteLackCoordiantes();
 
@@ -3290,7 +3293,7 @@ public interface UiConstants extends Constants {
     @Key("fieldTypeGeographicPoint")
     String fieldTypeGeographicPoint();
 
-    @DefaultStringValue("Big text")
+    @DefaultStringValue("Narrative")
     @Key("fieldTypeBigText")
     String fieldTypeBigText();
 
