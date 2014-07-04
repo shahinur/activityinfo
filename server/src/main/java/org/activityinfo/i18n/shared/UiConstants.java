@@ -3582,4 +3582,10 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("New Location Type")
     String newLocationType();
+
+    @DefaultStringValue("Create")
+    String create();
+
+    @DefaultStringValue("Design form")
+    String designForm();
 }
