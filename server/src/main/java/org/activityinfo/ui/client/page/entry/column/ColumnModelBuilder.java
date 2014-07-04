@@ -269,7 +269,7 @@ public class ColumnModelBuilder {
         // if the activity is published, there may be other partners that
         // we will see
         if ( activity.getPublished() == 1 ||
-             activity.getPartners().size() > 1) {
+             activity.getPartnerRange().size() > 1) {
             addPartnerColumn();
         }
         return this;

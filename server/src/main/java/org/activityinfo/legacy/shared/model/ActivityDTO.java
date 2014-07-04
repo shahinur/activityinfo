@@ -434,11 +434,16 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
         return database.getCountry().getBounds();
     }
 
-    public List<PartnerDTO> getPartners() {
+    /**
+     *
+     * @return the list of allowable values for the partner
+     * field for the requesting user
+     */
+    public List<PartnerDTO> getPartnerRange() {
         return partners;
     }
 
-    public void setPartners(List<PartnerDTO> partners) {
+    public void setPartnerRange(List<PartnerDTO> partners) {
         this.partners = partners;
     }
 
