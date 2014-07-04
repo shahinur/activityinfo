@@ -1,7 +1,6 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:a="urn:import:org.activityinfo.ui.client.widget"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
@@ -9,27 +8,36 @@
 
   <g:AbsolutePanel ui:field="absolutePanel">
     <g:at left='20' top='20'>
-      <g:DecoratorPanel addStyleNames="{style.widgetPanel}">
-        <g:VerticalPanel>
-          <g:Label>Widgets</g:Label>
-          <g:Button addStyleNames="btn btn-xs" text="Single Line Text"/>
-          <g:Button addStyleNames="btn btn-xs" text="Multi Line Text"/>
-          <g:Button addStyleNames="btn btn-xs" text="Number"/>
-          <g:Button addStyleNames="btn btn-xs" text="Dropdown"/>
-          <g:Button addStyleNames="btn btn-xs" text="Section break"/>
-        </g:VerticalPanel>
-      </g:DecoratorPanel>
+      <g:HTMLPanel>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b>Widgets</b>
+          </div>
+          <g:VerticalPanel addStyleNames="panel-body">
+            <g:Button addStyleNames="btn btn-primary btn-xs control" text="Single Line Text" ui:field="singleTextField"/>
+            <g:Button addStyleNames="btn btn-primary btn-xs control" text="Multi Line Text" ui:field="multiTextField"/>
+            <g:Button addStyleNames="btn btn-primary btn-xs control" text="Number" ui:field="numberField"/>
+            <g:Button addStyleNames="btn btn-primary btn-xs control" text="Dropdown" ui:field="dropDownField"/>
+            <g:Button addStyleNames="btn btn-default btn-xs control" text="Section break" ui:field="section"/>
+          </g:VerticalPanel>
+        </div>
+      </g:HTMLPanel>
     </g:at>
     <g:at left='20' top='200'>
-      <g:DecoratorPanel addStyleNames="{style.propertiesPanel}">
-        <g:Label>Properties</g:Label>
-      </g:DecoratorPanel>
+      <g:HTMLPanel>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b>Properties</b>
+          </div>
+          <div class="panel-body">
+            Properties content
+          </div>
+        </div>
+      </g:HTMLPanel>
     </g:at>
-
     <g:at left='200' top='20'>
-      <g:DecoratorPanel addStyleNames="{style.mainPanel}">
-        <g:Label>Main</g:Label>
-      </g:DecoratorPanel>
+      <g:HTMLPanel addStyleNames="{style.mainPanel}" width="100%" height="100%">
+      </g:HTMLPanel>
     </g:at>
   </g:AbsolutePanel>
 </ui:UiBinder>

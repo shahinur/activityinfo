@@ -33,6 +33,9 @@ public interface FormDesignerStyles extends Stylesheet{
 
     public static final FormDesignerStyles INSTANCE = GWT.create(FormDesignerStyles.class);
 
+    @ClassName("control")
+    String control();
+
     @ClassName("widget-panel")
     String widgetPanel();
 

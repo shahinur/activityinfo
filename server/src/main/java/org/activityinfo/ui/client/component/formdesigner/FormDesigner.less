@@ -1,17 +1,24 @@
 @import (reference) "../../style/bootstrap/variables.less";
 @import (reference) "../../style/bootstrap/mixins.less";
 
+@form-panel-bg: @state-info-bg;
+@form-panel-text: @alert-info-text;
+
+.control {
+  margin: 2px !important;
+}
+
 .widget-panel {
-  background-color: @state-info-bg;
-  color: @label-color;
+  background-color: @form-panel-bg;
+  color: @form-panel-text;
 }
 
 .properties-panel {
-  background-color: @state-info-bg;
-  color: @label-color;
+  background-color: @form-panel-bg;
+  color: @form-panel-text;
 }
 
 .main-panel {
-  background-color: @state-info-bg;
-  color: @label-color;
+  background-color: @form-panel-bg;
+  color: @form-panel-text;
 }
