@@ -12,6 +12,8 @@ import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.ParentCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.ui.client.page.*;
+import org.activityinfo.ui.client.page.formdesigner.FormDesignerPage;
+import org.activityinfo.ui.client.page.formdesigner.FormDesignerPlace;
 import org.activityinfo.ui.client.page.instance.InstancePage;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
 import org.activityinfo.ui.client.style.BaseStylesheet;
@@ -37,6 +39,9 @@ public class PageLoader implements org.activityinfo.ui.client.page.PageLoader {
         pageManager.registerPageLoader(InstancePage.PAGE_ID, this);
         placeSerializer.registerParser(InstancePage.PAGE_ID, new InstancePlace.Parser());
 
+        pageManager.registerPageLoader(FormDesignerPage.PAGE_ID, this);
+        placeSerializer.registerParser(FormDesignerPage.PAGE_ID, new FormDesignerPlace.Parser());
+
     }
 
     @Override
@@ -52,6 +57,10 @@ public class PageLoader implements org.activityinfo.ui.client.page.PageLoader {
 
                 } else if (pageState instanceof InstancePlace) {
                     InstancePage page = new InstancePage(resourceLocator);
+                    page.navigate(pageState);
+                    callback.onSuccess(page);
+                } else if (pageState instanceof FormDesignerPlace) {
+                    FormDesignerPage page = new FormDesignerPage(resourceLocator);
                     page.navigate(pageState);
                     callback.onSuccess(page);
                 }

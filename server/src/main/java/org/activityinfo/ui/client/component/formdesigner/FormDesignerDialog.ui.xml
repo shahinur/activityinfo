@@ -1,0 +1,26 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:a="urn:import:org.activityinfo.ui.client.widget"
+             xmlns:designer="urn:import:org.activityinfo.ui.client.component.formdesigner"
+        >
+
+  <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
+
+  <a:ModalHeaderPanel>
+
+    <a:ModalTitle text="{i18n.designForm}"/>
+
+    <!-- Center -->
+    <designer:FormDesignerPanel ui:field="contentPanel" height="100%"/>
+
+    <!-- Bottom Panel -->
+    <g:HTMLPanel styleName="footer">
+      <a:Button ui:field="cancelButton" style="DEFAULT" text="{i18n.cancel}" tabIndex="1001"/>&nbsp;
+      <a:Button ui:field="createButton" style="PRIMARY" text="{i18n.create}" tabIndex="1004"/>
+      <span ui:field="statusText"/>
+    </g:HTMLPanel>
+
+  </a:ModalHeaderPanel>
+
+</ui:UiBinder>
