@@ -21,33 +21,26 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.bedatadriven.rebar.style.client.Source;
+import com.bedatadriven.rebar.style.client.Stylesheet;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author yuriyz on 07/04/2014.
  */
-public class FormDesignerPanel extends Composite {
+@Source("FormDesigner.less")
+public interface FormDesignerStyles extends Stylesheet{
 
-    private static OurUiBinder uiBinder = GWT
-            .create(OurUiBinder.class);
+    public static final FormDesignerStyles INSTANCE = GWT.create(FormDesignerStyles.class);
 
-    interface OurUiBinder extends UiBinder<Widget, FormDesignerPanel> {
-    }
+    @ClassName("widget-panel")
+    String widgetPanel();
 
-    private final PickupDragController dragController;
+    @ClassName("properties-panel")
+    String propertiesPanel();
 
-    @UiField
-    AbsolutePanel absolutePanel;
+    @ClassName("main-panel")
+    String mainPanel();
 
-    public FormDesignerPanel() {
-        FormDesignerStyles.INSTANCE.ensureInjected();
-        initWidget(uiBinder.createAndBindUi(this));
-        dragController = new PickupDragController(absolutePanel, true);
-    }
+
 }

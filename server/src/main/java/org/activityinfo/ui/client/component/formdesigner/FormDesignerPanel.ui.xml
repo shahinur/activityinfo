@@ -1,16 +1,35 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:a="urn:import:org.activityinfo.ui.client.widget"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
+  <ui:with field="style" type="org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles"/>
 
-  <g:DockLayoutPanel>
-    <g:west size="100">
-      <g:HTML>Widgets</g:HTML>
-    </g:west>
-    <g:center>
-      <g:HTML>Main panel</g:HTML>
-    </g:center>
-  </g:DockLayoutPanel>
+  <g:AbsolutePanel ui:field="absolutePanel">
+    <g:at left='20' top='20'>
+      <g:DecoratorPanel addStyleNames="{style.widgetPanel}">
+        <g:VerticalPanel>
+          <g:Label>Widgets</g:Label>
+          <g:Button addStyleNames="btn btn-xs" text="Single Line Text"/>
+          <g:Button addStyleNames="btn btn-xs" text="Multi Line Text"/>
+          <g:Button addStyleNames="btn btn-xs" text="Number"/>
+          <g:Button addStyleNames="btn btn-xs" text="Dropdown"/>
+          <g:Button addStyleNames="btn btn-xs" text="Section break"/>
+        </g:VerticalPanel>
+      </g:DecoratorPanel>
+    </g:at>
+    <g:at left='20' top='200'>
+      <g:DecoratorPanel addStyleNames="{style.propertiesPanel}">
+        <g:Label>Properties</g:Label>
+      </g:DecoratorPanel>
+    </g:at>
+
+    <g:at left='200' top='20'>
+      <g:DecoratorPanel addStyleNames="{style.mainPanel}">
+        <g:Label>Main</g:Label>
+      </g:DecoratorPanel>
+    </g:at>
+  </g:AbsolutePanel>
 </ui:UiBinder>

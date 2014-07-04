@@ -5,7 +5,6 @@
              xmlns:designer="urn:import:org.activityinfo.ui.client.component.formdesigner"
         >
 
-
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
 
   <a:ModalHeaderPanel>
