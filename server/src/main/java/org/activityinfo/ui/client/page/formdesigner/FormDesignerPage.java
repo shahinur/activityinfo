@@ -27,6 +27,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerDialog;
 import org.activityinfo.ui.client.page.NavigationCallback;
 import org.activityinfo.ui.client.page.Page;
 import org.activityinfo.ui.client.page.PageId;
@@ -52,7 +53,8 @@ public class FormDesignerPage implements Page {
 
     @UiHandler(value = "createForm")
     public void onCreateForm(ClickEvent event) {
-
+        FormDesignerDialog dialog = new FormDesignerDialog();
+        dialog.show();
     }
 
     @Override
