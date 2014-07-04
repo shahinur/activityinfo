@@ -421,15 +421,6 @@ public interface UiConstants extends Constants {
     @Key("basemap")
     String basemap();
 
-    /**
-     * Translated "Searching..".
-     *
-     * @return translated "Searching.."
-     */
-    @DefaultStringValue("Searching..")
-    @Key("busySearching")
-    String busySearching();
-
     @DefaultStringValue("OK")
     @Key("ok")
     String ok();
@@ -2459,78 +2450,6 @@ public interface UiConstants extends Constants {
     String searchLocations();
 
     /**
-     * Translated "activity".
-     *
-     * @return translated "activity"
-     */
-    @DefaultStringValue("activity")
-    @Key("searchPrefixActivity")
-    String searchPrefixActivity();
-
-    /**
-     * Translated "admin".
-     *
-     * @return translated "admin"
-     */
-    @DefaultStringValue("admin")
-    @Key("searchPrefixAdminLevel")
-    String searchPrefixAdminLevel();
-
-    /**
-     * Translated "attrib".
-     *
-     * @return translated "attrib"
-     */
-    @DefaultStringValue("attrib")
-    @Key("searchPrefixAttrib")
-    String searchPrefixAttrib();
-
-    /**
-     * Translated "database".
-     *
-     * @return translated "database"
-     */
-    @DefaultStringValue("database")
-    @Key("searchPrefixDatabase")
-    String searchPrefixDatabase();
-
-    /**
-     * Translated "indicator".
-     *
-     * @return translated "indicator"
-     */
-    @DefaultStringValue("indicator")
-    @Key("searchPrefixIndicator")
-    String searchPrefixIndicator();
-
-    /**
-     * Translated "site".
-     *
-     * @return translated "site"
-     */
-    @DefaultStringValue("site")
-    @Key("searchPrefixLocation")
-    String searchPrefixLocation();
-
-    /**
-     * Translated "partner".
-     *
-     * @return translated "partner"
-     */
-    @DefaultStringValue("partner")
-    @Key("searchPrefixPartner")
-    String searchPrefixPartner();
-
-    /**
-     * Translated "project".
-     *
-     * @return translated "project"
-     */
-    @DefaultStringValue("project")
-    @Key("searchPrefixProject")
-    String searchPrefixProject();
-
-    /**
      * Translated "Matching sites".
      *
      * @return translated "Matching sites"
@@ -3332,14 +3251,6 @@ public interface UiConstants extends Constants {
     @Key("home")
     String home();
 
-    @DefaultStringValue("A value with this name already exists.")
-    @Key("duplicateValues")
-    String duplicateValues();
-
-    @DefaultStringValue("New")
-    @Key("newInstancePrefix")
-    String newInstancePrefix();
-
     @DefaultStringValue("Control is empty")
     @Key("validationControlIsEmpty")
     String validationControlIsEmpty();
@@ -3348,51 +3259,15 @@ public interface UiConstants extends Constants {
     @Key("range")
     String range();
 
-    @DefaultStringValue("New form class")
-    @Key("newFormClass")
-    String newFormClass();
-
-    @DefaultStringValue("Value was not changed")
-    @Key("valueNotChanged")
-    String valueNotChanged();
-
     @DefaultStringValue("« Previous")
     String previousButton();
 
     @DefaultStringValue("Next »")
     String nextButton();
 
-    @DefaultStringValue("Reference values")
-    @Key("fieldTypeReferenceValues")
-    String fieldTypeReferenceValues();
-
-    @DefaultStringValue("New form")
-    @Key("newForm")
-    String newForm();
-
-    @DefaultStringValue("Refer to")
-    @Key("referTo")
-    String referTo();
-
-    @DefaultStringValue("Select from")
-    @Key("selectFrom")
-    String selectFrom();
-
-    @DefaultStringValue("Choose from another form")
-    @Key("chooseExistingFormClass")
-    String chooseExistingFormClass();
-
-    @DefaultStringValue("Current form")
-    @Key("currentFormClass")
-    String currentFormClass();
-
     @DefaultStringValue("Bulk edit")
     @Key("bulkEdit")
     String bulkEdit();
-
-    @DefaultStringValue("Move left")
-    @Key("moveLeft")
-    String moveLeft();
 
     @DefaultStringValue("Move right")
     @Key("moveRight")
@@ -3507,9 +3382,6 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Import data from a spreadsheet")
     String importDialogTitle();
 
-    @DefaultStringValue("Mapping validation result")
-    String mappingValidationResult();
-
     @DefaultStringValue("Rows validation result")
     String rowsValidationResult();
 
@@ -3549,12 +3421,6 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Allow editing ONLY by users with 'design' privileges")
     String partOfWorkflow();
-
-    @DefaultStringValue("Switch to page view")
-    String switchToPageVeiw();
-
-    @DefaultStringValue("Pin to dashboard")
-    String pinToDashboard();
 
     @DefaultStringValue("Clustered bar")
     String clusteredBar();
