@@ -2,7 +2,6 @@ package org.activityinfo.core.shared.criteria;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.Iri;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.form.FormInstance;
 
@@ -22,10 +21,6 @@ public class ClassCriteria implements Criteria {
 
     public ClassCriteria(Cuid cuid) {
         this.classId = cuid;
-    }
-
-    public Iri getClassIri() {
-        return classId.asIri();
     }
 
     @Override

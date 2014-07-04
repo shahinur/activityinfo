@@ -57,7 +57,7 @@ public class PersistImportCommand implements ImportCommand<Void> {
             ValidatedRow validatedRow = validatedRowTable.getRow(row);
             if (validatedRow.isValid()) { // persist instance only if it's valid
                 // new instance per row
-                FormInstance newInstance = new FormInstance(CuidAdapter.newFormInstance(formClassId), formClassId);
+                FormInstance newInstance = new FormInstance(CuidAdapter.newLegacyFormInstanceId(formClassId), formClassId);
                 for (FieldImporter importer : commandExecutor.getImporters()) {
                     importer.updateInstance(row, newInstance);
                 }

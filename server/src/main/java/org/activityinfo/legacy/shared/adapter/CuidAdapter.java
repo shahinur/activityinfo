@@ -4,15 +4,11 @@ import com.google.common.base.Strings;
 import org.activityinfo.core.client.CuidGenerator;
 import org.activityinfo.core.shared.Cuid;
 import org.activityinfo.core.shared.Cuids;
-import org.activityinfo.core.shared.Iri;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.EntityDTO;
-import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
-
-import javax.annotation.Nonnull;
 
 /**
  * Provides an adapter between legacy ids, which are either random or sequential 32-bit integers but only
@@ -76,8 +72,7 @@ public class CuidAdapter {
     private CuidAdapter() {
     }
 
-    // todo yuriyz -> alex : please check it
-    public static Cuid newFormInstance(Cuid formClassId) {
+    public static Cuid newLegacyFormInstanceId(Cuid formClassId) {
         if (formClassId != null) {
             final int newId = new KeyGenerator().generateInt();
             switch (formClassId.getDomain()) {
@@ -92,25 +87,8 @@ public class CuidAdapter {
         return CuidGenerator.INSTANCE.nextCuid();
     }
 
-    public static Cuid newFormInstance() {
-        return attributeId(new KeyGenerator().generateInt());
-    }
-
-    // todo yuriyz -> alex : please check it, right now used to add new form class in inline reference panel
-    public static Cuid newFormClass() {
-        return CuidAdapter.cuid('z', new KeyGenerator().generateInt());
-    }
-
     public static Cuid getFormInstanceLabelCuid(FormInstance formInstance) {
         return CuidAdapter.field(formInstance.getClassId(), NAME_FIELD);
-    }
-
-    public static int getLegacyIdFromCuidIri(@Nonnull Iri iri) {
-        String iriAsString = iri.asString();
-        if (iriAsString.startsWith(Cuids.IRI_PREFIX)) {
-            iriAsString = iriAsString.substring(Cuids.IRI_PREFIX.length());
-        }
-        return Integer.parseInt(iriAsString.substring(1), Cuids.RADIX);
     }
 
     public static final int getLegacyIdFromCuid(String cuid) {
@@ -119,10 +97,6 @@ public class CuidAdapter {
 
     public static final Cuid cuid(char domain, int id) {
         return new Cuid(domain + block(id));
-    }
-
-    public static final Iri iri(char domain, int id) {
-        return cuid(domain, id).asIri();
     }
 
     public static int getLegacyIdFromCuid(Cuid id) {

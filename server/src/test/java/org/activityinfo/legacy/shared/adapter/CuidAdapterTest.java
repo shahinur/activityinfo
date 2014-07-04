@@ -23,7 +23,6 @@ package org.activityinfo.legacy.shared.adapter;
 
 import org.activityinfo.core.shared.Cuid;
 import org.activityinfo.core.shared.Cuids;
-import org.activityinfo.core.shared.Iri;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,14 +51,4 @@ public class CuidAdapterTest {
         assertThat(CuidAdapter.getBlock(fieldId, 1), equalTo(CuidAdapter.ADMIN_FIELD));
     }
 
-    @Test
-    public void cuidConversion() {
-        int groupId = 1262;
-        final Iri iri = CuidAdapter.attributeGroupFormClass(groupId).asIri();
-        correct(groupId, iri);
-    }
-
-    public static void correct(int expectedValue, Iri iri) {
-        Assert.assertEquals(expectedValue, CuidAdapter.getLegacyIdFromCuidIri(iri));
-    }
 }

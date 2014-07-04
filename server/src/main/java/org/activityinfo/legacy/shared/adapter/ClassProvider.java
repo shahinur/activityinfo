@@ -55,7 +55,7 @@ public class ClassProvider implements Function<Cuid, Promise<FormClass>> {
 
 
             default:
-                return Promise.rejected(new NotFoundException(classId.asIri()));
+                return Promise.rejected(new NotFoundException(classId));
         }
     }
 

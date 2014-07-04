@@ -20,10 +20,6 @@ public final class Cuid {
         return value;
     }
 
-    public Iri asIri() {
-        return new Iri(Cuids.IRI_PREFIX + value);
-    }
-
     public char getDomain() {
         return value.charAt(0);
     }

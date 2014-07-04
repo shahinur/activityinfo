@@ -3,14 +3,12 @@ package org.activityinfo.core.shared.form;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.Iri;
 import org.activityinfo.core.shared.LocalizedString;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.Criteria;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,7 +26,6 @@ public class FormField implements FormElement {
     private String calculation;
     private boolean readOnly;
     private boolean visible = true;
-    private List<Iri> dimensions;
     private Set<Cuid> superProperties = Sets.newHashSet();
     private boolean required;
     private FormFieldCardinality cardinality;
@@ -152,14 +149,6 @@ public class FormField implements FormElement {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-    public List<Iri> getDimensions() {
-        return dimensions;
-    }
-
-    public void setDimensions(List<Iri> dimensions) {
-        this.dimensions = dimensions;
     }
 
     @Override
