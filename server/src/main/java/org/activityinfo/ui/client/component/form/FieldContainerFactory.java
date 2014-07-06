@@ -1,6 +1,6 @@
 package org.activityinfo.ui.client.component.form;
 
-import org.activityinfo.core.shared.form.FormField;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 
 /**

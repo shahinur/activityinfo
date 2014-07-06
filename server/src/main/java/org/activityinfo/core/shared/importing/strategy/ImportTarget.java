@@ -1,7 +1,7 @@
 package org.activityinfo.core.shared.importing.strategy;
 
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormField;
 
 /**
  * Some fields can have multiple binding "sites" to which columns
@@ -13,16 +13,16 @@ public class ImportTarget {
     private final FormField formField;
     private final TargetSiteId site;
     private final String label;
-    private final Cuid formClassId;
+    private final ResourceId formClassId;
 
-    public ImportTarget(FormField formField, TargetSiteId site, String label, Cuid formClassId) {
+    public ImportTarget(FormField formField, TargetSiteId site, String label, ResourceId formClassId) {
         this.formField = formField;
         this.site = site;
         this.label = label;
         this.formClassId = formClassId;
     }
 
-    public Cuid getFormClassId() {
+    public ResourceId getFormClassId() {
         return formClassId;
     }
 

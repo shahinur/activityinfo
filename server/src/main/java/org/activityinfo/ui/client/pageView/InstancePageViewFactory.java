@@ -2,9 +2,9 @@ package org.activityinfo.ui.client.pageView;
 
 import com.google.common.base.Function;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.FolderClass;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.adapter.FolderListAdapter;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
@@ -33,7 +33,7 @@ public class InstancePageViewFactory implements Function<FormInstance, DisplayWi
             return new GeodbPageView(resourceLocator);
         }
 
-        Cuid classId = instance.getClassId();
+        ResourceId classId = instance.getClassId();
         if(classId.equals(FolderClass.CLASS_ID)) {
             return new FolderPageView(resourceLocator);
         } else if(classId.equals(FormClass.CLASS_ID)) {

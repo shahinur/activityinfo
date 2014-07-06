@@ -1,8 +1,8 @@
 package org.activityinfo.core.client.form.tree;
 
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
@@ -25,7 +25,7 @@ public class AsyncFormTreeBuilderTest extends CommandTestCase2 {
     public void treeResolver() {
         ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
         AsyncFormTreeBuilder treeBuilder = new AsyncFormTreeBuilder(locator);
-        Cuid formClassId = CuidAdapter.activityFormClass(1);
+        ResourceId formClassId = CuidAdapter.activityFormClass(1);
         FormTree tree = assertResolves(treeBuilder.apply(formClassId));
 
         System.out.println(tree);

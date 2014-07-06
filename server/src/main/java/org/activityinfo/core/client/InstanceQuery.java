@@ -1,10 +1,10 @@
 package org.activityinfo.core.client;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.criteria.NullCriteria;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class InstanceQuery {
     }
 
 
-    public static Builder select(Cuid... fieldIds) {
+    public static Builder select(ResourceId... fieldIds) {
         return new Builder().select(fieldIds);
     }
 
@@ -68,8 +68,8 @@ public class InstanceQuery {
             return this;
         }
 
-        public Builder select(Cuid... fields) {
-            for (Cuid fieldId : fields) {
+        public Builder select(ResourceId... fields) {
+            for (ResourceId fieldId : fields) {
                 paths.add(new FieldPath(fieldId));
             }
             return this;

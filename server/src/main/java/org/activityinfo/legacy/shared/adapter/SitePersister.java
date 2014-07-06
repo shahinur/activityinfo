@@ -3,7 +3,7 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.adapter.bindings.SiteBinding;

@@ -22,10 +22,10 @@ package org.activityinfo.ui.client.component.importDialog;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
 
 import javax.annotation.Nullable;

@@ -25,10 +25,10 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.Resource;
 import org.activityinfo.core.shared.model.AiLatLng;
-import org.activityinfo.legacy.shared.model.DTO;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
@@ -40,12 +40,12 @@ import java.util.Set;
 /**
  * @author yuriyz on 1/29/14.
  */
-public class FormInstance implements Resource {
+public class FormInstance implements IsResource {
 
-    private Cuid id;
-    private Cuid classId;
-    private final Map<Cuid, Object> valueMap = Maps.newHashMap();
-    private Cuid parentId;
+    private ResourceId id;
+    private ResourceId classId;
+    private final Map<ResourceId, Object> valueMap = Maps.newHashMap();
+    private ResourceId parentId;
 
     /**
      * Constructs a new FormInstance. To obtain an id for a new instance
@@ -54,58 +54,59 @@ public class FormInstance implements Resource {
      * @param id the id of the instance.
      * @param classId the id of this form's class
      */
-    public FormInstance(@Nonnull Cuid id, @Nonnull Cuid classId) {
+    public FormInstance(@Nonnull ResourceId id, @Nonnull ResourceId classId) {
         Preconditions.checkNotNull(id, classId);
         this.id = id;
         this.classId = classId;
     }
 
     @Override
-    public Cuid getId() {
+    public ResourceId getId() {
         return id;
     }
 
-    public Cuid getClassId() {
+    @Override
+    public org.activityinfo.model.resource.Resource asResource() {
+        throw new UnsupportedOperationException();
+    }
+
+    public ResourceId getClassId() {
         return classId;
     }
 
-    public void setParentId(Cuid parentId) {
+    public void setParentId(ResourceId parentId) {
         this.parentId = parentId;
     }
 
-    public Cuid getParentId() {
+    public ResourceId getParentId() {
         return parentId;
     }
 
-    public Map<Cuid, Object> getValueMap() {
+    public Map<ResourceId, Object> getValueMap() {
         return valueMap;
     }
 
-    public void removeAll(Set<Cuid> fieldIds) {
-        for (Cuid fieldId : fieldIds) {
+    public void removeAll(Set<ResourceId> fieldIds) {
+        for (ResourceId fieldId : fieldIds) {
             valueMap.remove(fieldId);
         }
     }
 
-    public void set(@NotNull Cuid fieldId, Object fieldValue) {
+    public void set(@NotNull ResourceId fieldId, Object fieldValue) {
         Preconditions.checkNotNull(fieldId);
         if (fieldValue instanceof LocalDate) {
             // not sure if we want to use LocalDate or Date here -- may only matter at the moment
             // of serialization
             fieldValue = ((LocalDate) fieldValue).atMidnightInMyTimezone();
         }
-        if (fieldValue instanceof DTO) {
-            throw new IllegalArgumentException("Please use cuid reference instead of legacy class.");
-        }
-
         valueMap.put(fieldId, fieldValue);
     }
 
-    public Object get(Cuid fieldId) {
+    public Object get(ResourceId fieldId) {
         return valueMap.get(fieldId);
     }
 
-    public String getString(Cuid fieldId) {
+    public String getString(ResourceId fieldId) {
         final Object value = get(fieldId);
         if (value instanceof String) {
             return (String) value;
@@ -113,7 +114,7 @@ public class FormInstance implements Resource {
         return null;
     }
 
-    public LocalDate getDate(Cuid fieldId) {
+    public LocalDate getDate(ResourceId fieldId) {
         final Object value = get(fieldId);
         if (value instanceof Date) {
             return (LocalDate) value;
@@ -121,26 +122,26 @@ public class FormInstance implements Resource {
         return null;
     }
 
-    public Cuid getInstanceId(Cuid fieldId) {
+    public ResourceId getInstanceId(ResourceId fieldId) {
         final Object value = get(fieldId);
-        if(value instanceof Cuid) {
-            return (Cuid) value;
+        if(value instanceof ResourceId) {
+            return (ResourceId) value;
         }
         return null;
     }
 
 
-    public Set<Cuid> getReferences(Cuid fieldId) {
+    public Set<ResourceId> getReferences(ResourceId fieldId) {
         final Object value = get(fieldId);
-        if(value instanceof Cuid) {
-            return Collections.singleton((Cuid)value);
+        if(value instanceof ResourceId) {
+            return Collections.singleton((ResourceId)value);
         } else if(value instanceof Set) {
-            return (Set<Cuid>)value;
+            return (Set<ResourceId>)value;
         }
         return Sets.newHashSet();
     }
 
-    public Double getDouble(Cuid fieldId) {
+    public Double getDouble(ResourceId fieldId) {
         final Object value = get(fieldId);
         if (value instanceof Double) {
             return (Double) value;
@@ -154,7 +155,7 @@ public class FormInstance implements Resource {
         return copy;
     }
 
-    public AiLatLng getPoint(Cuid fieldId) {
+    public AiLatLng getPoint(ResourceId fieldId) {
         final Object value = get(fieldId);
         if (value instanceof AiLatLng) {
             return (AiLatLng) value;

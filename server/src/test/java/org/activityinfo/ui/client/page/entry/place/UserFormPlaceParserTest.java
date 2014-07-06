@@ -22,7 +22,7 @@ package org.activityinfo.ui.client.page.entry.place;
  */
 
 import junit.framework.Assert;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.junit.Test;
 
 /**
@@ -37,7 +37,7 @@ public class UserFormPlaceParserTest {
 
     @Test
     public void formAndInstanceIdPresent() {
-        assertCorrect(new UserFormPlace(new Cuid("adf"), new Cuid("sdf")));
+        assertCorrect(new UserFormPlace(ResourceId.create("adf"), ResourceId.create("sdf")));
     }
 
     @Test

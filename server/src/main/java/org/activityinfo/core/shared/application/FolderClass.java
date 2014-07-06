@@ -1,19 +1,19 @@
 package org.activityinfo.core.shared.application;
 
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 
 /**
  * Defines a system-level FormClass of folders
  */
 public class FolderClass {
 
-    public static final Cuid CLASS_ID = new Cuid("_folder");
+    public static final ResourceId CLASS_ID = ResourceId.create("_folder");
 
-    public static final Cuid LABEL_FIELD_ID = new Cuid("_folder_label");
+    public static final ResourceId LABEL_FIELD_ID = ResourceId.create("_folder_label");
 
-    public static final Cuid DESCRIPTION_FIELD_ID = new Cuid("_folder_description");
+    public static final ResourceId DESCRIPTION_FIELD_ID = ResourceId.create("_folder_description");
 
     public static final FormClass get() {
 

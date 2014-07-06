@@ -1,11 +1,11 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Strings;
-import org.activityinfo.core.shared.Cuid;
-import java.lang.String;
-import org.activityinfo.core.shared.form.*;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.*;
 
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityCategoryFolderId;
 
@@ -25,7 +25,7 @@ public class ActivityUserFormBuilder {
     }
 
     public FormClass build() {
-        Cuid classId = CuidAdapter.activityFormClass(activity.getId());
+        ResourceId classId = CuidAdapter.activityFormClass(activity.getId());
 
         siteForm = new FormClass(classId);
         siteForm.setLabel(activity.getName());
@@ -108,7 +108,7 @@ public class ActivityUserFormBuilder {
         return siteForm;
     }
 
-    private static Cuid locationClass(LocationTypeDTO locationType) {
+    private static ResourceId locationClass(LocationTypeDTO locationType) {
         if (locationType.isAdminLevel()) {
             return CuidAdapter.adminLevelFormClass(locationType.getBoundAdminLevelId());
         } else {

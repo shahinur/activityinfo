@@ -2,11 +2,11 @@ package org.activityinfo.ui.client.component.form.model;
 
 import com.google.common.base.Function;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormFieldCardinality;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormFieldCardinality;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.tree.FormTree;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.promise.Promise;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class SimpleListViewModel implements FieldViewModel {
     }
 
     @Override
-    public Cuid getFieldId() {
+    public ResourceId getFieldId() {
         return null;
     }
 

@@ -1,8 +1,8 @@
 package org.activityinfo.legacy.shared.model;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 
 public interface IsFormClass {
 
-    Cuid getResourceId();
+    ResourceId getResourceId();
 }

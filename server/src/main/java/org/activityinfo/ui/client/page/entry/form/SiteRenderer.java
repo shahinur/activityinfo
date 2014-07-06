@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.page.entry.form;
 
 import com.google.common.base.Strings;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.type.IndicatorValueFormatter;

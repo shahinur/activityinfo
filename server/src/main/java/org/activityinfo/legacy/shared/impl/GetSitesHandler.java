@@ -39,7 +39,7 @@ import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.core.shared.expr.*;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.command.DimensionType;

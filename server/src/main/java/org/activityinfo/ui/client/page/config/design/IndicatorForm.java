@@ -31,7 +31,7 @@ import com.google.gwt.core.client.GWT;
 import org.activityinfo.core.shared.expr.ExprLexer;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.core.shared.form.FormFieldTypeLables;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;

@@ -1,6 +1,6 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
@@ -26,7 +26,7 @@ public class SiteBinding extends ModelBinding<SiteDTO> {
         return activity;
     }
 
-    public Cuid getLocationField() {
+    public ResourceId getLocationField() {
         return locationField(activity.getId());
     }
 

@@ -1,11 +1,10 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
-import org.activityinfo.core.shared.Cuid;
-import java.lang.String;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.FormField;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
@@ -26,7 +25,7 @@ public class AttributeClassAdapter implements Function<SchemaDTO, FormClass> {
     @Nullable @Override
     public FormClass apply(@Nullable SchemaDTO schema) {
         AttributeGroupDTO group = schema.getAttributeGroupById(attributeGroupId);
-        Cuid classId = CuidAdapter.attributeGroupFormClass(group);
+        ResourceId classId = CuidAdapter.attributeGroupFormClass(group);
         FormClass formClass = new FormClass(classId);
         formClass.setLabel(group.getName());
 

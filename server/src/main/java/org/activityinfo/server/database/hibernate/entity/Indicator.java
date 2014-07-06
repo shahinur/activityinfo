@@ -22,7 +22,7 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 
 import javax.persistence.*;
 import java.util.Date;

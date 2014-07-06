@@ -2,17 +2,17 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
 import org.activityinfo.core.client.NotFoundException;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.ApplicationClassProvider;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.GetFormViewModel;
 import org.activityinfo.legacy.shared.command.GetSchema;
 
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.*;
 
-public class ClassProvider implements Function<Cuid, Promise<FormClass>> {
+public class ClassProvider implements Function<ResourceId, Promise<FormClass>> {
     private final Dispatcher dispatcher;
     private final ApplicationClassProvider systemClassProvider = new ApplicationClassProvider();
 
@@ -21,7 +21,7 @@ public class ClassProvider implements Function<Cuid, Promise<FormClass>> {
     }
 
     @Override
-    public Promise<FormClass> apply(Cuid classId) {
+    public Promise<FormClass> apply(ResourceId classId) {
         switch (classId.getDomain()) {
             case ACTIVITY_DOMAIN:
                 int activityId = getLegacyIdFromCuid(classId);

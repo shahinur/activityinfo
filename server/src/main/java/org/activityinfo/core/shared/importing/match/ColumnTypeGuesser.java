@@ -23,7 +23,7 @@ package org.activityinfo.core.shared.importing.match;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.core.shared.type.converter.Converter;
 import org.activityinfo.core.shared.type.converter.ConverterFactory;
 

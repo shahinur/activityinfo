@@ -1,12 +1,11 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
-import org.activityinfo.core.shared.Cuid;
-import java.lang.String;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.FormField;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
@@ -25,7 +24,7 @@ public class AdminLevelClassAdapter implements Function<SchemaDTO, FormClass> {
     }
 
 
-    public static Cuid getNameFieldId(Cuid classId) {
+    public static ResourceId getNameFieldId(ResourceId classId) {
         return CuidAdapter.field(classId, CuidAdapter.NAME_FIELD);
     }
 
@@ -33,7 +32,7 @@ public class AdminLevelClassAdapter implements Function<SchemaDTO, FormClass> {
     public FormClass apply(SchemaDTO schema) {
         AdminLevelDTO adminLevel = schema.getAdminLevelById(adminLevelId);
 
-        Cuid classId = adminLevelFormClass(adminLevelId);
+        ResourceId classId = adminLevelFormClass(adminLevelId);
         FormClass formClass = new FormClass(classId);
         formClass.setLabel(adminLevel.getName());
 

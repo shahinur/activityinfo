@@ -16,7 +16,7 @@ import org.activityinfo.core.shared.importing.strategy.ImportTarget;
 import org.activityinfo.core.shared.importing.validation.ValidatedRow;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.ui.client.component.importDialog.Importer;

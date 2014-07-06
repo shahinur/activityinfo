@@ -1,6 +1,6 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.DTO;
@@ -14,11 +14,11 @@ import static org.activityinfo.legacy.shared.adapter.CuidAdapter.getLegacyIdFrom
  * Created by alex on 2/22/14.
  */
 public class NestedFieldBinding implements FieldBinding<EntityDTO> {
-    private final Cuid fieldId;
+    private final ResourceId fieldId;
     private final char domain;
     private final String propertyName;
 
-    public NestedFieldBinding(Cuid fieldId, char domain, String propertyName) {
+    public NestedFieldBinding(ResourceId fieldId, char domain, String propertyName) {
         this.fieldId = fieldId;
         this.domain = domain;
         this.propertyName = propertyName;
@@ -34,9 +34,9 @@ public class NestedFieldBinding implements FieldBinding<EntityDTO> {
 
     @Override
     public void populateChangeMap(FormInstance instance, Map<String, Object> changeMap) {
-        Cuid cuid = instance.getInstanceId(fieldId);
-        if (cuid != null) {
-            changeMap.put(propertyName + "Id", getLegacyIdFromCuid(cuid));
+        ResourceId resourceId = instance.getInstanceId(fieldId);
+        if (resourceId != null) {
+            changeMap.put(propertyName + "Id", getLegacyIdFromCuid(resourceId));
         }
     }
 }

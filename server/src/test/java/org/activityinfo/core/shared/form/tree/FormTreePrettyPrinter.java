@@ -3,8 +3,9 @@ package org.activityinfo.core.shared.form.tree;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.formTree.FormTree;
 
 import java.io.PrintWriter;
 import java.util.Collections;
@@ -33,7 +34,7 @@ public class FormTreePrettyPrinter {
         pw.flush();
     }
 
-    private void printFields(int indent, List<FormTree.Node> nodes, Cuid formClassId) {
+    private void printFields(int indent, List<FormTree.Node> nodes, ResourceId formClassId) {
 
         // print data fields first
         for(FormTree.Node node : nodes) {
@@ -62,11 +63,11 @@ public class FormTreePrettyPrinter {
     }
 
     private List<FormClass> distinctFormClasses(List<FormTree.Node> nodes) {
-        Set<Cuid> formClassIds = Sets.newHashSet();
+        Set<ResourceId> formClassIds = Sets.newHashSet();
         List<FormClass> formClasses = Lists.newArrayList();
 
         for(FormTree.Node node : nodes) {
-            Cuid formClassId = node.getDefiningFormClass().getId();
+            ResourceId formClassId = node.getDefiningFormClass().getId();
             if(!formClassIds.contains(formClassId)) {
                 formClassIds.add(formClassId);
                 formClasses.add(node.getDefiningFormClass());

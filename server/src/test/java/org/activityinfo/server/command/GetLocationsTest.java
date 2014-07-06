@@ -22,17 +22,6 @@ package org.activityinfo.server.command;
  * #L%
  */
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import org.activityinfo.core.client.InstanceQuery;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.criteria.ClassCriteria;
-import org.activityinfo.core.shared.form.tree.FieldPath;
-import org.activityinfo.fp.client.Promise;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
-import org.activityinfo.legacy.shared.adapter.LocationClassAdapter;
-import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.GetLocations;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.fixtures.InjectionSupport;
@@ -40,13 +29,6 @@ import org.activityinfo.server.database.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.field;
-import static org.activityinfo.legacy.shared.adapter.LocationClassAdapter.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 

@@ -26,7 +26,7 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.impl.Tables;
 import org.activityinfo.legacy.shared.impl.pivot.PivotQueryContext;

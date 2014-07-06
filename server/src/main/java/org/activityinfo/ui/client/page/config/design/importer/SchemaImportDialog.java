@@ -10,17 +10,15 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.ProgressListener;
@@ -28,7 +26,6 @@ import org.activityinfo.ui.client.style.BaseStylesheet;
 import org.activityinfo.ui.client.widget.ModalDialog;
 import org.activityinfo.ui.client.widget.ProgressBar;
 
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

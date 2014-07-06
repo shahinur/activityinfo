@@ -23,9 +23,8 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.LockedPeriodDTO.HasLockedPeriod;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
@@ -76,7 +75,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
     }
 
     @Override
-    public Cuid getResourceId() {
+    public ResourceId getResourceId() {
         return CuidAdapter.activityFormClass(getId());
     }
 

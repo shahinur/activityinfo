@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.importing.strategy;
 
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.type.converter.Converter;
 import org.activityinfo.core.shared.type.converter.ConverterFactory;
 

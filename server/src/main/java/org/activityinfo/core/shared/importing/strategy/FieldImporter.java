@@ -4,7 +4,7 @@ import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import java.util.List;
 

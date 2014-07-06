@@ -22,7 +22,7 @@ package org.activityinfo.core.shared.importing.match;
  */
 
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 import org.junit.Assert;
 import org.junit.Test;
 

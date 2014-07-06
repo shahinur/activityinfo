@@ -1,8 +1,8 @@
 package org.activityinfo.ui.client.component.form.model;
 
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.form.FormField;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;

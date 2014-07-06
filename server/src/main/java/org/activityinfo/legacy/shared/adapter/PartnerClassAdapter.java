@@ -1,20 +1,19 @@
 package org.activityinfo.legacy.shared.adapter;
 
-import org.activityinfo.core.shared.Cuid;
-import java.lang.String;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.FormField;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 
 
 public class PartnerClassAdapter {
 
-    public static Cuid getNameField(Cuid classId) {
+    public static ResourceId getNameField(ResourceId classId) {
         return CuidAdapter.field(classId, CuidAdapter.NAME_FIELD);
     }
 
-    public static Cuid getFullNameField(Cuid classId) {
+    public static ResourceId getFullNameField(ResourceId classId) {
         return CuidAdapter.field(classId, CuidAdapter.FULL_NAME_FIELD);
     }
 
@@ -25,7 +24,7 @@ public class PartnerClassAdapter {
      */
     public static FormClass create(int databaseId) {
 
-        Cuid classId = CuidAdapter.partnerFormClass(databaseId);
+        ResourceId classId = CuidAdapter.partnerFormClass(databaseId);
         FormClass formClass = new FormClass(classId);
         formClass.setLabel(I18N.CONSTANTS.partner());
 

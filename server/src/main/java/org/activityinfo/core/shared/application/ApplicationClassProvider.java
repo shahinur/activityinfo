@@ -1,9 +1,9 @@
 package org.activityinfo.core.shared.application;
 
 import com.google.common.collect.Maps;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class ApplicationClassProvider {
 
-    private Map<Cuid, FormClass> classMap = Maps.newHashMap();
+    private Map<ResourceId, FormClass> classMap = Maps.newHashMap();
 
     public ApplicationClassProvider() {
 
@@ -30,7 +30,7 @@ public class ApplicationClassProvider {
         return formClass;
     }
 
-    public FormClass get(Cuid classId) {
+    public FormClass get(ResourceId classId) {
         FormClass formClass = classMap.get(classId);
         if(formClass == null) {
             throw new IllegalArgumentException("No such system class: " + classId);

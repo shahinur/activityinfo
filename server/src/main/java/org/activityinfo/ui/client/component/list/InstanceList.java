@@ -7,7 +7,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
 import org.activityinfo.ui.client.pageView.IconStyleProvider;
 import org.activityinfo.ui.client.widget.DisplayWidget;

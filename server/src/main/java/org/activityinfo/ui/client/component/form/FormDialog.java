@@ -25,7 +25,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.form.model.FormViewModel;
@@ -77,7 +77,7 @@ public class FormDialog {
         dialog.setDialogTitle(text);
     }
 
-    public void show(final Cuid classId, final Cuid instanceId, FormDialogCallback callback) {
+    public void show(final ResourceId classId, final ResourceId instanceId, FormDialogCallback callback) {
         this.callback = callback;
         loadingPanel.show(new FormViewModelProvider(resourceLocator, classId, instanceId));
         dialog.show();

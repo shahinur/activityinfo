@@ -29,8 +29,8 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormFieldCardinality;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormFieldCardinality;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.form.FormInstanceLabeler;
 import org.activityinfo.ui.client.component.form.model.SimpleListViewModel;
@@ -87,21 +87,21 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
         }
     }
 
-    private Set<Cuid> updatedValue() {
-        final Set<Cuid> value = Sets.newHashSet();
+    private Set<ResourceId> updatedValue() {
+        final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
-                value.add(new Cuid(control.getFormValue()));
+                value.add(ResourceId.create(control.getFormValue()));
             }
         }
         return value;
     }
 
     @Override
-    public void setValue(Set<Cuid> value) {
+    public void setValue(Set<ResourceId> value) {
         for (CheckBox entry : controls) {
-            Cuid cuid = new Cuid(entry.getFormValue());
-            entry.setValue(value.contains(cuid));
+            ResourceId resourceId = ResourceId.create(entry.getFormValue());
+            entry.setValue(value.contains(resourceId));
         }
     }
 

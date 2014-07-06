@@ -2,7 +2,7 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Strings;
 import org.activityinfo.core.client.CuidGenerator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Cuids;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.KeyGenerator;
@@ -72,7 +72,7 @@ public class CuidAdapter {
     private CuidAdapter() {
     }
 
-    public static Cuid newLegacyFormInstanceId(Cuid formClassId) {
+    public static ResourceId newLegacyFormInstanceId(ResourceId formClassId) {
         if (formClassId != null) {
             final int newId = new KeyGenerator().generateInt();
             switch (formClassId.getDomain()) {
@@ -87,7 +87,7 @@ public class CuidAdapter {
         return CuidGenerator.INSTANCE.nextCuid();
     }
 
-    public static Cuid getFormInstanceLabelCuid(FormInstance formInstance) {
+    public static ResourceId getFormInstanceLabelCuid(FormInstance formInstance) {
         return CuidAdapter.field(formInstance.getClassId(), NAME_FIELD);
     }
 
@@ -95,53 +95,53 @@ public class CuidAdapter {
         return Integer.parseInt(cuid.substring(1), Cuids.RADIX);
     }
 
-    public static final Cuid cuid(char domain, int id) {
-        return new Cuid(domain + block(id));
+    public static final ResourceId cuid(char domain, int id) {
+        return ResourceId.create(domain + block(id));
     }
 
-    public static int getLegacyIdFromCuid(Cuid id) {
+    public static int getLegacyIdFromCuid(ResourceId id) {
         return getLegacyIdFromCuid(id.asString());
     }
 
     /**
-     * @return the {@code FormField} Cuid for the Partner field of a given Activity {@code FormClass}
+     * @return the {@code FormField} ResourceId for the Partner field of a given Activity {@code FormClass}
      */
-    public static Cuid partnerField(int activityId) {
+    public static ResourceId partnerField(int activityId) {
         return field(activityFormClass(activityId), PARTNER_FIELD);
     }
 
-    public static Cuid projectField(int activityId) {
+    public static ResourceId projectField(int activityId) {
         return field(activityFormClass(activityId), PROJECT_FIELD);
     }
 
-    public static Cuid partnerInstanceId(int partnerId) {
+    public static ResourceId partnerInstanceId(int partnerId) {
         return cuid(PARTNER_DOMAIN, partnerId);
     }
 
     /**
-     * @return the {@code FormField}  Cuid for the Location field of a given Activity {@code FormClass}
+     * @return the {@code FormField}  ResourceId for the Location field of a given Activity {@code FormClass}
      */
-    public static Cuid locationField(int activityId) {
+    public static ResourceId locationField(int activityId) {
         return field(activityFormClass(activityId), LOCATION_FIELD);
     }
 
     /**
-     * @return the {@code FormClass} Cuid for a given LocationType
+     * @return the {@code FormClass} ResourceId for a given LocationType
      */
-    public static Cuid locationFormClass(int locationTypeId) {
+    public static ResourceId locationFormClass(int locationTypeId) {
         return cuid(LOCATION_TYPE_DOMAIN, locationTypeId);
     }
 
-    public static Cuid locationInstanceId(int locationId) {
+    public static ResourceId locationInstanceId(int locationId) {
         return cuid(LOCATION_DOMAIN, locationId);
     }
 
-    public static Cuid adminLevelFormClass(int adminLevelId) {
+    public static ResourceId adminLevelFormClass(int adminLevelId) {
         return cuid(ADMIN_LEVEL_DOMAIN, adminLevelId);
     }
 
 
-    public static Cuid entity(int adminEntityId) {
+    public static ResourceId entity(int adminEntityId) {
         return cuid(ADMIN_ENTITY_DOMAIN, adminEntityId);
 
     }
@@ -154,110 +154,110 @@ public class CuidAdapter {
      * @param fieldIndex
      * @return
      */
-    public static Cuid field(Cuid classId, int fieldIndex) {
-        return new Cuid(classId.asString() + block(fieldIndex));
+    public static ResourceId field(ResourceId classId, int fieldIndex) {
+        return ResourceId.create(classId.asString() + block(fieldIndex));
     }
 
     /**
-     * @return the {@code FormClass} Cuid for a given Activity
+     * @return the {@code FormClass} ResourceId for a given Activity
      */
-    public static Cuid activityFormClass(int activityId) {
-        return new Cuid(ACTIVITY_DOMAIN + block(activityId));
+    public static ResourceId activityFormClass(int activityId) {
+        return ResourceId.create(ACTIVITY_DOMAIN + block(activityId));
     }
 
 
     /**
-     * @return the {@code FormClass} Cuid for a given Activity
+     * @return the {@code FormClass} ResourceId for a given Activity
      */
-    public static Cuid commentsField(int activityId) {
-        //        return new Cuid(ACTIVITY_DOMAIN + block(activityId) + "C");
+    public static ResourceId commentsField(int activityId) {
+        //        return new ResourceId(ACTIVITY_DOMAIN + block(activityId) + "C");
         return field(activityFormClass(activityId), COMMENT_FIELD);
     }
 
     /**
-     * @return the {@code FormField} Cuid for the indicator field within a given
+     * @return the {@code FormField} ResourceId for the indicator field within a given
      * Activity {@code FormClass}
      */
-    public static Cuid indicatorField(int indicatorId) {
+    public static ResourceId indicatorField(int indicatorId) {
         return cuid(INDICATOR_DOMAIN, indicatorId);
     }
 
-    public static Cuid attributeField(int attributeId) {
+    public static ResourceId attributeField(int attributeId) {
         return cuid(ATTRIBUTE_DOMAIN, attributeId);
     }
 
-    public static Cuid siteField(int siteId) {
+    public static ResourceId siteField(int siteId) {
         return cuid(INDICATOR_DOMAIN, siteId);
     }
 
     /**
-     * @return the {@code FormField} Cuid for the field of a given Activity {@code FormClass} that
+     * @return the {@code FormField} ResourceId for the field of a given Activity {@code FormClass} that
      * references the given AttributeGroup FormClass
      */
-    public static Cuid attributeGroupField(ActivityDTO activity, AttributeGroupDTO group) {
-        return new Cuid(ACTIVITY_DOMAIN + block(activity) + "a" +
-                        Integer.toString(group.getId(), Cuids.RADIX));
+    public static ResourceId attributeGroupField(ActivityDTO activity, AttributeGroupDTO group) {
+        return ResourceId.create(ACTIVITY_DOMAIN + block(activity) + "a" +
+                                 Integer.toString(group.getId(), Cuids.RADIX));
     }
 
     /**
-     * @return the {@code FormField} Cuid for the field of a given Activity {@code FormClass} that
+     * @return the {@code FormField} ResourceId for the field of a given Activity {@code FormClass} that
      * references the given AttributeGroup FormClass
      */
-    public static Cuid attributeGroupField(int activityId, int attributeGroupId) {
-        return new Cuid(ACTIVITY_DOMAIN + block(activityId) + "a" +
-                        Integer.toString(attributeGroupId, Cuids.RADIX));
+    public static ResourceId attributeGroupField(int activityId, int attributeGroupId) {
+        return ResourceId.create(ACTIVITY_DOMAIN + block(activityId) + "a" +
+                                 Integer.toString(attributeGroupId, Cuids.RADIX));
     }
 
-    public static Cuid activityCategoryFolderId(int dbId, String category) {
-        return new Cuid(ACTIVITY_CATEGORY_DOMAIN + block(dbId) + block(category.hashCode()));
+    public static ResourceId activityCategoryFolderId(int dbId, String category) {
+        return ResourceId.create(ACTIVITY_CATEGORY_DOMAIN + block(dbId) + block(category.hashCode()));
     }
 
     /**
-     * @return the {@code FormClass} Cuid for a given AttributeGroup
+     * @return the {@code FormClass} ResourceId for a given AttributeGroup
      */
-    public static Cuid attributeGroupFormClass(AttributeGroupDTO group) {
+    public static ResourceId attributeGroupFormClass(AttributeGroupDTO group) {
         return attributeGroupFormClass(group.getId());
     }
 
-    public static Cuid attributeGroupFormClass(int attributeGroupId) {
+    public static ResourceId attributeGroupFormClass(int attributeGroupId) {
         return cuid(ATTRIBUTE_GROUP_DOMAIN, attributeGroupId);
     }
 
-    public static Cuid attributeId(int attributeId) {
+    public static ResourceId attributeId(int attributeId) {
         return cuid(ATTRIBUTE_DOMAIN, attributeId);
     }
 
     /**
      * @param databaseId the id of the user database
-     * @return the {@code FormClass} Cuid for a given database's list of partners.
+     * @return the {@code FormClass} ResourceId for a given database's list of partners.
      */
-    public static Cuid partnerFormClass(int databaseId) {
+    public static ResourceId partnerFormClass(int databaseId) {
         return cuid(PARTNER_FORM_CLASS_DOMAIN, databaseId);
     }
 
     /**
      * @param databaseId the id of the user database
-     * @return the {@code FormClass} Cuid for a given database's list of projects.
+     * @return the {@code FormClass} ResourceId for a given database's list of projects.
      */
-    public static Cuid projectFormClass(int databaseId) {
+    public static ResourceId projectFormClass(int databaseId) {
         return cuid(PROJECT_CLASS_DOMAIN, databaseId);
     }
 
     /**
-     * @return the {@code FormSection} Cuid for a given indicator category within an
+     * @return the {@code FormSection} ResourceId for a given indicator category within an
      * Activity {@code FormClass}
      */
-    public static Cuid activityFormSection(int id, String name) {
-        return new Cuid(ACTIVITY_DOMAIN + block(id) + block(name.hashCode()));
+    public static ResourceId activityFormSection(int id, String name) {
+        return ResourceId.create(ACTIVITY_DOMAIN + block(id) + block(name.hashCode()));
     }
 
     private static String block(int id) {
         return Strings.padStart(Integer.toString(id, Cuids.RADIX), BLOCK_SIZE, '0');
     }
 
-    public static int getBlock(Cuid cuid, int blockIndex) {
+    public static int getBlock(ResourceId resourceId, int blockIndex) {
         int startIndex = 1 + (blockIndex * BLOCK_SIZE);
-        String block = cuid.asString().substring(startIndex, startIndex + BLOCK_SIZE);
+        String block = resourceId.asString().substring(startIndex, startIndex + BLOCK_SIZE);
         return Integer.parseInt(block, Cuids.RADIX);
     }
 
@@ -265,15 +265,15 @@ public class CuidAdapter {
         return block(entity.getId());
     }
 
-    private static Cuid cuid(char domain, EntityDTO entityDTO) {
+    private static ResourceId cuid(char domain, EntityDTO entityDTO) {
         return cuid(domain, entityDTO.getId());
     }
 
-    public static Cuid databaseId(int databaseId) {
+    public static ResourceId databaseId(int databaseId) {
         return cuid(DATABASE_DOMAIN, databaseId);
     }
 
-    public static Cuid generateLocationCuid() {
+    public static ResourceId generateLocationCuid() {
         return locationInstanceId(new KeyGenerator().generateInt());
     }
 }

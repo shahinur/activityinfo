@@ -1,9 +1,9 @@
 package org.activityinfo.core.shared.criteria;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ public class FieldCriteria implements Criteria {
     private FieldPath fieldPath;
     private Object value;
 
-    public FieldCriteria(@Nonnull Cuid fieldId, @Nonnull Object value) {
+    public FieldCriteria(@Nonnull ResourceId fieldId, @Nonnull Object value) {
         this.fieldPath = new FieldPath(fieldId);
         this.value = value;
     }
@@ -47,7 +47,7 @@ public class FieldCriteria implements Criteria {
         return Objects.equals(input.getValue(fieldPath), value);
     }
 
-    public Cuid getFieldId() {
+    public ResourceId getFieldId() {
         return fieldPath.getRoot();
     }
 

@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.model.*;
@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class AttributeInstanceListAdapter implements Function<SchemaDTO, List<FormInstance>> {
 
-    private final Predicate<Cuid> criteria;
+    private final Predicate<ResourceId> criteria;
 
     public AttributeInstanceListAdapter(Criteria criteria) {
         this.criteria = CriteriaEvaluation.evaluatePartiallyOnClassId(criteria);
@@ -32,11 +32,11 @@ public class AttributeInstanceListAdapter implements Function<SchemaDTO, List<Fo
         for (UserDatabaseDTO db : schema.getDatabases()) {
             for (ActivityDTO activity : db.getActivities()) {
                 for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-                    Cuid classId = CuidAdapter.attributeGroupFormClass(group.getId());
+                    ResourceId classId = CuidAdapter.attributeGroupFormClass(group.getId());
                     if (criteria.apply(classId)) {
                         for (AttributeDTO attribute : group.getAttributes()) {
                             if (!added.contains(attribute.getId())) {
-                                Cuid instanceId = CuidAdapter.attributeId(attribute.getId());
+                                ResourceId instanceId = CuidAdapter.attributeId(attribute.getId());
                                 FormInstance instance = new FormInstance(instanceId, classId);
                                 instance.set(CuidAdapter.getFormInstanceLabelCuid(instance), attribute.getName());
                                 instances.add(instance);

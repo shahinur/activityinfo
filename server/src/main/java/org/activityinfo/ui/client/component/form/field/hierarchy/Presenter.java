@@ -5,17 +5,16 @@ import com.google.common.collect.Sets;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.FieldCriteria;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import java.util.*;
 
@@ -23,20 +22,20 @@ import java.util.*;
  * Models the selection of hierarchy
  */
 class Presenter {
-    private Map<Cuid, LevelView> widgetMap = new HashMap<>();
-    private Map<Cuid, Projection> selection = new HashMap<>();
+    private Map<ResourceId, LevelView> widgetMap = new HashMap<>();
+    private Map<ResourceId, Projection> selection = new HashMap<>();
     private List<HandlerRegistration> registrations = new ArrayList<>();
     private ResourceLocator locator;
     private Hierarchy tree;
     private ValueUpdater valueUpdater;
 
-    Presenter(ResourceLocator locator, final Hierarchy tree, Map<Cuid, ? extends LevelView> widgets,
+    Presenter(ResourceLocator locator, final Hierarchy tree, Map<ResourceId, ? extends LevelView> widgets,
               ValueUpdater valueUpdater) {
         this.locator = locator;
         this.tree = tree;
         this.valueUpdater = valueUpdater;
         this.widgetMap.putAll(widgets);
-        for(final Map.Entry<Cuid, LevelView> entry : widgetMap.entrySet()) {
+        for(final Map.Entry<ResourceId, LevelView> entry : widgetMap.entrySet()) {
             entry.getValue().addSelectionHandler(new SelectionHandler<Projection>() {
                 @Override
                 public void onSelection(SelectionEvent<Projection> event) {
@@ -46,7 +45,7 @@ class Presenter {
         }
     }
 
-    public void setInitialSelection(Map<Cuid, Projection> initialSelection) {
+    public void setInitialSelection(Map<ResourceId, Projection> initialSelection) {
         this.selection.putAll(initialSelection);
         for(Level level : tree.getLevels()) {
             LevelView view = widgetMap.get(level.getClassId());
@@ -72,14 +71,14 @@ class Presenter {
         valueUpdater.update(getValue());
     }
 
-    private Set<Cuid> getValue() {
+    private Set<ResourceId> getValue() {
         // We want to store the values in a normalized fashion -
         // store only the leaf nodes, their parents are redundant
-        Set<Cuid> instanceIds = Sets.newHashSet();
-        Set<Cuid> parentIds = Sets.newHashSet();
+        Set<ResourceId> instanceIds = Sets.newHashSet();
+        Set<ResourceId> parentIds = Sets.newHashSet();
         for(Projection projection : selection.values()) {
             instanceIds.add(projection.getRootInstanceId());
-            Set<Cuid> parentId = projection.getReferenceValue(ApplicationProperties.PARENT_PROPERTY);
+            Set<ResourceId> parentId = projection.getReferenceValue(ApplicationProperties.PARENT_PROPERTY);
             if(!parentId.isEmpty()) {
                 parentIds.add(parentId.iterator().next());
             }
@@ -111,7 +110,7 @@ class Presenter {
         return selection.containsKey(level.getClassId());
     }
 
-    public String getSelectionLabel(Cuid classId) {
+    public String getSelectionLabel(ResourceId classId) {
         assert selection.containsKey(classId) : "No selection";
         return selection.get(classId).getStringValue(ApplicationProperties.LABEL_PROPERTY);
     }

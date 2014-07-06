@@ -5,12 +5,12 @@ import com.google.common.collect.Lists;
 import com.google.inject.Provider;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.IdCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.tree.FormTree;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.promise.Promise;
 
 import java.util.List;
 
@@ -22,11 +22,11 @@ import java.util.List;
 public class FormViewModelProvider implements Provider<Promise<FormViewModel>> {
 
     private final ResourceLocator resourceLocator;
-    private Cuid classId;
-    private Cuid instanceId;
+    private ResourceId classId;
+    private ResourceId instanceId;
     private FormViewModel viewModel = new FormViewModel();
 
-    public FormViewModelProvider(ResourceLocator resourceLocator, Cuid classId, Cuid instanceId) {
+    public FormViewModelProvider(ResourceLocator resourceLocator, ResourceId classId, ResourceId instanceId) {
         this.resourceLocator = resourceLocator;
         this.classId = classId;
         this.instanceId = instanceId;

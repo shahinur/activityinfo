@@ -21,7 +21,7 @@ package org.activityinfo.ui.client.component.table.renderer;
  * #L%
  */
 
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 
 /**
  * @author yuriyz on 3/28/14.

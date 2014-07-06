@@ -1,15 +1,15 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 
 public class PartnerInstanceAdapter implements Function<PartnerDTO, FormInstance> {
 
-    private final Cuid classId;
+    private final ResourceId classId;
 
-    public PartnerInstanceAdapter(Cuid formClassId) {
+    public PartnerInstanceAdapter(ResourceId formClassId) {
         this.classId = formClassId;
     }
 

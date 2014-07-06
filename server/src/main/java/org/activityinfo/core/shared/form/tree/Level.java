@@ -1,11 +1,11 @@
 package org.activityinfo.core.shared.form.tree;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.FormClassSet;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.FormField;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 
 import java.util.List;
 
@@ -16,8 +16,8 @@ public class Level {
 
     private FormClass formClass;
 
-    Cuid parentId;
-    Cuid parentFieldId;
+    ResourceId parentId;
+    ResourceId parentFieldId;
     Level parent;
     List<Level> children = Lists.newArrayList();
 
@@ -31,7 +31,7 @@ public class Level {
         }
     }
 
-    public Cuid getClassId() {
+    public ResourceId getClassId() {
         return formClass.getId();
     }
 
@@ -47,7 +47,7 @@ public class Level {
         return parent;
     }
 
-    public Cuid getParentFieldId() {
+    public ResourceId getParentFieldId() {
         return parentFieldId;
     }
 

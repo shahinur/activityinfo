@@ -22,7 +22,7 @@ package org.activityinfo.legacy.shared.adapter.projection;
  */
 
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 
 /**
  * @author yuriyz on 6/3/14.

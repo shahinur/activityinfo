@@ -22,8 +22,8 @@ package org.activityinfo.legacy.shared.adapter;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.BatchCommand;
 import org.activityinfo.legacy.shared.command.Command;
@@ -40,9 +40,9 @@ import java.util.Map;
 public class Eraser {
 
     private final Dispatcher dispatcher;
-    private final Collection<Cuid> instanceIds;
+    private final Collection<ResourceId> instanceIds;
 
-    public Eraser(Dispatcher dispatcher, Collection<Cuid> instanceIds) {
+    public Eraser(Dispatcher dispatcher, Collection<ResourceId> instanceIds) {
         this.dispatcher = dispatcher;
         this.instanceIds = instanceIds;
     }
@@ -50,7 +50,7 @@ public class Eraser {
     public Promise<Void> execute() {
 
         List<Command> commands = Lists.newArrayList();
-        for (Cuid instanceId : instanceIds) {
+        for (ResourceId instanceId : instanceIds) {
             if (instanceId.getDomain() == CuidAdapter.LOCATION_DOMAIN) {
 
 

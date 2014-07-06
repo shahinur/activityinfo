@@ -1,13 +1,13 @@
 package org.activityinfo.core.client;
 
 import com.google.gwt.user.client.Random;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Cuids;
 
 import java.util.Date;
 
 /**
- * Generates a Cuid.
+ * Generates a ResourceId.
  *
  * <p>Cuids can be safely generated on the client and relied upon to be universally unique,
  * even if generated at a very fast rate, thanks to the inclusion of the counter.</p>
@@ -40,7 +40,7 @@ public class CuidGenerator {
         return pad(x);
     }
 
-    public Cuid nextCuid() {
+    public ResourceId nextCuid() {
 
         // Starting with a lowercase letter makes
         // it HTML element ID friendly.
@@ -70,7 +70,7 @@ public class CuidGenerator {
 
         c++; // this is not subliminal
 
-        return new Cuid(letter + timestamp + counter + fingerprint + random);
+        return ResourceId.create(letter + timestamp + counter + fingerprint + random);
     }
 
     private static native int browserFingerPrint() /*-{

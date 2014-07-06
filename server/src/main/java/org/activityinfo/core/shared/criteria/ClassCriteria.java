@@ -1,7 +1,7 @@
 package org.activityinfo.core.shared.criteria;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.form.FormInstance;
 
@@ -16,11 +16,11 @@ import java.util.Set;
  */
 public class ClassCriteria implements Criteria {
 
-    private Cuid classId;
+    private ResourceId classId;
 
 
-    public ClassCriteria(Cuid cuid) {
-        this.classId = cuid;
+    public ClassCriteria(ResourceId resourceId) {
+        this.classId = resourceId;
     }
 
     @Override
@@ -39,19 +39,19 @@ public class ClassCriteria implements Criteria {
         return classId.equals(projection.getRootClassId());
     }
 
-    public static Criteria union(Set<Cuid> range) {
+    public static Criteria union(Set<ResourceId> range) {
         if(range.size() == 1) {
             return new ClassCriteria(range.iterator().next());
         } else {
             List<ClassCriteria> criteriaList = Lists.newArrayList();
-            for(Cuid classCuid : range) {
-                criteriaList.add(new ClassCriteria(classCuid));
+            for(ResourceId classResourceId : range) {
+                criteriaList.add(new ClassCriteria(classResourceId));
             }
             return new CriteriaUnion(criteriaList);
         }
     }
 
-    public Cuid getClassId() {
+    public ResourceId getClassId() {
         return classId;
     }
 }

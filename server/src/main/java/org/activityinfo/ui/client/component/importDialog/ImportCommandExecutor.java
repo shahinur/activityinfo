@@ -29,7 +29,7 @@ import org.activityinfo.core.shared.importing.strategy.ColumnAccessor;
 import org.activityinfo.core.shared.importing.strategy.FieldImporter;
 import org.activityinfo.core.shared.importing.strategy.FieldImporterColumn;
 import org.activityinfo.core.shared.importing.strategy.TargetSiteId;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
 import java.util.List;

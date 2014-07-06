@@ -26,17 +26,17 @@ import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.ParentCriteria;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.GetSchema;
@@ -225,7 +225,7 @@ public class GetSchemaTest extends CommandTestCase2 {
         ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
         List<FormInstance> folders = assertResolves(locator.queryInstances(
                 new CriteriaIntersection(
-                    ParentCriteria.isChildOf(new Cuid("home")),
+                    ParentCriteria.isChildOf(ResourceId.create("home")),
                     new ClassCriteria(FolderClass.CLASS_ID))));
 
         for(FormInstance folder : folders) {

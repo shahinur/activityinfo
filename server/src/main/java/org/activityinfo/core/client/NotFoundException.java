@@ -1,6 +1,6 @@
 package org.activityinfo.core.client;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * Indicates that the resource was not found on the server
@@ -8,18 +8,18 @@ import org.activityinfo.core.shared.Cuid;
  */
 public class NotFoundException extends RemoteException {
 
-    private Cuid resourceId;
+    private ResourceId resourceId;
 
     public NotFoundException() {
     }
 
-    public NotFoundException(Cuid resourceId) {
+    public NotFoundException(ResourceId resourceId) {
         super("Resource: " + resourceId);
         this.resourceId = resourceId;
     }
 
 
-    public Cuid getResourceId() {
+    public ResourceId getResourceId() {
         return resourceId;
     }
 }

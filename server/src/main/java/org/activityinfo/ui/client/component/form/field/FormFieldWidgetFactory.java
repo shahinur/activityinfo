@@ -23,7 +23,7 @@ package org.activityinfo.ui.client.component.form.field;
 
 import com.google.gwt.cell.client.ValueUpdater;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
 import org.activityinfo.ui.client.component.form.model.FieldViewModel;

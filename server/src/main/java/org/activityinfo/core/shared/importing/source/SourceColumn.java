@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.importing.source;
 
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 
 /**
  * Describes a column in the imported table

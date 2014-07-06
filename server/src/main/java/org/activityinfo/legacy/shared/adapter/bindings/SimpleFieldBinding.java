@@ -1,7 +1,7 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.model.EntityDTO;
 
@@ -11,10 +11,10 @@ import java.util.Map;
  * Created by alex on 2/22/14.
  */
 public class SimpleFieldBinding implements FieldBinding<EntityDTO> {
-    private final Cuid fieldId;
+    private final ResourceId fieldId;
     private final String propertyName;
 
-    public SimpleFieldBinding(Cuid fieldId, String propertyName) {
+    public SimpleFieldBinding(ResourceId fieldId, String propertyName) {
         this.fieldId = fieldId;
         this.propertyName = propertyName;
     }

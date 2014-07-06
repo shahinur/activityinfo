@@ -1,6 +1,6 @@
 package org.activityinfo.ui.client.pageView;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.ui.client.style.Icons;
@@ -12,7 +12,7 @@ import org.activityinfo.ui.client.style.Icons;
  */
 public class IconStyleProvider {
 
-    public static String getIconStyleForFormClass(Cuid classId) {
+    public static String getIconStyleForFormClass(ResourceId classId) {
         if(classId.equals(FolderClass.CLASS_ID)) {
             return Icons.INSTANCE.folder();
 

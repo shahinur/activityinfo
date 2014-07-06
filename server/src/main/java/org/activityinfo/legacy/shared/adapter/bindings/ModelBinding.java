@@ -1,7 +1,7 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.EntityDTO;
@@ -15,11 +15,11 @@ import java.util.Map;
  */
 public abstract class ModelBinding<T extends EntityDTO> {
 
-    private final Cuid classId;
+    private final ResourceId classId;
     private final char instanceDomain;
     private List<FieldBinding<? super T>> fieldBindings = Lists.newArrayList();
 
-    public ModelBinding(Cuid classId, char instanceDomain) {
+    public ModelBinding(ResourceId classId, char instanceDomain) {
         this.classId = classId;
         this.instanceDomain = instanceDomain;
     }
@@ -28,11 +28,11 @@ public abstract class ModelBinding<T extends EntityDTO> {
         this.fieldBindings.add(binding);
     }
 
-    public void addField(Cuid fieldId, String propertyName) {
+    public void addField(ResourceId fieldId, String propertyName) {
         this.fieldBindings.add(new SimpleFieldBinding(fieldId, propertyName));
     }
 
-    public void addNestedField(Cuid fieldId, char domain, String propertyName) {
+    public void addNestedField(ResourceId fieldId, char domain, String propertyName) {
         this.fieldBindings.add(new NestedFieldBinding(fieldId, domain, propertyName));
     }
 

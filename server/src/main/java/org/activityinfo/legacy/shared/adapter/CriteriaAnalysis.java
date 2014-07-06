@@ -4,7 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.*;
 
 import java.util.List;
@@ -18,9 +18,9 @@ public class CriteriaAnalysis extends CriteriaVisitor {
     /**
      * Instances must be a subclass of all of these FormClasses
      */
-    private final Set<Cuid> classCriteria = Sets.newHashSet();
+    private final Set<ResourceId> classCriteria = Sets.newHashSet();
 
-    private final Set<Cuid> parentCriteria = Sets.newHashSet();
+    private final Set<ResourceId> parentCriteria = Sets.newHashSet();
 
     private boolean rootOnly = false;
     private boolean classUnion = true;
@@ -30,7 +30,7 @@ public class CriteriaAnalysis extends CriteriaVisitor {
      */
     private final Multimap<Character, Integer> ids = HashMultimap.create();
 
-    public Cuid getParentCriteria() {
+    public ResourceId getParentCriteria() {
         return parentCriteria.iterator().next();
     }
 
@@ -47,7 +47,7 @@ public class CriteriaAnalysis extends CriteriaVisitor {
     public void visitInstanceIdCriteria(IdCriteria criteria) {
         // this is implicitly a union criteria
         // separate the instances out into domains
-        for (Cuid id : criteria.getInstanceIds()) {
+        for (ResourceId id : criteria.getInstanceIds()) {
             assert id != null : "ids cannot be null";
             if (id.getDomain() != CuidAdapter.ACTIVITY_CATEGORY_DOMAIN) {
                 ids.put(id.getDomain(), CuidAdapter.getLegacyIdFromCuid(id));
@@ -123,11 +123,11 @@ public class CriteriaAnalysis extends CriteriaVisitor {
         return rootOnly || !parentCriteria.isEmpty();
     }
 
-    public Cuid getClassRestriction() {
+    public ResourceId getClassRestriction() {
         return classCriteria.iterator().next();
     }
 
-    public Set<Cuid> getClassCriteria() {
+    public Set<ResourceId> getClassCriteria() {
         return classCriteria;
     }
 

@@ -36,7 +36,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.KeyGenerator;
@@ -365,10 +365,10 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
         if (UIActions.ADD.equals(actionId)) {
             if (FeatureSwitch.isNewFormEnabled()) {
                 int activityId = currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity);
-                final Cuid siteCuid = CuidAdapter.siteField(new KeyGenerator().generateInt());
-                final Cuid activityCuid = CuidAdapter.activityFormClass(activityId);
+                final ResourceId siteResourceId = CuidAdapter.siteField(new KeyGenerator().generateInt());
+                final ResourceId activityResourceId = CuidAdapter.activityFormClass(activityId);
                 eventBus.fireEvent(new NavigationEvent(NavigationHandler.NAVIGATION_REQUESTED,
-                        new UserFormPlace(activityCuid, siteCuid)));
+                        new UserFormPlace(activityResourceId, siteResourceId)));
             } else {
                 SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
                 formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {

@@ -10,8 +10,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
-import org.activityinfo.fp.client.Promise;
-import org.activityinfo.fp.client.PromiseMonitor;
+import org.activityinfo.promise.Promise;
+import org.activityinfo.promise.PromiseMonitor;
 import org.activityinfo.ui.client.component.importDialog.ImportPage;
 import org.activityinfo.ui.client.component.importDialog.Importer;
 
@@ -24,6 +24,7 @@ public class ValidationPage extends Composite implements PromiseMonitor, ImportP
 
     private static ValidationPageUiBinder uiBinder = GWT
             .create(ValidationPageUiBinder.class);
+
 
     interface ValidationPageUiBinder extends UiBinder<Widget, ValidationPage> {
     }

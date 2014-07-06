@@ -2,14 +2,13 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
-import java.lang.String;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.FormField;
-import org.activityinfo.core.shared.form.FormFieldCardinality;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormFieldCardinality;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 import org.activityinfo.legacy.shared.model.CountryDTO;
@@ -27,26 +26,26 @@ import static org.activityinfo.legacy.shared.adapter.CuidAdapter.adminLevelFormC
 public class LocationClassAdapter implements Function<SchemaDTO, FormClass> {
 
     private final int locationTypeId;
-    private Cuid classId;
+    private ResourceId classId;
 
     public LocationClassAdapter(int locationTypeId) {
         this.locationTypeId = locationTypeId;
         classId = CuidAdapter.locationFormClass(this.locationTypeId);
     }
 
-    public static Cuid getPointFieldId(Cuid classId) {
+    public static ResourceId getPointFieldId(ResourceId classId) {
         return CuidAdapter.field(classId, CuidAdapter.GEOMETRY_FIELD);
     }
 
-    public static Cuid getAxeFieldId(Cuid classId) {
+    public static ResourceId getAxeFieldId(ResourceId classId) {
         return CuidAdapter.field(classId, CuidAdapter.AXE_FIELD);
     }
 
-    public static Cuid getNameFieldId(Cuid classId) {
+    public static ResourceId getNameFieldId(ResourceId classId) {
         return CuidAdapter.field(classId, CuidAdapter.NAME_FIELD);
     }
 
-    public static Cuid getAdminFieldId(Cuid classId) {
+    public static ResourceId getAdminFieldId(ResourceId classId) {
         return CuidAdapter.field(classId, CuidAdapter.ADMIN_FIELD);
     }
 
@@ -71,7 +70,7 @@ public class LocationClassAdapter implements Function<SchemaDTO, FormClass> {
         formClass.addElement(axeField);
 
         // the range for the location object is any AdminLevel in this country
-        Set<Cuid> adminRange = Sets.newHashSet();
+        Set<ResourceId> adminRange = Sets.newHashSet();
         for (AdminLevelDTO level : country.getAdminLevels()) {
             adminRange.add(adminLevelFormClass(level.getId()));
         }
@@ -80,7 +79,7 @@ public class LocationClassAdapter implements Function<SchemaDTO, FormClass> {
         adminField.setLabel(I18N.CONSTANTS.adminEntities());
         adminField.setType(FormFieldType.REFERENCE);
         adminField.setCardinality(FormFieldCardinality.MULTIPLE);
-        adminField.setRange(ClassCriteria.union(adminRange));
+        adminField.setRange(adminRange);
         adminField.addSuperProperty(ApplicationProperties.HIERARCHIAL);
         formClass.addElement(adminField);
 

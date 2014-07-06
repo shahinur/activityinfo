@@ -27,17 +27,17 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Pair;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.FormClassSet;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.tree.FieldPath;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class HierarchyClassImporter implements FieldImporter {
     private final Map<FieldPath, Integer> referenceFields;
     private final List<ColumnAccessor> sourceColumns;
     private final List<FieldImporterColumn> fieldImporterColumns;
-    private final Map<Cuid, InstanceScoreSource> scoreSources = Maps.newHashMap();
+    private final Map<ResourceId, InstanceScoreSource> scoreSources = Maps.newHashMap();
 
     public HierarchyClassImporter(FormTree.Node rootField,
                                   List<ColumnAccessor> sourceColumns,
@@ -67,7 +67,7 @@ public class HierarchyClassImporter implements FieldImporter {
     @Override
     public Promise<Void> prepare(ResourceLocator locator, List<? extends SourceRow> batch) {
         final List<Promise<Void>> promises = Lists.newArrayList();
-        for (final Cuid range : FormClassSet.of(rootField.getRange()).getElements()) {
+        for (final ResourceId range : FormClassSet.of(rootField.getRange()).getElements()) {
             InstanceQuery query = new InstanceQuery(Lists.newArrayList(referenceFields.keySet()), new ClassCriteria(range));
             final Promise<List<Projection>> promise = locator.query(query);
             promise.then(new Function<List<Projection>, Void>() {
@@ -97,11 +97,11 @@ public class HierarchyClassImporter implements FieldImporter {
             ColumnAccessor columnAccessor = sourceColumns.get(i);
             if (!columnAccessor.isMissing(row)) {
                 FieldImporterColumn importedColumn = getImportedColumn(columnAccessor);
-                Cuid targetSiteId = new Cuid(importedColumn.getTarget().getSite().asString());
+                ResourceId targetSiteId = ResourceId.create(importedColumn.getTarget().getSite().asString());
                 if (targetSiteId.getDomain() == CuidAdapter.ADMIN_LEVEL_DOMAIN) {
                     final int levelId = CuidAdapter.getBlock(targetSiteId, 0);
                     // todo : recreation of admin level cuid seems to be error prone, check later !
-                    Cuid range = CuidAdapter.adminLevelFormClass(levelId);
+                    ResourceId range = CuidAdapter.adminLevelFormClass(levelId);
                     InstanceScoreSource scoreSource = scoreSources.get(range);
                     InstanceScorer instanceScorer = new InstanceScorer(scoreSource);
                     final InstanceScorer.Score score = instanceScorer.score(row);
@@ -132,11 +132,11 @@ public class HierarchyClassImporter implements FieldImporter {
         final List<ValidationResult> validationResults = Lists.newArrayList();
         validateInstance(row, validationResults);
 
-        final Map<Cuid, Cuid> toSave = Maps.newHashMap();
+        final Map<ResourceId, ResourceId> toSave = Maps.newHashMap();
         for (ValidationResult result : validationResults) {
             if (result.shouldPersist() && result.getRangeWithInstanceId() != null) {
-                Cuid range = result.getRangeWithInstanceId().getA();
-                Cuid value = toSave.get(range);
+                ResourceId range = result.getRangeWithInstanceId().getA();
+                ResourceId value = toSave.get(range);
                 if (value == null) {
                     toSave.put(range, result.getRangeWithInstanceId().getB());
                 }

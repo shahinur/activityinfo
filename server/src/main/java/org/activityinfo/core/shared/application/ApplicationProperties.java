@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.application;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * Defines Application-level properties.
@@ -12,27 +12,27 @@ public class ApplicationProperties {
      * Application-defined property that provides a human-readable name for
      * a given form instance.
      */
-    public static final Cuid LABEL_PROPERTY = new Cuid("_label");
+    public static final ResourceId LABEL_PROPERTY = ResourceId.create("_label");
 
-    public static final Cuid PARENT_PROPERTY = new Cuid("_parent");
+    public static final ResourceId PARENT_PROPERTY = ResourceId.create("_parent");
 
     /**
      * Application-defined property that provides an extended human-readable description
      * for a given form instance.
      */
-    public static final Cuid DESCRIPTION_PROPERTY = new Cuid("_description");
+    public static final ResourceId DESCRIPTION_PROPERTY = ResourceId.create("_description");
 
     /**
      * Application-defined property that provides the class ids of an instance.
      */
-    public static final Cuid CLASS_PROPERTY = new Cuid("_classOf");
+    public static final ResourceId CLASS_PROPERTY = ResourceId.create("_classOf");
 
 
-    public static final Cuid HIERARCHIAL = new Cuid("_multiLevel");
+    public static final ResourceId HIERARCHIAL = ResourceId.create("_multiLevel");
 
-    public static final Cuid COUNTRY_CLASS = new Cuid("_country");
+    public static final ResourceId COUNTRY_CLASS = ResourceId.create("_country");
 
-    public static final Cuid COUNTRY_NAME_FIELD = new Cuid("_country_name");
+    public static final ResourceId COUNTRY_NAME_FIELD = ResourceId.create("_country_name");
 
-    public static final Cuid GEOREF_PROPERTY = new Cuid("_georef");
+    public static final ResourceId GEOREF_PROPERTY = ResourceId.create("_georef");
 }

@@ -2,7 +2,7 @@ package org.activityinfo.core.shared.importing.strategy;
 
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.client.type.converter.JsCoordinateNumberFormatter;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
@@ -10,7 +10,7 @@ import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.core.shared.type.converter.CoordinateAxis;
 import org.activityinfo.core.shared.type.converter.CoordinateFormatException;
 import org.activityinfo.core.shared.type.converter.CoordinateParser;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,12 +20,12 @@ import java.util.List;
  */
 public class GeographicPointImporter implements FieldImporter {
 
-    private final Cuid fieldId;
+    private final ResourceId fieldId;
     private final ColumnAccessor[] sourceColumns;
     private final CoordinateParser[] coordinateParsers;
     private final List<FieldImporterColumn> fieldImporterColumns;
 
-    public GeographicPointImporter(Cuid fieldId, ColumnAccessor[] sourceColumns, ImportTarget[] targetSites) {
+    public GeographicPointImporter(ResourceId fieldId, ColumnAccessor[] sourceColumns, ImportTarget[] targetSites) {
         this.fieldId = fieldId;
         this.sourceColumns = sourceColumns;
         this.coordinateParsers = new CoordinateParser[]{

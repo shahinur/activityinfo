@@ -25,10 +25,10 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormFieldType;
-import org.activityinfo.core.shared.form.tree.FieldPath;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.formTree.FormTree;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +42,7 @@ public class TargetCollector {
     /**
      * Maps a unique field id to all the FieldPaths within this reference tree
      */
-    private final Multimap<Cuid, FieldPath> fieldPathMap = HashMultimap.create();
+    private final Multimap<ResourceId, FieldPath> fieldPathMap = HashMultimap.create();
     private final List<ImportTarget> targets = Lists.newArrayList();
     private final Map<TargetSiteId, ImportTarget> targetMap = Maps.newHashMap();
     private final FormTree.Node rootField;
@@ -69,7 +69,7 @@ public class TargetCollector {
         fieldPathMap.put(dataField.getFieldId(), dataField.getPath().relativeTo(rootField.getFieldId()));
     }
 
-    public Multimap<Cuid, FieldPath> getFieldPathMap() {
+    public Multimap<ResourceId, FieldPath> getFieldPathMap() {
         return fieldPathMap;
     }
 
@@ -107,7 +107,7 @@ public class TargetCollector {
 
             sourceColumns.add(entry.getValue());
 
-            Cuid fieldId = new Cuid(entry.getKey().asString());
+            ResourceId fieldId = ResourceId.create(entry.getKey().asString());
             for (FieldPath path : getFieldPathMap().get(fieldId)) {
                 referenceValues.put(path, columnIndex);
             }

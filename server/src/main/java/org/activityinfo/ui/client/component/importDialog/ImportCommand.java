@@ -22,7 +22,7 @@ package org.activityinfo.ui.client.component.importDialog;
  */
 
 import com.google.common.base.Function;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 /**
  * @author yuriyz on 4/18/14.

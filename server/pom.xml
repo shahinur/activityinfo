@@ -13,19 +13,15 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-
-  <properties>
-    <!-- This is the version displayed to users -->
-    <display.version>${project.version}</display.version>
-
-    <gwtVersion>2.6.0-rc3</gwtVersion>
-    <rebarVersion>2.4.1</rebarVersion>
-    <gae.version>1.9.6</gae.version>
-    <jersey.version>1.17</jersey.version>
-    <appengine.export.version>0.1.1</appengine.export.version>
-  </properties>
-
   <dependencies>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+
     <!-- GWT deps (from central repo) -->
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -271,16 +267,8 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>1.6</version>
     </dependency>
 
-
-    <dependency>
-      <groupId>gson-gwt</groupId>
-      <artifactId>gson-gwt</artifactId>
-      <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- testing framework -->
     <dependency>

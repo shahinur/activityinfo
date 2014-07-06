@@ -21,7 +21,7 @@ package org.activityinfo.core.shared.importing.strategy;
  * #L%
  */
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
 
@@ -31,13 +31,13 @@ import java.util.List;
 public class InstanceScoreSource {
 
     private List<ColumnAccessor> sources;
-    private List<Cuid> referenceInstanceIds;
+    private List<ResourceId> referenceInstanceIds;
     private List<String[]> referenceValues;
 
     public InstanceScoreSource() {
     }
 
-    public InstanceScoreSource(List<ColumnAccessor> sources, List<Cuid> referenceInstanceIds, List<String[]> referenceValues) {
+    public InstanceScoreSource(List<ColumnAccessor> sources, List<ResourceId> referenceInstanceIds, List<String[]> referenceValues) {
         this.sources = sources;
         this.referenceInstanceIds = referenceInstanceIds;
         this.referenceValues = referenceValues;
@@ -51,11 +51,11 @@ public class InstanceScoreSource {
         this.sources = sources;
     }
 
-    public List<Cuid> getReferenceInstanceIds() {
+    public List<ResourceId> getReferenceInstanceIds() {
         return referenceInstanceIds;
     }
 
-    public void setReferenceInstanceIds(List<Cuid> referenceInstanceIds) {
+    public void setReferenceInstanceIds(List<ResourceId> referenceInstanceIds) {
         this.referenceInstanceIds = referenceInstanceIds;
     }
 

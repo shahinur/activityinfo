@@ -30,8 +30,8 @@ import com.google.gwt.view.client.ListDataProvider;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.QueryResult;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.form.tree.FieldPath;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.CellTable;
 import org.activityinfo.ui.client.widget.loading.LoadingState;
 

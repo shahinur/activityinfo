@@ -9,12 +9,12 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.LocationClassAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
@@ -39,15 +39,15 @@ import static org.junit.Assert.assertThat;
 @OnDataSet("/dbunit/jordan-admin.db.xml")
 public class HierarchyTest extends CommandTestCase2 {
 
-    public static final Cuid CAMP_CLASS = CuidAdapter.locationFormClass(50505);
+    public static final ResourceId CAMP_CLASS = CuidAdapter.locationFormClass(50505);
 
-    public static final Cuid CAMP_DISTRICT_CLASS = CuidAdapter.adminLevelFormClass(1528);
+    public static final ResourceId CAMP_DISTRICT_CLASS = CuidAdapter.adminLevelFormClass(1528);
 
-    public static final Cuid REGION = CuidAdapter.adminLevelFormClass(1520);
+    public static final ResourceId REGION = CuidAdapter.adminLevelFormClass(1520);
 
-    public static final Cuid GOVERNORATE_ID = CuidAdapter.adminLevelFormClass(1360);
+    public static final ResourceId GOVERNORATE_ID = CuidAdapter.adminLevelFormClass(1360);
 
-    private Map<Cuid, MockLevelWidget> widgets;
+    private Map<ResourceId, MockLevelWidget> widgets;
 
     @Test
     public void buildViewModelTest() {
@@ -56,7 +56,7 @@ public class HierarchyTest extends CommandTestCase2 {
 
         FormTree.Node adminNode = tree.getRootField(LocationClassAdapter.getAdminFieldId(CAMP_CLASS));
 
-        Set<Cuid> fieldValue = Collections.singleton(entity(325703));
+        Set<ResourceId> fieldValue = Collections.singleton(entity(325703));
 
         HierarchyViewModel viewModel = (HierarchyViewModel) assertResolves(HierarchyViewModel
                 .build(resourceLocator, adminNode, fieldValue));
@@ -103,7 +103,7 @@ public class HierarchyTest extends CommandTestCase2 {
     }
 
     private void createWidgets(HierarchyViewModel viewModel) {
-        Map<Cuid, MockLevelWidget> levels = new HashMap<>();
+        Map<ResourceId, MockLevelWidget> levels = new HashMap<>();
         for(Level level : viewModel.getTree().getLevels()) {
             levels.put(level.getClassId(), new MockLevelWidget(level.getLabel()));
         }

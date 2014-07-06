@@ -6,7 +6,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.shared.form.FormField;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.widget.DoubleBox;
 
 public class QuantityFieldWidget implements FormFieldWidget {

@@ -1,7 +1,7 @@
 package org.activityinfo.core.shared.criteria;
 
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.form.FormInstance;
 
@@ -13,21 +13,21 @@ import java.util.Set;
  */
 public class IdCriteria implements Criteria {
 
-    private final Set<Cuid> instanceIds;
+    private final Set<ResourceId> instanceIds;
 
-    public IdCriteria(Cuid... instanceIds) {
+    public IdCriteria(ResourceId... instanceIds) {
         this.instanceIds = Sets.newHashSet(instanceIds);
     }
 
-    public IdCriteria(Set<Cuid> instanceIds) {
+    public IdCriteria(Set<ResourceId> instanceIds) {
         this.instanceIds = instanceIds;
     }
 
-    public IdCriteria(Iterable<Cuid> instanceIds) {
+    public IdCriteria(Iterable<ResourceId> instanceIds) {
         this.instanceIds = Sets.newHashSet(instanceIds);
     }
 
-    public Set<Cuid> getInstanceIds() {
+    public Set<ResourceId> getInstanceIds() {
         return instanceIds;
     }
 

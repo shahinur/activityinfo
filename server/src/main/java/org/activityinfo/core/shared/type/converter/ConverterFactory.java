@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.type.converter;
 
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.core.shared.type.formatter.DateFormatter;
 import org.activityinfo.core.shared.type.formatter.QuantityFormatterFactory;
 

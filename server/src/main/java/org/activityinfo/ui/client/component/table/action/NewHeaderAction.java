@@ -24,8 +24,8 @@ package org.activityinfo.ui.client.component.table.action;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
@@ -50,7 +50,7 @@ public class NewHeaderAction implements TableHeaderAction {
     @Override
     public void execute() {
         final FormClass formClass = table.getRootFormClass();
-        final Cuid instanceId = CuidAdapter.newLegacyFormInstanceId(formClass.getId());
+        final ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(formClass.getId());
         FormDialog dialog = new FormDialog(table.getResourceLocator());
         dialog.setDialogTitle(I18N.CONSTANTS.addInstance());
         dialog.show(formClass.getId(), instanceId, new FormDialogCallback() {

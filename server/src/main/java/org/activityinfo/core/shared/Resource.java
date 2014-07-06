@@ -1,8 +1,11 @@
 package org.activityinfo.core.shared;
 
 
-public interface Resource {
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.ResourceId;
 
-    Cuid getId();
+public interface Resource extends IsResource {
+
+    ResourceId getId();
 
 }

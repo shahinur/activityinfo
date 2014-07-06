@@ -8,11 +8,15 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.*;
-import org.activityinfo.core.shared.form.tree.FormTree;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.form.FormElement;
+import org.activityinfo.model.form.FormElementContainer;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormSection;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.form.model.FormViewModel;
@@ -32,7 +36,7 @@ public class SimpleFormPanel implements DisplayWidget<FormViewModel> {
     private final FlowPanel panel;
     private final ScrollPanel scrollPanel;
 
-    private final Map<Cuid, FieldContainer> containers = Maps.newHashMap();
+    private final Map<ResourceId, FieldContainer> containers = Maps.newHashMap();
 
     /**
      * The original, unmodified instance
@@ -80,7 +84,7 @@ public class SimpleFormPanel implements DisplayWidget<FormViewModel> {
         this.instance = instance;
         this.workingInstance = viewModel.getInstance().copy();
 
-        for(Map.Entry<Cuid, FieldContainer> entry : containers.entrySet()) {
+        for(Map.Entry<ResourceId, FieldContainer> entry : containers.entrySet()) {
             FieldContainer container = entry.getValue();
             FormFieldWidget fieldWidget = container.getFieldWidget();
             fieldWidget.setValue(workingInstance.get(entry.getKey()));

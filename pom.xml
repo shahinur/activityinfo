@@ -7,6 +7,26 @@
   <packaging>pom</packaging>
   <version>2.8.0-SNAPSHOT</version>
   <name>ActivityInfo Parent POM</name>
+
+  <properties>
+    <!-- This is the version displayed to users -->
+    <display.version>${project.version}</display.version>
+
+    <gwtVersion>2.6.0-rc3</gwtVersion>
+    <rebarVersion>2.4.1</rebarVersion>
+    <gae.version>1.9.6</gae.version>
+    <jersey.version>1.17</jersey.version>
+    <appengine.export.version>0.1.1</appengine.export.version>
+    <netbeans.hint.license>gpl3</netbeans.hint.license>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+
+    <!-- Allow the build to continue even if there are fixtures failures -->
+    <maven.test.failure.ignore>true</maven.test.failure.ignore>
+  </properties>
+
+
   <licenses>
     <license>
       <name>GPLv3</name>
@@ -35,17 +55,6 @@
     <url>scm:git:git@github.com:bedatadriven/activityinfo.git</url>
     <developerConnection>scm:git:git@github.com:bedatadriven/activityinfo.git</developerConnection>
   </scm>
-
-  <properties>
-    <netbeans.hint.license>gpl3</netbeans.hint.license>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
-
-    <!-- Allow the build to continue even if there are fixtures failures -->
-    <maven.test.failure.ignore>true</maven.test.failure.ignore>
-  </properties>
-
 
   <distributionManagement>
     <repository>
@@ -86,6 +95,8 @@
   </pluginRepositories>
 
   <modules>
+    <module>core/model</module>
+    <module>core/promises</module>
     <module>geoadmin</module>
     <module>server</module>
   </modules>
@@ -120,6 +131,29 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>15.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>15.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.2.4</version>
+      </dependency>
+
+    </dependencies>
+
+  </dependencyManagement>
 
   <build>
     <plugins>

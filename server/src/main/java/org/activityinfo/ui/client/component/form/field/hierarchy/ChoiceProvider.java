@@ -8,7 +8,7 @@ import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.FieldCriteria;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import java.util.List;
 

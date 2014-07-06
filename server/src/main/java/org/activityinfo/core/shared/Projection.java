@@ -2,7 +2,8 @@ package org.activityinfo.core.shared;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.Collections;
 import java.util.Map;
@@ -15,10 +16,10 @@ import java.util.Set;
 public class Projection {
 
     private final Map<FieldPath, Object> values = Maps.newHashMap();
-    private final Cuid rootInstanceId;
-    private final Cuid rootClassId;
+    private final ResourceId rootInstanceId;
+    private final ResourceId rootClassId;
 
-    public Projection(Cuid rootInstanceId, Cuid rootClassId) {
+    public Projection(ResourceId rootInstanceId, ResourceId rootClassId) {
         assert rootInstanceId != null;
         assert rootClassId != null;
 
@@ -26,12 +27,12 @@ public class Projection {
         this.rootClassId = rootClassId;
     }
 
-    public Cuid getRootInstanceId() {
+    public ResourceId getRootInstanceId() {
         return rootInstanceId;
     }
 
 
-    public Cuid getRootClassId() {
+    public ResourceId getRootClassId() {
         return rootClassId;
     }
 
@@ -47,19 +48,19 @@ public class Projection {
         return values.get(path);
     }
 
-    public Set<Cuid> getReferenceValue(FieldPath path) {
+    public Set<ResourceId> getReferenceValue(FieldPath path) {
         Object value = values.get(path);
         if(value == null) {
             return Collections.emptySet();
         } else if(value instanceof Set) {
-            return (Set<Cuid>)value;
+            return (Set<ResourceId>)value;
         } else {
-            return Collections.singleton((Cuid) value);
+            return Collections.singleton((ResourceId) value);
         }
     }
 
 
-    public Set<Cuid> getReferenceValue(Cuid fieldId) {
+    public Set<ResourceId> getReferenceValue(ResourceId fieldId) {
         return getReferenceValue(new FieldPath(fieldId));
     }
 
@@ -72,7 +73,7 @@ public class Projection {
     }
 
 
-    public String getStringValue(Cuid rootFieldId) {
+    public String getStringValue(ResourceId rootFieldId) {
         return getStringValue(new FieldPath(rootFieldId));
     }
 

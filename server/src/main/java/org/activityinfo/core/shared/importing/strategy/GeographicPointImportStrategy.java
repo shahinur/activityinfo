@@ -1,8 +1,8 @@
 package org.activityinfo.core.shared.importing.strategy;
 
 import com.google.common.base.Objects;
-import org.activityinfo.core.shared.form.FormFieldType;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.i18n.shared.I18N;
 
 import java.util.Arrays;

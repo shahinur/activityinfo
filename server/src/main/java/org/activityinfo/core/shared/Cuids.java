@@ -1,5 +1,7 @@
 package org.activityinfo.core.shared;
 
+import org.activityinfo.model.resource.ResourceId;
+
 /**
  * Functions that operator on Collision-resistant Universal ids (CUID)
  */
@@ -18,8 +20,8 @@ public class Cuids {
      * @param id the original numeric id
      * @return an IRI with the cuid: scheme
      */
-    public static Cuid toIri(char cuidDomain, int id) {
-        return new Cuid(cuidDomain + Integer.toString(id, RADIX));
+    public static ResourceId toIri(char cuidDomain, int id) {
+        return ResourceId.create(cuidDomain + Integer.toString(id, RADIX));
     }
 
 }

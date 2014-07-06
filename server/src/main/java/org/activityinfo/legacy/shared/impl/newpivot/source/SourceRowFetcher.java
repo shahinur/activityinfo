@@ -25,7 +25,7 @@ import com.bedatadriven.rebar.sql.client.*;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.impl.Tables;
 import org.activityinfo.legacy.shared.impl.newpivot.IndicatorAnalyzer;

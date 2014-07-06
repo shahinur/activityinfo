@@ -1,16 +1,17 @@
 package org.activityinfo.core.client;
 
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.Resource;
 import org.activityinfo.core.shared.criteria.Criteria;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface ResourceLocator {
 
@@ -20,9 +21,9 @@ public interface ResourceLocator {
      * @param formId
      * @return
      */
-    Promise<FormClass> getFormClass(Cuid formId);
+    Promise<FormClass> getFormClass(ResourceId formId);
 
-    Promise<FormInstance> getFormInstance(Cuid formId);
+    Promise<FormInstance> getFormInstance(ResourceId formId);
 
     /**
      * Persists a resource to the server, creating or updating as necessary.
@@ -31,9 +32,9 @@ public interface ResourceLocator {
      * @return a Promise that resolves when the persistance operation completes
      * successfully.
      */
-    Promise<Void> persist(Resource resource);
+    Promise<Void> persist(IsResource resource);
 
-    Promise<Void> persist(List<? extends Resource> resources);
+    Promise<Void> persist(List<? extends IsResource> resources);
 
     /**
      * Retrieves the form instances that match the given criteria.
@@ -45,5 +46,7 @@ public interface ResourceLocator {
 
     Promise<List<Projection>> query(InstanceQuery query);
 
-    Promise<Void> remove(Collection<Cuid> resources);
+    Promise<Void> remove(Collection<ResourceId> resources);
+
+    Promise queryInstances(Set<ResourceId> formClassIds);
 }

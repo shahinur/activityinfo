@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.importing.validation;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Pair;
 import org.activityinfo.core.shared.importing.strategy.InstanceScorer;
 
@@ -17,8 +17,8 @@ public class ValidationResult {
     };
 
     private final State state;
-    private Pair<Cuid, Cuid> rangeWithInstanceId;
-    private Cuid instanceId;
+    private Pair<ResourceId, ResourceId> rangeWithInstanceId;
+    private ResourceId instanceId;
     private String typeConversionErrorMessage;
     private String convertedValue;
     private double confidence;
@@ -68,19 +68,19 @@ public class ValidationResult {
         return state == State.OK || (state == State.CONFIDENCE && confidence >= InstanceScorer.MINIMUM_SCORE);
     }
 
-    public Cuid getInstanceId() {
+    public ResourceId getInstanceId() {
         return instanceId;
     }
 
-    public void setInstanceId(Cuid instanceId) {
+    public void setInstanceId(ResourceId instanceId) {
         this.instanceId = instanceId;
     }
 
-    public Pair<Cuid, Cuid> getRangeWithInstanceId() {
+    public Pair<ResourceId, ResourceId> getRangeWithInstanceId() {
         return rangeWithInstanceId;
     }
 
-    public void setRangeWithInstanceId(Pair<Cuid, Cuid> rangeWithInstanceId) {
+    public void setRangeWithInstanceId(Pair<ResourceId, ResourceId> rangeWithInstanceId) {
         this.rangeWithInstanceId = rangeWithInstanceId;
     }
 }

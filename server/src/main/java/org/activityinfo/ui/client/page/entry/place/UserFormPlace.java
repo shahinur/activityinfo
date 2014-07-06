@@ -21,7 +21,7 @@ package org.activityinfo.ui.client.page.entry.place;
  * #L%
  */
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.page.PageId;
 import org.activityinfo.ui.client.page.PageState;
 import org.activityinfo.ui.client.page.app.Section;
@@ -36,14 +36,14 @@ public class UserFormPlace implements PageState {
 
     public static final PageId PAGE_ID = new PageId("site-form");
 
-    private Cuid userFormId;
-    private Cuid userFormInstanceId;
+    private ResourceId userFormId;
+    private ResourceId userFormInstanceId;
     private boolean createNewForm;
 
     public UserFormPlace() {
     }
 
-    public UserFormPlace(Cuid userFormId, Cuid userFormInstanceId) {
+    public UserFormPlace(ResourceId userFormId, ResourceId userFormInstanceId) {
         this.userFormId = userFormId;
         this.userFormInstanceId = userFormInstanceId;
     }
@@ -72,19 +72,19 @@ public class UserFormPlace implements PageState {
         return Section.DATA_ENTRY;
     }
 
-    public Cuid getUserFormId() {
+    public ResourceId getUserFormId() {
         return userFormId;
     }
 
-    public void setUserFormId(Cuid userFormId) {
+    public void setUserFormId(ResourceId userFormId) {
         this.userFormId = userFormId;
     }
 
-    public Cuid getUserFormInstanceId() {
+    public ResourceId getUserFormInstanceId() {
         return userFormInstanceId;
     }
 
-    public void setUserFormInstanceId(Cuid userFormInstanceId) {
+    public void setUserFormInstanceId(ResourceId userFormInstanceId) {
         this.userFormInstanceId = userFormInstanceId;
     }
 

@@ -10,18 +10,16 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.IdCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
 
 import javax.annotation.Nullable;
 import java.util.List;
-
-import static com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 
 /**
  * Displays a set of parent links
@@ -78,7 +76,7 @@ public class BreadCrumbBuilder {
         return null;
     }
 
-    private Promise<List<Projection>> queryParent(Cuid parentId) {
+    private Promise<List<Projection>> queryParent(ResourceId parentId) {
         return resourceLocator.query(InstanceQuery
                 .select(ApplicationProperties.LABEL_PROPERTY)
                 .where(new IdCriteria(parentId))

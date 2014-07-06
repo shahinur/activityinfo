@@ -3,12 +3,12 @@ package org.activityinfo.core.client.form.tree;
 import com.google.common.base.Function;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.FormClassSet;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.FormField;
-import org.activityinfo.core.shared.form.tree.FormTree;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.promise.Promise;
 
 import java.util.Collections;
 import java.util.logging.Logger;
@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 /**
  * Builds a {@link FormTree}
  */
-public class AsyncFormTreeBuilder implements Function<Cuid, Promise<FormTree>> {
+public class AsyncFormTreeBuilder implements Function<ResourceId, Promise<FormTree>> {
 
     private static final Logger LOGGER = Logger.getLogger(AsyncFormTreeBuilder.class.getName());
 
@@ -27,11 +27,11 @@ public class AsyncFormTreeBuilder implements Function<Cuid, Promise<FormTree>> {
     }
 
     @Override
-    public Promise<FormTree> apply(Cuid formClassId) {
+    public Promise<FormTree> apply(ResourceId formClassId) {
         return execute(Collections.singleton(formClassId));
     }
 
-    public Promise<FormTree> execute(Iterable<Cuid> formClasses) {
+    public Promise<FormTree> execute(Iterable<ResourceId> formClasses) {
         Promise<FormTree> result = new Promise<>();
         new Resolver(formClasses, result);
         return result;
@@ -43,15 +43,15 @@ public class AsyncFormTreeBuilder implements Function<Cuid, Promise<FormTree>> {
         private FormTree tree;
         private int outstandingRequests = 0;
 
-        public Resolver(final Iterable<Cuid> classIds, final AsyncCallback<FormTree> callback) {
+        public Resolver(final Iterable<ResourceId> classIds, final AsyncCallback<FormTree> callback) {
             this.callback = callback;
             this.tree = new FormTree();
-            for(Cuid formClass : classIds) {
+            for(ResourceId formClass : classIds) {
                 requestFormClassForNode(null, formClass);
             }
         }
 
-        private void requestFormClassForNode(final FormTree.Node node, final Cuid formClassId) {
+        private void requestFormClassForNode(final FormTree.Node node, final ResourceId formClassId) {
 
             LOGGER.fine("Requesting form class for " + node);
 
@@ -96,7 +96,7 @@ public class AsyncFormTreeBuilder implements Function<Cuid, Promise<FormTree>> {
         private void queueNextRequests(FormTree.Node child) {
             FormClassSet classSet = FormClassSet.of(child.getRange());
             assert classSet.isClosed() : "trees for open class ranges not yet implemented";
-            for(Cuid classId : classSet.getElements()) {
+            for(ResourceId classId : classSet.getElements()) {
                 requestFormClassForNode(child, classId);
             }
         }

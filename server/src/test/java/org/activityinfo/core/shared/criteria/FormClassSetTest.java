@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.criteria;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -14,8 +14,8 @@ public class FormClassSetTest {
     @Test
     public void test() {
         CriteriaUnion union = new CriteriaUnion(Arrays.asList(
-                new ClassCriteria(new Cuid("a")),
-                new ClassCriteria(new Cuid("b"))));
+                new ClassCriteria(ResourceId.create("a")),
+                new ClassCriteria(ResourceId.create("b"))));
 
         FormClassSet set = FormClassSet.of(union);
         assertTrue(set.isClosed());

@@ -22,8 +22,8 @@ package org.activityinfo.core.shared.importing.strategy;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.form.tree.FieldPath;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.formTree.FormTree;
 
 import java.util.List;
 import java.util.Map;

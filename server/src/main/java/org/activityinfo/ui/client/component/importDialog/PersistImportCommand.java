@@ -22,14 +22,14 @@ package org.activityinfo.ui.client.component.importDialog;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.strategy.FieldImporter;
 import org.activityinfo.core.shared.importing.validation.ValidatedRow;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 
 import javax.annotation.Nullable;
@@ -49,7 +49,7 @@ public class PersistImportCommand implements ImportCommand<Void> {
     public Promise<Void> apply(Void input) {
         final ImportModel model = commandExecutor.getImportModel();
 
-        final Cuid formClassId = model.getFormTree().getRootFields().iterator().next().getDefiningFormClass().getId();
+        final ResourceId formClassId = model.getFormTree().getRootFields().iterator().next().getDefiningFormClass().getId();
         final List<FormInstance> toPersist = Lists.newArrayList();
         final ValidatedRowTable validatedRowTable = model.getValidatedRowTable();
 

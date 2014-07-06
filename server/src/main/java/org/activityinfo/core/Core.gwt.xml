@@ -17,6 +17,10 @@
   <inherits name="com.google.gwt.json.JSON"/>
   <inherits name="org.activityinfo.i18n.I18n"/>
   <inherits name="com.bedatadriven.rebar.Time"/>
+  <inherits name="org.activityinfo.model.Model"/>
+  <inherits name="org.activityinfo.model.Model"/>
+  <inherits name="org.activityinfo.model.Model"/>
+  <inherits name="org.activityinfo.model.Model"/>
 
   <source path='client'/>
   <source path='shared'/>

@@ -1,6 +1,7 @@
 package org.activityinfo.core.shared.form;
 
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.model.form.FormFieldType;
 
 import static org.activityinfo.i18n.shared.I18N.CONSTANTS;
 

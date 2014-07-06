@@ -25,7 +25,7 @@ package org.activityinfo.legacy.shared.model;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 
 import java.util.*;
@@ -91,7 +91,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         return (Integer) get("id");
     }
 
-    public Cuid getInstanceId() {
+    public ResourceId getInstanceId() {
         return CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, getId());
     }
 
@@ -104,7 +104,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
     }
 
 
-    public Cuid getFormClassId() {
+    public ResourceId getFormClassId() {
         return CuidAdapter.cuid(CuidAdapter.ACTIVITY_DOMAIN, getActivityId());
     }
 

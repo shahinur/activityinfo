@@ -23,7 +23,7 @@ package org.activityinfo.legacy.client.remote;
  */
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.AsyncMonitor;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.monitor.MonitoringCallback;

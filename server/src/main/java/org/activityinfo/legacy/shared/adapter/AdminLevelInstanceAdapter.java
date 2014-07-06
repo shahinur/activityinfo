@@ -1,7 +1,7 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 

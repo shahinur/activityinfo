@@ -1,13 +1,11 @@
 package org.activityinfo.core.client;
 
 import com.google.common.base.Function;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -40,10 +38,10 @@ public class Resources {
         };
     }
 
-    public Function<Cuid, Promise<FormInstance>> fetchInstance() {
-        return new Function<Cuid, Promise<FormInstance>>() {
+    public Function<ResourceId, Promise<FormInstance>> fetchInstance() {
+        return new Function<ResourceId, Promise<FormInstance>>() {
             @Override
-            public Promise<FormInstance> apply(Cuid input) {
+            public Promise<FormInstance> apply(ResourceId input) {
                 return resourceLocator.getFormInstance(input);
             }
         };

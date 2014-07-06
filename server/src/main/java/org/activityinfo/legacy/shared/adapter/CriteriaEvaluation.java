@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.*;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class CriteriaEvaluation {
      * @return a Predicate which returns true if {@code FormInstances} of this class
      * <strong>might</strong> be included in the result.
      */
-    public static Predicate<Cuid> evaluatePartiallyOnClassId(Criteria criteria) {
+    public static Predicate<ResourceId> evaluatePartiallyOnClassId(Criteria criteria) {
         ClassIdEvaluator evaluator = new ClassIdEvaluator();
         criteria.accept(evaluator);
         return evaluator.getPredicate();
@@ -28,7 +28,7 @@ public class CriteriaEvaluation {
 
     private static class ClassIdEvaluator extends CriteriaVisitor {
 
-        private List<Predicate<Cuid>> classPredicates = Lists.newArrayList();
+        private List<Predicate<ResourceId>> classPredicates = Lists.newArrayList();
         private boolean hasCriteriaIndependentOfClassId = false;
 
         @Override
@@ -73,7 +73,7 @@ public class CriteriaEvaluation {
             return visitor;
         }
 
-        public Predicate<Cuid> getPredicate() {
+        public Predicate<ResourceId> getPredicate() {
             if (classPredicates.isEmpty()) {
                 return Predicates.alwaysTrue();
             } else {

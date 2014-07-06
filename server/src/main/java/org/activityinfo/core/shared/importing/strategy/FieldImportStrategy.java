@@ -1,9 +1,6 @@
 package org.activityinfo.core.shared.importing.strategy;
 
-import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.form.tree.FormTree;
-import org.activityinfo.core.shared.importing.source.SourceRow;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.formTree.FormTree;
 
 import java.util.List;
 import java.util.Map;

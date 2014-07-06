@@ -3,7 +3,7 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class PartnerListExtractor implements Function<SchemaDTO, List<PartnerDTO>> {
 
-    private final Predicate<Cuid> formClassCriteria;
+    private final Predicate<ResourceId> formClassCriteria;
 
     public PartnerListExtractor(Criteria criteria) {
         this.formClassCriteria = CriteriaEvaluation.evaluatePartiallyOnClassId(criteria);
@@ -26,7 +26,7 @@ public class PartnerListExtractor implements Function<SchemaDTO, List<PartnerDTO
     public List<PartnerDTO> apply(SchemaDTO input) {
         List<PartnerDTO> results = Lists.newArrayList();
         for (UserDatabaseDTO db : input.getDatabases()) {
-            Cuid formClassId = CuidAdapter.partnerFormClass(db.getId());
+            ResourceId formClassId = CuidAdapter.partnerFormClass(db.getId());
             if (formClassCriteria.apply(formClassId)) {
                 results.addAll(db.getPartners());
             }

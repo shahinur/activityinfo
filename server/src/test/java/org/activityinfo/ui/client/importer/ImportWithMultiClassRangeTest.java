@@ -7,7 +7,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.form.tree.*;
@@ -21,6 +21,8 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.ui.client.component.importDialog.Importer;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
@@ -40,11 +42,11 @@ import static org.junit.Assert.assertThat;
 @OnDataSet("/dbunit/nfi-import.db.xml")
 public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
 
-    public static final Cuid NFI_DISTRIBUTION_FORM_CLASS = CuidAdapter.activityFormClass(33);
+    public static final ResourceId NFI_DISTRIBUTION_FORM_CLASS = CuidAdapter.activityFormClass(33);
 
-    public static final Cuid SCHOOL_FORM_CLASS = CuidAdapter.locationFormClass(2);
+    public static final ResourceId SCHOOL_FORM_CLASS = CuidAdapter.locationFormClass(2);
 
-    public static final Cuid ADMIN_FIELD = LocationClassAdapter.getAdminFieldId(SCHOOL_FORM_CLASS);
+    public static final ResourceId ADMIN_FIELD = LocationClassAdapter.getAdminFieldId(SCHOOL_FORM_CLASS);
 
 
     // admin levels
@@ -63,12 +65,12 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
     public static final int ECHO = 400;
     public static final int DEPLACEMENT = 63;
 
-    public static final Cuid PROVINCE_KATANGA = CuidAdapter.entity(141804);
-    public static final Cuid DISTRICT_TANGANIKA = CuidAdapter.entity(141845);
-    public static final Cuid TERRITOIRE_KALEMIE = CuidAdapter.entity(141979);
-    public static final Cuid SECTEUR_TUMBWE = CuidAdapter.entity(142803);
-    public static final Cuid GROUPEMENT_LAMBO_KATENGA = CuidAdapter.entity(148235);
-    public static final Cuid ZONE_SANTE_NYEMBA = CuidAdapter.entity(212931);
+    public static final ResourceId PROVINCE_KATANGA = CuidAdapter.entity(141804);
+    public static final ResourceId DISTRICT_TANGANIKA = CuidAdapter.entity(141845);
+    public static final ResourceId TERRITOIRE_KALEMIE = CuidAdapter.entity(141979);
+    public static final ResourceId SECTEUR_TUMBWE = CuidAdapter.entity(142803);
+    public static final ResourceId GROUPEMENT_LAMBO_KATENGA = CuidAdapter.entity(148235);
+    public static final ResourceId ZONE_SANTE_NYEMBA = CuidAdapter.entity(212931);
 
     private List<FormInstance> instances;
 
@@ -182,10 +184,10 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
 
     }
 
-    private Set<Cuid> school(String name) {
+    private Set<ResourceId> school(String name) {
         for(FormInstance instance : instances) {
             if(name.equals(instance.getString(LocationClassAdapter.getNameFieldId(SCHOOL_FORM_CLASS)))) {
-                Set<Cuid> references = instance.getReferences(ADMIN_FIELD);
+                Set<ResourceId> references = instance.getReferences(ADMIN_FIELD);
                 System.out.println(name +", references: " + references);
                 return references;
             }
@@ -193,7 +195,7 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
         throw new AssertionError("No instance with name " + name);
     }
 
-    public static Set<Cuid> set(Cuid... cuids) {
-        return Sets.newHashSet(cuids);
+    public static Set<ResourceId> set(ResourceId... resourceIds) {
+        return Sets.newHashSet(resourceIds);
     }
 }

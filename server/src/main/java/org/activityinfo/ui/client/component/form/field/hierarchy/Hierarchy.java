@@ -2,10 +2,9 @@ package org.activityinfo.ui.client.component.form.field.hierarchy;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.formTree.FormTree;
 
 import java.util.*;
 
@@ -14,7 +13,7 @@ import java.util.*;
  */
 public class Hierarchy {
 
-    private Map<Cuid, Level> levelMap = Maps.newHashMap();
+    private Map<ResourceId, Level> levelMap = Maps.newHashMap();
     private List<Level> roots = Lists.newArrayList();
     private List<Level> levels = Lists.newArrayList();
 
@@ -55,7 +54,7 @@ public class Hierarchy {
     /**
      * @return  the Level associated with the given {@code formClassId}
      */
-    public Level getLevel(Cuid formClassId) {
+    public Level getLevel(ResourceId formClassId) {
         return levelMap.get(formClassId);
     }
 
@@ -74,7 +73,7 @@ public class Hierarchy {
         return levels;
     }
 
-    public boolean hasLevel(Cuid classId) {
+    public boolean hasLevel(ResourceId classId) {
         return levelMap.containsKey(classId);
     }
 }

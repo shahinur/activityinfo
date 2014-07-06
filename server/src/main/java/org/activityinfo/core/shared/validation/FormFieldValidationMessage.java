@@ -1,19 +1,19 @@
 package org.activityinfo.core.shared.validation;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * Validation Error bound to form field.
  */
 public class FormFieldValidationMessage extends ValidationMessage {
 
-    private Cuid fieldId;
+    private ResourceId fieldId;
 
-    public FormFieldValidationMessage(Cuid fieldId) {
+    public FormFieldValidationMessage(ResourceId fieldId) {
         this.fieldId = fieldId;
     }
 
-    public Cuid getFieldId() {
+    public ResourceId getFieldId() {
         return fieldId;
     }
 }

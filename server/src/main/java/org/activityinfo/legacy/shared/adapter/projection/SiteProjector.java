@@ -2,10 +2,10 @@ package org.activityinfo.legacy.shared.adapter.projection;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.command.result.ListResult;
 import org.activityinfo.legacy.shared.model.*;
@@ -30,7 +30,7 @@ public class SiteProjector implements Function<ListResult<SiteDTO>, List<Project
         this.criteria = criteria;
         locationProjectors = LocationProjector.createLocationUpdaters(fields);
         for (FieldPath path : fields) {
-            Cuid fieldId = path.getLeafId();
+            ResourceId fieldId = path.getLeafId();
 
             if (fieldId.getDomain() == CuidAdapter.PARTNER_FORM_CLASS_DOMAIN) {
                 int databaseId = CuidAdapter.getBlock(fieldId, 0);

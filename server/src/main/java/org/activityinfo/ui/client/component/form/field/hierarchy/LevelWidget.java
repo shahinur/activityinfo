@@ -16,9 +16,9 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.Log;
 
@@ -34,7 +34,7 @@ public class LevelWidget implements IsWidget, LevelView {
     private final HTMLPanel panel;
     private boolean enabled = true;
     private boolean readOnly;
-    private Cuid parentId;
+    private ResourceId parentId;
 
     private Level level;
     private Supplier<Promise<List<Projection>>> choiceSupplier;

@@ -1,7 +1,7 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
 
@@ -14,8 +14,8 @@ public class AdminEntityInstanceAdapter implements Function<AdminEntityDTO, Form
     @Override
     public FormInstance apply(AdminEntityDTO input) {
 
-        Cuid classId = CuidAdapter.adminLevelFormClass(input.getLevelId());
-        Cuid instanceId = CuidAdapter.entity(input.getId());
+        ResourceId classId = CuidAdapter.adminLevelFormClass(input.getLevelId());
+        ResourceId instanceId = CuidAdapter.entity(input.getId());
         FormInstance instance = new FormInstance(instanceId, classId);
 
         // Parent field value

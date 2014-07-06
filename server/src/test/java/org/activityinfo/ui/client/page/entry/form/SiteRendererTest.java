@@ -1,7 +1,7 @@
 package org.activityinfo.ui.client.page.entry.form;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;

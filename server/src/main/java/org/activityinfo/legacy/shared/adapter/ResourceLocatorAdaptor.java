@@ -4,18 +4,20 @@ import com.google.common.collect.Lists;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.QueryResult;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.core.shared.criteria.ClassCriteria;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.Resource;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.criteria.IdCriteria;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.Dispatcher;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Exposes a legacy {@code Dispatcher} implementation as new {@code ResourceLocator}
@@ -31,17 +33,17 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     }
 
     @Override
-    public Promise<FormClass> getFormClass(Cuid classId) {
+    public Promise<FormClass> getFormClass(ResourceId classId) {
         return classProvider.apply(classId);
     }
 
     @Override
-    public Promise<FormInstance> getFormInstance(Cuid instanceId) {
+    public Promise<FormInstance> getFormInstance(ResourceId instanceId) {
         return queryInstances(new IdCriteria(instanceId)).then(new SelectSingle());
     }
 
     @Override
-    public Promise<Void> persist(Resource resource) {
+    public Promise<Void> persist(IsResource resource) {
         if (resource instanceof FormInstance) {
             FormInstance instance = (FormInstance) resource;
             if (instance.getId().getDomain() == CuidAdapter.SITE_DOMAIN) {
@@ -54,12 +56,11 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
         return Promise.rejected(new UnsupportedOperationException());
     }
 
-    // todo there should be better way to persist list of resources
     @Override
-    public Promise<Void> persist(List<? extends Resource> resources) {
+    public Promise<Void> persist(List<? extends IsResource> resources) {
         final List<Promise<Void>> promises = Lists.newArrayList();
         if (resources != null && !resources.isEmpty()) {
-            for (final Resource resource : resources) {
+            for (final IsResource resource : resources) {
                 promises.add(persist(resource));
             }
         }
@@ -82,7 +83,12 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
 
 
     @Override
-    public Promise<Void> remove(Collection<Cuid> resources) {
+    public Promise<Void> remove(Collection<ResourceId> resources) {
         return new Eraser(dispatcher, resources).execute();
+    }
+
+    @Override
+    public Promise queryInstances(Set<ResourceId> formClassIds) {
+        return queryInstances(ClassCriteria.union(formClassIds));
     }
 }

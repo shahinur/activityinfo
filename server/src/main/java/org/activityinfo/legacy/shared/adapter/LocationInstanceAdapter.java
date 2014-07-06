@@ -2,7 +2,7 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
@@ -19,8 +19,8 @@ public class LocationInstanceAdapter implements Function<LocationDTO, FormInstan
 
     @Override
     public FormInstance apply(LocationDTO input) {
-        Cuid instanceId = CuidAdapter.locationInstanceId(input.getId());
-        Cuid classId = CuidAdapter.locationFormClass(input.getLocationTypeId());
+        ResourceId instanceId = CuidAdapter.locationInstanceId(input.getId());
+        ResourceId classId = CuidAdapter.locationFormClass(input.getLocationTypeId());
 
         FormInstance instance = new FormInstance(instanceId, classId);
         instance.set(LocationClassAdapter.getNameFieldId(classId), input.getName());
@@ -32,7 +32,7 @@ public class LocationInstanceAdapter implements Function<LocationDTO, FormInstan
     }
 
 
-    private Set<Cuid> toInstanceIdSet(List<AdminEntityDTO> adminEntities) {
+    private Set<ResourceId> toInstanceIdSet(List<AdminEntityDTO> adminEntities) {
         // in the legacy database, all admin entities are stored to simplify
         // querying the sql database. here we need to eliminate the redundancy
 
@@ -43,7 +43,7 @@ public class LocationInstanceAdapter implements Function<LocationDTO, FormInstan
             }
         }
 
-        Set<Cuid> instanceIds = Sets.newHashSet();
+        Set<ResourceId> instanceIds = Sets.newHashSet();
         for (AdminEntityDTO entity : adminEntities) {
             if (!parents.contains(entity.getId())) {
                 instanceIds.add(CuidAdapter.entity(entity.getId()));

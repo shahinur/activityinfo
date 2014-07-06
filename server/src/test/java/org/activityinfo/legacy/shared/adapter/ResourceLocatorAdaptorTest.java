@@ -5,16 +5,15 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.core.client.InstanceQuery;
-import org.activityinfo.core.client.PromiseMatchers;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.command.GetLocations;
 import org.activityinfo.legacy.shared.command.result.LocationResult;
@@ -27,7 +26,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -49,21 +47,21 @@ public class ResourceLocatorAdaptorTest extends CommandTestCase2 {
 
     private static final int PROVINCE_ADMIN_LEVEL_ID = 1;
 
-    private static final Cuid PROVINCE_CLASS = CuidAdapter.adminLevelFormClass(PROVINCE_ADMIN_LEVEL_ID);
+    private static final ResourceId PROVINCE_CLASS = CuidAdapter.adminLevelFormClass(PROVINCE_ADMIN_LEVEL_ID);
 
     private static final int PEAR_DATABASE_ID = 1;
 
     private static final int HEALTH_CENTER_LOCATION_TYPE = 1;
 
-    private static final Cuid HEALTH_CENTER_CLASS = CuidAdapter.locationFormClass(HEALTH_CENTER_LOCATION_TYPE);
+    private static final ResourceId HEALTH_CENTER_CLASS = CuidAdapter.locationFormClass(HEALTH_CENTER_LOCATION_TYPE);
 
     private static final int NFI_DIST_ID = 1;
 
-    private static final Cuid NFI_DIST_FORM_CLASS = CuidAdapter.activityFormClass(NFI_DIST_ID);
+    private static final ResourceId NFI_DIST_FORM_CLASS = CuidAdapter.activityFormClass(NFI_DIST_ID);
 
     public static final int VILLAGE_TYPE_ID = 1;
 
-    public static final Cuid VILLAGE_CLASS = CuidAdapter.locationFormClass(VILLAGE_TYPE_ID);
+    public static final ResourceId VILLAGE_CLASS = CuidAdapter.locationFormClass(VILLAGE_TYPE_ID);
 
     public static final int IRUMU = 21;
 
@@ -98,9 +96,9 @@ public class ResourceLocatorAdaptorTest extends CommandTestCase2 {
     @Test
     @OnDataSet("/dbunit/jordan-locations.db.xml")
     public void getLocation() {
-        Cuid classId = locationFormClass(50512);
+        ResourceId classId = locationFormClass(50512);
         FormInstance instance = assertResolves(resourceLocator.getFormInstance(locationInstanceId(1590565828)));
-        Set<Cuid> adminUnits = instance.getReferences(field(classId, ADMIN_FIELD));
+        Set<ResourceId> adminUnits = instance.getReferences(field(classId, ADMIN_FIELD));
         System.out.println(adminUnits);
 
     }
@@ -185,7 +183,7 @@ public class ResourceLocatorAdaptorTest extends CommandTestCase2 {
         System.out.println(Joiner.on("\n").join(projections));
     }
 
-    private List<FormInstance> queryByClass(Cuid classId) {
+    private List<FormInstance> queryByClass(ResourceId classId) {
         Promise<List<FormInstance>> promise = resourceLocator.queryInstances(new ClassCriteria(classId));
 
         List<FormInstance> list = assertResolves(promise);
@@ -220,7 +218,7 @@ public class ResourceLocatorAdaptorTest extends CommandTestCase2 {
     public void deleteLocation() {
 
         ResourceLocatorAdaptor adapter = new ResourceLocatorAdaptor(getDispatcher());
-        Cuid instanceToDelete = CuidAdapter.locationInstanceId(1);
+        ResourceId instanceToDelete = CuidAdapter.locationInstanceId(1);
         adapter.remove(Arrays.asList(instanceToDelete));
 
         List<FormInstance> formInstances = assertResolves(adapter.queryInstances(new ClassCriteria(CuidAdapter.locationFormClass(1))));
@@ -235,7 +233,7 @@ public class ResourceLocatorAdaptorTest extends CommandTestCase2 {
     @Test
     public void siteProjections() {
 
-        Cuid partnerClassId = CuidAdapter.partnerFormClass(PEAR_DATABASE_ID);
+        ResourceId partnerClassId = CuidAdapter.partnerFormClass(PEAR_DATABASE_ID);
 
         ResourceLocatorAdaptor adapter = new ResourceLocatorAdaptor(getDispatcher());
         FieldPath villageName = new FieldPath(getNameFieldId(VILLAGE_CLASS));

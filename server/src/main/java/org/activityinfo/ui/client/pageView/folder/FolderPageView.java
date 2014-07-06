@@ -14,7 +14,7 @@ import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.core.shared.criteria.ParentCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.list.InstanceList;
 import org.activityinfo.ui.client.page.instance.BreadCrumbBuilder;
 import org.activityinfo.ui.client.pageView.IconStyleProvider;

@@ -3,7 +3,7 @@ package org.activityinfo.ui.client.page.instance;
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.page.PageId;
 import org.activityinfo.ui.client.page.PageState;
 import org.activityinfo.ui.client.page.PageStateParser;
@@ -16,15 +16,15 @@ import java.util.List;
  */
 public class InstancePlace implements PageState {
 
-    private Cuid instanceId;
+    private ResourceId instanceId;
     private String view;
 
-    public InstancePlace(Cuid instanceId) {
+    public InstancePlace(ResourceId instanceId) {
         this.instanceId = instanceId;
     }
 
-    public InstancePlace(Cuid cuid, String part) {
-        this.instanceId = cuid;
+    public InstancePlace(ResourceId resourceId, String part) {
+        this.instanceId = resourceId;
         this.view = part;
     }
 
@@ -42,7 +42,7 @@ public class InstancePlace implements PageState {
         return InstancePage.PAGE_ID;
     }
 
-    public Cuid getInstanceId() {
+    public ResourceId getInstanceId() {
         return instanceId;
     }
 
@@ -66,15 +66,15 @@ public class InstancePlace implements PageState {
         public PageState parse(String token) {
             String parts[] = token.split("/");
             if(parts.length == 1) {
-                return new InstancePlace(new Cuid(parts[0]));
+                return new InstancePlace(ResourceId.create(parts[0]));
             } else {
-                return new InstancePlace(new Cuid(parts[0]), parts[1]);
+                return new InstancePlace(ResourceId.create(parts[0]), parts[1]);
             }
         }
     }
 
 
-    public static SafeUri safeUri(Cuid instanceId) {
+    public static SafeUri safeUri(ResourceId instanceId) {
         return UriUtils.fromTrustedString("#i/" + instanceId.asString());
     }
 }

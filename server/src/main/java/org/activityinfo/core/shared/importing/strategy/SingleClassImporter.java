@@ -4,14 +4,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class SingleClassImporter implements FieldImporter {
 
-    private Cuid rangeClassId;
-    private Cuid fieldId;
+    private ResourceId rangeClassId;
+    private ResourceId fieldId;
 
     /**
      * List of columns to match against name properties of potential reference matches.
@@ -39,11 +39,11 @@ public class SingleClassImporter implements FieldImporter {
     private InstanceScoreSource scoreSource;
     private InstanceScorer instanceScorer = null;
 
-    public SingleClassImporter(Cuid rangeClassId,
+    public SingleClassImporter(ResourceId rangeClassId,
                                List<ColumnAccessor> sourceColumns,
                                Map<FieldPath, Integer> referenceFields,
                                List<FieldImporterColumn> fieldImporterColumns,
-                               Cuid fieldId) {
+                               ResourceId fieldId) {
         this.rangeClassId = rangeClassId;
         this.sources = sourceColumns;
         this.referenceFields = referenceFields;

@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.importer;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
-import org.activityinfo.core.shared.form.FormFieldType;
+import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.core.shared.importing.source.SourceColumn;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;

@@ -9,11 +9,11 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.tree.FormTree;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.page.instance.BreadCrumbBuilder;
 import org.activityinfo.ui.client.pageView.IconStyleProvider;
 import org.activityinfo.ui.client.pageView.InstancePageView;
@@ -57,7 +57,7 @@ public class FormClassPageView implements InstancePageView {
     }
 
     public Promise<Void> show(FormInstance instance) {
-        Cuid classId = instance.getId();
+        ResourceId classId = instance.getId();
 
         nameElement.setInnerText(instance.getString(FormClass.LABEL_FIELD_ID));
         pageIcon.setClassName(IconStyleProvider.getIconStyleForFormClass(instance.getId()));

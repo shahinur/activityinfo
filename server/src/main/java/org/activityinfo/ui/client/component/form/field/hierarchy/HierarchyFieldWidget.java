@@ -4,7 +4,7 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 import org.activityinfo.ui.client.component.form.model.HierarchyViewModel;
 
@@ -19,7 +19,7 @@ import java.util.Set;
 public class HierarchyFieldWidget implements ReferenceFieldWidget {
 
     private final FlowPanel panel;
-    private final Map<Cuid, LevelView> widgets = new HashMap<>();
+    private final Map<ResourceId, LevelView> widgets = new HashMap<>();
     private final Presenter presenter;
 
     public HierarchyFieldWidget(ResourceLocator locator, HierarchyViewModel viewModel, ValueUpdater valueUpdater) {
@@ -43,7 +43,7 @@ public class HierarchyFieldWidget implements ReferenceFieldWidget {
     }
 
     @Override
-    public void setValue(Set<Cuid> value) {
+    public void setValue(Set<ResourceId> value) {
 
     }
 

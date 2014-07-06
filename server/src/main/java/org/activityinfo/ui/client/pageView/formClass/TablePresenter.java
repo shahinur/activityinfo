@@ -5,11 +5,11 @@ import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
-import org.activityinfo.core.shared.form.FormClass;
-import org.activityinfo.core.shared.form.tree.FormTree;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.table.FieldColumn;
 import org.activityinfo.ui.client.component.table.InstanceTableView;
 import org.activityinfo.ui.client.widget.DisplayWidget;
@@ -25,7 +25,7 @@ public class TablePresenter implements DisplayWidget<FormTree> {
     private InstanceTableView tableView;
 
     private FormTree formTree;
-    private Map<Cuid, FieldColumn> columnMap;
+    private Map<ResourceId, FieldColumn> columnMap;
 
     private List<FieldColumn> columns;
     private ScrollPanel scrollAncestor;
@@ -39,7 +39,7 @@ public class TablePresenter implements DisplayWidget<FormTree> {
         this.formTree = formTree;
         enumerateColumns();
 
-        final Map<Cuid, FormClass> rootFormClasses = formTree.getRootFormClasses();
+        final Map<ResourceId, FormClass> rootFormClasses = formTree.getRootFormClasses();
 
         tableView.setRootFormClasses(rootFormClasses.values());
         tableView.setCriteria(ClassCriteria.union(rootFormClasses.keySet()));

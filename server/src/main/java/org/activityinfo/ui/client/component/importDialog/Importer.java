@@ -2,14 +2,14 @@ package org.activityinfo.ui.client.component.importDialog;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.strategy.FieldImportStrategies;
 import org.activityinfo.core.shared.importing.strategy.FieldImportStrategy;
 import org.activityinfo.core.shared.importing.strategy.ImportTarget;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import java.util.List;
 

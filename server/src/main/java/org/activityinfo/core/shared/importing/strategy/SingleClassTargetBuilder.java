@@ -1,10 +1,10 @@
 package org.activityinfo.core.shared.importing.strategy;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.FormClassSet;
-import org.activityinfo.core.shared.form.tree.FieldPath;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.formTree.FormTree;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class SingleClassTargetBuilder {
         Map<FieldPath, Integer> referenceValues = targetCollector.getPathMap(mappings, sourceColumns);
         List<FieldImporterColumn> fieldImporterColumns = targetCollector.fieldImporterColumns(mappings);
 
-        Cuid rangeClassId = FormClassSet.of(rootField.getRange()).unique();
+        ResourceId rangeClassId = FormClassSet.of(rootField.getRange()).unique();
 
         return new SingleClassImporter(rangeClassId, sourceColumns, referenceValues, fieldImporterColumns, rootField.getFieldId());
     }

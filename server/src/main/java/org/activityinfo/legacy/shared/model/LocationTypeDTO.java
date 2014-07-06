@@ -23,7 +23,7 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -31,7 +31,6 @@ import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import java.util.List;
@@ -60,7 +59,7 @@ public final class LocationTypeDTO extends BaseModelData implements EntityDTO, I
     }
 
     @Override
-    public Cuid getResourceId() {
+    public ResourceId getResourceId() {
         return CuidAdapter.locationFormClass(getId());
     }
 

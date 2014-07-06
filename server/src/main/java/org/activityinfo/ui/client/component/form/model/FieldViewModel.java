@@ -1,7 +1,7 @@
 package org.activityinfo.ui.client.component.form.model;
 
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * Marker interface for view models of fields. The view
@@ -11,5 +11,5 @@ import org.activityinfo.core.shared.Cuid;
  */
 public interface FieldViewModel {
 
-    Cuid getFieldId();
+    ResourceId getFieldId();
 }

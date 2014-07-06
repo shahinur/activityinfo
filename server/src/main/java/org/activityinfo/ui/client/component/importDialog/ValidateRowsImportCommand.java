@@ -28,7 +28,7 @@ import org.activityinfo.core.shared.importing.strategy.FieldImporter;
 import org.activityinfo.core.shared.importing.validation.ValidatedRow;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
 import java.util.List;

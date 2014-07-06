@@ -3,10 +3,10 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Functions;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.model.AiLatLng;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.legacy.shared.command.GetAdminEntities;
@@ -34,7 +34,7 @@ public class LocationPersister {
     private Promise<Void> callback;
     private Map<String, Object> properties;
     private Queue<Integer> parents = new LinkedList<>();
-    private Cuid classId;
+    private ResourceId classId;
 
     public LocationPersister(Dispatcher dispatcher, FormInstance instance) {
         this.dispatcher = dispatcher;
@@ -57,10 +57,10 @@ public class LocationPersister {
             properties.put("longitude", point.getLng());
         }
 
-        Set<Cuid> adminEntities = instance.getReferences(field(classId, ADMIN_FIELD));
+        Set<ResourceId> adminEntities = instance.getReferences(field(classId, ADMIN_FIELD));
         if (adminEntities != null) {
-            for (Cuid adminEntityCuid : adminEntities) {
-                parents.add(getLegacyIdFromCuid(adminEntityCuid));
+            for (ResourceId adminEntityResourceId : adminEntities) {
+                parents.add(getLegacyIdFromCuid(adminEntityResourceId));
             }
         }
 

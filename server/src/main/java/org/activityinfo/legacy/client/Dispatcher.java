@@ -28,7 +28,7 @@ package org.activityinfo.legacy.client;
 
 import com.google.common.base.Function;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 

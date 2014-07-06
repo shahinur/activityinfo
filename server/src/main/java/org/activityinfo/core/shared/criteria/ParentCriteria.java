@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.criteria;
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.form.FormInstance;
 
@@ -12,9 +12,9 @@ import java.util.Objects;
  */
 public class ParentCriteria implements Criteria {
 
-    private final Cuid parentId;
+    private final ResourceId parentId;
 
-    private ParentCriteria(Cuid id) {
+    private ParentCriteria(ResourceId id) {
         this.parentId = id;
     }
 
@@ -27,7 +27,7 @@ public class ParentCriteria implements Criteria {
         return parentId == null;
     }
 
-    public Cuid getParentId() {
+    public ResourceId getParentId() {
         return parentId;
     }
 
@@ -46,7 +46,7 @@ public class ParentCriteria implements Criteria {
         return new ParentCriteria(null);
     }
 
-    public static ParentCriteria isChildOf(Cuid id) {
+    public static ParentCriteria isChildOf(ResourceId id) {
         return new ParentCriteria(id);
     }
 }

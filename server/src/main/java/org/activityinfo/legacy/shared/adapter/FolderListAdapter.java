@@ -3,10 +3,10 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.core.shared.criteria.Criteria;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.*;
@@ -23,8 +23,8 @@ import static org.activityinfo.legacy.shared.adapter.CuidAdapter.*;
  */
 public class FolderListAdapter implements Function<SchemaDTO, List<FormInstance>> {
 
-    public static final Cuid HOME_ID = new Cuid("home");
-    public static final Cuid GEODB_ID = new Cuid("_geodb");
+    public static final ResourceId HOME_ID = ResourceId.create("home");
+    public static final ResourceId GEODB_ID = ResourceId.create("_geodb");
 
     private final Criteria criteria;
 

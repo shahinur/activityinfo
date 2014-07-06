@@ -2,8 +2,8 @@ package org.activityinfo.core.shared.importing.model;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.importing.source.SourceColumn;
 import org.activityinfo.core.shared.importing.source.SourceColumnAccessor;
 import org.activityinfo.core.shared.importing.source.SourceTable;
@@ -65,7 +65,7 @@ public class ImportModel {
         return columnActions;
     }
 
-    public Map<TargetSiteId, ColumnAccessor> getMappedColumns(Cuid fieldId) {
+    public Map<TargetSiteId, ColumnAccessor> getMappedColumns(ResourceId fieldId) {
         Map<TargetSiteId, ColumnAccessor> mappings = Maps.newHashMap();
         for (Map.Entry<SourceColumn, MapExistingAction> entry : getMapExistingActions(fieldId).entrySet()) {
             TargetSiteId site = entry.getValue().getTarget().getSite();
@@ -75,7 +75,7 @@ public class ImportModel {
         return mappings;
     }
 
-    public Map<SourceColumn, MapExistingAction> getMapExistingActions(Cuid fieldId) {
+    public Map<SourceColumn, MapExistingAction> getMapExistingActions(ResourceId fieldId) {
         Map<SourceColumn, MapExistingAction> existingActions = Maps.newHashMap();
         for (Map.Entry<SourceColumn, ColumnAction> entry : columnActions.entrySet()) {
             if (entry.getValue() instanceof MapExistingAction) {

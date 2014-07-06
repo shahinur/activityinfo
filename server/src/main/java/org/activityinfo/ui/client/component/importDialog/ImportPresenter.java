@@ -12,13 +12,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.model.MapExistingAction;
 import org.activityinfo.core.shared.importing.strategy.FieldImportStrategies;
 import org.activityinfo.core.shared.importing.strategy.ImportTarget;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.client.component.importDialog.mapping.ColumnMappingPage;
 import org.activityinfo.ui.client.component.importDialog.source.ChooseSourcePage;
@@ -209,7 +209,7 @@ public class ImportPresenter {
         return eventBus;
     }
 
-    public static Promise<ImportPresenter> showPresenter(Cuid activityId, final ResourceLocator resourceLocator) {
+    public static Promise<ImportPresenter> showPresenter(ResourceId activityId, final ResourceLocator resourceLocator) {
         AsyncFormTreeBuilder treeBuilder = new AsyncFormTreeBuilder(resourceLocator);
         return treeBuilder.apply(activityId).then(new Function<FormTree, ImportPresenter>() {
             @Override

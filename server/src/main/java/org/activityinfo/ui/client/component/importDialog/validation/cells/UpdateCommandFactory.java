@@ -1,7 +1,7 @@
 package org.activityinfo.ui.client.component.importDialog.validation.cells;
 
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 
 public interface UpdateCommandFactory<T> {
 

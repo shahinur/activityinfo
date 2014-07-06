@@ -22,9 +22,9 @@ package org.activityinfo.core.shared.importing.strategy;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 
 import java.util.List;
 import java.util.Map;
@@ -43,13 +43,13 @@ public class InstanceScoreSourceBuilder {
     }
 
     public InstanceScoreSource build(List<Projection> projections) {
-        final List<Cuid> instanceCuidList = Lists.newArrayList();
+        final List<ResourceId> instanceResourceIdList = Lists.newArrayList();
         final List<String[]> referenceValueList = Lists.newArrayList();
 
         for (Projection projection : projections) {
-            instanceCuidList.add(projection.getRootInstanceId());
+            instanceResourceIdList.add(projection.getRootInstanceId());
             referenceValueList.add(SingleClassImporter.toArray(projection, referenceFields, sourceColumns.size()));
         }
-        return new InstanceScoreSource(sourceColumns, instanceCuidList, referenceValueList);
+        return new InstanceScoreSource(sourceColumns, instanceResourceIdList, referenceValueList);
     }
 }

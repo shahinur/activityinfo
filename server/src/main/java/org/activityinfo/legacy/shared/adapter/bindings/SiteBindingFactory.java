@@ -2,7 +2,7 @@ package org.activityinfo.legacy.shared.adapter.bindings;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
@@ -58,7 +58,7 @@ public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
     private class AttributeGroupBinding implements FieldBinding<SiteDTO> {
 
         private final AttributeGroupDTO group;
-        private Cuid fieldId;
+        private ResourceId fieldId;
 
         private AttributeGroupBinding(ActivityDTO activity, AttributeGroupDTO group) {
             this.group = group;
@@ -67,7 +67,7 @@ public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
 
         @Override
         public void updateInstanceFromModel(FormInstance instance, SiteDTO model) {
-            Set<Cuid> references = Sets.newHashSet();
+            Set<ResourceId> references = Sets.newHashSet();
             for (AttributeDTO attribute : group.getAttributes()) {
                 int id = attribute.getId();
                 if (model.getAttributeValue(id)) {
@@ -81,9 +81,9 @@ public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
 
         @Override
         public void populateChangeMap(FormInstance instance, Map<String, Object> changeMap) {
-            Set<Cuid> references = instance.getReferences(fieldId);
-            for (Cuid attributeCuid : references) {
-                changeMap.put(AttributeDTO.getPropertyName(getLegacyIdFromCuid(attributeCuid)), true);
+            Set<ResourceId> references = instance.getReferences(fieldId);
+            for (ResourceId attributeResourceId : references) {
+                changeMap.put(AttributeDTO.getPropertyName(getLegacyIdFromCuid(attributeResourceId)), true);
             }
         }
     }

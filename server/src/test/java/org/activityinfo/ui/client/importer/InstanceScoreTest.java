@@ -26,17 +26,17 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
-import org.activityinfo.core.shared.form.tree.FieldPath;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.form.tree.FormTreePrettyPrinter;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.strategy.*;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.ui.client.component.importDialog.Importer;
@@ -60,7 +60,7 @@ import static org.junit.Assert.assertThat;
 @OnDataSet("/dbunit/nfi-import.db.xml")
 public class InstanceScoreTest extends AbstractImporterTest {
 
-    private static final Cuid ADMINISTRATIVE_UNIT_FIELD = new Cuid("L000002000006");
+    private static final ResourceId ADMINISTRATIVE_UNIT_FIELD = ResourceId.create("L000002000006");
 
     @Test
     public void adminEntityScoring() throws IOException {
@@ -127,7 +127,7 @@ public class InstanceScoreTest extends AbstractImporterTest {
     }
 
     private Promise<List<Projection>> query(Map<FieldPath, Integer> referenceFields, int adminLevel) {
-        Cuid range = CuidAdapter.adminLevelFormClass(adminLevel);
+        ResourceId range = CuidAdapter.adminLevelFormClass(adminLevel);
         return resourceLocator.query(new InstanceQuery(Lists.newArrayList(referenceFields.keySet()), new ClassCriteria(range)));
     }
 

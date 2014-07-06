@@ -1,7 +1,7 @@
 package org.activityinfo.core.shared.criteria;
 
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.Set;
 
@@ -14,12 +14,12 @@ public class FormClassSet {
     public static final FormClassSet OPEN = new FormClassSet();
 
     private boolean open = true;
-    private Set<Cuid> closed = Sets.newHashSet();
+    private Set<ResourceId> closed = Sets.newHashSet();
 
     private FormClassSet() {
     }
 
-    private FormClassSet(Cuid classId) {
+    private FormClassSet(ResourceId classId) {
         open = false;
         closed.add(classId);
     }
@@ -60,7 +60,7 @@ public class FormClassSet {
         return !open && closed.size() == 1;
     }
 
-    public Cuid unique() {
+    public ResourceId unique() {
         assert !open : "The set is open";
         assert !closed.isEmpty() : "The set is empty";
         assert  closed.size() == 1 : "The set includes more than one class";
@@ -68,7 +68,7 @@ public class FormClassSet {
         return closed.iterator().next();
     }
 
-    public Set<Cuid> getElements() {
+    public Set<ResourceId> getElements() {
         assert isClosed();
         return closed;
     }
@@ -126,7 +126,7 @@ public class FormClassSet {
         return result;
     }
 
-    public static FormClassSet of(Set<Cuid> range) {
+    public static FormClassSet of(Set<ResourceId> range) {
         FormClassSet set = new FormClassSet();
         set.open = false;
         set.closed.addAll(range);

@@ -1,9 +1,9 @@
 package org.activityinfo.ui.client.component.form.model;
 
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.formTree.FormTree;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ public class FormViewModel {
 
     FormTree formTree;
     FormInstance instance;
-    Map<Cuid, FieldViewModel> fields = new HashMap<>();
+    Map<ResourceId, FieldViewModel> fields = new HashMap<>();
 
     FormViewModel() {
     }
@@ -28,7 +28,7 @@ public class FormViewModel {
         return instance;
     }
 
-    public FieldViewModel getFieldViewModel(Cuid fieldId) {
+    public FieldViewModel getFieldViewModel(ResourceId fieldId) {
         return fields.get(fieldId);
     }
 

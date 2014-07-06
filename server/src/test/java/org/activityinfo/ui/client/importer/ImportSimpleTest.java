@@ -5,8 +5,8 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
-import org.activityinfo.core.shared.Cuid;
-import org.activityinfo.core.shared.form.tree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.form.tree.FormTreePrettyPrinter;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.model.MapExistingAction;
@@ -14,7 +14,7 @@ import org.activityinfo.core.shared.importing.source.SourceColumn;
 import org.activityinfo.core.shared.importing.strategy.FieldImportStrategies;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.fp.client.Promise;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
@@ -40,12 +40,12 @@ import static org.junit.Assert.*;
 @OnDataSet("/dbunit/brac-import.db.xml")
 public class ImportSimpleTest extends AbstractImporterTest {
 
-    private static final Cuid HOUSEHOLD_SURVEY_FORM_CLASS = CuidAdapter.activityFormClass(1);
+    private static final ResourceId HOUSEHOLD_SURVEY_FORM_CLASS = CuidAdapter.activityFormClass(1);
 
-    private static final Cuid TRAINING_PROGRAM_CLASS = CuidAdapter.activityFormClass(2);
+    private static final ResourceId TRAINING_PROGRAM_CLASS = CuidAdapter.activityFormClass(2);
 
 
-    private static final Cuid BRAC_PARTNER_CUID = CuidAdapter.partnerInstanceId(1);
+    private static final ResourceId BRAC_PARTNER_RESOURCE_ID = CuidAdapter.partnerInstanceId(1);
 
     public static final int MODHUPUR = 24;
 

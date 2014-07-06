@@ -21,7 +21,7 @@ package org.activityinfo.core.shared.expr;
  * #L%
  */
 
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * @author yuriyz on 6/3/14.
@@ -29,14 +29,14 @@ import org.activityinfo.core.shared.Cuid;
 public class Placeholder {
 
     private final String placeholder;
-    private final Cuid fieldId;
+    private final ResourceId fieldId;
     private final boolean isRowLevel;
 
     public Placeholder(String placeholder) {
         this.placeholder = placeholder;
         this.isRowLevel = !placeholder.contains("_");
         if (isRowLevel) {
-            fieldId = new Cuid(placeholder);
+            fieldId = ResourceId.create(placeholder);
         } else {
             throw new UnsupportedOperationException();
         }
@@ -46,7 +46,7 @@ public class Placeholder {
         return isRowLevel;
     }
 
-    public Cuid getFieldId() {
+    public ResourceId getFieldId() {
         return fieldId;
     }
 

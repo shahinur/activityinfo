@@ -22,7 +22,7 @@ package org.activityinfo.core.shared.expr;
  */
 
 import junit.framework.Assert;
-import org.activityinfo.core.shared.Cuid;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.junit.Test;
 
@@ -34,8 +34,8 @@ public class NamespaceTest {
     @Test
     public void siteId() {
         final int activityId = 34;
-        final Cuid cuid = CuidAdapter.activityFormClass(34);
-        Assert.assertEquals(activityId, CuidAdapter.getLegacyIdFromCuid(cuid));
+        final ResourceId resourceId = CuidAdapter.activityFormClass(34);
+        Assert.assertEquals(activityId, CuidAdapter.getLegacyIdFromCuid(resourceId));
     }
 
 }

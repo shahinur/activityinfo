@@ -2,7 +2,7 @@ package org.activityinfo.ui.client.component.importDialog.validation.cells;
 
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.shared.form.tree.FieldPath;
+import org.activityinfo.model.formTree.FieldPath;
 
 /**
  * A {@code CellPopup} that provides a list of actions to the user
