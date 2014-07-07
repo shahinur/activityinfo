@@ -582,9 +582,13 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                         // ignore -> see joinCalculatedIndicatorValues
                     } else { // if indicator is no calculated then assign value directly
                         if (indicatorType == FormFieldType.QUANTITY) {
-                            indicatorValue = row.getDouble("Value");
+                            if(!row.isNull("Value")) {
+                                indicatorValue = row.getDouble("Value");
+                            }
                         } else if (indicatorType == FormFieldType.FREE_TEXT || indicatorType == FormFieldType.NARRATIVE) {
-                            indicatorValue = row.getString("TextValue");
+                            if(!row.isNull("TextValue")) {
+                                indicatorValue = row.getString("TextValue");
+                            }
                         } else if (indicatorType == FormFieldType.LOCAL_DATE) {
                             indicatorValue = row.getDate("DateValue");
                         }
