@@ -76,6 +76,13 @@
     </dependency>
 
     <dependency>
+      <groupId>gson-gwt</groupId>
+      <artifactId>gson-gwt</artifactId>
+      <version>1.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.bedatadriven.appengine.export</groupId>
       <artifactId>appengine-itext</artifactId>
       <version>${appengine.export.version}</version>
