@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.type.converter;
 
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.core.shared.type.formatter.DateFormatter;
 import org.activityinfo.core.shared.type.formatter.QuantityFormatterFactory;
 
@@ -28,80 +28,44 @@ public class ConverterFactory {
 
     }
 
-    public Converter createSilently(FormFieldType from, FormFieldType to) {
-        try {
-            return create(from, to);
-        } catch (Exception e) {
-            LOGGER.warning("Unable to create converter from " + from.name() + " to " + to.name() + "" +
-                    " (it's not supported or is otherwise illegal)");
-            return null;
+    public Converter create(FieldTypeClass from, FieldTypeClass to) {
+
+        if(from == to) {
+            return NullConverter.INSTANCE;
         }
+
+        if(from == FieldTypeClass.FREE_TEXT || from == FieldTypeClass.NARRATIVE) {
+            return createStringConverter(to);
+        } else if(from == FieldTypeClass.QUANTITY) {
+            return createQuantityConverter(to);
+        } else if(from == FieldTypeClass.LOCAL_DATE) {
+            return createDateConverter(to);
+        } else if(from == FieldTypeClass.REFERENCE) {
+            throw new IllegalArgumentException("Reference fields are handled elsewhere");
+        }
+        throw new UnsupportedOperationException("Conversion from " + from + " to " + to + " is not supported.");
     }
 
-    public Converter create(FormFieldType from, FormFieldType to) {
-        switch (from) {
-            case FREE_TEXT:
-            case NARRATIVE:
-                return createStringConverter(to);
-            case QUANTITY:
-                return createQuantityConverter(to);
-            case LOCAL_DATE:
-                return createDateConverter(to);
-            case GEOGRAPHIC_POINT:
-                return createGeographicPointConverter(to);
-            case REFERENCE:
-                throw new IllegalArgumentException("Reference fields are handled elsewhere");
+    private Converter createDateConverter(FieldTypeClass to) {
+        if(to == FieldTypeClass.FREE_TEXT || to == FieldTypeClass.NARRATIVE) {
+            return dateToStringConverter;
         }
-        throw new UnsupportedOperationException("Conversion from " + from.name() + " to " + to.name() + " is not supported.");
+        throw new UnsupportedOperationException(to.getId());
     }
 
-    private Converter createGeographicPointConverter(FormFieldType to) {
-        switch (to) {
-            case GEOGRAPHIC_POINT:
-                return NullConverter.INSTANCE;
+    public Converter createQuantityConverter(FieldTypeClass to) {
+        if(to == FieldTypeClass.FREE_TEXT || to == FieldTypeClass.NARRATIVE) {
+            return quantityParser;
         }
-        throw new UnsupportedOperationException(to.name());
+        throw new UnsupportedOperationException(to.getId());
     }
 
-    private Converter createDateConverter(FormFieldType to) {
-        switch (to) {
-            case FREE_TEXT:
-            case NARRATIVE:
-                return dateToStringConverter;
-            case LOCAL_DATE:
-                return NullConverter.INSTANCE;
+    public Converter createStringConverter(FieldTypeClass fieldType) {
+        if(fieldType == FieldTypeClass.QUANTITY) {
+            return stringToQuantityFormatter;
+        } else if(fieldType == FieldTypeClass.LOCAL_DATE) {
+            return StringToDateConverter.INSTANCE;
         }
-        throw new UnsupportedOperationException(to.name());
-    }
-
-    public Converter createQuantityConverter(FormFieldType to) {
-        switch (to) {
-            case QUANTITY:
-                return NullConverter.INSTANCE;
-            case FREE_TEXT:
-            case NARRATIVE:
-                return quantityParser;
-            case LOCAL_DATE:
-            case GEOGRAPHIC_POINT:
-            case REFERENCE:
-                throw new UnsupportedOperationException("Conversion from QUANTITY to " + to.name() + " is not supported.");
-        }
-        throw new UnsupportedOperationException(to.name());
-    }
-
-    public Converter createStringConverter(FormFieldType fieldType) {
-        switch (fieldType) {
-            case QUANTITY:
-                return stringToQuantityFormatter;
-            case NARRATIVE:
-            case FREE_TEXT:
-                return NullConverter.INSTANCE;
-            case REFERENCE:
-                throw new IllegalArgumentException("Reference fields are handled elsewhere");
-            case LOCAL_DATE:
-                return StringToDateConverter.INSTANCE;
-            case GEOGRAPHIC_POINT:
-        }
-        throw new UnsupportedOperationException(fieldType.name());
+        throw new UnsupportedOperationException(fieldType.getId());
     }
 }

@@ -26,9 +26,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.type.TextType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,9 +54,9 @@ public class TargetCollector {
 
     public void collectTargetFields(FormTree.Node referenceField) {
         for (FormTree.Node child : referenceField.getChildren()) {
-            if (child.getFieldType() == FormFieldType.FREE_TEXT) {
+            if (child.getType() instanceof TextType) {
                 addTargetField(child);
-            } else if (child.getFieldType() == FormFieldType.REFERENCE) {
+            } else if (child.isReference()) {
                 collectTargetFields(child);
             }
         }

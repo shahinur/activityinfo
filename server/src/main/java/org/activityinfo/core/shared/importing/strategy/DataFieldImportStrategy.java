@@ -23,14 +23,7 @@ public class DataFieldImportStrategy implements FieldImportStrategy {
 
     @Override
     public boolean accept(FormTree.Node fieldNode) {
-        switch (fieldNode.getFieldType()) {
-            case QUANTITY:
-            case NARRATIVE:
-            case FREE_TEXT:
-            case LOCAL_DATE:
-                return true;
-        }
-        return false;
+        return !fieldNode.isReference();
     }
 
     @Override
@@ -47,7 +40,7 @@ public class DataFieldImportStrategy implements FieldImportStrategy {
             column = MissingColumn.INSTANCE;
         }
 
-        Converter converter = converterFactory.createStringConverter(node.getFieldType());
+        Converter converter = converterFactory.createStringConverter(node.getTypeClass());
 
         return new DataFieldImporter(column, requiredTarget, converter);
     }

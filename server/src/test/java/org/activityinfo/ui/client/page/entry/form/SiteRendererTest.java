@@ -1,7 +1,7 @@
 package org.activityinfo.ui.client.page.entry.form;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
@@ -44,7 +44,7 @@ public class SiteRendererTest {
 
         IndicatorDTO indicator3 = new IndicatorDTO();
         indicator3.setAggregation(IndicatorDTO.AGGREGATE_SUM);
-        indicator3.setType(FormFieldType.NARRATIVE);
+        indicator3.setType(FieldTypeClass.NARRATIVE);
         indicator3.setId(3);
         indicator3.setName("Third indicator");
         indicator3.setCategory("Second group");

@@ -24,7 +24,7 @@ package org.activityinfo.legacy.shared.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.command.Month;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
@@ -51,7 +51,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public static final int MAX_CATEGORY_LENGTH = 50;
 
     // ensure that serializer/deserializer is generated for FormFieldType
-    private FormFieldType type;
+    private FieldTypeClass type;
 
     public IndicatorDTO() {
         super();
@@ -186,11 +186,11 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     }
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
-    public FormFieldType getType() {
+    public FieldTypeClass getType() {
         return get("type");
     }
 
-    public void setType(FormFieldType type) {
+    public void setType(FieldTypeClass type) {
         set("type", type);
     }
 

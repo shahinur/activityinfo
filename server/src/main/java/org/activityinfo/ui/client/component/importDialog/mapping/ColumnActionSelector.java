@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.core.shared.importing.model.ColumnAction;
 import org.activityinfo.core.shared.importing.model.IgnoreAction;
 import org.activityinfo.core.shared.importing.model.ImportModel;
@@ -177,18 +177,19 @@ public class ColumnActionSelector extends Composite implements HasValue<ColumnAc
         }
     }
 
-    public void updateTypeStyles(FormFieldType sourceType) {
+    public void updateTypeStyles(FieldTypeClass sourceType) {
         for (Map.Entry<ColumnAction, RadioButton> entry : buttons.entrySet()) {
             final ColumnAction columnAction = entry.getKey();
             if (columnAction instanceof MapExistingAction) {
                 final ImportTarget target = ((MapExistingAction) columnAction).getTarget();
-                final FormFieldType targetType = target.getFormField().getType();
+                final FieldTypeClass targetType = target.getFormField().getType().getTypeClass();
                 final RadioButton button = entry.getValue();
 
                 button.removeStyleName(ColumnMappingStyles.INSTANCE.typeNotMatched());
                 button.removeStyleName(ColumnMappingStyles.INSTANCE.typeMatched());
 
-                if (targetType == sourceType || (sourceType == FormFieldType.FREE_TEXT && targetType == FormFieldType.REFERENCE)) {
+                if (targetType == sourceType || (sourceType == FieldTypeClass.FREE_TEXT &&
+                                                 targetType == FieldTypeClass.REFERENCE)) {
                     button.addStyleName(ColumnMappingStyles.INSTANCE.typeMatched());
                 } else {
                     button.addStyleName(ColumnMappingStyles.INSTANCE.typeNotMatched());

@@ -26,7 +26,7 @@ public class TypeRegistry {
 
     private TypeRegistry() {
         register(ReferenceType.TypeClass.INSTANCE);
-        register(TextType.TypeClass.INSTANCE);
+        register(TextType.INSTANCE);
         register(GeoPointType.INSTANCE);
         register(QuantityType.TypeClass.INSTANCE);
         register(LocalDateType.INSTANCE);

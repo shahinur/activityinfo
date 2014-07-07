@@ -2,37 +2,47 @@ package org.activityinfo.model.type;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.form.FormFieldCardinality;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Reference;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
 
-import java.util.Date;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 public class ReferenceType implements FieldType {
 
     public enum TypeClass implements FieldTypeClass {
         INSTANCE {
+
             @Override
             public String getId() {
-                return "ref";
+                return "REFERENCE";
             }
 
             @Override
             public FieldType createType(Record parameters) {
-                return new ReferenceType()
-                    .setCardinality(FormFieldCardinality.valueOf(parameters.getString("cardinality")))
-                    .setRangeFromReferenceSet(parameters.getReferenceSet("range"));
+                ReferenceType type = new ReferenceType();
+                type.setCardinality(Cardinality.valueOf(parameters.getString("cardinality")));
+                type.setRange(parameters.getStringList("range"));
+                return type;
+            }
+
+            @Override
+            public FormClass getParameterFormClass() {
+                FormClass formClass = new FormClass(ResourceId.create("_ref"));
+                // todo
+                return formClass;
             }
         }
     }
 
 
-    private FormFieldCardinality cardinality;
+
+    private Cardinality cardinality;
     private Set<ResourceId> range;
 
     public ReferenceType() {
@@ -43,11 +53,11 @@ public class ReferenceType implements FieldType {
         return TypeClass.INSTANCE;
     }
 
-    public FormFieldCardinality getCardinality() {
+    public Cardinality getCardinality() {
         return cardinality;
     }
 
-    public ReferenceType setCardinality(FormFieldCardinality cardinality) {
+    public ReferenceType setCardinality(Cardinality cardinality) {
         this.cardinality = cardinality;
         return this;
     }
@@ -59,14 +69,20 @@ public class ReferenceType implements FieldType {
         return range;
     }
 
-    private ReferenceType setRangeFromReferenceSet(Set<Reference> range) {
-        Set<ResourceId> resources = Sets.newHashSet();
-        for(Reference ref : range) {
-            resources.add(ref.getId());
-        }
-        setRange(resources);
-        return this;
+
+    public void setRange(ResourceId formClassId) {
+        this.range = Collections.singleton(formClassId);
     }
+
+
+    private void setRange(List<String> range) {
+        Set<ResourceId> formClassIds = Sets.newHashSet();
+        for(String id : range) {
+            formClassIds.add(ResourceId.create(id));
+        }
+        setRange(formClassIds);
+    }
+
 
     public ReferenceType setRange(Set<ResourceId> range) {
         this.range = range;
@@ -81,11 +97,11 @@ public class ReferenceType implements FieldType {
     }
 
     @Override
-    public ComponentReader getStringReader(final String fieldName, String componentId) {
-        return new ComponentReader() {
+    public ComponentReader<String> getStringReader(final String fieldName, String componentId) {
+        return new ComponentReader<String>() {
             @Override
-            public Object read(Resource resource) {
-                return resource.getReference(fieldName).getId().asString();
+            public String read(Resource resource) {
+                return resource.getRecord(fieldName).getString("id");
             }
         };
     }
@@ -94,4 +110,30 @@ public class ReferenceType implements FieldType {
     public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
        return new NullComponentReader<>();
     }
+
+
+    /**
+     * Convenience constructor for ReferenceTypes with single cardinality
+     * @param formClassId the id of the form class which is the range of this field
+     * @return a new ReferenceType
+     */
+    public static ReferenceType single(ResourceId formClassId) {
+        ReferenceType type = new ReferenceType();
+        type.setCardinality(Cardinality.SINGLE);
+        type.setRange(Collections.singleton(formClassId));
+        return type;
+    }
+
+    /**
+     * Convenience constructor for ReferenceTypes with single cardinality
+     * @param formClassIds the ids of the form class which constitute the range of this field
+     * @return a new ReferenceType
+     */
+    public static ReferenceType single(Iterable<ResourceId> formClassIds) {
+        ReferenceType type = new ReferenceType();
+        type.setCardinality(Cardinality.SINGLE);
+        type.setRange(Sets.newHashSet(formClassIds));
+        return type;
+    }
+
 }

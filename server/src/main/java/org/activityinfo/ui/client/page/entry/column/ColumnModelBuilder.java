@@ -30,7 +30,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
 import org.activityinfo.legacy.shared.model.*;
@@ -155,7 +155,7 @@ public class ColumnModelBuilder {
         indicatorColumn.setEditor(new CellEditor(indicatorField));
         indicatorColumn.setAlignment(Style.HorizontalAlignment.RIGHT);
 
-        if (indicator.getType() == FormFieldType.QUANTITY) {
+        if (indicator.getType() == FieldTypeClass.QUANTITY) {
             // For SUM indicators, don't show ZEROs in the Grid
             // (it looks better if we don't)
             if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SUM) {
@@ -191,7 +191,7 @@ public class ColumnModelBuilder {
                     }
                 });
             }
-        } else if (indicator.getType() == FormFieldType.FREE_TEXT || indicator.getType() == FormFieldType.NARRATIVE) {
+        } else if (indicator.getType() == FieldTypeClass.FREE_TEXT || indicator.getType() == FieldTypeClass.NARRATIVE) {
             indicatorColumn.setRenderer(new GridCellRenderer() {
                 @Override
                 public Object render(ModelData model,

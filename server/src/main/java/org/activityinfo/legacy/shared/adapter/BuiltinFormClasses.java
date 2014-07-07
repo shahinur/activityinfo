@@ -4,9 +4,9 @@ import com.google.common.base.Function;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.model.type.TextType;
 
 import javax.annotation.Nullable;
 
@@ -31,7 +31,7 @@ public class BuiltinFormClasses {
         // add the project's name
         FormField nameField = new FormField(CuidAdapter.field(classId, CuidAdapter.NAME_FIELD));
         nameField.setLabel(I18N.CONSTANTS.name());
-        nameField.setType(FormFieldType.FREE_TEXT);
+        nameField.setType(TextType.INSTANCE);
         nameField.setRequired(true);
         formClass.addElement(nameField);
 

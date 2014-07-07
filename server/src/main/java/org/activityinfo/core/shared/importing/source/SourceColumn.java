@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.importing.source;
 
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 
 /**
  * Describes a column in the imported table
@@ -9,7 +9,7 @@ public class SourceColumn {
 
     private String header;
     private int index;
-    private FormFieldType guessedType = FormFieldType.FREE_TEXT;
+    private FieldTypeClass guessedType = FieldTypeClass.FREE_TEXT;
 
     public String getHeader() {
         return header;
@@ -27,11 +27,11 @@ public class SourceColumn {
         this.index = index;
     }
 
-    public FormFieldType getGuessedType() {
+    public FieldTypeClass getGuessedType() {
         return guessedType;
     }
 
-    public void setGuessedType(FormFieldType guessedType) {
+    public void setGuessedType(FieldTypeClass guessedType) {
         this.guessedType = guessedType;
     }
 

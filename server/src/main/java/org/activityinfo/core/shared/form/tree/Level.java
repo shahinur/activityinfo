@@ -6,6 +6,7 @@ import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.FormClassSet;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.type.ReferenceType;
 
 import java.util.List;
 
@@ -24,8 +25,11 @@ public class Level {
     Level(FormClass formClass) {
         this.formClass = formClass;
         for(FormField field : formClass.getFields()) {
-            if(field.isSubPropertyOf(ApplicationProperties.PARENT_PROPERTY)) {
-                parentId = FormClassSet.of(field.getRange()).unique();
+            if(field.isSubPropertyOf(ApplicationProperties.PARENT_PROPERTY) &&
+                    field.getType() instanceof ReferenceType) {
+                ReferenceType type = (ReferenceType) field.getType();
+                assert type.getRange().size() == 1;
+                parentId = type.getRange().iterator().next();
                 parentFieldId = field.getId();
             }
         }

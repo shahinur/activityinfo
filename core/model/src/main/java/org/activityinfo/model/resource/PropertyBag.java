@@ -2,13 +2,11 @@ package org.activityinfo.model.resource;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Base class for Resource and Record
@@ -64,6 +62,15 @@ class PropertyBag<T extends PropertyBag> {
         return Collections.emptyList();
     }
 
+    @Nonnull
+    public List<String> getStringList(String propertyName) {
+        Object value = properties.get(propertyName);
+        if(value instanceof List) {
+            return (List)value;
+        }
+        return Collections.emptyList();
+    }
+
     /**
      * @return the value of the given property as a String
      * @throws java.lang.ClassCastException if the value of the property is not a string
@@ -84,40 +91,6 @@ class PropertyBag<T extends PropertyBag> {
             return (String)value;
         }
         return null;
-    }
-
-    /**
-     * @return the value of the reference property
-     * @throws java.lang.ClassCastException if the value of the property is not a Reference
-     * @throws java.lang.NullPointerException if there is no value for the property
-     */
-    public Reference getReference(String propertyName) {
-        Reference reference = (Reference) properties.get(propertyName);
-        if(reference == null) {
-            throw new NullPointerException(propertyName);
-        }
-        return reference;
-    }
-
-    /**
-     * @return an immutable set of references defined for the given property, or an
-     * empty set if the property is absent or not reference type.
-     */
-    public Set<Reference> getReferenceSet(String propertyName) {
-        Object value = properties.get(propertyName);
-        if(value instanceof Reference) {
-            return Collections.singleton((Reference) value);
-        } else if(value instanceof Iterable) {
-            Set<Reference> refs = Sets.newHashSet();
-            for(Object item : (Iterable)value) {
-                if(item instanceof Reference) {
-                    refs.add((Reference) item);
-                }
-            }
-            return refs;
-        } else {
-            return Collections.emptySet();
-        }
     }
 
     /**
@@ -203,15 +176,6 @@ class PropertyBag<T extends PropertyBag> {
         return (T)this;
     }
 
-    public T set(String propertyName, ResourceId id) {
-        if(id == null) {
-            properties.remove(propertyName);
-        } else {
-            properties.put(propertyName, Reference.to(id));
-        }
-        return (T)this;
-    }
-
     /**
      * Sets the named property to the name of the given
      * {@code enumValue}, or removes the property if
@@ -240,7 +204,6 @@ class PropertyBag<T extends PropertyBag> {
      *     <li>{@code java.lang.String}</li>
      *     <li>{@code java.lang.Number}</li>
      *     <li>{@code java.lang.Boolean}</li>
-     *     <li>{@code Reference}</li>
      *     <li>{@code Record}</li>
      *     <li>{@code java.util.List}</li>
      * </ul>
@@ -253,7 +216,6 @@ class PropertyBag<T extends PropertyBag> {
                   value instanceof Number ||
                   value instanceof Record ||
                   value instanceof Boolean ||
-                  value instanceof Reference ||
                   value instanceof List) {
 
            properties.put(propertyName, value);

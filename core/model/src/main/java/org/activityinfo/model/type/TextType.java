@@ -1,48 +1,32 @@
 package org.activityinfo.model.type;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
 
-public class TextType implements FieldType {
+public enum TextType implements FieldType, FieldTypeClass {
 
-    public enum TypeClass implements FieldTypeClass {
-        INSTANCE {
-            @Override
-            public String getId() {
-                return "text";
-            }
+    INSTANCE;
 
-            @Override
-            public FieldType createType(Record typeParameters) {
-                return new TextType()
-                        .setMultiLine(typeParameters.getBoolean("multiLine", false));
-            }
-        }
+
+    @Override
+    public String getId() {
+        return "text";
     }
 
     @Override
     public FieldTypeClass getTypeClass() {
-        return TypeClass.INSTANCE;
-    }
-
-    private boolean multiLine;
-
-    public boolean isMultiLine() {
-        return multiLine;
-    }
-
-    public TextType setMultiLine(boolean multiLine) {
-        this.multiLine = multiLine;
         return this;
     }
 
     @Override
     public Record getParameters() {
-        return new Record()
-                .set("multiLine", multiLine);
+        return new Record();
     }
 
     @Override
@@ -61,5 +45,16 @@ public class TextType implements FieldType {
     @Override
     public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
         return new NullComponentReader<>();
+    }
+
+
+    @Override
+    public FieldType createType(Record typeParameters) {
+        return this;
+    }
+
+    @Override
+    public FormClass getParameterFormClass() {
+        return null;
     }
 }

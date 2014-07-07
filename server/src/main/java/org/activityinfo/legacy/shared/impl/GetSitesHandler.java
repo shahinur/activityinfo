@@ -40,6 +40,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.core.shared.expr.*;
 import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.command.DimensionType;
@@ -574,22 +575,22 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 Log.trace("Received results for join indicators");
 
                 for (final SqlResultSetRow row : results.getRows()) {
-                    FormFieldType indicatorType = FormFieldType.valueOfSilently(row.getString("Type"));
+                    FieldTypeClass indicatorType = FormFieldType.valueOf(row.getString("Type"));
                     String expression = row.getString("Expression");
                     boolean isCalculatedIndicator = !Strings.isNullOrEmpty(expression);
                     Object indicatorValue = null;
                     if (isCalculatedIndicator) {
                         // ignore -> see joinCalculatedIndicatorValues
                     } else { // if indicator is no calculated then assign value directly
-                        if (indicatorType == FormFieldType.QUANTITY) {
+                        if (indicatorType == FieldTypeClass.QUANTITY) {
                             if(!row.isNull("Value")) {
                                 indicatorValue = row.getDouble("Value");
                             }
-                        } else if (indicatorType == FormFieldType.FREE_TEXT || indicatorType == FormFieldType.NARRATIVE) {
+                        } else if (indicatorType == FieldTypeClass.FREE_TEXT || indicatorType == FieldTypeClass.NARRATIVE) {
                             if(!row.isNull("TextValue")) {
                                 indicatorValue = row.getString("TextValue");
                             }
-                        } else if (indicatorType == FormFieldType.LOCAL_DATE) {
+                        } else if (indicatorType == FieldTypeClass.LOCAL_DATE) {
                             indicatorValue = row.getDate("DateValue");
                         }
                     }

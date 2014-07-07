@@ -3,8 +3,8 @@ package org.activityinfo.legacy.shared.adapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.type.TextType;
 
 
 public class PartnerClassAdapter {
@@ -31,14 +31,14 @@ public class PartnerClassAdapter {
         // add the partner's name
         FormField nameField = new FormField(getNameField(classId));
         nameField.setLabel(I18N.CONSTANTS.name());
-        nameField.setType(FormFieldType.FREE_TEXT);
+        nameField.setType(TextType.INSTANCE);
         nameField.setRequired(true);
         formClass.addElement(nameField);
 
         // partner full name
         FormField fullNameField = new FormField(getFullNameField(classId));
         fullNameField.setLabel(I18N.CONSTANTS.fullName());
-        fullNameField.setType(FormFieldType.FREE_TEXT);
+        fullNameField.setType(TextType.INSTANCE);
         formClass.addElement(fullNameField);
 
         return formClass;

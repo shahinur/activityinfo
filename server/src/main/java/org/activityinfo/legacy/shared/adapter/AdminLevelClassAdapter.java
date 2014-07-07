@@ -5,10 +5,11 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.TextType;
 
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.adminLevelFormClass;
 
@@ -40,18 +41,17 @@ public class AdminLevelClassAdapter implements Function<SchemaDTO, FormClass> {
             // TODO add country field
         } else {
             AdminLevelDTO parentLevel = schema.getAdminLevelById(adminLevel.getParentLevelId());
-            FormField parentField = new FormField(CuidAdapter.field(classId, CuidAdapter.ADMIN_PARENT_FIELD));
-            parentField.setLabel(parentLevel.getName());
-            parentField.setSuperProperty(ApplicationProperties.PARENT_PROPERTY);
-            parentField.setRange(adminLevelFormClass(adminLevel.getParentLevelId()));
-            parentField.setType(FormFieldType.REFERENCE);
-            parentField.setRequired(true);
+            FormField parentField = new FormField(CuidAdapter.field(classId, CuidAdapter.ADMIN_PARENT_FIELD))
+            .setLabel(parentLevel.getName())
+            .setSuperProperty(ApplicationProperties.PARENT_PROPERTY)
+            .setType(ReferenceType.single(adminLevelFormClass(adminLevel.getParentLevelId())))
+            .setRequired(true);
             formClass.addElement(parentField);
         }
 
         FormField nameField = new FormField(getNameFieldId(classId));
         nameField.setLabel(I18N.CONSTANTS.name());
-        nameField.setType(FormFieldType.FREE_TEXT);
+        nameField.setType(TextType.INSTANCE);
         nameField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
         nameField.setRequired(true);
         formClass.addElement(nameField);

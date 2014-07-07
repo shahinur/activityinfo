@@ -1,7 +1,9 @@
 package org.activityinfo.model.type.geo;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.component.ComponentReader;
@@ -11,7 +13,8 @@ public enum GeoPointType implements FieldType, FieldTypeClass {
 
     INSTANCE;
 
-    public static final String TYPE_ID = "geoPoint";
+    public static final String TYPE_ID = "GEOGRAPHIC_POINT";
+
 
     @Override
     public String getId() {
@@ -21,6 +24,11 @@ public enum GeoPointType implements FieldType, FieldTypeClass {
     @Override
     public FieldType createType(Record typeParameters) {
         return this;
+    }
+
+    @Override
+    public FormClass getParameterFormClass() {
+        return new FormClass(ResourceId.create("_geoPoint"));
     }
 
     @Override

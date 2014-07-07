@@ -4,10 +4,10 @@ import com.google.common.base.Function;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.model.type.TextType;
 
 import javax.annotation.Nullable;
 
@@ -32,7 +32,7 @@ public class AttributeClassAdapter implements Function<SchemaDTO, FormClass> {
         // attributes have only one field- the label
         FormField labelField = new FormField(CuidAdapter.field(classId, CuidAdapter.NAME_FIELD));
         labelField.setLabel(I18N.CONSTANTS.labelFieldLabel());
-        labelField.setType(FormFieldType.FREE_TEXT);
+        labelField.setType(TextType.INSTANCE);
         labelField.setRequired(true);
         formClass.addElement(labelField);
 

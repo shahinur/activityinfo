@@ -5,8 +5,6 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.component.ComponentReader;
 
-import java.util.Date;
-
 public interface FieldType {
 
     public static final String DEFAULT_COMPONENT = "_default";

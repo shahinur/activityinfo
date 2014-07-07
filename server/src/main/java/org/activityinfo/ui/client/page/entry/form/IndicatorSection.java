@@ -36,7 +36,7 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
@@ -102,7 +102,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         indicatorLabel.setStyleAttribute("fontSize", "9pt");
         add(indicatorLabel);
 
-        FormFieldType type = indicator.getType();
+        FieldTypeClass type = indicator.getType();
 
         Field indicatorField = addIndicatorField(indicator, type);
 
@@ -120,8 +120,8 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         indicatorFields.add(indicatorField);
     }
 
-    private Field addIndicatorField(IndicatorDTO indicator, FormFieldType type) {
-        if (type == FormFieldType.NARRATIVE) {
+    private Field addIndicatorField(IndicatorDTO indicator, FieldTypeClass type) {
+        if (type == FieldTypeClass.NARRATIVE) {
 
             TextArea textArea = new TextArea();
 
@@ -134,7 +134,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
             add(textArea);
             add(new Text()); // avoid layout shift
             return textArea;
-        } else if (type == FormFieldType.QUANTITY) {
+        } else if (type == FieldTypeClass.QUANTITY) {
             NumberField numberField = new NumberField();
 
             numberField.setFormat(IndicatorNumberFormat.INSTANCE);
@@ -151,7 +151,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
 
             add(unitLabel);
             return numberField;
-        } else if (type == FormFieldType.FREE_TEXT) {
+        } else if (type == FieldTypeClass.FREE_TEXT) {
             TextField textField = new TextField();
 
             textField.setWidth(TEXT_FIELD_WIDTH);

@@ -25,6 +25,13 @@ import com.google.gwt.cell.client.ValueUpdater;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
 import org.activityinfo.ui.client.component.form.model.FieldViewModel;
 import org.activityinfo.ui.client.component.form.model.FormViewModel;
@@ -59,22 +66,27 @@ public class FormFieldWidgetFactory {
     }
 
     public FormFieldWidget createWidget(FormViewModel viewModel, FormTree.Node node, ValueUpdater valueUpdater) {
-        switch (node.getFieldType()) {
-            case QUANTITY:
-                return new QuantityFieldWidget(node.getField(), valueUpdater);
-            case NARRATIVE:
-                return new NarrativeFieldWidget(valueUpdater);
-            case FREE_TEXT:
-                return new TextFieldWidget(valueUpdater);
-            case LOCAL_DATE:
-                return new DateFieldWidget(valueUpdater);
-            case GEOGRAPHIC_POINT:
-                return new GeographicPointWidget(valueUpdater);
-            case REFERENCE:
-                return createReferenceWidget(viewModel, node, valueUpdater);
-            default:
-                Log.error("Unexpected field type " + node.getFieldType());
+        FieldType type = node.getType();
+        if(type instanceof QuantityType) {
+            return new QuantityFieldWidget((QuantityType) type, valueUpdater);
+
+        } else if(type instanceof NarrativeType) {
+            return new NarrativeFieldWidget(valueUpdater);
+
+        } else if(type instanceof TextType) {
+            return new TextFieldWidget(valueUpdater);
+
+        } else if(type instanceof LocalDateType) {
+            return new DateFieldWidget(valueUpdater);
+
+        } else if(type instanceof GeoPointType) {
+            return new GeographicPointWidget(valueUpdater);
+
+        } else if(type instanceof ReferenceType) {
+            return createReferenceWidget(viewModel, node, valueUpdater);
         }
+
+        Log.error("Unexpected field type " + node.getTypeClass());
         throw new UnsupportedOperationException();
     }
 

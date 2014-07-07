@@ -3,14 +3,8 @@ package org.activityinfo.model.form;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Reference;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.model.type.TextType;
-import org.activityinfo.model.type.geo.GeoPointType;
-import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
@@ -19,23 +13,19 @@ import java.util.Set;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The smallest logical unit of data entry. A single field can yield
- * multiple RDFS properties.
+ * The smallest logical unit of data entry.
  */
 public class FormField extends FormElement {
     private final ResourceId id;
     private String name;
     private String label;
     private String description;
-    private String unit;
-    private FormFieldType type;
-    private Set<ResourceId> range;
     private String expression;
+    private FieldType type;
     private boolean readOnly;
     private boolean visible = true;
     private Set<ResourceId> superProperties = Sets.newHashSet();
     private boolean required;
-    private FormFieldCardinality cardinality;
     private String calculation;
 
     public FormField(ResourceId id) {
@@ -46,15 +36,6 @@ public class FormField extends FormElement {
     public FormField(ResourceId formClassId, String name) {
         this.id = FieldId.fieldId(formClassId, name);
         this.name = name;
-    }
-
-    public FormFieldCardinality getCardinality() {
-        return cardinality;
-    }
-
-    public FormField setCardinality(FormFieldCardinality cardinality) {
-        this.cardinality = cardinality;
-        return this;
     }
 
     public ResourceId getId() {
@@ -87,43 +68,12 @@ public class FormField extends FormElement {
         return this;
     }
 
-    @NotNull
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit;
-    }
-
-    /**
-     * @return this field's type
-     */
-    public FormFieldType getType() {
+    public FieldType getType() {
         return type;
     }
 
-    public FormField setType(FormFieldType type) {
+    public FormField setType(FieldType type) {
         this.type = type;
-        return this;
-    }
-
-    /**
-     *
-     * @return the set of ids of FormClasses that this reference field
-     * may take as a value
-     */
-    public Set<ResourceId> getRange() {
-        return range;
-    }
-
-    public FormField setRange(Set<ResourceId> range) {
-        this.range = range;
-        return this;
-    }
-
-    public FormField setRange(ResourceId classId) {
-        this.range = Sets.newHashSet(classId);
         return this;
     }
 
@@ -217,8 +167,9 @@ public class FormField extends FormElement {
         this.superProperties = superProperties;
     }
 
-    public void setSuperProperty(ResourceId superProperty) {
+    public FormField setSuperProperty(ResourceId superProperty) {
         this.superProperties = Collections.singleton(superProperty);
+        return this;
     }
 
     public boolean isSubPropertyOf(ResourceId parentProperty) {
@@ -232,81 +183,38 @@ public class FormField extends FormElement {
         Record record = new Record();
         record.set("name", name);
         record.set("label", label);
-        record.set("type", type);
+        record.set("type", toRecord(type));
         record.set("required", required);
-
         record.set("expression", expression);
 
-        switch(type) {
-            case QUANTITY:
-                record.set("unit", checkNotNull(getUnit()));
-                break;
-            case REFERENCE:
-                record.set("range", Reference.to(checkNotNull(getRange(), id + " is missing a range")));
-                record.set("cardinality", checkNotNull(getCardinality(),  id + " is missing cardinality"));
-                break;
-        }
+        return record;
+    }
 
+    private Record toRecord(FieldType type) {
+        Record record = new Record();
+        record.set("typeClass", type.getTypeClass().getId());
+        record.set("parameters", type.getParameters());
         return record;
     }
 
     public static FormElement fromRecord(ResourceId formClassId, Record record) {
         FormField formField = new FormField(formClassId, record.getString("name"))
             .setLabel(record.getString("label"))
-            .setType(FormFieldType.valueOf(record.getString("type")))
+            .setType(typeFromRecord(record.getRecord("type")))
             .setRequired(record.getBoolean("required", false));
 
         if(record.has("expression")) {
             formField.setExpression(record.getString("expression"));
         }
-
-        switch(formField.getType()) {
-            case QUANTITY:
-                formField.setUnit(checkNotNull(record.getString("unit")));
-                break;
-            case REFERENCE:
-                formField.setRange(toRange(record.getReferenceSet("range")));
-                formField.setCardinality(FormFieldCardinality.valueOf(record.getString("cardinality")));
-                break;
-        }
-
-
         return formField;
     }
 
-    private static Set<ResourceId> toRange(Set<Reference> range) {
-        Set<ResourceId> ids = Sets.newHashSet();
-        for(Reference reference : range) {
-            ids.add(reference.getId());
-        }
-        return ids;
+    private static FieldType typeFromRecord(Record record) {
+        String typeClassId = record.getString("typeClass");
+        FieldTypeClass typeClass = TypeRegistry.get().getTypeClass(typeClassId);
+        return typeClass.createType(record.isRecord("parameters"));
     }
 
-    public FieldType getFieldType() {
-        switch(type) {
-            case QUANTITY:
-                return new QuantityType().setUnits(unit);
-
-            case NARRATIVE:
-                return new TextType().setMultiLine(true);
-
-            case FREE_TEXT:
-                return new TextType();
-
-            case LOCAL_DATE:
-                return LocalDateType.INSTANCE;
-
-            case GEOGRAPHIC_POINT:
-                return GeoPointType.INSTANCE;
-
-            case REFERENCE:
-                return new ReferenceType()
-                        .setRange(range)
-                        .setCardinality(cardinality);
-        }
-
-        throw new UnsupportedOperationException();
-    }
 
     public void setCalculation(String calculation) {
         this.calculation = calculation;
@@ -315,4 +223,5 @@ public class FormField extends FormElement {
     public String getCalculation() {
         return calculation;
     }
+
 }

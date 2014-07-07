@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.page.entry.form;
 
 import com.google.common.base.Strings;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.type.IndicatorValueFormatter;
@@ -135,7 +135,7 @@ public class SiteRenderer {
                          .append(htmlEscape(indicator.getName()))
                          .append("</td>");
 
-                if(indicator.getType() == FormFieldType.QUANTITY) {
+                if(indicator.getType() == FieldTypeClass.QUANTITY) {
                     groupHtml
                          .append("<td class='indicatorValue'>")
                          .append(formatValue(indicator, value))
@@ -161,7 +161,7 @@ public class SiteRenderer {
     }
 
     private Object getIndicatorValue(SiteDTO site, IndicatorDTO indicator) {
-        if (indicator.getType() == FormFieldType.QUANTITY) {
+        if (indicator.getType() == FieldTypeClass.QUANTITY) {
             if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SITE_COUNT) {
                 return 1.0;
             } else if(indicator.getAggregation() == IndicatorDTO.AGGREGATE_SUM) {
@@ -180,15 +180,15 @@ public class SiteRenderer {
     }
 
     protected String formatValue(IndicatorDTO indicator, Object value) {
-        if(indicator.getType() == FormFieldType.QUANTITY) {
+        if(indicator.getType() == FieldTypeClass.QUANTITY) {
             if (value instanceof Double) {
                 return indicatorValueFormatter.format((Double) value);
             }
-        } else if(indicator.getType() == FormFieldType.FREE_TEXT) {
+        } else if(indicator.getType() == FieldTypeClass.FREE_TEXT) {
             if (value instanceof String) {
                 return htmlEscape((String) value);
             }
-        } else if(indicator.getType() == FormFieldType.NARRATIVE) {
+        } else if(indicator.getType() == FieldTypeClass.NARRATIVE) {
             if (value instanceof String) {
                 SafeHtmlBuilder html = new SafeHtmlBuilder();
                 html.appendEscapedLines((String)value);

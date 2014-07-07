@@ -23,7 +23,9 @@ package org.activityinfo.core.shared.importing.match;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.core.shared.type.converter.Converter;
 import org.activityinfo.core.shared.type.converter.ConverterFactory;
 
@@ -42,7 +44,7 @@ import java.util.Map;
  */
 public class ColumnTypeGuesser {
 
-    private final Map<FormFieldType, Integer> typeMap = newFieldMap();
+    private final Map<FieldTypeClass, Integer> typeMap = newFieldMap();
 
     private final List<String> columnValues;
     private final ConverterFactory converterFactory;
@@ -52,13 +54,13 @@ public class ColumnTypeGuesser {
         this.converterFactory = converterFactory;
     }
 
-    public FormFieldType guessType() {
+    public FieldTypeClass guessType() {
         calculateTypeScores();
 
-        final List<Map.Entry<FormFieldType, Integer>> copyEntrySet = Lists.newArrayList(typeMap.entrySet());
-        Collections.sort(copyEntrySet, new Comparator<Map.Entry<FormFieldType, Integer>>() {
+        final List<Map.Entry<FieldTypeClass, Integer>> copyEntrySet = Lists.newArrayList(typeMap.entrySet());
+        Collections.sort(copyEntrySet, new Comparator<Map.Entry<FieldTypeClass, Integer>>() {
             @Override
-            public int compare(Map.Entry<FormFieldType, Integer> o1, Map.Entry<FormFieldType, Integer> o2) {
+            public int compare(Map.Entry<FieldTypeClass, Integer> o1, Map.Entry<FieldTypeClass, Integer> o2) {
                 return o1.getValue().compareTo(o2.getValue());
             }
         });
@@ -67,14 +69,14 @@ public class ColumnTypeGuesser {
 
     private void calculateTypeScores() {
         for (String value : columnValues) {
-            final Map<FormFieldType, Integer> copyMap = Maps.newHashMap(typeMap);
+            final Map<FieldTypeClass, Integer> copyMap = Maps.newHashMap(typeMap);
 
             // we don't need to iterate over string types because input is always string
-            copyMap.remove(FormFieldType.FREE_TEXT);
-            copyMap.remove(FormFieldType.NARRATIVE);
+            copyMap.remove(FieldTypeClass.FREE_TEXT);
+            copyMap.remove(FieldTypeClass.NARRATIVE);
 
             boolean hasMatch = false;
-            for (Map.Entry<FormFieldType, Integer> entry : copyMap.entrySet()) {
+            for (Map.Entry<FieldTypeClass, Integer> entry : copyMap.entrySet()) {
                 try {
                     final Converter stringConverter = converterFactory.createStringConverter(entry.getKey());
                     final Object convertedValue = stringConverter.convert(value);
@@ -94,21 +96,21 @@ public class ColumnTypeGuesser {
             if (!hasMatch) {
                 final int length = value.length();
                 if (length < FormFieldType.FREE_TEXT_LENGTH) {
-                    increaseValue(FormFieldType.FREE_TEXT);
+                    increaseValue(FieldTypeClass.FREE_TEXT);
                 } else {
-                    increaseValue(FormFieldType.NARRATIVE);
+                    increaseValue(FieldTypeClass.NARRATIVE);
                 }
             }
         }
     }
 
-    private void increaseValue(FormFieldType type) {
+    private void increaseValue(FieldTypeClass type) {
         typeMap.put(type, typeMap.get(type) + 1);
     }
 
-    private static Map<FormFieldType, Integer> newFieldMap() {
-        Map<FormFieldType, Integer> typeMap = Maps.newHashMap();
-        for (FormFieldType type : FormFieldType.values()) {
+    private static Map<FieldTypeClass, Integer> newFieldMap() {
+        Map<FieldTypeClass, Integer> typeMap = Maps.newHashMap();
+        for (FieldTypeClass type : FormFieldType.values()) {
             typeMap.put(type, 0);
         }
         return typeMap;

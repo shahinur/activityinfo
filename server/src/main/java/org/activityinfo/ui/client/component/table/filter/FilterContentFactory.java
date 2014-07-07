@@ -33,11 +33,6 @@ public class FilterContentFactory {
     }
 
     public static FilterContent create(InstanceTable table, FieldColumn column) {
-        switch (column.getNode().getFieldType()) {
-            case FREE_TEXT:
-            case NARRATIVE:
-                return new FilterContentString(table, column);
-        }
         return new FilterContentString(table, column);
     }
 }

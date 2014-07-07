@@ -3213,8 +3213,8 @@ public interface UiConstants extends Constants {
     String fieldTypeGeographicPoint();
 
     @DefaultStringValue("Narrative")
-    @Key("fieldTypeBigText")
-    String fieldTypeBigText();
+    @Key("fieldTypeNarrative")
+    String fieldTypeNarrative();
 
     @DefaultStringValue("To begin, select the table you want to import in Excel, copy it to the clipboard, and " +
             "then paste here")

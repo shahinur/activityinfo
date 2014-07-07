@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.importer;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.core.shared.importing.source.SourceColumn;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
@@ -62,9 +62,9 @@ public class PastedTableTest {
         pastedTable.parseAllRows();
         pastedTable.guessColumnsType(JvmConverterFactory.get());
 
-        Assert.assertEquals(column(pastedTable, "Partner").getGuessedType(), FormFieldType.FREE_TEXT);
+        Assert.assertEquals(column(pastedTable, "Partner").getGuessedType(), FieldTypeClass.FREE_TEXT);
 //        Assert.assertEquals(column(pastedTable, "_CREATION_DATE").getGuessedType(), FormFieldType.LOCAL_DATE);
-        Assert.assertEquals(column(pastedTable, "_MODEL_VERSION").getGuessedType(), FormFieldType.QUANTITY);
+        Assert.assertEquals(column(pastedTable, "_MODEL_VERSION").getGuessedType(), FieldTypeClass.QUANTITY);
     }
 
     protected SourceColumn column(PastedTable pastedTable, String header) {

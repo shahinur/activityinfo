@@ -22,7 +22,7 @@ package org.activityinfo.core.shared.importing.match;
  */
 
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,19 +36,19 @@ public class ColumnTypeGuesserTest {
 
     @Test
     public void type() {
-        assertType(FormFieldType.QUANTITY, "1", "2", "3");
-        assertType(FormFieldType.QUANTITY, "0.1", "2.54", "334");
-        assertType(FormFieldType.LOCAL_DATE, "2012-12-18");
-        assertType(FormFieldType.LOCAL_DATE, "2012/12/18");
-        assertType(FormFieldType.LOCAL_DATE, "2012-12-18 12:38:40.0");
-        assertType(FormFieldType.FREE_TEXT, "df", "fsdf", "ff");
-        assertType(FormFieldType.NARRATIVE, "fKholishaur dffsdffsdffsdffsdffsdffsdfdfsdfsdfsdgfdfghdfgddddddddddddddddddddddddddddddddd", "fKholishaur fsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdf", "ff");
+        assertType(FieldTypeClass.QUANTITY, "1", "2", "3");
+        assertType(FieldTypeClass.QUANTITY, "0.1", "2.54", "334");
+        assertType(FieldTypeClass.LOCAL_DATE, "2012-12-18");
+        assertType(FieldTypeClass.LOCAL_DATE, "2012/12/18");
+        assertType(FieldTypeClass.LOCAL_DATE, "2012-12-18 12:38:40.0");
+        assertType(FieldTypeClass.FREE_TEXT, "df", "fsdf", "ff");
+        assertType(FieldTypeClass.NARRATIVE, "fKholishaur dffsdffsdffsdffsdffsdffsdfdfsdfsdfsdgfdfghdfgddddddddddddddddddddddddddddddddd", "fKholishaur fsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdf", "ff");
     }
 
-    private void assertType(FormFieldType exptectedType, String... columnValueList) {
+    private void assertType(FieldTypeClass exptectedType, String... columnValueList) {
         List<String> columnValues = Arrays.asList(columnValueList);
         ColumnTypeGuesser guesser = new ColumnTypeGuesser(columnValues, JvmConverterFactory.get());
-        final FormFieldType formFieldType = guesser.guessType();
+        final FieldTypeClass formFieldType = guesser.guessType();
         Assert.assertEquals(exptectedType, formFieldType);
     }
 }

@@ -1,17 +1,15 @@
-package org.activityinfo.model.resource;
+package org.activityinfo.model.type;
 
 import com.google.common.collect.Lists;
+import org.activityinfo.model.resource.ResourceId;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * A reference to a {@code Resource}
- *
- * TODO: Do we need this wrapper or do we just represent references using ResourceId?
- * Does this play a functional role?
+ * A FieldValue which references another FormInstance
  */
-public final class Reference {
+public final class Reference extends FieldValue {
 
     private final ResourceId id;
 

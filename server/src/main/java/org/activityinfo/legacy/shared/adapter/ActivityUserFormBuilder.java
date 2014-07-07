@@ -6,6 +6,11 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.*;
+import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.time.LocalDateType;
 
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityCategoryFolderId;
 
@@ -36,53 +41,46 @@ public class ActivityUserFormBuilder {
             siteForm.setParentId(CuidAdapter.databaseId(activity.getDatabaseId()));
         }
 
-        FormField partnerField = new FormField(CuidAdapter.field(classId, CuidAdapter.PARTNER_FIELD));
-        partnerField.setLabel(I18N.CONSTANTS.partner());
-        partnerField.setRange(CuidAdapter.partnerFormClass(activity.getDatabaseId()));
-        partnerField.setType(FormFieldType.REFERENCE);
-        partnerField.setCardinality(FormFieldCardinality.SINGLE);
-        partnerField.setRequired(true);
+        FormField partnerField = new FormField(CuidAdapter.field(classId, CuidAdapter.PARTNER_FIELD))
+        .setLabel(I18N.CONSTANTS.partner())
+        .setType(ReferenceType.single(CuidAdapter.partnerFormClass(activity.getDatabaseId())))
+        .setRequired(true);
         siteForm.addElement(partnerField);
 
-        FormField projectField = new FormField(CuidAdapter.field(classId, CuidAdapter.PROJECT_FIELD));
-        projectField.setLabel(I18N.CONSTANTS.project());
-        projectField.setRange(CuidAdapter.projectFormClass(activity.getDatabaseId()));
-        projectField.setType(FormFieldType.REFERENCE);
-        projectField.setCardinality(FormFieldCardinality.SINGLE);
+        FormField projectField = new FormField(CuidAdapter.field(classId, CuidAdapter.PROJECT_FIELD))
+        .setLabel(I18N.CONSTANTS.project())
+        .setType(ReferenceType.single(CuidAdapter.projectFormClass(activity.getDatabaseId())));
         siteForm.addElement(projectField);
 
-        FormField endDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.END_DATE_FIELD));
-        endDateField.setLabel(I18N.CONSTANTS.endDate());
-        endDateField.setType(FormFieldType.LOCAL_DATE);
-        endDateField.setRequired(true);
+        FormField endDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.END_DATE_FIELD))
+        .setLabel(I18N.CONSTANTS.endDate())
+        .setType(LocalDateType.INSTANCE)
+        .setRequired(true);
         siteForm.addElement(endDateField);
 
-        FormField startDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.START_DATE_FIELD));
-        startDateField.setLabel(I18N.CONSTANTS.startDate());
-        startDateField.setType(FormFieldType.LOCAL_DATE);
-        startDateField.setRequired(true);
+        FormField startDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.START_DATE_FIELD))
+        .setLabel(I18N.CONSTANTS.startDate())
+        .setType(LocalDateType.INSTANCE)
+        .setRequired(true);
         siteForm.addElement(startDateField);
 
 
-        FormField locationField = new FormField(CuidAdapter.locationField(activity.getId()));
-        locationField.setLabel(activity.getLocationType().getName());
-        locationField.setRange(locationClass(activity.getLocationType()));
-        locationField.setType(FormFieldType.REFERENCE);
-        locationField.setRequired(true);
-        locationField.setCardinality(FormFieldCardinality.SINGLE);
+        FormField locationField = new FormField(CuidAdapter.locationField(activity.getId()))
+        .setLabel(activity.getLocationType().getName())
+        .setType(ReferenceType.single(locationClass(activity.getLocationType())))
+        .setRequired(true);
         siteForm.addElement(locationField);
 
         for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-            FormField attributeField = new FormField(CuidAdapter.attributeGroupField(activity, group));
-            attributeField.setLabel(group.getName());
-            attributeField.setRange(CuidAdapter.attributeGroupFormClass(group));
-            attributeField.setType(FormFieldType.REFERENCE);
-            attributeField.setRequired(group.isMandatory());
-            if (group.isMultipleAllowed()) {
-                attributeField.setCardinality(FormFieldCardinality.MULTIPLE);
-            } else {
-                attributeField.setCardinality(FormFieldCardinality.SINGLE);
-            }
+
+            ReferenceType type = new ReferenceType();
+            type.setCardinality(group.isMultipleAllowed() ? Cardinality.MULTIPLE : Cardinality.SINGLE);
+            type.setRange(CuidAdapter.attributeGroupField(activity, group));
+
+            FormField attributeField = new FormField(CuidAdapter.attributeGroupField(activity, group))
+            .setLabel(group.getName())
+            .setType(type)
+            .setRequired(group.isMandatory());
             siteForm.addElement(attributeField);
         }
 
@@ -101,7 +99,7 @@ public class ActivityUserFormBuilder {
         }
 
         FormField commentsField = new FormField(CuidAdapter.commentsField(activity.getId()));
-        commentsField.setType(FormFieldType.NARRATIVE);
+        commentsField.setType(NarrativeType.INSTANCE);
         commentsField.setLabel(I18N.CONSTANTS.comments());
         siteForm.addElement(commentsField);
 
@@ -121,8 +119,7 @@ public class ActivityUserFormBuilder {
             FormField field = new FormField(CuidAdapter.indicatorField(indicator.getId()));
             field.setLabel(indicator.getName());
             field.setDescription(indicator.getDescription());
-            field.setType(FormFieldType.QUANTITY);
-            field.setUnit(indicator.getUnits());
+            field.setType(new QuantityType().setUnits(indicator.getUnits()));
             field.setCalculation(indicator.getExpression());
             container.addElement(field);
         }

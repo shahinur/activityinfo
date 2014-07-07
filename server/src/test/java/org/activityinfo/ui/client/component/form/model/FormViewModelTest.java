@@ -2,7 +2,7 @@ package org.activityinfo.ui.client.component.form.model;
 
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
@@ -28,7 +28,7 @@ public class FormViewModelTest extends CommandTestCase2 {
         FormViewModel formViewModel = assertResolves(builder.get());
         for(FormField field : formViewModel.getFormClass().getFields()) {
             System.out.println(field.getLabel());
-            if(field.getType() == FormFieldType.REFERENCE) {
+            if(field.getType() == FieldTypeClass.REFERENCE) {
                 System.out.println(formViewModel.getFieldViewModel(field.getId()));
             }
         }

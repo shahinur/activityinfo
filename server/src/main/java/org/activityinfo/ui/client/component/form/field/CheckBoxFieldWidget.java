@@ -29,8 +29,8 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.form.FormFieldCardinality;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.form.FormInstanceLabeler;
 import org.activityinfo.ui.client.component.form.model.SimpleListViewModel;
@@ -68,10 +68,10 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
         }
     }
 
-    private CheckBox createControl(FormInstance instance, FormFieldCardinality cardinality) {
+    private CheckBox createControl(FormInstance instance, Cardinality cardinality) {
         CheckBox checkBox;
         String label = FormInstanceLabeler.getLabel(instance);
-        if(cardinality == FormFieldCardinality.SINGLE) {
+        if(cardinality == Cardinality.SINGLE) {
             checkBox = new RadioButton(instance.getId().asString(), label);
         } else {
             checkBox = new CheckBox(label);

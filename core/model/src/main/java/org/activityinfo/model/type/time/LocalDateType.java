@@ -1,8 +1,10 @@
 package org.activityinfo.model.type.time;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.component.ComponentReader;
@@ -13,12 +15,13 @@ public enum LocalDateType implements FieldType, FieldTypeClass {
 
     INSTANCE;
 
-    public static final String TYPE_ID = "localDate";
+    public static final String TYPE_ID = "LOCAL_DATE";
 
     @Override
     public String getId() {
         return TYPE_ID;
     }
+
 
     @Override
     public FieldType createType(Record typeParameters) {
@@ -27,9 +30,16 @@ public enum LocalDateType implements FieldType, FieldTypeClass {
     }
 
     @Override
+    public FormClass getParameterFormClass() {
+        return new FormClass(ResourceId.create("_localDate"));
+    }
+
+    @Override
     public FieldTypeClass getTypeClass() {
         return this;
     }
+
+
 
     @Override
     public Record getParameters() {

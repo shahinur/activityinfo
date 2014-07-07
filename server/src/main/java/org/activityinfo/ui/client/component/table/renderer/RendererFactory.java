@@ -21,7 +21,7 @@ package org.activityinfo.ui.client.component.table.renderer;
  * #L%
  */
 
-import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 
 /**
  * @author yuriyz on 3/28/14.
@@ -30,8 +30,8 @@ public class RendererFactory {
     private RendererFactory() {
     }
 
-    public static ValueRenderer create(FormFieldType type) {
-        if (type == FormFieldType.GEOGRAPHIC_POINT) {
+    public static ValueRenderer create(FieldTypeClass type) {
+        if (type == FieldTypeClass.GEOGRAPHIC_POINT) {
             return new GeographicPointRenderer();
         }
         return new GenericRenderer();

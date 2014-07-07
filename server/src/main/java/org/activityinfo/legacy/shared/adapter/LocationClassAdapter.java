@@ -4,16 +4,16 @@ import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormFieldCardinality;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 import org.activityinfo.legacy.shared.model.CountryDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.geo.GeoPointType;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -59,14 +59,14 @@ public class LocationClassAdapter implements Function<SchemaDTO, FormClass> {
 
         FormField nameField = new FormField(getNameFieldId(classId));
         nameField.setLabel(I18N.CONSTANTS.name());
-        nameField.setType(FormFieldType.FREE_TEXT);
+        nameField.setType(TextType.INSTANCE);
         nameField.setRequired(true);
         nameField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
         formClass.addElement(nameField);
 
         FormField axeField = new FormField(getAxeFieldId(classId));
         axeField.setLabel(I18N.CONSTANTS.alternateName());
-        axeField.setType(FormFieldType.FREE_TEXT);
+        axeField.setType(TextType.INSTANCE);
         formClass.addElement(axeField);
 
         // the range for the location object is any AdminLevel in this country
@@ -77,15 +77,13 @@ public class LocationClassAdapter implements Function<SchemaDTO, FormClass> {
 
         FormField adminField = new FormField(getAdminFieldId(classId));
         adminField.setLabel(I18N.CONSTANTS.adminEntities());
-        adminField.setType(FormFieldType.REFERENCE);
-        adminField.setCardinality(FormFieldCardinality.MULTIPLE);
-        adminField.setRange(adminRange);
+        adminField.setType(ReferenceType.single(adminRange));
         adminField.addSuperProperty(ApplicationProperties.HIERARCHIAL);
         formClass.addElement(adminField);
 
         FormField pointField = new FormField(getPointFieldId(classId));
         pointField.setLabel(I18N.CONSTANTS.geographicCoordinatesFieldLabel());
-        pointField.setType(FormFieldType.GEOGRAPHIC_POINT);
+        pointField.setType(GeoPointType.INSTANCE);
         formClass.addElement(pointField);
 
         return formClass;

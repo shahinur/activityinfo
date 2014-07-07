@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.table.filter;
+package org.activityinfo.model.type;
 /*
  * #%L
  * ActivityInfo Server
@@ -22,7 +22,17 @@ package org.activityinfo.ui.client.component.table.filter;
  */
 
 /**
- * @author yuriyz on 4/3/14.
+ * @author yuriyz on 2/6/14.
  */
-public class FilterContentNumber {
+public enum Cardinality {
+
+    /**
+     * At most one instance may linked to the field
+     */
+    SINGLE,
+
+    /**
+     * Any number of instances may be linked to the field
+     */
+    MULTIPLE
 }

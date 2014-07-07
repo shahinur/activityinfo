@@ -7,6 +7,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.ui.client.widget.DoubleBox;
 
 public class QuantityFieldWidget implements FormFieldWidget {
@@ -14,7 +16,7 @@ public class QuantityFieldWidget implements FormFieldWidget {
     private FlowPanel panel;
     private DoubleBox box;
 
-    public QuantityFieldWidget(final FormField field, final ValueUpdater valueUpdater) {
+    public QuantityFieldWidget(final QuantityType type, final ValueUpdater valueUpdater) {
         box = new DoubleBox();
         box.addValueChangeHandler(new ValueChangeHandler<Double>() {
             @Override
@@ -25,7 +27,7 @@ public class QuantityFieldWidget implements FormFieldWidget {
 
         panel = new FlowPanel();
         panel.add(box);
-        panel.add(new Label(field.getUnit()));
+        panel.add(new Label(type.getUnits()));
     }
 
     @Override

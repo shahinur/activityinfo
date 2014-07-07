@@ -31,8 +31,8 @@ import com.google.gwt.core.client.GWT;
 import org.activityinfo.core.shared.expr.ExprLexer;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
-import org.activityinfo.model.form.FormFieldType;
-import org.activityinfo.core.shared.form.FormFieldTypeLables;
+import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
@@ -42,7 +42,7 @@ import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
 class IndicatorForm extends AbstractDesignForm {
 
     private final FormBinding binding;
-    private final MappingComboBox<FormFieldType> typeCombo;
+    private final MappingComboBox<FieldTypeClass> typeCombo;
     private final TextField<String> unitsField;
     private final MappingComboBox aggregationCombo;
     private final TextField<String> expressionField;
@@ -83,10 +83,9 @@ class IndicatorForm extends AbstractDesignForm {
 
         typeCombo = new MappingComboBox<>();
         typeCombo.setFieldLabel(constants.type());
-        typeCombo.add(FormFieldType.QUANTITY, FormFieldTypeLables.getFormFieldType(FormFieldType.QUANTITY));
-        typeCombo.add(FormFieldType.FREE_TEXT, FormFieldTypeLables.getFormFieldType(FormFieldType.FREE_TEXT));
-        typeCombo.add(FormFieldType.NARRATIVE, FormFieldTypeLables.getFormFieldType(FormFieldType.NARRATIVE));
-//        typeCombo.add(FormFieldType.LOCAL_DATE, FormFieldTypeLables.getFormFieldType(FormFieldType.LOCAL_DATE));
+        typeCombo.add(FieldTypeClass.QUANTITY, I18N.CONSTANTS.fieldTypeQuantity());
+        typeCombo.add(FieldTypeClass.FREE_TEXT, I18N.CONSTANTS.fieldTypeText());
+        typeCombo.add(FieldTypeClass.NARRATIVE, I18N.CONSTANTS.fieldTypeNarrative());
         binding.addFieldBinding(new MappingComboBoxBinding(typeCombo, "type"));
         this.add(typeCombo);
 
@@ -110,9 +109,9 @@ class IndicatorForm extends AbstractDesignForm {
                                 "available for activities with monthly reporting. " +
                                 "(We're working on it!)"));
 
-        typeCombo.addSelectionChangedListener(new SelectionChangedListener<MappingComboBox.Wrapper<FormFieldType>>() {
+        typeCombo.addSelectionChangedListener(new SelectionChangedListener<MappingComboBox.Wrapper<FieldTypeClass>>() {
             @Override
-            public void selectionChanged(SelectionChangedEvent<MappingComboBox.Wrapper<FormFieldType>> wrapperSelectionChangedEvent) {
+            public void selectionChanged(SelectionChangedEvent<MappingComboBox.Wrapper<FieldTypeClass>> wrapperSelectionChangedEvent) {
                 setState();
             }
         });
@@ -190,19 +189,19 @@ class IndicatorForm extends AbstractDesignForm {
 
     private void setState() {
         if (typeCombo.getValue() != null) {
-            FormFieldType selectedType = typeCombo.getValue().getWrappedValue();
+            FieldTypeClass selectedType = typeCombo.getValue().getWrappedValue();
 
-            unitsField.setVisible(selectedType == FormFieldType.QUANTITY);
-            unitsField.setAllowBlank(selectedType != FormFieldType.QUANTITY);
-            if (selectedType != FormFieldType.QUANTITY) {
+            unitsField.setVisible(selectedType == FieldTypeClass.QUANTITY);
+            unitsField.setAllowBlank(selectedType != FieldTypeClass.QUANTITY);
+            if (selectedType != FieldTypeClass.QUANTITY) {
                 unitsField.setValue("");
             }
 
-            calculatedExpressionLabelDesc.setEnabled(selectedType == FormFieldType.QUANTITY);
-            calculateAutomatically.setEnabled(selectedType == FormFieldType.QUANTITY);
-            expressionField.setEnabled(selectedType == FormFieldType.QUANTITY && calculateAutomatically.getValue());
+            calculatedExpressionLabelDesc.setEnabled(selectedType == FieldTypeClass.QUANTITY);
+            calculateAutomatically.setEnabled(selectedType == FieldTypeClass.QUANTITY);
+            expressionField.setEnabled(selectedType == FieldTypeClass.QUANTITY && calculateAutomatically.getValue());
 
-            aggregationCombo.setVisible(selectedType == FormFieldType.QUANTITY);
+            aggregationCombo.setVisible(selectedType == FieldTypeClass.QUANTITY);
 
             if (idField.getValue() != null && Strings.isNullOrEmpty(codeField.getValue())) {
                 codeField.setValue(CuidAdapter.indicatorField(idField.getValue().intValue()).asString());

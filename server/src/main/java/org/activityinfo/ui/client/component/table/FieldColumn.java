@@ -49,7 +49,7 @@ public class FieldColumn extends Column<Projection, String> {
     public String getValue(Projection projection) {
         final Object valueAsObject = getValueAsObject(projection);
         if (valueAsObject != null) {
-            final ValueRenderer valueRenderer = RendererFactory.create(getNode().getFieldType());
+            final ValueRenderer valueRenderer = RendererFactory.create(getNode().getTypeClass());
             return valueRenderer.asString(valueAsObject);
         }
 
