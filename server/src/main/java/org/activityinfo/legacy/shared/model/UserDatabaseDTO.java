@@ -298,6 +298,10 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, H
         return getPartnerById(getMyPartnerId());
     }
 
+    public boolean hasPartnerId() {
+        return (get("myPartnerId") != null);
+    }
+
     /**
      * @return the id of the Partner to which the client belongs
      */

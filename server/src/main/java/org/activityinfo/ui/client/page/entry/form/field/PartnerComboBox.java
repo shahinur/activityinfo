@@ -30,13 +30,12 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 
-import java.util.Collections;
 import java.util.List;
 
 public class PartnerComboBox extends ComboBox<PartnerDTO> {
 
     public PartnerComboBox(ActivityDTO activity) {
-        this(activity.getPartners());
+        this(activity.getPartnerRange());
     }
 
     public PartnerComboBox(List<PartnerDTO> partners) {

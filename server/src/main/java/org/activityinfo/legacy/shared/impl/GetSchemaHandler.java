@@ -377,7 +377,8 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
             SqlQuery query = SqlQuery.select("d.databaseId", "d.partnerId", "p.name", "p.fullName")
                                      .from(Tables.PARTNER_IN_DATABASE, "d")
                                      .leftJoin(Tables.PARTNER, "p")
-                                     .on("d.PartnerId = p.PartnerId");
+                                     .on("d.PartnerId = p.PartnerId")
+                                     .orderBy("p.name");
 
             // Only allow results that are visible to this user if we are on the
             // server,
@@ -438,7 +439,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     int databaseId = row.getInt("databaseId");
                     UserDatabaseDTO database = databaseMap.get(databaseId);
                     activity.setDatabase(database);
-                    activity.setPartners(database.getPartners());
+                    activity.setPartnerRange(getAllowablePartners(database));
                     database.getActivities().add(activity);
 
                     int locationTypeId = row.getInt("locationTypeId");
@@ -451,6 +452,18 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     activity.set("locationTypeId", locationType.getId());
 
                     activities.put(activity.getId(), activity);
+                }
+
+                private List<PartnerDTO> getAllowablePartners(UserDatabaseDTO database) {
+                    if(database.isEditAllAllowed()) {
+                        return database.getPartners();
+                    } else if(database.hasPartnerId()) {
+                        return Lists.newArrayList(database.getMyPartner());
+                    } else {
+                        // if the user has no specific rights, they may not
+                        // have any options to set the partner
+                        return Lists.newArrayList();
+                    }
                 }
             });
         }
