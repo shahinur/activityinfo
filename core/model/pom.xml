@@ -15,11 +15,6 @@
   <dependencies>
     <dependency>
       <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-expr</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-promises</artifactId>
       <version>${project.version}</version>
     </dependency>
