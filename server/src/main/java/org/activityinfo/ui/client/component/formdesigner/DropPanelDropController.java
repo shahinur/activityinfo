@@ -21,32 +21,19 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.bedatadriven.rebar.style.client.Source;
-import com.bedatadriven.rebar.style.client.Stylesheet;
-import com.google.gwt.core.client.GWT;
+import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 
 /**
- * @author yuriyz on 07/04/2014.
+ * @author yuriyz on 07/07/2014.
  */
-@Source("FormDesigner.less")
-public interface FormDesignerStyles extends Stylesheet{
-
-    public static final FormDesignerStyles INSTANCE = GWT.create(FormDesignerStyles.class);
-
-    @ClassName("control")
-    String control();
-
-    @ClassName("control-on-drag-spacer")
-    String controlOnDragSpacer();
-
-    @ClassName("widget-panel")
-    String widgetPanel();
-
-    @ClassName("properties-panel")
-    String propertiesPanel();
-
-    @ClassName("main-panel")
-    String mainPanel();
-
-
+public class DropPanelDropController extends AbsolutePositionDropController {
+    /**
+     * Basic constructor.
+     *
+     * @param dropTarget the absolute panel drop target
+     */
+    public DropPanelDropController(AbsolutePanel dropTarget) {
+        super(dropTarget);
+    }
 }

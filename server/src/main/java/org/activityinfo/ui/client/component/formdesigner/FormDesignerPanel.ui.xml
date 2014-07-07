@@ -6,26 +6,14 @@
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
   <ui:with field="style" type="org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles"/>
 
-  <g:AbsolutePanel ui:field="absolutePanel" width="1000px" height="1000px">
+  <g:AbsolutePanel ui:field="absolutePanel" width="1140px" height="1000px">
     <g:at left='0' top='10'>
       <g:HTMLPanel width="350px" height="100%">
         <div class="panel panel-default">
           <div class="panel-heading">
             <b>Widgets</b>
           </div>
-          <g:VerticalPanel addStyleNames="panel-body" width="100%">
-            <g:HorizontalPanel width="100%">
-              <g:VerticalPanel width="100%">
-                <g:Button addStyleNames="btn btn-primary btn-xs btn-block control" text="Single Line Text" ui:field="singleTextField"/>
-                <g:Button addStyleNames="btn btn-primary btn-xs btn-block control" text="Multi Line Text" ui:field="multiTextField"/>
-                <g:Button addStyleNames="btn btn-primary btn-xs btn-block control" text="Number" ui:field="numberField"/>
-              </g:VerticalPanel>
-              <g:VerticalPanel width="100%">
-                <g:Button addStyleNames="btn btn-default btn-xs btn-block control" text="Section break" ui:field="section"/>
-                <g:Button addStyleNames="btn btn-primary btn-xs btn-block control" text="Dropdown" ui:field="dropDownField"/>
-              </g:VerticalPanel>
-            </g:HorizontalPanel>
-          </g:VerticalPanel>
+          <g:AbsolutePanel addStyleNames="panel-body"  width="350px" ui:field="controlBucket"/>
         </div>
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -38,8 +26,7 @@
       </g:HTMLPanel>
     </g:at>
     <g:at left='360' top='10'>
-      <g:HTMLPanel addStyleNames="{style.mainPanel}" width="100%" height="100%">
-      </g:HTMLPanel>
+      <g:AbsolutePanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
     </g:at>
   </g:AbsolutePanel>
 </ui:UiBinder>

@@ -26,7 +26,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -35,6 +34,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FormDesignerPanel extends Composite {
 
+    public static final int GRID_X = 30;
+    public static final int GRID_Y = 770;
     private static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
 
@@ -46,26 +47,23 @@ public class FormDesignerPanel extends Composite {
     @UiField
     AbsolutePanel absolutePanel;
     @UiField
-    Button section;
+    AbsolutePanel dropPanel;
     @UiField
-    Button dropDownField;
-    @UiField
-    Button numberField;
-    @UiField
-    Button multiTextField;
-    @UiField
-    Button singleTextField;
+    AbsolutePanel controlBucket;
 
     public FormDesignerPanel() {
         FormDesignerStyles.INSTANCE.ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
+
         dragController = new PickupDragController(absolutePanel, false);
         dragController.setBehaviorMultipleSelection(false);
 
-        dragController.makeDraggable(section);
-        dragController.makeDraggable(dropDownField);
-        dragController.makeDraggable(numberField);
-        dragController.makeDraggable(multiTextField);
-        dragController.makeDraggable(singleTextField);
+        ControlBucketBuilder controlBucketBuilder = new ControlBucketBuilder(controlBucket, dragController);
+        controlBucketBuilder.build();
+
+        dragController.addDragHandler(new ControlDnDHandler());
+
+        DropPanelDropController widgetDropController = new DropPanelDropController(dropPanel);
+        dragController.registerDropController(widgetDropController);
     }
 }

@@ -21,32 +21,16 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.bedatadriven.rebar.style.client.Source;
-import com.bedatadriven.rebar.style.client.Stylesheet;
-import com.google.gwt.core.client.GWT;
-
 /**
- * @author yuriyz on 07/04/2014.
+ * @author yuriyz on 07/07/2014.
  */
-@Source("FormDesigner.less")
-public interface FormDesignerStyles extends Stylesheet{
+public class Metrics {
 
-    public static final FormDesignerStyles INSTANCE = GWT.create(FormDesignerStyles.class);
+    public static final int SOURCE_CONTROL_INITIAL_LEFT = 20;
+    public static final int SOURCE_CONTROL_WIDTH_PX = 150;
+    public static final int SOURCE_CONTROL_HEIGHT_PX = 32;
+    public static final int SOURCE_CONTROL_MARGIN_RIGHT = 10;
 
-    @ClassName("control")
-    String control();
-
-    @ClassName("control-on-drag-spacer")
-    String controlOnDragSpacer();
-
-    @ClassName("widget-panel")
-    String widgetPanel();
-
-    @ClassName("properties-panel")
-    String propertiesPanel();
-
-    @ClassName("main-panel")
-    String mainPanel();
-
-
+    private Metrics() {
+    }
 }
