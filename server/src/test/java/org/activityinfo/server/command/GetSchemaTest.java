@@ -109,7 +109,7 @@ public class GetSchemaTest extends CommandTestCase2 {
     @OnDataSet("/dbunit/sites-public.db.xml")
     public void testDatabasePublished() throws CommandException {
 
-        // Anonymouse user should fetch schema database with pulished
+        // Anonymouse user should fetch schema database with published
         // activities.
         setUser(0);
 

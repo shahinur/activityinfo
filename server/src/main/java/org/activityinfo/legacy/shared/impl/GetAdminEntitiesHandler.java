@@ -82,7 +82,8 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
         if (cmd.getFilter() != null) {
             Filter filter = cmd.getFilter();
             if(filter.isRestricted(DimensionType.Activity) ||
-               filter.isRestricted(DimensionType.Database)) {
+               filter.isRestricted(DimensionType.Database) ||
+               filter.isRestricted(DimensionType.Indicator)) {
 
                 SqlQuery subQuery = SqlQuery
                         .select("link.AdminEntityId")
@@ -101,6 +102,12 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
                             .on("site.ActivityId=activity.ActivityId")
                             .where("activity.DatabaseId")
                             .in(filter.getRestrictions(DimensionType.Database));
+                }
+                if(filter.isRestricted(DimensionType.Indicator)) {
+                    subQuery.leftJoin(Tables.REPORTING_PERIOD, "rp").on("site.siteId=rp.SiteId")
+                            .leftJoin(Tables.INDICATOR_VALUE, "iv").on("iv.reportingPeriodId=rp.reportingPeriodId")
+                            .where("iv.indicatorId").in(filter.getRestrictions(DimensionType.Indicator));
+
                 }
                 query.where("AdminEntity.AdminEntityId").in(subQuery);
             }
