@@ -25,7 +25,6 @@
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="com.bedatadriven.rebar.Time"/>
-  <inherits name="org.activityinfo.Expr"/>
   <inherits name="org.activityinfo.Promises"/>
 
   <!-- Include generated sources -->
