@@ -266,12 +266,7 @@ public class ColumnModelBuilder {
     }
 
     public ColumnModelBuilder maybeAddPartnerColumn(ActivityDTO activity) {
-        // if the activity is published, there may be other partners that
-        // we will see
-        if ( activity.getPublished() == 1 ||
-             activity.getPartnerRange().size() > 1) {
-            addPartnerColumn();
-        }
+        addPartnerColumn();
         return this;
     }
 
