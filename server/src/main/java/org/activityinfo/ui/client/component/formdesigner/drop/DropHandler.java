@@ -21,11 +21,12 @@ package org.activityinfo.ui.client.component.formdesigner.drop;
  * #L%
  */
 
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 
 /**
  * @author yuriyz on 07/07/2014.
  */
 public interface DropHandler {
-    Drop drop(AbsolutePanel dropTarget);
+    Drop drop(AbsolutePanel dropTarget, ValueUpdater valueUpdater);
 }

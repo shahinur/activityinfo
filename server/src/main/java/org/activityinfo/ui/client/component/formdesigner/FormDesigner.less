@@ -3,11 +3,33 @@
 
 @form-panel-bg: @state-info-bg;
 @form-panel-text: @alert-info-text;
+@main-panel-bg: @form-panel-bg;
+@padding: 4px;
 
 .widget-panel {
   background-color: @form-panel-bg;
   color: @form-panel-text;
+  padding: @padding;
 }
+
+.widget-container {
+  padding: 10px;
+  padding-right: 50px;
+  width: 100%;
+  border-collapse: separate !important; // override .bs table -> border-collapse: collapse
+  border-width: 1px; // keep border to avoid jumping effect
+  border-color: @main-panel-bg; // color is the same as background of main panel to make it invisible
+  border-style: dashed;
+}
+
+.widget-container:hover {
+  border-color: #0055ff;
+}
+
+.widget-container-selected {
+  background-color: @state-success-bg;
+}
+
 
 .properties-panel {
   background-color: @form-panel-bg;
@@ -15,6 +37,6 @@
 }
 
 .main-panel {
-  background-color: @form-panel-bg;
+  background-color: @main-panel-bg;
   color: @form-panel-text;
 }

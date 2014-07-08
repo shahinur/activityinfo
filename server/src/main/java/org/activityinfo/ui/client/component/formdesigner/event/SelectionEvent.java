@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner;
+package org.activityinfo.ui.client.component.formdesigner.event;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,32 +21,13 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.bedatadriven.rebar.style.client.Source;
-import com.bedatadriven.rebar.style.client.Stylesheet;
-import com.google.gwt.core.client.GWT;
+import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
 
 /**
- * @author yuriyz on 07/04/2014.
+ * @author yuriyz on 7/8/14.
  */
-@Source("FormDesigner.less")
-public interface FormDesignerStyles extends Stylesheet{
-
-    public static final FormDesignerStyles INSTANCE = GWT.create(FormDesignerStyles.class);
-
-    @ClassName("widget-container")
-    String widgetContainer();
-
-    @ClassName("widget-container-selected")
-    String widgetContainerSelected();
-
-    @ClassName("widget-panel")
-    String widgetPanel();
-
-    @ClassName("properties-panel")
-    String propertiesPanel();
-
-    @ClassName("main-panel")
-    String mainPanel();
-
-
+public class SelectionEvent extends com.google.gwt.event.logical.shared.SelectionEvent<WidgetContainer> {
+    public SelectionEvent(WidgetContainer selectedItem) {
+        super(selectedItem);
+    }
 }

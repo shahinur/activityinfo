@@ -21,18 +21,28 @@ package org.activityinfo.ui.client.component.formdesigner.drop;
  * #L%
  */
 
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import org.activityinfo.ui.client.component.form.field.TextFieldWidget;
+import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
 import org.activityinfo.ui.client.widget.TextBox;
 
 /**
  * @author yuriyz on 07/07/2014.
  */
-public class SingleLineDropHandler implements DropHandler{
+public class SingleLineDropHandler implements DropHandler {
+
+    private final EventBus eventBus;
+
+    public SingleLineDropHandler(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
 
     @Override
-    public Drop drop(AbsolutePanel dropTarget) {
+    public Drop drop(AbsolutePanel dropTarget, ValueUpdater valueUpdater) {
         final TextBox box = new TextBox();
-        dropTarget.add(box);
+        dropTarget.add(new WidgetContainer(eventBus, new TextFieldWidget(valueUpdater)).asWidget());
 
         final Drop drop = new Drop();
         drop.setDropHeight(box.getOffsetHeight());

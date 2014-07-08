@@ -22,6 +22,8 @@ package org.activityinfo.ui.client.component.formdesigner;
  */
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -31,6 +33,7 @@ public class FormDesigner {
 
     private final ControlBucketBuilder controlBucketBuilder;
     private final PickupDragController dragController;
+    private final EventBus eventBus = new SimpleEventBus();
 
     public FormDesigner(FormDesignerPanel formDesignerPanel) {
         dragController = new PickupDragController(formDesignerPanel.getContainerPanel(), false);
@@ -47,5 +50,9 @@ public class FormDesigner {
 
     public ControlType getControlType(Widget widget) {
         return controlBucketBuilder.getControlMap().inverse().get(widget);
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 }

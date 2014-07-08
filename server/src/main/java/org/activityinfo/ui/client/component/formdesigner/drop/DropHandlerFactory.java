@@ -21,7 +21,9 @@ package org.activityinfo.ui.client.component.formdesigner.drop;
  * #L%
  */
 
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.activityinfo.ui.client.component.formdesigner.ControlType;
 
@@ -32,22 +34,25 @@ public class DropHandlerFactory {
 
     private static final DropHandler DUMMY_DROP_HANDLER = new DropHandler() {
         @Override
-        public Drop drop(AbsolutePanel dropTarget) {
+        public Drop drop(AbsolutePanel dropTarget, ValueUpdater valueUpdater) {
             return new Drop();
         }
     };
 
-    private DropHandlerFactory() {
+    private final EventBus eventBus;
+
+    public DropHandlerFactory(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
-    public static DropHandler create(ControlType type) {
+    public DropHandler create(ControlType type) {
         if (type != null) {
             switch (type) {
                 case SINGLE_LINE_TEXT:
-                    return new SingleLineDropHandler();
+                    return new SingleLineDropHandler(eventBus);
             }
         }
         GWT.log("Control is not supported, type: " + type);
-        return new SingleLineDropHandler();
+        return new SingleLineDropHandler(eventBus);
     }
 }

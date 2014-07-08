@@ -24,6 +24,7 @@ package org.activityinfo.ui.client.component.formdesigner;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import org.activityinfo.ui.client.component.formdesigner.drop.Drop;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropHandlerFactory;
@@ -46,8 +47,15 @@ public class DropPanelDropController extends AbsolutePositionDropController {
     public void onPreviewDrop(DragContext context) throws VetoDragException {
         int dropPanelHeightBeforeDrop = dropTarget.getOffsetHeight();
 
+        final ValueUpdater valueUpdater = new ValueUpdater() {
+            @Override
+            public void update(Object value) {
+                // todo
+            }
+        };
+
         ControlType controlType = formDesigner.getControlType(context.draggable);
-        Drop drop = DropHandlerFactory.create(controlType).drop(dropTarget);
+        Drop drop = new DropHandlerFactory(formDesigner.getEventBus()).create(controlType).drop(dropTarget, valueUpdater);
 
         resizeDropPanel(dropPanelHeightBeforeDrop, drop);
 
