@@ -10,10 +10,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import java.lang.String;
-import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerPanel;
 import org.activityinfo.ui.client.pageView.InstancePageView;
 import org.activityinfo.ui.client.widget.EditableHeader;
 
@@ -46,6 +46,7 @@ public class FormClassDesignView implements InstancePageView{
         this.resourceLocator = resourceLocator;
         this.formPanel = new Label("Under (re)construction!");
         rootElement = ourUiBinder.createAndBindUi(this);
+        rootElement.add(new FormDesignerPanel(resourceLocator));
     }
 
     @Override

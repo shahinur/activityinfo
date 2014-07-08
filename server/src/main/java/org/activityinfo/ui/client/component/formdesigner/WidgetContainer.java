@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.*;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.event.SelectionEvent;
 
@@ -38,10 +39,12 @@ public class WidgetContainer {
     private EventBus eventBus;
     private FormFieldWidget formFieldWidget;
     private Widget containerWidget;
+    private FormField formField;
 
-    public WidgetContainer(EventBus eventBus, FormFieldWidget widget) {
+    public WidgetContainer(EventBus eventBus, FormFieldWidget formFieldWidget, FormField formField) {
         this.eventBus = eventBus;
-        this.formFieldWidget = widget;
+        this.formFieldWidget = formFieldWidget;
+        this.formField = formField;
         this.containerWidget = createContainerWidget();
         this.eventBus.addHandler(SelectionEvent.getType(), new SelectionHandler<Object>() {
             @Override
@@ -64,6 +67,7 @@ public class WidgetContainer {
 
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
         horizontalPanel.setWidth("100%");
+        horizontalPanel.add(new HTML(formField.getLabel()));
         horizontalPanel.add(formFieldWidget);
         horizontalPanel.add(removeButton);
 

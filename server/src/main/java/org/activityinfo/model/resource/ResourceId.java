@@ -1,6 +1,7 @@
 package org.activityinfo.model.resource;
 
 import javax.annotation.Nonnull;
+import java.util.Date;
 
 /**
  * Collision-Resistant Unique ID.
@@ -8,12 +9,19 @@ import javax.annotation.Nonnull;
  */
 public final class ResourceId {
 
+    public static long COUNTER = 1;
+
     @Nonnull
     private final String value;
 
     private ResourceId(String value) {
         assert value != null;
         this.value = value;
+    }
+
+    public static ResourceId generateId() {
+        return create("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
+                Long.toString(COUNTER++, Character.MAX_RADIX));
     }
 
     public static ResourceId create(String value) {

@@ -26,8 +26,12 @@ import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import org.activityinfo.ui.client.component.formdesigner.drop.Drop;
-import org.activityinfo.ui.client.component.formdesigner.drop.DropHandlerFactory;
+import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -55,15 +59,28 @@ public class DropPanelDropController extends AbsolutePositionDropController {
         };
 
         ControlType controlType = formDesigner.getControlType(context.draggable);
-        Drop drop = new DropHandlerFactory(formDesigner.getEventBus()).create(controlType).drop(dropTarget, valueUpdater);
 
-        resizeDropPanel(dropPanelHeightBeforeDrop, drop);
+        final FormField formField = new FormField(ResourceId.generateId());
+        formField.setLabel(controlType.getLabel());
+        formField.setType(controlType.getFieldType());
+
+        FormTree formTree = new FormTree();
+        FormTree.Node node = formTree.addRootField(formDesigner.getFormClass(), formField);
+
+        // todo reference support
+        FormFieldWidget formFieldWidget = new FormFieldWidgetFactory(formDesigner.getResourceLocator()).createWidget(null, node, valueUpdater);
+
+
+        Widget containerWidget = new WidgetContainer(formDesigner.getEventBus(), formFieldWidget, formField).asWidget();
+        dropTarget.add(containerWidget);
+
+        resizeDropPanel(dropPanelHeightBeforeDrop, containerWidget);
 
         // forbid drop of source control widget
         throw new VetoDragException();
     }
 
-    private void resizeDropPanel(int dropPanelHeightBeforeDrop, Drop drop) {
+    private void resizeDropPanel(int dropPanelHeightBeforeDrop, Widget containerWidget) {
         // todo !!!
     }
 }

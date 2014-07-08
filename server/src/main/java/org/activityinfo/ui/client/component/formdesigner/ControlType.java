@@ -21,29 +21,43 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.number.QuantityType;
+
 /**
  * @author yuriyz on 07/07/2014.
  */
 public enum ControlType {
 
-    SINGLE_LINE_TEXT(0, Metrics.DEFAULT_STYLE_NAME),
-    MULTI_LINE_TEXT(0, Metrics.DEFAULT_STYLE_NAME),
-    MULTIPLE_CHOICE(1, Metrics.DEFAULT_STYLE_NAME),
-    DROP_DOWN(1, Metrics.DEFAULT_STYLE_NAME),
-    CHECKBOX(1, Metrics.DEFAULT_STYLE_NAME),
-    NUMBER(1, Metrics.DEFAULT_STYLE_NAME),
-    SECTION_BREAK(1, Metrics.DEFAULT_STYLE_NAME),
-    PAGE_BREAK(1, Metrics.DEFAULT_STYLE_NAME);
+    SINGLE_LINE_TEXT(1, Metrics.DEFAULT_STYLE_NAME, TextType.INSTANCE),
+    MULTI_LINE_TEXT(1, Metrics.DEFAULT_STYLE_NAME, NarrativeType.INSTANCE),
+    MULTIPLE_CHOICE(0, Metrics.DEFAULT_STYLE_NAME, ReferenceType.single(ResourceId.generateId())),
+    DROP_DOWN(0, Metrics.DEFAULT_STYLE_NAME, ReferenceType.single(ResourceId.generateId())),
+    CHECKBOX(0, Metrics.DEFAULT_STYLE_NAME, ReferenceType.single(ResourceId.generateId())),
+    NUMBER(1, Metrics.DEFAULT_STYLE_NAME, QuantityType.TypeClass.INSTANCE.createType(new Record().set("units", "Units"))),
+    SECTION_BREAK(0, Metrics.DEFAULT_STYLE_NAME, null),
+    PAGE_BREAK(0, Metrics.DEFAULT_STYLE_NAME, null);
 
     private final int column;
     private final String styleName;
+    private final FieldType fieldType;
 
-    ControlType(int column, String styleName) {
+    ControlType(int column, String styleName, FieldType fieldType) {
         if (column != 0 && column != 1) {
             throw new IllegalArgumentException("Unsupported column. Only two columns are supported right now.");
         }
         this.column = column;
         this.styleName = styleName;
+        this.fieldType = fieldType;
+    }
+
+    public FieldType getFieldType() {
+        return fieldType;
     }
 
     public String getStyleName() {

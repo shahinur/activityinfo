@@ -17,7 +17,7 @@ public class FormViewModel {
     FormInstance instance;
     Map<ResourceId, FieldViewModel> fields = new HashMap<>();
 
-    FormViewModel() {
+    public FormViewModel() {
     }
 
     public FormTree getFormTree() {
