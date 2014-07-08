@@ -154,19 +154,6 @@ public class AdminLevelResource {
         return Response.ok().entity(baos.toByteArray()).type(MediaType.APPLICATION_JSON).build();
     }
 
-    @GET @Path("/tiles/{z}/{x}/{y}.png")
-    public Response tile(@InjectParam Session session,
-                         @PathParam("z") int zoom,
-                         @PathParam("x") int x,
-                         @PathParam("y") int y) throws IOException {
-
-        AdminTileRenderer renderer = new AdminTileRenderer(session, level);
-        byte[] image = renderer.render(zoom, x, y);
-
-        return Response.ok(image).type("image/png").tag("version=" + level.getVersion()).build();
-
-    }
-
     @PUT @Consumes(MediaType.APPLICATION_JSON)
     public Response update(@InjectParam AuthenticatedUser user, UpdatedAdminLevel updatedLevel) throws ParseException {
 
