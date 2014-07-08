@@ -16,7 +16,7 @@ public enum TextType implements FieldType, FieldTypeClass {
 
     @Override
     public String getId() {
-        return "text";
+        return "FREE_TEXT";
     }
 
     @Override
