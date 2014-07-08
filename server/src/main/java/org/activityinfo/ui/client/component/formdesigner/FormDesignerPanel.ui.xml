@@ -6,7 +6,7 @@
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
   <ui:with field="style" type="org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles"/>
 
-  <g:AbsolutePanel ui:field="absolutePanel" width="1140px" height="1000px">
+  <g:AbsolutePanel ui:field="containerPanel" width="1140px" height="1000px">
     <g:at left='0' top='10'>
       <g:HTMLPanel width="350px" height="100%">
         <div class="panel panel-default">

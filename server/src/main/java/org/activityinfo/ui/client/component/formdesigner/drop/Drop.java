@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner;
+package org.activityinfo.ui.client.component.formdesigner.drop;
 /*
  * #%L
  * ActivityInfo Server
@@ -24,17 +24,15 @@ package org.activityinfo.ui.client.component.formdesigner;
 /**
  * @author yuriyz on 07/07/2014.
  */
-public class Metrics {
+public class Drop {
 
-    public static final int SOURCE_CONTROL_INITIAL_LEFT = 20;
-    public static final int SOURCE_CONTROL_INITIAL_TOP = 5;
+    private int dropHeight;
 
-    public static final int SOURCE_CONTROL_WIDTH_PX = 150;
-    public static final int SOURCE_CONTROL_HEIGHT_PX = 32;
-    public static final int SOURCE_CONTROL_MARGIN_RIGHT = 10;
+    public int getDropHeight() {
+        return dropHeight;
+    }
 
-    public static final String DEFAULT_STYLE_NAME = "btn btn-primary btn-xs";
-
-    private Metrics() {
+    public void setDropHeight(int dropHeight) {
+        this.dropHeight = dropHeight;
     }
 }

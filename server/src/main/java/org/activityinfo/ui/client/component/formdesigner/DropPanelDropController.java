@@ -21,19 +21,41 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import com.allen_sauer.gwt.dnd.client.DragContext;
+import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import org.activityinfo.ui.client.component.formdesigner.drop.Drop;
+import org.activityinfo.ui.client.component.formdesigner.drop.DropHandlerFactory;
 
 /**
  * @author yuriyz on 07/07/2014.
  */
 public class DropPanelDropController extends AbsolutePositionDropController {
-    /**
-     * Basic constructor.
-     *
-     * @param dropTarget the absolute panel drop target
-     */
-    public DropPanelDropController(AbsolutePanel dropTarget) {
+
+    private FormDesigner formDesigner;
+    private AbsolutePanel dropTarget;
+
+    public DropPanelDropController(AbsolutePanel dropTarget, FormDesigner formDesigner) {
         super(dropTarget);
+        this.formDesigner = formDesigner;
+        this.dropTarget = dropTarget;
+    }
+
+    @Override
+    public void onPreviewDrop(DragContext context) throws VetoDragException {
+        int dropPanelHeightBeforeDrop = dropTarget.getOffsetHeight();
+
+        ControlType controlType = formDesigner.getControlType(context.draggable);
+        Drop drop = DropHandlerFactory.create(controlType).drop(dropTarget);
+
+        resizeDropPanel(dropPanelHeightBeforeDrop, drop);
+
+        // forbid drop of source control widget
+        throw new VetoDragException();
+    }
+
+    private void resizeDropPanel(int dropPanelHeightBeforeDrop, Drop drop) {
+        // todo !!!
     }
 }

@@ -21,8 +21,8 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -34,18 +34,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FormDesignerPanel extends Composite {
 
-    public static final int GRID_X = 30;
-    public static final int GRID_Y = 770;
     private static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
+
 
     interface OurUiBinder extends UiBinder<Widget, FormDesignerPanel> {
     }
 
-    private final PickupDragController dragController;
-
     @UiField
-    AbsolutePanel absolutePanel;
+    AbsolutePanel containerPanel;
     @UiField
     AbsolutePanel dropPanel;
     @UiField
@@ -54,16 +51,23 @@ public class FormDesignerPanel extends Composite {
     public FormDesignerPanel() {
         FormDesignerStyles.INSTANCE.ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                new FormDesigner(FormDesignerPanel.this);
+            }
+        });
+    }
 
-        dragController = new PickupDragController(absolutePanel, false);
-        dragController.setBehaviorMultipleSelection(false);
+    public AbsolutePanel getDropPanel() {
+        return dropPanel;
+    }
 
-        ControlBucketBuilder controlBucketBuilder = new ControlBucketBuilder(controlBucket, dragController);
-        controlBucketBuilder.build();
+    public AbsolutePanel getControlBucket() {
+        return controlBucket;
+    }
 
-        dragController.addDragHandler(new ControlDnDHandler());
-
-        DropPanelDropController widgetDropController = new DropPanelDropController(dropPanel);
-        dragController.registerDropController(widgetDropController);
+    public AbsolutePanel getContainerPanel() {
+        return containerPanel;
     }
 }
