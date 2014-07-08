@@ -26,9 +26,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.event.SelectionEvent;
 
@@ -54,18 +52,34 @@ public class WidgetContainer {
     }
 
     private Widget createContainerWidget() {
-        final VerticalPanel verticalPanel = new VerticalPanel();
-        verticalPanel.addStyleName(FormDesignerStyles.INSTANCE.widgetContainer());
-        verticalPanel.add(formFieldWidget);
+        final Button removeButton = new Button("x");
+        removeButton.setStyleName("close pull-right btn-link");
+        removeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                onRemove();
+            }
+        });
 
-        final FocusPanel focusPanel = new FocusPanel(verticalPanel);
+
+        final HorizontalPanel horizontalPanel = new HorizontalPanel();
+        horizontalPanel.setWidth("100%");
+        horizontalPanel.add(formFieldWidget);
+        horizontalPanel.add(removeButton);
+
+        final FocusPanel focusPanel = new FocusPanel(horizontalPanel);
         focusPanel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 WidgetContainer.this.onClick();
             }
         });
+        focusPanel.addStyleName(FormDesignerStyles.INSTANCE.widgetContainer());
         return focusPanel;
+    }
+
+    private void onRemove() {
+        containerWidget.removeFromParent();
     }
 
     private void onClick() {
