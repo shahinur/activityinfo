@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner;
+package org.activityinfo.ui.client.component.formdesigner.event;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,20 +21,13 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+
 /**
- * @author yuriyz on 07/07/2014.
+ * @author yuriyz on 7/8/14.
  */
-public class Metrics {
-
-    public static final int SOURCE_CONTROL_INITIAL_LEFT = 20;
-    public static final int SOURCE_CONTROL_INITIAL_TOP = 5;
-
-    public static final int SOURCE_CONTROL_WIDTH_PX = 150;
-    public static final int SOURCE_CONTROL_HEIGHT_PX = 32;
-    public static final int SOURCE_CONTROL_MARGIN_RIGHT = 10;
-
-    public static final String DEFAULT_STYLE_NAME = "btn btn-primary btn-xs";
-
-    private Metrics() {
+public class SelectionEvent extends com.google.gwt.event.logical.shared.SelectionEvent<WidgetContainer> {
+    public SelectionEvent(WidgetContainer selectedItem) {
+        super(selectedItem);
     }
 }

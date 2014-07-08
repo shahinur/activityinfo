@@ -33,11 +33,11 @@ public interface FormDesignerStyles extends Stylesheet{
 
     public static final FormDesignerStyles INSTANCE = GWT.create(FormDesignerStyles.class);
 
-    @ClassName("control")
-    String control();
+    @ClassName("widget-container")
+    String widgetContainer();
 
-    @ClassName("control-on-drag-spacer")
-    String controlOnDragSpacer();
+    @ClassName("widget-container-selected")
+    String widgetContainerSelected();
 
     @ClassName("widget-panel")
     String widgetPanel();

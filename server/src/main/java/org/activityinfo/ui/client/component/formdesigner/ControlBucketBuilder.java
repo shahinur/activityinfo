@@ -22,9 +22,12 @@ package org.activityinfo.ui.client.component.formdesigner;
  */
 
 import com.allen_sauer.gwt.dnd.client.DragController;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 
 import java.util.Collections;
 import java.util.Map;
@@ -35,7 +38,7 @@ import java.util.Map;
 public class ControlBucketBuilder {
 
     private final AbsolutePanel bucketPanel;
-    private final Map<ControlType, Button> controlMap = Maps.newHashMap();
+    private final BiMap<ControlType, Widget> controlMap = HashBiMap.create();
     private final DragController dragController;
 
     public ControlBucketBuilder(AbsolutePanel bucketPanel, DragController dragController) {
@@ -47,14 +50,14 @@ public class ControlBucketBuilder {
         final Map<Integer, Integer> top = Maps.newHashMap();
 
         // support only 2 columns for now
-        top.put(0, 0);
-        top.put(1, 0);
+        top.put(0, Metrics.SOURCE_CONTROL_INITIAL_TOP);
+        top.put(1, Metrics.SOURCE_CONTROL_INITIAL_TOP);
 
         for (ControlType type : ControlType.values()) {
             int left = Metrics.SOURCE_CONTROL_INITIAL_LEFT + Metrics.SOURCE_CONTROL_WIDTH_PX * type.getColumn() +
                     + (type.getColumn() == 0 ? 0 : Metrics.SOURCE_CONTROL_MARGIN_RIGHT);
             Integer topValue = top.get(type.getColumn());
-            bucketPanel.add(createButton(type), left, topValue);
+            bucketPanel.add(createWidget(type), left, topValue);
 
             topValue = topValue + Metrics.SOURCE_CONTROL_HEIGHT_PX;
             top.put(type.getColumn(), topValue);
@@ -63,16 +66,17 @@ public class ControlBucketBuilder {
         bucketPanel.setHeight(Collections.max(top.values()) + "px");
     }
 
-    private Button createButton(ControlType type) {
-        final Button button = new Button(type.getLabel());
-        button.setStyleName("btn btn-primary btn-xs btn-block control");
+    private HTML createWidget(ControlType type) {
+        final HTML button = new HTML(type.getLabel());
+        button.setStyleName(type.getStyleName());
         button.setWidth(Metrics.SOURCE_CONTROL_WIDTH_PX + "px");
+
         controlMap.put(type, button);
         dragController.makeDraggable(button);
         return button;
     }
 
-    public Map<ControlType, Button> getControlMap() {
+    public BiMap<ControlType, Widget> getControlMap() {
         return controlMap;
     }
 }

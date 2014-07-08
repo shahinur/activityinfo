@@ -25,22 +25,29 @@ package org.activityinfo.ui.client.component.formdesigner;
  * @author yuriyz on 07/07/2014.
  */
 public enum ControlType {
-    SINGLE_LINE_TEXT(0),
-    MULTI_LINE_TEXT(0),
-    MULTIPLE_CHOICE(1),
-    DROP_DOWN(1),
-    CHECKBOX(1),
-    NUMBER(1),
-    SECTION_BREAK(1),
-    PAGE_BREAK(1);
+
+    SINGLE_LINE_TEXT(0, Metrics.DEFAULT_STYLE_NAME),
+    MULTI_LINE_TEXT(0, Metrics.DEFAULT_STYLE_NAME),
+    MULTIPLE_CHOICE(1, Metrics.DEFAULT_STYLE_NAME),
+    DROP_DOWN(1, Metrics.DEFAULT_STYLE_NAME),
+    CHECKBOX(1, Metrics.DEFAULT_STYLE_NAME),
+    NUMBER(1, Metrics.DEFAULT_STYLE_NAME),
+    SECTION_BREAK(1, Metrics.DEFAULT_STYLE_NAME),
+    PAGE_BREAK(1, Metrics.DEFAULT_STYLE_NAME);
 
     private final int column;
+    private final String styleName;
 
-    ControlType(int column) {
-        this.column = column;
+    ControlType(int column, String styleName) {
         if (column != 0 && column != 1) {
             throw new IllegalArgumentException("Unsupported column. Only two columns are supported right now.");
         }
+        this.column = column;
+        this.styleName = styleName;
+    }
+
+    public String getStyleName() {
+        return styleName;
     }
 
     public int getColumn() {
