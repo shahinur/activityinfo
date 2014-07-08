@@ -6,6 +6,5 @@
   <g:HTMLPanel>
     <a:EditableHeader ui:field="formHeader"/>
     <g:Label ui:field="formPanel"/>
-    <design:FormDesignerPanel/>
   </g:HTMLPanel>
 </ui:UiBinder>

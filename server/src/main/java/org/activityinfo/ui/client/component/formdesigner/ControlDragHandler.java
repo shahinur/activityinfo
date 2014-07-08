@@ -29,7 +29,7 @@ import com.allen_sauer.gwt.dnd.client.VetoDragException;
 /**
  * @author yuriyz on 07/07/2014.
  */
-public class ControlDnDHandler implements DragHandler {
+public class ControlDragHandler implements DragHandler {
 
     @Override
     public void onDragEnd(DragEndEvent event) {

@@ -28,6 +28,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.core.client.ResourceLocator;
 
 /**
  * @author yuriyz on 07/04/2014.
@@ -48,13 +49,13 @@ public class FormDesignerPanel extends Composite {
     @UiField
     AbsolutePanel controlBucket;
 
-    public FormDesignerPanel() {
+    public FormDesignerPanel(final ResourceLocator resourceLocator) {
         FormDesignerStyles.INSTANCE.ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                new FormDesigner(FormDesignerPanel.this);
+                new FormDesigner(FormDesignerPanel.this, resourceLocator);
             }
         });
     }

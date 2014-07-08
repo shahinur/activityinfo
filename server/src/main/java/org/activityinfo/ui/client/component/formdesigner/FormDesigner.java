@@ -25,6 +25,9 @@ import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -34,15 +37,19 @@ public class FormDesigner {
     private final ControlBucketBuilder controlBucketBuilder;
     private final PickupDragController dragController;
     private final EventBus eventBus = new SimpleEventBus();
+    private final ResourceLocator resourceLocator;
+    private final FormClass formClass = new FormClass(ResourceId.generateId());
 
-    public FormDesigner(FormDesignerPanel formDesignerPanel) {
+    public FormDesigner(FormDesignerPanel formDesignerPanel, ResourceLocator resourceLocator) {
+        this.resourceLocator = resourceLocator;
+
         dragController = new PickupDragController(formDesignerPanel.getContainerPanel(), false);
         dragController.setBehaviorMultipleSelection(false);
 
         controlBucketBuilder = new ControlBucketBuilder(formDesignerPanel.getControlBucket(), dragController);
         controlBucketBuilder.build();
 
-        dragController.addDragHandler(new ControlDnDHandler());
+        dragController.addDragHandler(new ControlDragHandler());
 
         DropPanelDropController widgetDropController = new DropPanelDropController(formDesignerPanel.getDropPanel(), this);
         dragController.registerDropController(widgetDropController);
@@ -54,5 +61,17 @@ public class FormDesigner {
 
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    public ResourceLocator getResourceLocator() {
+        return resourceLocator;
+    }
+
+    public PickupDragController getDragController() {
+        return dragController;
+    }
+
+    public FormClass getFormClass() {
+        return formClass;
     }
 }
