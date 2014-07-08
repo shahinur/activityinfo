@@ -53,7 +53,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
 
     private int sortOrder;
     private String listHeader;
-    private String type = FieldTypeClass.QUANTITY.name();
+    private String type = FieldTypeClass.QUANTITY.getId();
     private String expression;
     private String nameInExpression;
     private boolean calculatedAutomatically;
