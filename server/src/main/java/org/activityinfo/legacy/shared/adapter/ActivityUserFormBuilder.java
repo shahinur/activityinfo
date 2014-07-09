@@ -75,7 +75,7 @@ public class ActivityUserFormBuilder {
 
             ReferenceType type = new ReferenceType();
             type.setCardinality(group.isMultipleAllowed() ? Cardinality.MULTIPLE : Cardinality.SINGLE);
-            type.setRange(CuidAdapter.attributeGroupField(activity, group));
+            type.setRange(CuidAdapter.attributeGroupFormClass(group));
 
             FormField attributeField = new FormField(CuidAdapter.attributeGroupField(activity, group))
             .setLabel(group.getName())
