@@ -28,6 +28,9 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
+import org.activityinfo.ui.client.component.formdesigner.drop.ForwardDropController;
+import org.activityinfo.ui.client.component.formdesigner.drop.SpacerDropController;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -39,6 +42,7 @@ public class FormDesigner {
     private final EventBus eventBus = new SimpleEventBus();
     private final ResourceLocator resourceLocator;
     private final FormClass formClass = new FormClass(ResourceId.generateId());
+    private Integer insertIndex = null; // null means insert in tail
 
     public FormDesigner(FormDesignerPanel formDesignerPanel, ResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
@@ -51,8 +55,11 @@ public class FormDesigner {
 
         dragController.addDragHandler(new ControlDragHandler());
 
-        DropPanelDropController widgetDropController = new DropPanelDropController(formDesignerPanel.getDropPanel(), this);
-        dragController.registerDropController(widgetDropController);
+        ForwardDropController forwardDropController = new ForwardDropController(formDesignerPanel.getDropPanel());
+        forwardDropController.add(new DropPanelDropController(formDesignerPanel.getDropPanel(), this));
+        forwardDropController.add(new SpacerDropController(formDesignerPanel.getDropPanel(), this));
+
+        dragController.registerDropController(forwardDropController);
     }
 
     public ControlType getControlType(Widget widget) {
@@ -73,5 +80,13 @@ public class FormDesigner {
 
     public FormClass getFormClass() {
         return formClass;
+    }
+
+    public Integer getInsertIndex() {
+        return insertIndex;
+    }
+
+    public void setInsertIndex(Integer insertIndex) {
+        this.insertIndex = insertIndex;
     }
 }

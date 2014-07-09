@@ -39,6 +39,9 @@ public interface FormDesignerStyles extends Stylesheet{
     @ClassName("widget-container-selected")
     String widgetContainerSelected();
 
+    @ClassName("spacer")
+    String spacer();
+
     @ClassName("widget-panel")
     String widgetPanel();
 

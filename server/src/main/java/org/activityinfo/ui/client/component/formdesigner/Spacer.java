@@ -21,23 +21,24 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
 /**
- * @author yuriyz on 07/07/2014.
+ * @author yuriyz on 7/8/14.
  */
-public class Metrics {
+public class Spacer implements IsWidget {
 
-    public static final int SOURCE_CONTROL_INITIAL_LEFT = 20;
-    public static final int SOURCE_CONTROL_INITIAL_TOP = 5;
+    private final HTML widget = new HTML();
 
-    public static final int SOURCE_CONTROL_WIDTH_PX = 150;
-    public static final int SOURCE_CONTROL_HEIGHT_PX = 32;
-    public static final int SOURCE_CONTROL_MARGIN_RIGHT = 10;
+    public Spacer() {
+        widget.addStyleName(FormDesignerStyles.INSTANCE.spacer());
+        widget.setHeight(Metrics.SOURCE_CONTROL_HEIGHT_PX + "px");
+    }
 
-    public static final int MIN_Y_SPACER_CORRECTION = 10;
-    public static final int MAX_Y_SPACER_CORRECTION = 10;
-
-    public static final String DEFAULT_STYLE_NAME = "btn btn-primary btn-xs";
-
-    private Metrics() {
+    @Override
+    public Widget asWidget() {
+        return widget;
     }
 }

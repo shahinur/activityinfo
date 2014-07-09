@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner;
+package org.activityinfo.ui.client.component.formdesigner.drop;
 /*
  * #%L
  * ActivityInfo Server
@@ -32,12 +32,17 @@ import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
+import org.activityinfo.ui.client.component.formdesigner.ControlType;
+import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
+import org.activityinfo.ui.client.component.formdesigner.Spacer;
+import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
 
 /**
  * @author yuriyz on 07/07/2014.
  */
 public class DropPanelDropController extends AbsolutePositionDropController {
 
+    private final Spacer spacer = new Spacer();
     private FormDesigner formDesigner;
     private AbsolutePanel dropTarget;
 
@@ -49,6 +54,12 @@ public class DropPanelDropController extends AbsolutePositionDropController {
 
     @Override
     public void onPreviewDrop(DragContext context) throws VetoDragException {
+
+        int spacerIndex = dropTarget.getWidgetIndex(spacer);
+        if (spacerIndex != -1) {
+            dropTarget.remove(spacerIndex);
+        }
+
         int dropPanelHeightBeforeDrop = dropTarget.getOffsetHeight();
 
         final ValueUpdater valueUpdater = new ValueUpdater() {
@@ -72,13 +83,19 @@ public class DropPanelDropController extends AbsolutePositionDropController {
 
 
         Widget containerWidget = new WidgetContainer(formDesigner.getEventBus(), formFieldWidget, formField).asWidget();
-        dropTarget.add(containerWidget);
+        Integer insertIndex = formDesigner.getInsertIndex();
+        if (insertIndex != null) {
+            dropTarget.insert(containerWidget, insertIndex);
+        } else { // null means insert in tail
+            dropTarget.add(containerWidget);
+        }
 
         resizeDropPanel(dropPanelHeightBeforeDrop, containerWidget);
 
         // forbid drop of source control widget
         throw new VetoDragException();
     }
+
 
     private void resizeDropPanel(int dropPanelHeightBeforeDrop, Widget containerWidget) {
         // todo !!!
