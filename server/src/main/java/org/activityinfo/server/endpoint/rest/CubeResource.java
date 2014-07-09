@@ -6,6 +6,8 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.legacy.shared.command.PivotSites;
 import org.activityinfo.legacy.shared.command.result.Bucket;
+import org.activityinfo.legacy.shared.reports.model.DateDimension;
+import org.activityinfo.legacy.shared.reports.model.DateUnit;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.report.util.DateUtilCalendarImpl;
@@ -60,6 +62,9 @@ public class CubeResource {
                     break;
                 case "site":
                     pivotDimensions.add(new Dimension(DimensionType.Site));
+                    break;
+                case "month":
+                    pivotDimensions.add(new DateDimension(DateUnit.MONTH));
                     break;
                 default:
                     throw new WebApplicationException(Response
