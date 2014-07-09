@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPanel;
 
 /**
  * @author yuriyz on 07/04/2014.
@@ -48,10 +49,13 @@ public class FormDesignerPanel extends Composite {
     AbsolutePanel dropPanel;
     @UiField
     AbsolutePanel controlBucket;
+    @UiField
+    PropertiesPanel propertiesPanel;
 
     public FormDesignerPanel(final ResourceLocator resourceLocator) {
         FormDesignerStyles.INSTANCE.ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
+        propertiesPanel.setVisible(false);
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
@@ -70,5 +74,9 @@ public class FormDesignerPanel extends Composite {
 
     public AbsolutePanel getContainerPanel() {
         return containerPanel;
+    }
+
+    public PropertiesPanel getPropertiesPanel() {
+        return propertiesPanel;
     }
 }

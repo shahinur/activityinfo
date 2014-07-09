@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner.event;
+package org.activityinfo.ui.client.component.formdesigner.properties;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,13 +21,33 @@ package org.activityinfo.ui.client.component.formdesigner.event;
  * #L%
  */
 
-import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.ui.client.widget.TextBox;
 
 /**
- * @author yuriyz on 7/8/14.
+ * @author yuriyz on 7/9/14.
  */
-public class SelectionEvent extends com.google.gwt.event.logical.shared.SelectionEvent<WidgetContainer> {
-    public SelectionEvent(WidgetContainer selectedItem) {
-        super(selectedItem);
+public class PropertiesPanel extends Composite {
+
+    private static OurUiBinder uiBinder = GWT
+            .create(OurUiBinder.class);
+
+    interface OurUiBinder extends UiBinder<Widget, PropertiesPanel> {
     }
+
+    @UiField
+    TextBox label;
+
+    public PropertiesPanel() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    public TextBox getLabel() {
+        return label;
+    }
+
 }

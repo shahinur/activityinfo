@@ -3457,4 +3457,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Design form")
     String designForm();
+
+    @DefaultStringValue("Label can be simple text as well as HTML.")
+    String labelSupportsHtml();
 }

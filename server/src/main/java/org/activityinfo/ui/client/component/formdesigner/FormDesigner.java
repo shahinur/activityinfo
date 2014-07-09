@@ -31,6 +31,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
 import org.activityinfo.ui.client.component.formdesigner.drop.ForwardDropController;
 import org.activityinfo.ui.client.component.formdesigner.drop.SpacerDropController;
+import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
+import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPresenter;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -42,10 +44,13 @@ public class FormDesigner {
     private final EventBus eventBus = new SimpleEventBus();
     private final ResourceLocator resourceLocator;
     private final FormClass formClass = new FormClass(ResourceId.generateId());
+    private final PropertiesPresenter propertiesPresenter;
     private Integer insertIndex = null; // null means insert in tail
 
     public FormDesigner(FormDesignerPanel formDesignerPanel, ResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
+
+        propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel());
 
         dragController = new PickupDragController(formDesignerPanel.getContainerPanel(), false);
         dragController.setBehaviorMultipleSelection(false);
@@ -60,6 +65,16 @@ public class FormDesigner {
         forwardDropController.add(new SpacerDropController(formDesignerPanel.getDropPanel(), this));
 
         dragController.registerDropController(forwardDropController);
+        eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
+            @Override
+            public void handle(WidgetContainerSelectionEvent event) {
+                onContainerSelection(event.getSelectedItem());
+            }
+        });
+    }
+
+    private void onContainerSelection(WidgetContainer selectedItem) {
+        propertiesPresenter.show(selectedItem);
     }
 
     public ControlType getControlType(Widget widget) {

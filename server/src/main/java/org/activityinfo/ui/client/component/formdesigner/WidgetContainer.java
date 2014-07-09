@@ -25,7 +25,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -33,7 +32,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
-import org.activityinfo.ui.client.component.formdesigner.event.SelectionEvent;
+import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 
 /**
  * @author yuriyz on 7/8/14.
@@ -64,9 +63,9 @@ public class WidgetContainer {
         this.eventBus = eventBus;
         this.formFieldWidget = formFieldWidget;
         this.formField = formField;
-        this.eventBus.addHandler(SelectionEvent.getType(), new SelectionHandler<Object>() {
+        this.eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
             @Override
-            public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Object> event) {
+            public void handle(WidgetContainerSelectionEvent event) {
                 setSelected(false);
             }
         });
@@ -87,7 +86,7 @@ public class WidgetContainer {
     }
 
     private void onClick() {
-        eventBus.fireEvent(new SelectionEvent(this));
+        eventBus.fireEvent(new WidgetContainerSelectionEvent(this));
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
@@ -96,12 +95,20 @@ public class WidgetContainer {
         });
     }
 
+    public HTML getLabel() {
+        return label;
+    }
+
     public FormFieldWidget getFormFieldWidget() {
         return formFieldWidget;
     }
 
     public Widget asWidget() {
         return focusPanel;
+    }
+
+    public FormField getFormField() {
+        return formField;
     }
 
     public void setSelected(boolean selected) {

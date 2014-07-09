@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:properties="urn:import:org.activityinfo.ui.client.component.formdesigner.properties"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
@@ -20,7 +21,7 @@
             <b>Properties</b>
           </div>
           <div class="panel-body">
-            Properties content
+            <properties:PropertiesPanel ui:field="propertiesPanel"/>
           </div>
         </div>
       </g:HTMLPanel>
