@@ -21,11 +21,15 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
@@ -36,54 +40,50 @@ import org.activityinfo.ui.client.component.formdesigner.event.SelectionEvent;
  */
 public class WidgetContainer {
 
+    private static OurUiBinder uiBinder = GWT
+            .create(OurUiBinder.class);
+
+    interface OurUiBinder extends UiBinder<Widget, WidgetContainer> {
+    }
+
     private EventBus eventBus;
     private FormFieldWidget formFieldWidget;
-    private Widget containerWidget;
     private FormField formField;
 
+    @UiField
+    Button removeButton;
+    @UiField
+    FocusPanel focusPanel;
+    @UiField
+    HTML label;
+    @UiField
+    SimplePanel widgetContainer;
+
     public WidgetContainer(EventBus eventBus, FormFieldWidget formFieldWidget, FormField formField) {
+        uiBinder.createAndBindUi(this);
         this.eventBus = eventBus;
         this.formFieldWidget = formFieldWidget;
         this.formField = formField;
-        this.containerWidget = createContainerWidget();
         this.eventBus.addHandler(SelectionEvent.getType(), new SelectionHandler<Object>() {
             @Override
             public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<Object> event) {
                 setSelected(false);
             }
         });
-    }
 
-    private Widget createContainerWidget() {
-        final Button removeButton = new Button("x");
-        removeButton.setStyleName("close pull-right btn-link");
-        removeButton.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                onRemove();
-            }
-        });
-
-
-        final HorizontalPanel horizontalPanel = new HorizontalPanel();
-        horizontalPanel.setWidth("100%");
-        horizontalPanel.add(new HTML(formField.getLabel()));
-        horizontalPanel.add(formFieldWidget);
-        horizontalPanel.add(removeButton);
-
-        final FocusPanel focusPanel = new FocusPanel(horizontalPanel);
+        label.setHTML(formField.getLabel());
+        widgetContainer.add(formFieldWidget);
         focusPanel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 WidgetContainer.this.onClick();
             }
         });
-        focusPanel.addStyleName(FormDesignerStyles.INSTANCE.widgetContainer());
-        return focusPanel;
     }
 
-    private void onRemove() {
-        containerWidget.removeFromParent();
+    @UiHandler("removeButton")
+    public void onRemove(ClickEvent clickEvent) {
+        focusPanel.removeFromParent();
     }
 
     private void onClick() {
@@ -101,14 +101,14 @@ public class WidgetContainer {
     }
 
     public Widget asWidget() {
-        return containerWidget;
+        return focusPanel;
     }
 
     public void setSelected(boolean selected) {
         if (selected) {
-            containerWidget.addStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
+            focusPanel.addStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
         } else {
-            containerWidget.removeStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
+            focusPanel.removeStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
         }
     }
 }
