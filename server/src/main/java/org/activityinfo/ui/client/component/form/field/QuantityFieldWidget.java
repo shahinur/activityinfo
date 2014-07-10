@@ -1,5 +1,6 @@
 package org.activityinfo.ui.client.component.form.field;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -53,7 +54,7 @@ public class QuantityFieldWidget implements FormFieldWidget {
     @Override
     public void setType(FieldType type) {
         for (FormField formField : type.getTypeClass().getParameterFormClass().getFields()) {
-            map.get(formField.getId()).setText(formField.getLabel());
+            map.get(formField.getId()).setText(Strings.nullToEmpty(type.getParameters().getString(formField.getName())));
         }
     }
 

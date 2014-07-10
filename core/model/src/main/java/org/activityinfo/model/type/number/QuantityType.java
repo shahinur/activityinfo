@@ -39,17 +39,17 @@ public class QuantityType implements FieldType {
         }
     }
 
-    private String units;
+    private Record record = new Record();
 
     public QuantityType() {
     }
 
     public String getUnits() {
-        return units;
+        return record.getString("units");
     }
 
     public QuantityType setUnits(String units) {
-        this.units = units;
+        record.set("units", units);
         return this;
     }
 
@@ -60,7 +60,7 @@ public class QuantityType implements FieldType {
 
     @Override
     public Record getParameters() {
-        return new Record().set("units", units);
+        return record;
     }
 
     @Override

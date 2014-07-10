@@ -51,7 +51,7 @@ public class PropertyTypeViewPanel extends Composite implements PropertyTypeView
     @UiField
     HTML name;
 
-    public PropertyTypeViewPanel(WidgetContainer widgetContainer, FormField formField) {
+    public PropertyTypeViewPanel(final WidgetContainer widgetContainer, final FormField formField) {
         this.widgetContainer = widgetContainer;
         this.formField = formField;
 
@@ -61,11 +61,7 @@ public class PropertyTypeViewPanel extends Composite implements PropertyTypeView
         label.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                // todo mistake !
-                // widgetContainer.getFormField().getType(). todo what should I do here ?
-
-                // I would expect to see following line !
-                // PropertyTypeViewPanel.this.widgetContainer.getFormField().getType.setProperty(formField.getId());
+                widgetContainer.getFormField().getType().getParameters().set(formField.getName(), label.getValue());
                 syncWithModel();
             }
         });
@@ -78,7 +74,7 @@ public class PropertyTypeViewPanel extends Composite implements PropertyTypeView
 
     @Override
     public void syncWithModel() {
-        label.setValue(formField.getLabel());
+        label.setValue(widgetContainer.getFormField().getType().getParameters().getString(formField.getName()));
         name.setHTML(formField.getName());
         widgetContainer.syncWithModel();
     }
