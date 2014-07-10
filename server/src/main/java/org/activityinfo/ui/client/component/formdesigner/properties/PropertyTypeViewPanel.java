@@ -61,7 +61,11 @@ public class PropertyTypeViewPanel extends Composite implements PropertyTypeView
         label.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                PropertyTypeViewPanel.this.formField.setLabel(label.getValue());
+                // todo mistake !
+                // widgetContainer.getFormField().getType(). todo what should I do here ?
+
+                // I would expect to see following line !
+                // PropertyTypeViewPanel.this.widgetContainer.getFormField().getType.setProperty(formField.getId());
                 syncWithModel();
             }
         });
