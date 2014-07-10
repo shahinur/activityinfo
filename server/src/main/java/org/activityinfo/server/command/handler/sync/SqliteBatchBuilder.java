@@ -26,8 +26,12 @@ import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SqliteBatchBuilder {
+
+    private static final Logger LOGGER = Logger.getLogger(SqliteBatchBuilder.class.getName());
 
     private StringWriter stringWriter;
     private JsonWriter jsonWriter;
@@ -44,6 +48,11 @@ public class SqliteBatchBuilder {
         jsonWriter.name("statement");
         jsonWriter.value(sqlState);
         jsonWriter.endObject();
+
+        if(sqlState.length() > 1024) {
+            LOGGER.log(Level.WARNING, "Add statement with size " + sqlState.length() + ": " +
+                    sqlState.substring(0, 100) + "...");
+        }
     }
 
     public SqliteInsertBuilder insert() {
