@@ -51,6 +51,6 @@ public class PropertiesViewBuilder {
     }
 
     private PropertyTypeView create(FormField formField) {
-        return new PropertyTypeViewPanel(formField);
+        return new PropertyTypeViewPanel(widgetContainer, formField);
     }
 }

@@ -22,10 +22,14 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  */
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+
+import java.util.List;
 
 /**
  * @author yuriyz on 7/9/14.
@@ -33,6 +37,7 @@ import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
 public class PropertiesPresenter {
 
     private final PropertiesPanel view;
+    private final List<Widget> lastPropertyTypeViewWidgets = Lists.newArrayList();
 
     public PropertiesPresenter(PropertiesPanel view) {
         this.view = view;
@@ -42,7 +47,16 @@ public class PropertiesPresenter {
         return view;
     }
 
+    private void reset() {
+        for (Widget w : lastPropertyTypeViewWidgets) {
+            view.getPanel().remove(w);
+        }
+        lastPropertyTypeViewWidgets.clear();
+    }
+
     public void show(final WidgetContainer widgetContainer) {
+        reset();
+
         final FormField formField = widgetContainer.getFormField();
 
         view.setVisible(true);
@@ -58,7 +72,9 @@ public class PropertiesPresenter {
 
         PropertiesViewBuilder viewBuilder = new PropertiesViewBuilder(widgetContainer);
         for (PropertyTypeView propertyTypeView : viewBuilder.build()) {
-            view.getPanel().add(propertyTypeView.asWidget());
+            Widget w = propertyTypeView.asWidget();
+            lastPropertyTypeViewWidgets.add(w);
+            view.getPanel().add(w);
         }
     }
 }
