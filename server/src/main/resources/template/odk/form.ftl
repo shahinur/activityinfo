@@ -44,8 +44,13 @@
 
         <#if reportingFrequency == 0>
             <#list indicators as indicator>
-                <bind nodeset="/data/I${indicator.id?c}"
-                      type="decimal" ${indicator.mandatory?string("required=\"true()\"", "")}/>
+                <#if indicator.type.id == "FREE_TEXT">
+                    <bind nodeset="/data/I${indicator.id?c}" type="string" ${indicator.mandatory?string("required=\"true()\"", "")}/>
+                </#if>
+
+                <#if indicator.type.id == "QUANTITY">
+                    <bind nodeset="/data/I${indicator.id?c}" type="decimal" ${indicator.mandatory?string("required=\"true()\"", "")}/>
+                </#if>
             </#list>
         </#if>
 
