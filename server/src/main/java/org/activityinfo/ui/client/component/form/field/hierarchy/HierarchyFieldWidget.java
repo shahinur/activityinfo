@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 import org.activityinfo.ui.client.component.form.model.HierarchyViewModel;
 
@@ -44,6 +45,11 @@ public class HierarchyFieldWidget implements ReferenceFieldWidget {
 
     @Override
     public void setValue(Set<ResourceId> value) {
+
+    }
+
+    @Override
+    public void setType(FieldType type) {
 
     }
 
