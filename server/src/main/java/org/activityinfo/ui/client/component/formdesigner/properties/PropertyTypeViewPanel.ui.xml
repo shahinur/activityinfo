@@ -8,7 +8,7 @@
   <ui:with field="style" type="org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles"/>
 
   <g:VerticalPanel width="100%" ui:field="panel">
-    <g:HTML ui:field="name" title="{i18n.labelSupportsHtml}"/>
+    <g:HTML ui:field="name"/>
     <a:TextBox ui:field="label" width="100%"/>
   </g:VerticalPanel>
 </ui:UiBinder>

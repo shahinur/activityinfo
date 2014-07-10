@@ -82,6 +82,7 @@ public class WidgetContainer {
 
     public void syncWithModel() {
         label.setHTML(formField.getLabel());
+        formFieldWidget.setType(formField.getType());
     }
 
     @UiHandler("removeButton")

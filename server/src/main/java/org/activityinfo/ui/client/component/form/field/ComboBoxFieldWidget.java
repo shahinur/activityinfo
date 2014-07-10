@@ -30,6 +30,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.form.FormInstanceLabeler;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.ui.client.component.form.model.SimpleListViewModel;
 
 import java.util.Set;
@@ -81,6 +82,11 @@ public class ComboBoxFieldWidget implements ReferenceFieldWidget {
                 break;
             }
         }
+    }
+
+    @Override
+    public void setType(FieldType type) {
+
     }
 
     @Override
