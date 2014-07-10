@@ -70,7 +70,6 @@ public class WidgetContainer {
             }
         });
 
-        label.setHTML(formField.getLabel());
         widgetContainer.add(formFieldWidget);
         focusPanel.addClickHandler(new ClickHandler() {
             @Override
@@ -78,6 +77,11 @@ public class WidgetContainer {
                 WidgetContainer.this.onClick();
             }
         });
+        syncWithModel();
+    }
+
+    public void syncWithModel() {
+        label.setHTML(formField.getLabel());
     }
 
     @UiHandler("removeButton")

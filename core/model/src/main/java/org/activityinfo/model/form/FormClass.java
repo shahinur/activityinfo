@@ -131,7 +131,7 @@ public class FormClass implements IsResource, FormElementContainer {
     }
 
     public FormField addField(String name) {
-        FormField field = new FormField(id, name);
+        FormField field = new FormField(id, name); // todo is it bug? if we call it two times we will get form field with the same id?
         elements.add(field);
         return field;
     }

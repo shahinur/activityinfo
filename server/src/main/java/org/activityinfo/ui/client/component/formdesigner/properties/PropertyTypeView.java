@@ -21,39 +21,16 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  * #L%
  */
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.client.widget.TextBox;
+import org.activityinfo.model.form.FormField;
 
 /**
- * @author yuriyz on 7/9/14.
+ * @author yuriyz on 7/10/14.
  */
-public class PropertiesPanel extends Composite {
+public interface PropertyTypeView {
+    public FormField getFormField();
 
-    private static OurUiBinder uiBinder = GWT
-            .create(OurUiBinder.class);
+    public void syncWithModel();
 
-    interface OurUiBinder extends UiBinder<Widget, PropertiesPanel> {
-    }
-
-    @UiField
-    TextBox label;
-    @UiField
-    VerticalPanel panel;
-
-    public PropertiesPanel() {
-        initWidget(uiBinder.createAndBindUi(this));
-    }
-
-    public TextBox getLabel() {
-        return label;
-    }
-
-    public VerticalPanel getPanel() {
-        return panel;
-    }
+    public Widget asWidget();
 }

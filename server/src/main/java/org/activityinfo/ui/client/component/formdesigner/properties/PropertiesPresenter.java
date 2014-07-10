@@ -52,12 +52,13 @@ public class PropertiesPresenter {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 formField.setLabel(view.getLabel().getValue());
-                widgetContainer.getLabel().setHTML(view.getLabel().getValue());
+                widgetContainer.syncWithModel();
             }
         });
 
-//        if (formField.getType() == QuantityType.TINSTANCE) {
-            //todo
-//        }
+        PropertiesViewBuilder viewBuilder = new PropertiesViewBuilder(widgetContainer);
+        for (PropertyTypeView propertyTypeView : viewBuilder.build()) {
+            view.getPanel().add(propertyTypeView.asWidget());
+        }
     }
 }

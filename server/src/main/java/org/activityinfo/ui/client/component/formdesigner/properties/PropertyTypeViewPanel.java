@@ -22,38 +22,60 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  */
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
 import org.activityinfo.ui.client.widget.TextBox;
 
 /**
- * @author yuriyz on 7/9/14.
+ * @author yuriyz on 7/10/14.
  */
-public class PropertiesPanel extends Composite {
+public class PropertyTypeViewPanel extends Composite implements PropertyTypeView {
 
     private static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
 
-    interface OurUiBinder extends UiBinder<Widget, PropertiesPanel> {
+    interface OurUiBinder extends UiBinder<Widget, PropertyTypeViewPanel> {
     }
 
+    private final WidgetContainer widgetContainer;
+    private final FormField formField;
     @UiField
     TextBox label;
     @UiField
-    VerticalPanel panel;
+    HTML name;
 
-    public PropertiesPanel() {
+    public PropertyTypeViewPanel(WidgetContainer widgetContainer, FormField formField) {
+        this.widgetContainer = widgetContainer;
+        this.formField = formField;
+
         initWidget(uiBinder.createAndBindUi(this));
+        syncWithModel();
+
+        label.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                PropertyTypeViewPanel.this.formField.setLabel(label.getValue());
+                syncWithModel();
+            }
+        });
     }
 
-    public TextBox getLabel() {
-        return label;
+    @Override
+    public FormField getFormField() {
+        return formField;
     }
 
-    public VerticalPanel getPanel() {
-        return panel;
+    @Override
+    public void syncWithModel() {
+        label.setValue(formField.getLabel());
+        name.setHTML(formField.getName());
+        widgetContainer.syncWithModel();
     }
 }

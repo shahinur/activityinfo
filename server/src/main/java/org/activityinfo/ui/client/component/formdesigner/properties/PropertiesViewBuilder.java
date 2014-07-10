@@ -21,8 +21,36 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  * #L%
  */
 
+import com.google.common.collect.Lists;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+
+import java.util.List;
+
 /**
  * @author yuriyz on 7/9/14.
  */
 public class PropertiesViewBuilder {
+
+    private WidgetContainer widgetContainer;
+
+    public PropertiesViewBuilder(WidgetContainer widgetContainer) {
+        this.widgetContainer = widgetContainer;
+    }
+
+    public List<PropertyTypeView> build() {
+        FieldTypeClass typeClass = widgetContainer.getFormField().getType().getTypeClass();
+        final List<PropertyTypeView> result = Lists.newArrayList();
+        if (typeClass != null && typeClass.getParameterFormClass() != null) { // for some types it can be null
+            for (FormField formField : typeClass.getParameterFormClass().getFields()) {
+                result.add(create(formField));
+            }
+        }
+        return result;
+    }
+
+    private PropertyTypeView create(FormField formField) {
+        return new PropertyTypeViewPanel(formField);
+    }
 }
