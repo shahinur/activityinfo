@@ -25,6 +25,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
@@ -38,6 +39,7 @@ public class PropertiesPresenter {
 
     private final PropertiesPanel view;
     private final List<Widget> lastPropertyTypeViewWidgets = Lists.newArrayList();
+    private HandlerRegistration labelKeyUpHandler;
 
     public PropertiesPresenter(PropertiesPanel view) {
         this.view = view;
@@ -52,6 +54,10 @@ public class PropertiesPresenter {
             view.getPanel().remove(w);
         }
         lastPropertyTypeViewWidgets.clear();
+
+        if (labelKeyUpHandler != null) {
+            labelKeyUpHandler.removeHandler();
+        }
     }
 
     public void show(final WidgetContainer widgetContainer) {
@@ -61,8 +67,7 @@ public class PropertiesPresenter {
 
         view.setVisible(true);
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
-
-        view.getLabel().addKeyUpHandler(new KeyUpHandler() {
+        labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 formField.setLabel(view.getLabel().getValue());
