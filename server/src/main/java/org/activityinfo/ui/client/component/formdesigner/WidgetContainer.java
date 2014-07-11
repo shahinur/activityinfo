@@ -25,7 +25,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -45,7 +44,7 @@ public class WidgetContainer {
     interface OurUiBinder extends UiBinder<Widget, WidgetContainer> {
     }
 
-    private EventBus eventBus;
+    private FormDesigner formDesigner;
     private FormFieldWidget formFieldWidget;
     private FormField formField;
 
@@ -58,12 +57,12 @@ public class WidgetContainer {
     @UiField
     SimplePanel widgetContainer;
 
-    public WidgetContainer(EventBus eventBus, FormFieldWidget formFieldWidget, FormField formField) {
+    public WidgetContainer(FormDesigner formDesigner, FormFieldWidget formFieldWidget, FormField formField) {
         uiBinder.createAndBindUi(this);
-        this.eventBus = eventBus;
+        this.formDesigner = formDesigner;
         this.formFieldWidget = formFieldWidget;
         this.formField = formField;
-        this.eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
+        this.formDesigner.getEventBus().addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
             @Override
             public void handle(WidgetContainerSelectionEvent event) {
                 setSelected(false);
@@ -91,7 +90,7 @@ public class WidgetContainer {
     }
 
     private void onClick() {
-        eventBus.fireEvent(new WidgetContainerSelectionEvent(this));
+        formDesigner.getEventBus().fireEvent(new WidgetContainerSelectionEvent(this));
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
@@ -119,8 +118,15 @@ public class WidgetContainer {
     public void setSelected(boolean selected) {
         if (selected) {
             focusPanel.addStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
+            formDesigner.getDragController().makeDraggable(focusPanel);
         } else {
             focusPanel.removeStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
+            try {
+                formDesigner.getDragController().makeNotDraggable(focusPanel);
+            } catch (Exception e) {
+                // ignore exception, we don't want to track which panels are draggable and which are not
+                // RuntimeException: dragHandle was not draggable
+            }
         }
     }
 }

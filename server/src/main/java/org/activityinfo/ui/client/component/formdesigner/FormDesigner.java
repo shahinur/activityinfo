@@ -45,9 +45,11 @@ public class FormDesigner {
     private final ResourceLocator resourceLocator;
     private final FormClass formClass = new FormClass(ResourceId.generateId());
     private final PropertiesPresenter propertiesPresenter;
+    private final FormDesignerPanel formDesignerPanel;
     private Integer insertIndex = null; // null means insert in tail
 
     public FormDesigner(FormDesignerPanel formDesignerPanel, ResourceLocator resourceLocator) {
+        this.formDesignerPanel = formDesignerPanel;
         this.resourceLocator = resourceLocator;
 
         propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel());
@@ -81,6 +83,10 @@ public class FormDesigner {
         return controlBucketBuilder.getControlMap().inverse().get(widget);
     }
 
+    public FormDesignerPanel getFormDesignerPanel() {
+        return formDesignerPanel;
+    }
+
     public EventBus getEventBus() {
         return eventBus;
     }
@@ -104,4 +110,6 @@ public class FormDesigner {
     public void setInsertIndex(Integer insertIndex) {
         this.insertIndex = insertIndex;
     }
+
+
 }
