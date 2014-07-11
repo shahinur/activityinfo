@@ -24,10 +24,7 @@ package org.activityinfo.server.command.handler.sync;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 
 enum ColumnAppender {
 
@@ -57,6 +54,17 @@ enum ColumnAppender {
                 sb.append("NULL");
             } else {
                 sb.append(value);
+            }
+        }
+    },
+    TIMESTAMP {
+        @Override
+        void append(StringBuilder sb, ResultSet rs, int column) throws SQLException {
+            Timestamp timestamp = rs.getTimestamp(column);
+            if(rs.wasNull()) {
+                sb.append("NULL");
+            } else {
+                sb.append(Long.toString(timestamp.getTime()));
             }
         }
     },
@@ -105,6 +113,9 @@ enum ColumnAppender {
             case Types.FLOAT:
             case Types.BIGINT:
                 return ColumnAppender.REAL;
+
+            case Types.TIMESTAMP:
+                return ColumnAppender.TIMESTAMP;
 
             case Types.DATE:
                 return ColumnAppender.DATE;

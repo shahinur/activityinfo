@@ -24,6 +24,7 @@ package org.activityinfo.server.command.handler.sync;
 
 import com.google.gson.stream.JsonWriter;
 
+import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.logging.Level;
@@ -59,6 +60,16 @@ public class SqliteBatchBuilder {
         return new SqliteInsertBuilder(this);
     }
 
+    public void createTableIfNotExists(EntityManager em, String tableName) {
+        new SqliteCreateTableBuilder(this, tableName).execute(em);
+    }
+
+    public void createTablesIfNotExist(EntityManager em, String... tableNames) {
+        for(String tableName : tableNames) {
+            createTableIfNotExists(em, tableName);
+        }
+    }
+
     public String build() throws IOException {
         jsonWriter.endArray();
         jsonWriter.flush();
@@ -67,5 +78,11 @@ public class SqliteBatchBuilder {
 
     public SqliteDeleteBuilder delete() {
         return new SqliteDeleteBuilder(this);
+    }
+
+    public void clearTables(String... tables) throws IOException {
+        for(String table : tables) {
+            addStatement("DELETE FROM " + table);
+        }
     }
 }

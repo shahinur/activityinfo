@@ -62,6 +62,11 @@ public class SqliteInsertBuilder {
     }
 
     public void execute(EntityManager entityManager) {
+
+        if(tableName == null) {
+            throw new IllegalStateException("Missing target for query " + query.sql());
+        }
+
         ((HibernateEntityManager) entityManager).getSession().doWork(new Work() {
 
             @Override
