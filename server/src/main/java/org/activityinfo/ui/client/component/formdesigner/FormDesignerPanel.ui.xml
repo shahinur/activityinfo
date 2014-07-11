@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:properties="urn:import:org.activityinfo.ui.client.component.formdesigner.properties"
+             xmlns:header="urn:import:org.activityinfo.ui.client.component.formdesigner.header"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
@@ -27,7 +28,10 @@
       </g:HTMLPanel>
     </g:at>
     <g:at left='360' top='10'>
-      <g:AbsolutePanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
+      <g:HTMLPanel>
+        <header:HeaderPanel ui:field="headerPanel"/>
+        <g:AbsolutePanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
+      </g:HTMLPanel>
     </g:at>
   </g:AbsolutePanel>
 </ui:UiBinder>

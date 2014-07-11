@@ -1,10 +1,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'
              xmlns:a="urn:import:org.activityinfo.ui.client.widget"
-             xmlns:design="urn:import:org.activityinfo.ui.client.component.formdesigner"
         >
   <g:HTMLPanel>
-    <a:EditableHeader ui:field="formHeader"/>
-    <g:Label ui:field="formPanel"/>
+    <g:Label text="Under (re)construction!"/>
   </g:HTMLPanel>
 </ui:UiBinder>

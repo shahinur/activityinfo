@@ -25,7 +25,6 @@ import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -134,7 +133,7 @@ public class DropPanelDropController extends AbsolutePositionDropController {
             actualHeight = actualHeight + child.getOffsetHeight();
         }
 
-        GWT.log("panelHeight=" + panelHeight + ", actualHeight=" + actualHeight);
+        //GWT.log("panelHeight=" + panelHeight + ", actualHeight=" + actualHeight);
         if ((panelHeight - Metrics.EXPECTED_MAX_CHILD_HEIGHT) < actualHeight) {
             int height = actualHeight + Metrics.PANEL_HEIGHT_INCREASE_CORRECTION;
             dropTarget.setHeight(height + "px");

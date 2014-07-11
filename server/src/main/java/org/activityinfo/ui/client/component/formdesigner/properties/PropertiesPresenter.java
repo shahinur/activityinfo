@@ -25,10 +25,15 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
+import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
+import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
 
 import java.util.List;
 
@@ -40,9 +45,22 @@ public class PropertiesPresenter {
     private final PropertiesPanel view;
     private final List<Widget> lastPropertyTypeViewWidgets = Lists.newArrayList();
     private HandlerRegistration labelKeyUpHandler;
+    private HandlerRegistration descriptionKeyUpHandler;
 
-    public PropertiesPresenter(PropertiesPanel view) {
+    public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
         this.view = view;
+        eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
+            @Override
+            public void handle(WidgetContainerSelectionEvent event) {
+                show(event.getSelectedItem());
+            }
+        });
+        eventBus.addHandler(HeaderSelectionEvent.TYPE, new HeaderSelectionEvent.Handler() {
+            @Override
+            public void handle(HeaderSelectionEvent event) {
+                show(event.getSelectedItem());
+            }
+        });
     }
 
     public PropertiesPanel getView() {
@@ -58,9 +76,12 @@ public class PropertiesPresenter {
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
         }
+        if (descriptionKeyUpHandler != null) {
+            descriptionKeyUpHandler.removeHandler();
+        }
     }
 
-    public void show(final WidgetContainer widgetContainer) {
+    private void show(final WidgetContainer widgetContainer) {
         reset();
 
         final FormField formField = widgetContainer.getFormField();
@@ -74,6 +95,13 @@ public class PropertiesPresenter {
                 widgetContainer.syncWithModel();
             }
         });
+        descriptionKeyUpHandler = view.getDescription().addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                formField.setDescription(view.getDescription().getValue());
+                widgetContainer.syncWithModel();
+            }
+        });
 
         PropertiesViewBuilder viewBuilder = new PropertiesViewBuilder(widgetContainer);
         for (PropertyTypeView propertyTypeView : viewBuilder.build()) {
@@ -81,5 +109,30 @@ public class PropertiesPresenter {
             lastPropertyTypeViewWidgets.add(w);
             view.getPanel().add(w);
         }
+    }
+
+
+    public void show(final HeaderPresenter headerPresenter) {
+        reset();
+
+        final FormClass formClass = headerPresenter.getFormClass();
+
+        view.setVisible(true);
+        view.getLabel().setValue(Strings.nullToEmpty(formClass.getLabel()));
+        labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                formClass.setLabel(view.getLabel().getValue());
+                headerPresenter.show();
+            }
+        });
+
+        descriptionKeyUpHandler = view.getDescription().addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                formClass.setDescription(view.getDescription().getValue());
+                headerPresenter.show();
+            }
+        });
     }
 }

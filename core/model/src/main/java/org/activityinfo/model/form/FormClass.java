@@ -35,6 +35,7 @@ public class FormClass implements IsResource, FormElementContainer {
     private ResourceId ownerId;
 
     private String label;
+    private String description;
     private final List<FormElement> elements = Lists.newArrayList();
     private int cacheId;
 
@@ -102,6 +103,14 @@ public class FormClass implements IsResource, FormElementContainer {
     public FormClass setLabel(String label) {
         this.label = label;
         return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public List<FormElement> getElements() {

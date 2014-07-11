@@ -27,12 +27,13 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
 import org.activityinfo.ui.client.component.formdesigner.drop.ForwardDropController;
 import org.activityinfo.ui.client.component.formdesigner.drop.SpacerDropController;
-import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
+import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPresenter;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -43,16 +44,18 @@ public class FormDesigner {
     private final PickupDragController dragController;
     private final EventBus eventBus = new SimpleEventBus();
     private final ResourceLocator resourceLocator;
-    private final FormClass formClass = new FormClass(ResourceId.generateId());
+    private final FormClass formClass;
     private final PropertiesPresenter propertiesPresenter;
+    private final HeaderPresenter headerPresenter;
     private final FormDesignerPanel formDesignerPanel;
     private Integer insertIndex = null; // null means insert in tail
 
-    public FormDesigner(FormDesignerPanel formDesignerPanel, ResourceLocator resourceLocator) {
+    public FormDesigner(@Nonnull FormDesignerPanel formDesignerPanel, @Nonnull ResourceLocator resourceLocator, @Nonnull FormClass formClass) {
         this.formDesignerPanel = formDesignerPanel;
         this.resourceLocator = resourceLocator;
+        this.formClass = formClass;
 
-        propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel());
+        propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel(), eventBus);
 
         dragController = new PickupDragController(formDesignerPanel.getContainerPanel(), false);
         dragController.setBehaviorMultipleSelection(false);
@@ -67,16 +70,9 @@ public class FormDesigner {
         forwardDropController.add(new SpacerDropController(formDesignerPanel.getDropPanel(), this));
 
         dragController.registerDropController(forwardDropController);
-        eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
-            @Override
-            public void handle(WidgetContainerSelectionEvent event) {
-                onContainerSelection(event.getSelectedItem());
-            }
-        });
-    }
 
-    private void onContainerSelection(WidgetContainer selectedItem) {
-        propertiesPresenter.show(selectedItem);
+        headerPresenter = new HeaderPresenter(this);
+        headerPresenter.show();
     }
 
     public ControlType getControlType(Widget widget) {
@@ -110,6 +106,4 @@ public class FormDesigner {
     public void setInsertIndex(Integer insertIndex) {
         this.insertIndex = insertIndex;
     }
-
-
 }

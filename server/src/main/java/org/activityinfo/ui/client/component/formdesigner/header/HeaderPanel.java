@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner.properties;
+package org.activityinfo.ui.client.component.formdesigner.header;
 /*
  * #%L
  * ActivityInfo Server
@@ -25,42 +25,41 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.client.widget.TextArea;
-import org.activityinfo.ui.client.widget.TextBox;
 
 /**
- * @author yuriyz on 7/9/14.
+ * @author yuriyz on 7/11/14.
  */
-public class PropertiesPanel extends Composite {
+public class HeaderPanel extends Composite {
 
     private static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
+    @UiField
+    HTML label;
+    @UiField
+    FocusPanel focusPanel;
+    @UiField
+    HTML description;
 
-    interface OurUiBinder extends UiBinder<Widget, PropertiesPanel> {
+    interface OurUiBinder extends UiBinder<Widget, HeaderPanel> {
     }
 
-    @UiField
-    TextBox label;
-    @UiField
-    VerticalPanel panel;
-    @UiField
-    TextArea description;
-
-    public PropertiesPanel() {
+    public HeaderPanel() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public TextBox getLabel() {
+    public HTML getLabel() {
         return label;
     }
 
-    public VerticalPanel getPanel() {
-        return panel;
-    }
-
-    public TextArea getDescription() {
+    public HTML getDescription() {
         return description;
     }
+
+    public FocusPanel getFocusPanel() {
+        return focusPanel;
+    }
 }
+

@@ -42,11 +42,8 @@ public interface FormDesignerStyles extends Stylesheet{
     @ClassName("spacer")
     String spacer();
 
-    @ClassName("widget-panel")
-    String widgetPanel();
-
-    @ClassName("properties-panel")
-    String propertiesPanel();
+    @ClassName("header-container")
+    String headerContainer();
 
     @ClassName("main-panel")
     String mainPanel();
