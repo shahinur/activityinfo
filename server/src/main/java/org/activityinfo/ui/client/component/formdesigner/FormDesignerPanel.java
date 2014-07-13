@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPanel;
+import org.activityinfo.ui.client.component.formdesigner.palette.FieldPalette;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPanel;
 
 import javax.annotation.Nonnull;
@@ -52,11 +53,12 @@ public class FormDesignerPanel extends Composite {
     @UiField
     AbsolutePanel dropPanel;
     @UiField
-    AbsolutePanel controlBucket;
-    @UiField
     PropertiesPanel propertiesPanel;
     @UiField
     HeaderPanel headerPanel;
+
+    @UiField
+    FieldPalette fieldPalette;
 
     public FormDesignerPanel(final ResourceLocator resourceLocator, @Nonnull final FormClass formClass) {
         FormDesignerStyles.INSTANCE.ensureInjected();
@@ -74,10 +76,6 @@ public class FormDesignerPanel extends Composite {
         return dropPanel;
     }
 
-    public AbsolutePanel getControlBucket() {
-        return controlBucket;
-    }
-
     public AbsolutePanel getContainerPanel() {
         return containerPanel;
     }
@@ -89,4 +87,9 @@ public class FormDesignerPanel extends Composite {
     public HeaderPanel getHeaderPanel() {
         return headerPanel;
     }
+
+    public FieldPalette getFieldPalette() {
+        return fieldPalette;
+    }
+
 }

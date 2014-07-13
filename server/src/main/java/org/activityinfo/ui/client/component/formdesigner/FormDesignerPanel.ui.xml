@@ -3,6 +3,7 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:properties="urn:import:org.activityinfo.ui.client.component.formdesigner.properties"
              xmlns:header="urn:import:org.activityinfo.ui.client.component.formdesigner.header"
+             xmlns:palette="urn:import:org.activityinfo.ui.client.component.formdesigner.palette"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
@@ -15,7 +16,9 @@
           <div class="panel-heading">
             <b>Widgets</b>
           </div>
-          <g:AbsolutePanel addStyleNames="panel-body"  width="350px" ui:field="controlBucket"/>
+          <div class="panel-body">
+            <palette:FieldPalette ui:field="fieldPalette" width="350px"/>
+          </div>
         </div>
         <div class="panel panel-default">
           <div class="panel-heading">

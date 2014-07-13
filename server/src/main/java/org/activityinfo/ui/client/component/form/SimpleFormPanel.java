@@ -1,6 +1,8 @@
 package org.activityinfo.ui.client.component.form;
 
+import com.google.common.base.Function;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -8,27 +10,25 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.core.shared.form.*;
-import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.promise.Promise;
+import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.model.form.FormElement;
-import org.activityinfo.model.form.FormElementContainer;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormSection;
+import org.activityinfo.model.form.*;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
-import org.activityinfo.ui.client.component.form.model.FormViewModel;
 import org.activityinfo.ui.client.widget.DisplayWidget;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 /**
  * Displays a simple view of the form, where users can edit instances
  */
-public class SimpleFormPanel implements DisplayWidget<FormViewModel> {
+public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private final VerticalFieldContainer.Factory containerFactory;
     private final FormFieldWidgetFactory widgetFactory;
@@ -48,11 +48,14 @@ public class SimpleFormPanel implements DisplayWidget<FormViewModel> {
      */
     private FormInstance workingInstance;
 
-    private FormViewModel viewModel;
+    private FormClass formClass;
+    private ResourceLocator locator;
 
-    public SimpleFormPanel(VerticalFieldContainer.Factory containerFactory, FormFieldWidgetFactory widgetFactory) {
+    public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
+                           FormFieldWidgetFactory widgetFactory) {
         FormPanelStyles.INSTANCE.ensureInjected();
 
+        this.locator = locator;
         this.containerFactory = containerFactory;
         this.widgetFactory = widgetFactory;
 
@@ -66,30 +69,75 @@ public class SimpleFormPanel implements DisplayWidget<FormViewModel> {
     }
 
     @Override
-    public Promise<Void> show(FormViewModel viewModel) {
-        this.viewModel = viewModel;
+    public Promise<Void> show(final FormInstance instance) {
+        this.instance = instance;
+        return locator.getFormClass(instance.getClassId()).join(new Function<FormClass, Promise<Void>>() {
+            @Nullable
+            @Override
+            public Promise<Void> apply(@Nullable FormClass formClass) {
+                return buildForm(formClass);
+            }
+        }).join(new Function<Void, Promise<Void>>() {
+            @Nullable
+            @Override
+            public Promise<Void> apply(@Nullable Void input) {
+                return setValue(instance);
+            }
+        });
+    }
+
+    private Promise<Void> buildForm(final FormClass formClass) {
+        this.formClass = formClass;
 
         try {
-            addFormElements(viewModel.getFormClass(), 0);
-            setValue(viewModel.getInstance());
-
-            return Promise.done();
+            return createWidgets().then(new Function<Void, Void>() {
+                @Nullable
+                @Override
+                public Void apply(@Nullable Void input) {
+                    addFormElements(formClass, 0);
+                    return null;
+                }
+            });
 
         } catch(Throwable caught) {
             return Promise.rejected(caught);
         }
     }
 
-    private void setValue(FormInstance instance) {
+    private Promise<Void> createWidgets() {
+        return Promise.forEach(formClass.getFields(), new Function<FormField, Promise<Void>>() {
+            @Override
+            public Promise<Void> apply(final FormField field) {
+                return widgetFactory.createWidget(field, new ValueUpdater() {
+                    @Override
+                    public void update(Object value) {
+                        onFieldUpdated(field, value);
+                    }
+                }).then(new Function<FormFieldWidget, Void>() {
+                    @Override
+                    public Void apply(@Nullable FormFieldWidget widget) {
+                        containers.put(field.getId(), containerFactory.createContainer(field, widget));
+                        return null;
+                    }
+                });
+            }
+        });
+    }
+
+    public Promise<Void> setValue(FormInstance instance) {
         this.instance = instance;
-        this.workingInstance = viewModel.getInstance().copy();
+        this.workingInstance = instance.copy();
+
+        List<Promise<Void>> tasks = Lists.newArrayList();
 
         for(Map.Entry<ResourceId, FieldContainer> entry : containers.entrySet()) {
             FieldContainer container = entry.getValue();
             FormFieldWidget fieldWidget = container.getFieldWidget();
-            fieldWidget.setValue(workingInstance.get(entry.getKey()));
+            tasks.add(fieldWidget.setValue(workingInstance.get(entry.getKey())));
             container.setValid();
         }
+
+        return Promise.waitAll(tasks);
     }
 
     private void addFormElements(FormElementContainer container, int depth) {
@@ -98,22 +146,9 @@ public class SimpleFormPanel implements DisplayWidget<FormViewModel> {
                 panel.add(createHeader(depth, ((FormSection) element)));
                 addFormElements((FormElementContainer) element, depth + 1);
             } else if(element instanceof FormField) {
-                addField((FormField)element);
+                panel.add(containers.get(((FormField) element).getId()));
             }
         }
-    }
-
-    private void addField(final FormField field) {
-        FormTree.Node node = viewModel.getFormTree().getRootField(field.getId());
-        FormFieldWidget widget = widgetFactory.createWidget(viewModel, node, new ValueUpdater() {
-            @Override
-            public void update(Object value) {
-                onFieldUpdated(field, value);
-            }
-        });
-        FieldContainer container = containerFactory.createContainer(field, widget);
-        containers.put(field.getId(), container);
-        panel.add(container);
     }
 
     private void onFieldUpdated(FormField field, Object newValue) {

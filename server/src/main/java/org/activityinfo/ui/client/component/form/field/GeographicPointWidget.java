@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.coord.CoordinateBox;
 
 /**
@@ -81,7 +82,7 @@ public class GeographicPointWidget implements FormFieldWidget<AiLatLng> {
     }
 
     @Override
-    public void setValue(AiLatLng value) {
+    public Promise<Void> setValue(AiLatLng value) {
         if (value != null) {
             latitudeBox.setValue(value.getLat());
             longitudeBox.setValue(value.getLng());
@@ -89,6 +90,7 @@ public class GeographicPointWidget implements FormFieldWidget<AiLatLng> {
             latitudeBox.setValue(null);
             longitudeBox.setValue(null);
         }
+        return Promise.done();
     }
 
     @Override

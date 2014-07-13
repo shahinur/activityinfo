@@ -8,19 +8,19 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.LocationClassAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.ui.client.component.form.model.HierarchyViewModel;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,27 +52,27 @@ public class HierarchyTest extends CommandTestCase2 {
     @Test
     public void buildViewModelTest() {
         ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
-        FormTree tree = assertResolves(new AsyncFormTreeBuilder(resourceLocator).apply(CAMP_CLASS));
+        FormClass campForm = assertResolves(resourceLocator.getFormClass(CAMP_CLASS));
 
-        FormTree.Node adminNode = tree.getRootField(LocationClassAdapter.getAdminFieldId(CAMP_CLASS));
+        FormField adminField = campForm.getField(LocationClassAdapter.getAdminFieldId(CAMP_CLASS));
 
         Set<ResourceId> fieldValue = Collections.singleton(entity(325703));
 
-        HierarchyViewModel viewModel = (HierarchyViewModel) assertResolves(HierarchyViewModel
-                .build(resourceLocator, adminNode, fieldValue));
+        Hierarchy tree = assertResolves(Hierarchy
+                .get(resourceLocator, (ReferenceType) adminField.getType()));
 
-        prettyPrintTree(viewModel);
-        assertThat(viewModel.getTree().getRoots(), hasSize(1));
+        prettyPrintTree(tree);
+        assertThat(tree.getRoots(), hasSize(1));
 
-        createWidgets(viewModel);
+        createWidgets(tree);
 
-        Presenter presenter = new Presenter(resourceLocator, viewModel.getTree(), widgets, new ValueUpdater() {
+        Presenter presenter = new Presenter(resourceLocator, tree, widgets, new ValueUpdater() {
             @Override
             public void update(Object value) {
                 System.out.println("VALUE = " + value);
             }
         });
-        presenter.setInitialSelection(viewModel.getSelection());
+        assertResolves(presenter.setInitialSelection(fieldValue));
 
         assertThat(presenter.getSelectionLabel(CAMP_DISTRICT_CLASS), equalTo("District 5"));
 
@@ -85,7 +85,7 @@ public class HierarchyTest extends CommandTestCase2 {
         // if we change the root item, then all descendants should be cleared
         widgets.get(REGION).setSelection("South");
 
-        prettyPrintWidgets(viewModel.getTree());
+        prettyPrintWidgets(tree);
 
         assertThat(widgets.get(CAMP_DISTRICT_CLASS).selection, isEmptyOrNullString());
 
@@ -102,26 +102,25 @@ public class HierarchyTest extends CommandTestCase2 {
         }
     }
 
-    private void createWidgets(HierarchyViewModel viewModel) {
+    private void createWidgets(Hierarchy tree) {
         Map<ResourceId, MockLevelWidget> levels = new HashMap<>();
-        for(Level level : viewModel.getTree().getLevels()) {
+        for(Level level : tree.getLevels()) {
             levels.put(level.getClassId(), new MockLevelWidget(level.getLabel()));
         }
         this.widgets = levels;
     }
 
 
-    private void prettyPrintTree(HierarchyViewModel model) {
-        for(Level level : model.getTree().getRoots()) {
-            printTree(0, model, level);
+    private void prettyPrintTree(Hierarchy tree) {
+        for(Level level : tree.getRoots()) {
+            printTree(0, level);
         }
     }
 
-    private void printTree(int indent, HierarchyViewModel model, Level parent) {
-        System.out.println(Strings.repeat(" ", indent) + parent.getLabel() +
-                " = " + model.getSelection().get(parent.getClassId()));
+    private void printTree(int indent, Level parent) {
+        System.out.println(Strings.repeat(" ", indent) + parent.getLabel());
         for(Level child : parent.getChildren()) {
-            printTree(indent+1, model, child);
+            printTree(indent+1, child);
         }
     }
 

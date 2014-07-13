@@ -1,12 +1,17 @@
 package org.activityinfo.ui.client.component.form.field.hierarchy;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.promise.Promise;
 
-import java.util.*;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Models a hierarchy of choices for the user
@@ -17,11 +22,26 @@ public class Hierarchy {
     private List<Level> roots = Lists.newArrayList();
     private List<Level> levels = Lists.newArrayList();
 
-    public Hierarchy(FormTree.Node node) {
+
+    public static Promise<Hierarchy> get(final ResourceLocator resourceLocator, ReferenceType type) {
+        return Promise.map(type.getRange(), new Function<ResourceId, Promise<FormClass>>() {
+            @Override
+            public Promise<FormClass> apply(@Nullable ResourceId input) {
+                return resourceLocator.getFormClass(input);
+            }
+        }).then(new Function<List<FormClass>, Hierarchy>() {
+            @Nullable
+            @Override
+            public Hierarchy apply(@Nullable List<FormClass> input) {
+                return new Hierarchy(input);
+            }
+        });
+    }
+
+    public Hierarchy(List<FormClass> rangeFormClasses) {
 
         // Find all of the form class here
-        for(FormTree.Node child : node.getChildren()) {
-            FormClass formClass = child.getDefiningFormClass();
+        for(FormClass formClass : rangeFormClasses) {
             if(!levelMap.containsKey(formClass.getId())) {
                 levelMap.put(formClass.getId(), new Level(formClass));
             }

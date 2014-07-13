@@ -21,10 +21,13 @@ package org.activityinfo.ui.client.component.form.field;
  * #L%
  */
 
+import com.google.common.base.Function;
 import com.google.gwt.cell.client.ValueUpdater;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.core.shared.application.ApplicationProperties;
+import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
@@ -32,11 +35,10 @@ import org.activityinfo.model.type.TextType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
-import org.activityinfo.ui.client.component.form.model.FieldViewModel;
-import org.activityinfo.ui.client.component.form.model.FormViewModel;
-import org.activityinfo.ui.client.component.form.model.HierarchyViewModel;
-import org.activityinfo.ui.client.component.form.model.SimpleListViewModel;
+
+import java.util.List;
 
 /**
  * @author yuriyz on 1/28/14.
@@ -65,61 +67,64 @@ public class FormFieldWidgetFactory {
         this.resourceLocator = resourceLocator;
     }
 
-    public FormFieldWidget createWidget(FormViewModel viewModel, FormTree.Node node, ValueUpdater valueUpdater) {
-        FieldType type = node.getType();
+    public Promise<? extends FormFieldWidget> createWidget(FormField field, ValueUpdater valueUpdater) {
+        FieldType type = field.getType();
+
         if(type instanceof QuantityType) {
-            return new QuantityFieldWidget((QuantityType) type, valueUpdater);
+            return Promise.resolved(new QuantityFieldWidget((QuantityType) type, valueUpdater));
 
         } else if(type instanceof NarrativeType) {
-            return new NarrativeFieldWidget(valueUpdater);
+            return Promise.resolved(new NarrativeFieldWidget(valueUpdater));
 
         } else if(type instanceof TextType) {
-            return new TextFieldWidget(valueUpdater);
+            return Promise.resolved(new TextFieldWidget(valueUpdater));
 
         } else if(type instanceof LocalDateType) {
-            return new DateFieldWidget(valueUpdater);
+            return Promise.resolved(new DateFieldWidget(valueUpdater));
 
         } else if(type instanceof GeoPointType) {
-            return new GeographicPointWidget(valueUpdater);
+            return Promise.resolved(new GeographicPointWidget(valueUpdater));
 
         } else if(type instanceof ReferenceType) {
-            return createReferenceWidget(viewModel, node, valueUpdater);
+            if(field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
+                return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) type, valueUpdater);
+            }
+            return createReferenceWidget(field, valueUpdater);
         }
 
-        Log.error("Unexpected field type " + node.getTypeClass());
+        Log.error("Unexpected field type " + type.getTypeClass());
         throw new UnsupportedOperationException();
     }
 
-    private FormFieldWidget createReferenceWidget(FormViewModel formModel, FormTree.Node node,
-                                                  ValueUpdater valueUpdater) {
-
-        FieldViewModel fieldModel = formModel.getFieldViewModel(node.getFieldId());
-
-        if(fieldModel instanceof HierarchyViewModel) {
-            return new HierarchyFieldWidget(resourceLocator, (HierarchyViewModel) fieldModel, valueUpdater);
-
-        } else if(fieldModel instanceof SimpleListViewModel) {
-            return createSimpleListWidget((SimpleListViewModel)fieldModel, valueUpdater);
-
+    private Promise<? extends FormFieldWidget> createReferenceWidget(FormField field, ValueUpdater updater) {
+        if(field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
+            return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) field.getType(), updater);
         } else {
-            Log.error("Unknown fieldModel " + fieldModel.getClass().getSimpleName());
-            throw new IllegalArgumentException();
+            return createSimpleListWidget((ReferenceType) field.getType(), updater);
         }
     }
 
-    private FormFieldWidget createSimpleListWidget(SimpleListViewModel fieldModel, ValueUpdater valueUpdater) {
+    private Promise createSimpleListWidget(final ReferenceType type, final ValueUpdater valueUpdater) {
+        return resourceLocator
+                .queryInstances(type.getRange())
+                .then(new Function<List<FormInstance>, FormFieldWidget>() {
+                    @Override
+                    public FormFieldWidget apply(List<FormInstance> input) {
 
-        if (fieldModel.getCount() < SMALL_BALANCE_NUMBER) {
-            // Radio buttons
-            return new CheckBoxFieldWidget(fieldModel, valueUpdater);
+                        if (input.size() < SMALL_BALANCE_NUMBER) {
+                            // Radio buttons
+                            return new CheckBoxFieldWidget(type, input, valueUpdater);
 
-        } else if (fieldModel.getCount() < MEDIUM_BALANCE_NUMBER) {
-            // Dropdown list
-            return new ComboBoxFieldWidget(fieldModel, valueUpdater);
+                        } else if (input.size() < MEDIUM_BALANCE_NUMBER) {
+                            // Dropdown list
+                            return new ComboBoxFieldWidget(input, valueUpdater);
 
-        } else {
-            // Suggest box
-            return new SuggestBoxWidget(fieldModel, valueUpdater);
-        }
+                        } else {
+                            // Suggest box
+                            return new SuggestBoxWidget(input, valueUpdater);
+                        }
+                    }
+                });
     }
 }
+

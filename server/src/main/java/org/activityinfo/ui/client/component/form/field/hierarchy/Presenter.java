@@ -1,5 +1,6 @@
 package org.activityinfo.ui.client.component.form.field.hierarchy;
 
+import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Sets;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -8,14 +9,15 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.FieldCriteria;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -45,20 +47,29 @@ class Presenter {
         }
     }
 
-    public void setInitialSelection(Map<ResourceId, Projection> initialSelection) {
-        this.selection.putAll(initialSelection);
-        for(Level level : tree.getLevels()) {
-            LevelView view = widgetMap.get(level.getClassId());
-            if(level.isRoot() || hasSelection(level.getParent())) {
-                view.setEnabled(true);
-                view.setChoices(choices(level));
-            } else {
-                view.setEnabled(false);
+    public Promise<Void> setInitialSelection(Set<ResourceId> resourceIds) {
+        final InitialSelection initialSelection = new InitialSelection(tree);
+        return initialSelection.fetch(locator, resourceIds).then(new Function<Void, Void>() {
+
+            @Nullable
+            @Override
+            public Void apply(@Nullable Void input) {
+                selection.putAll(initialSelection.getSelection());
+                for(Level level : tree.getLevels()) {
+                    LevelView view = widgetMap.get(level.getClassId());
+                    if(level.isRoot() || hasSelection(level.getParent())) {
+                        view.setEnabled(true);
+                        view.setChoices(choices(level));
+                    } else {
+                        view.setEnabled(false);
+                    }
+                    if(hasSelection(level)) {
+                        view.setSelection(getSelection(level));
+                    }
+                }
+                return null;
             }
-            if(hasSelection(level)) {
-                view.setSelection(getSelection(level));
-            }
-        }
+        });
     }
 
     private void onUserSelection(Level level, Projection selectedItem) {

@@ -21,10 +21,9 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.DragController;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
-import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
@@ -40,8 +39,6 @@ import javax.annotation.Nonnull;
  */
 public class FormDesigner {
 
-    private final ControlBucketBuilder controlBucketBuilder;
-    private final PickupDragController dragController;
     private final EventBus eventBus = new SimpleEventBus();
     private final ResourceLocator resourceLocator;
     private final FormClass formClass;
@@ -57,26 +54,15 @@ public class FormDesigner {
 
         propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel(), eventBus);
 
-        dragController = new PickupDragController(formDesignerPanel.getContainerPanel(), false);
-        dragController.setBehaviorMultipleSelection(false);
-
-        controlBucketBuilder = new ControlBucketBuilder(formDesignerPanel.getControlBucket(), dragController);
-        controlBucketBuilder.build();
-
-        dragController.addDragHandler(new ControlDragHandler());
 
         ForwardDropController forwardDropController = new ForwardDropController(formDesignerPanel.getDropPanel());
         forwardDropController.add(new DropPanelDropController(formDesignerPanel.getDropPanel(), this));
         forwardDropController.add(new SpacerDropController(formDesignerPanel.getDropPanel(), this));
 
-        dragController.registerDropController(forwardDropController);
+        formDesignerPanel.getFieldPalette().registerDropController(forwardDropController);
 
         headerPresenter = new HeaderPresenter(this);
         headerPresenter.show();
-    }
-
-    public ControlType getControlType(Widget widget) {
-        return controlBucketBuilder.getControlMap().inverse().get(widget);
     }
 
     public FormDesignerPanel getFormDesignerPanel() {
@@ -91,10 +77,6 @@ public class FormDesigner {
         return resourceLocator;
     }
 
-    public PickupDragController getDragController() {
-        return dragController;
-    }
-
     public FormClass getFormClass() {
         return formClass;
     }
@@ -105,5 +87,9 @@ public class FormDesigner {
 
     public void setInsertIndex(Integer insertIndex) {
         this.insertIndex = insertIndex;
+    }
+
+    public DragController getDragController() {
+        return formDesignerPanel.getFieldPalette().getDragController();
     }
 }

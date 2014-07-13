@@ -22,10 +22,19 @@ public enum LocalDateType implements FieldType, FieldTypeClass {
         return TYPE_ID;
     }
 
+    @Override
+    public String getLabel() {
+        return "Date";
+    }
 
     @Override
     public FieldType createType(Record typeParameters) {
         // no parameters
+        return this;
+    }
+
+    @Override
+    public FieldType createType() {
         return this;
     }
 

@@ -30,11 +30,23 @@ public interface FieldTypeClass {
      */
     String getId();
 
+
+    /**
+     * @return a human readable label describing this type class
+     */
+    String getLabel();
+
     /**
      * Creates an instance of this {@code FieldTypeClass} using the parameters
      * specified by given the record.
      */
     FieldType createType(Record typeParameters);
+
+    /**
+     *
+     * @return an instance of this {@code FieldTypeClass} using default parameters
+     */
+    FieldType createType();
 
     /**
      *
@@ -57,6 +69,5 @@ public interface FieldTypeClass {
     public static final GeoPointType GEOGRAPHIC_POINT = GeoPointType.INSTANCE;
 
     public static final ReferenceType.TypeClass REFERENCE = ReferenceType.TypeClass.INSTANCE;
-
 
 }

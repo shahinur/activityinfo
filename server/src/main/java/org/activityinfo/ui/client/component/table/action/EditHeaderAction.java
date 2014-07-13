@@ -50,7 +50,7 @@ public class EditHeaderAction implements TableHeaderAction {
         final Projection selectedProjection = table.getSelectionModel().getSelectedSet().iterator().next();
         final FormDialog dialog = new FormDialog(table.getResourceLocator());
         dialog.setDialogTitle(I18N.CONSTANTS.editInstance());
-        dialog.show(selectedProjection.getRootClassId(), selectedProjection.getRootInstanceId(), new FormDialogCallback() {
+        dialog.show(selectedProjection.getRootInstanceId(), new FormDialogCallback() {
             @Override
             public void onPersisted(FormInstance instance) {
                 table.reload();

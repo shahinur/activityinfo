@@ -1,15 +1,20 @@
 package org.activityinfo.ui.client.component.form.field.hierarchy;
 
+import com.google.common.base.Function;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
-import org.activityinfo.ui.client.component.form.model.HierarchyViewModel;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -23,17 +28,17 @@ public class HierarchyFieldWidget implements ReferenceFieldWidget {
     private final Map<ResourceId, LevelView> widgets = new HashMap<>();
     private final Presenter presenter;
 
-    public HierarchyFieldWidget(ResourceLocator locator, HierarchyViewModel viewModel, ValueUpdater valueUpdater) {
+    public HierarchyFieldWidget(ResourceLocator locator, Hierarchy tree,
+                                ValueUpdater valueUpdater) {
 
         this.panel = new FlowPanel();
-        for(Level level : viewModel.getTree().getLevels()) {
+        for(Level level : tree.getLevels()) {
             LevelWidget widget = new LevelWidget(level.getLabel());
             widgets.put(level.getClassId(), widget);
             this.panel.add(widget);
         }
 
-        this.presenter = new Presenter(locator, viewModel.getTree(), widgets, valueUpdater);
-        this.presenter.setInitialSelection(viewModel.getSelection());
+        this.presenter = new Presenter(locator, tree, widgets, valueUpdater);
     }
 
     @Override
@@ -44,8 +49,8 @@ public class HierarchyFieldWidget implements ReferenceFieldWidget {
     }
 
     @Override
-    public void setValue(Set<ResourceId> value) {
-
+    public Promise<Void> setValue(Set<ResourceId> value) {
+        return presenter.setInitialSelection(value);
     }
 
     @Override
@@ -56,6 +61,26 @@ public class HierarchyFieldWidget implements ReferenceFieldWidget {
     @Override
     public Widget asWidget() {
         return panel;
+    }
+
+
+    public static Promise<HierarchyFieldWidget> create(final ResourceLocator locator,
+                                                 final ReferenceType type,
+                                                 final ValueUpdater valueUpdater) {
+
+        return Promise.map(type.getRange(), new Function<ResourceId, Promise<FormClass>>() {
+            @Nullable
+            @Override
+            public Promise<FormClass> apply(@Nullable ResourceId input) {
+                return locator.getFormClass(input);
+            }
+        }).then(new Function<List<FormClass>, HierarchyFieldWidget>() {
+            @Nullable
+            @Override
+            public HierarchyFieldWidget apply(@Nullable List<FormClass> input) {
+                return new HierarchyFieldWidget(locator, new Hierarchy(input), valueUpdater);
+            }
+        });
     }
 
 }

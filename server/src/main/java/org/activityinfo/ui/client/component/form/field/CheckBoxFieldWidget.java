@@ -29,12 +29,13 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.form.FormInstanceLabeler;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.ui.client.component.form.model.SimpleListViewModel;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.RadioButton;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
     private final List<CheckBox> controls;
     private SimpleEventBus eventBus;
 
-    public CheckBoxFieldWidget(SimpleListViewModel range, final ValueUpdater valueUpdater) {
+    public CheckBoxFieldWidget(ReferenceType type, List<FormInstance> range, final ValueUpdater valueUpdater) {
         panel = new FlowPanel();
         controls = new ArrayList<>();
 
@@ -61,8 +62,8 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
             }
         };
 
-        for (final FormInstance instance : range.getInstances()) {
-            CheckBox checkBox = createControl(instance, range.getCardinality());
+        for (final FormInstance instance : range) {
+            CheckBox checkBox = createControl(instance, type.getCardinality());
             checkBox.addValueChangeHandler(changeHandler);
             panel.add(checkBox);
             controls.add(checkBox);
@@ -99,11 +100,12 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
     }
 
     @Override
-    public void setValue(Set<ResourceId> value) {
+    public Promise<Void> setValue(Set<ResourceId> value) {
         for (CheckBox entry : controls) {
             ResourceId resourceId = ResourceId.create(entry.getFormValue());
             entry.setValue(value.contains(resourceId));
         }
+        return Promise.done();
     }
 
     @Override
