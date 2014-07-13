@@ -82,7 +82,7 @@ public class SpacerDropController extends AbsolutePositionDropController {
 
     private Integer calcSpacerIndex(int desiredDraggableY) {
 
-        List<Widget> dropPanelChilds = getDropPanelChilds();
+        List<Widget> dropPanelChilds = getDropPanelChilds(dropTarget);
         int childCount = dropPanelChilds.size();
 
         if (childCount > 0 && desiredDraggableY > 0) {
@@ -109,11 +109,11 @@ public class SpacerDropController extends AbsolutePositionDropController {
         return 0;
     }
 
-    private List<Widget> getDropPanelChilds() {
+    public static List<Widget> getDropPanelChilds(AbsolutePanel dropTarget) {
         List<Widget> widget = Lists.newArrayList();
         for (int i = 0; i < dropTarget.getWidgetCount(); i++) {
             Widget w = dropTarget.getWidget(i);
-            if (w.getStyleName().contains("dragdrop-positioner")) {
+            if (w.getStyleName().contains("dragdrop-positioner") || w.getStyleName().contains("spacer")) {
                 continue; // skip DnD positioner widgets
             }
             widget.add(w);

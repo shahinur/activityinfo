@@ -4,6 +4,7 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.ui.client.widget.TextBox;
 
 public class TextFieldWidget implements FormFieldWidget {
@@ -28,6 +29,11 @@ public class TextFieldWidget implements FormFieldWidget {
     @Override
     public void setValue(Object value) {
         box.setValue((String) value);
+    }
+
+    @Override
+    public void setType(FieldType type) {
+
     }
 
     @Override

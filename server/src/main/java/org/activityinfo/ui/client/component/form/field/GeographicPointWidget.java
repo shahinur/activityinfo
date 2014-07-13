@@ -30,6 +30,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.shared.model.AiLatLng;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.ui.client.widget.coord.CoordinateBox;
 
 /**
@@ -88,6 +89,11 @@ public class GeographicPointWidget implements FormFieldWidget<AiLatLng> {
             latitudeBox.setValue(null);
             longitudeBox.setValue(null);
         }
+    }
+
+    @Override
+    public void setType(FieldType type) {
+
     }
 
     @Override

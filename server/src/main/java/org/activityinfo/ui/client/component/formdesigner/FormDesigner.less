@@ -1,16 +1,10 @@
 @import (reference) "../../style/bootstrap/variables.less";
 @import (reference) "../../style/bootstrap/mixins.less";
 
-@form-panel-bg: @state-info-bg;
+@header-panel-bg: @panel-inner-border;
 @form-panel-text: @alert-info-text;
-@main-panel-bg: @form-panel-bg;
+@main-panel-bg: @panel-footer-bg;
 @padding: 4px;
-
-.widget-panel {
-  background-color: @form-panel-bg;
-  color: @form-panel-text;
-  padding: @padding;
-}
 
 .widget-container {
   padding: 10px;
@@ -40,12 +34,13 @@
   width: 100%;
 }
 
-.properties-panel {
-  background-color: @form-panel-bg;
-  color: @form-panel-text;
+.header-container {
+  background-color: @header-panel-bg;
 }
 
 .main-panel {
   background-color: @main-panel-bg;
   color: @form-panel-text;
+  border-color: @panel-default-border;
+  border-width: 1px;
 }

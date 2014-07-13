@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import org.activityinfo.core.shared.type.formatter.DateFormatterFactory;
+import org.activityinfo.model.type.FieldType;
 
 import java.util.Date;
 
@@ -90,6 +91,11 @@ public class DateFieldWidget implements FormFieldWidget<Date> {
     @Override
     public void setValue(Date value) {
         dateBox.setValue(value);
+    }
+
+    @Override
+    public void setType(FieldType type) {
+
     }
 
     @Override

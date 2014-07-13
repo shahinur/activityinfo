@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner;
+package org.activityinfo.ui.client.component.formdesigner.properties;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,32 +21,16 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.bedatadriven.rebar.style.client.Source;
-import com.bedatadriven.rebar.style.client.Stylesheet;
-import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.model.form.FormField;
 
 /**
- * @author yuriyz on 07/04/2014.
+ * @author yuriyz on 7/10/14.
  */
-@Source("FormDesigner.less")
-public interface FormDesignerStyles extends Stylesheet{
+public interface PropertyTypeView {
+    public FormField getFormField();
 
-    public static final FormDesignerStyles INSTANCE = GWT.create(FormDesignerStyles.class);
+    public void syncWithModel();
 
-    @ClassName("widget-container")
-    String widgetContainer();
-
-    @ClassName("widget-container-selected")
-    String widgetContainerSelected();
-
-    @ClassName("spacer")
-    String spacer();
-
-    @ClassName("header-container")
-    String headerContainer();
-
-    @ClassName("main-panel")
-    String mainPanel();
-
-
+    public Widget asWidget();
 }

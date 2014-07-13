@@ -33,6 +33,7 @@ import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.form.FormInstanceLabeler;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.ui.client.component.form.model.SimpleListViewModel;
 import org.activityinfo.ui.client.widget.RadioButton;
 
@@ -103,6 +104,11 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
             ResourceId resourceId = ResourceId.create(entry.getFormValue());
             entry.setValue(value.contains(resourceId));
         }
+    }
+
+    @Override
+    public void setType(FieldType type) {
+
     }
 
     @Override

@@ -22,6 +22,7 @@ package org.activityinfo.ui.client.component.form.field;
  */
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.activityinfo.model.type.FieldType;
 
 /**
  * @author yuriyz on 2/6/14.
@@ -31,5 +32,7 @@ public interface FormFieldWidget<T> extends IsWidget {
     public void setReadOnly(boolean readOnly);
 
     public void setValue(T value);
+
+    public void setType(FieldType type);
 
 }

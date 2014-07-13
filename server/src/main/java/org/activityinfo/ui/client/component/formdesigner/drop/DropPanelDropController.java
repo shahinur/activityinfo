@@ -25,6 +25,8 @@ import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
@@ -32,10 +34,7 @@ import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
-import org.activityinfo.ui.client.component.formdesigner.ControlType;
-import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
-import org.activityinfo.ui.client.component.formdesigner.Spacer;
-import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.*;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -70,6 +69,9 @@ public class DropPanelDropController extends AbsolutePositionDropController {
         };
 
         ControlType controlType = formDesigner.getControlType(context.draggable);
+        if (controlType == null) {
+            draggingExistingWidgetContainer(context);
+        }
 
         final FormField formField = new FormField(ResourceId.generateId());
         formField.setLabel(controlType.getLabel());
@@ -82,7 +84,7 @@ public class DropPanelDropController extends AbsolutePositionDropController {
         FormFieldWidget formFieldWidget = new FormFieldWidgetFactory(formDesigner.getResourceLocator()).createWidget(null, node, valueUpdater);
 
 
-        Widget containerWidget = new WidgetContainer(formDesigner.getEventBus(), formFieldWidget, formField).asWidget();
+        Widget containerWidget = new WidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
         Integer insertIndex = formDesigner.getInsertIndex();
         if (insertIndex != null) {
             dropTarget.insert(containerWidget, insertIndex);
@@ -90,14 +92,54 @@ public class DropPanelDropController extends AbsolutePositionDropController {
             dropTarget.add(containerWidget);
         }
 
-        resizeDropPanel(dropPanelHeightBeforeDrop, containerWidget);
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                resizeDropPanel();
+            }
+        });
 
         // forbid drop of source control widget
         throw new VetoDragException();
     }
 
+    private void draggingExistingWidgetContainer(final DragContext context) throws VetoDragException {
 
-    private void resizeDropPanel(int dropPanelHeightBeforeDrop, Widget containerWidget) {
-        // todo !!!
+        final Integer insertIndex = formDesigner.getInsertIndex();
+        final Widget draggable = context.draggable;
+        if (insertIndex != null) {
+            dropTarget.insert(draggable, insertIndex);
+        } else { // null means insert in tail
+            dropTarget.add(draggable);
+        }
+
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                // avoid widgets overlap
+                draggable.getElement().getStyle().setPosition(Style.Position.RELATIVE);
+                draggable.getElement().getStyle().setTop(0, Style.Unit.PX);
+                formDesigner.getDragController().makeNotDraggable(draggable);
+            }
+        });
+        throw new VetoDragException();
+    }
+
+
+    private void resizeDropPanel() {
+        int panelHeight = dropTarget.getOffsetHeight();
+        int actualHeight = 0;
+        for (Widget child : SpacerDropController.getDropPanelChilds(dropTarget)) {
+            actualHeight = actualHeight + child.getOffsetHeight();
+        }
+
+        //GWT.log("panelHeight=" + panelHeight + ", actualHeight=" + actualHeight);
+        if ((panelHeight - Metrics.EXPECTED_MAX_CHILD_HEIGHT) < actualHeight) {
+            int height = actualHeight + Metrics.PANEL_HEIGHT_INCREASE_CORRECTION;
+            dropTarget.setHeight(height + "px");
+
+            // increase also height of container panel
+            formDesigner.getFormDesignerPanel().getContainerPanel().setHeight((height + Metrics.HEIGHT_DIFF_BETWEEN_DROPPANEL_AND_CONTAINER_ABSOLUTE_PANEL) + "px");
+        }
     }
 }

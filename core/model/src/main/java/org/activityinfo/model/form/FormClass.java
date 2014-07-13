@@ -35,6 +35,7 @@ public class FormClass implements IsResource, FormElementContainer {
     private ResourceId ownerId;
 
     private String label;
+    private String description;
     private final List<FormElement> elements = Lists.newArrayList();
     private int cacheId;
 
@@ -104,6 +105,14 @@ public class FormClass implements IsResource, FormElementContainer {
         return this;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public List<FormElement> getElements() {
         return elements;
     }
@@ -131,7 +140,7 @@ public class FormClass implements IsResource, FormElementContainer {
     }
 
     public FormField addField(String name) {
-        FormField field = new FormField(id, name);
+        FormField field = new FormField(id, name); // todo is it bug? if we call it two times we will get form field with the same id?
         elements.add(field);
         return field;
     }
