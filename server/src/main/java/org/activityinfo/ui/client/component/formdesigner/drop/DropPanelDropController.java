@@ -24,6 +24,7 @@ package org.activityinfo.ui.client.component.formdesigner.drop;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
+import com.google.common.base.Function;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.Widget;
@@ -34,6 +35,8 @@ import org.activityinfo.ui.client.component.formdesigner.Spacer;
 import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldLabel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldTemplate;
+
+import javax.annotation.Nullable;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -58,7 +61,7 @@ public class DropPanelDropController extends AbsolutePositionDropController {
             dropTarget.remove(spacerIndex);
         }
 
-        if(context.draggable instanceof FieldLabel) {
+        if (context.draggable instanceof FieldLabel) {
             previewDropNewWidget(((FieldLabel) context.draggable).getFieldTemplate());
 
         } else {
@@ -68,20 +71,24 @@ public class DropPanelDropController extends AbsolutePositionDropController {
 
     private void previewDropNewWidget(FieldTemplate fieldTemplate) throws VetoDragException {
         final FormField formField = fieldTemplate.createField();
+        formDesigner.getFormClass().insertElement(formDesigner.getInsertIndex(), formField);
 
-        // todo reference support
-        FormFieldWidget formFieldWidget = formDesigner.getFormFieldWidgetFactory()
-                .createWidget(formField, NullValueUpdater.INSTANCE)
-                .get();
+        formDesigner.getFormFieldWidgetFactory()
+                .createWidget(formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
+            @Nullable
+            @Override
+            public Void apply(@Nullable FormFieldWidget formFieldWidget) {
+                Widget containerWidget = new WidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
+                Integer insertIndex = formDesigner.getInsertIndex();
+                if (insertIndex != null) {
+                    dropTarget.insert(containerWidget, insertIndex);
+                } else { // null means insert in tail
+                    dropTarget.add(containerWidget);
+                }
+                return null;
+            }
+        });
 
-
-        Widget containerWidget = new WidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
-        Integer insertIndex = formDesigner.getInsertIndex();
-        if (insertIndex != null) {
-            dropTarget.insert(containerWidget, insertIndex);
-        } else { // null means insert in tail
-            dropTarget.add(containerWidget);
-        }
 
         // forbid drop of source control widget
         throw new VetoDragException();

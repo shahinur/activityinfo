@@ -148,6 +148,11 @@ public class FormClass implements IsResource, FormElementContainer {
         return this;
     }
 
+    public FormClass insertElement(int index, FormElement element) {
+        elements.add(index, element);
+        return this;
+    }
+
     public FormField addField(String name) {
         FormField field = new FormField(id, name); // todo is it bug? if we call it two times we will get form field with the same id?
         elements.add(field);

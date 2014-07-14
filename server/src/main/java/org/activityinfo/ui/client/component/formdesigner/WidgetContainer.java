@@ -95,6 +95,7 @@ public class WidgetContainer {
 
     @UiHandler("removeButton")
     public void onRemove(ClickEvent clickEvent) {
+        formDesigner.getFormClass().getElements().remove(formField);
         focusPanel.removeFromParent();
     }
 
