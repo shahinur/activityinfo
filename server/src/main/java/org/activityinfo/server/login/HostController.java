@@ -56,7 +56,8 @@ public class HostController {
     @GET @Produces(MediaType.TEXT_HTML) @LogException(emailAlert = true)
     public Response getHostPage(@Context UriInfo uri,
                                 @Context HttpServletRequest req,
-                                @QueryParam("redirect") boolean redirect) throws Exception {
+                                @QueryParam("redirect") boolean redirect,
+                                @QueryParam("ui") String ui) throws Exception {
 
         if (!authProvider.isAuthenticated()) {
             // Otherwise, go to the default ActivityInfo root page
@@ -74,6 +75,12 @@ public class HostController {
 
         HostPageModel model = new HostPageModel(appUri);
         model.setAppCacheEnabled(checkAppCacheEnabled(req));
+
+        // NEW UI!!
+        if("new".equals(ui)) {
+            model.setAppCacheEnabled(false);
+            model.setNewUI(true);
+        }
 
         return Response.ok(model.asViewable())
                        .type(MediaType.TEXT_HTML)

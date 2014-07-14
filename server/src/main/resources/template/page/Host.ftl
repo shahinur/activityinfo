@@ -19,7 +19,7 @@
  <http://www.gnu.org/licenses/gpl-3.0.html>.
  #L%
 -->
-<#-- @ftlvariable name="" type="org.activityinfo.server.bootstrap.model.HostPageModel" -->
+<#-- @ftlvariable name="" type="org.activityinfo.server.login.model.HostPageModel" -->
 <!DOCTYPE html>
 <#if appCacheEnabled>
 <html manifest="ActivityInfo/ActivityInfo.appcache">
@@ -33,6 +33,10 @@
     <meta name="application-url" content="${appUrl}"/>
     <meta http-equiv="X-UA-Compatible" content="IE=10">
 
+    <#if newUI>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    </#if>
+
     <link rel="icon" href="ActivityInfo/desktopicons/16x16.png" sizes="16x16"/>
     <link rel="icon" href="ActivityInfo/desktopicons/32x32.png" sizes="32x32"/>
     <link rel="icon" href="ActivityInfo/desktopicons/48x48.png" sizes="48x48"/>
@@ -40,6 +44,8 @@
     <link rel="icon" href="ActivityInfo/desktopicons/128x128.png" sizes="128x128"/>
 
     <title>${domain.title}</title>
+
+    <#if !newUI>
     <style type="text/css">
         #loading-box {
             position: absolute;
@@ -79,6 +85,7 @@
         }
         <#include "Application.css">
     </style>
+    </#if>
     <script type="text/javascript">
         if (document.cookie.indexOf('authToken=') == -1 ||
                 document.cookie.indexOf('userId') == -1 ||
@@ -93,7 +100,11 @@
         };
     </script>
 
-    <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
+    <#if newUI>
+        <script type="text/javascript" language="javascript" src="AI/AI.nocache.js"></script>
+    <#else>
+        <script type="text/javascript" language="javascript" src="ActivityInfo/ActivityInfo.nocache.js"></script>
+    </#if>
     <script type="text/javascript">
 
 
@@ -113,7 +124,8 @@
     </script>
 </head>
 <body role="application">
-<iframe id="__printingFrame" style="width:0;height:0;border:0"></iframe>
+
+<#if !newUI>
 <div id="loading">
     <div id="loading-box">
         <div class="loading-indicator">
@@ -124,11 +136,23 @@
         </div>
     </div>
 </div>
+</#if>
+
+<#if newUI>
+    <section id="root">
+
+    </section>
+</#if>
+
 <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
         style="position:absolute;width:0;height:0;border:0"></iframe>
 <iframe src="javascript:''" id="_downloadFrame" name="_downloadFrame" tabIndex='-1'
         style="position:absolute;width:0;height:0;border:0"></iframe>
+<iframe id="__printingFrame" style="position:absolute;width:0;height:0;border:0"></iframe>
+
 <script type="text/javascript">
     var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
     document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
+</body>
+</html>

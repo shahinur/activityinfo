@@ -28,5 +28,6 @@
   <inherits name="com.bedatadriven.rebar.appcache.AppCacheLinker"/>
     <inherits name="com.bedatadriven.rebar.style.Style"/>
   <inherits name="org.activityinfo.legacy.Legacy"/>
+  <inherits name="com.extjs.gxt.ui.GXTAssets"/>
 
 </module>
