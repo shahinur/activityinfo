@@ -4,6 +4,7 @@
              xmlns:properties="urn:import:org.activityinfo.ui.client.component.formdesigner.properties"
              xmlns:header="urn:import:org.activityinfo.ui.client.component.formdesigner.header"
              xmlns:palette="urn:import:org.activityinfo.ui.client.component.formdesigner.palette"
+             xmlns:drop="urn:import:org.activityinfo.ui.client.component.formdesigner.drop"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
@@ -33,7 +34,7 @@
     <g:at left='360' top='10'>
       <g:HTMLPanel>
         <header:HeaderPanel ui:field="headerPanel"/>
-        <g:AbsolutePanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
+        <drop:DropTargetPanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
       </g:HTMLPanel>
     </g:at>
   </g:AbsolutePanel>
