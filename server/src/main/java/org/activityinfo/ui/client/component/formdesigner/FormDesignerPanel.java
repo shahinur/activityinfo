@@ -21,6 +21,7 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import com.google.common.base.Function;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -29,12 +30,16 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.*;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
+import org.activityinfo.ui.client.component.formdesigner.drop.DropTargetPanel;
+import org.activityinfo.ui.client.component.formdesigner.drop.NullValueUpdater;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPanel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldPalette;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPanel;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author yuriyz on 07/04/2014.
@@ -51,12 +56,11 @@ public class FormDesignerPanel extends Composite {
     @UiField
     AbsolutePanel containerPanel;
     @UiField
-    AbsolutePanel dropPanel;
+    DropTargetPanel dropPanel;
     @UiField
     PropertiesPanel propertiesPanel;
     @UiField
     HeaderPanel headerPanel;
-
     @UiField
     FieldPalette fieldPalette;
 
@@ -67,12 +71,26 @@ public class FormDesignerPanel extends Composite {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                new FormDesigner(FormDesignerPanel.this, resourceLocator, formClass);
+                FormDesigner formDesigner = new FormDesigner(FormDesignerPanel.this, resourceLocator, formClass);
+                render(formDesigner);
             }
         });
     }
 
-    public AbsolutePanel getDropPanel() {
+    private void render(final FormDesigner formDesigner) {
+        for (final FormField formField : formDesigner.getFormClass().getFields()) {
+            formDesigner.getFormFieldWidgetFactory().createWidget(formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
+                @Override
+                public Void apply(@Nullable FormFieldWidget widget) {
+                    Widget containerWidget = new WidgetContainer(formDesigner, widget, formField).asWidget();
+                    dropPanel.add(containerWidget);
+                    return null;
+                }
+            });
+        }
+    }
+
+    public DropTargetPanel getDropPanel() {
         return dropPanel;
     }
 

@@ -4,6 +4,7 @@
              xmlns:properties="urn:import:org.activityinfo.ui.client.component.formdesigner.properties"
              xmlns:header="urn:import:org.activityinfo.ui.client.component.formdesigner.header"
              xmlns:palette="urn:import:org.activityinfo.ui.client.component.formdesigner.palette"
+             xmlns:drop="urn:import:org.activityinfo.ui.client.component.formdesigner.drop"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
@@ -14,7 +15,7 @@
       <g:HTMLPanel width="350px" height="100%">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b>Widgets</b>
+            <b><ui:text from='{i18n.widgets}'/></b>
           </div>
           <div class="panel-body">
             <palette:FieldPalette ui:field="fieldPalette" width="350px"/>
@@ -22,7 +23,7 @@
         </div>
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b>Properties</b>
+            <b><ui:text from='{i18n.properties}'/></b>
           </div>
           <div class="panel-body">
             <properties:PropertiesPanel ui:field="propertiesPanel"/>
@@ -33,7 +34,7 @@
     <g:at left='360' top='10'>
       <g:HTMLPanel>
         <header:HeaderPanel ui:field="headerPanel"/>
-        <g:AbsolutePanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
+        <drop:DropTargetPanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
       </g:HTMLPanel>
     </g:at>
   </g:AbsolutePanel>

@@ -3458,4 +3458,9 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Design form")
     String designForm();
 
+    @DefaultStringValue("Widgets")
+    String widgets();
+
+    @DefaultStringValue("Properties")
+    String properties();
 }

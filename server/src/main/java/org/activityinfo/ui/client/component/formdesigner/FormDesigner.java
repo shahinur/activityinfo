@@ -26,6 +26,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
 import org.activityinfo.ui.client.component.formdesigner.drop.ForwardDropController;
 import org.activityinfo.ui.client.component.formdesigner.drop.SpacerDropController;
@@ -45,6 +46,7 @@ public class FormDesigner {
     private final PropertiesPresenter propertiesPresenter;
     private final HeaderPresenter headerPresenter;
     private final FormDesignerPanel formDesignerPanel;
+    private final FormFieldWidgetFactory formFieldWidgetFactory;
     private Integer insertIndex = null; // null means insert in tail
 
     public FormDesigner(@Nonnull FormDesignerPanel formDesignerPanel, @Nonnull ResourceLocator resourceLocator, @Nonnull FormClass formClass) {
@@ -54,6 +56,9 @@ public class FormDesigner {
 
         propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel(), eventBus);
 
+        formFieldWidgetFactory = new FormFieldWidgetFactory(resourceLocator);
+
+        formDesignerPanel.getDropPanel().setFormDesigner(this);
 
         ForwardDropController forwardDropController = new ForwardDropController(formDesignerPanel.getDropPanel());
         forwardDropController.add(new DropPanelDropController(formDesignerPanel.getDropPanel(), this));
@@ -87,6 +92,10 @@ public class FormDesigner {
 
     public void setInsertIndex(Integer insertIndex) {
         this.insertIndex = insertIndex;
+    }
+
+    public FormFieldWidgetFactory getFormFieldWidgetFactory() {
+        return formFieldWidgetFactory;
     }
 
     public DragController getDragController() {

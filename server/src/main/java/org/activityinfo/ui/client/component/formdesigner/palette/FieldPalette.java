@@ -61,7 +61,7 @@ public class FieldPalette implements IsWidget {
             panel.add(draggableLabel, calculateLeft(column), calculateTop(row));
         }
 
-        int rowCount = templates.size() / NUM_COLUMNS;
+        int rowCount = Math.round((float) templates.size() / NUM_COLUMNS);
 
         panel.setHeight(calculateTop(rowCount) + "px");
     }

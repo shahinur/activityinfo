@@ -87,6 +87,25 @@ public class FormClass implements IsResource, FormElementContainer {
         return null;
     }
 
+    public void traverse(FormElementContainer element, TraverseFunction traverseFunction) {
+        for (FormElement elem : Lists.newArrayList(element.getElements())) {
+            traverseFunction.apply(elem, element);
+            if (elem instanceof FormElementContainer) {
+                traverse((FormElementContainer) elem, traverseFunction);
+            }
+        }
+    }
+
+    public void remove(final FormElement formElement) {
+        traverse(this, new TraverseFunction() {
+            @Override
+            public void apply(FormElement element, FormElementContainer container) {
+                if (element.equals(formElement)) {
+                    container.getElements().remove(formElement);
+                }
+            }
+        });
+    }
 
     public ResourceId getId() {
         return id;
@@ -145,6 +164,11 @@ public class FormClass implements IsResource, FormElementContainer {
 
     public FormClass addElement(FormElement element) {
         elements.add(element);
+        return this;
+    }
+
+    public FormClass insertElement(int index, FormElement element) {
+        elements.add(index, element);
         return this;
     }
 
