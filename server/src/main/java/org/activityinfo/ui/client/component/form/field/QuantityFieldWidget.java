@@ -47,7 +47,7 @@ public class QuantityFieldWidget implements FormFieldWidget {
 
     @Override
     public void setType(FieldType type) {
-        unitsLabel.setText(unitsLabel.getText());
+        unitsLabel.setText(((QuantityType) type).getUnits());
     }
 
     @Override
