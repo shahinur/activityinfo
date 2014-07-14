@@ -65,6 +65,8 @@ public class ConverterFactory {
             return stringToQuantityFormatter;
         } else if(fieldType == FieldTypeClass.LOCAL_DATE) {
             return StringToDateConverter.INSTANCE;
+        } else if(fieldType == FieldTypeClass.FREE_TEXT) {
+            return NullConverter.INSTANCE;
         }
         throw new UnsupportedOperationException(fieldType.getId());
     }
