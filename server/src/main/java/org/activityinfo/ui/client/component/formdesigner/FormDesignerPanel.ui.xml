@@ -14,7 +14,7 @@
       <g:HTMLPanel width="350px" height="100%">
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b>Widgets</b>
+            <b><ui:text from='{i18n.widgets}'/></b>
           </div>
           <div class="panel-body">
             <palette:FieldPalette ui:field="fieldPalette" width="350px"/>
@@ -22,7 +22,7 @@
         </div>
         <div class="panel panel-default">
           <div class="panel-heading">
-            <b>Properties</b>
+            <b><ui:text from='{i18n.properties}'/></b>
           </div>
           <div class="panel-body">
             <properties:PropertiesPanel ui:field="propertiesPanel"/>
