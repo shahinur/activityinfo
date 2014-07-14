@@ -21,6 +21,7 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -88,7 +89,7 @@ public class WidgetContainer {
     }
 
     public void syncWithModel() {
-        label.setHTML(SafeHtmlUtils.fromString(formField.getLabel()));
+        label.setHTML(SafeHtmlUtils.fromString(Strings.nullToEmpty(formField.getLabel())));
         formFieldWidget.setType(formField.getType());
     }
 

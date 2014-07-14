@@ -21,6 +21,7 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  * #L%
  */
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
@@ -76,7 +77,7 @@ public class PropertyTypeViewPanel extends Composite implements PropertyTypeView
     @Override
     public void syncWithModel() {
         label.setValue(widgetContainer.getFormField().getType().getParameters().getString(formField.getName()));
-        name.setHTML(SafeHtmlUtils.fromString(formField.getName()));
+        name.setHTML(SafeHtmlUtils.fromString(Strings.nullToEmpty(formField.getName())));
         widgetContainer.syncWithModel();
     }
 }

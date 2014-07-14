@@ -21,6 +21,7 @@ package org.activityinfo.ui.client.component.formdesigner.header;
  * #L%
  */
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -64,8 +65,8 @@ public class HeaderPresenter {
     }
 
     public void show() {
-        headerPanel.getLabel().setHTML(SafeHtmlUtils.fromString(formDesigner.getFormClass().getLabel()));
-        headerPanel.getDescription().setHTML(SafeHtmlUtils.fromString(formDesigner.getFormClass().getDescription()));
+        headerPanel.getLabel().setHTML(SafeHtmlUtils.fromString(Strings.nullToEmpty(formDesigner.getFormClass().getLabel())));
+        headerPanel.getDescription().setHTML(SafeHtmlUtils.fromString(Strings.nullToEmpty(formDesigner.getFormClass().getDescription())));
     }
 
     private void onClick() {
