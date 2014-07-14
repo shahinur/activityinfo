@@ -46,10 +46,12 @@
             <#list indicators as indicator>
                 <#if indicator.type.id == "FREE_TEXT">
                     <bind nodeset="/data/I${indicator.id?c}" type="string" ${indicator.mandatory?string("required=\"true()\"", "")}/>
-                </#if>
-
-                <#if indicator.type.id == "QUANTITY">
+                <#elseif indicator.type.id == "QUANTITY">
                     <bind nodeset="/data/I${indicator.id?c}" type="decimal" ${indicator.mandatory?string("required=\"true()\"", "")}/>
+                <#elseif indicator.type.id == "NARRATIVE">
+                    <bind nodeset="/data/I${indicator.id?c}" type="string" ${indicator.mandatory?string("required=\"true()\"", "")}/>
+                <#else>
+                    <bind nodeset="/data/I${indicator.id?c}" type="string" ${indicator.mandatory?string("required=\"true()\"", "")}/>
                 </#if>
             </#list>
         </#if>
