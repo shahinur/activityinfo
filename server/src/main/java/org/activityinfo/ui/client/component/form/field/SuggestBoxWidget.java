@@ -27,16 +27,17 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.form.FormInstanceLabeler;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.suggest.InstanceSuggestOracle;
 import org.activityinfo.ui.client.component.form.field.suggest.InstanceSuggestion;
-import org.activityinfo.ui.client.component.form.model.SimpleListViewModel;
 import org.activityinfo.ui.client.widget.SuggestBox;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -48,9 +49,9 @@ public class SuggestBoxWidget implements ReferenceFieldWidget {
     private final SuggestBox suggestBox;
 
     private ResourceId value;
-    private SimpleListViewModel range;
+    private List<FormInstance> range;
 
-    public SuggestBoxWidget(SimpleListViewModel range, final ValueUpdater valueUpdater) {
+    public SuggestBoxWidget(List<FormInstance> range, final ValueUpdater valueUpdater) {
         this.range = range;
         this.suggestBox = new SuggestBox(new InstanceSuggestOracle(range));
         this.suggestBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
@@ -70,7 +71,7 @@ public class SuggestBoxWidget implements ReferenceFieldWidget {
     }
 
     @Override
-    public void setValue(Set<ResourceId> value) {
+    public Promise<Void> setValue(Set<ResourceId> value) {
         ResourceId newValue = Iterables.getFirst(value, null);
         if(!Objects.equals(newValue, this.value)) {
             this.value = newValue;
@@ -80,6 +81,7 @@ public class SuggestBoxWidget implements ReferenceFieldWidget {
                 suggestBox.setValue(findDisplayLabel(newValue));
             }
         }
+        return Promise.done();
     }
 
     @Override
@@ -88,7 +90,7 @@ public class SuggestBoxWidget implements ReferenceFieldWidget {
     }
 
     private String findDisplayLabel(ResourceId newValue) {
-        for(FormInstance instance : range.getInstances()) {
+        for(FormInstance instance : range) {
             if(instance.getId().equals(newValue)) {
                 return FormInstanceLabeler.getLabel(instance);
             }

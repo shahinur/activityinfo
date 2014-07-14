@@ -25,16 +25,18 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
-import org.activityinfo.ui.client.component.form.model.FormViewModel;
-import org.activityinfo.ui.client.component.form.model.FormViewModelProvider;
 import org.activityinfo.ui.client.style.ModalStylesheet;
 import org.activityinfo.ui.client.widget.LoadingPanel;
 import org.activityinfo.ui.client.widget.ModalDialog;
 import org.activityinfo.ui.client.widget.loading.ExceptionOracle;
 import org.activityinfo.ui.client.widget.loading.PageLoadingPanel;
+
+import javax.inject.Provider;
 
 /**
  * @author yuriyz on 3/28/14.
@@ -47,7 +49,7 @@ public class FormDialog {
 
     private final ModalDialog dialog;
     private final SimpleFormPanel formPanel;
-    private final LoadingPanel<FormViewModel> loadingPanel;
+    private final LoadingPanel<FormInstance> loadingPanel;
 
     public FormDialog(ResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
@@ -56,6 +58,7 @@ public class FormDialog {
 
 
         formPanel = new SimpleFormPanel(
+                resourceLocator,
                 new VerticalFieldContainer.Factory(),
                 new FormFieldWidgetFactory(resourceLocator));
 
@@ -77,9 +80,15 @@ public class FormDialog {
         dialog.setDialogTitle(text);
     }
 
-    public void show(final ResourceId classId, final ResourceId instanceId, FormDialogCallback callback) {
+    public void show(final ResourceId instanceId, FormDialogCallback callback) {
         this.callback = callback;
-        loadingPanel.show(new FormViewModelProvider(resourceLocator, classId, instanceId));
+        loadingPanel.show(new Provider<Promise<FormInstance>>() {
+
+            @Override
+            public Promise<FormInstance> get() {
+                return resourceLocator.getFormInstance(instanceId);
+            }
+        });
         dialog.show();
     }
 

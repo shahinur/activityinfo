@@ -22,9 +22,20 @@ public class QuantityType implements FieldType {
             }
 
             @Override
+            public String getLabel() {
+                return "Quantity";
+            }
+
+            @Override
             public QuantityType createType(Record typeParameters) {
                 return new QuantityType()
                         .setUnits(typeParameters.getString("units"));
+            }
+
+            @Override
+            public FieldType createType() {
+                return new QuantityType()
+                        .setUnits("households");
             }
 
             @Override
@@ -64,7 +75,7 @@ public class QuantityType implements FieldType {
     }
 
     @Override
-    public ComponentReader getStringReader(String fieldName, String componentId) {
+    public ComponentReader<String> getStringReader(String fieldName, String componentId) {
         throw new UnsupportedOperationException();
     }
 

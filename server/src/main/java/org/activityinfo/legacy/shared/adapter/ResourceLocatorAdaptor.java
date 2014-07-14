@@ -4,16 +4,16 @@ import com.google.common.collect.Lists;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.QueryResult;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.criteria.ClassCriteria;
-import org.activityinfo.model.resource.IsResource;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
+import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.criteria.IdCriteria;
-import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.promise.Promise;
 
 import java.util.Collection;
 import java.util.List;
@@ -88,7 +88,7 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     }
 
     @Override
-    public Promise queryInstances(Set<ResourceId> formClassIds) {
+    public Promise<List<FormInstance>> queryInstances(Set<ResourceId> formClassIds) {
         return queryInstances(ClassCriteria.union(formClassIds));
     }
 }

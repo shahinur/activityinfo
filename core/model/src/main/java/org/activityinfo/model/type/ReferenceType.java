@@ -24,11 +24,23 @@ public class ReferenceType implements FieldType {
             }
 
             @Override
+            public String getLabel() {
+                return "Reference";
+            }
+
+            @Override
             public FieldType createType(Record parameters) {
                 ReferenceType type = new ReferenceType();
                 type.setCardinality(Cardinality.valueOf(parameters.getString("cardinality")));
                 type.setRange(parameters.getStringList("range"));
                 return type;
+            }
+
+            @Override
+            public FieldType createType() {
+                return new ReferenceType()
+                        .setCardinality(Cardinality.SINGLE)
+                        .setRange(Collections.<ResourceId>emptySet());
             }
 
             @Override
@@ -39,8 +51,6 @@ public class ReferenceType implements FieldType {
             }
         }
     }
-
-
 
     private Cardinality cardinality;
     private Set<ResourceId> range;

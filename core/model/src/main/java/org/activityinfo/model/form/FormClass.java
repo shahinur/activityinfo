@@ -134,6 +134,15 @@ public class FormClass implements IsResource, FormElementContainer {
         }
     }
 
+    public FormField getField(ResourceId fieldId) {
+        for(FormField field : getFields()) {
+            if(field.getId().equals(fieldId)) {
+                return field;
+            }
+        }
+        throw new IllegalArgumentException("No such field: " + fieldId);
+    }
+
     public FormClass addElement(FormElement element) {
         elements.add(element);
         return this;
@@ -188,4 +197,5 @@ public class FormClass implements IsResource, FormElementContainer {
         resource.set("elements", FormElement.asRecordList(elements));
         return resource;
     }
+
 }

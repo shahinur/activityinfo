@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.form.field;
+package org.activityinfo.ui.client.component.formdesigner.palette;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,19 +21,18 @@ package org.activityinfo.ui.client.component.form.field;
  * #L%
  */
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.promise.Promise;
+import org.activityinfo.model.form.FormField;
 
 /**
- * @author yuriyz on 2/6/14.
+ *
+ * An item within the Field Palette Panel
+ *
+ * @author yuriyz on 07/07/2014.
  */
-public interface FormFieldWidget<T> extends IsWidget {
+public interface FieldTemplate {
 
-    public void setReadOnly(boolean readOnly);
+    public String getLabel();
 
-    public Promise<Void> setValue(T value);
-
-    public void setType(FieldType type);
+    public FormField createField();
 
 }

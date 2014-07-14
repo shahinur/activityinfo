@@ -22,9 +22,20 @@ public enum GeoPointType implements FieldType, FieldTypeClass {
     }
 
     @Override
+    public String getLabel() {
+        return "Latitude/Longitude";
+    }
+
+    @Override
     public FieldType createType(Record typeParameters) {
         return this;
     }
+
+    @Override
+    public FieldType createType() {
+        return this;
+    }
+
 
     @Override
     public FormClass getParameterFormClass() {

@@ -30,6 +30,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import org.activityinfo.core.shared.type.formatter.DateFormatterFactory;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.promise.Promise;
 
 import java.util.Date;
 
@@ -89,8 +90,9 @@ public class DateFieldWidget implements FormFieldWidget<Date> {
     }
 
     @Override
-    public void setValue(Date value) {
+    public Promise<Void> setValue(Date value) {
         dateBox.setValue(value);
+        return Promise.done();
     }
 
     @Override

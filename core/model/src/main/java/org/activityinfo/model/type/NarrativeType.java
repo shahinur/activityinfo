@@ -15,6 +15,7 @@ public enum NarrativeType implements FieldType, FieldTypeClass {
 
 
 
+
     @Override
     public FieldTypeClass getTypeClass() {
         return this;
@@ -41,7 +42,17 @@ public enum NarrativeType implements FieldType, FieldTypeClass {
     }
 
     @Override
+    public String getLabel() {
+        return "Paragraph Text";
+    }
+
+    @Override
     public FieldType createType(Record typeParameters) {
+        return this;
+    }
+
+    @Override
+    public FieldType createType() {
         return this;
     }
 

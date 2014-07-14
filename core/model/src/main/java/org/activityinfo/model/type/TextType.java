@@ -2,10 +2,8 @@ package org.activityinfo.model.type;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
 
@@ -14,9 +12,15 @@ public enum TextType implements FieldType, FieldTypeClass {
     INSTANCE;
 
 
+
     @Override
     public String getId() {
         return "FREE_TEXT";
+    }
+
+    @Override
+    public String getLabel() {
+        return "Text";
     }
 
     @Override
@@ -52,6 +56,12 @@ public enum TextType implements FieldType, FieldTypeClass {
     public FieldType createType(Record typeParameters) {
         return this;
     }
+
+    @Override
+    public FieldType createType() {
+        return this;
+    }
+
 
     @Override
     public FormClass getParameterFormClass() {

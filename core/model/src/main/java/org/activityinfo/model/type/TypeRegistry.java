@@ -27,9 +27,10 @@ public class TypeRegistry {
     private TypeRegistry() {
         register(ReferenceType.TypeClass.INSTANCE);
         register(TextType.INSTANCE);
-        register(GeoPointType.INSTANCE);
         register(QuantityType.TypeClass.INSTANCE);
+        register(NarrativeType.INSTANCE);
         register(LocalDateType.INSTANCE);
+        register(GeoPointType.INSTANCE);
     }
 
     private void register(FieldTypeClass typeClass) {
@@ -42,6 +43,10 @@ public class TypeRegistry {
             throw new RuntimeException("Unknown type: " + typeId);
         }
         return typeClass;
+    }
+
+    public Iterable<FieldTypeClass> getTypeClasses() {
+        return typeMap.values();
     }
 
     public static FieldTypeClass typeForValue(Record value) {

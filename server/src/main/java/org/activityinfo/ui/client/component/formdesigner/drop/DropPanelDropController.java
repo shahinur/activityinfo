@@ -24,17 +24,19 @@ package org.activityinfo.ui.client.component.formdesigner.drop;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
-import org.activityinfo.ui.client.component.formdesigner.*;
+import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
+import org.activityinfo.ui.client.component.formdesigner.Metrics;
+import org.activityinfo.ui.client.component.formdesigner.Spacer;
+import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.palette.FieldLabel;
+import org.activityinfo.ui.client.component.formdesigner.palette.FieldTemplate;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -59,29 +61,21 @@ public class DropPanelDropController extends AbsolutePositionDropController {
             dropTarget.remove(spacerIndex);
         }
 
-        int dropPanelHeightBeforeDrop = dropTarget.getOffsetHeight();
+        if(context.draggable instanceof FieldLabel) {
+            previewDropNewWidget(((FieldLabel) context.draggable).getFieldTemplate());
 
-        final ValueUpdater valueUpdater = new ValueUpdater() {
-            @Override
-            public void update(Object value) {
-                // todo
-            }
-        };
-
-        ControlType controlType = formDesigner.getControlType(context.draggable);
-        if (controlType == null) {
+        } else {
             draggingExistingWidgetContainer(context);
         }
+    }
 
-        final FormField formField = new FormField(ResourceId.generateId());
-        formField.setLabel(controlType.getLabel());
-        formField.setType(controlType.getFieldType());
-
-        FormTree formTree = new FormTree();
-        FormTree.Node node = formTree.addRootField(formDesigner.getFormClass(), formField);
+    private void previewDropNewWidget(FieldTemplate fieldTemplate) throws VetoDragException {
+        final FormField formField = fieldTemplate.createField();
 
         // todo reference support
-        FormFieldWidget formFieldWidget = new FormFieldWidgetFactory(formDesigner.getResourceLocator()).createWidget(null, node, valueUpdater);
+        FormFieldWidget formFieldWidget = new FormFieldWidgetFactory(formDesigner.getResourceLocator())
+                .createWidget(formField, NullValueUpdater.INSTANCE)
+                .get();
 
 
         Widget containerWidget = new WidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
