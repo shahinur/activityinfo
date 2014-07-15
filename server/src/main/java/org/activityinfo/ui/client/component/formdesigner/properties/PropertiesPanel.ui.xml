@@ -7,10 +7,24 @@
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
   <ui:with field="style" type="org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles"/>
 
-  <g:VerticalPanel width="100%" ui:field="panel">
-    <g:HTML text="{i18n.label}"/>
-    <a:TextBox ui:field="label" width="100%"/>
-    <g:HTML text="{i18n.description}"/>
-    <a:TextArea ui:field="description" width="100%"/>
-  </g:VerticalPanel>
+  <g:HTMLPanel width="100%" ui:field="panel">
+    <div class="form-group">
+      <label class="control-label">
+        <ui:text from='{i18n.label}'/>
+      </label>
+      <a:TextBox ui:field="label" width="100%"/>
+    </div>
+    <div class="form-group">
+      <label class="control-label">
+        <ui:text from='{i18n.description}'/>
+      </label>
+      <a:TextArea ui:field="description" width="100%"/>
+    </div>
+    <g:HTMLPanel addStyleNames="form-group"  ui:field="mandatoryGroup">
+      <label class="control-label">
+        <ui:text from='{i18n.mandatory}'/>
+      </label>
+      <a:CheckBox ui:field="mandatory"/>
+    </g:HTMLPanel>
+  </g:HTMLPanel>
 </ui:UiBinder>

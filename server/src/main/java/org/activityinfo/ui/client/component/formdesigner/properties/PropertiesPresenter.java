@@ -25,6 +25,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
@@ -45,8 +47,10 @@ public class PropertiesPresenter {
 
     private final PropertiesPanel view;
     private final List<Widget> lastPropertyTypeViewWidgets = Lists.newArrayList();
+
     private HandlerRegistration labelKeyUpHandler;
     private HandlerRegistration descriptionKeyUpHandler;
+    private HandlerRegistration mandatoryValueChangeHandler;
 
     public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
         this.view = view;
@@ -65,6 +69,7 @@ public class PropertiesPresenter {
                 show(event.getSelectedItem());
             }
         });
+        reset();
     }
 
     public PropertiesPanel getView() {
@@ -76,12 +81,16 @@ public class PropertiesPresenter {
             view.getPanel().remove(w);
         }
         lastPropertyTypeViewWidgets.clear();
+        view.getMandatoryGroup().setVisible(false);
 
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
         }
         if (descriptionKeyUpHandler != null) {
             descriptionKeyUpHandler.removeHandler();
+        }
+        if (mandatoryValueChangeHandler != null) {
+            mandatoryValueChangeHandler.removeHandler();
         }
     }
 
@@ -90,8 +99,11 @@ public class PropertiesPresenter {
 
         final FormField formField = fieldWidgetContainer.getFormField();
 
+        view.getMandatoryGroup().setVisible(true);
         view.setVisible(true);
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
+        view.getMandatory().setValue(formField.isRequired());
+
         labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
@@ -103,6 +115,13 @@ public class PropertiesPresenter {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 formField.setDescription(view.getDescription().getValue());
+                fieldWidgetContainer.syncWithModel();
+            }
+        });
+        mandatoryValueChangeHandler = view.getMandatory().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                formField.setRequired(view.getMandatory().getValue());
                 fieldWidgetContainer.syncWithModel();
             }
         });

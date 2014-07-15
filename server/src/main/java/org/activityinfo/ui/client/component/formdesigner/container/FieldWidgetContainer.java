@@ -22,8 +22,12 @@ package org.activityinfo.ui.client.component.formdesigner.container;
  */
 
 import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
@@ -35,6 +39,13 @@ import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSe
  * @author yuriyz on 7/14/14.
  */
 public class FieldWidgetContainer implements WidgetContainer {
+
+    public interface LabelTemplate extends SafeHtmlTemplates {
+        @Template("<span style='color: red;'> *</span>")
+        SafeHtml mandatoryMarker();
+    }
+
+    private static final LabelTemplate LABEL_TEMPLATE = GWT.create(LabelTemplate.class);
 
     private FormDesigner formDesigner;
     private FormFieldWidget formFieldWidget;
@@ -63,7 +74,13 @@ public class FieldWidgetContainer implements WidgetContainer {
     }
 
     public void syncWithModel() {
-        widgetContainer.getLabel().setHTML(SafeHtmlUtils.fromString(Strings.nullToEmpty(formField.getLabel())));
+        final SafeHtmlBuilder label = new SafeHtmlBuilder();
+        label.append(SafeHtmlUtils.fromString(Strings.nullToEmpty(formField.getLabel())));
+        if (formField.isRequired()) {
+            label.append(LABEL_TEMPLATE.mandatoryMarker());
+        }
+
+        widgetContainer.getLabel().setHTML(label.toSafeHtml());
         formFieldWidget.setType(formField.getType());
     }
 

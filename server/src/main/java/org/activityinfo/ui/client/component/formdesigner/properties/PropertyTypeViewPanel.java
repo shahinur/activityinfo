@@ -25,11 +25,10 @@ import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
@@ -51,7 +50,7 @@ public class PropertyTypeViewPanel extends Composite implements PropertyTypeView
     @UiField
     TextBox label;
     @UiField
-    HTML name;
+    Label name;
 
     public PropertyTypeViewPanel(final FieldWidgetContainer widgetContainer, final FormField formField) {
         this.widgetContainer = widgetContainer;
@@ -77,7 +76,7 @@ public class PropertyTypeViewPanel extends Composite implements PropertyTypeView
     @Override
     public void syncWithModel() {
         label.setValue(widgetContainer.getFormField().getType().getParameters().getString(formField.getName()));
-        name.setHTML(SafeHtmlUtils.fromString(Strings.nullToEmpty(formField.getName())));
+        name.setText(Strings.nullToEmpty(formField.getName()));
         widgetContainer.syncWithModel();
     }
 }

@@ -25,8 +25,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.ui.client.widget.CheckBox;
 import org.activityinfo.ui.client.widget.TextArea;
 import org.activityinfo.ui.client.widget.TextBox;
 
@@ -44,9 +45,13 @@ public class PropertiesPanel extends Composite {
     @UiField
     TextBox label;
     @UiField
-    VerticalPanel panel;
+    HTMLPanel panel;
     @UiField
     TextArea description;
+    @UiField
+    CheckBox mandatory;
+    @UiField
+    HTMLPanel mandatoryGroup;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -56,11 +61,19 @@ public class PropertiesPanel extends Composite {
         return label;
     }
 
-    public VerticalPanel getPanel() {
+    public HTMLPanel getPanel() {
         return panel;
     }
 
     public TextArea getDescription() {
         return description;
+    }
+
+    public CheckBox getMandatory() {
+        return mandatory;
+    }
+
+    public HTMLPanel getMandatoryGroup() {
+        return mandatoryGroup;
     }
 }
