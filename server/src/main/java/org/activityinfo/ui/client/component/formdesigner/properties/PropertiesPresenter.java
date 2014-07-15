@@ -50,7 +50,7 @@ public class PropertiesPresenter {
 
     private HandlerRegistration labelKeyUpHandler;
     private HandlerRegistration descriptionKeyUpHandler;
-    private HandlerRegistration mandatoryValueChangeHandler;
+    private HandlerRegistration requiredValueChangeHandler;
     private HandlerRegistration readonlyValueChangeHandler;
 
     public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
@@ -92,8 +92,8 @@ public class PropertiesPresenter {
         if (descriptionKeyUpHandler != null) {
             descriptionKeyUpHandler.removeHandler();
         }
-        if (mandatoryValueChangeHandler != null) {
-            mandatoryValueChangeHandler.removeHandler();
+        if (requiredValueChangeHandler != null) {
+            requiredValueChangeHandler.removeHandler();
         }
         if (readonlyValueChangeHandler != null) {
             readonlyValueChangeHandler.removeHandler();
@@ -126,7 +126,7 @@ public class PropertiesPresenter {
                 fieldWidgetContainer.syncWithModel();
             }
         });
-        mandatoryValueChangeHandler = view.getRequired().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        requiredValueChangeHandler = view.getRequired().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
                 formField.setRequired(view.getRequired().getValue());
