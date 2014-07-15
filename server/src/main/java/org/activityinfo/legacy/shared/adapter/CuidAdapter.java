@@ -209,7 +209,7 @@ public class CuidAdapter {
     }
 
     public static ResourceId activityCategoryFolderId(int dbId, String category) {
-        return ResourceId.create(ACTIVITY_CATEGORY_DOMAIN + block(dbId) + block(category.hashCode()));
+        return ResourceId.create(ACTIVITY_CATEGORY_DOMAIN + block(dbId) + block(Math.abs(category.hashCode())));
     }
 
     /**

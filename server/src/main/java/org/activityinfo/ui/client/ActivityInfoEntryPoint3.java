@@ -11,7 +11,6 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
-import javassist.tools.framedump;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.remote.MergingDispatcher;
@@ -23,7 +22,6 @@ import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.RemoteCommandService;
 import org.activityinfo.legacy.shared.command.RemoteCommandServiceAsync;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.chrome.LeftPanel;
 import org.activityinfo.ui.client.chrome.MainPanel;
 import org.activityinfo.ui.client.inject.ClientSideAuthProvider;
@@ -43,7 +41,6 @@ public class ActivityInfoEntryPoint3 implements EntryPoint {
 
     @Override
     public void onModuleLoad() {
-
 
         Document.get().getBody().addClassName("bs");
 
