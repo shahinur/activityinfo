@@ -1,24 +1,24 @@
 package org.activityinfo.ui.client.pageView.formClass;
 
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.AnchorElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.ui.client.page.instance.BreadCrumbBuilder;
-import org.activityinfo.ui.client.pageView.IconStyleProvider;
+import org.activityinfo.ui.client.chrome.PageHeader;
+import org.activityinfo.ui.client.page.instance.InstancePlace;
 import org.activityinfo.ui.client.pageView.InstancePageView;
+import org.activityinfo.ui.client.pageView.InstanceViewModel;
 import org.activityinfo.ui.client.style.Icons;
-import org.activityinfo.ui.client.widget.LoadingPanel;
+import org.activityinfo.ui.client.widget.DisplayWidget;
+
+import java.util.Map;
 
 /**
  * Provides a view for a FormClass instance
@@ -26,48 +26,46 @@ import org.activityinfo.ui.client.widget.LoadingPanel;
 public class FormClassPageView implements InstancePageView {
 
     private final Widget rootElement;
-    private final ResourceLocator resourceLocator;
 
     interface FormViewUiBinder extends UiBinder<HTMLPanel, FormClassPageView> {
     }
 
     private static FormViewUiBinder ourUiBinder = GWT.create(FormViewUiBinder.class);
 
-    private BreadCrumbBuilder breadCrumb;
-    private ScrollPanel scrollAncestor;
+    @UiField PageHeader pageHeader;
 
-    @UiField
-    Element nameElement;
+    @UiField(provided = true)
+    Widget tabWidget;
 
-    @UiField
-    Element pageIcon;
+    DisplayWidget<FormInstance> tabView;
 
-    @UiField
-    Element breadCrumbElement;
+    @UiField AnchorElement designTab;
+    @UiField AnchorElement tableTab;
 
-    @UiField
-    LoadingPanel<FormTree> contentPanel;
+    private Map<String, AnchorElement> tabs = Maps.newHashMap();
 
-    public FormClassPageView(ResourceLocator resourceLocator) {
-        this.resourceLocator = resourceLocator;
+    public FormClassPageView(DisplayWidget<FormInstance> tabView) {
+        this.tabView = tabView;
+        this.tabWidget = tabView.asWidget();
+
         rootElement = ourUiBinder.createAndBindUi(this);
-        breadCrumb = new BreadCrumbBuilder(resourceLocator, breadCrumbElement);
+
+        tabs.put("table", tableTab);
+        tabs.put("design", designTab);
 
         Icons.INSTANCE.ensureInjected();
     }
 
-    public Promise<Void> show(FormInstance instance) {
-        ResourceId classId = instance.getId();
+    public Promise<Void> show(InstanceViewModel view) {
 
-        nameElement.setInnerText(instance.getString(FormClass.LABEL_FIELD_ID));
-        pageIcon.setClassName(IconStyleProvider.getIconStyleForFormClass(instance.getId()));
+        pageHeader.setPageTitle(view.getInstance().getString(FormClass.LABEL_FIELD_ID));
+        pageHeader.setIconStyle("fa fa-edit");
 
-        breadCrumb.show(instance);
+        for(String tab : tabs.keySet()) {
+            tabs.get(tab).setHref(InstancePlace.safeUri(view.getInstance().getId(), tab));
+        }
 
-        final TablePresenter tablePresenter = new TablePresenter(resourceLocator);
-        tablePresenter.setScrollAncestor(scrollAncestor);
-        contentPanel.setDisplayWidget(tablePresenter);
-        return contentPanel.show(new AsyncFormTreeBuilder(resourceLocator), classId);
+        return tabView.show(view.getInstance());
     }
 
     @Override
@@ -75,11 +73,4 @@ public class FormClassPageView implements InstancePageView {
         return rootElement;
     }
 
-    public ScrollPanel getScrollAncestor() {
-        return scrollAncestor;
-    }
-
-    public void setScrollAncestor(ScrollPanel scrollAncestor) {
-        this.scrollAncestor = scrollAncestor;
-    }
 }

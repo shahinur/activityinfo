@@ -27,6 +27,7 @@ package org.activityinfo.ui.client.inject;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
+import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.legacy.client.remote.cache.AdminEntityCache;
 import org.activityinfo.legacy.client.remote.cache.SchemaCache;
 import org.activityinfo.ui.client.EventBus;

@@ -3,6 +3,7 @@ package org.activityinfo.ui.client.pageView.formClass;
 import com.google.common.base.Function;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
@@ -11,6 +12,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.formdesigner.FormDesignerPanel;
 import org.activityinfo.ui.client.pageView.InstancePageView;
+import org.activityinfo.ui.client.widget.DisplayWidget;
 
 import javax.annotation.Nullable;
 
@@ -19,19 +21,14 @@ import javax.annotation.Nullable;
  *
  * Created by Mithun on 4/3/2014.
  */
-public class FormClassDesignView implements InstancePageView{
-
-    interface FormClassDesignViewUiBinder extends UiBinder<HTMLPanel, FormClassDesignView> {
-    }
-
-    private static FormClassDesignViewUiBinder ourUiBinder = GWT.create(FormClassDesignViewUiBinder.class);
+public class DesignTab implements DisplayWidget<FormInstance> {
 
     private ResourceLocator resourceLocator;
-    private final HTMLPanel rootElement;
+    private FlowPanel panel;
 
-    public FormClassDesignView(ResourceLocator resourceLocator) {
+    public DesignTab(ResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
-        rootElement = ourUiBinder.createAndBindUi(this);
+        this.panel = new FlowPanel();
     }
 
     @Override
@@ -41,7 +38,7 @@ public class FormClassDesignView implements InstancePageView{
                     @Nullable
                     @Override
                     public Void apply(FormClass formClass) {
-                        rootElement.add(new FormDesignerPanel(resourceLocator, formClass));
+                        panel.add(new FormDesignerPanel(resourceLocator, formClass));
                         return null;
                     }
                 });
@@ -49,6 +46,6 @@ public class FormClassDesignView implements InstancePageView{
 
     @Override
     public Widget asWidget() {
-        return rootElement;
+        return panel;
     }
 }

@@ -36,9 +36,9 @@
   <sessions-enabled>false</sessions-enabled>
   <precompilation-enabled>false</precompilation-enabled>
   <threadsafe>true</threadsafe>
-  <instance-class>F2</instance-class>
+  <instance-class>${gae.instance.class}</instance-class>
   <automatic-scaling>
-    <min-idle-instances>5</min-idle-instances>
+    <min-idle-instances>${gae.min.idle.instances}</min-idle-instances>
     <max-idle-instances>automatic</max-idle-instances>
     <min-pending-latency>automatic</min-pending-latency>
     <max-pending-latency>30ms</max-pending-latency>

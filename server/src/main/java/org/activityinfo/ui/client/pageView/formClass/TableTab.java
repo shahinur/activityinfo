@@ -1,10 +1,13 @@
 package org.activityinfo.ui.client.pageView.formClass;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
+import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.model.form.FormClass;
@@ -14,13 +17,14 @@ import org.activityinfo.ui.client.component.table.FieldColumn;
 import org.activityinfo.ui.client.component.table.InstanceTableView;
 import org.activityinfo.ui.client.widget.DisplayWidget;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Presents the instances of this form class as table
  */
-public class TablePresenter implements DisplayWidget<FormTree> {
+public class TableTab implements DisplayWidget<FormInstance> {
 
     private InstanceTableView tableView;
 
@@ -28,24 +32,32 @@ public class TablePresenter implements DisplayWidget<FormTree> {
     private Map<ResourceId, FieldColumn> columnMap;
 
     private List<FieldColumn> columns;
-    private ScrollPanel scrollAncestor;
+    private ResourceLocator resourceLocator;
 
-    public TablePresenter(ResourceLocator resourceLocator) {
+    public TableTab(ResourceLocator resourceLocator) {
+        this.resourceLocator = resourceLocator;
         this.tableView = new InstanceTableView(resourceLocator);
     }
 
     @Override
-    public Promise<Void> show(FormTree formTree) {
-        this.formTree = formTree;
-        enumerateColumns();
+    public Promise<Void> show(FormInstance instance) {
+        return new AsyncFormTreeBuilder(resourceLocator)
+        .apply(instance.getId())
+        .join(new Function<FormTree, Promise<Void>>() {
+         @Override
+            public Promise<Void> apply(@Nullable FormTree input) {
+                formTree = input;
+                enumerateColumns();
 
-        final Map<ResourceId, FormClass> rootFormClasses = formTree.getRootFormClasses();
+                final Map<ResourceId, FormClass> rootFormClasses = formTree.getRootFormClasses();
 
-        tableView.setRootFormClasses(rootFormClasses.values());
-        tableView.setCriteria(ClassCriteria.union(rootFormClasses.keySet()));
-        tableView.setColumns(columns);
+                tableView.setRootFormClasses(rootFormClasses.values());
+                tableView.setCriteria(ClassCriteria.union(rootFormClasses.keySet()));
+                tableView.setColumns(columns);
 
-        return Promise.done();
+                return Promise.done();
+            }
+        });
     }
 
     @Override
@@ -80,13 +92,4 @@ public class TablePresenter implements DisplayWidget<FormTree> {
         }
     }
 
-    public void setScrollAncestor(ScrollPanel scrollAncestor) {
-        if (scrollAncestor != null) { // hack! - not nice, can be initialized and then null'ed from outer loading panel
-            this.scrollAncestor = scrollAncestor;
-        }
-    }
-
-    public ScrollPanel getScrollAncestor() {
-        return scrollAncestor;
-    }
 }

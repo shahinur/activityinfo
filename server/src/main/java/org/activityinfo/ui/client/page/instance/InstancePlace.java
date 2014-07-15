@@ -60,10 +60,12 @@ public class InstancePlace implements PageState {
         return view;
     }
 
+
+
     public static class Parser implements PageStateParser {
 
         @Override
-        public PageState parse(String token) {
+        public InstancePlace parse(String token) {
             String parts[] = token.split("/");
             if(parts.length == 1) {
                 return new InstancePlace(ResourceId.create(parts[0]));
@@ -75,6 +77,18 @@ public class InstancePlace implements PageState {
 
 
     public static SafeUri safeUri(ResourceId instanceId) {
-        return UriUtils.fromTrustedString("#i/" + instanceId.asString());
+        return UriUtils.fromTrustedString("#" + historyToken(instanceId));
+    }
+
+    public static SafeUri safeUri(ResourceId id, String tab) {
+        return UriUtils.fromTrustedString("#" + historyToken(id, tab));
+    }
+
+    public static String historyToken(ResourceId instanceId) {
+        return "i/" + instanceId.asString();
+    }
+
+    public static String historyToken(ResourceId instanceId, String tab) {
+        return historyToken(instanceId) + "/" + tab;
     }
 }
