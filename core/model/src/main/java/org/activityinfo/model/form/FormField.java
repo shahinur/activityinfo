@@ -110,7 +110,7 @@ public class FormField extends FormElement {
     /**
      * @return true if this field is read-only.
      */
-    boolean isReadOnly() {
+    public boolean isReadOnly() {
         return readOnly;
     }
 

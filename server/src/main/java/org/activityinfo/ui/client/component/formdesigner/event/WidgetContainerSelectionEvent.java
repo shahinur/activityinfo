@@ -23,7 +23,7 @@ package org.activityinfo.ui.client.component.formdesigner.event;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
 
 /**
  * @author yuriyz on 7/8/14.

@@ -68,7 +68,10 @@ public class FormDesigner {
 
         headerPresenter = new HeaderPresenter(this);
         headerPresenter.show();
+
+        new FormDesignerActions(this); // init actions
     }
+
 
     public FormDesignerPanel getFormDesignerPanel() {
         return formDesignerPanel;

@@ -32,7 +32,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 import org.activityinfo.ui.client.component.formdesigner.Spacer;
-import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldLabel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldTemplate;
 
@@ -63,7 +63,6 @@ public class DropPanelDropController extends AbsolutePositionDropController {
 
         if (context.draggable instanceof FieldLabel) {
             previewDropNewWidget(((FieldLabel) context.draggable).getFieldTemplate());
-
         } else {
             draggingExistingWidgetContainer(context);
         }
@@ -78,7 +77,7 @@ public class DropPanelDropController extends AbsolutePositionDropController {
             @Nullable
             @Override
             public Void apply(@Nullable FormFieldWidget formFieldWidget) {
-                Widget containerWidget = new WidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
+                Widget containerWidget = new FieldWidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
                 Integer insertIndex = formDesigner.getInsertIndex();
                 if (insertIndex != null) {
                     dropTarget.insert(containerWidget, insertIndex);

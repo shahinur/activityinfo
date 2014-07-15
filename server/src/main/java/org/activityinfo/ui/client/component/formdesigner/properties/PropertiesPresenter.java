@@ -25,12 +25,15 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
@@ -44,15 +47,21 @@ public class PropertiesPresenter {
 
     private final PropertiesPanel view;
     private final List<Widget> lastPropertyTypeViewWidgets = Lists.newArrayList();
+
     private HandlerRegistration labelKeyUpHandler;
     private HandlerRegistration descriptionKeyUpHandler;
+    private HandlerRegistration requiredValueChangeHandler;
+    private HandlerRegistration readonlyValueChangeHandler;
 
     public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
         this.view = view;
         eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
             @Override
             public void handle(WidgetContainerSelectionEvent event) {
-                show(event.getSelectedItem());
+                WidgetContainer widgetContainer = event.getSelectedItem();
+                if (widgetContainer instanceof FieldWidgetContainer) {
+                    show((FieldWidgetContainer) widgetContainer);
+                }
             }
         });
         eventBus.addHandler(HeaderSelectionEvent.TYPE, new HeaderSelectionEvent.Handler() {
@@ -61,6 +70,7 @@ public class PropertiesPresenter {
                 show(event.getSelectedItem());
             }
         });
+        reset();
     }
 
     public PropertiesPanel getView() {
@@ -73,37 +83,65 @@ public class PropertiesPresenter {
         }
         lastPropertyTypeViewWidgets.clear();
 
+        view.getRequiredGroup().setVisible(false);
+        view.getReadOnlyGroup().setVisible(false);
+
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
         }
         if (descriptionKeyUpHandler != null) {
             descriptionKeyUpHandler.removeHandler();
         }
+        if (requiredValueChangeHandler != null) {
+            requiredValueChangeHandler.removeHandler();
+        }
+        if (readonlyValueChangeHandler != null) {
+            readonlyValueChangeHandler.removeHandler();
+        }
     }
 
-    private void show(final WidgetContainer widgetContainer) {
+    private void show(final FieldWidgetContainer fieldWidgetContainer) {
         reset();
 
-        final FormField formField = widgetContainer.getFormField();
+        final FormField formField = fieldWidgetContainer.getFormField();
 
         view.setVisible(true);
+        view.getRequiredGroup().setVisible(true);
+        view.getReadOnlyGroup().setVisible(true);
+
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
+        view.getRequired().setValue(formField.isRequired());
+
         labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 formField.setLabel(view.getLabel().getValue());
-                widgetContainer.syncWithModel();
+                fieldWidgetContainer.syncWithModel();
             }
         });
         descriptionKeyUpHandler = view.getDescription().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 formField.setDescription(view.getDescription().getValue());
-                widgetContainer.syncWithModel();
+                fieldWidgetContainer.syncWithModel();
+            }
+        });
+        requiredValueChangeHandler = view.getRequired().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                formField.setRequired(view.getRequired().getValue());
+                fieldWidgetContainer.syncWithModel();
+            }
+        });
+        readonlyValueChangeHandler = view.getReadOnly().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                formField.setReadOnly(view.getReadOnly().getValue());
+                fieldWidgetContainer.syncWithModel();
             }
         });
 
-        PropertiesViewBuilder viewBuilder = new PropertiesViewBuilder(widgetContainer);
+        PropertiesViewBuilder viewBuilder = new PropertiesViewBuilder(fieldWidgetContainer);
         for (PropertyTypeView propertyTypeView : viewBuilder.build()) {
             Widget w = propertyTypeView.asWidget();
             lastPropertyTypeViewWidgets.add(w);

@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner;
+package org.activityinfo.ui.client.component.formdesigner.container;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,35 +21,31 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
+import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles;
 import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 
 /**
  * @author yuriyz on 7/8/14.
  */
-public class WidgetContainer {
+public class WidgetContainerPanel {
 
     private static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
 
-    interface OurUiBinder extends UiBinder<Widget, WidgetContainer> {
+    interface OurUiBinder extends UiBinder<Widget, WidgetContainerPanel> {
     }
 
-    private FormDesigner formDesigner;
-    private FormFieldWidget formFieldWidget;
-    private FormField formField;
+    private final FormDesigner formDesigner;
 
     @UiField
     Button removeButton;
@@ -60,11 +56,9 @@ public class WidgetContainer {
     @UiField
     SimplePanel widgetContainer;
 
-    public WidgetContainer(FormDesigner formDesigner, FormFieldWidget formFieldWidget, FormField formField) {
+    public WidgetContainerPanel(FormDesigner formDesigner) {
         uiBinder.createAndBindUi(this);
         this.formDesigner = formDesigner;
-        this.formFieldWidget = formFieldWidget;
-        this.formField = formField;
         this.formDesigner.getEventBus().addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
             @Override
             public void handle(WidgetContainerSelectionEvent event) {
@@ -78,29 +72,29 @@ public class WidgetContainer {
             }
         });
 
-        widgetContainer.add(formFieldWidget);
         focusPanel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                WidgetContainer.this.onClick();
+                WidgetContainerPanel.this.onClick();
             }
         });
-        syncWithModel();
     }
 
-    public void syncWithModel() {
-        label.setHTML(SafeHtmlUtils.fromString(Strings.nullToEmpty(formField.getLabel())));
-        formFieldWidget.setType(formField.getType());
-    }
 
     @UiHandler("removeButton")
     public void onRemove(ClickEvent clickEvent) {
-        formDesigner.getFormClass().remove(formField);
         focusPanel.removeFromParent();
     }
 
+    public Button getRemoveButton() {
+        return removeButton;
+    }
+
+    public FocusPanel getFocusPanel() {
+        return focusPanel;
+    }
+
     private void onClick() {
-        formDesigner.getEventBus().fireEvent(new WidgetContainerSelectionEvent(this));
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
@@ -113,16 +107,12 @@ public class WidgetContainer {
         return label;
     }
 
-    public FormFieldWidget getFormFieldWidget() {
-        return formFieldWidget;
-    }
-
     public Widget asWidget() {
         return focusPanel;
     }
 
-    public FormField getFormField() {
-        return formField;
+    public SimplePanel getWidgetContainer() {
+        return widgetContainer;
     }
 
     public void setSelected(boolean selected) {

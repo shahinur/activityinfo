@@ -1625,9 +1625,13 @@ public interface UiConstants extends Constants {
      *
      * @return translated "Mandatory"
      */
-    @DefaultStringValue("Required")
+    @DefaultStringValue("Mandatory")
     @Key("mandatory")
     String mandatory();
+
+    @DefaultStringValue("Required")
+    @Key("required")
+    String required();
 
     /**
      * Translated "Maps".
@@ -3463,4 +3467,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Properties")
     String properties();
+
+    @DefaultStringValue("Read only")
+    String readonly();
 }

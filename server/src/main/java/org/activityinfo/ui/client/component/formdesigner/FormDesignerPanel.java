@@ -22,24 +22,36 @@ package org.activityinfo.ui.client.component.formdesigner;
  */
 
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.*;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
+import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.SectionWidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropTargetPanel;
 import org.activityinfo.ui.client.component.formdesigner.drop.NullValueUpdater;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPanel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldPalette;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPanel;
+import org.activityinfo.ui.client.widget.Button;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author yuriyz on 07/04/2014.
@@ -53,6 +65,8 @@ public class FormDesignerPanel extends Composite {
     interface OurUiBinder extends UiBinder<Widget, FormDesignerPanel> {
     }
 
+    private final Map<ResourceId, WidgetContainer> widgetMap = Maps.newHashMap();
+
     @UiField
     AbsolutePanel containerPanel;
     @UiField
@@ -63,6 +77,10 @@ public class FormDesignerPanel extends Composite {
     HeaderPanel headerPanel;
     @UiField
     FieldPalette fieldPalette;
+    @UiField
+    Button saveButton;
+    @UiField
+    HTML statusMessage;
 
     public FormDesignerPanel(final ResourceLocator resourceLocator, @Nonnull final FormClass formClass) {
         FormDesignerStyles.INSTANCE.ensureInjected();
@@ -72,21 +90,63 @@ public class FormDesignerPanel extends Composite {
             @Override
             public void execute() {
                 FormDesigner formDesigner = new FormDesigner(FormDesignerPanel.this, resourceLocator, formClass);
-                render(formDesigner);
+                List<Promise<Void>> promises = Lists.newArrayList();
+                buildWidgetContainers(formDesigner, formClass, 0, promises);
+                Promise.waitAll(promises).then(new AsyncCallback<Void>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        // ugly but we still have exception like: unsupportedoperationexception: domain is not supported.
+                        fillPanel(formClass);
+                    }
+
+                    @Override
+                    public void onSuccess(Void result) {
+                        fillPanel(formClass);
+                    }
+                });
+
             }
         });
     }
 
-    private void render(final FormDesigner formDesigner) {
-        for (final FormField formField : formDesigner.getFormClass().getFields()) {
-            formDesigner.getFormFieldWidgetFactory().createWidget(formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
-                @Override
-                public Void apply(@Nullable FormFieldWidget widget) {
-                    Widget containerWidget = new WidgetContainer(formDesigner, widget, formField).asWidget();
-                    dropPanel.add(containerWidget);
-                    return null;
+    private void fillPanel(final FormClass formClass) {
+        formClass.traverse(formClass, new TraverseFunction() {
+            @Override
+            public void apply(FormElement element, FormElementContainer container) {
+                if (element instanceof FormField) {
+                    FormField formField = (FormField) element;
+                    WidgetContainer widgetContainer = widgetMap.get(formField.getId());
+                    if (widgetContainer != null) { // widget container may be null if domain is not supported, should be removed later
+                        dropPanel.add(widgetContainer.asWidget());
+                    }
+                } else if (element instanceof FormSection) {
+                    FormSection section = (FormSection) element;
+                    dropPanel.add(widgetMap.get(section.getId()).asWidget());
+                } else {
+                    throw new UnsupportedOperationException("Unknow form element.");
                 }
-            });
+            }
+        });
+    }
+
+    private void buildWidgetContainers(final FormDesigner formDesigner, FormElementContainer container, int depth, List<Promise<Void>> promises) {
+        for(FormElement element : container.getElements()) {
+            if(element instanceof FormSection) {
+                FormSection formSection = (FormSection) element;
+                widgetMap.put(formSection.getId(), new SectionWidgetContainer(formDesigner, formSection));
+                buildWidgetContainers(formDesigner, formSection, depth + 1, promises);
+            } else if(element instanceof FormField) {
+                final FormField formField = (FormField) element;
+                Promise<Void> promise = formDesigner.getFormFieldWidgetFactory().createWidget(formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
+                    @Nullable
+                    @Override
+                    public Void apply(@Nullable FormFieldWidget input) {
+                        widgetMap.put(formField.getId(), new FieldWidgetContainer(formDesigner, input, formField));
+                        return null;
+                    }
+                });
+                promises.add(promise);
+            }
         }
     }
 
@@ -110,4 +170,11 @@ public class FormDesignerPanel extends Composite {
         return fieldPalette;
     }
 
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+    public HTML getStatusMessage() {
+        return statusMessage;
+    }
 }

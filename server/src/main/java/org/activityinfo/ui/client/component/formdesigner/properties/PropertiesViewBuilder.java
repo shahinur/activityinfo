@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 
 import java.util.List;
 
@@ -33,9 +33,9 @@ import java.util.List;
  */
 public class PropertiesViewBuilder {
 
-    private WidgetContainer widgetContainer;
+    private FieldWidgetContainer widgetContainer;
 
-    public PropertiesViewBuilder(WidgetContainer widgetContainer) {
+    public PropertiesViewBuilder(FieldWidgetContainer widgetContainer) {
         this.widgetContainer = widgetContainer;
     }
 
