@@ -80,6 +80,8 @@ public class FieldWidgetContainer implements WidgetContainer {
             label.append(LABEL_TEMPLATE.mandatoryMarker());
         }
 
+        formFieldWidget.setReadOnly(formField.isReadOnly());
+
         widgetContainer.getLabel().setHTML(label.toSafeHtml());
         formFieldWidget.setType(formField.getType());
     }

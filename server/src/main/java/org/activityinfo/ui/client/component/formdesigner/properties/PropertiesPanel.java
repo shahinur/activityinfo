@@ -49,9 +49,13 @@ public class PropertiesPanel extends Composite {
     @UiField
     TextArea description;
     @UiField
-    CheckBox mandatory;
+    CheckBox required;
     @UiField
-    HTMLPanel mandatoryGroup;
+    HTMLPanel requiredGroup;
+    @UiField
+    HTMLPanel readOnlyGroup;
+    @UiField
+    CheckBox readOnly;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -69,11 +73,19 @@ public class PropertiesPanel extends Composite {
         return description;
     }
 
-    public CheckBox getMandatory() {
-        return mandatory;
+    public CheckBox getRequired() {
+        return required;
     }
 
-    public HTMLPanel getMandatoryGroup() {
-        return mandatoryGroup;
+    public HTMLPanel getRequiredGroup() {
+        return requiredGroup;
+    }
+
+    public HTMLPanel getReadOnlyGroup() {
+        return readOnlyGroup;
+    }
+
+    public CheckBox getReadOnly() {
+        return readOnly;
     }
 }

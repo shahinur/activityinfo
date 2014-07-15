@@ -51,6 +51,7 @@ public class PropertiesPresenter {
     private HandlerRegistration labelKeyUpHandler;
     private HandlerRegistration descriptionKeyUpHandler;
     private HandlerRegistration mandatoryValueChangeHandler;
+    private HandlerRegistration readonlyValueChangeHandler;
 
     public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
         this.view = view;
@@ -81,7 +82,9 @@ public class PropertiesPresenter {
             view.getPanel().remove(w);
         }
         lastPropertyTypeViewWidgets.clear();
-        view.getMandatoryGroup().setVisible(false);
+
+        view.getRequiredGroup().setVisible(false);
+        view.getReadOnlyGroup().setVisible(false);
 
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
@@ -92,6 +95,9 @@ public class PropertiesPresenter {
         if (mandatoryValueChangeHandler != null) {
             mandatoryValueChangeHandler.removeHandler();
         }
+        if (readonlyValueChangeHandler != null) {
+            readonlyValueChangeHandler.removeHandler();
+        }
     }
 
     private void show(final FieldWidgetContainer fieldWidgetContainer) {
@@ -99,10 +105,12 @@ public class PropertiesPresenter {
 
         final FormField formField = fieldWidgetContainer.getFormField();
 
-        view.getMandatoryGroup().setVisible(true);
         view.setVisible(true);
+        view.getRequiredGroup().setVisible(true);
+        view.getReadOnlyGroup().setVisible(true);
+
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
-        view.getMandatory().setValue(formField.isRequired());
+        view.getRequired().setValue(formField.isRequired());
 
         labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
             @Override
@@ -118,10 +126,17 @@ public class PropertiesPresenter {
                 fieldWidgetContainer.syncWithModel();
             }
         });
-        mandatoryValueChangeHandler = view.getMandatory().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        mandatoryValueChangeHandler = view.getRequired().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
-                formField.setRequired(view.getMandatory().getValue());
+                formField.setRequired(view.getRequired().getValue());
+                fieldWidgetContainer.syncWithModel();
+            }
+        });
+        readonlyValueChangeHandler = view.getReadOnly().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                formField.setReadOnly(view.getReadOnly().getValue());
                 fieldWidgetContainer.syncWithModel();
             }
         });
