@@ -545,6 +545,8 @@
         <display.version>Build ${BUILD_NUMBER}</display.version>
         <gae.application>ai-dev</gae.application>
         <gae.application.version>ci-dev</gae.application.version>
+        <gae.instance.class>F1</gae.instance.class>
+        <gae.min.idle.instances>automatic</gae.min.idle.instances>
       </properties>
     </profile>
 
@@ -585,6 +587,8 @@
         <display.version>2.8.${BUILD_NUMBER}</display.version>
         <gae.application>activityinfoeu</gae.application>
         <gae.application.version>build${BUILD_NUMBER}</gae.application.version>
+        <gae.instance.class>F2</gae.instance.class>
+        <gae.min.idle.instances>3</gae.min.idle.instances>
       </properties>
       <build>
         <plugins>
