@@ -1,17 +1,13 @@
 package org.activityinfo.ui.client.pageView.formClass;
 
 import com.google.common.base.Function;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.formdesigner.FormDesignerPanel;
-import org.activityinfo.ui.client.pageView.InstancePageView;
 import org.activityinfo.ui.client.widget.DisplayWidget;
 
 import javax.annotation.Nullable;

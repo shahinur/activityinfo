@@ -25,6 +25,7 @@ import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.chrome.PageHeader;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
 import org.activityinfo.ui.client.pageView.InstancePageView;
+import org.activityinfo.ui.client.pageView.InstanceViewModel;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -70,8 +71,8 @@ public class FolderPageView implements InstancePageView {
         stylesheet.ensureInjected();
     }
 
-    public Promise<Void> show(FormInstance folderInstance) {
-        this.instance = folderInstance;
+    public Promise<Void> show(InstanceViewModel view) {
+        this.instance = view.getInstance();
         pageHeader.setPageTitle(instance.getString(FolderClass.LABEL_FIELD_ID));
         pageHeader.setIconStyle("glyphicon glyphicon-folder-open");
 
