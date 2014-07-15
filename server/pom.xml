@@ -506,6 +506,7 @@
               <compileReport>false</compileReport>
               <modules>
                 <module>org.activityinfo.ui.ActivityInfoCI</module>
+                <module>org.activityinfo.ui.AI</module>
                 <module>org.activityinfo.ui.Embed</module>
               </modules>
             </configuration>
@@ -593,6 +594,7 @@
             <configuration>
               <modules>
                 <module>org.activityinfo.ui.ActivityInfoRelease</module>
+                <module>org.activityinfo.ui.AI</module>
                 <module>org.activityinfo.ui.embed.Embed</module>
               </modules>
             </configuration>
