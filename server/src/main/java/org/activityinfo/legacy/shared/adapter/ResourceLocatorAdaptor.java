@@ -52,6 +52,8 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
             } else if (instance.getId().getDomain() == CuidAdapter.LOCATION_DOMAIN) {
                 return new LocationPersister(dispatcher, instance).persist();
             }
+        } else if(resource instanceof FormClass) {
+            return new FormPersister(dispatcher, (FormClass)resource).persist();
         }
         return Promise.rejected(new UnsupportedOperationException());
     }

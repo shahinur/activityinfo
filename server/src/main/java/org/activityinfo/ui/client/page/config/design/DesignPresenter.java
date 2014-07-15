@@ -211,6 +211,12 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                     return null;
                 }
             });
+        } else if(UIActions.EDIT.equals(actionId)) {
+            IsFormClass formClass = (IsFormClass) view.getSelection();
+            eventBus.fireEvent(new NavigationEvent(
+                    NavigationHandler.NAVIGATION_REQUESTED,
+                    new InstancePlace(formClass.getResourceId(), "design")));
+
         } else if(UIActions.OPEN_TABLE.equals(actionId)) {
             IsFormClass formClass = (IsFormClass) view.getSelection();
             eventBus.fireEvent(new NavigationEvent(
@@ -388,8 +394,19 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
     @Override
     public void onSelectionChanged(ModelData selectedItem) {
+        view.setActionEnabled(UIActions.EDIT, this.db.isDesignAllowed() && canEditWithFormDesigner(selectedItem));
         view.setActionEnabled(UIActions.DELETE, this.db.isDesignAllowed() && selectedItem instanceof EntityDTO);
         view.setActionEnabled(UIActions.OPEN_TABLE, selectedItem instanceof IsFormClass);
+    }
+
+    private boolean canEditWithFormDesigner(ModelData selectedItem) {
+        if(!(selectedItem instanceof ActivityDTO)) {
+            return false;
+        }
+        ActivityDTO activity = (ActivityDTO)selectedItem;
+
+        // we still don't have a plan for monthly reporting
+        return activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE;
     }
 
     @Override

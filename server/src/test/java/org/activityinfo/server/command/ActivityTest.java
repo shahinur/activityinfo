@@ -22,7 +22,8 @@ package org.activityinfo.server.command;
  * #L%
  */
 
-import junit.framework.Assert;
+import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.BatchCommand;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
@@ -30,8 +31,12 @@ import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.database.OnDataSet;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +44,10 @@ import org.junit.runner.RunWith;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
+import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityFormClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/schema1.db.xml")
@@ -124,5 +132,44 @@ public class ActivityTest extends CommandTestCase2 {
 
         SchemaDTO schema = execute(new GetSchema());
         assertEquals(Published.ALL_ARE_PUBLISHED.getIndex(), schema.getActivityById(1).getPublished());
+    }
+
+    @Test
+    public void testFormPersister() {
+
+        SchemaDTO schema = execute(new GetSchema());
+        UserDatabaseDTO db = schema.getDatabaseById(1);
+        LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
+
+
+        ActivityDTO act = new ActivityDTO();
+        act.setName("Household Survey");
+        act.setLocationType(locType);
+        act.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+
+
+        CreateResult createResult = execute(CreateEntity.Activity(db, act));
+        ResourceId classId = activityFormClass(createResult.getNewId());
+
+        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(classId));
+
+        FormField newField = new FormField(ResourceId.generateId());
+        newField.setLabel("How old are you?");
+        newField.setType(new QuantityType().setUnits("years"));
+        formClass.addElement(newField);
+
+        assertResolves(resourceLocator.persist(formClass));
+
+        newField.setLabel("How old are you today?");
+        // save again
+        assertResolves(resourceLocator.persist(formClass));
+
+        FormClass reform = assertResolves(resourceLocator.getFormClass(formClass.getId()));
+        System.out.println(reform.getFields().toString());
+
+        assertThat(reform.getFields(), Matchers.hasSize(7));
+
+
     }
 }

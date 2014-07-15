@@ -209,16 +209,16 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         newButtonMenu.setEnabled(db.isDesignAllowed());
         toolBar.add(newButtonMenu);
 
+        toolBar.add(new SeparatorMenuItem());
+
+        toolBar.addButton(UIActions.EDIT, "Open Form Designer", IconImageBundle.ICONS.edit());
+        toolBar.addButton(UIActions.OPEN_TABLE, "Open Table", IconImageBundle.ICONS.table());
         toolBar.addDeleteButton();
 
         toolBar.add(new SeparatorToolItem());
 
         toolBar.addImportButton();
         toolBar.addExcelExportButton();
-
-        toolBar.add(new SeparatorMenuItem());
-
-        toolBar.addButton(UIActions.OPEN_TABLE, "Open Table", IconImageBundle.ICONS.table());
     }
 
     protected void initNewMenu(Menu menu, SelectionListener<MenuEvent> listener) {
