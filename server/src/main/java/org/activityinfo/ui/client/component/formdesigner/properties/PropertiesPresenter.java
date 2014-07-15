@@ -30,7 +30,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
@@ -52,7 +53,10 @@ public class PropertiesPresenter {
         eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
             @Override
             public void handle(WidgetContainerSelectionEvent event) {
-                show(event.getSelectedItem());
+                WidgetContainer widgetContainer = event.getSelectedItem();
+                if (widgetContainer instanceof FieldWidgetContainer) {
+                    show((FieldWidgetContainer) widgetContainer);
+                }
             }
         });
         eventBus.addHandler(HeaderSelectionEvent.TYPE, new HeaderSelectionEvent.Handler() {
@@ -81,10 +85,10 @@ public class PropertiesPresenter {
         }
     }
 
-    private void show(final WidgetContainer widgetContainer) {
+    private void show(final FieldWidgetContainer fieldWidgetContainer) {
         reset();
 
-        final FormField formField = widgetContainer.getFormField();
+        final FormField formField = fieldWidgetContainer.getFormField();
 
         view.setVisible(true);
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
@@ -92,18 +96,18 @@ public class PropertiesPresenter {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 formField.setLabel(view.getLabel().getValue());
-                widgetContainer.syncWithModel();
+                fieldWidgetContainer.syncWithModel();
             }
         });
         descriptionKeyUpHandler = view.getDescription().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 formField.setDescription(view.getDescription().getValue());
-                widgetContainer.syncWithModel();
+                fieldWidgetContainer.syncWithModel();
             }
         });
 
-        PropertiesViewBuilder viewBuilder = new PropertiesViewBuilder(widgetContainer);
+        PropertiesViewBuilder viewBuilder = new PropertiesViewBuilder(fieldWidgetContainer);
         for (PropertyTypeView propertyTypeView : viewBuilder.build()) {
             Widget w = propertyTypeView.asWidget();
             lastPropertyTypeViewWidgets.add(w);

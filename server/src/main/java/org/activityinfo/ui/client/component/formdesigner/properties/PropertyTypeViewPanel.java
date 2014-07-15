@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.ui.client.component.formdesigner.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.widget.TextBox;
 
 /**
@@ -46,14 +46,14 @@ public class PropertyTypeViewPanel extends Composite implements PropertyTypeView
     interface OurUiBinder extends UiBinder<Widget, PropertyTypeViewPanel> {
     }
 
-    private final WidgetContainer widgetContainer;
+    private final FieldWidgetContainer widgetContainer;
     private final FormField formField;
     @UiField
     TextBox label;
     @UiField
     HTML name;
 
-    public PropertyTypeViewPanel(final WidgetContainer widgetContainer, final FormField formField) {
+    public PropertyTypeViewPanel(final FieldWidgetContainer widgetContainer, final FormField formField) {
         this.widgetContainer = widgetContainer;
         this.formField = formField;
 
