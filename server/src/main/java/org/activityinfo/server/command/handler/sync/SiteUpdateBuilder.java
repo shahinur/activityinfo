@@ -36,7 +36,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 
     private final EntityManager entityManager;
 
-    private int databaseId;
+    private int activityId;
     private SqliteBatchBuilder batch;
     private long localVersion;
 
@@ -48,17 +48,21 @@ public class SiteUpdateBuilder implements UpdateBuilder {
     @Override
     public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws IOException {
         batch = new SqliteBatchBuilder();
-        databaseId = parseDatabaseId(request.getRegionId());
+        activityId = parseActivityId(request.getRegionId());
         localVersion = TimestampHelper.fromString(request.getLocalVersion());
 
         SyncRegionUpdate update = new SyncRegionUpdate();
         long latestVersion = queryLatestVersion();
 
         if (latestVersion > localVersion) {
-            SqlQuery updatedQuery = updatedSites();
-            String updatedIds = SqlQueryUtil.queryIdSet(entityManager, updatedQuery);
 
-            deleteUpdated(updatedIds);
+            if(localVersion > 0) {
+                SqlQuery updatedQuery = updatedSites();
+                String updatedIds = SqlQueryUtil.queryIdSet(entityManager, updatedQuery);
+
+                deleteUpdated(updatedIds);
+            }
+
             insertUpdatedSites();
             insertUpdatedReportingPeriods();
             insertUpdatedAttributeValues();
@@ -66,13 +70,12 @@ public class SiteUpdateBuilder implements UpdateBuilder {
 
             update.setSql(batch.build());
         }
-
         update.setComplete(true);
         update.setVersion(Long.toString(latestVersion));
         return update;
     }
 
-    private int parseDatabaseId(String regionId) {
+    private int parseActivityId(String regionId) {
         String[] parts = regionId.split("/");
         return Integer.parseInt(parts[1]);
     }
@@ -121,8 +124,8 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                        .leftJoin(Tables.ACTIVITY, "a")
                        .on("a.ActivityId=s.ActivityId")
                        .appendColumn("s.SiteId")
-                       .where("a.DatabaseId")
-                       .equalTo(databaseId)
+                       .where("a.ActivityId")
+                       .equalTo(activityId)
                        .where("s.timeEdited")
                        .greaterThan(localVersion);
     }
@@ -141,8 +144,8 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                        .appendColumn("iv.Value")
                        .appendColumn("iv.TextValue")
                        .appendColumn("iv.DateValue")
-                       .where("a.DatabaseId")
-                       .equalTo(databaseId)
+                       .where("a.ActivityId")
+                       .equalTo(activityId)
                        .where("s.timeEdited")
                        .greaterThan(localVersion)
                        .whereTrue("s.dateDeleted IS NULL");
@@ -159,8 +162,8 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                        .appendColumn("rp.SiteId")
                        .appendColumn("rp.Date1")
                        .appendColumn("rp.Date2")
-                       .where("a.DatabaseId")
-                       .equalTo(databaseId)
+                       .where("a.ActivityId")
+                       .equalTo(activityId)
                        .where("s.timeEdited")
                        .greaterThan(localVersion)
                        .whereTrue("s.dateDeleted IS NULL");
@@ -176,10 +179,11 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                        .appendColumn("av.AttributeId")
                        .appendColumn("av.SiteId")
                        .appendColumn("av.Value")
-                       .where("a.DatabaseId")
-                       .equalTo(databaseId)
+                       .where("a.ActivityId")
+                       .equalTo(activityId)
                        .where("s.timeEdited")
                        .greaterThan(localVersion)
+                       .whereTrue("av.Value=1")
                        .whereTrue("s.dateDeleted IS NULL");
     }
 
@@ -199,8 +203,8 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                        .appendColumn("s.timeEdited")
                        .where("s.timeEdited")
                        .greaterThan(localVersion)
-                       .where("a.DatabaseId")
-                       .equalTo(databaseId)
+                       .where("a.ActivityId")
+                       .equalTo(activityId)
                        .whereTrue("s.dateDeleted IS NULL");
     }
 
@@ -210,8 +214,8 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                                  .leftJoin(Tables.ACTIVITY, "a")
                                  .on("a.ActivityId=s.ActivityId")
                                  .appendColumn("MAX(timeEdited)", "last")
-                                 .where("a.DatabaseId")
-                                 .equalTo(databaseId);
+                                 .where("a.ActivityId")
+                                 .equalTo(activityId);
 
         return SqlQueryUtil.queryLong(entityManager, query);
 

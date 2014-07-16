@@ -226,6 +226,7 @@ public class DesignTest {
         resetToDefault(view);
         view.setActionEnabled(UIActions.DELETE, true);
         view.setActionEnabled(UIActions.OPEN_TABLE, true);
+        view.setActionEnabled(UIActions.EDIT, true);
         replay(view);
 
         designer.onSelectionChanged(schema.getActivityById(91));
@@ -236,6 +237,8 @@ public class DesignTest {
         reset(view);
         view.setActionEnabled(UIActions.OPEN_TABLE, false);
         view.setActionEnabled(UIActions.DELETE, false);
+        view.setActionEnabled(UIActions.EDIT, false);
+
         replay(view);
 
         designer.onSelectionChanged(new IndicatorFolder(null));

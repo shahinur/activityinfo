@@ -74,7 +74,7 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
             }
         }
 
-        List<SyncRegion> regions = new ArrayList<SyncRegion>();
+        List<SyncRegion> regions = new ArrayList<>();
         regions.add(new SyncRegion("schema", Long.toString(schemaVersion)));
         regions.addAll(listAdminRegions(countryIds));
         regions.addAll(listLocations(databaseIds));
@@ -138,18 +138,18 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
         siteRegions.add(new SyncRegion("site-tables", SiteTableUpdateBuilder.CURRENT_VERSION));
 
         if (CollectionUtil.isNotEmpty(databases)) {
-            // do one sync region per database
+            // do one sync region per form
             List<Object[]> regions = entityManager.createQuery("SELECT " +
-                                                               "s.activity.database.id, " +
+                                                               "s.activity.id, " +
                                                                "MAX(s.timeEdited) " +
                                                                "FROM Site s " +
                                                                "WHERE s.activity.database.id in (:dbs) " +
-                                                               "GROUP BY s.activity.database.id")
+                                                               "GROUP BY s.activity.id")
                                                   .setParameter("dbs", databases)
                                                   .getResultList();
 
             for (Object[] region : regions) {
-                siteRegions.add(new SyncRegion("site/" + region[0], region[1].toString()));
+                siteRegions.add(new SyncRegion("form-submissions/" + region[0], region[1].toString()));
             }
         }
         return siteRegions;
