@@ -22,6 +22,8 @@ package org.activityinfo.ui.client.util;
  */
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author yuriyz on 1/27/14.
@@ -78,5 +80,17 @@ public class GwtUtil {
 
     public static String valueWithTooltip(String value) {
         return "<span qtip='" + value + "'>" + value + "</span>";
+    }
+
+    public static ScrollPanel getScrollAncestor(Widget widget) {
+        if (widget != null && widget.getParent() != null) {
+            final Widget parent = widget.getParent();
+            if (parent instanceof ScrollPanel) {
+                return (ScrollPanel) parent;
+            } else {
+                return getScrollAncestor(parent);
+            }
+        }
+        return null;
     }
 }

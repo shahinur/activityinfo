@@ -33,6 +33,8 @@ public class Metrics {
     public static final int SOURCE_CONTROL_HEIGHT_PX = 32;
     public static final int SOURCE_CONTROL_MARGIN_RIGHT = 10;
 
+    public static final int MAX_VERTICAL_SCROLL_POSITION = 170;
+
     public static final int EXPECTED_MAX_CHILD_HEIGHT = 200;
     public static final int PANEL_HEIGHT_INCREASE_CORRECTION = 300;
     public static final int HEIGHT_DIFF_BETWEEN_DROPPANEL_AND_CONTAINER_ABSOLUTE_PANEL = 100;

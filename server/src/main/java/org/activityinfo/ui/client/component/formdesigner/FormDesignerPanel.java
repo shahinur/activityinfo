@@ -26,6 +26,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ScrollEvent;
+import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.AttachEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -42,6 +45,7 @@ import org.activityinfo.ui.client.component.formdesigner.drop.NullValueUpdater;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPanel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldPalette;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPanel;
+import org.activityinfo.ui.client.util.GwtUtil;
 import org.activityinfo.ui.client.widget.Button;
 
 import javax.annotation.Nonnull;
@@ -52,9 +56,9 @@ import java.util.Map;
 /**
  * @author yuriyz on 07/04/2014.
  */
-public class FormDesignerPanel extends Composite {
+public class FormDesignerPanel extends Composite implements ScrollHandler {
 
-    private static OurUiBinder uiBinder = GWT
+    private final static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
 
 
@@ -62,6 +66,7 @@ public class FormDesignerPanel extends Composite {
     }
 
     private final Map<ResourceId, WidgetContainer> containerMap = Maps.newHashMap();
+    private ScrollPanel scrollAncestor;
 
     @UiField
     HTMLPanel containerPanel;
@@ -77,11 +82,21 @@ public class FormDesignerPanel extends Composite {
     Button saveButton;
     @UiField
     HTML statusMessage;
+    @UiField
+    HTML spacer;
 
     public FormDesignerPanel(final ResourceLocator resourceLocator, @Nonnull final FormClass formClass) {
         FormDesignerStyles.INSTANCE.ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
         propertiesPanel.setVisible(false);
+
+        addAttachHandler(new AttachEvent.Handler() {
+            @Override
+            public void onAttachOrDetach(AttachEvent event) {
+                scrollAncestor = GwtUtil.getScrollAncestor(FormDesignerPanel.this);
+                scrollAncestor.addScrollHandler(FormDesignerPanel.this);
+            }
+        });
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
@@ -131,12 +146,12 @@ public class FormDesignerPanel extends Composite {
     }
 
     private void buildWidgetContainers(final FormDesigner formDesigner, FormElementContainer container, int depth, List<Promise<Void>> promises) {
-        for(FormElement element : container.getElements()) {
-            if(element instanceof FormSection) {
+        for (FormElement element : container.getElements()) {
+            if (element instanceof FormSection) {
                 FormSection formSection = (FormSection) element;
                 containerMap.put(formSection.getId(), new SectionWidgetContainer(formDesigner, formSection));
                 buildWidgetContainers(formDesigner, formSection, depth + 1, promises);
-            } else if(element instanceof FormField) {
+            } else if (element instanceof FormField) {
                 final FormField formField = (FormField) element;
                 Promise<Void> promise = formDesigner.getFormFieldWidgetFactory().createWidget(formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
                     @Nullable
@@ -148,6 +163,18 @@ public class FormDesignerPanel extends Composite {
                 });
                 promises.add(promise);
             }
+        }
+    }
+
+    @Override
+    public void onScroll(ScrollEvent event) {
+        int verticalScrollPosition = scrollAncestor.getVerticalScrollPosition();
+        if (verticalScrollPosition > Metrics.MAX_VERTICAL_SCROLL_POSITION) {
+            int height = verticalScrollPosition - Metrics.MAX_VERTICAL_SCROLL_POSITION;
+            GWT.log("verticalPos = " + verticalScrollPosition + ", height = " + height);
+            spacer.setHeight(height + "px");
+        } else {
+            spacer.setHeight("0px");
         }
     }
 
