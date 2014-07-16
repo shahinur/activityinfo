@@ -23,31 +23,36 @@ package org.activityinfo.ui.client.component.formdesigner.drop;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.allen_sauer.gwt.dnd.client.drop.AbsolutePositionDropController;
+import com.allen_sauer.gwt.dnd.client.drop.FlowPanelDropController;
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Style;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
-import org.activityinfo.ui.client.component.formdesigner.Spacer;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldLabel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldTemplate;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author yuriyz on 07/07/2014.
  */
-public class DropPanelDropController extends AbsolutePositionDropController {
+public class DropPanelDropController extends FlowPanelDropController {
 
-    private final Spacer spacer = new Spacer();
+    private final Positioner positioner = new Positioner();
     private FormDesigner formDesigner;
-    private DropTargetPanel dropTarget;
+    private FlowPanel dropTarget;
 
-    public DropPanelDropController(DropTargetPanel dropTarget, FormDesigner formDesigner) {
+    public DropPanelDropController(FlowPanel dropTarget, FormDesigner formDesigner) {
         super(dropTarget);
         this.formDesigner = formDesigner;
         this.dropTarget = dropTarget;
@@ -55,64 +60,54 @@ public class DropPanelDropController extends AbsolutePositionDropController {
 
     @Override
     public void onPreviewDrop(DragContext context) throws VetoDragException {
-
-        int spacerIndex = dropTarget.getWidgetIndex(spacer);
-        if (spacerIndex != -1) {
-            dropTarget.remove(spacerIndex);
-        }
+        super.onPreviewDrop(context); // important ! - calculates drop index
 
         if (context.draggable instanceof FieldLabel) {
-            previewDropNewWidget(((FieldLabel) context.draggable).getFieldTemplate());
-        } else {
-            draggingExistingWidgetContainer(context);
+            previewDropNewWidget(context);
+        } else if (context.draggable instanceof FocusPanel) {
+            FocusPanel focusPanel = (FocusPanel) context.draggable;
+            // hack ! - emulate clickevent on FocusPanel
+            NativeEvent event = Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false);
+            DomEvent.fireNativeEvent(event, focusPanel);
         }
     }
 
-    private void previewDropNewWidget(FieldTemplate fieldTemplate) throws VetoDragException {
+    private void previewDropNewWidget(final DragContext context) throws VetoDragException {
+        final FieldTemplate fieldTemplate = ((FieldLabel) context.draggable).getFieldTemplate();
         final FormField formField = fieldTemplate.createField();
-        formDesigner.getFormClass().insertElement(formDesigner.getInsertIndex(), formField);
 
-        formDesigner.getFormFieldWidgetFactory()
-                .createWidget(formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
+        formDesigner.getFormFieldWidgetFactory().createWidget(formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
             @Nullable
             @Override
             public Void apply(@Nullable FormFieldWidget formFieldWidget) {
-                Widget containerWidget = new FieldWidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
-                Integer insertIndex = formDesigner.getInsertIndex();
-                if (insertIndex != null) {
-                    dropTarget.insert(containerWidget, insertIndex);
-                } else { // null means insert in tail
-                    dropTarget.add(containerWidget);
-                }
+                final Widget containerWidget = new FieldWidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
+
+                // hack ! - replace original selected widget with our container, drop it and then restore selection
+                final List<Widget> originalSelectedWidgets = context.selectedWidgets;
+                context.selectedWidgets = Lists.newArrayList(containerWidget);
+                DropPanelDropController.super.onDrop(context); // drop container
+                context.selectedWidgets = originalSelectedWidgets; // restore state;
+
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        int widgetIndex = dropTarget.getWidgetIndex(containerWidget);
+
+                        // update model
+                        formDesigner.getFormClass().insertElement(widgetIndex, formField);
+                        formDesigner.getDragController().makeDraggable(containerWidget);
+                    }
+                });
                 return null;
             }
         });
-
 
         // forbid drop of source control widget
         throw new VetoDragException();
     }
 
-    private void draggingExistingWidgetContainer(final DragContext context) throws VetoDragException {
-
-        final Integer insertIndex = formDesigner.getInsertIndex();
-        final Widget draggable = context.draggable;
-        if (insertIndex != null) {
-            dropTarget.insert(draggable, insertIndex);
-        } else { // null means insert in tail
-            dropTarget.add(draggable);
-        }
-
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                // avoid widgets overlap
-                draggable.getElement().getStyle().setPosition(Style.Position.RELATIVE);
-                draggable.getElement().getStyle().setTop(0, Style.Unit.PX);
-                formDesigner.getDragController().makeNotDraggable(draggable);
-            }
-        });
-        throw new VetoDragException();
+    @Override
+    protected Widget newPositioner(DragContext context) {
+        return positioner.asWidget();
     }
-
 }

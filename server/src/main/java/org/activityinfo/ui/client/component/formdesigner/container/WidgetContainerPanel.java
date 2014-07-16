@@ -118,15 +118,8 @@ public class WidgetContainerPanel {
     public void setSelected(boolean selected) {
         if (selected) {
             focusPanel.addStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
-            formDesigner.getDragController().makeDraggable(focusPanel);
         } else {
             focusPanel.removeStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
-            try {
-                formDesigner.getDragController().makeNotDraggable(focusPanel);
-            } catch (Exception e) {
-                // ignore exception, we don't want to track which panels are draggable and which are not
-                // RuntimeException: dragHandle was not draggable
-            }
         }
     }
 }

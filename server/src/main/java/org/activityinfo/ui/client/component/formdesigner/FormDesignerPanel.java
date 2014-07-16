@@ -29,10 +29,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.*;
 import org.activityinfo.model.resource.ResourceId;
@@ -41,7 +38,6 @@ import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.container.SectionWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
-import org.activityinfo.ui.client.component.formdesigner.drop.DropTargetPanel;
 import org.activityinfo.ui.client.component.formdesigner.drop.NullValueUpdater;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPanel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldPalette;
@@ -65,12 +61,12 @@ public class FormDesignerPanel extends Composite {
     interface OurUiBinder extends UiBinder<Widget, FormDesignerPanel> {
     }
 
-    private final Map<ResourceId, WidgetContainer> widgetMap = Maps.newHashMap();
+    private final Map<ResourceId, WidgetContainer> containerMap = Maps.newHashMap();
 
     @UiField
     AbsolutePanel containerPanel;
     @UiField
-    DropTargetPanel dropPanel;
+    FlowPanel dropPanel;
     @UiField
     PropertiesPanel propertiesPanel;
     @UiField
@@ -89,19 +85,19 @@ public class FormDesignerPanel extends Composite {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                FormDesigner formDesigner = new FormDesigner(FormDesignerPanel.this, resourceLocator, formClass);
+                final FormDesigner formDesigner = new FormDesigner(FormDesignerPanel.this, resourceLocator, formClass);
                 List<Promise<Void>> promises = Lists.newArrayList();
                 buildWidgetContainers(formDesigner, formClass, 0, promises);
                 Promise.waitAll(promises).then(new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         // ugly but we still have exception like: unsupportedoperationexception: domain is not supported.
-                        fillPanel(formClass);
+                        fillPanel(formClass, formDesigner);
                     }
 
                     @Override
                     public void onSuccess(Void result) {
-                        fillPanel(formClass);
+                        fillPanel(formClass, formDesigner);
                     }
                 });
 
@@ -109,19 +105,23 @@ public class FormDesignerPanel extends Composite {
         });
     }
 
-    private void fillPanel(final FormClass formClass) {
+    private void fillPanel(final FormClass formClass, final FormDesigner formDesigner) {
         formClass.traverse(formClass, new TraverseFunction() {
             @Override
             public void apply(FormElement element, FormElementContainer container) {
                 if (element instanceof FormField) {
                     FormField formField = (FormField) element;
-                    WidgetContainer widgetContainer = widgetMap.get(formField.getId());
+                    WidgetContainer widgetContainer = containerMap.get(formField.getId());
                     if (widgetContainer != null) { // widget container may be null if domain is not supported, should be removed later
-                        dropPanel.add(widgetContainer.asWidget());
+                        Widget widget = widgetContainer.asWidget();
+                        formDesigner.getDragController().makeDraggable(widget);
+                        dropPanel.add(widget);
                     }
                 } else if (element instanceof FormSection) {
                     FormSection section = (FormSection) element;
-                    dropPanel.add(widgetMap.get(section.getId()).asWidget());
+                    Widget widget = containerMap.get(section.getId()).asWidget();
+                    formDesigner.getDragController().makeDraggable(widget);
+                    dropPanel.add(widget);
                 } else {
                     throw new UnsupportedOperationException("Unknow form element.");
                 }
@@ -133,7 +133,7 @@ public class FormDesignerPanel extends Composite {
         for(FormElement element : container.getElements()) {
             if(element instanceof FormSection) {
                 FormSection formSection = (FormSection) element;
-                widgetMap.put(formSection.getId(), new SectionWidgetContainer(formDesigner, formSection));
+                containerMap.put(formSection.getId(), new SectionWidgetContainer(formDesigner, formSection));
                 buildWidgetContainers(formDesigner, formSection, depth + 1, promises);
             } else if(element instanceof FormField) {
                 final FormField formField = (FormField) element;
@@ -141,7 +141,7 @@ public class FormDesignerPanel extends Composite {
                     @Nullable
                     @Override
                     public Void apply(@Nullable FormFieldWidget input) {
-                        widgetMap.put(formField.getId(), new FieldWidgetContainer(formDesigner, input, formField));
+                        containerMap.put(formField.getId(), new FieldWidgetContainer(formDesigner, input, formField));
                         return null;
                     }
                 });
@@ -150,7 +150,11 @@ public class FormDesignerPanel extends Composite {
         }
     }
 
-    public DropTargetPanel getDropPanel() {
+    public Map<ResourceId, WidgetContainer> getContainerMap() {
+        return containerMap;
+    }
+
+    public FlowPanel getDropPanel() {
         return dropPanel;
     }
 

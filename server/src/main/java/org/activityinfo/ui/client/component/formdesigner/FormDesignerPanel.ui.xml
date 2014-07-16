@@ -38,7 +38,7 @@
     <g:at left='360' top='10'>
       <g:HTMLPanel>
         <header:HeaderPanel ui:field="headerPanel"/>
-        <drop:DropTargetPanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
+        <g:FlowPanel addStyleNames="{style.mainPanel}" width="780px" height="780px" ui:field="dropPanel"/>
       </g:HTMLPanel>
     </g:at>
   </g:AbsolutePanel>

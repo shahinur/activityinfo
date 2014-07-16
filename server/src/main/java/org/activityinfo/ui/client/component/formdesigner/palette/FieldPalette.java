@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.client.component.formdesigner.ControlDragHandler;
 import org.activityinfo.ui.client.component.formdesigner.Metrics;
 
 import java.util.List;
@@ -49,7 +48,6 @@ public class FieldPalette implements IsWidget {
         this.panel = new AbsolutePanel();
         dragController = new PickupDragController(RootPanel.get(), false);
         dragController.setBehaviorMultipleSelection(false);
-        dragController.addDragHandler(new ControlDragHandler());
 
         List<FieldTemplate> templates = FieldTemplates.list();
         for (int i=0;i!=templates.size();++i) {

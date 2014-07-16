@@ -29,7 +29,6 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
 import org.activityinfo.ui.client.component.formdesigner.drop.ForwardDropController;
-import org.activityinfo.ui.client.component.formdesigner.drop.SpacerDropController;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPresenter;
 
@@ -47,7 +46,6 @@ public class FormDesigner {
     private final HeaderPresenter headerPresenter;
     private final FormDesignerPanel formDesignerPanel;
     private final FormFieldWidgetFactory formFieldWidgetFactory;
-    private Integer insertIndex = null; // null means insert in tail
 
     public FormDesigner(@Nonnull FormDesignerPanel formDesignerPanel, @Nonnull ResourceLocator resourceLocator, @Nonnull FormClass formClass) {
         this.formDesignerPanel = formDesignerPanel;
@@ -58,11 +56,8 @@ public class FormDesigner {
 
         formFieldWidgetFactory = new FormFieldWidgetFactory(resourceLocator);
 
-        formDesignerPanel.getDropPanel().setFormDesigner(this);
-
         ForwardDropController forwardDropController = new ForwardDropController(formDesignerPanel.getDropPanel());
         forwardDropController.add(new DropPanelDropController(formDesignerPanel.getDropPanel(), this));
-        forwardDropController.add(new SpacerDropController(formDesignerPanel.getDropPanel(), this));
 
         formDesignerPanel.getFieldPalette().registerDropController(forwardDropController);
 
@@ -87,14 +82,6 @@ public class FormDesigner {
 
     public FormClass getFormClass() {
         return formClass;
-    }
-
-    public Integer getInsertIndex() {
-        return insertIndex;
-    }
-
-    public void setInsertIndex(Integer insertIndex) {
-        this.insertIndex = insertIndex;
     }
 
     public FormFieldWidgetFactory getFormFieldWidgetFactory() {

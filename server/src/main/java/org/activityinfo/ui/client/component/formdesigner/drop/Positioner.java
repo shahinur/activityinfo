@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner;
+package org.activityinfo.ui.client.component.formdesigner.drop;
 /*
  * #%L
  * ActivityInfo Server
@@ -24,15 +24,17 @@ package org.activityinfo.ui.client.component.formdesigner;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles;
+import org.activityinfo.ui.client.component.formdesigner.Metrics;
 
 /**
  * @author yuriyz on 7/8/14.
  */
-public class Spacer implements IsWidget {
+public class Positioner implements IsWidget {
 
     private final HTML widget = new HTML();
 
-    public Spacer() {
+    public Positioner() {
         widget.addStyleName(FormDesignerStyles.INSTANCE.spacer());
         widget.setHeight(Metrics.SOURCE_CONTROL_HEIGHT_PX + "px");
     }
