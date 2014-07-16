@@ -120,7 +120,7 @@ public class FormSubmissionResource extends ODKResource {
         // save
         CreateResult createResult = dispatcher.execute(cmd);
 
-        // create sitehistory entry
+        // create site history entry
         siteHistoryProcessor.process(cmd, getUser().getId(), createResult.getNewId());
     }
 
