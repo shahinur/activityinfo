@@ -1,6 +1,7 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.*;
@@ -9,10 +10,15 @@ import org.activityinfo.model.form.*;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.time.LocalDateType;
 
+import java.util.List;
+
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityCategoryFolderId;
+import static org.activityinfo.legacy.shared.adapter.CuidAdapter.attributeId;
 
 /**
  * Adapts a Legacy "Activity" model to a FormClass
@@ -73,14 +79,17 @@ public class ActivityUserFormBuilder {
 
         for (AttributeGroupDTO group : activity.getAttributeGroups()) {
 
-            ReferenceType type = new ReferenceType();
-            type.setCardinality(group.isMultipleAllowed() ? Cardinality.MULTIPLE : Cardinality.SINGLE);
-            type.setRange(CuidAdapter.attributeGroupFormClass(group));
+            Cardinality cardinality = group.isMultipleAllowed() ? Cardinality.MULTIPLE : Cardinality.SINGLE;
+            List<EnumValue> values = Lists.newArrayList();
+            for(AttributeDTO attribute : group.getAttributes()) {
+                values.add(new EnumValue(CuidAdapter.attributeId(attribute.getId()), attribute.getName()));
+            }
 
             FormField attributeField = new FormField(CuidAdapter.attributeGroupField(activity, group))
             .setLabel(group.getName())
-            .setType(type)
+            .setType(new EnumType(cardinality, values))
             .setRequired(group.isMandatory());
+
             siteForm.addElement(attributeField);
         }
 

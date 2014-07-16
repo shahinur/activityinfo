@@ -32,6 +32,7 @@ import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.time.LocalDateType;
@@ -84,6 +85,9 @@ public class FormFieldWidgetFactory {
 
         } else if(type instanceof GeoPointType) {
             return Promise.resolved(new GeographicPointWidget(valueUpdater));
+
+        } else if(type instanceof EnumType) {
+            return Promise.resolved(new EnumFieldWidget((EnumType) field.getType(), valueUpdater));
 
         } else if(type instanceof ReferenceType) {
             if(field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
