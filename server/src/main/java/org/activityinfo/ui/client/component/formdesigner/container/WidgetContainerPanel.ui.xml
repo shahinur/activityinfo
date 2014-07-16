@@ -6,13 +6,15 @@
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
   <ui:with field="style" type="org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles"/>
 
-  <g:FocusPanel ui:field="focusPanel" addStyleNames="{style.widgetContainer}">
-    <g:VerticalPanel width="100%">
+  <g:FocusPanel ui:field="focusPanel" addStyleNames="{style.widgetContainer} form-group">
+    <g:HTMLPanel width="100%">
       <g:HTML ui:field="label"/>
-      <g:HorizontalPanel width="100%">
-        <g:SimplePanel ui:field="widgetContainer"/>
-        <g:Button text="x" ui:field="removeButton" addStyleNames="close pull-right btn-link"/>
-      </g:HorizontalPanel>
-    </g:VerticalPanel>
+      <div class="row" width="100%">
+        <g:SimplePanel ui:field="widgetContainer" addStyleNames="col-md-11"/>
+        <div class="col-md-1">
+          <g:Button text="x" ui:field="removeButton" addStyleNames="close pull-right btn-link"/>
+        </div>
+      </div>
+    </g:HTMLPanel>
   </g:FocusPanel>
 </ui:UiBinder>
