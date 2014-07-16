@@ -114,13 +114,14 @@ public class FormDesignerPanel extends Composite {
                     WidgetContainer widgetContainer = containerMap.get(formField.getId());
                     if (widgetContainer != null) { // widget container may be null if domain is not supported, should be removed later
                         Widget widget = widgetContainer.asWidget();
-                        formDesigner.getDragController().makeDraggable(widget);
+                        formDesigner.getDragController().makeDraggable(widget, widgetContainer.getDragHandle());
                         dropPanel.add(widget);
                     }
                 } else if (element instanceof FormSection) {
                     FormSection section = (FormSection) element;
-                    Widget widget = containerMap.get(section.getId()).asWidget();
-                    formDesigner.getDragController().makeDraggable(widget);
+                    WidgetContainer widgetContainer = containerMap.get(section.getId());
+                    Widget widget = widgetContainer.asWidget();
+                    formDesigner.getDragController().makeDraggable(widget, widgetContainer.getDragHandle());
                     dropPanel.add(widget);
                 } else {
                     throw new UnsupportedOperationException("Unknow form element.");

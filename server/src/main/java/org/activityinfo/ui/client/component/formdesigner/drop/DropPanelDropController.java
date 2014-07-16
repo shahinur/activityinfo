@@ -80,7 +80,8 @@ public class DropPanelDropController extends FlowPanelDropController {
             @Nullable
             @Override
             public Void apply(@Nullable FormFieldWidget formFieldWidget) {
-                final Widget containerWidget = new FieldWidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
+                final FieldWidgetContainer fieldWidgetContainer = new FieldWidgetContainer(formDesigner, formFieldWidget, formField);
+                final Widget containerWidget = fieldWidgetContainer.asWidget();
 
                 // hack ! - replace original selected widget with our container, drop it and then restore selection
                 final List<Widget> originalSelectedWidgets = context.selectedWidgets;
@@ -95,7 +96,7 @@ public class DropPanelDropController extends FlowPanelDropController {
 
                         // update model
                         formDesigner.getFormClass().insertElement(widgetIndex, formField);
-                        formDesigner.getDragController().makeDraggable(containerWidget);
+                        formDesigner.getDragController().makeDraggable(containerWidget, fieldWidgetContainer.getDragHandle());
                     }
                 });
                 return null;
