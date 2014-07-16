@@ -55,12 +55,6 @@ public class LocationUpdateBuilder implements UpdateBuilder {
         batch = new SqliteBatchBuilder();
 
         long latestVersion = queryLatestVersion();
-
-        if(localState.lastDate == 0) {
-            batch.createTableIfNotExists(em, Tables.LOCATION);
-            batch.createTableIfNotExists(em, Tables.LOCATION_ADMIN_LINK);
-        }
-
         if (latestVersion > localState.lastDate) {
             queryChanged();
             linkAdminEntities();

@@ -22,13 +22,10 @@ package org.activityinfo.server.command.handler.sync;
  * #L%
  */
 
-import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.sync.server.JpaUpdateBuilder;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import org.activityinfo.legacy.shared.command.GetSyncRegionUpdates;
 import org.activityinfo.legacy.shared.command.result.SyncRegionUpdate;
-import org.activityinfo.legacy.shared.impl.Tables;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOProvider;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
 import org.activityinfo.server.database.hibernate.entity.*;
@@ -36,29 +33,56 @@ import org.json.JSONException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-import static com.bedatadriven.rebar.sql.client.query.SqlQuery.*;
-
 public class SchemaUpdateBuilder implements UpdateBuilder {
-
-    private static final Logger LOGGER = Logger.getLogger(SchemaUpdateBuilder.class.getName());
 
     private final UserDatabaseDAO userDatabaseDAO;
     private final EntityManager entityManager;
 
-    private SqliteBatchBuilder batch;
-    private Set<Integer> databaseIds = Sets.newHashSet();
+    private final Set<Integer> countryIds = new HashSet<Integer>();
+    private final List<Country> countries = new ArrayList<Country>();
+    private final List<AdminLevel> adminLevels = new ArrayList<AdminLevel>();
 
-    private List<UserDatabase> databases = new ArrayList<>();
+    private List<UserDatabase> databases = new ArrayList<UserDatabase>();
+
+    private final Set<Integer> partnerIds = new HashSet<Integer>();
+    private final List<Partner> partners = new ArrayList<Partner>();
+
+    private final List<Activity> activities = new ArrayList<Activity>();
+    private final List<Indicator> indicators = new ArrayList<Indicator>();
+    private final Set<IndicatorLinkEntity> indicatorLinks = new HashSet<IndicatorLinkEntity>();
+
+    private final Set<Integer> attributeGroupIds = new HashSet<Integer>();
+    private final List<AttributeGroup> attributeGroups = new ArrayList<AttributeGroup>();
+    private final List<Attribute> attributes = new ArrayList<Attribute>();
+
+    private final Set<Integer> userIds = new HashSet<Integer>();
+    private final List<User> users = new ArrayList<User>();
+    private final List<LocationType> locationTypes = new ArrayList<LocationType>();
     private List<UserPermission> userPermissions;
-    private User user;
 
+    private static final Logger LOGGER = Logger.getLogger(SchemaUpdateBuilder.class.getName());
+
+    private final Class[] schemaClasses = new Class[]{Country.class,
+            AdminLevel.class,
+            LocationType.class,
+            UserDatabase.class,
+            Partner.class,
+            Activity.class,
+            Indicator.class,
+            AttributeGroup.class,
+            Attribute.class,
+            User.class,
+            UserPermission.class,
+            LockedPeriod.class,
+            Project.class};
+    private final List<LockedPeriod> allLockedPeriods = new ArrayList<LockedPeriod>();
+    private final List<Project> projects = new ArrayList<Project>();
 
     @Inject
     public SchemaUpdateBuilder(EntityManagerFactory entityManagerFactory) {
@@ -70,10 +94,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
     }
 
     @SuppressWarnings("unchecked") @Override
-    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException, IOException {
-
-        batch = new SqliteBatchBuilder();
-        this.user = user;
+    public SyncRegionUpdate build(User user, GetSyncRegionUpdates request) throws JSONException {
 
         try {
             // get the permissions before we apply the filter
@@ -85,9 +106,6 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             DomainFilters.applyUserFilter(user, entityManager);
 
             databases = userDatabaseDAO.queryAllUserDatabasesAlphabetically();
-            for(UserDatabase db : databases) {
-                databaseIds.add(db.getId());
-            }
 
             long localVersion = request.getLocalVersion() == null ? 0 : Long.parseLong(request.getLocalVersion());
             long serverVersion = getCurrentSchemaVersion();
@@ -99,6 +117,7 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
             update.setComplete(true);
 
             if (localVersion < serverVersion) {
+                makeEntityLists();
                 update.setSql(buildSql());
             }
             return update;
@@ -107,141 +126,188 @@ public class SchemaUpdateBuilder implements UpdateBuilder {
         }
     }
 
-    private String buildSql() throws JSONException, IOException {
+    private String buildSql() throws JSONException {
+        JpaUpdateBuilder builder = new JpaUpdateBuilder();
+
+        for (Class schemaClass : schemaClasses) {
+            builder.createTableIfNotExists(schemaClass);
+
+            // Special case: we never delete partners, only add them. This way we always have a label for Partners
+            // See : LocalSiteCreateTest.siteRemovePartnerConflict
+            if (!schemaClass.equals(Partner.class)) {
+                builder.deleteAll(schemaClass);
+            }
+        }
+
+        builder.insert(Country.class, countries);
+        builder.insert(AdminLevel.class, adminLevels);
+        builder.insert(UserDatabase.class, databases);
+        builder.insert(" or replace ", Partner.class, partners);
+        builder.insert(Activity.class, activities);
+        builder.insert(Indicator.class, indicators);
+        builder.insert(AttributeGroup.class, attributeGroups);
+        builder.insert(Attribute.class, attributes);
+        builder.insert(LocationType.class, locationTypes);
+        builder.insert(User.class, users);
+        builder.insert(UserPermission.class, userPermissions);
+        builder.insert(Project.class, projects);
+        builder.insert(LockedPeriod.class, allLockedPeriods);
+
+        // TODO: this needs to be actually synchronized
+        builder.executeStatement(
+                "CREATE TABLE IF NOT EXISTS  target (targetId int, name text, date1 text, date2 text, projectId int, " +
+                "partnerId int, adminEntityId int, databaseId int)");
+        builder.executeStatement("CREATE TABLE IF NOT EXISTS  targetvalue (targetId int, IndicatorId int, value real)");
+        builder.createTableIfNotExists(Location.class);
+        builder.executeStatement(
+                "create table if not exists LocationAdminLink (LocationId integer, AdminEntityId integer)");
 
 
-        batch.createTablesIfNotExist(
-                entityManager,
-                Tables.COUNTRY,
-                Tables.ADMIN_LEVEL,
-                Tables.LOCATION_TYPE,
-                Tables.USER_DATABASE,
-                Tables.USER_LOGIN,
-                Tables.USER_PERMISSION,
-                Tables.ACTIVITY,
-                Tables.INDICATOR,
-                Tables.INDICATOR_LINK,
-                Tables.ATTRIBUTE,
-                Tables.ATTRIBUTE_GROUP,
-                Tables.ATTRIBUTE_GROUP_IN_ACTIVITY,
-                Tables.PARTNER_IN_DATABASE,
-                Tables.PARTNER,
-                Tables.TARGET,
-                Tables.PROJECT,
-                Tables.LOCKED_PERIOD);
+        createAndSyncIndicatorlinks(builder);
+        createAndSyncPartnerInDatabase(builder);
+        createAndSyncAttributeGroupInActivity(builder);
 
 
-        SqlQuery countryIds = select("countryId")
-                .from(Tables.USER_DATABASE)
-                .where("databaseId").in(databaseIds);
+        return builder.asJson();
+    }
 
-        SqlQuery activityIds = select("activityId")
-                .from(Tables.ACTIVITY)
-                .where("databaseId").in(databaseIds);
+    private void createAndSyncIndicatorlinks(JpaUpdateBuilder builder) throws JSONException {
+        builder.executeStatement(
+                "create table if not exists IndicatorLink (SourceIndicatorId int, DestinationIndicatorId int) ");
+        builder.executeStatement("delete from IndicatorLink");
 
+        if (!indicatorLinks.isEmpty()) {
+            builder.beginPreparedStatement(
+                    "insert into IndicatorLink (SourceIndicatorId, DestinationIndicatorId) values (?, ?) ");
+            for (IndicatorLinkEntity il : indicatorLinks) {
+                builder.addExecution(il.getId().getSourceIndicatorId(), il.getId().getDestinationIndicatorId());
+            }
+            builder.finishPreparedStatement();
+        }
+    }
 
-        batch.clearTables(
-                Tables.COUNTRY,
-                Tables.ADMIN_LEVEL,
-                Tables.LOCATION_TYPE,
-                Tables.USER_DATABASE,
-                Tables.USER_PERMISSION,
-                Tables.ACTIVITY,
-                Tables.PARTNER_IN_DATABASE,
-                Tables.LOCKED_PERIOD);
+    private void createAndSyncPartnerInDatabase(JpaUpdateBuilder builder) throws JSONException {
+        builder.executeStatement("create table if not exists PartnerInDatabase (DatabaseId integer, PartnerId int)");
+        builder.executeStatement("delete from PartnerInDatabase");
 
-        batch.insert().from(selectAll().from(Tables.COUNTRY).where("countryId").in(countryIds))
-             .into(Tables.COUNTRY)
-             .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.ADMIN_LEVEL).where("countryId").in(countryIds))
-             .into(Tables.ADMIN_LEVEL)
-             .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.LOCATION_TYPE).where("countryId").in(countryIds))
-             .into(Tables.LOCATION_TYPE)
-             .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.USER_DATABASE).where("countryId").in(countryIds))
-             .into(Tables.USER_DATABASE)
-             .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.USER_PERMISSION)
-               .where("databaseId")
-               .in(databaseIds)
-               .where("userId")
-               .equalTo(user.getId()))
-                .into(Tables.USER_PERMISSION)
-               .execute(entityManager);
+        if (anyPartners()) {
+            builder.beginPreparedStatement("insert into PartnerInDatabase (DatabaseId, PartnerId) values (?, ?) ");
+            for (UserDatabase db : databases) {
+                for (Partner partner : db.getPartners()) {
+                    builder.addExecution(db.getId(), partner.getId());
+                }
+            }
+            builder.finishPreparedStatement();
+        }
+    }
 
-        batch.insert().from(selectAll().from(Tables.ACTIVITY).where("databaseId").in(databaseIds))
-             .into(Tables.ACTIVITY)
-             .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.PARTNER_IN_DATABASE).where("databaseId").in(databaseIds))
-             .into(Tables.PARTNER_IN_DATABASE)
-             .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.PARTNER).where("partnerId").in(
-                select("partnerId").from(Tables.PARTNER_IN_DATABASE).where("databaseId").in(databaseIds)))
-                .into(Tables.PARTNER)
-                .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.PROJECT).where("databaseId").in(databaseIds))
-                .into(Tables.PROJECT)
-                .execute(entityManager);
+    private void createAndSyncAttributeGroupInActivity(JpaUpdateBuilder builder) throws JSONException {
+        builder.executeStatement(
+                "create table if not exists AttributeGroupInActivity (ActivityId integer, AttributeGroupId integer)");
+        builder.executeStatement("delete from AttributeGroupInActivity");
 
-        batch.insert().from(selectAll().from(Tables.LOCKED_PERIOD).where("UserDatabaseId").in(databaseIds))
-             .into(Tables.LOCKED_PERIOD)
-             .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.LOCKED_PERIOD).where("activityId").in(activityIds))
-             .into(Tables.LOCKED_PERIOD)
-             .execute(entityManager);
-        batch.insert().from(selectAll().from(Tables.LOCKED_PERIOD).where("projectId").in(
-                select("projectId").from(Tables.PROJECT).where("databaseId").in(databaseIds)))
-             .into(Tables.LOCKED_PERIOD)
-             .execute(entityManager);
+        if (anyAttributes()) {
+            builder.beginPreparedStatement(
+                    "insert into AttributeGroupInActivity (ActivityId, AttributeGroupId) values (?,?)");
+            for (UserDatabase db : databases) {
+                for (Activity activity : db.getActivities()) {
+                    for (AttributeGroup group : activity.getAttributeGroups()) {
+                        builder.addExecution(activity.getId(), group.getId());
+                    }
+                }
+            }
+            builder.finishPreparedStatement();
+        }
+    }
 
-        batch.insert().from(select("UserId", "Name", "Email")
-            .from(Tables.USER_LOGIN)
-            .where("userId").in(
-                select("OwnerUserId")
-                    .from(Tables.USER_DATABASE).where("databaseId").in(databaseIds)))
-            .into(Tables.USER_LOGIN)
-            .execute(entityManager);
+    private boolean anyPartners() {
+        for (UserDatabase db : databases) {
+            if (!db.getPartners().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        batch.insert().from(selectAll().from(Tables.INDICATOR)
-            .where("activityId").in(activityIds))
-            .into(Tables.INDICATOR)
-            .execute(entityManager);
+    private boolean anyAttributes() {
+        for (UserDatabase db : databases) {
+            for (Activity activity : db.getActivities()) {
+                if (!activity.getAttributeGroups().isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
-        batch.insert().from(selectAll().from(Tables.ATTRIBUTE_GROUP_IN_ACTIVITY)
-            .where("activityId").in(activityIds))
-            .into(Tables.ATTRIBUTE_GROUP_IN_ACTIVITY)
-            .execute(entityManager);
+    private void makeEntityLists() {
+        for (UserDatabase database : databases) {
+            if (!userIds.contains(database.getOwner().getId())) {
+                User u = database.getOwner();
+                // don't send hashed password to client
+                // EEK i think hibernate will persist this to the database
+                // automatically if we change it here!!
+                // u.setHashedPassword("");
+                users.add(u);
+                userIds.add(u.getId());
+            }
 
-        SqlQuery groupIds = select("attributeGroupId")
-            .from(Tables.ATTRIBUTE_GROUP_IN_ACTIVITY)
-            .where("activityId").in(activityIds);
+            if (!countryIds.contains(database.getCountry().getId())) {
+                countries.add(database.getCountry());
+                adminLevels.addAll(database.getCountry().getAdminLevels());
+                countryIds.add(database.getCountry().getId());
+                for (org.activityinfo.server.database.hibernate.entity.LocationType l : database.getCountry()
+                                                                                                .getLocationTypes()) {
+                    locationTypes.add(l);
+                }
+            }
+            for (Partner partner : database.getPartners()) {
+                if (!partnerIds.contains(partner.getId())) {
+                    partners.add(partner);
+                    partnerIds.add(partner.getId());
+                }
+            }
 
-        batch.insert().from(selectAll().from(Tables.ATTRIBUTE_GROUP)
-            .where("attributeGroupId").in(groupIds))
-            .into(Tables.ATTRIBUTE_GROUP)
-            .execute(entityManager);
+            projects.addAll(new ArrayList<Project>(database.getProjects()));
 
-        batch.insert().from(selectAll().from(Tables.ATTRIBUTE)
-            .where("attributeGroupId").in(groupIds))
-            .into(Tables.ATTRIBUTE)
-            .execute(entityManager);
+            allLockedPeriods.addAll(database.getLockedPeriods());
+            for (Project project : database.getProjects()) {
+                allLockedPeriods.addAll(project.getLockedPeriods());
+            }
 
-        SqlQuery indicatorIds = select("indicatorId")
-            .from(Tables.INDICATOR)
-            .where("activityId").in(activityIds);
+            for (Activity activity : database.getActivities()) {
+                allLockedPeriods.addAll(activity.getLockedPeriods());
 
-        batch.insert().from(selectAll().from(Tables.INDICATOR_LINK)
-            .where("sourceIndicatorId").in(indicatorIds))
-            .into(Tables.INDICATOR_LINK)
-            .execute(entityManager);
+                activities.add(activity);
+                for (Indicator indicator : activity.getIndicators()) {
+                    indicators.add(indicator);
 
-        batch.insert().from(selectAll().from(Tables.INDICATOR_LINK)
-           .where("destinationIndicatorId").in(indicatorIds))
-           .into(Tables.INDICATOR_LINK)
-           .execute(entityManager);
+                    List<IndicatorLinkEntity> links = findIndicatorLinks(indicator);
+                    if (links != null && !links.isEmpty()) {
+                        indicatorLinks.addAll(links);
+                    }
+                }
+                for (AttributeGroup g : activity.getAttributeGroups()) {
+                    if (!attributeGroupIds.contains(g.getId())) {
+                        attributeGroups.add(g);
+                        attributeGroupIds.add(g.getId());
+                        for (Attribute a : g.getAttributes()) {
+                            attributes.add(a);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-        return batch.build();
+    @SuppressWarnings("unchecked")
+    private List<IndicatorLinkEntity> findIndicatorLinks(Indicator indicator) {
+        return entityManager.createQuery(
+                "select il from IndicatorLinkEntity il where il.id.sourceIndicatorId = ?1 or il.id" +
+                ".destinationIndicatorId = ?2")
+                            .setParameter(1, indicator.getId())
+                            .setParameter(2, indicator.getId())
+                            .getResultList();
     }
 
     public long getCurrentSchemaVersion() {

@@ -74,7 +74,7 @@ public class GetSyncRegionsHandler implements CommandHandler<GetSyncRegions> {
             }
         }
 
-        List<SyncRegion> regions = new ArrayList<>();
+        List<SyncRegion> regions = new ArrayList<SyncRegion>();
         regions.add(new SyncRegion("schema", Long.toString(schemaVersion)));
         regions.addAll(listAdminRegions(countryIds));
         regions.addAll(listLocations(databaseIds));
