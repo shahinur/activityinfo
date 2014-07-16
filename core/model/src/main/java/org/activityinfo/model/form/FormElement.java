@@ -7,6 +7,8 @@ import java.util.List;
 
 public abstract class FormElement {
 
+    public abstract String getLabel();
+
     public abstract Record asRecord();
 
     public static List<Record> asRecordList(List<FormElement> elements) {

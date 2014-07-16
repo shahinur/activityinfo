@@ -24,6 +24,7 @@ package org.activityinfo.server.command;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.BatchCommand;
 import org.activityinfo.legacy.shared.command.CreateEntity;
@@ -33,26 +34,35 @@ import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.TextType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.server.database.hibernate.entity.Activity;
+import org.activityinfo.server.database.hibernate.entity.AttributeGroup;
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityFormClass;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/schema1.db.xml")
@@ -140,18 +150,16 @@ public class ActivityTest extends CommandTestCase2 {
     }
 
     @Test
-    public void testFormPersister() {
+    public void createActivity() {
 
         SchemaDTO schema = execute(new GetSchema());
         UserDatabaseDTO db = schema.getDatabaseById(1);
         LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
 
-
         ActivityDTO act = new ActivityDTO();
         act.setName("Household Survey");
         act.setLocationType(locType);
         act.setReportingFrequency(ActivityDTO.REPORT_ONCE);
-
 
         CreateResult createResult = execute(CreateEntity.Activity(db, act));
         ResourceId classId = activityFormClass(createResult.getNewId());
@@ -164,6 +172,11 @@ public class ActivityTest extends CommandTestCase2 {
         newField.setType(new QuantityType().setUnits("years"));
         formClass.addElement(newField);
 
+        FormField newTextField = new FormField(ResourceId.generateId());
+        newTextField.setLabel("What is your name?");
+        newTextField.setType(TextType.INSTANCE);
+        formClass.addElement(newTextField);
+
         assertResolves(resourceLocator.persist(formClass));
         FormClass reform = assertResolves(resourceLocator.getFormClass(formClass.getId()));
         assertHasFieldWithLabel(reform, "How old are you?");
@@ -175,21 +188,119 @@ public class ActivityTest extends CommandTestCase2 {
         reform = assertResolves(resourceLocator.getFormClass(formClass.getId()));
         assertHasFieldWithLabel(reform, "How old are you today?");
         System.out.println(reform.getFields().toString());
-
-        assertThat(reform.getFields(), Matchers.hasSize(7));
+        assertThat(reform.getFields(), hasSize(8));
 
         List<EnumValue> values = Lists.newArrayList();
         values.add(new EnumValue(ResourceId.generateId(), "Option 1"));
         values.add(new EnumValue(ResourceId.generateId(), "Option 2"));
+    }
 
-        FormField attributeField = new FormField(ResourceId.generateId());
-        attributeField.setLabel("Which options apply?");
-        attributeField.setType(new EnumType(Cardinality.MULTIPLE, values));
-        formClass.addElement(attributeField);
+    @Test
+    public void createAttributeGroup() {
 
-        assertResolves(resourceLocator.persist(formClass));
-        reform = assertResolves(resourceLocator.getFormClass(formClass.getId()));
-//        assertThat(reform.getFields(), Matchers.hasSize(8));
+        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
+
+        FormField newField = new FormField(ResourceId.generateId());
+        newField.setLabel("New Group");
+        EnumValue yes = new EnumValue(ResourceId.generateId(), "Yes");
+        EnumValue no = new EnumValue(ResourceId.generateId(), "No");
+        newField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(yes, no)));
+
+        formClass.getElements().add(newField);
+
+        resourceLocator.persist(formClass);
+
+        // verify that it appears as attribute group
+        ActivityDTO activity = getActivity(1);
+        AttributeGroupDTO group = findGroup(activity, "New Group");
+        assertThat(group.isMultipleAllowed(), equalTo(false));
+        assertThat(group.getAttributes(), hasSize(2));
+        assertThat(group.getAttributes().get(0), hasProperty("name", Matchers.equalTo("Yes")));
+        assertThat(group.getAttributes().get(1), hasProperty("name", Matchers.equalTo("No")));
+
+        // Now update the same attribute group and a value
+        newField.setLabel("Do you like ice cream?");
+        yes.setLabel("Oui");
+        no.setLabel("Non");
+        resourceLocator.persist(formClass);
+
+        group = findGroup(getActivity(1), "Do you like ice cream?");
+        assertThat(group.isMultipleAllowed(), equalTo(false));
+        assertThat(group.getAttributes(), contains(hasProperty("name", Matchers.equalTo("Oui")),
+                hasProperty("name", Matchers.equalTo("Non"))));
+
+        // Remove one of our new enum values
+        newField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(yes)));
+        resourceLocator.persist(formClass);
+
+        group = findGroup(getActivity(1), "Do you like ice cream?");
+        assertThat(group.isMultipleAllowed(), equalTo(false));
+        assertThat(group.getAttributes(), contains(hasProperty("name", Matchers.equalTo("Oui"))));
+    }
+
+    @Test
+    public void updateIndicator() {
+
+        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
+
+        FormField beneficiaries = (FormField)find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
+        beneficiaries.setLabel("Number of benes");
+        resourceLocator.persist(formClass);
+
+        ActivityDTO activity = getActivity(1);
+        assertThat(activity.getIndicatorById(1), hasProperty("name", Matchers.equalTo("Number of benes")));
+    }
+
+    private <T> T find(List<T> list, Matcher<? super T> matcher) {
+
+        assertThat(list, hasItem(matcher));
+
+        for(T t : list) {
+            if(matcher.matches(t)) {
+                return t;
+            }
+        }
+        throw new AssertionError();
+    }
+
+    private ActivityDTO getActivity(int activityId) {
+        return execute(new GetSchema()).getActivityById(activityId);
+    }
+
+    private AttributeGroupDTO findGroup(ActivityDTO activityDTO, String label) {
+        for(AttributeGroupDTO group : activityDTO.getAttributeGroups()) {
+            if(group.getName().equals(label)) {
+                return group;
+            }
+        }
+        throw new AssertionError("No such attribute group: " + label);
+    }
+
+
+    @Test
+    public void deleteAttributeGroup() {
+
+        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
+
+        int numFields = formClass.getElements().size();
+
+        // Remove attribute
+        ListIterator<FormElement> it = formClass.getElements().listIterator();
+        while(it.hasNext()) {
+            FormElement element = it.next();
+            if(element.getLabel().equals("Cause")) {
+                it.remove();
+            }
+        }
+        resourceLocator.persist(formClass);
+
+        // Ensure deleted
+        SchemaDTO schema = execute(new GetSchema());
+        assertTrue("Cause attribute is gone", schema.getAttributeGroupById(1) == null);
+
 
     }
 

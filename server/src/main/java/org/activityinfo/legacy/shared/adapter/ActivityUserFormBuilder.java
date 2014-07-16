@@ -94,17 +94,16 @@ public class ActivityUserFormBuilder {
             siteForm.addElement(attributeField);
         }
 
+        // ignore indicator groups until they are full implemented in form designer
         for (IndicatorGroup group : activity.groupIndicators()) {
-            if (Strings.isNullOrEmpty(group.getName())) {
+            for(IndicatorDTO indicator : group.getIndicators()) {
+//                FormSection section = new FormSection(CuidAdapter.activityFormSection(activity.getId(),
+//                        group.getName()));
+//                section.setLabel(group.getName());
+
                 addIndicators(siteForm, group);
-            } else {
-                FormSection section = new FormSection(CuidAdapter.activityFormSection(activity.getId(),
-                        group.getName()));
-                section.setLabel(group.getName());
 
-                addIndicators(section, group);
-
-                siteForm.addElement(section);
+//                siteForm.addElement(section);
             }
         }
 
@@ -138,7 +137,11 @@ public class ActivityUserFormBuilder {
                 field.setType(NarrativeType.INSTANCE);
 
             } else {
-                field.setType(new QuantityType().setUnits(indicator.getUnits()));
+                String units = indicator.getUnits();
+                if(Strings.isNullOrEmpty(units)) {
+                    units = "units";
+                }
+                field.setType(new QuantityType().setUnits(units));
             }
 
             container.addElement(field);

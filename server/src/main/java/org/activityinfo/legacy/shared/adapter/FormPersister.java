@@ -3,27 +3,19 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.BatchResult;
-import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
-import org.activityinfo.legacy.shared.model.IndicatorDTO;
+import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.NarrativeType;
-import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.server.database.hibernate.entity.AttributeGroup;
-import org.activityinfo.server.database.hibernate.entity.Indicator;
-import org.apache.poi.ss.formula.functions.T;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -52,6 +44,8 @@ public class FormPersister {
     private List<Command> commands = Lists.newArrayList();
     private Map<CreateEntity, ResourceId> oldIds = Maps.newHashMap();
 
+    private List<FormField> newAttributes = Lists.newArrayList();
+
     public FormPersister(Dispatcher dispatcher, FormClass form) {
         this.dispatcher = dispatcher;
         this.form = form;
@@ -64,7 +58,14 @@ public class FormPersister {
             @Override
             public Promise<Void> apply(@Nullable ActivityDTO input) {
                 activity = input;
-                return syncActivity();
+                return syncActivity().join(new Function<Void, Promise<Void>>() {
+                    @Nullable
+                    @Override
+                    public Promise<Void> apply(@Nullable Void input) {
+                        return createAttributesForNewGroups();
+                    }
+
+                });
             }
         });
     }
@@ -89,10 +90,26 @@ public class FormPersister {
 
             if(isIndicator(field)) {
                 updateOrCreateIndicator(field, sortOrder);
+            } else if(isAttributeGroup(field)) {
+                updateOrCreateAttributeGroup(field, sortOrder);
             }
 
             sortOrder++;
         }
+
+        deleteRemoved(indicators);
+        deleteRemoved(attributeGroups);
+
+        return executeAndCollectNewIds();
+    }
+
+    private void deleteRemoved(Map<Integer, ? extends EntityDTO> entityMap) {
+        for(EntityDTO removed : entityMap.values()) {
+            commands.add(new Delete(removed));
+        }
+    }
+
+    private Promise<Void> executeAndCollectNewIds() {
         if(commands.isEmpty()) {
             return Promise.done();
         } else {
@@ -101,11 +118,16 @@ public class FormPersister {
                 @Override
                 public Void apply(@Nullable BatchResult input) {
                     mapNewIds(input);
+                    commands.clear();
                     return null;
                 }
-
             });
         }
+    }
+
+
+    private boolean isAttributeGroup(FormField field) {
+        return field.getType() instanceof EnumType;
     }
 
     private void mapNewIds(BatchResult results) {
@@ -121,17 +143,20 @@ public class FormPersister {
 
     private void updateOrCreateIndicator(FormField field, int sortOrder) {
         IndicatorDTO indicator = null;
-        boolean created = true;
+        boolean created = false;
         if(field.getId().getDomain() == CuidAdapter.INDICATOR_DOMAIN) {
             indicator = indicators.get(CuidAdapter.getLegacyIdFromCuid(field.getId()));
-            created = false;
         } else if(newIds.containsKey(field.getId())) {
             indicator = indicators.get(newIds.get(field.getId()));
-            created = false;
         }
         if(indicator == null) {
+            created = true;
             indicator = new IndicatorDTO();
             indicator.setActivityId(activity.getId());
+        } else {
+            // remove from so we know it is still used - those remaining
+            // will be deleted
+            indicators.remove(indicator.getId());
         }
 
         indicator.setName(field.getLabel());
@@ -142,6 +167,12 @@ public class FormPersister {
         if(field.getType() instanceof QuantityType) {
             indicator.setType(FieldTypeClass.QUANTITY);
             indicator.setUnits(((QuantityType) field.getType()).getUnits());
+
+        } else if(field.getType() instanceof NarrativeType) {
+            indicator.setType(FieldTypeClass.NARRATIVE);
+
+        } else {
+            indicator.setType(FieldTypeClass.FREE_TEXT);
         }
 
         if(created) {
@@ -153,6 +184,92 @@ public class FormPersister {
         }
     }
 
+
+    private void updateOrCreateAttributeGroup(FormField field, int sortOrder) {
+        AttributeGroupDTO group = null;
+        boolean created = false;
+        if(field.getId().getDomain() == CuidAdapter.ATTRIBUTE_GROUP_FIELD_DOMAIN) {
+            group = attributeGroups.get(CuidAdapter.getLegacyIdFromCuid(field.getId()));
+        } else if(newIds.containsKey(field.getId())) {
+            group = attributeGroups.get(newIds.get(field.getId()));
+        }
+        if(group == null) {
+            created = true;
+            group = new AttributeGroupDTO();
+            group.set("activityId", activity.getId());
+        } else {
+            // mark as used
+            attributeGroups.remove(group.getId());
+        }
+
+        EnumType enumType = (EnumType) field.getType();
+
+        group.setName(field.getLabel());
+        group.setMultipleAllowed(enumType.getCardinality() == Cardinality.MULTIPLE);
+        group.setMandatory(field.isRequired());
+
+        if(created) {
+            CreateEntity create = new CreateEntity(group);
+            oldIds.put(create, field.getId());
+            commands.add(create);
+            newAttributes.add(field);
+        } else {
+            commands.add(new UpdateEntity(group, group.getProperties()));
+            syncAttributes(group, enumType);
+        }
+
+    }
+
+    private void syncAttributes(AttributeGroupDTO group, EnumType enumType) {
+        Map<Integer, AttributeDTO> attributeMap = Maps.newHashMap();
+        int sortOrder = 0;
+        for(AttributeDTO attribute : group.getAttributes()) {
+            attribute.set("sortOrder", sortOrder);
+            attributeMap.put(attribute.getId(), attribute);
+            sortOrder++;
+        }
+        sortOrder = 0;
+        for(EnumValue enumValue : enumType.getValues()) {
+            AttributeDTO attr = null;
+            if(enumValue.getId().getDomain() == CuidAdapter.ATTRIBUTE_DOMAIN) {
+                attr = attributeMap.get(CuidAdapter.getLegacyIdFromCuid(enumValue.getId()));
+            } else if(newIds.containsKey(enumValue.getId())) {
+                attr = attributeMap.get(newIds.get(enumValue.getId()));
+            }
+
+            if(attr == null) {
+                commands.add(createAttribute(group.getId(), enumValue));
+
+            } else {
+                if(!attr.getName().equals(enumValue.getLabel()) ||
+                   attr.<Integer>get("sortOrder") != sortOrder) {
+
+                    attr.setName(enumValue.getLabel());
+                    attr.set("sortOrder", sortOrder);
+
+                    commands.add(new UpdateEntity(attr, attr.getProperties()));
+                }
+                attributeMap.remove(attr.getId());
+            }
+
+            sortOrder++;
+        }
+
+        // Delete all unreferenced attribute groups
+        deleteRemoved(attributeMap);
+
+    }
+
+    private CreateEntity createAttribute(int groupId, EnumValue enumValue) {
+        AttributeDTO attr;
+        attr = new AttributeDTO();
+        attr.setName(enumValue.getLabel());
+        attr.set("attributeGroupId", groupId);
+        CreateEntity create = new CreateEntity(attr);
+        oldIds.put(create, enumValue.getId());
+        return create;
+    }
+
     private boolean isIndicator(FormField field) {
 
         if(field.getId().equals(CuidAdapter.commentsField(activity.getId()))) {
@@ -162,6 +279,18 @@ public class FormPersister {
         return field.getType() instanceof QuantityType ||
                field.getType() instanceof NarrativeType ||
                field.getType() instanceof TextType;
+    }
+
+
+    private Promise<Void> createAttributesForNewGroups() {
+        for(FormField field : newAttributes) {
+            int groupId = newIds.get(field.getId());
+            EnumType enumType = (EnumType) field.getType();
+            for(EnumValue enumValue : enumType.getValues()) {
+                commands.add(createAttribute(groupId, enumValue));
+            }
+        }
+        return executeAndCollectNewIds();
     }
 
 }

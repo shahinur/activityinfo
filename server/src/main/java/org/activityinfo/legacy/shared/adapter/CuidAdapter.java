@@ -35,6 +35,9 @@ public class CuidAdapter {
 
     public static final char ATTRIBUTE_GROUP_DOMAIN = 'A';
 
+    public static final char ATTRIBUTE_GROUP_FIELD_DOMAIN = 'Q';
+
+
     public static final char ATTRIBUTE_DOMAIN = 't';
 
     public static final char DATABASE_DOMAIN = 'd';
@@ -195,8 +198,7 @@ public class CuidAdapter {
      * references the given AttributeGroup FormClass
      */
     public static ResourceId attributeGroupField(ActivityDTO activity, AttributeGroupDTO group) {
-        return ResourceId.create(ACTIVITY_DOMAIN + block(activity) + "a" +
-                                 Integer.toString(group.getId(), Cuids.RADIX));
+        return cuid(ATTRIBUTE_GROUP_FIELD_DOMAIN, group.getId());
     }
 
     /**
