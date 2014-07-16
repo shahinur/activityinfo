@@ -43,7 +43,7 @@ public enum NarrativeType implements FieldType, FieldTypeClass {
 
     @Override
     public String getLabel() {
-        return "Paragraph Text";
+        return "Multi-line Text";
     }
 
     @Override
