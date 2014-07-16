@@ -28,4 +28,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public interface WidgetContainer {
     public Widget asWidget();
+
+    public Widget getDragHandle();
 }

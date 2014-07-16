@@ -10,9 +10,12 @@
     <g:HTMLPanel width="100%">
       <g:HTML ui:field="label"/>
       <div class="row" width="100%">
-        <g:SimplePanel ui:field="widgetContainer" addStyleNames="col-md-11"/>
+        <g:SimplePanel ui:field="widgetContainer" addStyleNames="col-md-10"/>
         <div class="col-md-1">
           <g:Button text="x" ui:field="removeButton" addStyleNames="close pull-right btn-link"/>
+        </div>
+        <div class="col-md-1">
+          <g:Label text="|||" ui:field="dragHandle"/>
         </div>
       </div>
     </g:HTMLPanel>

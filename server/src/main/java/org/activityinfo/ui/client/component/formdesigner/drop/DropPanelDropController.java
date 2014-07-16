@@ -27,11 +27,7 @@ import com.allen_sauer.gwt.dnd.client.drop.FlowPanelDropController;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
@@ -64,11 +60,6 @@ public class DropPanelDropController extends FlowPanelDropController {
 
         if (context.draggable instanceof FieldLabel) {
             previewDropNewWidget(context);
-        } else if (context.draggable instanceof FocusPanel) {
-            FocusPanel focusPanel = (FocusPanel) context.draggable;
-            // hack ! - emulate clickevent on FocusPanel
-            NativeEvent event = Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false);
-            DomEvent.fireNativeEvent(event, focusPanel);
         }
     }
 
@@ -80,7 +71,8 @@ public class DropPanelDropController extends FlowPanelDropController {
             @Nullable
             @Override
             public Void apply(@Nullable FormFieldWidget formFieldWidget) {
-                final Widget containerWidget = new FieldWidgetContainer(formDesigner, formFieldWidget, formField).asWidget();
+                final FieldWidgetContainer fieldWidgetContainer = new FieldWidgetContainer(formDesigner, formFieldWidget, formField);
+                final Widget containerWidget = fieldWidgetContainer.asWidget();
 
                 // hack ! - replace original selected widget with our container, drop it and then restore selection
                 final List<Widget> originalSelectedWidgets = context.selectedWidgets;
@@ -95,7 +87,7 @@ public class DropPanelDropController extends FlowPanelDropController {
 
                         // update model
                         formDesigner.getFormClass().insertElement(widgetIndex, formField);
-                        formDesigner.getDragController().makeDraggable(containerWidget);
+                        formDesigner.getDragController().makeDraggable(containerWidget, fieldWidgetContainer.getDragHandle());
                     }
                 });
                 return null;

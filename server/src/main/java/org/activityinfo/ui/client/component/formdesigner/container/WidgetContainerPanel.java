@@ -55,6 +55,8 @@ public class WidgetContainerPanel {
     HTML label;
     @UiField
     SimplePanel widgetContainer;
+    @UiField
+    Label dragHandle;
 
     public WidgetContainerPanel(FormDesigner formDesigner) {
         uiBinder.createAndBindUi(this);
@@ -109,6 +111,10 @@ public class WidgetContainerPanel {
 
     public Widget asWidget() {
         return focusPanel;
+    }
+
+    public Label getDragHandle() {
+        return dragHandle;
     }
 
     public SimplePanel getWidgetContainer() {

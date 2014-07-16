@@ -30,9 +30,9 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionModel;
+import org.activityinfo.ui.client.util.GwtUtil;
 
 /**
  * @author yuriyz on 4/7/14.
@@ -141,7 +141,7 @@ public class CellTable<T> extends com.google.gwt.user.cellview.client.CellTable<
     }
 
     public ScrollPanel getScrollAncestor() {
-        return getScrollAncestor(this);
+        return GwtUtil.getScrollAncestor(this);
     }
 
     public void saveColumnWidthInformation() {
@@ -155,15 +155,4 @@ public class CellTable<T> extends com.google.gwt.user.cellview.client.CellTable<
         }
     }
 
-    public static ScrollPanel getScrollAncestor(Widget widget) {
-        if (widget != null && widget.getParent() != null) {
-            final Widget parent = widget.getParent();
-            if (parent instanceof ScrollPanel) {
-                return (ScrollPanel) parent;
-            } else {
-                return getScrollAncestor(parent);
-            }
-        }
-        return null;
-    }
 }
