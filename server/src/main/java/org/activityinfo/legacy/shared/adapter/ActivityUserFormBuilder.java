@@ -10,6 +10,7 @@ import org.activityinfo.model.form.*;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.TextType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
@@ -128,8 +129,18 @@ public class ActivityUserFormBuilder {
             FormField field = new FormField(CuidAdapter.indicatorField(indicator.getId()));
             field.setLabel(indicator.getName());
             field.setDescription(indicator.getDescription());
-            field.setType(new QuantityType().setUnits(indicator.getUnits()));
             field.setCalculation(indicator.getExpression());
+
+            if(indicator.getType() == TextType.INSTANCE) {
+                field.setType(TextType.INSTANCE);
+
+            } else if(indicator.getType() == NarrativeType.INSTANCE) {
+                field.setType(NarrativeType.INSTANCE);
+
+            } else {
+                field.setType(new QuantityType().setUnits(indicator.getUnits()));
+            }
+
             container.addElement(field);
         }
     }
