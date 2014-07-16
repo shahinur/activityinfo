@@ -8,10 +8,12 @@ import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
+import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.server.database.hibernate.dao.Geocoder;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
+import org.activityinfo.server.database.hibernate.entity.Location;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormAttributeGroup;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormIndicator;
 import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
@@ -111,7 +113,9 @@ public class FormSubmissionResource extends ODKResource {
 
         // create command(s)
         CreateSite cmd = new CreateSite(site);
-        cmd.setNestedCommand(createCreateLocationCommand(data, schemaDTO, activity));
+        CreateLocation createlocation = createCreateLocationCommand(data, schemaDTO, activity);
+        dispatcher.execute(createlocation);
+        cmd.getProperties().put("locationId",createlocation.getLocationId());
 
         // save
         CreateResult createResult = dispatcher.execute(cmd);
