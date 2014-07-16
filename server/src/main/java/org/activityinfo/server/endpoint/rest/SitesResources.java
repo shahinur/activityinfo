@@ -325,6 +325,12 @@ public class SitesResources {
         return writer.toString();
     }
 
+    @Path("/cube")
+    public CubeResource getCube() {
+        return new CubeResource(dispatcher);
+    }
+
+
     private String formatMonth(String propertyName) {
         Month month = Month.parseMonth(propertyName.substring(1));
         String monthName = month.getYear() + "-";

@@ -24,10 +24,15 @@ package org.activityinfo.server.command.handler.sync;
 
 import com.google.gson.stream.JsonWriter;
 
+import javax.persistence.EntityManager;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SqliteBatchBuilder {
+
+    private static final Logger LOGGER = Logger.getLogger(SqliteBatchBuilder.class.getName());
 
     private StringWriter stringWriter;
     private JsonWriter jsonWriter;
@@ -44,10 +49,25 @@ public class SqliteBatchBuilder {
         jsonWriter.name("statement");
         jsonWriter.value(sqlState);
         jsonWriter.endObject();
+
+        if(sqlState.length() > 1024) {
+            LOGGER.log(Level.WARNING, "Add statement with size " + sqlState.length() + ": " +
+                    sqlState.substring(0, 100) + "...");
+        }
     }
 
     public SqliteInsertBuilder insert() {
         return new SqliteInsertBuilder(this);
+    }
+
+    public void createTableIfNotExists(EntityManager em, String tableName) {
+        new SqliteCreateTableBuilder(this, tableName).execute(em);
+    }
+
+    public void createTablesIfNotExist(EntityManager em, String... tableNames) {
+        for(String tableName : tableNames) {
+            createTableIfNotExists(em, tableName);
+        }
     }
 
     public String build() throws IOException {
@@ -58,5 +78,11 @@ public class SqliteBatchBuilder {
 
     public SqliteDeleteBuilder delete() {
         return new SqliteDeleteBuilder(this);
+    }
+
+    public void clearTables(String... tables) throws IOException {
+        for(String table : tables) {
+            addStatement("DELETE FROM " + table);
+        }
     }
 }
