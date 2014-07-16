@@ -27,7 +27,8 @@ public class FieldTemplates {
         // concrete types that make will hopefully make sense to the user
 
         items.add(new CheckboxTemplate());
-
+        items.add(new RadioButtonTemplate());
+        
         return items;
     }
 }
