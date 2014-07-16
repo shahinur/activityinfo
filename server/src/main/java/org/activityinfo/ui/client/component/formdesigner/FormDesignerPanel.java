@@ -64,7 +64,7 @@ public class FormDesignerPanel extends Composite {
     private final Map<ResourceId, WidgetContainer> containerMap = Maps.newHashMap();
 
     @UiField
-    AbsolutePanel containerPanel;
+    HTMLPanel containerPanel;
     @UiField
     FlowPanel dropPanel;
     @UiField
@@ -157,10 +157,6 @@ public class FormDesignerPanel extends Composite {
 
     public FlowPanel getDropPanel() {
         return dropPanel;
-    }
-
-    public AbsolutePanel getContainerPanel() {
-        return containerPanel;
     }
 
     public PropertiesPanel getPropertiesPanel() {
