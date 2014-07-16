@@ -136,7 +136,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
      * @return description of the units in which this indicator is expressed.
      * Examples: "households", "%" "cm"
      */
-    @Column(name = "Units", nullable = false, length = 15)
+    @Column(name = "Units", nullable = true, length = 15)
     public String getUnits() {
         return this.units;
     }

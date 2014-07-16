@@ -53,4 +53,9 @@
 
   </changeSet>
 
+  <changeSet id="021-02" author="alex">
+    <comment>Avoid constraint errors when storing non-quantity fields</comment>
+    <dropNotNullConstraint tableName="indicator" columnName="units" columnDataType="varchar(15)"/>
+  </changeSet>
+
 </databaseChangeLog>
