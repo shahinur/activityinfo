@@ -31,8 +31,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SqliteInsertBuilder {
+
+    private static final Logger LOGGER = Logger.getLogger(SqliteInsertBuilder.class.getName());
 
     private StringBuilder sql;
     private String tableName;
@@ -71,6 +75,10 @@ public class SqliteInsertBuilder {
                     appendRows();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
+                }
+                if(sql.length() > (1024*10)) {
+                    LOGGER.log(Level.WARNING, "Add statement with size " + sql.length() + ": " +
+                                              sql.substring(0, 100) + "...");
                 }
             }
         });
