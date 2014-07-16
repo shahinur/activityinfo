@@ -73,6 +73,6 @@ public class SectionWidgetContainer implements WidgetContainer {
 
     @Override
     public Widget getDragHandle() {
-        return asWidget();
+        return widgetContainer.getDragHandle();
     }
 }

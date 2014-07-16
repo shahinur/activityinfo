@@ -91,7 +91,7 @@ public class FieldWidgetContainer implements WidgetContainer {
     }
 
     public Widget getDragHandle() {
-        return formFieldWidget.asWidget();
+        return widgetContainer.getDragHandle();
     }
 
 
