@@ -12,7 +12,7 @@
 
   <g:HTMLPanel ui:field="containerPanel">
     <div class="row">
-      <div class="col-md-4">
+      <div class="col-xs-4">
         <g:HTMLPanel height="100%">
           <g:HTML ui:field="spacer" width="100%" height="0px"/>
           <a:Button style="PRIMARY" ui:field="saveButton" text="{i18n.save}"/>
@@ -41,7 +41,7 @@
         </g:HTMLPanel>
       </div>
 
-      <div class="col-md-8">
+      <div class="col-xs-8">
         <g:HTMLPanel>
           <header:HeaderPanel ui:field="headerPanel"/>
           <g:FlowPanel addStyleNames="{style.mainPanel}" ui:field="dropPanel"/>
