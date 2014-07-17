@@ -1,11 +1,10 @@
 package org.activityinfo.server.endpoint.odk;
 
+import com.google.common.collect.Lists;
 import com.sun.jersey.api.view.Viewable;
 import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.PartnerDTO;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
+import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
@@ -15,6 +14,9 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.ListIterator;
 
 @Path("/activityForm")
@@ -37,6 +39,28 @@ public class FormResource extends ODKResource {
             throw new WebApplicationException(Status.FORBIDDEN);
         }
 
+        // Quick fix to allow users to interleave attributes and indicators
+        // together without break the legacy model
+
+        activity.set("fields", sortFieldsTogether(activity));
+
+
         return Response.ok(new Viewable("/odk/form.ftl", activity)).build();
+    }
+
+    private List<IsFormField> sortFieldsTogether(ActivityDTO activity) {
+        List<IsFormField> fields = Lists.newArrayList();
+        fields.addAll(activity.getAttributeGroups());
+        if(activity.getReportingFrequency() == 0) {
+            fields.addAll(activity.getIndicators());
+        }
+
+        Collections.sort(fields, new Comparator<IsFormField>() {
+            @Override
+            public int compare(IsFormField o1, IsFormField o2) {
+                return o1.getSortOrder() - o2.getSortOrder();
+            }
+        });
+        return fields;
     }
 }

@@ -96,25 +96,28 @@
         </input>
     </group>
 
-<#if reportingFrequency == 0>
-    <#list indicators as indicator>
-        <input ref="/data/I${indicator.id?c}">
-        <label>${indicator.name?xml}</label>
-        </input>
-    </#list>
-</#if>
+    <#list fields as field>
 
-<#list attributeGroups as attributeGroup>
-    <${attributeGroup.multipleAllowed?string("select", "select1")} ref="/data/AG${attributeGroup.id?c}">
-    <label>${attributeGroup.name?xml}</label>
-    <#list attributeGroup.attributes as attribute>
-        <item>
-            <label>${attribute.name?xml}</label>
-            <value>${attribute.id?c}</value>
-        </item>
+        <#if field.entityName == "Indicator">
+            <input ref="/data/I${field.id?c}">
+            <label>${field.name?xml}</label>
+            </input>
+        </#if>
+
+        <#if field.entityName == "AttributeGroup">
+            <${field.multipleAllowed?string("select", "select1")} ref="/data/AG${field.id?c}">
+            <label>${field.name?xml}</label>
+            <#list field.attributes as attribute>
+                <item>
+                    <label>${attribute.name?xml}</label>
+                    <value>${attribute.id?c}</value>
+                </item>
+            </#list>
+        </${field.multipleAllowed?string("select", "select1")}>
+
+        </#if>
+
     </#list>
-</${attributeGroup.multipleAllowed?string("select", "select1")}>
-</#list>
 
     <input ref="/data/comments">
     <label>${label.odkComments?xml}</label>
