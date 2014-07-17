@@ -24,12 +24,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Path("/submission")
 public class FormSubmissionResource extends ODKResource {
     private final Provider<FormParser> formParser;
     private final Geocoder geocoder;
     private final SiteHistoryProcessor siteHistoryProcessor;
+
+    private static final Logger LOGGER = Logger.getLogger(FormSubmissionResource.class.getName());
 
     @Inject
     public FormSubmissionResource(Provider<FormParser> formParser,
@@ -47,23 +51,34 @@ public class FormSubmissionResource extends ODKResource {
         }
         LOGGER.fine("ODK form submitted by user " + getUser().getEmail() + " (" + getUser().getId() + ")");
 
+        LOGGER.info("XML:\n" + xml);
+
         // parse
         SiteFormData data = formParser.get().parse(xml);
         if (data == null) {
+            LOGGER.severe("Failed to parse XML");
             return badRequest("Problem parsing submission XML");
         }
 
         // basic validation
-        if (data.getActivity() == 0 || data.getPartner() == 0 ||
-            data.getLatitude() == 999 || data.getLongitude() == 999 ||
-            data.getDate1() == null || data.getDate2() == null || data.getDate2().before(data.getDate1())) {
-            return badRequest("Problem validating submission XML");
+        if (data.getActivity() == 0) {
+            LOGGER.severe("activity = 0");
+            return badRequest("Missing activityId");
+
+        } else if(data.getPartner() == 0) {
+            LOGGER.severe("partner = 0");
+            return badRequest("Missing partnerId");
+
+        } else if(data.getDate1() == null || data.getDate2() == null || data.getDate2().before(data.getDate1())) {
+            LOGGER.severe("Invalid dates: date1=" + data.getDate1() + ", date2=" + data.getDate2());
+            return badRequest("Invalid dates");
         }
 
         // check if activity exists
         SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
         ActivityDTO activity = schemaDTO.getActivityById(data.getActivity());
         if (activity == null) {
+            LOGGER.severe("Unknown activity, id = " + data.getActivity());
             return notFound("Unknown activity");
         }
 
@@ -71,8 +86,8 @@ public class FormSubmissionResource extends ODKResource {
         try {
             createSite(data, schemaDTO, activity);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+            LOGGER.log(Level.SEVERE, "Exception whilst creating site: " + e.getMessage(), e);
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         return Response.status(Status.CREATED).build();
     }
