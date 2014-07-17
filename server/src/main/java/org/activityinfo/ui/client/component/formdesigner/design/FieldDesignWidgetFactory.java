@@ -21,6 +21,8 @@ package org.activityinfo.ui.client.component.formdesigner.design;
  * #L%
  */
 
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -41,6 +43,12 @@ public class FieldDesignWidgetFactory {
         }
 
         Log.error("Unexpected field type " + type.getTypeClass());
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
+        return new FieldDesignWidget() {
+            @Override
+            public Widget asWidget() {
+                return new Label();
+            }
+        };
     }
 }
