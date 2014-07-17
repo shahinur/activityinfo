@@ -1,0 +1,106 @@
+/*
+ * #%L
+ * ActivityInfo Server
+ * %%
+ * Copyright (C) 2009 - 2013 UNICEF
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+
+.locationDialogPane {
+    background: white;
+}
+
+.locationDialogHeader {
+    font-family: tahoma, arial, helvetica;
+    font-size: 13px;
+    font-weight: bold;
+    color: #15428B;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 8px;
+}
+
+.locationDialogHelp {
+    margin-left: 8px;
+    margin-right: 3px;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+
+.addLocationButton {
+    margin-left: 8px;
+    margin-bottom: 10px;
+}
+
+@sprite .locationMarker {
+    gwt-image: "blankMarker";
+    color: white;
+    font-size: 15px;
+    text-align: center;
+}
+
+.locationSearchResults {
+    margin-left: 8px;
+    margin-right: 3px;
+}
+
+.locSerMarker {
+    float: left;
+    color: white;
+    background-color: red;
+    width: 21px;
+    height: 20px;
+    font-size: 15px;
+    text-align: center;
+}
+
+.locSerResult {
+    border: 1px solid white;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    height: 32px;
+    font-family: tahoma, arial, helvetica;
+}
+
+.locSerWrap {
+    margin-left: 32px;
+}
+
+.locSerName {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.locSerAxe {
+    font-style: italic;
+}
+
+.formSec {
+    border: 1px solid white;
+    padding: 3px;
+}
+
+.formSecHeader {
+    font-weight: bold;
+}
+
+.adminClearSpan {
+    margin-left: 23px;
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}

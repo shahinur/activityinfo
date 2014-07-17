@@ -1,0 +1,68 @@
+/*
+ * #%L
+ * ActivityInfo Server
+ * %%
+ * Copyright (C) 2009 - 2013 UNICEF
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+
+.basemap-dlg .x-panel-body {
+    background: white;
+    font: 11px Arial, Helvetica, sans-serif;
+}
+
+.basemap-dlg .thumb {
+    background: #dddddd;
+    padding: 3px;
+}
+
+.basemap-dlg .thumb img {
+    height: 200px;
+    width: 300px;
+}
+
+.basemap-dlg .thumb-wrap {
+    float: left;
+    margin: 4px;
+    margin-right: 0;
+    padding: 5px;
+    width: 305px;
+    border: 1px solid #FFF;
+}
+
+.basemap-dlg .thumb-wrap span {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+}
+
+.basemap-dlg .x-view-over {
+    border: 1px solid #dddddd;
+    background: #efefef url(ActivityInfo/gxt/images/default/grid/row-over.gif) repeat-x left top;
+    padding: 4px;
+}
+
+.basemap-dlg .x-view-selected {
+    background: #eff5fb url(images/selected.gif) no-repeat right bottom;
+    border: 1px solid #99bbe8;
+    padding: 4px;
+}
+
+.basemap-dlg .x-view-selected .thumb {
+    background: transparent;
+}
+	

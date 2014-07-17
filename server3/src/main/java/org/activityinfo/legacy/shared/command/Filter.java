@@ -1,0 +1,323 @@
+package org.activityinfo.legacy.shared.command;
+
+/*
+ * #%L
+ * ActivityInfo Server
+ * %%
+ * Copyright (C) 2009 - 2013 UNICEF
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the 
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public 
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+
+import com.google.common.collect.Sets;
+import org.activityinfo.legacy.shared.reports.model.DateRange;
+import org.activityinfo.legacy.shared.reports.model.typeadapter.FilterAdapter;
+
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.io.Serializable;
+import java.util.*;
+import java.util.Map.Entry;
+
+/**
+ * Defines a filter of activity data as a date range and a set of restrictions
+ * on <code>Dimensions</code>.
+ */
+@XmlJavaTypeAdapter(FilterAdapter.class)
+public class Filter implements Serializable {
+    private static final long serialVersionUID = -9117480720562024905L;
+
+    // TODO: should be restrictions on DIMENSIONS and not DimensionTypes!!
+    private Map<DimensionType, Set<Integer>> restrictions = new HashMap<DimensionType, Set<Integer>>();
+
+    private DateRange dateRange = new DateRange();
+
+    /**
+     * In short: when set to true, the where-clauses of the pivotquery are joined by 'OR' instead of 'AND' (which is the
+     * default).
+     */
+    private boolean lenient = false;
+
+    /**
+     * Constructs a <code>Filter</code> with no restrictions. All data visible
+     * to the user will be included.
+     */
+    public Filter() {
+    }
+
+    public Filter(boolean lenient) {
+        this.lenient = lenient;
+    }
+
+    /**
+     * Constructs a copy of the given <code>filter</code>
+     *
+     * @param filter The filter which to copy.
+     */
+    public Filter(Filter filter) {
+
+        for (Map.Entry<DimensionType, Set<Integer>> entry : filter.restrictions.entrySet()) {
+            this.restrictions.put(entry.getKey(), new HashSet<Integer>(entry.getValue()));
+        }
+        this.dateRange = filter.dateRange;
+        this.lenient = filter.lenient;
+    }
+
+    /**
+     * Constructs a <code>Filter</code> as the intersection between two
+     * <code>Filter</code>s.
+     *
+     * @param a The first filter
+     * @param b The second filter
+     */
+    public Filter(Filter a, Filter b) {
+
+        Set<DimensionType> types = new HashSet<DimensionType>();
+        types.addAll(a.restrictions.keySet());
+        types.addAll(b.restrictions.keySet());
+
+        for (DimensionType type : types) {
+            this.restrictions.put(type, intersect(a.getRestrictionSet(type, false), b.getRestrictionSet(type, false)));
+
+        }
+        this.dateRange = DateRange.intersection(a.getDateRange(), b.getDateRange());
+
+    }
+
+    private Set<Integer> intersect(Set<Integer> a, Set<Integer> b) {
+        if (a.size() == 0) {
+            return new HashSet<Integer>(b);
+        }
+        if (b.size() == 0) {
+            return new HashSet<Integer>(a);
+        }
+
+        Set<Integer> intersection = new HashSet<Integer>(a);
+        intersection.retainAll(b);
+
+        return intersection;
+    }
+
+    public Set<Integer> getRestrictions(DimensionType type) {
+        return getRestrictionSet(type, false);
+    }
+
+    private Set<Integer> getRestrictionSet(DimensionType type, boolean create) {
+        Set<Integer> set = restrictions.get(type);
+
+        if (set == null) {
+            if (!create) {
+                return Collections.emptySet();
+            }
+            set = new HashSet<Integer>();
+            restrictions.put(type, set);
+        }
+
+        return set;
+    }
+
+    public void addRestriction(DimensionType type, int categoryId) {
+        Set<Integer> set = getRestrictionSet(type, true);
+        set.add(categoryId);
+    }
+
+    public void addRestriction(DimensionType type, Collection<Integer> categoryIds) {
+        if (!categoryIds.isEmpty()) {
+            Set<Integer> set = getRestrictionSet(type, true);
+            set.addAll(categoryIds);
+        }
+    }
+
+    public void clearRestrictions(DimensionType type) {
+        restrictions.remove(type);
+    }
+
+    public boolean isRestricted(DimensionType type) {
+        if (type == DimensionType.Date) {
+            return isDateRestricted();
+        } else {
+            Set<Integer> set = restrictions.get(type);
+            return set != null && !set.isEmpty();
+        }
+    }
+
+    public boolean isNull() {
+        return restrictions.isEmpty() && !isDateRestricted();
+    }
+
+    public boolean hasRestrictions() {
+        return !restrictions.isEmpty();
+    }
+
+    public boolean isDateRestricted() {
+        if (dateRange == null) {
+            return false;
+        }
+        return dateRange.getMinDate() != null || dateRange.getMaxDate() != null;
+    }
+
+    public Set<DimensionType> getRestrictedDimensions() {
+        Set<DimensionType> dims = Sets.newHashSet();
+        for (Entry<DimensionType, Set<Integer>> entries : restrictions.entrySet()) {
+            if (!entries.getValue().isEmpty()) {
+                dims.add(entries.getKey());
+            }
+        }
+        return dims;
+    }
+
+    public Map<DimensionType, Set<Integer>> getRestrictions() {
+        return restrictions;
+    }
+
+    @XmlTransient
+    public Date getMinDate() {
+        return getDateRange().getMinDate();
+    }
+
+    public void setMinDate(Date minDate) {
+        getDateRange().setMinDate(minDate);
+    }
+
+    @XmlTransient
+    public Date getMaxDate() {
+        return getDateRange().getMaxDate();
+    }
+
+    public void setMaxDate(Date maxDate) {
+        getDateRange().setMaxDate(maxDate);
+    }
+
+    public void setDateRange(DateRange range) {
+        this.dateRange = range;
+    }
+
+    public boolean isDimensionRestrictedToSingleCategory(DimensionType type) {
+        return getRestrictions(type).size() == 1;
+    }
+
+    /**
+     * @return
+     * @throws UnsupportedOperationException if the dimension is not restricted to exactly one category
+     */
+    public int getRestrictedCategory(DimensionType type) {
+        Set<Integer> ids = getRestrictions(type);
+        if (ids.size() != 1) {
+            throw new UnsupportedOperationException(
+                    "Cannot return a unique category, the dimension " + type + " is restricted to " +
+                    ids.size() + " categories");
+        }
+        return ids.iterator().next();
+    }
+
+    @XmlElement
+    public DateRange getDateRange() {
+        if (dateRange == null) {
+            dateRange = new DateRange();
+        }
+        return dateRange;
+    }
+
+    public boolean isLenient() {
+        return lenient;
+    }
+
+    public void setLenient(boolean lenient) {
+        this.lenient = lenient;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (DimensionType type : getRestrictedDimensions()) {
+            if (sb.length() != 0) {
+                sb.append(", ");
+            }
+            sb.append(type.toString()).append("={");
+            for (Integer id : getRestrictions(type)) {
+                sb.append(' ').append(id);
+            }
+            sb.append(" }");
+        }
+        if (dateRange.getMinDate() != null || dateRange.getMaxDate() != null) {
+            if (sb.length() != 0) {
+                sb.append(", ");
+            }
+            sb.append("date=[");
+            if (dateRange.getMinDate() != null) {
+                sb.append(dateRange.getMinDate());
+            }
+            sb.append(",");
+            if (dateRange.getMaxDate() != null) {
+                sb.append(dateRange.getMaxDate()).append("]");
+            }
+        }
+        if (sb.length() != 0) {
+            sb.append(", ");
+        }
+        sb.append("lenient: ");
+        sb.append(lenient);
+
+        sb.insert(0, "[");
+        sb.append("]");
+        return sb.toString();
+    }
+
+    public Filter onActivity(int activityId) {
+        addRestriction(DimensionType.Activity, activityId);
+        return this;
+    }
+
+    public Filter onSite(int siteId) {
+        addRestriction(DimensionType.Site, siteId);
+        return this;
+    }
+
+    public Filter onDatabase(int databaseId) {
+        addRestriction(DimensionType.Database, databaseId);
+        return this;
+    }
+
+    public static Filter filter() {
+        return new Filter();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((dateRange == null) ? 0 : dateRange.hashCode());
+        result = prime * result + ((restrictions == null) ? 0 : restrictions.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Filter other = (Filter) obj;
+        return getDateRange().equals(other.getDateRange()) && getRestrictions().equals(other.getRestrictions());
+    }
+
+}

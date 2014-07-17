@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  ActivityInfo Server
+  %%
+  Copyright (C) 2009 - 2013 UNICEF
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet author="yuriyz" id="021-01">
+    <comment>
+      Define indicator type
+    </comment>
+    <addColumn tableName="indicator">
+      <column name="Type" type="varchar(30)" defaultValue="QUANTITY">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
+
+  <changeSet author="yuriyz" id="021-02">
+    <addColumn tableName="indicatorvalue">
+      <column name="TextValue" type="LONGTEXT">
+        <constraints nullable="true"/>
+      </column>
+    </addColumn>
+    <addColumn tableName="indicatorvalue">
+      <column name="DateValue" type="DATE">
+        <constraints nullable="true"/>
+      </column>
+    </addColumn>
+
+    <!-- Value is used to keep Double value. In case indicator has string value 'Value' column can be null -->
+    <dropNotNullConstraint tableName="indicatorvalue" columnName="Value" columnDataType="DOUBLE"/>
+
+  </changeSet>
+
+  <changeSet id="021-02" author="alex">
+    <comment>Avoid constraint errors when storing non-quantity fields</comment>
+    <dropNotNullConstraint tableName="indicator" columnName="units" columnDataType="varchar(15)"/>
+  </changeSet>
+
+</databaseChangeLog>

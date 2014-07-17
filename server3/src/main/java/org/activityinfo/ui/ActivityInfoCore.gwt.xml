@@ -1,0 +1,86 @@
+<!--
+  #%L
+  ActivityInfo Server
+  %%
+  Copyright (C) 2009 - 2013 UNICEF
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+<module rename-to="ActivityInfo">
+
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name='com.google.gwt.user.User'/>
+
+  <!-- Inherit additional dependencies  -->
+  <inherits name='com.google.gwt.inject.Inject'/>
+  <inherits name="com.google.gwt.i18n.I18N"/>
+  <inherits name="com.google.gson.Gson"/>
+  <inherits name='com.extjs.gxt.ui.GXT'/>
+
+  <inherits name="org.discotools.gwt.leaflet.Core"/>
+
+  <inherits name="com.google.gwt.gears.Gears"/>
+  <inherits name="com.google.gwt.inject.Inject"/>
+  <inherits name="com.extjs.gxt.charts.Chart"/>
+  <inherits name='com.allen_sauer.gwt.dnd.gwt-dnd'/>
+
+  <inherits name="com.google.common.collect.Collect"/>
+
+  <inherits name="com.bedatadriven.rebar.sql.Sql"/>
+  <inherits name="com.bedatadriven.rebar.appcache.AppCache"/>
+  <inherits name="com.bedatadriven.rebar.Time"/>
+  <inherits name="com.bedatadriven.rebar.style.Style"/>
+
+  <inherits name="org.activityinfo.i18n.I18n"/>
+  <inherits name="org.activityinfo.model.Model"/>
+  <inherits name="org.activityinfo.legacy.Legacy"/>
+
+  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
+
+
+  <!-- Configure deferred binding for offline module depending on browser capability -->
+
+  <replace-with class="org.activityinfo.ui.client.local.capability.IECapabilityProfile">
+    <when-type-is class="org.activityinfo.ui.client.local.capability.LocalCapabilityProfile"/>
+    <any>
+      <when-property-is name="user.agent" value="ie6"/>
+      <when-property-is name="user.agent" value="ie8"/>
+      <when-property-is name="user.agent" value="ie9"/>
+      <when-property-is name="user.agent" value="ie10"/>
+    </any>
+  </replace-with>
+
+  <replace-with class="org.activityinfo.ui.client.local.capability.FFCapabilityProfile">
+    <when-type-is class="org.activityinfo.ui.client.local.capability.LocalCapabilityProfile"/>
+    <any>
+      <when-property-is name="user.agent" value="gecko1_8"/>
+    </any>
+  </replace-with>
+
+  <replace-with class="org.activityinfo.ui.client.local.capability.WebKitCapabilityProfile">
+    <when-type-is class="org.activityinfo.ui.client.local.capability.LocalCapabilityProfile"/>
+    <any>
+      <when-property-is name="user.agent" value="safari"/>
+      <!-- Have to double check but think opera is pretty consistent with webkit -->
+      <when-property-is name="user.agent" value="opera"/>
+    </any>
+  </replace-with>
+
+  <!-- Include generated sources -->
+  <source path='client'/>
+  <source path="shared"/>
+</module>

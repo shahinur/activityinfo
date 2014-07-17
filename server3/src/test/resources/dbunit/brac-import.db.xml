@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!--
+  #%L
+  ActivityInfo Server
+  %%
+  Copyright (C) 2009 - 2013 UNICEF
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the 
+  License, or (at your option) any later version.
+  
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+  
+  You should have received a copy of the GNU General Public 
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+
+<dataset>
+
+
+  <!-- Reference Geography setup setup -->
+
+  <country countryId="1" name="Bangladesh" x1="0" y1="0" x2="0" y2="0"/>
+
+  <adminLevel countryId="1" adminLevelId="1" name="Division" deleted="0"/>
+  <adminLevel countryId="1" adminLevelId="2" name="District" ParentId="1" deleted="0"/>
+  <adminLevel countryId="1" adminLevelId="3" name="Upzilla" ParentId="2" deleted="0"/>
+
+  <locationType locationTypeId="1" countryId="1" name="Upzilla" boundAdminLevelId="3" reuse="1"/>
+  <locationType locationTypeId="2" countryId="1" name="Village" reuse="0"/>
+
+  <adminEntity adminLevelId="2" adminEntityId="1" name="Bogra"/>
+  <adminEntity adminLevelId="2" adminEntityId="10" name="Rajbari"/>
+  <adminEntity adminLevelId="2" adminEntityId="11" name="Satkhira"/>
+  <adminEntity adminLevelId="2" adminEntityId="12" name="Tangail"/>
+  <adminEntity adminLevelId="2" adminEntityId="2" name="Chittagong"/>
+  <adminEntity adminLevelId="2" adminEntityId="3" name="Comilla"/>
+  <adminEntity adminLevelId="2" adminEntityId="4" name="Gazipur"/>
+  <adminEntity adminLevelId="2" adminEntityId="5" name="Gopalgonj"/>
+  <adminEntity adminLevelId="2" adminEntityId="6" name="Kishoregonj"/>
+  <adminEntity adminLevelId="2" adminEntityId="7" name="Kushtia"/>
+  <adminEntity adminLevelId="2" adminEntityId="8" name="Mymensingh"/>
+  <adminEntity adminLevelId="2" adminEntityId="9" name="Netrakona"/>
+
+  <adminEntity adminLevelId="3" adminEntityId="13" name="Sonatoal" adminEntityParentId="1"/>
+  <adminEntity adminLevelId="3" adminEntityId="14" name="Fatickchari" adminEntityParentId="2"/>
+  <adminEntity adminLevelId="3" adminEntityId="15" name="Burichong" adminEntityParentId="3"/>
+  <adminEntity adminLevelId="3" adminEntityId="16" name="Kaligonj" adminEntityParentId="4"/>
+  <adminEntity adminLevelId="3" adminEntityId="17" name="Tungipara" adminEntityParentId="5"/>
+  <adminEntity adminLevelId="3" adminEntityId="18" name="Bhairab" adminEntityParentId="6"/>
+  <adminEntity adminLevelId="3" adminEntityId="19" name="Kushtia Sadar" adminEntityParentId="7"/>
+  <adminEntity adminLevelId="3" adminEntityId="20" name="Bhaluka" adminEntityParentId="8"/>
+  <adminEntity adminLevelId="3" adminEntityId="21" name="Purbadhala" adminEntityParentId="9"/>
+  <adminEntity adminLevelId="3" adminEntityId="22" name="Baliakandi" adminEntityParentId="10"/>
+  <adminEntity adminLevelId="3" adminEntityId="23" name="Tala" adminEntityParentId="11"/>
+  <adminEntity adminLevelId="3" adminEntityId="24" name="Modhupur" adminEntityParentId="12"/>
+
+
+  <!-- User setup -->
+  <userLogin userId="1" name="Raju" email="raju@brac.net" password="$$hashed$$" locale="en"/>
+
+
+  <!-- Database structure -->
+
+  <userDatabase databaseId="1" name="QIS Database" countryId="1" ownerUserId="1" lastSchemaUpdate="2009-01-01"/>
+
+  <partner partnerId="1" name="BRAC"/>
+  <partnerInDatabase partnerId="1" databaseId="1"/>
+
+  <!-- Household survey. Each interview is reported once (reportingFrequency = 0) -->
+  <activity activityId="1" name="Household Survey" databaseId="1" locationTypeId="1" reportingFrequency="0"
+            allowEdit="1"
+            sortOrder="1"/>
+
+  <indicator indicatorId="1"
+             name="NumAdultFemale"
+             description="Number of adult female members of household"
+             activityId="1"
+             aggregation="0"
+             units="women"
+             sortOrder="1"
+             mandatory="0"/>
+
+  <indicator indicatorId="2"
+             name="NumAdultMale"
+             description="Number of adult male members of household"
+             activityId="1"
+             aggregation="0"
+             units="men"
+             sortOrder="2"
+             mandatory="0"/>
+
+  <activity activityId="2" name="Training" databaseId="1" locationTypeId="2" reportingFrequency="0"
+            allowEdit="1"
+            sortOrder="2"/>
+
+
+  <indicator indicatorId="3"
+             name="NumberTrained"
+             description="Number of people trained"
+             activityId="2"
+             aggregation="0"
+             units="individuals"
+             sortOrder="1"
+             mandatory="0"/>
+
+</dataset>
