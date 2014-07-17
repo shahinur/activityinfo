@@ -22,23 +22,21 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  */
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.IsWidget;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.design.FieldDesignWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
-
-import java.util.List;
 
 /**
  * @author yuriyz on 7/9/14.
@@ -46,8 +44,8 @@ import java.util.List;
 public class PropertiesPresenter {
 
     private final PropertiesPanel view;
-    private final List<Widget> lastPropertyTypeViewWidgets = Lists.newArrayList();
 
+    private IsWidget currentDesignWidget = null;
     private HandlerRegistration labelKeyUpHandler;
     private HandlerRegistration descriptionKeyUpHandler;
     private HandlerRegistration requiredValueChangeHandler;
@@ -78,10 +76,10 @@ public class PropertiesPresenter {
     }
 
     private void reset() {
-        for (Widget w : lastPropertyTypeViewWidgets) {
-            view.getPanel().remove(w);
+        if (currentDesignWidget != null) {
+            view.getPanel().remove(currentDesignWidget);
+            currentDesignWidget = null;
         }
-        lastPropertyTypeViewWidgets.clear();
 
         view.getRequiredGroup().setVisible(false);
         view.getReadOnlyGroup().setVisible(false);
@@ -141,12 +139,8 @@ public class PropertiesPresenter {
             }
         });
 
-        PropertiesViewBuilder viewBuilder = new PropertiesViewBuilder(fieldWidgetContainer);
-        for (PropertyTypeView propertyTypeView : viewBuilder.build()) {
-            Widget w = propertyTypeView.asWidget();
-            lastPropertyTypeViewWidgets.add(w);
-            view.getPanel().add(w);
-        }
+        currentDesignWidget = FieldDesignWidgetFactory.create(fieldWidgetContainer);
+        view.getPanel().add(currentDesignWidget);
     }
 
 
