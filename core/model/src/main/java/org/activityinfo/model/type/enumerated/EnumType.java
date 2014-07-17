@@ -45,6 +45,7 @@ public class EnumType implements FieldType {
 
     private final Cardinality cardinality;
     private final List<EnumValue> values;
+    private final List<EnumValue> defaultValues = Lists.newArrayList();
 
     public EnumType() {
         this.cardinality = Cardinality.SINGLE;
@@ -62,6 +63,10 @@ public class EnumType implements FieldType {
 
     public List<EnumValue> getValues() {
         return values;
+    }
+
+    public List<EnumValue> getDefaultValues() {
+        return defaultValues;
     }
 
     @Override
