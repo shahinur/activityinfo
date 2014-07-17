@@ -1,0 +1,9 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+  <g:HTMLPanel styleName="progress">
+    <div ui:field="barElement" class="progress-bar progress-bar-info" role="progressbar"
+         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0">
+      <span ui:field="screenReaderText" class="sr-only"/>
+    </div>
+  </g:HTMLPanel>
+</ui:UiBinder>

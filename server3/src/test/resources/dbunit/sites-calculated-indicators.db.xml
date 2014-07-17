@@ -1,0 +1,143 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <activity ActivityId="1" AllowEdit="true" category="NFI Cluster" Name="NFI" ReportingFrequency="0" SortOrder="1" DatabaseId="1" LocationTypeId="1" published="0" cacheKey="0"/>
+  <activity ActivityId="2" AllowEdit="true" Name="Distribution de Kits Scolaire" ReportingFrequency="0" SortOrder="1" DatabaseId="1" LocationTypeId="1" published="0" cacheKey="0"/>
+  <activity ActivityId="3" AllowEdit="true" Name="Appui aux centres de sant&#233;" ReportingFrequency="1" SortOrder="1" DatabaseId="2" LocationTypeId="1" published="0" cacheKey="0"/>
+  <activity ActivityId="4" AllowEdit="true" Name="Reunification of child soliders" ReportingFrequency="1" SortOrder="1" DatabaseId="2" LocationTypeId="3" published="0" cacheKey="0"/>
+  <activity ActivityId="5" AllowEdit="true" Name="Kivu water distribution" ReportingFrequency="1" SortOrder="1" DatabaseId="2" LocationTypeId="3" published="0" cacheKey="0"/>
+  <activity ActivityId="41" AllowEdit="true" Name="Public Activity" ReportingFrequency="1" SortOrder="1" DatabaseId="4" LocationTypeId="3" published="2" cacheKey="0"/>
+  <adminentity AdminEntityId="1" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="10" Name="Kinshasa" AdminLevelId="1" deleted="false"/>
+  <adminentity AdminEntityId="2" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="20" Name="Sud Kivu" AdminLevelId="1" deleted="false"/>
+  <adminentity AdminEntityId="3" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="30" Name="Nord Kivu" AdminLevelId="1" deleted="false"/>
+  <adminentity AdminEntityId="4" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="40" Name="Ituri" AdminLevelId="1" deleted="false"/>
+  <adminentity AdminEntityId="10" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="203" Name="Bukavu" AdminLevelId="2" AdminEntityParentId="4" deleted="false"/>
+  <adminentity AdminEntityId="11" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="201" Name="Walungu" AdminLevelId="2" AdminEntityParentId="2" deleted="false"/>
+  <adminentity AdminEntityId="12" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="202" Name="Shabunda" AdminLevelId="2" AdminEntityParentId="2" deleted="false"/>
+  <adminentity AdminEntityId="13" x1="-44.0" x2="33.5" y1="-22.0" y2="40.0" Code="203" Name="Kalehe" AdminLevelId="2" AdminEntityParentId="2" deleted="false"/>
+  <adminentity AdminEntityId="21" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Code="203" Name="Irumu" AdminLevelId="2" AdminEntityParentId="4" deleted="false"/>
+  <adminentity_soundex/>
+  <adminlevel AdminLevelId="1" Name="Province" CountryId="1" polygons="true" version="1" deleted="false"/>
+  <adminlevel AdminLevelId="2" Name="Territoire" CountryId="1" ParentId="1" polygons="true" version="1" deleted="false"/>
+  <adminlevelversion/>
+  <attribute AttributeId="1" Name="Catastrophe Naturelle" SortOrder="2" AttributeGroupId="1"/>
+  <attribute AttributeId="2" Name="Deplacement" SortOrder="1" AttributeGroupId="1"/>
+  <attribute AttributeId="3" Name="Casserole" SortOrder="1" AttributeGroupId="2"/>
+  <attribute AttributeId="4" Name="Soap" SortOrder="2" AttributeGroupId="2"/>
+  <attributegroup AttributeGroupId="1" multipleAllowed="true" name="cause" sortOrder="2" mandatory="false"/>
+  <attributegroup AttributeGroupId="2" multipleAllowed="true" name="contenu du kit" sortOrder="1" mandatory="false"/>
+  <attributegroup AttributeGroupId="3" multipleAllowed="true" name="Something about Kivu" sortOrder="1" mandatory="false"/>
+  <attributegroup AttributeGroupId="991" dateDeleted="2011-01-01 00:00:00.0" multipleAllowed="true" name="Deleted" sortOrder="1" mandatory="false"/>
+  <attributegroupinactivity AttributeGroupId="1" ActivityId="1"/>
+  <attributegroupinactivity AttributeGroupId="2" ActivityId="1"/>
+  <attributegroupinactivity AttributeGroupId="3" ActivityId="1"/>
+  <attributegroupinactivity AttributeGroupId="991" ActivityId="1"/>
+  <attributegroupinactivity AttributeGroupId="1" ActivityId="2"/>
+  <attributevalue AttributeId="1" SiteId="1" Value="false"/>
+  <attributevalue AttributeId="1" SiteId="2" Value="false"/>
+  <attributevalue AttributeId="1" SiteId="3" Value="true"/>
+  <attributevalue AttributeId="2" SiteId="1" Value="false"/>
+  <attributevalue AttributeId="2" SiteId="2" Value="true"/>
+  <attributevalue AttributeId="2" SiteId="3" Value="false"/>
+  <authentication AuthToken="56aec6d3377eb6d47974728a8eda4a92" dateCreated="2014-06-03 12:12:21.0" dateLastActive="2014-06-03 12:12:21.0" UserId="3"/>
+  <basemap/>
+  <country CountryId="1" x1="0.0" x2="0.0" y1="0.0" y2="0.0" Name="Rdc"/>
+  <domain/>
+  <indicator IndicatorId="1" Aggregation="0" Category="inputs" description="falling in lve" ListHeader="no header really" name="beneficiaries" SortOrder="2" Units="menages" ActivityId="1" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="2" Aggregation="0" Category="outputs" description="desc" ListHeader="header" name="baches" SortOrder="1" Units="menages" ActivityId="1" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="5" Aggregation="1" Category="outputs" description="desc" ListHeader="header" name="Utilisaton rate" SortOrder="1" Units="nc/hab/month" ActivityId="3" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="6" Aggregation="1" description="desc" ListHeader="kids" name="Number of children" SortOrder="1" Units="children" ActivityId="4" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="103" Aggregation="2" Category="outputs" description="Nomber of distributions effectuees" ListHeader="distribs" name="Nb. of distributions" SortOrder="3" Units="distributions" ActivityId="1" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="675" Aggregation="2" Category="outputs" description="Kivu description" ListHeader="distribs" name="A kivu thing" SortOrder="3" Units="distributions" ActivityId="1" mandatory="false" Type="QUANTITY"/>
+  <indicator IndicatorId="12451" Aggregation="0" name="calculated" SortOrder="5" Units="calculated" ActivityId="1" mandatory="false" Type="QUANTITY" Expression="{i000001}+{i000002}"/>
+  <indicatorlink/>
+  <indicatorvalue IndicatorId="1" ReportingPeriodId="1" Value="1500.0"/>
+  <indicatorvalue IndicatorId="1" ReportingPeriodId="2" Value="3600.0"/>
+  <indicatorvalue IndicatorId="1" ReportingPeriodId="3" Value="10000.0"/>
+  <indicatorvalue IndicatorId="2" ReportingPeriodId="1" Value="500.0"/>
+  <indicatorvalue IndicatorId="2" ReportingPeriodId="2" Value="1200.0"/>
+  <indicatorvalue IndicatorId="2" ReportingPeriodId="3" Value="500.0"/>
+  <indicatorvalue IndicatorId="5" ReportingPeriodId="91" Value="0.1"/>
+  <indicatorvalue IndicatorId="5" ReportingPeriodId="92" Value="0.3"/>
+  <indicatorvalue IndicatorId="5" ReportingPeriodId="93" Value="0.4"/>
+  <indicatorvalue IndicatorId="6" ReportingPeriodId="601" Value="35.0"/>
+  <indicatorvalue IndicatorId="6" ReportingPeriodId="602" Value="70.0"/>
+  <location LocationID="1" Name="Penekusu Kivu" X="1.532" Y="27.323" LocationTypeID="1" timeEdited="1" workflowStatusId="validated"/>
+  <location LocationID="2" Name="Ngshwe" X="1.323" Y="28.232" LocationTypeID="1" timeEdited="2" workflowStatusId="validated"/>
+  <location LocationID="3" Name="Boga" LocationTypeID="1" timeEdited="300" workflowStatusId="validated"/>
+  <location LocationID="4" Name="Boga" X="3.323" Y="27.232" LocationTypeID="1" timeEdited="500" workflowStatusId="validated"/>
+  <location LocationID="6" Name="Walungu" LocationTypeID="3" timeEdited="550" workflowStatusId="validated"/>
+  <location LocationID="7" Name="Shabunda" LocationTypeID="3" timeEdited="600" workflowStatusId="validated"/>
+  <location LocationID="9" Name="CS Ngweshe" X="3.23" Y="27.232" LocationTypeID="2" timeEdited="400" workflowStatusId="validated"/>
+  <locationadminlink AdminEntityId="2" LocationId="1"/>
+  <locationadminlink AdminEntityId="12" LocationId="1"/>
+  <locationadminlink AdminEntityId="2" LocationId="2"/>
+  <locationadminlink AdminEntityId="11" LocationId="2"/>
+  <locationadminlink AdminEntityId="4" LocationId="3"/>
+  <locationadminlink AdminEntityId="21" LocationId="3"/>
+  <locationadminlink AdminEntityId="2" LocationId="4"/>
+  <locationadminlink AdminEntityId="10" LocationId="4"/>
+  <locationadminlink AdminEntityId="3" LocationId="6"/>
+  <locationadminlink AdminEntityId="11" LocationId="6"/>
+  <locationadminlink AdminEntityId="3" LocationId="7"/>
+  <locationadminlink AdminEntityId="12" LocationId="7"/>
+  <locationadminlink AdminEntityId="2" LocationId="9"/>
+  <locationadminlink AdminEntityId="11" LocationId="9"/>
+  <locationtype locationtypeid="1" Name="localite" Reuse="true" CountryId="1" workflowId="open"/>
+  <locationtype locationtypeid="2" Name="Health Center" Reuse="true" CountryId="1" workflowId="open"/>
+  <locationtype locationtypeid="3" Name="Territorie" Reuse="true" BoundAdminLevelId="2" CountryId="1" workflowId="open"/>
+  <project ProjectId="1" description="A project" name="Project X" DatabaseId="3"/>
+  <project ProjectId="2" name="RRMP" DatabaseId="1"/>
+  <project ProjectId="3" name="USAID" DatabaseId="1"/>
+  <project ProjectId="4" name="Kivu water" DatabaseId="1"/>
+  <lockedperiod LockedPeriodId="1" FromDate="2009-01-01 00:00:00.0" Name="woei" ToDate="2009-01-02 00:00:00.0" UserDatabaseId="1" enabled="true"/>
+  <lockedperiod LockedPeriodId="2" FromDate="2009-01-01 00:00:00.0" Name="lala" ToDate="2009-01-12 00:00:00.0" enabled="true" ProjectId="1"/>
+  <lockedperiod LockedPeriodId="3" FromDate="2009-01-01 00:00:00.0" Name="whoa" ToDate="2009-01-22 00:00:00.0" enabled="true" ActivityId="1"/>
+  <lockedperiod LockedPeriodId="4" FromDate="2009-01-01 00:00:00.0" Name="yey" ToDate="2009-01-24 00:00:00.0" UserDatabaseId="2" enabled="true"/>
+  <partner PartnerId="1" Name="NRC"/>
+  <partner PartnerId="2" Name="Solidarites"/>
+  <partner PartnerId="3" Name="Kivu Help"/>
+  <partnerindatabase PartnerId="1" DatabaseId="1"/>
+  <partnerindatabase PartnerId="2" DatabaseId="1"/>
+  <partnerindatabase PartnerId="3" DatabaseId="1"/>
+  <partnerindatabase PartnerId="1" DatabaseId="2"/>
+  <projectreportmodel/>
+  <reportingperiod ReportingPeriodId="1" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="1"/>
+  <reportingperiod ReportingPeriodId="2" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="2"/>
+  <reportingperiod ReportingPeriodId="3" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="3"/>
+  <reportingperiod ReportingPeriodId="91" Date1="2009-01-01" Date2="2009-01-31" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="9"/>
+  <reportingperiod ReportingPeriodId="92" Date1="2009-02-01" Date2="2009-02-28" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="9"/>
+  <reportingperiod ReportingPeriodId="93" Date1="2009-03-01" Date2="2009-03-30" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" SiteId="9"/>
+  <reportingperiod ReportingPeriodId="601" Date1="2009-01-01" Date2="2009-01-31" DateCreated="2009-01-01 00:00:00.0" DateEdited="2009-01-01 00:00:00.0" SiteId="6"/>
+  <reportingperiod ReportingPeriodId="602" Date1="2009-02-01" Date2="2009-02-28" DateCreated="2009-01-01 00:00:00.0" DateEdited="2009-01-01 00:00:00.0" SiteId="6"/>
+  <reportsubscription/>
+  <reporttemplate/>
+  <reportvisibility/>
+  <site SiteId="1" comments="He said &apos;booyah&apos;" Date1="2009-01-01" Date2="2009-01-02" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="1" LocationId="1" PartnerId="1" ProjectId="1" timeEdited="3"/>
+  <site SiteId="2" Date1="2009-01-15" Date2="2009-01-16" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="1" LocationId="2" PartnerId="1" ProjectId="1" timeEdited="3"/>
+  <site SiteId="3" Date1="2008-10-05" Date2="2008-10-06" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="1" LocationId="3" PartnerId="2" ProjectId="2" timeEdited="330"/>
+  <site SiteId="4" Date1="2008-10-06" Date2="2008-11-06" DateCreated="2009-10-05 00:00:00.0" DateEdited="2009-10-05 00:00:00.0" ActivityId="2" LocationId="4" PartnerId="2" timeEdited="510"/>
+  <site SiteId="5" Date1="2008-10-05" Date2="2008-10-05" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="2" LocationId="3" PartnerId="1" timeEdited="530"/>
+  <site SiteId="6" Date1="2009-01-01" Date2="2009-01-31" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="4" LocationId="6" PartnerId="1" timeEdited="570"/>
+  <site SiteId="7" Date1="2009-01-01" Date2="2009-01-31" DateCreated="2009-02-01 00:00:00.0" DateEdited="2009-02-01 00:00:00.0" ActivityId="4" LocationId="7" PartnerId="1" timeEdited="660"/>
+  <site SiteId="9" Date1="2009-01-01" Date2="2009-12-31" DateCreated="2009-01-01 00:00:00.0" DateEdited="2009-01-01 00:00:00.0" ActivityId="3" LocationId="9" PartnerId="1" timeEdited="420"/>
+  <userdatabase DatabaseId="1" lastSchemaUpdate="2009-01-01 00:00:00.0" Name="PEAR" CountryId="1" OwnerUserId="1" version="1401787542017"/>
+  <userdatabase DatabaseId="2" lastSchemaUpdate="2009-01-01 00:00:00.0" Name="PEAR Plus" CountryId="1" OwnerUserId="1" version="0"/>
+  <userdatabase DatabaseId="3" lastSchemaUpdate="2009-01-01 00:00:00.0" Name="Alpha" CountryId="1" OwnerUserId="1" version="0"/>
+  <userdatabase DatabaseId="4" lastSchemaUpdate="2009-01-01 00:00:00.0" Name="Public" CountryId="1" OwnerUserId="4" version="0"/>
+  <userlogin UserId="1" Email="akbertram@gmail.com" Password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." Locale="fr" Name="Alex" emailnotification="true" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="2" Email="bavon@nrc.org" Password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." Locale="fr" Name="Bavon" emailnotification="false" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="3" Email="lisa@solidarites" Password="xyz" Locale="fr" Name="Lisa" emailnotification="false" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="4" Email="marlene@solidarites" Password="xyz" Locale="en" Name="Marlene" emailnotification="true" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="5" Email="christian@nrc.org" Password="xyz" Locale="fr" Name="Christian" emailnotification="false" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userlogin UserId="21" Email="pacifique@nrc.org" Password="$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1." Locale="fr" Name="Pacifique" emailnotification="false" organization="" jobtitle="" dateCreated="1970-01-01"/>
+  <userpermission UserPermissionId="1" AllowDesign="false" AllowEdit="true" AllowEditAll="false" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="false" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="1" PartnerId="1" UserId="2" version="0"/>
+  <userpermission UserPermissionId="2" AllowDesign="false" AllowEdit="false" AllowEditAll="false" allowManageAllUsers="false" allowManageUsers="false" AllowView="false" AllowViewAll="false" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="1" PartnerId="1" UserId="5" version="0"/>
+  <userpermission UserPermissionId="3" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="false" allowManageUsers="true" AllowView="true" AllowViewAll="false" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="1" PartnerId="2" UserId="3" version="0"/>
+  <userpermission UserPermissionId="4" AllowDesign="true" AllowEdit="false" AllowEditAll="true" allowManageAllUsers="false" allowManageUsers="false" AllowView="true" AllowViewAll="false" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="1" PartnerId="2" UserId="4" version="0"/>
+  <userpermission UserPermissionId="91" AllowDesign="false" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="true" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="2" PartnerId="1" UserId="2" version="0"/>
+  <userpermission UserPermissionId="8884" AllowDesign="false" AllowEdit="true" AllowEditAll="false" allowManageAllUsers="false" allowManageUsers="false" AllowView="true" AllowViewAll="true" lastSchemaUpdate="2009-01-01 00:00:00.0" DatabaseId="2" PartnerId="1" UserId="21" version="0"/>
+  <sitehistory id="1" siteid="1" userid="1" timecreated="1355342502769" initial="true" json="{&apos;id&apos;:{&apos;type&apos;:&apos;Integer&apos;,&apos;value&apos;:1},&apos;I4925&apos;:{&apos;type&apos;:&apos;Double&apos;,&apos;value&apos;:54.0},&apos;comments&apos;:{&apos;type&apos;:&apos;String&apos;,&apos;value&apos;:&apos;site 1 my first comment&apos;}}"/>
+  <sitehistory id="2" siteid="1" userid="3" timecreated="1355342502792" initial="false" json="{&apos;comments&apos;:{&apos;type&apos;:&apos;String&apos;,&apos;value&apos;:&apos;site 1 changed comment&apos;}}"/>
+  <sitehistory id="3" siteid="2" userid="1" timecreated="1355342502769" initial="false" json="{&apos;id&apos;:{&apos;type&apos;:&apos;Integer&apos;,&apos;value&apos;:1},&apos;I4925&apos;:{&apos;type&apos;:&apos;Double&apos;,&apos;value&apos;:54.0},&apos;comments&apos;:{&apos;type&apos;:&apos;String&apos;,&apos;value&apos;:&apos;site 2 my first comment&apos;}}"/>
+  <sitehistory id="4" siteid="2" userid="3" timecreated="1355342502792" initial="false" json="{&apos;comments&apos;:{&apos;type&apos;:&apos;String&apos;,&apos;value&apos;:&apos;site 2 changed comment&apos;}}"/>
+</dataset>

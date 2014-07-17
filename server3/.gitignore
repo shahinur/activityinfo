@@ -1,0 +1,17 @@
+./target/
+/gwt-unitCache
+/ActivityInfo.launch
+/Embed.launch
+/Login.launch
+/org.activityinfo.login.LoginApi.launch
+.*
+.metadata/
+/SomeXmlTest.xml
+war/Login
+war/ActivityInfo
+war/Embed
+war/WEB-INF/deploy
+war/WEB-INF/classes
+war/WEB-INF/appengine-generated
+/ActivityInfo Chrome.launch
+/ActivityInfo Firefox.launch
