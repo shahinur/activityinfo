@@ -2,16 +2,14 @@ package org.activityinfo.model.type.enumerated;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.form.FieldId;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.component.ComponentReader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EnumType implements FieldType {
@@ -55,7 +53,7 @@ public class EnumType implements FieldType {
 
     public EnumType(Cardinality cardinality, List<EnumValue> values) {
         this.cardinality = cardinality;
-        this.values = values;
+        this.values = values != null ? values : new ArrayList<EnumValue>();
     }
 
     public Cardinality getCardinality() {
