@@ -1,0 +1,60 @@
+// Core variables and mixins
+@import "variables";
+@import "mixins";
+
+// For the transition from GXT to Bootstrap,
+// We will nest all styles in
+// .bs class to avoid messing with the rest of the 
+// app
+
+// Reset
+
+.bs {
+  @import "normalize";
+  //@import "print.less";
+}
+
+// Core CSS
+@import "scaffolding";
+@import "type";
+@import "code";
+@import "grid";
+//@import "tables.less";
+@import "forms";
+@import "buttons";
+
+// Components
+
+//@import "component-animations.less";
+//@import "glyphicons.less";
+//@import "dropdowns.less";
+//@import "button-groups.less";
+//@import "input-groups.less";
+@import "navs";
+//@import "navbar.less";
+//@import "breadcrumbs.less";
+//@import "pagination.less";
+//@import "pager.less";
+//@import "labels.less";
+//@import "badges.less";
+//@import "jumbotron.less";
+//@import "thumbnails.less";
+@import "alerts.less";
+@import "progress-bars";
+@import "media";
+//@import "list-group.less";
+@import "panels";
+//@import "wells.less";
+@import "close";
+
+// Components w/ JavaScript
+@import "modals";
+
+// Utility classes
+@import "utilities";
+@import "responsive-utilities";
+
+
+// AI Specific Components
+@import "../../../../../../../../less/bootstrap-transition/ai/datagrid";
+@import "../../../../../../../../less/bootstrap-transition/ai/column-mapping-grid";

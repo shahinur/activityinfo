@@ -69,5 +69,4 @@ public class PivotQueryContext {
     public List<Bucket> getBuckets() {
         return Lists.newArrayList(buckets.values());
     }
-
 }

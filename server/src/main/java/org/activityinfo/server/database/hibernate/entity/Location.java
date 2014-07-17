@@ -46,6 +46,7 @@ public class Location implements java.io.Serializable {
     private String axe;
     private Set<Site> sites = new HashSet<Site>(0);
     private Set<AdminEntity> adminEntities = new HashSet<AdminEntity>(0);
+    private String workflowStatusId;
     private long timeEdited;
 
     public Location() {
@@ -85,6 +86,14 @@ public class Location implements java.io.Serializable {
 
     public void setX(Double x) {
         this.x = x;
+    }
+
+    public String getWorkflowStatusId() {
+        return workflowStatusId;
+    }
+
+    public void setWorkflowStatusId(String workflowStatusId) {
+        this.workflowStatusId = workflowStatusId;
     }
 
     @JsonProperty("latitude") @Column(name = "Y", precision = 7, scale = 0)

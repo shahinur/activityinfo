@@ -43,6 +43,15 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
     private Set<Integer> fetchIndicators;
     private boolean fetchAdminEntities = true;
 
+    private boolean fetchPartner = true;
+    private boolean fetchLocation = true;
+    private boolean fetchLinks = true;
+    private boolean fetchComments = true;
+    private boolean fetchDates = true;
+
+
+    private boolean fetchAllReportingPeriods = false;
+
     public GetSites() {
     }
 
@@ -80,11 +89,27 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
         return cmd;
     }
 
+    public boolean isFetchLinks() {
+        return fetchLinks;
+    }
+
+    public void setFetchLinks(boolean fetchLinks) {
+        this.fetchLinks = fetchLinks;
+    }
+
     public static GetSites byActivity(int activityId) {
         GetSites cmd = new GetSites();
         cmd.filter().onActivity(activityId);
 
         return cmd;
+    }
+
+    public boolean isFetchAllReportingPeriods() {
+        return fetchAllReportingPeriods;
+    }
+
+    public void setFetchAllReportingPeriods(boolean fetchAllReportingPeriods) {
+        this.fetchAllReportingPeriods = fetchAllReportingPeriods;
     }
 
     @Override
@@ -136,6 +161,38 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
             super.setOffset(offset);
             seekToSiteId = null;
         }
+    }
+
+    public boolean isFetchPartner() {
+        return fetchPartner;
+    }
+
+    public void setFetchPartner(boolean fetchPartner) {
+        this.fetchPartner = fetchPartner;
+    }
+
+    public boolean isFetchLocation() {
+        return fetchLocation;
+    }
+
+    public void setFetchLocation(boolean fetchLocation) {
+        this.fetchLocation = fetchLocation;
+    }
+
+    public boolean isFetchDates() {
+        return fetchDates;
+    }
+
+    public void setFetchDates(boolean fetchDates) {
+        this.fetchDates = fetchDates;
+    }
+
+    public boolean isFetchComments() {
+        return fetchComments;
+    }
+
+    public void setFetchComments(boolean fetchComments) {
+        this.fetchComments = fetchComments;
     }
 
     public Integer getSeekToSiteId() {

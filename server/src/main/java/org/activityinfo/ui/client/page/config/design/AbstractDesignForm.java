@@ -22,6 +22,7 @@ package org.activityinfo.ui.client.page.config.design;
  * #L%
  */
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.event.BindingEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -35,6 +36,11 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
  * @author Alex Bertram
  */
 abstract class AbstractDesignForm extends FormPanel {
+
+    protected AbstractDesignForm() {
+        setScrollMode(Style.Scroll.AUTOY);
+    }
+
     public abstract FormBinding getBinding();
 
     public int getPreferredDialogWidth() {

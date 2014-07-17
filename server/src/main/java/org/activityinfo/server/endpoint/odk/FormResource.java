@@ -3,12 +3,10 @@ package org.activityinfo.server.endpoint.odk;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.view.Viewable;
 import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.server.database.hibernate.entity.Partner;
-import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.database.hibernate.entity.UserDatabase;
-import org.activityinfo.server.database.hibernate.entity.UserPermission;
+import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
+import org.activityinfo.legacy.shared.model.IsFormField;
+import org.activityinfo.legacy.shared.model.SchemaDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -17,16 +15,16 @@ import javax.ws.rs.core.Response.Status;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ListIterator;
 
 @Path("/activityForm")
 public class FormResource extends ODKResource {
+
     @GET @Produces(MediaType.TEXT_XML)
     public Response form(@QueryParam("id") int id) throws Exception {
         if (enforceAuthorization()) {
             return askAuthentication();
         }
-        LOGGER.finer("ODK activityform " + id + " requested by " +
+        LOGGER.finer("ODK activity form " + id + " requested by " +
                      getUser().getEmail() + " (" + getUser().getId() + ")");
 
         SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
@@ -50,7 +48,15 @@ public class FormResource extends ODKResource {
 
     private List<IsFormField> sortFieldsTogether(ActivityDTO activity) {
         List<IsFormField> fields = Lists.newArrayList();
-        fields.addAll(activity.getAttributeGroups());
+
+        // add only attribute groups with at least one attribute
+        for(AttributeGroupDTO group : activity.getAttributeGroups()) {
+            if(group.getAttributes().size() > 0) {
+                fields.add(group);
+            }
+        }
+
+        // add indicators if this nto monthly reporting
         if(activity.getReportingFrequency() == 0) {
             fields.addAll(activity.getIndicators());
         }

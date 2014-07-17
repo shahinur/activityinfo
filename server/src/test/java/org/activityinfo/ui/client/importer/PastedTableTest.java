@@ -35,6 +35,10 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.google.common.io.Resources.getResource;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author yuriyz on 4/18/14.
@@ -87,5 +91,25 @@ public class PastedTableTest {
         long end = System.currentTimeMillis();
 
         System.out.println("Done in " + (end - start) + "ms , rows count=" + rows.size() + ", columns count=" + columns.size() );
+    }
+
+    @Test
+    public void libreOfficeImport() throws IOException {
+        PastedTable pastedTable = new PastedTable(
+                Resources.toString(getResource("org/activityinfo/core/shared/importing/somali-camps.txt"), Charsets.UTF_8));
+        pastedTable.parseAllRows();
+        pastedTable.guessColumnsType(JvmConverterFactory.get());
+
+        assertThat(pastedTable.getColumns(),
+             contains(hasProperty("header", equalTo("Region")),
+                     hasProperty("header", equalTo("District")),
+                     hasProperty("header", equalTo("Village/camp")),
+                     hasProperty("header", equalTo("Village Name")),
+                     hasProperty("header", equalTo("Pcode")),
+                     hasProperty("header", equalTo("Latitude")),
+                     hasProperty("header", equalTo("Longitude"))));
+
+
+
     }
 }

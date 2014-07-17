@@ -43,7 +43,11 @@ public class CategoryComparator implements Comparator<PivotTableData.Axis> {
             return 1;
         }
 
-        return c1.compareTo(c2);
+        try {
+            return c1.compareTo(c2);
+        } catch(Exception e) {
+            return -1;
+        }
     }
 
     private Comparable sortKey(PivotTableData.Axis a1) {

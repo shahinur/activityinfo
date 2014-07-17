@@ -25,6 +25,7 @@ package org.activityinfo.legacy.shared.command;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Encapsulates a Gregorian month
@@ -213,5 +214,9 @@ public class Month implements Serializable, Comparable<Month> {
      */
     public LocalDate toLocalDate() {
         return new LocalDate(year, month, 1);
+    }
+
+    public static Month of(Date date) {
+        return new Month(date.getYear()+1900, date.getMonth()+1);
     }
 }

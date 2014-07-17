@@ -23,6 +23,7 @@ public class SingleClassImporter implements FieldImporter {
     private ResourceId rangeClassId;
     private ResourceId fieldId;
 
+    private boolean required;
     /**
      * List of columns to match against name properties of potential reference matches.
      */
@@ -40,11 +41,13 @@ public class SingleClassImporter implements FieldImporter {
     private InstanceScorer instanceScorer = null;
 
     public SingleClassImporter(ResourceId rangeClassId,
+                               boolean required,
                                List<ColumnAccessor> sourceColumns,
                                Map<FieldPath, Integer> referenceFields,
                                List<FieldImporterColumn> fieldImporterColumns,
                                ResourceId fieldId) {
         this.rangeClassId = rangeClassId;
+        this.required = required;
         this.sources = sourceColumns;
         this.referenceFields = referenceFields;
         this.fieldImporterColumns = fieldImporterColumns;
@@ -89,7 +92,11 @@ public class SingleClassImporter implements FieldImporter {
 
         for (int i = 0; i != sources.size(); ++i) {
             if (score.getImported()[i] == null) {
-                results.add(ValidationResult.MISSING);
+                if(required) {
+                    results.add(ValidationResult.error("required missing"));
+                } else {
+                    results.add(ValidationResult.MISSING);
+                }
             } else if (bestMatchIndex == -1) {
                 results.add(ValidationResult.error("No match"));
             } else {

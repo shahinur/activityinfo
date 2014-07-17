@@ -33,7 +33,6 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.PivotSites;
 import org.activityinfo.legacy.shared.command.PivotSites.PivotResult;
 import org.activityinfo.legacy.shared.command.result.Bucket;
-import org.activityinfo.legacy.shared.impl.newpivot.PivotIndicatorHandler;
 import org.activityinfo.legacy.shared.impl.pivot.*;
 
 import java.util.List;
@@ -76,38 +75,38 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
 
         final PivotQueryContext queryContext = new PivotQueryContext(command, context, dialect);
 
-        // in memory calculation for indicators : move away from sql because it brings
-        // quite complex queries for calculated indicators
-        if (false && command.getValueType() == PivotSites.ValueType.INDICATOR && command.getFilter().hasRestrictions() && !command.getFilter().getRestrictions(DimensionType.Indicator).isEmpty()) {
-            PivotIndicatorHandler handler = new PivotIndicatorHandler(queryContext, callback);
-            handler.execute();
-            return;
-        }
-
-        final List<PivotQuery> queries = Lists.newArrayList();
+        final List<WorkItem> workList = Lists.newArrayList();
 
         for (BaseTable baseTable : baseTables) {
             if (baseTable.accept(command)) {
-                queries.add(new PivotQuery(queryContext, baseTable));
+                workList.add(new PivotQuery(queryContext, baseTable));
             }
         }
 
-        if (queries.isEmpty()) {
+        if(command.isPivotedBy(DimensionType.Indicator)) {
+            workList.add(new ErrorLoggingWorkItem(new CalculatedIndicatorsQuery(queryContext)));
+        }
+
+        if (workList.isEmpty()) {
             callback.onSuccess(new PivotResult(Lists.<Bucket>newArrayList()));
         }
 
-        final Set<PivotQuery> remaining = Sets.newHashSet(queries);
+        final Set<WorkItem> remaining = Sets.newHashSet(workList);
         final List<Throwable> errors = Lists.newArrayList();
 
-        for (final PivotQuery query : queries) {
-            query.execute(new AsyncCallback<Void>() {
+        for (final WorkItem workItem : workList) {
+            workItem.execute(new AsyncCallback<Void>() {
 
                 @Override
                 public void onSuccess(Void voidResult) {
                     if (errors.isEmpty()) {
-                        remaining.remove(query);
+                        remaining.remove(workItem);
                         if (remaining.isEmpty()) {
-                            callback.onSuccess(new PivotResult(queryContext.getBuckets()));
+                            try {
+                                callback.onSuccess(new PivotResult(queryContext.getBuckets()));
+                            } catch (Throwable e) {
+                                callback.onFailure(e);
+                            }
                         }
                     }
                 }

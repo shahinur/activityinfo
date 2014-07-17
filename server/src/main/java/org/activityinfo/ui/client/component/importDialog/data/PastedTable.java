@@ -25,10 +25,16 @@ public class PastedTable implements SourceTable {
 
     private List<SourceColumn> columns;
     private final List<PastedRow> rows = Lists.newArrayList();
+    private final DelimiterGuesser delimiterGuesser;
 
     public PastedTable(String text) {
-        final char delimiter = new DelimiterGuesser(text).guess();
+        delimiterGuesser = new DelimiterGuesser(text);
+        final char delimiter = delimiterGuesser.guess();
         this.rowParser = new RowParser(text, delimiter);
+    }
+
+    public int getFirstInvalidRow() {
+        return delimiterGuesser.getFirstNotMatchedRow();
     }
 
     @Override

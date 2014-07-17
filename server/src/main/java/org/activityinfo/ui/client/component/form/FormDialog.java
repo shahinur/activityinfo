@@ -24,9 +24,11 @@ package org.activityinfo.ui.client.component.form;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.inject.util.Providers;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
@@ -79,6 +81,18 @@ public class FormDialog {
     public void setDialogTitle(String text) {
         dialog.setDialogTitle(text);
     }
+
+    public void show(final FormInstance instance, FormDialogCallback callback) {
+        this.callback = callback;
+        loadingPanel.show(new Provider<Promise<FormInstance>>() {
+            @Override
+            public Promise<FormInstance> get() {
+                return Promise.resolved(instance);
+            }
+        });
+        dialog.show();
+    }
+
 
     public void show(final ResourceId instanceId, FormDialogCallback callback) {
         this.callback = callback;

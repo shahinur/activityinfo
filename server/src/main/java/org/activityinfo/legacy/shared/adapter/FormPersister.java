@@ -18,6 +18,7 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,8 @@ public class FormPersister {
     }
 
     private Promise<Void> syncActivity() {
+        updateActivity();
+
         // make a list of indicators / attributes
         indexFields();
 
@@ -100,6 +103,15 @@ public class FormPersister {
         deleteRemoved(attributeGroups);
 
         return executeAndCollectNewIds();
+    }
+
+    private void updateActivity() {
+        String label = form.getLabel();
+        if (!activity.getName().equals(label)) {
+            Map<String, Object> changes = new HashMap<>();
+            changes.put("name", label);
+            commands.add(new UpdateEntity(activity, changes) );
+        }
     }
 
     private void deleteRemoved(Map<Integer, ? extends EntityDTO> entityMap) {
@@ -162,6 +174,9 @@ public class FormPersister {
         indicator.setMandatory(field.isRequired());
         indicator.setDescription(field.getDescription());
         indicator.set("sortOrder", sortOrder);
+        indicator.setNameInExpression(field.getNameInExpression());
+        indicator.setExpression(field.getExpression());
+        indicator.setCalculatedAutomatically(field.getCalculateAutomatically());
 
         if(field.getType() instanceof QuantityType) {
             indicator.setType(FieldTypeClass.QUANTITY);

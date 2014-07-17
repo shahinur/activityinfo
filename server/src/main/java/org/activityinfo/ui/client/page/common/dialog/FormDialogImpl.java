@@ -22,6 +22,7 @@ package org.activityinfo.ui.client.page.common.dialog;
  * #L%
  */
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;

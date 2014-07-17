@@ -59,7 +59,7 @@ public class InstanceScorer {
         }
     }
 
-    public static final double MINIMUM_SCORE = 0.5;
+    public static final double MINIMUM_SCORE = 0.25;
 
     private final InstanceScoreSource source;
     private final LatinPlaceNameScorer scorer = new LatinPlaceNameScorer();

@@ -17,6 +17,7 @@ public class RowParser {
     private char delimiter;
     private int rowIndex;
     private int maxRowCount = Integer.MAX_VALUE;
+    private boolean skipBlankRows = true;
 
     public RowParser(String text, char delimiter) {
         this.text = text;
@@ -74,7 +75,7 @@ public class RowParser {
         } else if (size == 2 && (offsets.get(0) + 1) == offsets.get(1)) {
             return true;
         }
-        return true;
+        return false;
     }
 
     private boolean advanceToNextColumn() {

@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <userLogin userId="1" name="admin"
+             email="admin@gmail.com" password="XYZ"
+             locale="en" organization="" jobtitle="" emailnotification="1"/>
+
+  <country CountryId="360" x1="34.9600105078453" y1="29.185036877479" x2="39.3011665344238" y2="33.3747214708255" ISO2="JO" Name="Jordan"/>
+
+  <userdatabase databaseId="1" ownerUserId="1" Name="Geodb" CountryId="360"/>
+
+  <adminlevel AdminLevelId="1360" Name="Governorate" CountryId="360" ParentId="1520" polygons="false" version="3" deleted="false"/>
+  <adminlevel AdminLevelId="1520" Name="Region" CountryId="360" polygons="false" version="2" deleted="false"/>
+  <adminlevel AdminLevelId="1525" Name="District" CountryId="360" ParentId="1360" polygons="false" version="0" deleted="false"/>
+  <adminlevel AdminLevelId="1526" Name="Subdistrict" CountryId="360" ParentId="1525" polygons="false" version="0" deleted="false"/>
+  <adminlevel AdminLevelId="1527" Name="Refugee Camps" CountryId="360" ParentId="1360" polygons="false" version="1" deleted="false"/>
+  <adminlevel AdminLevelId="1528" Name="Camp Districts" CountryId="360" ParentId="1527" polygons="false" version="0" deleted="false"/>
+  <adminentity AdminEntityId="323215" AdminLevelId="1520" Name="North"/>
+  <adminentity AdminEntityId="323216" AdminLevelId="1520" Name="Central"/>
+  <adminentity AdminEntityId="323217" AdminLevelId="1520" Name="South"/>
+  <adminentity AdminEntityId="1701" AdminEntityParentId="323215" AdminLevelId="1360" Name="Ajlun"/>
+  <adminentity AdminEntityId="1702" AdminEntityParentId="323216" AdminLevelId="1360" Name="Al Balqa"/>
+  <adminentity AdminEntityId="1703" AdminEntityParentId="323217" AdminLevelId="1360" Name="Aqaba"/>
+  <adminentity AdminEntityId="1704" AdminEntityParentId="323217" AdminLevelId="1360" Name="Karak"/>
+  <adminentity AdminEntityId="1705" AdminEntityParentId="323216" AdminLevelId="1360" Name="Amman"/>
+  <adminentity AdminEntityId="1706" AdminEntityParentId="323217" AdminLevelId="1360" Name="Tafileh"/>
+  <adminentity AdminEntityId="1707" AdminEntityParentId="323215" AdminLevelId="1360" Name="Irbid"/>
+  <adminentity AdminEntityId="1708" AdminEntityParentId="323215" AdminLevelId="1360" Name="Jarash"/>
+  <adminentity AdminEntityId="1709" AdminEntityParentId="323217" AdminLevelId="1360" Name="Ma&apos;an"/>
+  <adminentity AdminEntityId="1710" AdminEntityParentId="323216" AdminLevelId="1360" Name="Madaba"/>
+  <adminentity AdminEntityId="1711" AdminEntityParentId="323215" AdminLevelId="1360" Name="Mafraq"/>
+  <adminentity AdminEntityId="1712" AdminEntityParentId="323216" AdminLevelId="1360" Name="Zarqa"/>
+  <adminentity AdminEntityId="325550" AdminEntityParentId="1702" AdminLevelId="1525" Name="Ash Shuna Al Janoubyah"/>
+  <adminentity AdminEntityId="325551" AdminEntityParentId="1704" AdminLevelId="1525" Name="Aghwar Janoobiyah"/>
+  <adminentity AdminEntityId="325552" AdminEntityParentId="1707" AdminLevelId="1525" Name="Bani Kinana"/>
+  <adminentity AdminEntityId="325553" AdminEntityParentId="1702" AdminLevelId="1525" Name="Mahis Wa Al Fuhays"/>
+  <adminentity AdminEntityId="325554" AdminEntityParentId="1701" AdminLevelId="1525" Name="Kufranja"/>
+  <adminentity AdminEntityId="325555" AdminEntityParentId="1709" AdminLevelId="1525" Name="Al Petra"/>
+  <adminentity AdminEntityId="325556" AdminEntityParentId="1709" AdminLevelId="1525" Name="Al Husayniyya"/>
+  <adminentity AdminEntityId="325557" AdminEntityParentId="1705" AdminLevelId="1525" Name="Mwaqqar"/>
+  <adminentity AdminEntityId="325558" AdminEntityParentId="1705" AdminLevelId="1525" Name="Al Jamiah"/>
+  <adminentity AdminEntityId="325559" AdminEntityParentId="1712" AdminLevelId="1525" Name="Ar Rusayfa"/>
+  <adminentity AdminEntityId="325560" AdminEntityParentId="1705" AdminLevelId="1525" Name="Qasabat Amman"/>
+  <adminentity AdminEntityId="325561" AdminEntityParentId="1707" AdminLevelId="1525" Name="Al Wastiyya"/>
+  <adminentity AdminEntityId="325562" AdminEntityParentId="1704" AdminLevelId="1525" Name="Ayy"/>
+  <adminentity AdminEntityId="325563" AdminEntityParentId="1707" AdminLevelId="1525" Name="Al Mazar Ash Shamali"/>
+  <adminentity AdminEntityId="325564" AdminEntityParentId="1706" AdminLevelId="1525" Name="Qasabat At Tafilah"/>
+  <adminentity AdminEntityId="325565" AdminEntityParentId="1702" AdminLevelId="1525" Name="Ayn Al Basha"/>
+  <adminentity AdminEntityId="325566" AdminEntityParentId="1702" AdminLevelId="1525" Name="Deir Alla"/>
+  <adminentity AdminEntityId="325567" AdminEntityParentId="1702" AdminLevelId="1525" Name="Qasabat As Salt"/>
+  <adminentity AdminEntityId="325568" AdminEntityParentId="1707" AdminLevelId="1525" Name="Bani Obayd"/>
+  <adminentity AdminEntityId="325569" AdminEntityParentId="1705" AdminLevelId="1525" Name="Al Jiza"/>
+  <adminentity AdminEntityId="325570" AdminEntityParentId="1712" AdminLevelId="1525" Name="Zarqa Qasabah"/>
+  <adminentity AdminEntityId="325571" AdminEntityParentId="1706" AdminLevelId="1525" Name="Busayrah"/>
+  <adminentity AdminEntityId="325572" AdminEntityParentId="1705" AdminLevelId="1525" Name="Sahab"/>
+  <adminentity AdminEntityId="325573" AdminEntityParentId="1711" AdminLevelId="1525" Name="Badiah Shamaliyah Gharbiyah"/>
+  <adminentity AdminEntityId="325574" AdminEntityParentId="1707" AdminLevelId="1525" Name="Qasabat Irbid"/>
+  <adminentity AdminEntityId="325575" AdminEntityParentId="1703" AdminLevelId="1525" Name="Qasabat Al Aqabah"/>
+  <adminentity AdminEntityId="325576" AdminEntityParentId="1707" AdminLevelId="1525" Name="At Tayba"/>
+  <adminentity AdminEntityId="325577" AdminEntityParentId="1703" AdminLevelId="1525" Name="Al Quwayra"/>
+  <adminentity AdminEntityId="325578" AdminEntityParentId="1706" AdminLevelId="1525" Name="Al Hasa"/>
+  <adminentity AdminEntityId="325579" AdminEntityParentId="1707" AdminLevelId="1525" Name="Al Aghwar Al Shamalyah"/>
+  <adminentity AdminEntityId="325580" AdminEntityParentId="1709" AdminLevelId="1525" Name="Ash Shobak"/>
+  <adminentity AdminEntityId="325581" AdminEntityParentId="1704" AdminLevelId="1525" Name="Al Qasr"/>
+  <adminentity AdminEntityId="325582" AdminEntityParentId="1704" AdminLevelId="1525" Name="Al Mazar Al janoubi"/>
+  <adminentity AdminEntityId="325583" AdminEntityParentId="1704" AdminLevelId="1525" Name="Al Qatrana"/>
+  <adminentity AdminEntityId="325584" AdminEntityParentId="1705" AdminLevelId="1525" Name="Marka"/>
+  <adminentity AdminEntityId="325585" AdminEntityParentId="1707" AdminLevelId="1525" Name="Al Koura"/>
+  <adminentity AdminEntityId="325586" AdminEntityParentId="1705" AdminLevelId="1525" Name="Wadi As Sir"/>
+  <adminentity AdminEntityId="325587" AdminEntityParentId="1705" AdminLevelId="1525" Name="Naur"/>
+  <adminentity AdminEntityId="325588" AdminEntityParentId="1711" AdminLevelId="1525" Name="Al-ruwaished"/>
+  <adminentity AdminEntityId="325589" AdminEntityParentId="1705" AdminLevelId="1525" Name="Al Quaysmh"/>
+  <adminentity AdminEntityId="325590" AdminEntityParentId="1704" AdminLevelId="1525" Name="Qasabat Al Karak"/>
+  <adminentity AdminEntityId="325591" AdminEntityParentId="1707" AdminLevelId="1525" Name="Ar Ramtha"/>
+  <adminentity AdminEntityId="325592" AdminEntityParentId="1709" AdminLevelId="1525" Name="Qasabat Ma&apos;an"/>
+  <adminentity AdminEntityId="325593" AdminEntityParentId="1710" AdminLevelId="1525" Name="Theeban"/>
+  <adminentity AdminEntityId="325594" AdminEntityParentId="1708" AdminLevelId="1525" Name="Qasabat Jarash"/>
+  <adminentity AdminEntityId="325595" AdminEntityParentId="1712" AdminLevelId="1525" Name="Al-Hashimiya"/>
+  <adminentity AdminEntityId="325596" AdminEntityParentId="1710" AdminLevelId="1525" Name="Qasabat Madaba"/>
+  <adminentity AdminEntityId="325597" AdminEntityParentId="1704" AdminLevelId="1525" Name="Fqou"/>
+  <adminentity AdminEntityId="325598" AdminEntityParentId="1701" AdminLevelId="1525" Name="Qasabat  Ajloun"/>
+  <adminentity AdminEntityId="325599" AdminEntityParentId="1711" AdminLevelId="1525" Name="Badiah Shamaliyah"/>
+  <adminentity AdminEntityId="325600" AdminEntityParentId="1711" AdminLevelId="1525" Name="Mafraq Qasabah"/>
+  <adminentity AdminEntityId="325601" AdminEntityParentId="325550" AdminLevelId="1526" Name="Dead Sea"/>
+  <adminentity AdminEntityId="325602" AdminEntityParentId="325588" AdminLevelId="1526" Name="Al-ruwaished"/>
+  <adminentity AdminEntityId="325603" AdminEntityParentId="325594" AdminLevelId="1526" Name="Al-Mastaba"/>
+  <adminentity AdminEntityId="325604" AdminEntityParentId="325592" AdminLevelId="1526" Name="Adhrah"/>
+  <adminentity AdminEntityId="325605" AdminEntityParentId="325599" AdminLevelId="1526" Name="Um Al qutaien"/>
+  <adminentity AdminEntityId="325606" AdminEntityParentId="325551" AdminLevelId="1526" Name="Ghawr Al Mazr&apos;ha"/>
+  <adminentity AdminEntityId="325607" AdminEntityParentId="325551" AdminLevelId="1526" Name="Al Malahat"/>
+  <adminentity AdminEntityId="325608" AdminEntityParentId="325560" AdminLevelId="1526" Name="Amman"/>
+  <adminentity AdminEntityId="325609" AdminEntityParentId="325590" AdminLevelId="1526" Name="Al Karak"/>
+  <adminentity AdminEntityId="325610" AdminEntityParentId="325577" AdminLevelId="1526" Name="Al Daysah"/>
+  <adminentity AdminEntityId="325611" AdminEntityParentId="325592" AdminLevelId="1526" Name="Ma&apos;an"/>
+  <adminentity AdminEntityId="325612" AdminEntityParentId="325592" AdminLevelId="1526" Name="Ail"/>
+  <adminentity AdminEntityId="325613" AdminEntityParentId="325550" AdminLevelId="1526" Name="Ash Shuna Al Janoubyah"/>
+  <adminentity AdminEntityId="325614" AdminEntityParentId="325566" AdminLevelId="1526" Name="Deir Alla"/>
+  <adminentity AdminEntityId="325615" AdminEntityParentId="325558" AdminLevelId="1526" Name="Al Jamiah"/>
+  <adminentity AdminEntityId="325616" AdminEntityParentId="325551" AdminLevelId="1526" Name="Ghawr Al Safi"/>
+  <adminentity AdminEntityId="325617" AdminEntityParentId="325600" AdminLevelId="1526" Name="Bal&apos;ama"/>
+  <adminentity AdminEntityId="325618" AdminEntityParentId="325570" AdminLevelId="1526" Name="Al-Dhilail"/>
+  <adminentity AdminEntityId="325619" AdminEntityParentId="325582" AdminLevelId="1526" Name="Al Mazar"/>
+  <adminentity AdminEntityId="325620" AdminEntityParentId="325600" AdminLevelId="1526" Name="Erhab"/>
+  <adminentity AdminEntityId="325621" AdminEntityParentId="325582" AdminLevelId="1526" Name="Mo&apos;ab"/>
+  <adminentity AdminEntityId="325622" AdminEntityParentId="325569" AdminLevelId="1526" Name="Al Jiza"/>
+  <adminentity AdminEntityId="325623" AdminEntityParentId="325587" AdminLevelId="1526" Name="Naur"/>
+  <adminentity AdminEntityId="325624" AdminEntityParentId="325579" AdminLevelId="1526" Name="Al Aghwar Al Shamalyah"/>
+  <adminentity AdminEntityId="325625" AdminEntityParentId="325563" AdminLevelId="1526" Name="Al Mazar Ash Shamali"/>
+  <adminentity AdminEntityId="325626" AdminEntityParentId="325594" AdminLevelId="1526" Name="Jarash"/>
+  <adminentity AdminEntityId="325627" AdminEntityParentId="325575" AdminLevelId="1526" Name="Wadi Araba"/>
+  <adminentity AdminEntityId="325628" AdminEntityParentId="325592" AdminLevelId="1526" Name="Al Jafr"/>
+  <adminentity AdminEntityId="325629" AdminEntityParentId="325584" AdminLevelId="1526" Name="Marka"/>
+  <adminentity AdminEntityId="325630" AdminEntityParentId="325569" AdminLevelId="1526" Name="Um Al-Rasas"/>
+  <adminentity AdminEntityId="325631" AdminEntityParentId="325589" AdminLevelId="1526" Name="Al Quaysmh"/>
+  <adminentity AdminEntityId="325632" AdminEntityParentId="325593" AdminLevelId="1526" Name="Al Areed"/>
+  <adminentity AdminEntityId="325633" AdminEntityParentId="325580" AdminLevelId="1526" Name="Ash Shobak"/>
+  <adminentity AdminEntityId="325634" AdminEntityParentId="325593" AdminLevelId="1526" Name="Mleah"/>
+  <adminentity AdminEntityId="325635" AdminEntityParentId="325598" AdminLevelId="1526" Name="Ajloun"/>
+  <adminentity AdminEntityId="325636" AdminEntityParentId="325568" AdminLevelId="1526" Name="Bani Obayd"/>
+  <adminentity AdminEntityId="325637" AdminEntityParentId="325573" AdminLevelId="1526" Name="Sama As Sarhan"/>
+  <adminentity AdminEntityId="325638" AdminEntityParentId="325573" AdminLevelId="1526" Name="Hosha"/>
+  <adminentity AdminEntityId="325639" AdminEntityParentId="325598" AdminLevelId="1526" Name="Sakhrah"/>
+  <adminentity AdminEntityId="325640" AdminEntityParentId="325596" AdminLevelId="1526" Name="Ma&apos;een"/>
+  <adminentity AdminEntityId="325641" AdminEntityParentId="325599" AdminLevelId="1526" Name="Al Badyeh Al shamalyah (salihia)"/>
+  <adminentity AdminEntityId="325642" AdminEntityParentId="325600" AdminLevelId="1526" Name="Al Manshyah"/>
+  <adminentity AdminEntityId="325643" AdminEntityParentId="325593" AdminLevelId="1526" Name="Theeban"/>
+  <adminentity AdminEntityId="325644" AdminEntityParentId="325599" AdminLevelId="1526" Name="Sabha"/>
+  <adminentity AdminEntityId="325645" AdminEntityParentId="325586" AdminLevelId="1526" Name="Wadi As Sir"/>
+  <adminentity AdminEntityId="325646" AdminEntityParentId="325553" AdminLevelId="1526" Name="Mahis Wa Al Fuhays"/>
+  <adminentity AdminEntityId="325647" AdminEntityParentId="325574" AdminLevelId="1526" Name="Qasabat Irbid"/>
+  <adminentity AdminEntityId="325648" AdminEntityParentId="325567" AdminLevelId="1526" Name="Al Arda"/>
+  <adminentity AdminEntityId="325649" AdminEntityParentId="325565" AdminLevelId="1526" Name="Ayn Al Basha"/>
+  <adminentity AdminEntityId="325650" AdminEntityParentId="325557" AdminLevelId="1526" Name="Mwaqqar"/>
+  <adminentity AdminEntityId="325651" AdminEntityParentId="325597" AdminLevelId="1526" Name="Fqou"/>
+  <adminentity AdminEntityId="325652" AdminEntityParentId="325587" AdminLevelId="1526" Name="Um Al-Basatin"/>
+  <adminentity AdminEntityId="325653" AdminEntityParentId="325583" AdminLevelId="1526" Name="Al Qatrana"/>
+  <adminentity AdminEntityId="325654" AdminEntityParentId="325575" AdminLevelId="1526" Name="Al Aqabah"/>
+  <adminentity AdminEntityId="325655" AdminEntityParentId="325577" AdminLevelId="1526" Name="Al Quwayra"/>
+  <adminentity AdminEntityId="325656" AdminEntityParentId="325570" AdminLevelId="1526" Name="Az Zarqa"/>
+  <adminentity AdminEntityId="325657" AdminEntityParentId="325554" AdminLevelId="1526" Name="Kufranja"/>
+  <adminentity AdminEntityId="325658" AdminEntityParentId="325595" AdminLevelId="1526" Name="Al-Hashimiya"/>
+  <adminentity AdminEntityId="325659" AdminEntityParentId="325576" AdminLevelId="1526" Name="At Tayba"/>
+  <adminentity AdminEntityId="325660" AdminEntityParentId="325571" AdminLevelId="1526" Name="Busayrah"/>
+  <adminentity AdminEntityId="325661" AdminEntityParentId="325561" AdminLevelId="1526" Name="Al Wastiyya"/>
+  <adminentity AdminEntityId="325662" AdminEntityParentId="325573" AdminLevelId="1526" Name="Al Khaldyah"/>
+  <adminentity AdminEntityId="325663" AdminEntityParentId="325599" AdminLevelId="1526" Name="Dair Al-Kahf"/>
+  <adminentity AdminEntityId="325664" AdminEntityParentId="325557" AdminLevelId="1526" Name="Rujm Al shami"/>
+  <adminentity AdminEntityId="325665" AdminEntityParentId="325598" AdminLevelId="1526" Name="Arjan"/>
+  <adminentity AdminEntityId="325666" AdminEntityParentId="325596" AdminLevelId="1526" Name="Madaba"/>
+  <adminentity AdminEntityId="325667" AdminEntityParentId="325564" AdminLevelId="1526" Name="At Tafilah"/>
+  <adminentity AdminEntityId="325668" AdminEntityParentId="325567" AdminLevelId="1526" Name="Ira Wa Yarqa"/>
+  <adminentity AdminEntityId="325669" AdminEntityParentId="325567" AdminLevelId="1526" Name="Alan Wa Zay"/>
+  <adminentity AdminEntityId="325670" AdminEntityParentId="325591" AdminLevelId="1526" Name="Ar Ramtha"/>
+  <adminentity AdminEntityId="325671" AdminEntityParentId="325556" AdminLevelId="1526" Name="Al Husayniyya"/>
+  <adminentity AdminEntityId="325672" AdminEntityParentId="325592" AdminLevelId="1526" Name="Al Muraygha"/>
+  <adminentity AdminEntityId="325673" AdminEntityParentId="325594" AdminLevelId="1526" Name="Burma"/>
+  <adminentity AdminEntityId="325674" AdminEntityParentId="325578" AdminLevelId="1526" Name="Al Hasa"/>
+  <adminentity AdminEntityId="325675" AdminEntityParentId="325587" AdminLevelId="1526" Name="Husban"/>
+  <adminentity AdminEntityId="325676" AdminEntityParentId="325585" AdminLevelId="1526" Name="Al Koura"/>
+  <adminentity AdminEntityId="325677" AdminEntityParentId="325573" AdminLevelId="1526" Name="Al Badyeh shamalyah Al gharbyah"/>
+  <adminentity AdminEntityId="325678" AdminEntityParentId="325581" AdminLevelId="1526" Name="Al Mawjib"/>
+  <adminentity AdminEntityId="325679" AdminEntityParentId="325567" AdminLevelId="1526" Name="As Salt"/>
+  <adminentity AdminEntityId="325680" AdminEntityParentId="325562" AdminLevelId="1526" Name="Ayy"/>
+  <adminentity AdminEntityId="325681" AdminEntityParentId="325555" AdminLevelId="1526" Name="Al Petra"/>
+  <adminentity AdminEntityId="325682" AdminEntityParentId="325600" AdminLevelId="1526" Name="Al Mafraq"/>
+  <adminentity AdminEntityId="325683" AdminEntityParentId="325596" AdminLevelId="1526" Name="Al Faisaleyah"/>
+  <adminentity AdminEntityId="325684" AdminEntityParentId="325552" AdminLevelId="1526" Name="Bani Kinana"/>
+  <adminentity AdminEntityId="325685" AdminEntityParentId="325572" AdminLevelId="1526" Name="Sahab"/>
+  <adminentity AdminEntityId="325686" AdminEntityParentId="325596" AdminLevelId="1526" Name="Jrainah"/>
+  <adminentity AdminEntityId="325687" AdminEntityParentId="325570" AdminLevelId="1526" Name="Beerain"/>
+  <adminentity AdminEntityId="325688" AdminEntityParentId="325599" AdminLevelId="1526" Name="Um Al-Jimal"/>
+  <adminentity AdminEntityId="325689" AdminEntityParentId="325581" AdminLevelId="1526" Name="Al Qasr"/>
+  <adminentity AdminEntityId="325690" AdminEntityParentId="325559" AdminLevelId="1526" Name="Ar Rusayfa"/>
+  <adminentity AdminEntityId="325691" AdminEntityParentId="325570" AdminLevelId="1526" Name="Al Azraq"/>
+  <adminentity AdminEntityId="325692" AdminEntityParentId="1712" AdminLevelId="1527" Name="Emirati Jordanian Camp (EJC)"/>
+  <adminentity AdminEntityId="325693" AdminEntityParentId="1711" AdminLevelId="1527" Name="Zaatari Camp"/>
+  <adminentity AdminEntityId="325694" AdminEntityParentId="1707" AdminLevelId="1527" Name="Cyber City Camp"/>
+  <adminentity AdminEntityId="325695" AdminEntityParentId="1707" AdminLevelId="1527" Name="King Abdullah Park Camp"/>
+  <adminentity AdminEntityId="325696" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 12"/>
+  <adminentity AdminEntityId="325697" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 2"/>
+  <adminentity AdminEntityId="325698" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 1"/>
+  <adminentity AdminEntityId="325699" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 11"/>
+  <adminentity AdminEntityId="325700" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 4"/>
+  <adminentity AdminEntityId="325701" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 3"/>
+  <adminentity AdminEntityId="325702" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 10"/>
+  <adminentity AdminEntityId="325703" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 5"/>
+  <adminentity AdminEntityId="325704" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 9"/>
+  <adminentity AdminEntityId="325705" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 6"/>
+  <adminentity AdminEntityId="325706" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 8"/>
+  <adminentity AdminEntityId="325707" AdminEntityParentId="325693" AdminLevelId="1528" Name="District 7"/>
+  <adminentity AdminEntityId="329177" AdminEntityParentId="1712" AdminLevelId="1527" Name="Azraq"/>
+  <adminentity AdminEntityId="329178" AdminEntityParentId="329178" AdminLevelId="1527" Name="Emirati Jordan Camp"/>
+  <locationtype locationtypeid="50505" Name="Camp or host community" Reuse="false" CountryId="360" workflowId="closed" databaseId="1"/>
+
+
+</dataset>

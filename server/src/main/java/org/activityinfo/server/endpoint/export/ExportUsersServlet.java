@@ -64,7 +64,7 @@ public class ExportUsersServlet extends HttpServlet {
             export.createSheet();
 
             resp.setContentType("application/vnd.ms-excel");
-            if (req.getHeader("User-Agent").indexOf("MSIE") != -1) {
+            if (req.getHeader("User-Agent").contains("MSIE")) {
                 resp.addHeader("Content-Disposition", "attachment; filename=ActivityInfo.xls");
             } else {
                 resp.addHeader("Content-Disposition",

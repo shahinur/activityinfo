@@ -381,6 +381,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
         AbstractDesignForm form = createForm(entity);
         form.getBinding().bind(entity);
+        form.getBinding().setStore(tree.getStore());
 
         for (FieldBinding field : form.getBinding().getBindings()) {
             field.getField().clearInvalid();

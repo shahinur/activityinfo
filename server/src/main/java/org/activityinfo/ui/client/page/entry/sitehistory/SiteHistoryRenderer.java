@@ -22,21 +22,17 @@ package org.activityinfo.ui.client.page.entry.sitehistory;
  * #L%
  */
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.model.SiteHistoryDTO;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SiteHistoryRenderer {
 
-    private static final LocalDate HISTORY_AVAILABLE_FROM = new LocalDate(2012, 12, 20);
+    private static final Date HISTORY_AVAILABLE_FROM = new Date(2012, 12, 20);
 
     public String renderLoading() {
         return new Item(I18N.CONSTANTS.loading()).toString();
@@ -102,7 +98,7 @@ public class SiteHistoryRenderer {
     private Item availableFrom(SiteDTO site) {
         Item item = new Item();
         if (site != null && site.getDateCreated() != null && site.getDateCreated().before(HISTORY_AVAILABLE_FROM)) {
-            item.setMsg(I18N.MESSAGES.siteHistoryAvailableFrom(HISTORY_AVAILABLE_FROM.atMidnightInMyTimezone()));
+            item.setMsg(I18N.MESSAGES.siteHistoryAvailableFrom(HISTORY_AVAILABLE_FROM));
         }
         return item;
     }

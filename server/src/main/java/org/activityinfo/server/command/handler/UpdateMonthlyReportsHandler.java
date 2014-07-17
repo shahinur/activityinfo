@@ -22,6 +22,7 @@ package org.activityinfo.server.command.handler;
  * #L%
  */
 
+import com.google.api.services.storage.Storage;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import org.activityinfo.legacy.client.KeyGenerator;
@@ -39,7 +40,10 @@ import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
 import javax.persistence.EntityManager;
 import java.util.Calendar;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Map;
+
+import static org.activityinfo.legacy.shared.model.IndicatorDTO.getPropertyName;
 
 /**
  * @author Alex Bertram
@@ -62,12 +66,6 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
         this.permissionOracle = new PermissionOracle(em);
     }
 
-    public static void main(String[] args) {
-        String o1 = "I123M2009-1";
-        System.out.println();
-        System.out.println(o1.substring(o1.indexOf('-') + 1));
-    }
-
     @Override
     public CommandResult execute(UpdateMonthlyReports cmd, User user) throws CommandException {
 
@@ -83,15 +81,19 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
         Map<Month, ReportingPeriod> periods = Maps.newHashMap();
         Map<String, Object> siteHistoryChangeMap = createChangeMap();
 
+
         for (ReportingPeriod period : site.getReportingPeriods()) {
             periods.put(HandlerUtil.monthFromRange(period.getDate1(), period.getDate2()), period);
         }
 
-        for (UpdateMonthlyReports.Change change : cmd.getChanges()) {
+        // update tables in consistent order to avoid deadlocks
 
-            ReportingPeriod period = periods.get(change.getMonth());
-            if (period == null) {
-                period = new ReportingPeriod(site);
+        // First create any new reporting periods needed
+
+        for (UpdateMonthlyReports.Change change : cmd.getChanges()) {
+            if (!periods.containsKey(change.getMonth())) {
+
+                ReportingPeriod period = new ReportingPeriod(site);
                 period.setId(keyGenerator.generateInt());
 
                 Calendar calendar = Calendar.getInstance();
@@ -107,12 +109,23 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
 
                 periods.put(change.getMonth(), period);
             }
-
-            updateIndicatorValue(em, period, change.getIndicatorId(), change.getValue(), false);
-
-            siteHistoryChangeMap.put(IndicatorDTO.getPropertyName(change.getIndicatorId(), change.getMonth()),
-                    change.getValue());
         }
+
+        // Now update indicator values
+
+        for (UpdateMonthlyReports.Change change : cmd.getChanges()) {
+
+            updateIndicatorValue(em,
+                periods.get(change.getMonth()),
+                change.getIndicatorId(),
+                change.getValue(), false);
+
+            siteHistoryChangeMap.put(getPropertyName(change.getIndicatorId(), change.getMonth()), change.getValue());
+        }
+
+        // finally update the timestamp on the site entity so changes get picked up
+        // by the synchro mechanism
+        site.setDateEdited(new Date());
 
         siteHistoryProcessor.persistHistory(site, user, ChangeType.UPDATE, siteHistoryChangeMap);
 
@@ -127,7 +140,7 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
 
         if (value == null && !creating) {
             int rowsAffected = em.createQuery(
-                    "delete IndicatorValue v where v.indicator.id = ?1 and v.reportingPeriod.id = ?2")
+                    "delete from IndicatorValue v where v.indicator.id = ?1 and v.reportingPeriod.id = ?2")
                                  .setParameter(1, indicatorId)
                                  .setParameter(2, period.getId())
                                  .executeUpdate();

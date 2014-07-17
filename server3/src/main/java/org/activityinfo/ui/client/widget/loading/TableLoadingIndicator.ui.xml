@@ -1,0 +1,18 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:a='urn:import:org.activityinfo.ui.client.widget'>
+
+  <ui:with field="bundle" type="org.activityinfo.ui.client.widget.loading.LoadingClientBundle"/>
+  <ui:with field="style" type="org.activityinfo.ui.client.widget.loading.LoadingStylesheet"/>
+  <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
+  <ui:with field="messages" type="org.activityinfo.i18n.shared.UiMessages"/>
+
+  <g:HTMLPanel styleName="{style.loadingContainer} ">
+
+    <img class="{style.indicator} {style.loading}" src="{bundle.loadingIcon.getSafeUri}"/>
+
+    <div class="{style.indicator} {style.failed}">
+      <span ui:field="messageSpan"/> <a:Button ui:field="retryButton" style="LINK" text="{i18n.retry}"/>
+    </div>
+  </g:HTMLPanel>
+</ui:UiBinder>

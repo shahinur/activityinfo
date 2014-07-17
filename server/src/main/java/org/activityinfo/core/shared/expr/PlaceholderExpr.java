@@ -42,12 +42,13 @@ public class PlaceholderExpr extends ExprNode {
 
     @Override
     public double evalReal() {
-        // try to resolve value if it's not resolved yet
-        if (value == null && resolver != null) {
+        // HACK: ensure that indicator is recacluated up on each call:
+        // that we don't have to parse the AST six million times!!
+        if (resolver != null) {
             resolver.resolve(this);
         }
         if (value == null) {
-            throw new IllegalArgumentException("Placeholder is not resolved.");
+            throw new IllegalArgumentException("Placeholder is not resolved: " + getPlaceholder());
         }
         return value;
     }
@@ -84,5 +85,10 @@ public class PlaceholderExpr extends ExprNode {
         int result = placeholder != null ? placeholder.hashCode() : 0;
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "{" + placeholder + '}';
     }
 }

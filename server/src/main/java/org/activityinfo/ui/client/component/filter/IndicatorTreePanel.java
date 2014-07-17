@@ -24,7 +24,11 @@ package org.activityinfo.ui.client.component.filter;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.LoadListener;
+import com.extjs.gxt.ui.client.event.TreePanelEvent;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
@@ -50,6 +54,7 @@ import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -245,17 +250,53 @@ public class IndicatorTreePanel extends ContentPanel {
                             }
                         });
             } else if (parent instanceof UserDatabaseDTO) {
-                callback.onSuccess(new ArrayList<ModelData>(((UserDatabaseDTO) parent).getActivities()));
+
+                callback.onSuccess(new ArrayList<ModelData>(createDatabaseChildren((UserDatabaseDTO) parent)));
+
+            } else if (parent instanceof ActivityCategory) {
+
+                callback.onSuccess(new ArrayList<ModelData>(((ActivityCategory) parent).getActivities()));
 
             } else if (parent instanceof ActivityDTO) {
-                ActivityDTO acitvity = (ActivityDTO) parent;
-                callback.onSuccess(createActivityChildren(acitvity));
+
+                callback.onSuccess(createActivityChildren((ActivityDTO) parent));
 
             } else if (parent instanceof IndicatorGroup) {
-                IndicatorGroup group = ((IndicatorGroup) parent);
-                callback.onSuccess(createIndicatorList(group));
+
+                callback.onSuccess(createIndicatorList((IndicatorGroup) parent));
             }
         }
+    }
+
+    private List<ModelData> createDatabaseChildren(UserDatabaseDTO databaseDTO) {
+
+        Set<ActivityCategory> categories = new HashSet<ActivityCategory>();
+        Set<ActivityDTO> activitiesWithoutCategory = new HashSet<ActivityDTO>();
+
+        for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
+            ActivityCategory activityCategory = activityDTO.getActivityCategory();
+            if (activityCategory != null) {
+                categories.add(activityCategory);
+            } else {
+                activitiesWithoutCategory.add(activityDTO);
+            }
+        }
+
+        // fill category with activities
+        for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
+            for (ActivityCategory category : categories) {
+                if (category.equals(activityDTO.getActivityCategory()) && !category.getActivities().contains(activityDTO)) {
+                    category.addActivity(activityDTO);
+                }
+            }
+        }
+
+        List<ModelData> children = new ArrayList<ModelData>();
+
+        children.addAll(categories);
+        children.addAll(activitiesWithoutCategory);
+
+        return children;
     }
 
     private List<ModelData> createActivityChildren(ActivityDTO acitvity) {

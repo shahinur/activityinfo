@@ -29,6 +29,8 @@ import com.bedatadriven.rebar.sql.client.fn.TxAsyncFunction;
 import com.bedatadriven.rebar.sql.client.query.SqlInsert;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -39,8 +41,11 @@ import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.local.sync.SyncRequestEvent;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static org.activityinfo.legacy.shared.command.UpdateMonthlyReports.Change;
 
 /**
  * Manages a persistent queue of commands to be sent to the server.
@@ -199,6 +204,8 @@ public class CommandQueue {
             return serialize((CreateLocation) cmd);
         } else if (cmd instanceof DeleteSite) {
             return serialize((DeleteSite) cmd);
+        } else if (cmd instanceof UpdateMonthlyReports) {
+            return serialize((UpdateMonthlyReports)cmd);
         } else {
             throw new IllegalArgumentException("Cannot serialize commands of type " + cmd.getClass());
         }
@@ -233,6 +240,24 @@ public class CommandQueue {
         return root;
     }
 
+    private JsonObject serialize(UpdateMonthlyReports cmd) {
+        JsonArray changeArray = new JsonArray();
+        for (Change change : cmd.getChanges()) {
+            JsonObject changeObject = new JsonObject();
+            changeObject.addProperty("year", change.getMonth().getYear());
+            changeObject.addProperty("month", change.getMonth().getMonth());
+            changeObject.addProperty("indicatorId", change.getIndicatorId());
+            changeObject.addProperty("value", change.getValue());
+            changeArray.add(changeObject);
+        }
+
+        JsonObject root = new JsonObject();
+        root.addProperty("commandClass", "UpdateMonthlyReports");
+        root.addProperty("siteId", cmd.getSiteId());
+        root.add("changes", changeArray);
+        return root;
+    }
+
     private Command deserializeCommand(String json) {
         JsonObject root = JsonUtil.parse(json);
         String commandClass = root.get("commandClass").getAsString();
@@ -245,9 +270,29 @@ public class CommandQueue {
             return deserializeCreateLocation(root);
         } else if ("DeleteSite".equals(commandClass)) {
             return deserializeDeleteSite(root);
+        } else if ("UpdateMonthlyReports".equals(commandClass)) {
+            return deserializeMonthlyReports(root);
         } else {
             throw new RuntimeException("Cannot deserialize queud command of class " + commandClass);
         }
+    }
+
+    private Command deserializeMonthlyReports(JsonObject root) {
+        int siteId = root.get("siteId").getAsInt();
+        JsonArray changeArray = root.get("changes").getAsJsonArray();
+        ArrayList<Change> changes = Lists.newArrayList();
+        for(int i=0;i!=changeArray.size();++i) {
+            JsonObject changeObject = changeArray.get(i).getAsJsonObject();
+            int indicatorId = changeObject.get("indicatorId").getAsInt();
+            Month month = new Month(changeObject.get("year").getAsInt(), changeObject.get("month").getAsInt());
+            Double value = null;
+            if(changeObject.get("value").isJsonPrimitive()) {
+                value = changeObject.get("value").getAsDouble();
+            }
+            changes.add(new Change(indicatorId, month, value));
+        }
+        return new UpdateMonthlyReports(siteId, changes);
+
     }
 
     private DeleteSite deserializeDeleteSite(JsonObject root) {

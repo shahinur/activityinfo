@@ -22,26 +22,32 @@ package org.activityinfo.server.endpoint.export;
  * #L%
  */
 
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.appengine.tools.cloudstorage.GcsFileMetadata;
+import com.google.appengine.tools.cloudstorage.GcsFilename;
+import com.google.appengine.tools.cloudstorage.GcsService;
+import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
+import com.google.common.base.Strings;
+import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.activityinfo.legacy.shared.command.DimensionType;
-import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.FilterUrlSerializer;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
+import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.server.command.DispatcherSync;
+import org.activityinfo.server.report.output.StorageProvider;
 
+import javax.inject.Provider;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.nio.channels.Channels;
+import java.security.SecureRandom;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Exports complete data to an Excel file
@@ -51,48 +57,78 @@ import java.util.Set;
 @Singleton
 public class ExportSitesServlet extends HttpServlet {
     private DispatcherSync dispatcher;
+    private StorageProvider storageProvider;
+    private Provider<AuthenticatedUser> authenticatedUserProvider;
+    private SecureRandom random = new SecureRandom();
 
     @Inject
-    public ExportSitesServlet(DispatcherSync dispatcher) {
+    public ExportSitesServlet(DispatcherSync dispatcher,
+                              StorageProvider storageProvider,
+                              Provider<AuthenticatedUser> authenticatedUserProvider) {
         this.dispatcher = dispatcher;
+        this.storageProvider = storageProvider;
+        this.authenticatedUserProvider = authenticatedUserProvider;
+    }
+
+
+    /**
+     * Initiates an export to Excel task. A token is send back to the client as plain text
+     * that can be use to poll the status of the export and retrieve the result.
+     */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        // Create a unique key from which the user can retrieve the file from GCS
+        String exportId = Long.toString(Math.abs(random.nextLong()), 16);
+
+        TaskOptions options = TaskOptions.Builder.withUrl(ExportSitesTask.END_POINT);
+        for(Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
+            options.param(entry.getKey(), entry.getValue()[0]);
+        }
+        options.param("userId", Integer.toString(authenticatedUserProvider.get().getId()));
+        options.param("userEmail", authenticatedUserProvider.get().getEmail());
+
+        options.param("exportId", exportId);
+        options.param("filename", fileName());
+
+        QueueFactory.getDefaultQueue().add(options);
+
+        resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+        resp.getOutputStream().print(exportId);
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        Set<Integer> activities = new HashSet<Integer>();
-        if (req.getParameterValues("a") != null) {
-            for (String activity : req.getParameterValues("a")) {
-                activities.add(Integer.parseInt(activity));
-            }
-        }
+        String exportId = req.getParameter("id");
 
-        Filter filter = FilterUrlSerializer.fromQueryParameter(req.getParameter("filter"));
+        // First determine whether the file is available
+        GcsService gcs = GcsServiceFactory.createGcsService();
+        GcsFilename fileName = new GcsFilename("activityinfo-generated", exportId);
+        GcsFileMetadata metadata = gcs.getMetadata(fileName);
 
-        SchemaDTO schema = dispatcher.execute(new GetSchema());
+        if(metadata == null) {
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
 
-        SiteExporter export = new SiteExporter(dispatcher);
-        for (UserDatabaseDTO db : schema.getDatabases()) {
-            for (ActivityDTO activity : db.getActivities()) {
-                if (!filter.isRestricted(DimensionType.Activity) ||
-                    filter.getRestrictions(DimensionType.Activity).contains(activity.getId())) {
-                    export.export(activity, filter);
-
-                }
-            }
-        }
-        export.done();
-
-        resp.setContentType("application/vnd.ms-excel");
-        if (req.getHeader("User-Agent").indexOf("MSIE") != -1) {
-            resp.addHeader("Content-Disposition", "attachment; filename=ActivityInfo.xls");
         } else {
-            resp.addHeader("Content-Disposition",
-                    "attachment; filename=" +
-                    ("ActivityInfo Export " + new Date().toString() + ".xls").replace(" ", "_"));
-        }
+            // First determine whether the file is available
 
-        OutputStream os = resp.getOutputStream();
-        export.getBook().write(os);
+            GcsAppIdentityServiceUrlSigner signer = new GcsAppIdentityServiceUrlSigner();
+            String url;
+            try {
+                url = signer.getSignedUrl("GET", ExportSitesTask.EXPORT_BUCKET_NAME + "/" + exportId);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to sign url", e);
+            }
+
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.getOutputStream().print(url);
+        }
     }
+
+    private String fileName() {
+        String date = new SimpleDateFormat("YYYY-MM-dd_HHmmss").format(new Date());
+        return ("ActivityInfo_Export_" + date + ".xls").replace(" ", "_");
+    }
+
 }

@@ -108,6 +108,12 @@
       <version>${appengine.export.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.appengine.tools</groupId>
+      <artifactId>appengine-gcs-client</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+
     <!-- Database dependencies -->
 
     <dependency>
@@ -180,7 +186,7 @@
     <dependency>
       <groupId>com.extjs</groupId>
       <artifactId>gxt</artifactId>
-      <version>2.3.1-gwt26-bdd-6-SNAPSHOT</version>
+      <version>2.3.1-gwt26-bdd-9</version>
     </dependency>
     <dependency>
       <groupId>org.discotools.gwt.leaflet</groupId>
@@ -553,28 +559,18 @@
     <!-- Run a more time-intensive check periodically to
          monitor code quality -->
     <profile>
-      <id>quality</id>
+      <id>compile-report</id>
       <build>
         <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-                <configuration>
-                  <failOnError>false</failOnError>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <compileReport>true</compileReport>
+              <modules>
+                <module>org.activityinfo.ui.ActivityInfoCI</module>
+                <module>org.activityinfo.ui.AI</module>
+              </modules>
             </configuration>
           </plugin>
         </plugins>
@@ -587,7 +583,7 @@
         <display.version>2.8.${BUILD_NUMBER}</display.version>
         <gae.application>activityinfoeu</gae.application>
         <gae.application.version>build${BUILD_NUMBER}</gae.application.version>
-        <gae.instance.class>F2</gae.instance.class>
+        <gae.instance.class>F4</gae.instance.class>
         <gae.min.idle.instances>3</gae.min.idle.instances>
       </properties>
       <build>

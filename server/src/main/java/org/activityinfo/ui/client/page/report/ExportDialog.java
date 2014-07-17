@@ -37,14 +37,19 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.command.Filter;
+import org.activityinfo.legacy.shared.command.FilterUrlSerializer;
 import org.activityinfo.legacy.shared.command.RenderElement;
 import org.activityinfo.legacy.shared.command.RenderElement.Format;
 import org.activityinfo.legacy.shared.command.result.UrlResult;
 import org.activityinfo.legacy.shared.reports.model.ReportElement;
+import org.activityinfo.promise.Promise;
 
 public class ExportDialog extends Dialog {
 
@@ -97,9 +102,7 @@ public class ExportDialog extends Dialog {
     }
 
     public void export(String filename, ReportElement model, Format format) {
-        show();
-        bar.updateText(I18N.CONSTANTS.exportProgress());
-        bar.auto();
+        showStartProgress();
 
         RenderElement command = new RenderElement(model, format);
         command.setFilename(filename);
@@ -108,30 +111,118 @@ public class ExportDialog extends Dialog {
 
             @Override
             public void onFailure(Throwable caught) {
-                MessageBox.alert(I18N.CONSTANTS.export(),
-                        I18N.CONSTANTS.serverError(),
-                        new Listener<MessageBoxEvent>() {
-
-                            @Override
-                            public void handleEvent(MessageBoxEvent be) {
-                                ExportDialog.this.hide();
-                            }
-                        });
+                showError();
             }
 
             @Override
             public void onSuccess(UrlResult result) {
                 if (!canceled) {
-                    bar.reset();
-                    bar.updateProgress(1.0, I18N.CONSTANTS.downloadReady());
-                    button.setText(I18N.CONSTANTS.close());
-                    tryStartDownloadWithIframe(result.getUrl());
-                    downloadLink.getElement().setAttribute("href", result.getUrl());
-                    downloadLink.setVisible(true);
-                    layout(true);
+                    initiateDownload(result.getUrl());
                 }
             }
         });
+    }
+
+
+    private void showStartProgress() {
+        show();
+        bar.updateText(I18N.CONSTANTS.exportProgress());
+        bar.auto();
+    }
+
+    private void showError() {
+        MessageBox.alert(I18N.CONSTANTS.export(), I18N.CONSTANTS.serverError(), new Listener<MessageBoxEvent>() {
+
+            @Override
+            public void handleEvent(MessageBoxEvent be) {
+                ExportDialog.this.hide();
+            }
+        });
+    }
+
+    private void initiateDownload(String url) {
+        bar.reset();
+        bar.updateProgress(1.0, I18N.CONSTANTS.downloadReady());
+        button.setText(I18N.CONSTANTS.close());
+        tryStartDownloadWithIframe(url);
+        downloadLink.getElement().setAttribute("href", url);
+        downloadLink.setVisible(true);
+        layout(true);
+    }
+
+    public void exportSites(Filter filter) {
+
+        showStartProgress();
+
+        RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, "/ActivityInfo/export");
+        requestBuilder.setHeader("Content-type", "application/x-www-form-urlencoded");
+        requestBuilder.setRequestData("filter=" + FilterUrlSerializer.toUrlFragment(filter));
+        requestBuilder.setCallback(new RequestCallback() {
+            @Override
+            public void onResponseReceived(Request request, Response response) {
+                final String exportId = response.getText();
+                getDownloadUrl(exportId).then(new AsyncCallback<String>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        showError();
+                    }
+
+                    @Override
+                    public void onSuccess(String downloadUrl) {
+                        initiateDownload(downloadUrl);
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Request request, Throwable exception) {
+                showError();
+            }
+        });
+        try {
+            requestBuilder.send();
+        } catch (RequestException e) {
+            showError();
+        }
+    }
+
+    private Promise<String> getDownloadUrl(String exportId) {
+        final Promise<String> url = new Promise<>();
+        schedulePoll(exportId, url);
+        return url;
+    }
+
+    private void schedulePoll(final String exportId, final Promise<String> downloadUrl) {
+        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+            @Override
+            public boolean execute() {
+                pollServer(exportId, downloadUrl);
+                return false;
+            }
+        }, 1000);
+    }
+
+    private void pollServer(final String exportId, final Promise<String> downloadUrl) {
+        RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/ActivityInfo/export?id=" + exportId);
+        request.setCallback(new RequestCallback() {
+            @Override
+            public void onResponseReceived(Request request, Response response) {
+                if(response.getStatusCode() == 200) {
+                    downloadUrl.onSuccess(response.getText());
+                } else {
+                    schedulePoll(exportId, downloadUrl);
+                }
+            }
+            @Override
+            public void onError(Request request, Throwable exception) {
+                downloadUrl.onFailure(exception);
+            }
+        });
+        try {
+            request.send();
+        } catch (RequestException e) {
+            downloadUrl.onFailure(e);
+        }
     }
 
     private void tryStartDownloadWithIframe(String url) {

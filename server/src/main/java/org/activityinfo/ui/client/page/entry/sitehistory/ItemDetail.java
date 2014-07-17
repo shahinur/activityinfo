@@ -26,6 +26,9 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.legacy.shared.model.AttributeDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
+import org.activityinfo.legacy.shared.model.LocationDTO;
+import org.activityinfo.legacy.shared.model.PartnerDTO;
+import org.activityinfo.legacy.shared.model.ProjectDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 
 import java.util.Map;
@@ -59,7 +62,10 @@ class ItemDetail {
         } else if (key.equals("locationId")) { // schema loookups
             String oldName = null;
             if (oldValue != null) {
-                oldName = ctx.getLocation(toInt(oldValue)).getName();
+                LocationDTO location = ctx.getLocation(toInt(oldValue));
+                if (location != null) {
+                    oldName = location.getName();
+                }
             }
             String newName = ctx.getLocation(toInt(newValue)).getName();
             addValues(sb, I18N.CONSTANTS.location(), oldName, newName);
@@ -67,7 +73,10 @@ class ItemDetail {
         } else if (key.equals("projectId")) {
             String oldName = null;
             if (oldValue != null) {
-                oldName = schema.getProjectById(toInt(oldValue)).getName();
+                ProjectDTO project = schema.getProjectById(toInt(oldValue));
+                if (project != null) {
+                    oldName = project.getName();
+                }
             }
             String newName = schema.getProjectById(toInt(newValue)).getName();
             addValues(sb, I18N.CONSTANTS.project(), oldName, newName);
@@ -75,31 +84,41 @@ class ItemDetail {
         } else if (key.equals("partnerId")) {
             String oldName = null;
             if (oldValue != null) {
-                oldName = schema.getPartnerById(toInt(oldValue)).getName();
+                PartnerDTO oldPartner = schema.getPartnerById(toInt(oldValue));
+                if (oldPartner != null) {
+                    oldName = oldPartner.getName();
+                }
             }
-            String newName = schema.getPartnerById(toInt(newValue)).getName();
-            addValues(sb, I18N.CONSTANTS.partner(), oldName, newName);
+            PartnerDTO newPartner = schema.getPartnerById(toInt(newValue));
+            if (newPartner != null) {
+                String newName = newPartner.getName();
+                addValues(sb, I18N.CONSTANTS.partner(), oldName, newName);
+            }
 
         } else if (key.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
             // custom
             int id = IndicatorDTO.indicatorIdForPropertyName(key);
             IndicatorDTO dto = schema.getIndicatorById(id);
-            String name = dto.getName();
+            if (dto != null) {
+                String name = dto.getName();
 
-            Month m = IndicatorDTO.monthForPropertyName(key);
-            if (m != null) {
-                name = I18N.MESSAGES.siteHistoryIndicatorName(name, m.toLocalDate().atMidnightInMyTimezone());
+                Month m = IndicatorDTO.monthForPropertyName(key);
+                if (m != null) {
+                    name = I18N.MESSAGES.siteHistoryIndicatorName(name, m.toLocalDate().atMidnightInMyTimezone());
+                }
+
+                addValues(sb, name, oldValue, newValue, dto.getUnits());
             }
-
-            addValues(sb, name, oldValue, newValue, dto.getUnits());
 
         } else if (key.startsWith(AttributeDTO.PROPERTY_PREFIX)) {
             int id = AttributeDTO.idForPropertyName(key);
             AttributeDTO dto = schema.getAttributeById(id);
-            if (Boolean.parseBoolean(newValue.toString())) {
-                sb.append(I18N.MESSAGES.siteHistoryAttrAdd(dto.getName()));
-            } else {
-                sb.append(I18N.MESSAGES.siteHistoryAttrRemove(dto.getName()));
+            if (dto != null) {
+                if (Boolean.parseBoolean(newValue.toString())) {
+                    sb.append(I18N.MESSAGES.siteHistoryAttrAdd(dto.getName()));
+                } else {
+                    sb.append(I18N.MESSAGES.siteHistoryAttrRemove(dto.getName()));
+                }
             }
 
         } else {
@@ -148,7 +167,7 @@ class ItemDetail {
     }
 
     private static int toInt(Object val) {
-        return Integer.parseInt(val.toString());
+        return val != null ? Integer.parseInt(val.toString()) : -1;
     }
 
     @Override

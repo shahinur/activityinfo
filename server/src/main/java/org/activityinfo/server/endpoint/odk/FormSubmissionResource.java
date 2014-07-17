@@ -8,12 +8,13 @@ import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
-import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.server.database.hibernate.dao.Geocoder;
+import org.activityinfo.server.database.hibernate.entity.Activity;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
-import org.activityinfo.server.database.hibernate.entity.Location;
+import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormAttributeGroup;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormIndicator;
 import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
@@ -24,12 +25,16 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Path("/submission")
 public class FormSubmissionResource extends ODKResource {
     private final Provider<FormParser> formParser;
     private final Geocoder geocoder;
     private final SiteHistoryProcessor siteHistoryProcessor;
+
+    private static final Logger LOGGER = Logger.getLogger(FormSubmissionResource.class.getName());
 
     @Inject
     public FormSubmissionResource(Provider<FormParser> formParser,
@@ -42,28 +47,46 @@ public class FormSubmissionResource extends ODKResource {
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
     public Response submit(@FormDataParam("xml_submission_file") String xml) throws Exception {
-        if (enforceAuthorization()) {
-            return askAuthentication();
-        }
         LOGGER.fine("ODK form submitted by user " + getUser().getEmail() + " (" + getUser().getId() + ")");
+
+        LOGGER.info("XML:\n" + xml);
 
         // parse
         SiteFormData data = formParser.get().parse(xml);
         if (data == null) {
+            LOGGER.severe("Failed to parse XML");
             return badRequest("Problem parsing submission XML");
         }
 
         // basic validation
-        if (data.getActivity() == 0 || data.getPartner() == 0 ||
-            data.getLatitude() == 999 || data.getLongitude() == 999 ||
-            data.getDate1() == null || data.getDate2() == null || data.getDate2().before(data.getDate1())) {
-            return badRequest("Problem validating submission XML");
+        if (data.getActivity() == 0) {
+            LOGGER.severe("activity = 0");
+            return badRequest("Missing activityId");
+
+        } else if(data.getPartner() == 0) {
+            LOGGER.severe("partner = 0");
+            return badRequest("Missing partnerId");
+
+        } else if(data.getDate1() == null || data.getDate2() == null || data.getDate2().before(data.getDate1())) {
+            LOGGER.severe("Invalid dates: date1=" + data.getDate1() + ", date2=" + data.getDate2());
+            return badRequest("Invalid dates");
+        }
+
+        // Workaround: assign anonymous submissions to owner of form
+        if(!auth.isAuthenticated()) {
+            LOGGER.info("Setting authentication to form owner");
+
+            User owner = entityManager.get().find(Activity.class, data.getActivity()).getDatabase().getOwner();
+            LOGGER.info("Owner = " + owner.getEmail());
+
+            auth.set(owner);
         }
 
         // check if activity exists
         SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
         ActivityDTO activity = schemaDTO.getActivityById(data.getActivity());
         if (activity == null) {
+            LOGGER.severe("Unknown activity, id = " + data.getActivity());
             return notFound("Unknown activity");
         }
 
@@ -71,8 +94,8 @@ public class FormSubmissionResource extends ODKResource {
         try {
             createSite(data, schemaDTO, activity);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+            LOGGER.log(Level.SEVERE, "Exception whilst creating site: " + e.getMessage(), e);
+            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
         }
         return Response.status(Status.CREATED).build();
     }
@@ -106,18 +129,29 @@ public class FormSubmissionResource extends ODKResource {
 
         // set indicators
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-            for (FormIndicator formIndicator : data.getIndicators()) {
-                site.setIndicatorValue(formIndicator.getId(), formIndicator.getValue());
+            for (IndicatorDTO indicator : activity.getIndicators()) {
+                FormIndicator formIndicator = data.getIndicator(indicator.getId());
+                if(formIndicator != null) {
+                    if(indicator.getType() == FieldTypeClass.QUANTITY) {
+                        site.setIndicatorValue(indicator.getId(), formIndicator.getDoubleValue());
+                    } else {
+                        site.setIndicatorValue(indicator.getId(), formIndicator.getValue());
+                    }
+                }
             }
         }
 
         // create command(s)
         CreateSite cmd = new CreateSite(site);
-        CreateLocation createlocation = createCreateLocationCommand(data, schemaDTO, activity);
-        dispatcher.execute(createlocation);
-        cmd.getProperties().put("locationId",createlocation.getLocationId());
+        if(activity.getLocationType().isNationwide()) {
+            // hack to support "no" locationtypes in the legacy api
+            cmd.getProperties().put("locationId", activity.getLocationTypeId());
+        } else {
+            CreateLocation createlocation = createCreateLocationCommand(data, schemaDTO, activity);
+            dispatcher.execute(createlocation);
+            cmd.getProperties().put("locationId", createlocation.getLocationId());
+        }
 
-        // save
         CreateResult createResult = dispatcher.execute(cmd);
 
         // create site history entry

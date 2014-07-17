@@ -47,7 +47,7 @@ public class ColumnParser {
         for (int i = 0; i != row.getColumnCount(); ++i) {
             SourceColumn column = new SourceColumn();
             column.setIndex(i);
-            column.setHeader(row.getColumnValue(i));
+            column.setHeader(row.getColumnValue(i).trim());
             columns.add(column);
         }
         return columns;

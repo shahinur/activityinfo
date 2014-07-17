@@ -185,6 +185,15 @@ public class SiteFormData {
         }
     }
 
+    public FormIndicator getIndicator(int id) {
+        for(FormIndicator indicator : indicators) {
+            if(indicator.getId() == id) {
+                return indicator;
+            }
+        }
+        return null;
+    }
+
     public class FormAttributeGroup {
         private int id;
         private String name;

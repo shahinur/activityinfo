@@ -27,7 +27,7 @@ import org.activityinfo.legacy.shared.command.result.VoidResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class UpdateMonthlyReports implements Command<VoidResult> {
+public class UpdateMonthlyReports implements MutatingCommand<VoidResult> {
 
     public static class Change implements Serializable {
         private Month month;

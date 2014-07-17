@@ -38,7 +38,12 @@ import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
 import org.activityinfo.legacy.client.state.StateProvider;
-import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.BatchCommand;
+import org.activityinfo.legacy.shared.command.Command;
+import org.activityinfo.legacy.shared.command.CreateEntity;
+import org.activityinfo.legacy.shared.command.Delete;
+import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
@@ -57,7 +62,6 @@ import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
-import org.activityinfo.ui.client.page.instance.InstancePage;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
 
 import javax.annotation.Nullable;
@@ -113,6 +117,8 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
         this.view.init(this, db, treeStore);
         this.view.setActionEnabled(UIActions.DELETE, false);
+        this.view.setActionEnabled(UIActions.EDIT, false);
+        this.view.setActionEnabled(UIActions.OPEN_TABLE, false);
     }
 
     public void refresh() {

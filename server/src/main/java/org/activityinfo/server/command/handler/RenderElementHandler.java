@@ -80,11 +80,9 @@ public class RenderElementHandler implements CommandHandler<RenderElement> {
                     LOGGER.log(Level.WARNING, "Exception while closing storage: " + e.getMessage(), e);
                 }
             }
-
             return new UrlResult(storage.getUrl());
         } catch (Exception e) {
             throw new RuntimeException("Exception generating export", e);
         }
     }
-
 }

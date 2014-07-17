@@ -23,7 +23,10 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -62,11 +65,45 @@ public class SchemaImporterTest extends CommandTestCase2 {
         assertThat(h2.getCategory(), equalTo("Health"));
     }
 
-    private UserDatabaseDTO doImport(String resourceName) throws IOException {
+    @Test // AI-678 : Database import duplicates fields
+    public void duplicatesTest() throws IOException {
+        SchemaImporter schemaImporter = new SchemaImporter(getDispatcher(), db(), warningTemplates());
+        schemaImporter.parseColumns(source("schema_ai_678.txt"));
+        schemaImporter.processRows();
+
+        assertNoDuplicates(schemaImporter.getNewIndicators());
+        assertNoDuplicates(schemaImporter.getNewAttributeGroups());
+        assertNoDuplicates(schemaImporter.getNewAttributes());
+    }
+
+    private static void assertNoDuplicates(Collection<?> list) {
+        if (hasDuplicates(list)) {
+            throw new AssertionError("List has duplications:" + list);
+        }
+    }
+
+    private static boolean hasDuplicates(Collection<?> list) {
+        Set set = new HashSet(list);
+        return set.size() < list.size();
+    }
+
+    private static PastedTable source(String resourceName) throws IOException {
         String csv = Resources.toString(Resources.getResource(resourceName), Charsets.UTF_8);
-        PastedTable source = new PastedTable(csv);
+        return new PastedTable(csv);
+    }
 
+    private UserDatabaseDTO db() {
+        SchemaDTO schema = execute(new GetSchema());
+        return schema.getDatabaseById(1);
+    }
 
+    private SchemaImporter.WarningTemplates warningTemplates() {
+        SchemaImporter.WarningTemplates templates = EasyMock.createNiceMock(SchemaImporter.WarningTemplates.class);
+        EasyMock.replay(templates);
+        return templates;
+    }
+
+    private UserDatabaseDTO doImport(String resourceName) throws IOException {
         Map<String, Object> dbProps = Maps.newHashMap();
         dbProps.put("name", "Syria");
         dbProps.put("countryId", 1);
@@ -80,10 +117,7 @@ public class SchemaImporterTest extends CommandTestCase2 {
             throw new AssertionError("database not created");
         }
 
-        SchemaImporter.WarningTemplates templates = EasyMock.createNiceMock(SchemaImporter.WarningTemplates.class);
-        EasyMock.replay(templates);
-
-        SchemaImporter importer = new SchemaImporter(getDispatcher(), db, templates);
+        SchemaImporter importer = new SchemaImporter(getDispatcher(), db, warningTemplates());
         importer.setProgressListener(new SchemaImporter.ProgressListener() {
 
             @Override
@@ -92,7 +126,7 @@ public class SchemaImporterTest extends CommandTestCase2 {
             }
         });
 
-        boolean success = importer.parseColumns(source);
+        boolean success = importer.parseColumns(source(resourceName));
         if (success) {
             importer.processRows();
         }

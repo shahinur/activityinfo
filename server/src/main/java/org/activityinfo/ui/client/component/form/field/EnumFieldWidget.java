@@ -76,7 +76,6 @@ public class EnumFieldWidget implements FormFieldWidget<Set<ResourceId>> {
             CheckBox checkBox = createControl(instance);
             checkBox.addValueChangeHandler(changeHandler);
             boxPanel.add(checkBox);
-            controls.add(checkBox);
         }
 
         panel = new FlowPanel();
@@ -165,6 +164,7 @@ public class EnumFieldWidget implements FormFieldWidget<Set<ResourceId>> {
         }
         checkBox.setFormValue(instance.getId().asString());
         checkBox.getElement().setAttribute("data-id", instance.getId().asString());
+        controls.add(checkBox);
         return checkBox;
     }
 
