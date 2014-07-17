@@ -22,17 +22,28 @@ package org.activityinfo.ui.client.component.formdesigner;
  */
 
 import com.allen_sauer.gwt.dnd.client.DragController;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormElement;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
+import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
 import org.activityinfo.ui.client.component.formdesigner.drop.ForwardDropController;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPresenter;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author yuriyz on 07/07/2014.
@@ -90,5 +101,25 @@ public class FormDesigner {
 
     public DragController getDragController() {
         return formDesignerPanel.getFieldPalette().getDragController();
+    }
+
+    public void updateFieldOrder() {
+
+        Map<ResourceId, FormField> fieldMap = Maps.newHashMap();
+        for(FormField field : formClass.getFields()) {
+            fieldMap.put(field.getId(), field);
+        }
+
+        // update the order of the model
+        List<FormElement> elements = Lists.newArrayList();
+        FlowPanel panel = formDesignerPanel.getDropPanel();
+        for(int i=0;i!=panel.getWidgetCount();++i) {
+            Widget widget = panel.getWidget(i);
+            String fieldId = widget.getElement().getAttribute(FieldWidgetContainer.DATA_FIELD_ID);
+            elements.add(fieldMap.get(ResourceId.create(fieldId)));
+        }
+
+        formClass.getElements().clear();
+        formClass.getElements().addAll(elements);
     }
 }

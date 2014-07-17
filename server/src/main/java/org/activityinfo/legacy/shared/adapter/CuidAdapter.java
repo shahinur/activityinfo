@@ -6,7 +6,6 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Cuids;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.KeyGenerator;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.EntityDTO;
 
@@ -197,17 +196,16 @@ public class CuidAdapter {
      * @return the {@code FormField} ResourceId for the field of a given Activity {@code FormClass} that
      * references the given AttributeGroup FormClass
      */
-    public static ResourceId attributeGroupField(ActivityDTO activity, AttributeGroupDTO group) {
-        return cuid(ATTRIBUTE_GROUP_FIELD_DOMAIN, group.getId());
+    public static ResourceId attributeGroupField(AttributeGroupDTO group) {
+        return attributeGroupField(group.getId());
     }
 
     /**
      * @return the {@code FormField} ResourceId for the field of a given Activity {@code FormClass} that
      * references the given AttributeGroup FormClass
      */
-    public static ResourceId attributeGroupField(int activityId, int attributeGroupId) {
-        return ResourceId.create(ACTIVITY_DOMAIN + block(activityId) + "a" +
-                                 Integer.toString(attributeGroupId, Cuids.RADIX));
+    public static ResourceId attributeGroupField(int attributeGroupId) {
+        return cuid(ATTRIBUTE_GROUP_FIELD_DOMAIN, attributeGroupId);
     }
 
     public static ResourceId activityCategoryFolderId(int dbId, String category) {

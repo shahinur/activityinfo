@@ -70,7 +70,6 @@ public class FormPersister {
         });
     }
 
-
     private void indexFields() {
         for(IndicatorDTO indicator : activity.getIndicators()) {
             indicators.put(indicator.getId(), indicator);
@@ -207,6 +206,7 @@ public class FormPersister {
         group.setName(field.getLabel());
         group.setMultipleAllowed(enumType.getCardinality() == Cardinality.MULTIPLE);
         group.setMandatory(field.isRequired());
+        group.setSortOrder(sortOrder);
 
         if(created) {
             CreateEntity create = new CreateEntity(group);

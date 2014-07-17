@@ -62,7 +62,7 @@ public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
 
         private AttributeGroupBinding(ActivityDTO activity, AttributeGroupDTO group) {
             this.group = group;
-            fieldId = CuidAdapter.attributeGroupField(activity, group);
+            fieldId = CuidAdapter.attributeGroupField(group);
         }
 
         @Override

@@ -22,6 +22,7 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
@@ -150,6 +151,57 @@ public class ActivityTest extends CommandTestCase2 {
     }
 
     @Test
+    public void orderIndicatorsActivities() {
+
+        SchemaDTO schema = execute(new GetSchema());
+        UserDatabaseDTO db = schema.getDatabaseById(1);
+        LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
+
+        ActivityDTO act = new ActivityDTO();
+        act.setName("Household Survey");
+        act.setLocationType(locType);
+        act.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+
+        CreateResult createResult = execute(CreateEntity.Activity(db, act));
+        ResourceId classId = activityFormClass(createResult.getNewId());
+
+        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(classId));
+
+        // create three new fields with an order that mixes "attributes" and "indicators"
+
+        FormField newField = new FormField(ResourceId.generateId());
+        newField.setLabel("How old are you?");
+        newField.setType(new QuantityType().setUnits("years"));
+        formClass.addElement(newField);
+
+        FormField newGenderField = new FormField(ResourceId.generateId());
+        newGenderField.setLabel("Gender");
+        EnumValue male = new EnumValue(ResourceId.generateId(), "Male");
+        EnumValue female = new EnumValue(ResourceId.generateId(), "Female");
+        newGenderField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(male, female)));
+        formClass.addElement(newGenderField);
+
+        FormField newTextField = new FormField(ResourceId.generateId());
+        newTextField.setLabel("What is your name?");
+        newTextField.setType(TextType.INSTANCE);
+        formClass.addElement(newTextField);
+
+        resourceLocator.persist(formClass);
+
+        FormClass reform = assertResolves(resourceLocator.getFormClass(formClass.getId()));
+
+        System.out.println(Joiner.on("\n").join(reform.getFields()));
+
+        int a = indexOf(reform.getFields(), hasProperty("label", equalTo("How old are you?")));
+        int b = indexOf(reform.getFields(), hasProperty("label", equalTo("Gender")));
+        int c = indexOf(reform.getFields(), hasProperty("label", equalTo("What is your name?")));
+
+        assertTrue(a < b && b < c);
+
+    }
+
+    @Test
     public void createActivity() {
 
         SchemaDTO schema = execute(new GetSchema());
@@ -251,6 +303,7 @@ public class ActivityTest extends CommandTestCase2 {
 
         ActivityDTO activity = getActivity(1);
         assertThat(activity.getIndicatorById(1), hasProperty("name", Matchers.equalTo("Number of benes")));
+
     }
 
     private <T> T find(List<T> list, Matcher<? super T> matcher) {
@@ -264,6 +317,22 @@ public class ActivityTest extends CommandTestCase2 {
         }
         throw new AssertionError();
     }
+
+
+
+    private <T> int indexOf(List<T> list, Matcher<? super T> matcher) {
+
+        assertThat(list, hasItem(matcher));
+
+        for(int i=0;i!=list.size();++i) {
+            if(matcher.matches(list.get(i))) {
+                return i;
+            }
+        }
+        throw new AssertionError();
+    }
+
+
 
     private ActivityDTO getActivity(int activityId) {
         return execute(new GetSchema()).getActivityById(activityId);

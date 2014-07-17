@@ -27,6 +27,7 @@ import com.allen_sauer.gwt.dnd.client.drop.FlowPanelDropController;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
@@ -60,6 +61,13 @@ public class DropPanelDropController extends FlowPanelDropController {
 
         if (context.draggable instanceof FieldLabel) {
             previewDropNewWidget(context);
+        } else {
+            Scheduler.get().scheduleDeferred(new Command() {
+                @Override
+                public void execute() {
+                    formDesigner.updateFieldOrder();
+                }
+            });
         }
     }
 

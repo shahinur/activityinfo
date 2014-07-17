@@ -40,6 +40,8 @@ import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSe
  */
 public class FieldWidgetContainer implements WidgetContainer {
 
+    public static final String DATA_FIELD_ID = "data-field-id";
+
     public interface LabelTemplate extends SafeHtmlTemplates {
         @Template("<span style='color: red;'> *</span>")
         SafeHtml mandatoryMarker();
@@ -70,6 +72,9 @@ public class FieldWidgetContainer implements WidgetContainer {
                 formDesigner.getEventBus().fireEvent(new WidgetContainerSelectionEvent(FieldWidgetContainer.this));
             }
         });
+        // Workaround(alex): store field id with widget so we can update model order after
+        // drag and drop
+        widgetContainer.asWidget().getElement().setAttribute(DATA_FIELD_ID, formField.getId().asString());
         syncWithModel();
     }
 

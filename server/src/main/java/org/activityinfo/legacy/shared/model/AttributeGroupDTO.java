@@ -23,6 +23,12 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.common.collect.Lists;
+import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -37,7 +43,7 @@ import java.util.List;
  * domain object
  */
 @JsonAutoDetect(JsonMethod.NONE)
-public final class AttributeGroupDTO extends BaseModelData implements EntityDTO {
+public final class AttributeGroupDTO extends BaseModelData implements EntityDTO, IsFormField {
     private static final long serialVersionUID = 7927425202152761370L;
     public static final String PROPERTY_PREFIX = "AG";
 
@@ -46,6 +52,11 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
     private List<AttributeDTO> attributes = new ArrayList<AttributeDTO>(0);
 
     public AttributeGroupDTO() {
+    }
+
+    @Override
+    public String getLabel() {
+        return getName();
     }
 
     /**
@@ -152,6 +163,30 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO 
 
     public static String getPropertyName(int attributeGroupId) {
         return PROPERTY_PREFIX + attributeGroupId;
+    }
+
+
+
+    public int getSortOrder() {
+        return get("sortOrder", 0);
+    }
+
+    @Override
+    public FormField asFormField() {
+        Cardinality cardinality = isMultipleAllowed() ? Cardinality.MULTIPLE : Cardinality.SINGLE;
+        List<EnumValue> values = Lists.newArrayList();
+        for(AttributeDTO attribute : getAttributes()) {
+            values.add(new EnumValue(CuidAdapter.attributeId(attribute.getId()), attribute.getName()));
+        }
+
+        return new FormField(CuidAdapter.attributeGroupField(getId()))
+                .setLabel(getName())
+                .setType(new EnumType(cardinality, values))
+                .setRequired(isMandatory());
+    }
+
+    public void setSortOrder(int sortOrder) {
+        set("sortOrder", sortOrder);
     }
 
     public String getPropertyName() {

@@ -24,8 +24,13 @@ package org.activityinfo.legacy.shared.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
+import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.command.Month;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.number.QuantityType;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -39,7 +44,7 @@ import org.codehaus.jackson.map.annotate.JsonView;
  * @author Alex Bertram
  */
 @JsonAutoDetect(JsonMethod.NONE)
-public final class IndicatorDTO extends BaseModelData implements EntityDTO, ProvidesKey {
+public final class IndicatorDTO extends BaseModelData implements EntityDTO, ProvidesKey, IsFormField {
     public final static int AGGREGATE_SUM = 0;
     public final static int AGGREGATE_AVG = 1;
     public final static int AGGREGATE_SITE_COUNT = 2;
@@ -311,5 +316,42 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     @Override
     public String getKey() {
         return "i" + getId();
+    }
+
+    @Override
+    public String getLabel() {
+        return getName();
+    }
+
+    @Override
+    public int getSortOrder() {
+        return get("sortOrder", 0);
+    }
+
+    @Override
+    public FormField asFormField() {
+        FormField field = new FormField(CuidAdapter.indicatorField(getId()));
+        field.setLabel(getName());
+        field.setDescription(getDescription());
+        field.setCalculation(getExpression());
+
+        if(getType() == TextType.INSTANCE) {
+            field.setType(TextType.INSTANCE);
+
+        } else if(getType() == NarrativeType.INSTANCE) {
+            field.setType(NarrativeType.INSTANCE);
+
+        } else {
+            String units = getUnits();
+            if(Strings.isNullOrEmpty(units)) {
+                units = "units";
+            }
+            field.setType(new QuantityType().setUnits(units));
+        }
+        return field;
+    }
+
+    public void setSortOrder(int sortOrder) {
+        set("sortOrder", sortOrder);
     }
 }

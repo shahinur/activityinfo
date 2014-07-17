@@ -482,6 +482,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     "aggregation",
                     "units",
                     "activityId",
+                    "sortOrder",
                     "mandatory").from("indicator").orderBy("SortOrder");
 
             if (context.isRemote()) {
@@ -508,6 +509,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     indicator.setAggregation(rs.getInt("aggregation"));
                     indicator.setUnits(rs.getString("units"));
                     indicator.setMandatory(rs.getBoolean("mandatory"));
+                    indicator.setSortOrder(rs.getInt("sortOrder"));
 
                     int activityId = rs.getInt("activityId");
                     ActivityDTO activity = activities.get(activityId);
@@ -526,6 +528,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                                      .appendColumn("mandatory")
                                      .appendColumn("defaultValue")
                                      .appendColumn("workflow")
+                                     .appendColumn("sortOrder")
                                      .from("attributegroup")
                                      .orderBy("SortOrder");
 
@@ -552,6 +555,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     group.setName(rs.getString("name"));
                     group.setMultipleAllowed(rs.getBoolean("multipleAllowed"));
                     group.setMandatory(rs.getBoolean("mandatory"));
+                    group.setSortOrder(rs.getInt("sortOrder"));
                     if (!rs.isNull("defaultValue")) { // if null it throws NPE
                         group.setDefaultValue(rs.getInt("defaultValue"));
                     }

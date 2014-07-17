@@ -16,6 +16,8 @@ import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.time.LocalDateType;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityCategoryFolderId;
@@ -71,40 +73,25 @@ public class ActivityUserFormBuilder {
         .setRequired(true);
         siteForm.addElement(startDateField);
 
-
         FormField locationField = new FormField(CuidAdapter.locationField(activity.getId()))
         .setLabel(activity.getLocationType().getName())
         .setType(ReferenceType.single(locationClass(activity.getLocationType())))
         .setRequired(true);
         siteForm.addElement(locationField);
 
-        for (AttributeGroupDTO group : activity.getAttributeGroups()) {
+        List<IsFormField> fields = Lists.newArrayList();
+        fields.addAll(activity.getAttributeGroups());
+        fields.addAll(activity.getIndicators());
 
-            Cardinality cardinality = group.isMultipleAllowed() ? Cardinality.MULTIPLE : Cardinality.SINGLE;
-            List<EnumValue> values = Lists.newArrayList();
-            for(AttributeDTO attribute : group.getAttributes()) {
-                values.add(new EnumValue(CuidAdapter.attributeId(attribute.getId()), attribute.getName()));
+        Collections.sort(fields, new Comparator<IsFormField>() {
+            @Override
+            public int compare(IsFormField o1, IsFormField o2) {
+                return o1.getSortOrder() - o2.getSortOrder();
             }
+        });
 
-            FormField attributeField = new FormField(CuidAdapter.attributeGroupField(activity, group))
-            .setLabel(group.getName())
-            .setType(new EnumType(cardinality, values))
-            .setRequired(group.isMandatory());
-
-            siteForm.addElement(attributeField);
-        }
-
-        // ignore indicator groups until they are full implemented in form designer
-        for (IndicatorGroup group : activity.groupIndicators()) {
-            for(IndicatorDTO indicator : group.getIndicators()) {
-//                FormSection section = new FormSection(CuidAdapter.activityFormSection(activity.getId(),
-//                        group.getName()));
-//                section.setLabel(group.getName());
-
-                addIndicators(siteForm, group);
-
-//                siteForm.addElement(section);
-            }
+        for(IsFormField field : fields) {
+            siteForm.addElement(field.asFormField());
         }
 
         FormField commentsField = new FormField(CuidAdapter.commentsField(activity.getId()));
@@ -120,31 +107,6 @@ public class ActivityUserFormBuilder {
             return CuidAdapter.adminLevelFormClass(locationType.getBoundAdminLevelId());
         } else {
             return CuidAdapter.locationFormClass(locationType.getId());
-        }
-    }
-
-    private static void addIndicators(FormElementContainer container, IndicatorGroup group) {
-        for (IndicatorDTO indicator : group.getIndicators()) {
-            FormField field = new FormField(CuidAdapter.indicatorField(indicator.getId()));
-            field.setLabel(indicator.getName());
-            field.setDescription(indicator.getDescription());
-            field.setCalculation(indicator.getExpression());
-
-            if(indicator.getType() == TextType.INSTANCE) {
-                field.setType(TextType.INSTANCE);
-
-            } else if(indicator.getType() == NarrativeType.INSTANCE) {
-                field.setType(NarrativeType.INSTANCE);
-
-            } else {
-                String units = indicator.getUnits();
-                if(Strings.isNullOrEmpty(units)) {
-                    units = "units";
-                }
-                field.setType(new QuantityType().setUnits(units));
-            }
-
-            container.addElement(field);
         }
     }
 }

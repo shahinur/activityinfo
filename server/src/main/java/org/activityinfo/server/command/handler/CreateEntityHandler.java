@@ -76,18 +76,18 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
     }
 
     private CommandResult createAttributeGroup(CreateEntity cmd, Map<String, Object> properties) {
-        AttributeGroup group = new AttributeGroup();
+        Activity activity = entityManager().find(Activity.class, properties.get("activityId"));
 
+        AttributeGroup group = new AttributeGroup();
+        group.setSortOrder(activity.getAttributeGroups().size() + 1);
         updateAttributeGroupProperties(group, properties);
 
         entityManager().persist(group);
 
-        Activity activity = entityManager().find(Activity.class, properties.get("activityId"));
         activity.getAttributeGroups().add(group);
 
         activity.getDatabase().setLastSchemaUpdate(new Date());
 
-        group.setSortOrder(activity.getAttributeGroups().size() + 1);
 
         return new CreateResult(group.getId());
     }
