@@ -29,6 +29,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.AttachEvent;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -42,6 +43,7 @@ import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetCo
 import org.activityinfo.ui.client.component.formdesigner.container.SectionWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.drop.NullValueUpdater;
+import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPanel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldPalette;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPanel;
@@ -67,6 +69,7 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
 
     private final Map<ResourceId, WidgetContainer> containerMap = Maps.newHashMap();
     private ScrollPanel scrollAncestor;
+    private WidgetContainer selectedWidgetContainer;
 
     @UiField
     HTMLPanel containerPanel;
@@ -120,6 +123,16 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
         });
     }
 
+    public void bind(EventBus eventBus) {
+        eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
+            @Override
+            public void handle(WidgetContainerSelectionEvent event) {
+                selectedWidgetContainer = event.getSelectedItem();
+                calcSpacerHeight();
+            }
+        });
+    }
+
     private void fillPanel(final FormClass formClass, final FormDesigner formDesigner) {
         formClass.traverse(formClass, new TraverseFunction() {
             @Override
@@ -168,10 +181,23 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
 
     @Override
     public void onScroll(ScrollEvent event) {
+        calcSpacerHeight();
+    }
+
+    private void calcSpacerHeight() {
         int verticalScrollPosition = scrollAncestor.getVerticalScrollPosition();
         if (verticalScrollPosition > Metrics.MAX_VERTICAL_SCROLL_POSITION) {
             int height = verticalScrollPosition - Metrics.MAX_VERTICAL_SCROLL_POSITION;
-            //GWT.log("verticalPos = " + verticalScrollPosition + ", height = " + height);
+
+            int selectedWidgetTop = 0;
+            if (selectedWidgetContainer != null) {
+                selectedWidgetTop = selectedWidgetContainer.asWidget().getAbsoluteTop();
+            }
+            if (selectedWidgetTop < 0) {
+                height = height + selectedWidgetTop;
+            }
+
+            //GWT.log("verticalPos = " + verticalScrollPosition + ", height = " + height + ", selectedWidgetTop = " + selectedWidgetTop);
             spacer.setHeight(height + "px");
         } else {
             spacer.setHeight("0px");
