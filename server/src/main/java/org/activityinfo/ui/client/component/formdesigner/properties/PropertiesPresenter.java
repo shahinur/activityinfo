@@ -29,11 +29,14 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.ui.client.component.form.SimpleFormPanel;
+import org.activityinfo.ui.client.component.form.VerticalFieldContainer;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
-import org.activityinfo.ui.client.component.formdesigner.design.FieldDesignWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
@@ -139,7 +142,10 @@ public class PropertiesPresenter {
             }
         });
 
-        currentDesignWidget = FieldDesignWidgetFactory.create(fieldWidgetContainer);
+        ResourceLocator locator = fieldWidgetContainer.getFormDesigner().getResourceLocator();
+        currentDesignWidget = new SimpleFormPanel(locator,
+                new VerticalFieldContainer.Factory(),
+                new FormFieldWidgetFactory(locator));
         view.getPanel().add(currentDesignWidget);
     }
 
