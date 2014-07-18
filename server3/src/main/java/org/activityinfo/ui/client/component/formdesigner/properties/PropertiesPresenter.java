@@ -28,10 +28,11 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.ui.client.component.form.SimpleFormPanel;
 import org.activityinfo.ui.client.component.form.VerticalFieldContainer;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
@@ -48,7 +49,7 @@ public class PropertiesPresenter {
 
     private final PropertiesPanel view;
 
-    private IsWidget currentDesignWidget = null;
+    private SimpleFormPanel currentDesignWidget = null;
     private HandlerRegistration labelKeyUpHandler;
     private HandlerRegistration descriptionKeyUpHandler;
     private HandlerRegistration requiredValueChangeHandler;
@@ -146,6 +147,10 @@ public class PropertiesPresenter {
         currentDesignWidget = new SimpleFormPanel(locator,
                 new VerticalFieldContainer.Factory(),
                 new FormFieldWidgetFactory(locator));
+        Resource resource = Resources.createResource();
+        resource.getProperties().putAll(formField.getType().getParameters().getProperties());
+        resource.set("formClass", formField.getType().getTypeClass().getParameterFormClass());
+        currentDesignWidget.show(resource);
         view.getPanel().add(currentDesignWidget);
     }
 
