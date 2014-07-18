@@ -107,4 +107,8 @@ public class FieldWidgetContainer implements WidgetContainer {
     public FormField getFormField() {
         return formField;
     }
+
+    public FormDesigner getFormDesigner() {
+        return formDesigner;
+    }
 }

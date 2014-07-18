@@ -62,6 +62,23 @@ public class FormInstance implements IsResource {
         return id;
     }
 
+    public static FormInstance fromResource(Resource resource) {
+        FormInstance instance = new FormInstance(resource.getId(), resource.getResourceId("classId"));
+        instance.setParentId(resource.getOwnerId());
+        instance.valueMap.clear();
+        instance.valueMap.putAll(fromValueRecord(resource.getRecord("values")));
+        return instance;
+    }
+
+    public static Map<ResourceId, Object> fromValueRecord(Record record) {
+        final Map<ResourceId, Object> valueMap = Maps.newHashMap();
+        Map<String, Object> properties = record.getProperties();
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            valueMap.put(ResourceId.create(entry.getKey()), entry.getValue());
+        }
+        return valueMap;
+    }
+
     @Override
     public Resource asResource() {
         Resource resource = Resources.createResource();

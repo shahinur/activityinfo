@@ -95,7 +95,7 @@ public class FormDialog {
     public void save() {
         dialog.getStatusLabel().setText(I18N.CONSTANTS.saving());
         dialog.getPrimaryButton().setEnabled(false);
-        resourceLocator.persist(formPanel.getInstance()).then(new AsyncCallback<Void>() {
+        resourceLocator.persist(FormInstance.fromResource(formPanel.getInstance())).then(new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -106,7 +106,7 @@ public class FormDialog {
             @Override
             public void onSuccess(Void result) {
                 dialog.hide();
-                callback.onPersisted(formPanel.getInstance());
+                callback.onPersisted(FormInstance.fromResource(formPanel.getInstance()));
             }
         });
     }

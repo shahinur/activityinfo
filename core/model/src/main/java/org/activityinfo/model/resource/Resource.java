@@ -31,6 +31,14 @@ public final class Resource extends PropertyBag<Resource> {
     Resource() {
     }
 
+    public Resource copy() {
+        Resource copy = new Resource();
+        copy.id = this.id;
+        copy.owner = this.owner;
+        copy.copy();
+        return copy;
+    }
+
     /**
      * Returns the Resource's globally-unique ID.
      *
