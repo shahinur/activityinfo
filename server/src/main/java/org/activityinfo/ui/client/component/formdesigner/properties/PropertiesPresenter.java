@@ -110,6 +110,7 @@ public class PropertiesPresenter {
         view.getReadOnlyGroup().setVisible(true);
 
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
+        view.getDescription().setValue(Strings.nullToEmpty(formField.getDescription()));
         view.getRequired().setValue(formField.isRequired());
 
         labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
