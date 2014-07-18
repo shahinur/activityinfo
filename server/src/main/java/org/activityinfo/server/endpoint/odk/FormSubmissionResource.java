@@ -128,11 +128,15 @@ public class FormSubmissionResource extends ODKResource {
 
         // create command(s)
         CreateSite cmd = new CreateSite(site);
-        CreateLocation createlocation = createCreateLocationCommand(data, schemaDTO, activity);
-        dispatcher.execute(createlocation);
-        cmd.getProperties().put("locationId",createlocation.getLocationId());
+        if(activity.getLocationType().isNationwide()) {
+            // hack to support "no" locationtypes in the legacy api
+            cmd.getProperties().put("locationId", activity.getLocationTypeId());
+        } else {
+            CreateLocation createlocation = createCreateLocationCommand(data, schemaDTO, activity);
+            dispatcher.execute(createlocation);
+            cmd.getProperties().put("locationId", createlocation.getLocationId());
+        }
 
-        // save
         CreateResult createResult = dispatcher.execute(cmd);
 
         // create site history entry
