@@ -157,6 +157,7 @@ public class PropertiesPresenter {
 
         view.setVisible(true);
         view.getLabel().setValue(Strings.nullToEmpty(formClass.getLabel()));
+        view.getDescription().setValue(Strings.nullToEmpty(formClass.getDescription()));
         labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
