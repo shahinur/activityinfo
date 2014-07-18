@@ -14,6 +14,7 @@ import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.*;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
@@ -41,12 +42,12 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     /**
      * The original, unmodified instance
      */
-    private FormInstance instance;
+    private Resource instance;
 
     /**
      * A new version of the instance, being updated by the user
      */
-    private FormInstance workingInstance;
+    private Resource workingInstance;
 
     private FormClass formClass;
     private ResourceLocator locator;
@@ -64,26 +65,37 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         scrollPanel = new ScrollPanel(panel);
     }
 
-    public FormInstance getInstance() {
+    public Resource getInstance() {
         return workingInstance;
     }
 
     @Override
     public Promise<Void> show(final FormInstance instance) {
+        return show(instance.asResource());
+    }
+
+    public Promise<Void> show(final Resource instance) {
         this.instance = instance;
-        return locator.getFormClass(instance.getClassId()).join(new Function<FormClass, Promise<Void>>() {
-            @Nullable
-            @Override
-            public Promise<Void> apply(@Nullable FormClass formClass) {
-                return buildForm(formClass);
-            }
-        }).join(new Function<Void, Promise<Void>>() {
-            @Nullable
-            @Override
-            public Promise<Void> apply(@Nullable Void input) {
-                return setValue(instance);
-            }
-        });
+        Resource formClassResource = instance.isResource("formClass");
+        if (formClassResource != null) {
+            buildForm(FormClass.fromResource(formClassResource));
+            setValue(instance);
+            return Promise.done();
+        } else {
+            return locator.getFormClass(instance.getResourceId("classId")).join(new Function<FormClass, Promise<Void>>() {
+                @Nullable
+                @Override
+                public Promise<Void> apply(@Nullable FormClass formClass) {
+                    return buildForm(formClass);
+                }
+            }).join(new Function<Void, Promise<Void>>() {
+                @Nullable
+                @Override
+                public Promise<Void> apply(@Nullable Void input) {
+                    return setValue(instance);
+                }
+            });
+        }
     }
 
     private Promise<Void> buildForm(final FormClass formClass) {
@@ -99,7 +111,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
                 }
             });
 
-        } catch(Throwable caught) {
+        } catch (Throwable caught) {
             return Promise.rejected(caught);
         }
     }
@@ -124,16 +136,16 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         });
     }
 
-    public Promise<Void> setValue(FormInstance instance) {
+    public Promise<Void> setValue(Resource instance) {
         this.instance = instance;
         this.workingInstance = instance.copy();
 
         List<Promise<Void>> tasks = Lists.newArrayList();
 
-        for(Map.Entry<ResourceId, FieldContainer> entry : containers.entrySet()) {
+        for (Map.Entry<ResourceId, FieldContainer> entry : containers.entrySet()) {
             FieldContainer container = entry.getValue();
             FormFieldWidget fieldWidget = container.getFieldWidget();
-            tasks.add(fieldWidget.setValue(workingInstance.get(entry.getKey())));
+            tasks.add(fieldWidget.setValue(workingInstance.get(entry.getKey().asString())));
             container.setValid();
         }
 
@@ -141,27 +153,27 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     }
 
     private void addFormElements(FormElementContainer container, int depth) {
-        for(FormElement element : container.getElements()) {
-            if(element instanceof FormSection) {
+        for (FormElement element : container.getElements()) {
+            if (element instanceof FormSection) {
                 panel.add(createHeader(depth, ((FormSection) element)));
                 addFormElements((FormElementContainer) element, depth + 1);
-            } else if(element instanceof FormField) {
+            } else if (element instanceof FormField) {
                 panel.add(containers.get(((FormField) element).getId()));
             }
         }
     }
 
     private void onFieldUpdated(FormField field, Object newValue) {
-        if(!Objects.equals(workingInstance.get(field.getId()), newValue)) {
-            workingInstance.set(field.getId(), newValue);
+        if (!Objects.equals(workingInstance.get(field.getId().asString()), newValue)) {
+            workingInstance.set(field.getId().asString(), newValue);
             validate(field);
         }
     }
 
     private void validate(FormField field) {
-        String value = (String)workingInstance.get(field.getId());
+        String value = (String) workingInstance.get(field.getId().asString());
         FieldContainer container = containers.get(field.getId());
-        if(field.isRequired() && Strings.isNullOrEmpty(value)) {
+        if (field.isRequired() && Strings.isNullOrEmpty(value)) {
             container.setInvalid(I18N.CONSTANTS.requiredFieldMessage());
         } else {
             container.setValid();
@@ -170,10 +182,10 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private Widget createHeader(int depth, FormSection section) {
         StringBuilder html = new StringBuilder();
-        String hn = "h" + (3+depth);
+        String hn = "h" + (3 + depth);
         html.append("<").append(hn).append(">")
-            .append(SafeHtmlUtils.htmlEscape(section.getLabel()))
-            .append("</").append(hn).append(">");
+                .append(SafeHtmlUtils.htmlEscape(section.getLabel()))
+                .append("</").append(hn).append(">");
         return new HTML(html.toString());
     }
 

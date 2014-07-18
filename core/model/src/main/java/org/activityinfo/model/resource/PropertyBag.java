@@ -15,6 +15,12 @@ class PropertyBag<T extends PropertyBag> {
 
     private final Map<String, Object> properties = Maps.newHashMap();
 
+    public PropertyBag<T> copy() {
+        final PropertyBag<T> copy = new PropertyBag<>();
+        copy.properties.putAll(this.properties);
+        return copy;
+    }
+
     /**
      *
      * @return the value of the given property, or {@code null} if there
@@ -110,6 +116,44 @@ class PropertyBag<T extends PropertyBag> {
         Object value = properties.get(propertyName);
         if(value instanceof Record) {
             return (Record) value;
+        }
+        return null;
+    }
+
+    /**
+     * @return this field's value as a {@code Resource}
+     *
+     */
+    @Nonnull
+    public Resource getResource(String propertyName) {
+        Resource value = (Resource) properties.get(propertyName);
+        if(value == null) {
+            throw new NullPointerException(propertyName);
+        }
+        return value;
+    }
+
+    public Resource isResource(String propertyName) {
+        Object value = properties.get(propertyName);
+        if(value instanceof Resource) {
+            return (Resource) value;
+        }
+        return null;
+    }
+
+    @Nonnull
+    public ResourceId getResourceId(String propertyName) {
+        ResourceId value = (ResourceId) properties.get(propertyName);
+        if(value == null) {
+            throw new NullPointerException(propertyName);
+        }
+        return value;
+    }
+
+    public ResourceId isResourceId(String propertyName) {
+        Object value = properties.get(propertyName);
+        if(value instanceof ResourceId) {
+            return (ResourceId) value;
         }
         return null;
     }
