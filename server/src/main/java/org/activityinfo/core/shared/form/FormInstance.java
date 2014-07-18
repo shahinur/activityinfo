@@ -26,14 +26,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.core.shared.model.AiLatLng;
-import org.activityinfo.model.resource.IsResource;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.*;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -66,8 +63,21 @@ public class FormInstance implements IsResource {
     }
 
     @Override
-    public org.activityinfo.model.resource.Resource asResource() {
-        throw new UnsupportedOperationException();
+    public Resource asResource() {
+        Resource resource = Resources.createResource();
+        resource.setId(id);
+        resource.setOwnerId(parentId);
+        resource.set("classId", classId);
+        resource.set("values", getValueRecord());
+        return resource;
+    }
+
+    public Record getValueRecord() {
+        Record value = new Record();
+        for (Map.Entry<ResourceId, Object> entry : valueMap.entrySet()) {
+            value.set(entry.getKey().asString(), entry.getValue());
+        }
+        return value;
     }
 
     public ResourceId getClassId() {
@@ -116,7 +126,7 @@ public class FormInstance implements IsResource {
 
     public LocalDate getDate(ResourceId fieldId) {
         final Object value = get(fieldId);
-        if (value instanceof Date) {
+        if (value instanceof LocalDate) {
             return (LocalDate) value;
         }
         return null;
