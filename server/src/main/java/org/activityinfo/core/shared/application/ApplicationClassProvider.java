@@ -1,9 +1,11 @@
 package org.activityinfo.core.shared.application;
 
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.TypeRegistry;
 
 import java.util.Map;
 
@@ -18,6 +20,13 @@ public class ApplicationClassProvider {
 
         classMap.put(FormClass.CLASS_ID, createFormClassClass());
         classMap.put(FolderClass.CLASS_ID, FolderClass.get());
+
+        for (FieldTypeClass fieldTypeClass : TypeRegistry.get().getTypeClasses()) {
+            FormClass parameterFormClass = fieldTypeClass.getParameterFormClass();
+            if (parameterFormClass != null) {
+                classMap.put(parameterFormClass.getId(), parameterFormClass);
+            }
+        }
     }
 
     private FormClass createFormClassClass() {

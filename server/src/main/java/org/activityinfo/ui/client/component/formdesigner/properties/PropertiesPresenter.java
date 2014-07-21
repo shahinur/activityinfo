@@ -31,7 +31,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.ui.client.component.form.SimpleFormPanel;
 import org.activityinfo.ui.client.component.form.VerticalFieldContainer;
@@ -146,11 +145,8 @@ public class PropertiesPresenter {
         ResourceLocator locator = fieldWidgetContainer.getFormDesigner().getResourceLocator();
         currentDesignWidget = new SimpleFormPanel(locator,
                 new VerticalFieldContainer.Factory(),
-                new FormFieldWidgetFactory(locator));
-        Resource resource = Resources.createResource();
-        resource.getProperties().putAll(formField.getType().getParameters().getProperties());
-        resource.set("formClass", formField.getType().getTypeClass().getParameterFormClass());
-        currentDesignWidget.show(resource);
+                new FormFieldWidgetFactory(locator), false);
+        currentDesignWidget.show(Resources.createResource(formField.getType().getParameters()));
         view.getPanel().add(currentDesignWidget);
     }
 
