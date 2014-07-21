@@ -2,9 +2,6 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.model.type.TypeRegistry;
-import org.activityinfo.model.type.enumerated.EnumType;
 
 import java.util.List;
 
@@ -31,6 +28,7 @@ public class FieldTemplates {
         items.add(new TypeClassTemplate(FieldTypeClass.QUANTITY));
         items.add(new TypeClassTemplate(FieldTypeClass.FREE_TEXT));
         items.add(new TypeClassTemplate(FieldTypeClass.NARRATIVE));
+        items.add(new TypeClassTemplate(FieldTypeClass.BOOLEAN));
 
         items.add(new CheckboxTemplate());
         items.add(new RadioButtonTemplate());

@@ -3435,7 +3435,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Line")
     String line();
 
-    @DefaultStringValue("Set expression if you would like to calculate indicator value dynamically (otherwise leave blank). Example: {A}+{B}+({C}/{D})")
+    @DefaultStringValue("Set expression if you would like to calculate indicator value dynamically (otherwise leave blank). Example: [A]+[B]+([C]/[D])")
     String calculatedIndicatorExplanation();
 
     @DefaultStringValue("Calculation")
@@ -3470,7 +3470,4 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Read only")
     String readonly();
-
-    @DefaultStringValue("Form Category")
-    String formCategory();
 }
