@@ -31,6 +31,7 @@ public class TypeRegistry {
         register(NarrativeType.INSTANCE);
         register(LocalDateType.INSTANCE);
         register(GeoPointType.INSTANCE);
+        register(BooleanType.INSTANCE);
     }
 
     private void register(FieldTypeClass typeClass) {

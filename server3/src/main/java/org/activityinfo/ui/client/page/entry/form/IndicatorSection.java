@@ -28,10 +28,7 @@ import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.TextArea;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
@@ -162,6 +159,12 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
             add(textField);
             add(new Text()); // avoid layout shift
             return textField;
+        } else if (type == FieldTypeClass.BOOLEAN) {
+            CheckBox checkBox = new CheckBox();
+
+            add(checkBox);
+            add(new Text()); // avoid layout shift
+            return checkBox;
         }
         return new NumberField();
     }

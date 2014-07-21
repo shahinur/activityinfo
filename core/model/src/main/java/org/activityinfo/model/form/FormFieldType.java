@@ -3,7 +3,6 @@ package org.activityinfo.model.form;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.model.type.time.LocalDateType;
 
 /**
  * The type of field, which influences how input is presented
@@ -36,6 +35,8 @@ public class FormFieldType {
                 return GeoPointType.INSTANCE;
             case "REFERENCE":
                 return ReferenceType.TypeClass.INSTANCE;
+            case "BOOLEAN":
+                return BooleanType.INSTANCE;
         }
         throw new IllegalArgumentException("name: " + name);
     }
@@ -46,6 +47,7 @@ public class FormFieldType {
                 FieldTypeClass.NARRATIVE,
                 FieldTypeClass.FREE_TEXT,
                 FieldTypeClass.LOCAL_DATE,
+                FieldTypeClass.BOOLEAN,
                 FieldTypeClass.GEOGRAPHIC_POINT};
 
     }
