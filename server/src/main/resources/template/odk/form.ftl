@@ -14,7 +14,7 @@
                     </meta>
                     <activity>${id?c}</activity>
 
-                    <partner><#if database.partners?size == 1>${database.partners[0].id?c}</#if></partner>
+                    <partner><#if partnerRange?size == 1>${partnerRange[0].id?c}</#if></partner>
                     <#if !locationType.nationwide >
                     <locationname/>
                     <gps/>
@@ -67,10 +67,10 @@
     </h:head>
 
 <h:body>
-<#if (database.partners?size > 1)>
+<#if (partnerRange?size > 1)>
     <select1 ref="/data/partner">
         <label>${label.odkPartner?xml}</label>
-        <#list database.partners as partner>
+        <#list patnerRange as partner>
             <item>
                 <label>${partner.name?xml}</label>
                 <value>${partner.id?c}</value>
