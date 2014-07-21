@@ -102,7 +102,11 @@ public class CuidAdapter {
     }
 
     public static int getLegacyIdFromCuid(ResourceId id) {
-        return getLegacyIdFromCuid(id.asString());
+        if(id.getDomain() == '_') {
+            return 0;
+        } else {
+            return getLegacyIdFromCuid(id.asString());
+        }
     }
 
     /**
