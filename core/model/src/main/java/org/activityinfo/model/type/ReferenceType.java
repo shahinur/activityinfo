@@ -6,6 +6,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
 
@@ -45,7 +46,7 @@ public class ReferenceType implements FieldType {
 
             @Override
             public FormClass getParameterFormClass() {
-                FormClass formClass = new FormClass(ResourceId.create("_type:ref"));
+                FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("ref"));
                 // todo
                 return formClass;
             }

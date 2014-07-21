@@ -4,7 +4,7 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.component.ComponentReader;
@@ -40,7 +40,7 @@ public enum LocalDateType implements FieldType, FieldTypeClass {
 
     @Override
     public FormClass getParameterFormClass() {
-        return new FormClass(ResourceId.create("_type:localDate"));
+        return new FormClass(ResourceIdPrefixType.TYPE.id("localDate"));
     }
 
     @Override
