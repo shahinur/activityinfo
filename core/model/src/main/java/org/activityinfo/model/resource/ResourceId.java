@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public final class ResourceId {
 
+    public static final int RADIX = 10;
     public static long COUNTER = 1;
 
     private final String text;

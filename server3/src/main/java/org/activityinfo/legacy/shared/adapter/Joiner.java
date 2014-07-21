@@ -18,6 +18,7 @@ import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.BiFunction;
 import org.activityinfo.promise.Promise;

@@ -24,7 +24,8 @@ package org.activityinfo.core.shared.form;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
 import java.util.Set;
@@ -38,11 +39,11 @@ public class FormInstanceLabeler {
     }
 
     public static String getLabel(FormInstance instance) {
-        return Strings.nullToEmpty(instance.getString(CuidAdapter.getFormInstanceLabelCuid(instance)));
+        return Strings.nullToEmpty(instance.getString(getFormInstanceLabelCuid(instance)));
     }
 
     public static void setLabel(FormInstance instance, String label) {
-        instance.set(CuidAdapter.getFormInstanceLabelCuid(instance), label);
+        instance.set(getFormInstanceLabelCuid(instance), label);
     }
 
     public static List<String> getLabels(List<FormInstance> list) {
@@ -65,5 +66,9 @@ public class FormInstanceLabeler {
             }
         }
         return duplicates;
+    }
+
+    public static ResourceId getFormInstanceLabelCuid(FormInstance formInstance) {
+        return CuidAdapter.field(formInstance.getClassId(), CuidAdapter.NAME_FIELD);
     }
 }

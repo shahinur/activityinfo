@@ -2,26 +2,21 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.*;
-import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.model.type.TextType;
-import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
-import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityCategoryFolderId;
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.attributeId;
+import static org.activityinfo.model.legacy.CuidAdapter.activityCategoryFolderId;
 
 /**
  * Adapts a Legacy "Activity" model to a FormClass
