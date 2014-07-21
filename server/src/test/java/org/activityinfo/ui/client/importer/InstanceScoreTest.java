@@ -50,6 +50,8 @@ import java.util.Map;
 
 import static com.google.common.io.Resources.getResource;
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
+import static org.activityinfo.legacy.shared.adapter.CuidAdapter.field;
+import static org.activityinfo.legacy.shared.adapter.CuidAdapter.locationFormClass;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -60,7 +62,7 @@ import static org.junit.Assert.assertThat;
 @OnDataSet("/dbunit/nfi-import.db.xml")
 public class InstanceScoreTest extends AbstractImporterTest {
 
-    private static final ResourceId ADMINISTRATIVE_UNIT_FIELD = ResourceId.create("L000002000006");
+    private static final ResourceId ADMINISTRATIVE_UNIT_FIELD = field(locationFormClass(2), CuidAdapter.ADMIN_FIELD);
 
     @Test
     public void adminEntityScoring() throws IOException {
