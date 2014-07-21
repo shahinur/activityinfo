@@ -41,7 +41,7 @@ public class QuantityType implements FieldType {
             @Override
             public FormClass getParameterFormClass() {
                 FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("quantity"));
-                formClass.addField("units", FREE_TEXT)
+                formClass.addField("units", "units", FREE_TEXT)
                         .setLabel("Units")
                         .setDescription("Describes the unit of measurement. For example: 'households', 'individuals'," +
                                 " 'meters', etc.");
