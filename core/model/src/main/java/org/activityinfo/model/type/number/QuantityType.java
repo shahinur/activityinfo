@@ -3,7 +3,7 @@ package org.activityinfo.model.type.number;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.component.ComponentReader;
@@ -40,7 +40,7 @@ public class QuantityType implements FieldType {
 
             @Override
             public FormClass getParameterFormClass() {
-                FormClass formClass = new FormClass(ResourceId.create("_type:quantity"));
+                FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("quantity"));
                 formClass.addField("units", FREE_TEXT)
                         .setLabel("Units")
                         .setDescription("Describes the unit of measurement. For example: 'households', 'individuals'," +
