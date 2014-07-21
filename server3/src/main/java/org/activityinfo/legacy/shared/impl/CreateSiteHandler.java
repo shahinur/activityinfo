@@ -143,6 +143,8 @@ public class CreateSiteHandler implements CommandHandlerAsync<CreateSite, Create
                     sqlInsert.value("DateValue", value).execute(tx);
                 } else if (value instanceof LocalDate) {
                     sqlInsert.value("DateValue", value).execute(tx);
+                } else if (value instanceof Boolean) {
+                    sqlInsert.value("BooleanValue", value).execute(tx);
                 }
             }
         }

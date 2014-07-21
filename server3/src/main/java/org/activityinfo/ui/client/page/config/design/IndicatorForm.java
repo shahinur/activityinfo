@@ -86,6 +86,7 @@ class IndicatorForm extends AbstractDesignForm {
         typeCombo.add(FieldTypeClass.QUANTITY, I18N.CONSTANTS.fieldTypeQuantity());
         typeCombo.add(FieldTypeClass.FREE_TEXT, I18N.CONSTANTS.fieldTypeText());
         typeCombo.add(FieldTypeClass.NARRATIVE, I18N.CONSTANTS.fieldTypeNarrative());
+        typeCombo.add(FieldTypeClass.BOOLEAN, I18N.CONSTANTS.fieldTypeBoolean());
         binding.addFieldBinding(new MappingComboBoxBinding(typeCombo, "type"));
         this.add(typeCombo);
 
