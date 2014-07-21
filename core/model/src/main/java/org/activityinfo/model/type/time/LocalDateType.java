@@ -40,7 +40,7 @@ public enum LocalDateType implements FieldType, FieldTypeClass {
 
     @Override
     public FormClass getParameterFormClass() {
-        return new FormClass(ResourceId.create("_localDate"));
+        return new FormClass(ResourceId.create("_type:localDate"));
     }
 
     @Override

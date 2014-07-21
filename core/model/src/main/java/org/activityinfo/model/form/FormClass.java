@@ -174,7 +174,7 @@ public class FormClass implements IsResource, FormElementContainer {
     }
 
     public FormField addField(String name, FieldType type) {
-        FormField field = new FormField(ResourceId.generateId(), name);
+        FormField field = new FormField(ResourceId.create(id.asString() + ResourceId.generateId().asString()), name);
         field.setType(type);
         elements.add(field);
         return field;
