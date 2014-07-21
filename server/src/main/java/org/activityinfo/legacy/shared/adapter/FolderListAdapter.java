@@ -3,6 +3,7 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.core.shared.criteria.Criteria;
@@ -16,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 /**
  * Extracts a list of databases as a list of folders

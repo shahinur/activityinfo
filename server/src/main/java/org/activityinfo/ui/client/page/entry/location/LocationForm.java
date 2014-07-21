@@ -35,7 +35,7 @@ import com.google.gwt.user.client.Timer;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.client.KeyGenerator;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;

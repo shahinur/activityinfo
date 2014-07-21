@@ -10,6 +10,7 @@ import org.activityinfo.core.shared.criteria.FieldCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.ConcatList;
 import org.activityinfo.promise.Promise;
@@ -19,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 import static org.activityinfo.promise.BiFunctions.concatMap;
 
 /**

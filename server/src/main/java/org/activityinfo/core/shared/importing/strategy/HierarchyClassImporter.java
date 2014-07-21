@@ -38,7 +38,7 @@ import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.legacy.CuidAdapter;
 
 import java.util.List;
 import java.util.Map;

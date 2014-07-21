@@ -42,7 +42,7 @@ import org.activityinfo.core.shared.expr.*;
 import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.Log;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;

@@ -36,13 +36,11 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
@@ -52,7 +50,6 @@ import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.ui.client.ClientContext;
 import org.activityinfo.ui.client.EventBus;
-import org.activityinfo.ui.client.FeatureSwitch;
 import org.activityinfo.ui.client.component.importDialog.ImportPresenter;
 import org.activityinfo.ui.client.page.*;
 import org.activityinfo.ui.client.page.common.toolbar.ActionListener;
@@ -64,7 +61,6 @@ import org.activityinfo.ui.client.page.entry.form.SiteDialogCallback;
 import org.activityinfo.ui.client.page.entry.form.SiteDialogLauncher;
 import org.activityinfo.ui.client.page.entry.grouping.GroupingComboBox;
 import org.activityinfo.ui.client.page.entry.place.DataEntryPlace;
-import org.activityinfo.ui.client.page.entry.place.UserFormPlace;
 import org.activityinfo.ui.client.page.entry.sitehistory.SiteHistoryTab;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
@@ -363,37 +359,26 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     @Override
     public void onUIAction(String actionId) {
         if (UIActions.ADD.equals(actionId)) {
-            if (FeatureSwitch.isNewFormEnabled()) {
-                int activityId = currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity);
-                final ResourceId siteResourceId = CuidAdapter.siteField(new KeyGenerator().generateInt());
-                final ResourceId activityResourceId = CuidAdapter.activityFormClass(activityId);
-                eventBus.fireEvent(new NavigationEvent(NavigationHandler.NAVIGATION_REQUESTED,
-                        new UserFormPlace(activityResourceId, siteResourceId)));
-            } else {
-                SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
-                formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {
 
-                    @Override
-                    public void onSaved(SiteDTO site) {
-                        gridPanel.refresh();
-                    }
-                });
-            }
+            SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
+            formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {
+
+                @Override
+                public void onSaved(SiteDTO site) {
+                    gridPanel.refresh();
+                }
+            });
+
         } else if (UIActions.EDIT.equals(actionId)) {
             final SiteDTO selection = gridPanel.getSelection();
-            if (FeatureSwitch.isNewFormEnabled()) {
-                eventBus.fireEvent(new NavigationEvent(NavigationHandler.NAVIGATION_REQUESTED,
-                        new UserFormPlace(selection.getFormClassId(), selection.getInstanceId())));
-            } else {
-                SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher);
-                launcher.editSite(selection, new SiteDialogCallback() {
+            SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher);
+            launcher.editSite(selection, new SiteDialogCallback() {
 
-                    @Override
-                    public void onSaved(SiteDTO site) {
-                        gridPanel.refresh();
-                    }
-                });
-            }
+                @Override
+                public void onSaved(SiteDTO site) {
+                    gridPanel.refresh();
+                }
+            });
         } else if (UIActions.DELETE.equals(actionId)) {
             MessageBox.confirm(ClientContext.getAppTitle(),
                     I18N.MESSAGES.confirmDeleteSite(),

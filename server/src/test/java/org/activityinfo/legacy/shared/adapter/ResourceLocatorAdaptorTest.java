@@ -5,6 +5,7 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.core.client.InstanceQuery;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
@@ -14,7 +15,7 @@ import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.legacy.client.KeyGenerator;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.legacy.shared.command.GetLocations;
 import org.activityinfo.legacy.shared.command.result.LocationResult;
 import org.activityinfo.legacy.shared.model.LocationDTO;
@@ -32,7 +33,7 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.core.shared.criteria.ParentCriteria.isChildOf;
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 import static org.activityinfo.legacy.shared.adapter.LocationClassAdapter.getAdminFieldId;
 import static org.activityinfo.legacy.shared.adapter.LocationClassAdapter.getNameFieldId;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -121,7 +122,8 @@ public class ResourceLocatorAdaptorTest extends CommandTestCase2 {
     @Test
     public void persistLocation() {
 
-        FormInstance instance = new FormInstance(CuidAdapter.generateLocationCuid(), HEALTH_CENTER_CLASS);
+        FormInstance instance = new FormInstance(newLegacyFormInstanceId(HEALTH_CENTER_CLASS),
+                HEALTH_CENTER_CLASS);
         instance.set(field(HEALTH_CENTER_CLASS, NAME_FIELD), "CS Ubuntu");
         instance.set(field(HEALTH_CENTER_CLASS, GEOMETRY_FIELD), new AiLatLng(-1, 13));
         instance.set(field(HEALTH_CENTER_CLASS, ADMIN_FIELD), entity(IRUMU));
