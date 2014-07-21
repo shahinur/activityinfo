@@ -68,6 +68,8 @@ public interface FieldTypeClass {
 
     public static final GeoPointType GEOGRAPHIC_POINT = GeoPointType.INSTANCE;
 
+    public static final BooleanType BOOLEAN = BooleanType.INSTANCE;
+
     public static final ReferenceType.TypeClass REFERENCE = ReferenceType.TypeClass.INSTANCE;
 
 }
