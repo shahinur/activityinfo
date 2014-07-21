@@ -33,7 +33,6 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
@@ -71,6 +70,7 @@ public class FormDesigner {
         forwardDropController.add(new DropPanelDropController(formDesignerPanel.getDropPanel(), this));
 
         formDesignerPanel.getFieldPalette().registerDropController(forwardDropController);
+        formDesignerPanel.bind(eventBus);
 
         headerPresenter = new HeaderPresenter(this);
         headerPresenter.show();
