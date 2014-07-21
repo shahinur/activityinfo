@@ -553,6 +553,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                                  .appendColumn("V.Value")
                                  .appendColumn("V.TextValue")
                                  .appendColumn("V.DateValue")
+                                 .appendColumn("V.BooleanValue")
                                  .from(Tables.REPORTING_PERIOD, "P")
                                  .innerJoin(Tables.INDICATOR_VALUE, "V")
                                  .on("P.ReportingPeriodId = V.ReportingPeriodId")
@@ -592,6 +593,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                             }
                         } else if (indicatorType == FieldTypeClass.LOCAL_DATE) {
                             indicatorValue = row.getDate("DateValue");
+                        } else if (indicatorType == FieldTypeClass.BOOLEAN) {
+                            if (!row.isNull("BooleanValue")) {
+                                indicatorValue = row.getDate("BooleanValue");
+                            }
                         }
                     }
 

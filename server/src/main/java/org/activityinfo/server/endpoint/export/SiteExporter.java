@@ -386,6 +386,8 @@ public class SiteExporter {
                 cell.setCellValue((Date) value);
             } else if (value instanceof LocalDate) {
                 cell.setCellValue(((LocalDate) value).atMidnightInMyTimezone());
+            } else if (value instanceof Boolean) {
+                cell.setCellValue((Boolean) value);
             }
         }
     }
