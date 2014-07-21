@@ -260,7 +260,9 @@ class PropertyBag<T extends PropertyBag> {
                   value instanceof Number ||
                   value instanceof Record ||
                   value instanceof Boolean ||
-                  value instanceof List) {
+                  value instanceof List ||
+                  value instanceof ResourceId
+                ) {
 
            properties.put(propertyName, value);
 
