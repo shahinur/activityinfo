@@ -45,7 +45,7 @@ public class ReferenceType implements FieldType {
 
             @Override
             public FormClass getParameterFormClass() {
-                FormClass formClass = new FormClass(ResourceId.create("_ref"));
+                FormClass formClass = new FormClass(ResourceId.create("_type:ref"));
                 // todo
                 return formClass;
             }
