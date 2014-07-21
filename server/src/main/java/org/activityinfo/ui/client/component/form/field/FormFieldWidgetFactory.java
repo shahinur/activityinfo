@@ -28,10 +28,7 @@ import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.NarrativeType;
-import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -71,26 +68,29 @@ public class FormFieldWidgetFactory {
     public Promise<? extends FormFieldWidget> createWidget(FormField field, ValueUpdater valueUpdater) {
         FieldType type = field.getType();
 
-        if(type instanceof QuantityType) {
+        if (type instanceof QuantityType) {
             return Promise.resolved(new QuantityFieldWidget((QuantityType) type, valueUpdater));
 
-        } else if(type instanceof NarrativeType) {
+        } else if (type instanceof NarrativeType) {
             return Promise.resolved(new NarrativeFieldWidget(valueUpdater));
 
-        } else if(type instanceof TextType) {
+        } else if (type instanceof TextType) {
             return Promise.resolved(new TextFieldWidget(valueUpdater));
 
-        } else if(type instanceof LocalDateType) {
+        } else if (type instanceof LocalDateType) {
             return Promise.resolved(new DateFieldWidget(valueUpdater));
 
-        } else if(type instanceof GeoPointType) {
+        } else if (type instanceof GeoPointType) {
             return Promise.resolved(new GeographicPointWidget(valueUpdater));
 
-        } else if(type instanceof EnumType) {
+        } else if (type instanceof EnumType) {
             return Promise.resolved(new EnumFieldWidget((EnumType) field.getType(), valueUpdater));
 
-        } else if(type instanceof ReferenceType) {
-            if(field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
+        } else if (type instanceof BooleanType) {
+            return Promise.resolved(new BooleanFieldWidget(valueUpdater));
+
+        } else if (type instanceof ReferenceType) {
+            if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
                 return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) type, valueUpdater);
             }
             return createReferenceWidget(field, valueUpdater);
@@ -101,7 +101,7 @@ public class FormFieldWidgetFactory {
     }
 
     private Promise<? extends FormFieldWidget> createReferenceWidget(FormField field, ValueUpdater updater) {
-        if(field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
+        if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
             return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) field.getType(), updater);
         } else {
             return createSimpleListWidget((ReferenceType) field.getType(), updater);
