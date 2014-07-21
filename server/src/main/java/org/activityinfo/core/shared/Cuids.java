@@ -11,7 +11,7 @@ public class Cuids {
 
     public static final String IRI_PREFIX = SCHEME + ":";
 
-    public static final int RADIX = Character.MAX_RADIX;
+    public static final int RADIX = 10;
 
     /**
      * Constructs an IRI from a legacy id.
