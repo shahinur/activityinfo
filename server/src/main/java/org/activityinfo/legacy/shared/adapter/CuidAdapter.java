@@ -66,7 +66,7 @@ public class CuidAdapter {
     public static final int END_DATE_FIELD = 13;
     public static final int COMMENT_FIELD = 14;
 
-    public static final int BLOCK_SIZE = 6;
+    public static final int BLOCK_SIZE = 10;
 
     /**
      * Avoid instance creation.
