@@ -19,6 +19,13 @@ public class Resources {
         return new Resource();
     }
 
+    public static Resource createResource(Record record) {
+        Resource resource = new Resource();
+        resource.setId(ResourceId.generateId());
+        resource.getProperties().putAll(record.getProperties());
+        return resource;
+    }
+
     /**
      * @return  {@code} true if {@code x} and {@code y} have the same identity
      * and have equal properties

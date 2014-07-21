@@ -3,6 +3,7 @@ package org.activityinfo.model.form;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.*;
+import org.activityinfo.model.type.FieldType;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -172,8 +173,9 @@ public class FormClass implements IsResource, FormElementContainer {
         return this;
     }
 
-    public FormField addField(String name) {
-        FormField field = new FormField(id, name); // todo is it bug? if we call it two times we will get form field with the same id?
+    public FormField addField(String name, FieldType type) {
+        FormField field = new FormField(ResourceId.generateId(), name);
+        field.setType(type);
         elements.add(field);
         return field;
     }

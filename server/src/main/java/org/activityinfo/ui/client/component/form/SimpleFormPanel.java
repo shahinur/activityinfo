@@ -36,6 +36,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private final FlowPanel panel;
     private final ScrollPanel scrollPanel;
+    private final boolean withScroll;
 
     private final Map<ResourceId, FieldContainer> containers = Maps.newHashMap();
 
@@ -54,11 +55,17 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
                            FormFieldWidgetFactory widgetFactory) {
+        this(locator, containerFactory, widgetFactory, true);
+    }
+
+    public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
+                           FormFieldWidgetFactory widgetFactory, boolean withScroll) {
         FormPanelStyles.INSTANCE.ensureInjected();
 
         this.locator = locator;
         this.containerFactory = containerFactory;
         this.widgetFactory = widgetFactory;
+        this.withScroll = withScroll;
 
         panel = new FlowPanel();
         panel.setStyleName(FormPanelStyles.INSTANCE.formPanel());
@@ -76,26 +83,19 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     public Promise<Void> show(final Resource instance) {
         this.instance = instance;
-        Resource formClassResource = instance.isResource("formClass");
-        if (formClassResource != null) {
-            buildForm(FormClass.fromResource(formClassResource));
-            setValue(instance);
-            return Promise.done();
-        } else {
-            return locator.getFormClass(instance.getResourceId("classId")).join(new Function<FormClass, Promise<Void>>() {
-                @Nullable
-                @Override
-                public Promise<Void> apply(@Nullable FormClass formClass) {
-                    return buildForm(formClass);
-                }
-            }).join(new Function<Void, Promise<Void>>() {
-                @Nullable
-                @Override
-                public Promise<Void> apply(@Nullable Void input) {
-                    return setValue(instance);
-                }
-            });
-        }
+        return locator.getFormClass(instance.getResourceId("classId")).join(new Function<FormClass, Promise<Void>>() {
+            @Nullable
+            @Override
+            public Promise<Void> apply(@Nullable FormClass formClass) {
+                return buildForm(formClass);
+            }
+        }).join(new Function<Void, Promise<Void>>() {
+            @Nullable
+            @Override
+            public Promise<Void> apply(@Nullable Void input) {
+                return setValue(instance);
+            }
+        });
     }
 
     private Promise<Void> buildForm(final FormClass formClass) {
@@ -191,7 +191,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     @Override
     public Widget asWidget() {
-        return scrollPanel;
+        return withScroll ? scrollPanel : panel;
     }
 
 }
