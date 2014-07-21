@@ -2,13 +2,13 @@ package org.activityinfo.legacy.shared.adapter.bindings;
 
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.DTO;
 import org.activityinfo.legacy.shared.model.EntityDTO;
 
 import java.util.Map;
 
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.getLegacyIdFromCuid;
+import static org.activityinfo.model.legacy.CuidAdapter.getLegacyIdFromCuid;
 
 /**
  * Created by alex on 2/22/14.

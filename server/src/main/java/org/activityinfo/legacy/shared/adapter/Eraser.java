@@ -22,6 +22,7 @@ package org.activityinfo.legacy.shared.adapter;
  */
 
 import com.google.common.collect.Lists;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.Dispatcher;

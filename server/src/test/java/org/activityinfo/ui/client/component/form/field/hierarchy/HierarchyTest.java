@@ -11,7 +11,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.LocationClassAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.model.form.FormClass;
@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 import java.util.*;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.entity;
+import static org.activityinfo.model.legacy.CuidAdapter.entity;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyOrNullString;

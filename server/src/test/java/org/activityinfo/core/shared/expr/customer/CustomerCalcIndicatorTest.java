@@ -25,8 +25,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.client.KeyGenerator;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.Bucket;
@@ -39,6 +37,7 @@ import org.activityinfo.legacy.shared.reports.model.DateUnit;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -47,7 +46,6 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.LocationDTOs;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.database.hibernate.entity.AttributeGroup;
 import org.activityinfo.server.endpoint.export.SiteExporter;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -67,7 +65,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityFormClass;
+import static org.activityinfo.model.legacy.CuidAdapter.activityFormClass;
+import static org.activityinfo.model.legacy.CuidAdapter.getLegacyIdFromCuid;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.hasItem;
@@ -76,6 +75,7 @@ import static org.junit.Assert.assertThat;
 /**
  * @author yuriyz on 8/1/14.
  */
+@SuppressWarnings({"GwtClientClassFromNonInheritedModule", "NonJREEmulationClassesInClientCode"})
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/schema1.db.xml")
 public class CustomerCalcIndicatorTest extends CommandTestCase2 {
@@ -100,7 +100,7 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
     @Test
     public void calculations() {
         formClass = createFormClass();
-        int activityId = CuidAdapter.getLegacyIdFromCuid(formClass.getId());
+        int activityId = getLegacyIdFromCuid(formClass.getId());
 
         SiteDTO newSite = newSite(activityId);
 
@@ -132,7 +132,7 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
     @Test
     public void calculationsWithMissingValues() {
         formClass = createFormClass();
-        int activityId = CuidAdapter.getLegacyIdFromCuid(formClass.getId());
+        int activityId = getLegacyIdFromCuid(formClass.getId());
 
         SiteDTO newSite = newSite(activityId);
 
@@ -163,7 +163,7 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
     @Test
     public void pivot() throws IOException {
         formClass = createFormClass();
-        int activityId = CuidAdapter.getLegacyIdFromCuid(formClass.getId());
+        int activityId = getLegacyIdFromCuid(formClass.getId());
 
 
         double alloc[] = new double[] { 20, 10, 50, 20, 10 };
@@ -325,7 +325,7 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
 
     private Double indicatorValue(SiteDTO siteDTO, String nameInExpression) {
-        int indicatorId = CuidAdapter.getLegacyIdFromCuid(field(nameInExpression).getId());
+        int indicatorId = getLegacyIdFromCuid(field(nameInExpression).getId());
         return siteDTO.getIndicatorValue(indicatorId);
     }
 
@@ -339,7 +339,7 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
     }
 
     private int fieldId(String nameInExpression) {
-        return CuidAdapter.getLegacyIdFromCuid(field(nameInExpression).getId());
+        return getLegacyIdFromCuid(field(nameInExpression).getId());
     }
 
     private SiteDTO newSite(int activityId) {

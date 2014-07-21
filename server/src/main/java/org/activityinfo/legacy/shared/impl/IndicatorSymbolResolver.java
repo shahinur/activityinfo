@@ -8,8 +8,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.core.shared.expr.*;
 import org.activityinfo.legacy.shared.Log;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.legacy.CuidAdapter;
 
 import java.util.List;
 import java.util.Map;

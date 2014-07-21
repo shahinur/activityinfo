@@ -1,13 +1,7 @@
-package org.activityinfo.legacy.shared.adapter;
+package org.activityinfo.model.legacy;
 
 import com.google.common.base.Strings;
-import org.activityinfo.core.client.CuidGenerator;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.core.shared.Cuids;
-import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.legacy.client.KeyGenerator;
-import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
-import org.activityinfo.legacy.shared.model.EntityDTO;
 
 /**
  * Provides an adapter between legacy ids, which are either random or sequential 32-bit integers but only
@@ -86,15 +80,11 @@ public class CuidAdapter {
                     return attributeId(newId);
             }
         }
-        return CuidGenerator.INSTANCE.nextCuid();
-    }
-
-    public static ResourceId getFormInstanceLabelCuid(FormInstance formInstance) {
-        return CuidAdapter.field(formInstance.getClassId(), NAME_FIELD);
+        return ResourceId.generateId();
     }
 
     public static final int getLegacyIdFromCuid(String cuid) {
-        return Integer.parseInt(cuid.substring(1), Cuids.RADIX);
+        return Integer.parseInt(cuid.substring(1), ResourceId.RADIX);
     }
 
     public static final ResourceId cuid(char domain, int id) {
@@ -200,27 +190,12 @@ public class CuidAdapter {
      * @return the {@code FormField} ResourceId for the field of a given Activity {@code FormClass} that
      * references the given AttributeGroup FormClass
      */
-    public static ResourceId attributeGroupField(AttributeGroupDTO group) {
-        return attributeGroupField(group.getId());
-    }
-
-    /**
-     * @return the {@code FormField} ResourceId for the field of a given Activity {@code FormClass} that
-     * references the given AttributeGroup FormClass
-     */
     public static ResourceId attributeGroupField(int attributeGroupId) {
         return cuid(ATTRIBUTE_GROUP_FIELD_DOMAIN, attributeGroupId);
     }
 
     public static ResourceId activityCategoryFolderId(int dbId, String category) {
         return ResourceId.create(ACTIVITY_CATEGORY_DOMAIN + block(dbId) + block(Math.abs(category.hashCode())));
-    }
-
-    /**
-     * @return the {@code FormClass} ResourceId for a given AttributeGroup
-     */
-    public static ResourceId attributeGroupFormClass(AttributeGroupDTO group) {
-        return attributeGroupFormClass(group.getId());
     }
 
     public static ResourceId attributeGroupFormClass(int attributeGroupId) {
@@ -256,21 +231,13 @@ public class CuidAdapter {
     }
 
     private static String block(int id) {
-        return Strings.padStart(Integer.toString(id, Cuids.RADIX), BLOCK_SIZE, '0');
+        return Strings.padStart(Integer.toString(id, ResourceId.RADIX), BLOCK_SIZE, '0');
     }
 
     public static int getBlock(ResourceId resourceId, int blockIndex) {
         int startIndex = 1 + (blockIndex * BLOCK_SIZE);
         String block = resourceId.asString().substring(startIndex, startIndex + BLOCK_SIZE);
-        return Integer.parseInt(block, Cuids.RADIX);
-    }
-
-    private static String block(EntityDTO entity) {
-        return block(entity.getId());
-    }
-
-    private static ResourceId cuid(char domain, EntityDTO entityDTO) {
-        return cuid(domain, entityDTO.getId());
+        return Integer.parseInt(block, ResourceId.RADIX);
     }
 
     public static ResourceId databaseId(int databaseId) {

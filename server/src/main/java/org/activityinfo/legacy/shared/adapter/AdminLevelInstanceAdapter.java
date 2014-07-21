@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
+import org.activityinfo.model.legacy.CuidAdapter;
 
 import javax.annotation.Nullable;
 

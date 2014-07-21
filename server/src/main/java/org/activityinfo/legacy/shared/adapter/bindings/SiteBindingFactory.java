@@ -4,14 +4,14 @@ import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.legacy.client.KeyGenerator;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.*;
 
 import java.util.Map;
 import java.util.Set;
 
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 /**
  * Creates a SiteBinding from a SchemaDTO
@@ -62,7 +62,7 @@ public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
 
         private AttributeGroupBinding(ActivityDTO activity, AttributeGroupDTO group) {
             this.group = group;
-            fieldId = CuidAdapter.attributeGroupField(group);
+            fieldId = CuidAdapter.attributeGroupField(group.getId());
         }
 
         @Override

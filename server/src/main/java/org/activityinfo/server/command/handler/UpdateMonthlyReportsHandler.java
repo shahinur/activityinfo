@@ -25,7 +25,7 @@ package org.activityinfo.server.command.handler;
 import com.google.api.services.storage.Storage;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import org.activityinfo.legacy.client.KeyGenerator;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.legacy.shared.command.UpdateMonthlyReports;
 import org.activityinfo.legacy.shared.command.result.CommandResult;

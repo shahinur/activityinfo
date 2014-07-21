@@ -276,8 +276,7 @@ public class IndicatorTreePanel extends ContentPanel {
 
         for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
             if (activityDTO.hasCategory()) {
-                ActivityCategory activityCategory =
-                        new ActivityCategory(databaseDTO.getId(), activityDTO.getCategory());
+                ActivityCategory activityCategory = new ActivityCategory(databaseDTO.getId(), activityDTO.getCategory());
                 categories.add(activityCategory);
                 if (!children.contains(activityCategory)) {
                     children.add(activityCategory);
@@ -290,8 +289,7 @@ public class IndicatorTreePanel extends ContentPanel {
         // fill category with activities
         for (ActivityCategory category : categories) {
             for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
-                if (activityDTO.hasCategory() &&
-                        category.equals(new ActivityCategory(databaseDTO.getId(), activityDTO.getCategory()))) {
+                if (category.getName().equals(activityDTO.getCategory())) {
                     category.addActivity(activityDTO);
                 }
             }

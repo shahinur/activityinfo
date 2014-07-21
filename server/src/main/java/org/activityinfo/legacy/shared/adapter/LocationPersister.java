@@ -3,6 +3,7 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Functions;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.core.shared.model.AiLatLng;
@@ -19,7 +20,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 /**
  * Updates/creates a location object.

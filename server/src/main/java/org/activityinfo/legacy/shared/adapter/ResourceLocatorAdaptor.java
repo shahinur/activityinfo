@@ -11,6 +11,7 @@ import org.activityinfo.core.shared.criteria.IdCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;

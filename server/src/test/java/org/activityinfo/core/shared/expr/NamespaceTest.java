@@ -23,7 +23,7 @@ package org.activityinfo.core.shared.expr;
 
 import junit.framework.Assert;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.junit.Test;
 
 /**

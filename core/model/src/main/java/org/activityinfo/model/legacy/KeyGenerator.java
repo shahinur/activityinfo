@@ -1,4 +1,4 @@
-package org.activityinfo.legacy.client;
+package org.activityinfo.model.legacy;
 
 /*
  * #%L
