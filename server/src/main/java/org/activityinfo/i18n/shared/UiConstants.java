@@ -3470,4 +3470,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Read only")
     String readonly();
+
+    @DefaultStringValue("Boolean")
+    String fieldTypeBoolean();
 }

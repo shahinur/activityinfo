@@ -3,7 +3,6 @@ package org.activityinfo.server.endpoint.rest;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.MonthlyReportResult;
@@ -141,6 +140,8 @@ public class SitesResources {
                         json.writeStringField(Integer.toString(indicatorId), (String) indicatorValue);
                     } else if (indicatorValue instanceof LocalDate) {
                         json.writeStringField(Integer.toString(indicatorId), ((LocalDate) indicatorValue).toString());
+                    } else if (indicatorValue instanceof Boolean) {
+                        json.writeStringField(Integer.toString(indicatorId), ((Boolean) indicatorValue).toString());
                     }
                 }
                 json.writeEndObject();
@@ -208,6 +209,8 @@ public class SitesResources {
                             final double doubleValue = ((Number) value).doubleValue();
                             indicatorsMap.put(dto.getName(), doubleValue);
                         } else if (value instanceof String || value instanceof LocalDate) {
+                            indicatorsMap.put(dto.getName(), value);
+                        } else if (value instanceof Boolean) {
                             indicatorsMap.put(dto.getName(), value);
                         }
                     } else if (propertyName.startsWith(AttributeDTO.PROPERTY_PREFIX)) {
