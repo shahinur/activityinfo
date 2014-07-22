@@ -29,7 +29,9 @@ public class OdkIntegrationTest {
     }
 
     @Test
-    public void blankFormAvailable() {
+    public void blankFormAvailable() throws InterruptedException {
+
+        Thread.sleep(2000);
 
         odkDriver.openGeneralSettings()
            .setUrl(getRequiredProperty("serverUrl"))
