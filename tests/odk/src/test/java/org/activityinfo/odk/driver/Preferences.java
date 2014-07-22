@@ -40,10 +40,17 @@ public class Preferences {
         driver.getKeyboard().sendKeys(newValue);
 
         // move to OK button
-        driver.sendKeyEvent(AndroidKeyCode.ENTER);
+        try {
+            driver.sendKeyEvent(AndroidKeyCode.ENTER);
+            // click ok
+            driver.sendKeyEvent(AndroidKeyCode.ENTER);
+        } catch(Exception e) {
+            // try something else...
+            driver.findElement(By.xpath("//Button[@value='OK']")).click();
 
-        // click ok
-        driver.sendKeyEvent(AndroidKeyCode.ENTER);
+        }
+
+
 
         return this;
     }
@@ -60,7 +67,10 @@ public class Preferences {
         // update password
         driver.getKeyboard().sendKeys(password);
 
-        driver.sendKeyEvent(AndroidKeyCode.BACK);
+        try {
+            driver.sendKeyEvent(AndroidKeyCode.BACK);
+        } catch (Exception e) {
+        }
 
         driver.findElement(By.xpath("//Button[@value='OK']")).click();
 
