@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class FieldPalette implements IsWidget {
 
-    public static final int NUM_COLUMNS = 2;
+    public static final int NUM_COLUMNS = 1;
 
     private final AbsolutePanel panel;
     private final PickupDragController dragController;
@@ -50,7 +50,7 @@ public class FieldPalette implements IsWidget {
         dragController.setBehaviorMultipleSelection(false);
 
         List<FieldTemplate> templates = FieldTemplates.list();
-        for (int i=0;i!=templates.size();++i) {
+        for (int i = 0; i != templates.size(); ++i) {
             int row = (i / NUM_COLUMNS);
             int column = (i % NUM_COLUMNS);
 
@@ -75,13 +75,13 @@ public class FieldPalette implements IsWidget {
 
     private int calculateTop(int row) {
         return Metrics.SOURCE_CONTROL_INITIAL_TOP +
-               (Metrics.SOURCE_CONTROL_HEIGHT_PX * row);
+                (Metrics.SOURCE_CONTROL_HEIGHT_PX * row);
     }
 
     private int calculateLeft(int column) {
         return Metrics.SOURCE_CONTROL_INITIAL_LEFT +
-               (Metrics.SOURCE_CONTROL_WIDTH_PX * column) +
-               (Metrics.SOURCE_CONTROL_MARGIN_RIGHT * column);
+                (Metrics.SOURCE_CONTROL_WIDTH_PX * column) +
+                (Metrics.SOURCE_CONTROL_MARGIN_RIGHT * column);
     }
 
 
