@@ -26,7 +26,7 @@ public class OdkDriver {
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(CapabilityType.BROWSER_NAME, "");
         capabilities.setCapability("platformName", "Android");
-        capabilities.setCapability("deviceName", "Android Emulator");
+        capabilities.setCapability("deviceName", System.getProperty("deviceName", "Android Emulator"));
         capabilities.setCapability("platformVersion", System.getProperty("platformVersion", "4.0.3"));
         capabilities.setCapability("app", getApkPath());
         capabilities.setCapability("appPackage", ODK_COLLECT_PACKAGE);
@@ -44,7 +44,7 @@ public class OdkDriver {
 
     private static URL localAppiumServer()  {
         try {
-            return new URL("http://127.0.0.1:4723/wd/hub");
+            return new URL(System.getProperty("appiumUrl", "http://127.0.0.1:4723/wd/hub"));
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
