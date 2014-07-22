@@ -26,10 +26,10 @@ package org.activityinfo.ui.client.component.formdesigner;
  */
 public class Metrics {
 
-    public static final int SOURCE_CONTROL_INITIAL_LEFT = 20;
+    public static final int SOURCE_CONTROL_INITIAL_LEFT = 4;
     public static final int SOURCE_CONTROL_INITIAL_TOP = 5;
 
-    public static final int SOURCE_CONTROL_WIDTH_PX = 150;
+    public static final int SOURCE_CONTROL_WIDTH_PX = 120;
     public static final int SOURCE_CONTROL_HEIGHT_PX = 32;
     public static final int SOURCE_CONTROL_MARGIN_RIGHT = 10;
 
