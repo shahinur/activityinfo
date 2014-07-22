@@ -85,6 +85,7 @@ public class SyncTest {
             enableOfflineMode();
             localStorage.recordSuccessfulSynchronization();
         } else {
+            driver.get(Config.getRootUrl());
             assertThatWeAreInOfflineMode();
             synchronize();
         }
