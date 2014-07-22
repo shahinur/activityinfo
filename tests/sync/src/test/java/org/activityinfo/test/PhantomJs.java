@@ -30,6 +30,7 @@ public class PhantomJs {
 
     public PhantomJs with(LocalStorage localStorage) {
         args.add("--local-storage-path=" + localStorage.getDir().getAbsolutePath());
+        args.add("--cookies-file=" + localStorage.getCookiesFile().getAbsolutePath());
         return this;
     }
 

@@ -69,4 +69,7 @@ public class LocalStorage {
         return dir;
     }
 
+    public File getCookiesFile() {
+        return new File(dir, "cookies.txt");
+    }
 }
