@@ -1,5 +1,6 @@
 package org.activityinfo.odk.driver;
 
+import com.google.common.base.Strings;
 import com.google.common.io.Resources;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.remote.CapabilityType;
@@ -39,7 +40,11 @@ public class OdkDriver {
     }
 
     private static String getApkPath() {
-        return new File(Resources.getResource("odk_collect_v1.4.3_rev_1042.apk").getFile()).getAbsolutePath();
+
+        String packagedApk = new File(Resources.getResource("odk_collect_v1.4.3_rev_1042.apk")
+                                                .getFile()).getAbsolutePath();
+
+        return System.getProperty("apk", packagedApk);
     }
 
     private static URL localAppiumServer()  {
@@ -78,7 +83,11 @@ public class OdkDriver {
      * Closes the ODK Collect app.
      */
     public void close() {
-        driver.closeApp();
+        try {
+            driver.closeApp();
+        } catch(Exception e) {
+            // ignore, doesn't seem to work on SauceLabs
+        }
         driver.quit();
     }
 }
