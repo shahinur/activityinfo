@@ -83,10 +83,10 @@ public class SyncTest {
             login();
             assertThatWeAreInOnlineMode();
             enableOfflineMode();
+            localStorage.recordSuccessfulSynchronization();
         } else {
             assertThatWeAreInOfflineMode();
             synchronize();
-            localStorage.recordSuccessfulSynchronization();
         }
     }
 
