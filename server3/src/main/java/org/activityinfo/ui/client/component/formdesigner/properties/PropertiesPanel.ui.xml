@@ -42,5 +42,18 @@
         </div>
       </g:HTMLPanel>
     </g:HTMLPanel>
+    <g:HTMLPanel addStyleNames="form-group" ui:field="skipGroup">
+      <label class="control-label col-xs-4">
+        <ui:text from='{i18n.skipLogic}'/>
+      </label>
+      <div class="col-xs-3">
+        <g:Label ui:field="skipState"/>
+      </div>
+      <div class="col-xs-2">
+        <g:Button addStyleNames="btn btn-default btn-xs" ui:field="skipButton">
+          <ui:text from='{i18n.defineSkipLogic}'/>
+        </g:Button>
+      </div>
+    </g:HTMLPanel>
   </g:HTMLPanel>
 </ui:UiBinder>
