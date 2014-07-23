@@ -29,6 +29,11 @@ public enum TokenType {
     OPERATOR(true),
 
     /**
+     * Boolean operator : &&, ||, !
+     */
+    BOOLEAN_OPERATOR(false),
+
+    /**
      * A named value
      */
     SYMBOL(true),
@@ -36,9 +41,14 @@ public enum TokenType {
     FUNCTION(true),
 
     /**
-     * Numeric Literal
+     * Numeric Literal: 1, 3 ...
      */
     NUMBER(false),
+
+    /**
+     * Boolean literal : true, false
+     */
+    BOOLEAN_LITERAL(false),
 
     /**
      * Whitespace

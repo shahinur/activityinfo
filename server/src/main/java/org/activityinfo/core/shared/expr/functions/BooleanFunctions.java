@@ -21,8 +21,74 @@ package org.activityinfo.core.shared.expr.functions;
  * #L%
  */
 
+import org.activityinfo.core.shared.expr.ExprFunction;
+import org.activityinfo.core.shared.expr.ExprNode;
+
+import java.util.List;
+
 /**
  * @author yuriyz on 7/23/14.
  */
 public class BooleanFunctions {
+
+    public static final ExprFunction<Boolean> AND = new ExprFunction<Boolean>() {
+
+        @Override
+        public String getName() {
+            return "AND";
+        }
+
+        @Override
+        public Boolean applyReal(List<ExprNode<Boolean>> arguments) {
+            Boolean result = arguments.get(0).evalReal();
+            for (int i = 1; i < arguments.size(); i++) {
+                result = result && arguments.get(i).evalReal();
+            }
+            return result;
+        }
+    };
+
+    public static final ExprFunction<Boolean> OR = new ExprFunction<Boolean>() {
+
+        @Override
+        public String getName() {
+            return "OR";
+        }
+
+        @Override
+        public Boolean applyReal(List<ExprNode<Boolean>> arguments) {
+            Boolean result = arguments.get(0).evalReal();
+            for (int i = 1; i < arguments.size(); i++) {
+                result = result || arguments.get(i).evalReal();
+            }
+            return result;
+        }
+    };
+
+    public static final ExprFunction<Boolean> NOT = new ExprFunction<Boolean>() {
+        @Override
+        public String getName() {
+            return "not";
+        }
+
+        @Override
+        public Boolean applyReal(List<ExprNode<Boolean>> arguments) {
+            return !arguments.get(0).evalReal();
+        }
+    };
+
+    public static ExprFunction<Boolean> getBooleanFunction(String token) {
+        if (token.equals("&&")) {
+            return AND;
+
+        } else if (token.equals("||")) {
+            return OR;
+
+        } else if (token.equals("!")) {
+            return NOT;
+
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 }
