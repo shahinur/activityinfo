@@ -668,7 +668,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                                     if (placeholder.isRowLevel()) {
                                         try {
                                             int indicatorId = CuidAdapter.getLegacyIdFromCuid(placeholder.getFieldId());
-                                            double value = site.getIndicatorDoubleValue(indicatorId);
+                                            Double value = site.getIndicatorDoubleValue(indicatorId);
                                             placeholderExpr.setValue(value);
                                             return;
                                         } catch (NumberFormatException e) {
@@ -690,7 +690,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                             });
 
                             try {
-                                ExprNode exprNode = parser.parse();
+                                ExprNode<Double> exprNode = parser.parse();
                                 double calculatedValue = exprNode.evalReal();
                                 site.setIndicatorValue(row.getInt("IndicatorId"), calculatedValue);
                             } catch (Exception e) {

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertEquals;
 
 public class ExprParserTest {
 
-
     @Test
     public void simpleTokenizing() {
         expect("1+2",
@@ -169,7 +168,7 @@ public class ExprParserTest {
     private void evaluate(String string, double expectedValue) {
         ExprLexer lexer = new ExprLexer(string);
         ExprParser parser = new ExprParser(lexer);
-        ExprNode expr = parser.parse();
+        ExprNode<Double> expr = parser.parse();
         assertEquals(string, expectedValue, expr.evalReal(), 0);
     }
 }
