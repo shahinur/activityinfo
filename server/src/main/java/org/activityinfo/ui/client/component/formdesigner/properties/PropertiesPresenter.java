@@ -22,6 +22,8 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  */
 
 import com.google.common.base.Strings;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -29,6 +31,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resources;
@@ -40,6 +43,7 @@ import org.activityinfo.ui.client.component.formdesigner.container.WidgetContain
 import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
+import org.activityinfo.ui.client.component.formdesigner.skip.SkipDialog;
 
 /**
  * @author yuriyz on 7/9/14.
@@ -86,6 +90,7 @@ public class PropertiesPresenter {
 
         view.getRequiredGroup().setVisible(false);
         view.getReadOnlyGroup().setVisible(false);
+        view.getSkipGroup().setVisible(false);
 
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
@@ -109,9 +114,19 @@ public class PropertiesPresenter {
         view.setVisible(true);
         view.getRequiredGroup().setVisible(true);
         view.getReadOnlyGroup().setVisible(true);
+        view.getSkipGroup().setVisible(true);
 
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
         view.getRequired().setValue(formField.isRequired());
+
+        setSkipState(formField.hasSkipExpression());
+        view.getSkipButton().addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                SkipDialog dialog = new SkipDialog(fieldWidgetContainer, PropertiesPresenter.this);
+                dialog.show();
+            }
+        });
 
         labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
             @Override
@@ -150,6 +165,9 @@ public class PropertiesPresenter {
         view.getPanel().add(currentDesignWidget);
     }
 
+    public void setSkipState(boolean hasSkipExpression) {
+        view.getSkipState().setText(hasSkipExpression ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
+    }
 
     public void show(final HeaderPresenter headerPresenter) {
         reset();
