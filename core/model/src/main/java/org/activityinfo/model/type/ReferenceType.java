@@ -103,6 +103,7 @@ public class ReferenceType implements FieldType {
     @Override
     public Record getParameters() {
         return new Record()
+                .set("classId", getTypeClass().getParameterFormClass().getId())
                 .set("range", Reference.to(range))
                 .set("cardinality", cardinality);
     }
