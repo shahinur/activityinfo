@@ -4,18 +4,18 @@ import org.activityinfo.core.shared.expr.ExprFunction;
 
 public class ArithmeticFunctions {
 
-    public static final ExprFunction<Double> BINARY_PLUS = new BinaryInfixFunction("+") {
+    public static final ExprFunction<Double> BINARY_PLUS = new BinaryInfixFunction<Double>("+") {
 
         @Override
-        public Double applyReal(double x, double y) {
+        public Double applyReal(Double x, Double y) {
             return x + y;
         }
     };
 
-    public static final ExprFunction<Double> DIVIDE = new BinaryInfixFunction("/") {
+    public static final ExprFunction<Double> DIVIDE = new BinaryInfixFunction<Double>("/") {
 
         @Override
-        public Double applyReal(double x, double y) {
+        public Double applyReal(Double x, Double y) {
             return x / y;
         }
     };

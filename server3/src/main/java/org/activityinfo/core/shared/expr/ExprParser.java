@@ -5,6 +5,7 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 import com.google.common.collect.Sets;
 import org.activityinfo.core.shared.expr.functions.ArithmeticFunctions;
+import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -43,6 +44,12 @@ public class ExprParser {
             ExprNode right = parse();
 
             return new FunctionCallNode(function, expr, right);
+        } else if (token.getType() == TokenType.BOOLEAN_OPERATOR) {
+            lexer.next();
+            ExprFunction<Boolean> function = BooleanFunctions.getBooleanFunction(token.getString());
+            ExprNode right = parse();
+
+            return new FunctionCallNode(function, expr, right);
 
         } else {
             return expr;
@@ -68,6 +75,9 @@ public class ExprParser {
 
         } else if (token.getType() == TokenType.NUMBER) {
             return new ConstantExpr(Double.parseDouble(token.getString()));
+
+        } else if (token.getType() == TokenType.BOOLEAN_LITERAL) {
+            return new BooleanConstantExpr(Boolean.parseBoolean(token.getString()));
 
         } else {
             throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");
