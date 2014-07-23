@@ -4,6 +4,7 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
 
@@ -30,7 +31,7 @@ public enum TextType implements FieldType, FieldTypeClass {
 
     @Override
     public Record getParameters() {
-        return new Record();
+        return new Record().set("classId", getTypeClass().getParameterFormClass().getId());
     }
 
     @Override
@@ -65,6 +66,6 @@ public enum TextType implements FieldType, FieldTypeClass {
 
     @Override
     public FormClass getParameterFormClass() {
-        return null;
+        return new FormClass(ResourceIdPrefixType.TYPE.id("text"));
     }
 }
