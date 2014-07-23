@@ -5,7 +5,7 @@ import org.activityinfo.core.shared.expr.ExprNode;
 
 import java.util.List;
 
-public abstract class BinaryInfixFunction extends ExprFunction<Double> {
+public abstract class BinaryInfixFunction<T> extends ExprFunction<T> {
 
     private String symbol;
 
@@ -20,9 +20,9 @@ public abstract class BinaryInfixFunction extends ExprFunction<Double> {
     }
 
     @Override
-    public Double applyReal(List<ExprNode<Double>> arguments) {
+    public T applyReal(List<ExprNode<T>> arguments) {
         return applyReal(arguments.get(0).evalReal(), arguments.get(1).evalReal());
     }
 
-    public abstract Double applyReal(double x, double y);
+    public abstract T applyReal(T x, T y);
 }

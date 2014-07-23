@@ -1,6 +1,7 @@
 package org.activityinfo.core.shared.expr;
 
 import org.activityinfo.core.shared.expr.functions.ArithmeticFunctions;
+import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -39,6 +40,30 @@ public class ExprParserTest {
                 new Token(TokenType.OPERATOR, 19, "/"),
                 new Token(TokenType.NUMBER, 20, "66"),
                 new Token(TokenType.WHITESPACE, 22, "   "));
+    }
+
+    @Test
+    public void booleanTokenizing() {
+        expect("true", new Token(TokenType.BOOLEAN_LITERAL, 0, "true"));
+        expect("false", new Token(TokenType.BOOLEAN_LITERAL, 0, "false"));
+        expect("true&&false",
+                new Token(TokenType.BOOLEAN_LITERAL, 0, "true"),
+                new Token(TokenType.BOOLEAN_OPERATOR, 4, "&&"),
+                new Token(TokenType.BOOLEAN_LITERAL, 6, "false")
+        );
+        expect("(true||false)&&(false&&true)",
+                new Token(TokenType.PAREN_START, 0, "("),
+                new Token(TokenType.BOOLEAN_LITERAL, 1, "true"),
+                new Token(TokenType.BOOLEAN_OPERATOR, 5, "||"),
+                new Token(TokenType.BOOLEAN_LITERAL, 7, "false"),
+                new Token(TokenType.PAREN_END, 8, ")"),
+                new Token(TokenType.BOOLEAN_OPERATOR, 9, "&&"),
+                new Token(TokenType.PAREN_START, 11, "("),
+                new Token(TokenType.BOOLEAN_LITERAL, 12, "false"),
+                new Token(TokenType.BOOLEAN_OPERATOR, 17, "&&"),
+                new Token(TokenType.BOOLEAN_LITERAL, 22, "true"),
+                new Token(TokenType.PAREN_END, 23, ")")
+        );
     }
 
     @Test
@@ -98,6 +123,20 @@ public class ExprParserTest {
     }
 
     @Test
+    public void parseBooleanSimple() {
+        expect("true", new BooleanConstantExpr(true));
+        expect("false", new BooleanConstantExpr(false));
+        expect("true&&false&&false", new FunctionCallNode(BooleanFunctions.AND,
+                new BooleanConstantExpr(true),
+                new FunctionCallNode(BooleanFunctions.AND,
+                        new BooleanConstantExpr(false),
+                        new BooleanConstantExpr(false)
+                )
+        ));
+    }
+
+
+    @Test
     public void parseNested() {
         expect("(1+2)/3",
                 new FunctionCallNode(ArithmeticFunctions.DIVIDE,
@@ -137,6 +176,19 @@ public class ExprParserTest {
         evaluate("(5+5)/2", 5);
     }
 
+    @Test
+    public void evaluateBooleanExpr() {
+        evaluate("true", true);
+        evaluate("false", false);
+        evaluate("true&&true", true);
+        evaluate("true&&false", false);
+        evaluate("true||false", true);
+        evaluate("false||false", false);
+        evaluate("false||false||true", true);
+        evaluate("(false||true)&&true", true);
+
+    }
+
     private void expect(String string, Token... tokens) {
         System.out.println("Tokenizing [" + string + "]");
         ExprLexer tokenizer = new ExprLexer(string);
@@ -170,5 +222,12 @@ public class ExprParserTest {
         ExprParser parser = new ExprParser(lexer);
         ExprNode<Double> expr = parser.parse();
         assertEquals(string, expectedValue, expr.evalReal(), 0);
+    }
+
+    private void evaluate(String string, boolean expectedValue) {
+        ExprLexer lexer = new ExprLexer(string);
+        ExprParser parser = new ExprParser(lexer);
+        ExprNode<Boolean> expr = parser.parse();
+        assertEquals(string, expectedValue, expr.evalReal());
     }
 }

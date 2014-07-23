@@ -15,7 +15,6 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
     private int currentCharIndex;
     private int currentTokenStart = 0;
 
-
     private static final String VALID_OPERATORS = "+-/*";
 
     public ExprLexer(String string) {
@@ -88,6 +87,12 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         } else if (isOperator(c)) {
             return finishToken(TokenType.OPERATOR);
 
+        } else if (isBooleanLiteral(c)) {
+            return readBooleanLiteral(c);
+
+        } else if (isBooleanOperator(c)) {
+            return readBooleanOperator(c);
+
         } else if (isSymbolStart(c)) {
             return readSymbol();
 
@@ -100,6 +105,19 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         return VALID_OPERATORS.indexOf(c) != -1;
     }
 
+    private boolean isBooleanOperator(char c) {
+        if (c == '!') {
+            return true;
+        } else if (c == '&') {
+            // if next char is also & then its && operator
+            return string.charAt(currentCharIndex) == '&';
+        } else if (c == '|') {
+            // if next char is also | then its || operator
+            return string.charAt(currentCharIndex) == '|';
+        }
+        return false;
+    }
+
     private boolean isSymbolStart(char c) {
         return c == '_' || Character.isLetter(c);
     }
@@ -110,6 +128,20 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
 
     private boolean isNumberPart(char c) {
         return Character.isDigit(c);
+    }
+
+    private boolean isBooleanLiteral(char c) {
+        final int currentIndex = currentCharIndex - 1;
+        if (c == 't' || c == 'T') {
+            String trueLiteral = Boolean.TRUE.toString();
+            String literal = string.substring(currentIndex, currentIndex + trueLiteral.length());
+            return trueLiteral.equalsIgnoreCase(literal);
+        } else if (c == 'f' || c == 'F') {
+            String falseLiteral = Boolean.FALSE.toString();
+            String literal = string.substring(currentIndex, currentIndex + falseLiteral.length());
+            return falseLiteral.equalsIgnoreCase(literal);
+        }
+        return false;
     }
 
     private Token readWhitespace() {
@@ -131,6 +163,41 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
             consumeChar();
         }
         return finishToken(TokenType.SYMBOL);
+    }
+
+    private Token readBooleanLiteral(char c) {
+        currentCharIndex--;
+        if (c == 't' || c == 'T') {
+            String trueLiteral = Boolean.TRUE.toString();
+            String literal = string.substring(currentCharIndex, currentCharIndex + trueLiteral.length());
+            if (trueLiteral.equalsIgnoreCase(literal)) {
+                currentCharIndex += trueLiteral.length();
+                return finishToken(TokenType.BOOLEAN_LITERAL);
+            }
+        } else if (c == 'f' || c == 'F') {
+            String falseLiteral = Boolean.FALSE.toString();
+            String literal = string.substring(currentCharIndex, currentCharIndex + falseLiteral.length());
+            if (falseLiteral.equalsIgnoreCase(literal)) {
+                currentCharIndex += falseLiteral.length();
+                return finishToken(TokenType.BOOLEAN_LITERAL);
+            }
+        }
+        throw new RuntimeException("Bug in isBooleanLiteral() ?");
+    }
+
+    private Token readBooleanOperator(char c) {
+        if (c == '!') {
+            return finishToken(TokenType.BOOLEAN_OPERATOR);
+        } else if (c == '&') {
+            // if next char is also & then its && operator
+            currentCharIndex++;
+            return finishToken(TokenType.BOOLEAN_OPERATOR);
+        } else if (c == '|') {
+            currentCharIndex++;
+            // if next char is also | then its || operator
+            return finishToken(TokenType.BOOLEAN_OPERATOR);
+        }
+        throw new RuntimeException("Invalid boolean operator.");
     }
 
 }
