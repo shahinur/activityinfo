@@ -1,6 +1,6 @@
 package org.activityinfo.core.shared.expr;
 
-public class ConstantExpr extends ExprNode {
+public class ConstantExpr extends ExprNode<Double> {
 
     private double value;
 
@@ -14,7 +14,7 @@ public class ConstantExpr extends ExprNode {
     }
 
     @Override
-    public double evalReal() {
+    public Double evalReal() {
         return value;
     }
 

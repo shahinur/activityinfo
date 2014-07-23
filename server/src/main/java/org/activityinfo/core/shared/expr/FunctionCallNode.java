@@ -4,21 +4,21 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class FunctionCallNode extends ExprNode {
+public class FunctionCallNode<T> extends ExprNode<T> {
 
     @Nonnull
-    private ExprFunction function;
+    private ExprFunction<T> function;
 
     @Nonnull
-    private List<ExprNode> arguments;
+    private List<ExprNode<T>> arguments;
 
-    public FunctionCallNode(ExprFunction function, List<ExprNode> arguments) {
+    public FunctionCallNode(ExprFunction<T> function, List<ExprNode<T>> arguments) {
         super();
         this.function = function;
         this.arguments = arguments;
     }
 
-    public FunctionCallNode(ExprFunction function, ExprNode... arguments) {
+    public FunctionCallNode(ExprFunction<T> function, ExprNode<T>... arguments) {
         this(function, Arrays.asList(arguments));
     }
 
@@ -28,7 +28,7 @@ public class FunctionCallNode extends ExprNode {
     }
 
     @Override
-    public double evalReal() {
+    public T evalReal() {
         return function.applyReal(arguments);
     }
 

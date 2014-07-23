@@ -39,7 +39,7 @@ public class ExprParser {
         Token token = lexer.peek();
         if (isInfixOperator(token)) {
             lexer.next();
-            ExprFunction function = ArithmeticFunctions.getBinaryInfix(token.getString());
+            ExprFunction<Double> function = ArithmeticFunctions.getBinaryInfix(token.getString());
             ExprNode right = parse();
 
             return new FunctionCallNode(function, expr, right);

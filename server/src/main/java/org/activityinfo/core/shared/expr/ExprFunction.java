@@ -2,7 +2,7 @@ package org.activityinfo.core.shared.expr;
 
 import java.util.List;
 
-public abstract class ExprFunction {
+public abstract class ExprFunction<T> {
 
     /**
      * @return the name of this function
@@ -12,5 +12,5 @@ public abstract class ExprFunction {
     /**
      * Apply this function to the provided arguments.
      */
-    public abstract double applyReal(List<ExprNode> arguments);
+    public abstract T applyReal(List<ExprNode<T>> arguments);
 }
