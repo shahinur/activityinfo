@@ -21,6 +21,7 @@ public class FormField extends FormElement {
     private String label;
     private String description;
     private String expression;
+    private String skipExpression;
     private FieldType type;
     private boolean readOnly;
     private boolean visible = true;
@@ -52,6 +53,14 @@ public class FormField extends FormElement {
     public FormField setLabel(String label) {
         this.label = label;
         return this;
+    }
+
+    public String getSkipExpression() {
+        return skipExpression;
+    }
+
+    public void setSkipExpression(String skipExpression) {
+        this.skipExpression = skipExpression;
     }
 
     /**
@@ -100,6 +109,10 @@ public class FormField extends FormElement {
 
     public boolean isCalculated() {
         return !Strings.isNullOrEmpty(expression);
+    }
+
+    public boolean hasSkipExpression() {
+        return !Strings.isNullOrEmpty(skipExpression);
     }
 
     public FormField setExpression(String expression) {
