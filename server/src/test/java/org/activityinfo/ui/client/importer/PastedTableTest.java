@@ -28,7 +28,6 @@ import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.core.shared.importing.source.SourceColumn;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -97,7 +96,7 @@ public class PastedTableTest {
     @Test
     public void libreOfficeImport() throws IOException {
         PastedTable pastedTable = new PastedTable(
-                Resources.toString(getResource("org/activityinfo/core/shared/importing/libreoffice.txt"), Charsets.UTF_8));
+                Resources.toString(getResource("org/activityinfo/core/shared/importing/somali-camps.txt"), Charsets.UTF_8));
         pastedTable.parseAllRows();
         pastedTable.guessColumnsType(JvmConverterFactory.get());
 
