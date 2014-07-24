@@ -297,14 +297,30 @@ public class ActivityTest extends CommandTestCase2 {
         ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
 
-        FormField beneficiaries = (FormField)find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
+        FormField beneficiaries = find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
         beneficiaries.setLabel("Number of benes");
         resourceLocator.persist(formClass);
 
         ActivityDTO activity = getActivity(1);
         assertThat(activity.getIndicatorById(1), hasProperty("name", Matchers.equalTo("Number of benes")));
-
     }
+
+
+    @Test
+    public void updateIndicatorWithLongUnits() {
+
+        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
+
+        FormField beneficiaries = find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
+        QuantityType updatedType = new QuantityType().setUnits("imperial tonne with very long qualifying text");
+        beneficiaries.setType(updatedType);
+        resourceLocator.persist(formClass);
+
+        ActivityDTO activity = getActivity(1);
+        assertThat(activity.getIndicatorById(1), hasProperty("units", Matchers.equalTo(updatedType.getUnits())));
+    }
+
 
     private <T> T find(List<T> list, Matcher<? super T> matcher) {
 
