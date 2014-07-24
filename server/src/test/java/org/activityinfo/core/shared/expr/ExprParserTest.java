@@ -186,7 +186,13 @@ public class ExprParserTest {
         evaluate("false||false", false);
         evaluate("false||false||true", true);
         evaluate("(false||true)&&true", true);
-
+        evaluate("true==true", true);
+        evaluate("true==false", false);
+        evaluate("true!=false", true);
+        evaluate("false!=false", false);
+        evaluate("true!=true", false);
+        evaluate("!true", false);
+        evaluate("!false", true);
     }
 
     private void expect(String string, Token... tokens) {
