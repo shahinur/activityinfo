@@ -4,21 +4,21 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class FunctionCallNode<T> extends ExprNode<T> {
+public class FunctionCallNode<T, K> extends ExprNode<T> {
 
     @Nonnull
-    private ExprFunction<T> function;
+    private ExprFunction<T, K> function;
 
     @Nonnull
-    private List<ExprNode<T>> arguments;
+    private List<ExprNode<K>> arguments;
 
-    public FunctionCallNode(ExprFunction<T> function, List<ExprNode<T>> arguments) {
+    public FunctionCallNode(ExprFunction<T, K> function, List<ExprNode<K>> arguments) {
         super();
         this.function = function;
         this.arguments = arguments;
     }
 
-    public FunctionCallNode(ExprFunction<T> function, ExprNode<T>... arguments) {
+    public FunctionCallNode(ExprFunction<T, K> function, ExprNode<K>... arguments) {
         this(function, Arrays.asList(arguments));
     }
 

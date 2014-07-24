@@ -21,6 +21,7 @@ package org.activityinfo.core.shared.expr;
  * #L%
  */
 
+import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -56,18 +57,14 @@ public class SkipExpressionTest {
         FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
         instance.set(GENDER_FIELD_ID, enumValue(GENDER_FIELD_ID, "Male"));
 
-        String skipExpression = String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId());
-        eval(skipExpression, true, instance);
+        eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
+        eval(String.format("{%s}!={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), false, instance);
+        eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
     }
 
     private void eval(String skipExpresison, Boolean expectedValue, FormInstance instance) {
         ExprLexer lexer = new ExprLexer(skipExpresison);
-        ExprParser parser = new ExprParser(lexer, new PlaceholderExprResolver() {
-            @Override
-            public void resolve(PlaceholderExpr placeholderExpr) {
-                String placeholder = placeholderExpr.getPlaceholder();
-            }
-        });
+        ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(instance, formClass));
         ExprNode<Boolean> expr = parser.parse();
         Assert.assertEquals(skipExpresison, expectedValue, expr.evalReal());
     }
