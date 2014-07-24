@@ -5,7 +5,7 @@ import org.activityinfo.core.shared.expr.ExprNode;
 
 import java.util.List;
 
-public abstract class BinaryInfixFunction<T> extends ExprFunction<T> {
+public abstract class BinaryInfixFunction<T> extends ExprFunction<T, T> {
 
     private String symbol;
 
