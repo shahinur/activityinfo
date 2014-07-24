@@ -114,6 +114,9 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         } else if (c == '|') {
             // if next char is also | then its || operator
             return string.charAt(currentCharIndex) == '|';
+        } else if (c == '=') {
+            // if next char is also = then its == operator
+            return string.charAt(currentCharIndex) == '=';
         }
         return false;
     }
@@ -187,6 +190,9 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
 
     private Token readBooleanOperator(char c) {
         if (c == '!') {
+            if (string.charAt(currentCharIndex) == '=') { // check whether it's NOT (!) or NOT_EQUAL operator (!=)
+                currentCharIndex++;
+            }
             return finishToken(TokenType.BOOLEAN_OPERATOR);
         } else if (c == '&') {
             // if next char is also & then its && operator
@@ -195,6 +201,10 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         } else if (c == '|') {
             currentCharIndex++;
             // if next char is also | then its || operator
+            return finishToken(TokenType.BOOLEAN_OPERATOR);
+        } else if (c == '=') {
+            currentCharIndex++;
+            // if next char is also = then its == operator
             return finishToken(TokenType.BOOLEAN_OPERATOR);
         }
         throw new RuntimeException("Invalid boolean operator.");

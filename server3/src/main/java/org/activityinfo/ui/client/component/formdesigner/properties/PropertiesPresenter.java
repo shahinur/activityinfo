@@ -119,7 +119,7 @@ public class PropertiesPresenter {
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
         view.getRequired().setValue(formField.isRequired());
 
-        setSkipState(formField.hasSkipExpression());
+        setSkipState(formField);
         view.getSkipButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -165,8 +165,15 @@ public class PropertiesPresenter {
         view.getPanel().add(currentDesignWidget);
     }
 
-    public void setSkipState(boolean hasSkipExpression) {
-        view.getSkipState().setText(hasSkipExpression ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
+    public void setSkipState(FormField formField) {
+        view.getSkipState().setText(formField.hasSkipExpression() ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
+        view.getSkipExpression().setInnerText(formField.getSkipExpression());
+
+        if (formField.hasSkipExpression()) {
+            view.getSkipExpression().removeClassName("hide");
+        } else if (!view.getSkipExpression().getClassName().contains("hide")) {
+            view.getSkipExpression().addClassName("hide");
+        }
     }
 
     public void show(final HeaderPresenter headerPresenter) {

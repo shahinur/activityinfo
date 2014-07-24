@@ -79,6 +79,12 @@ public class ExprParser {
         } else if (token.getType() == TokenType.BOOLEAN_LITERAL) {
             return new BooleanConstantExpr(Boolean.parseBoolean(token.getString()));
 
+        } else if (token.getType() == TokenType.BOOLEAN_OPERATOR) {
+            // unary NOT operation (right now it's the only case when we start with node fucntion)
+            ExprFunction<Boolean> function = BooleanFunctions.getBooleanFunction(token.getString());
+            ExprNode right = parse();
+            return new FunctionCallNode(function, right);
+
         } else {
             throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");
         }
