@@ -55,6 +55,7 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
     private String listHeader;
     private String type = FieldTypeClass.QUANTITY.getId();
     private String expression;
+    private String skipExpression;
     private String nameInExpression;
     private boolean calculatedAutomatically;
 
@@ -83,6 +84,15 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
 
     public void setExpression(String expression) {
         this.expression = expression;
+    }
+
+    @Column(name = "skipExpression", nullable = true, length = 999)
+    public String getSkipExpression() {
+        return skipExpression;
+    }
+
+    public void setSkipExpression(String skipExpression) {
+        this.skipExpression = skipExpression;
     }
 
     @Column(name = "nameInExpression", nullable = true, length = 999)

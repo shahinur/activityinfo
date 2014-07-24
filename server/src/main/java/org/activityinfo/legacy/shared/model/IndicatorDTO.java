@@ -168,6 +168,15 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     }
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
+    public String getSkipExpression() {
+        return get("skipExpression");
+    }
+
+    public void setSkipExpression(String skipExpression) {
+        set("skipExpression", skipExpression);
+    }
+
+    @JsonProperty @JsonView(DTOViews.Schema.class)
     public String getNameInExpression() {
         return get("nameInExpression");
     }
