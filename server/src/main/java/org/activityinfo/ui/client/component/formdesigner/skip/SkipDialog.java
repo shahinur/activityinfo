@@ -44,7 +44,7 @@ public class SkipDialog {
         this.dialog.getPrimaryButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                propertiesPresenter.setSkipState(formField.hasSkipExpression());
+                propertiesPresenter.setSkipState(formField);
                 dialog.hide();
             }
         });

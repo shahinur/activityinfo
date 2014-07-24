@@ -65,6 +65,46 @@ public class BooleanFunctions {
         }
     };
 
+    public static final ExprFunction<Boolean> EQUAL = new ExprFunction<Boolean>() {
+
+        @Override
+        public String getName() {
+            return "EQUAL";
+        }
+
+        @Override
+        public Boolean applyReal(List<ExprNode<Boolean>> arguments) {
+            int size = arguments.size();
+            if (size <= 1) {
+                throw new IllegalArgumentException();
+            }
+            Boolean result = arguments.get(0).evalReal();
+            for (int i = 1; i < size; i++) {
+                if (!result.equals(arguments.get(i).evalReal())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    };
+
+    public static final ExprFunction<Boolean> NOT_EQUAL = new ExprFunction<Boolean>() {
+
+        @Override
+        public String getName() {
+            return "NOT_EQUAL";
+        }
+
+        @Override
+        public Boolean applyReal(List<ExprNode<Boolean>> arguments) {
+            int size = arguments.size();
+            if (size != 2) {
+                throw new IllegalArgumentException();
+            }
+            return !arguments.get(0).evalReal().equals(arguments.get(1).evalReal());
+        }
+    };
+
     public static final ExprFunction<Boolean> NOT = new ExprFunction<Boolean>() {
         @Override
         public String getName() {
@@ -86,6 +126,12 @@ public class BooleanFunctions {
 
         } else if (token.equals("!")) {
             return NOT;
+
+        } else if (token.equals("==")) {
+            return EQUAL;
+
+        } else if (token.equals("!=")) {
+            return NOT_EQUAL;
 
         } else {
             throw new IllegalArgumentException();

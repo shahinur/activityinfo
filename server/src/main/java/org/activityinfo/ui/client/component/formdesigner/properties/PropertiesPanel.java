@@ -22,6 +22,7 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  */
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
@@ -60,6 +61,8 @@ public class PropertiesPanel extends Composite {
     Label skipState;
     @UiField
     HTMLPanel skipGroup;
+    @UiField
+    SpanElement skipExpression;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -103,5 +106,9 @@ public class PropertiesPanel extends Composite {
 
     public HTMLPanel getSkipGroup() {
         return skipGroup;
+    }
+
+    public SpanElement getSkipExpression() {
+        return skipExpression;
     }
 }
