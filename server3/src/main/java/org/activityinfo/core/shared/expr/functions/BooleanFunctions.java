@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class BooleanFunctions {
 
-    public static final ExprFunction<Boolean> AND = new ExprFunction<Boolean>() {
+    public static final ExprFunction<Boolean, Boolean> AND = new ExprFunction<Boolean, Boolean>() {
 
         @Override
         public String getName() {
@@ -48,7 +48,7 @@ public class BooleanFunctions {
         }
     };
 
-    public static final ExprFunction<Boolean> OR = new ExprFunction<Boolean>() {
+    public static final ExprFunction<Boolean, Boolean> OR = new ExprFunction<Boolean, Boolean>() {
 
         @Override
         public String getName() {
@@ -65,7 +65,7 @@ public class BooleanFunctions {
         }
     };
 
-    public static final ExprFunction<Boolean> EQUAL = new ExprFunction<Boolean>() {
+    public static final ExprFunction<Boolean, Object> EQUAL = new ExprFunction<Boolean, Object>() {
 
         @Override
         public String getName() {
@@ -73,12 +73,12 @@ public class BooleanFunctions {
         }
 
         @Override
-        public Boolean applyReal(List<ExprNode<Boolean>> arguments) {
+        public Boolean applyReal(List<ExprNode<Object>> arguments) {
             int size = arguments.size();
             if (size <= 1) {
                 throw new IllegalArgumentException();
             }
-            Boolean result = arguments.get(0).evalReal();
+            Object result = arguments.get(0).evalReal();
             for (int i = 1; i < size; i++) {
                 if (!result.equals(arguments.get(i).evalReal())) {
                     return false;
@@ -88,7 +88,7 @@ public class BooleanFunctions {
         }
     };
 
-    public static final ExprFunction<Boolean> NOT_EQUAL = new ExprFunction<Boolean>() {
+    public static final ExprFunction<Boolean, Object> NOT_EQUAL = new ExprFunction<Boolean, Object>() {
 
         @Override
         public String getName() {
@@ -96,7 +96,7 @@ public class BooleanFunctions {
         }
 
         @Override
-        public Boolean applyReal(List<ExprNode<Boolean>> arguments) {
+        public Boolean applyReal(List<ExprNode<Object>> arguments) {
             int size = arguments.size();
             if (size != 2) {
                 throw new IllegalArgumentException();
@@ -105,7 +105,7 @@ public class BooleanFunctions {
         }
     };
 
-    public static final ExprFunction<Boolean> NOT = new ExprFunction<Boolean>() {
+    public static final ExprFunction<Boolean, Boolean> NOT = new ExprFunction<Boolean, Boolean>() {
         @Override
         public String getName() {
             return "not";
@@ -117,7 +117,7 @@ public class BooleanFunctions {
         }
     };
 
-    public static ExprFunction<Boolean> getBooleanFunction(String token) {
+    public static ExprFunction<Boolean, ?> getBooleanFunction(String token) {
         if (token.equals("&&")) {
             return AND;
 

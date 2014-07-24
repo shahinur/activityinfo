@@ -40,13 +40,13 @@ public class ExprParser {
         Token token = lexer.peek();
         if (isInfixOperator(token)) {
             lexer.next();
-            ExprFunction<Double> function = ArithmeticFunctions.getBinaryInfix(token.getString());
+            ExprFunction function = ArithmeticFunctions.getBinaryInfix(token.getString());
             ExprNode right = parse();
 
             return new FunctionCallNode(function, expr, right);
         } else if (token.getType() == TokenType.BOOLEAN_OPERATOR) {
             lexer.next();
-            ExprFunction<Boolean> function = BooleanFunctions.getBooleanFunction(token.getString());
+            ExprFunction function = BooleanFunctions.getBooleanFunction(token.getString());
             ExprNode right = parse();
 
             return new FunctionCallNode(function, expr, right);
@@ -81,7 +81,7 @@ public class ExprParser {
 
         } else if (token.getType() == TokenType.BOOLEAN_OPERATOR) {
             // unary NOT operation (right now it's the only case when we start with node fucntion)
-            ExprFunction<Boolean> function = BooleanFunctions.getBooleanFunction(token.getString());
+            ExprFunction function = BooleanFunctions.getBooleanFunction(token.getString());
             ExprNode right = parse();
             return new FunctionCallNode(function, right);
 
