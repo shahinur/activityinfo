@@ -29,7 +29,7 @@ public class FunctionCallNode<T, K> extends ExprNode<T> {
 
     @Override
     public String toString() {
-        return arguments.get(0) + " " + function.getName() + " " + arguments.get(1);
+        return arguments.get(0) + " " + function.getId() + " " + arguments.get(1);
     }
 
     @Override
