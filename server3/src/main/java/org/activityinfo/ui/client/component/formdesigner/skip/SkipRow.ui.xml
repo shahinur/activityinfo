@@ -6,21 +6,23 @@
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
   <ui:with field="icons" type="org.activityinfo.ui.client.style.Icons"/>
 
-  <g:HTMLPanel addStyleNames="form-group" ui:field="skipGroup">
-    <div class="col-xs-3">
-      <g:ListBox addStyleNames="form-control" ui:field="formfield"/>
-    </div>
-    <div class="col-xs-3">
-      <g:ListBox addStyleNames="form-control" ui:field="function"/>
-    </div>
-    <g:HTMLPanel addStyleNames="col-xs-3" ui:field="valueContainer"/>
-    <div class="col-xs-3">
-      <g:Button addStyleNames="btn btn-defaul btn-xs pull-rigth" ui:field="addButton">
-        <span class="{icons.add}"/>
-      </g:Button>
-      <g:Button addStyleNames="btn btn-defaul btn-xs pull-rigth" ui:field="removeButton">
-        <span class="{icons.remove}"/>
-      </g:Button>
+  <g:HTMLPanel ui:field="skipGroup">
+    <div class="row form-group" style="margin-left: 0px; margin-right: 0px">
+      <div class="col-xs-3">
+        <g:ListBox addStyleNames="form-control" ui:field="formfield"/>
+      </div>
+      <div class="col-xs-3">
+        <g:ListBox addStyleNames="form-control" ui:field="function"/>
+      </div>
+      <g:HTMLPanel addStyleNames="col-xs-3" ui:field="valueContainer"/>
+      <div class="col-xs-3">
+        <g:Button addStyleNames="btn btn-defaul btn-xs pull-rigth" ui:field="addButton">
+          <span class="{icons.add}"/>
+        </g:Button>
+        <g:Button addStyleNames="btn btn-defaul btn-xs pull-rigth" ui:field="removeButton">
+          <span class="{icons.remove}"/>
+        </g:Button>
+      </div>
     </div>
   </g:HTMLPanel>
 
