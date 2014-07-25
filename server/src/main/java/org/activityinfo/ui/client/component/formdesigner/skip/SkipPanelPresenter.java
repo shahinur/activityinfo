@@ -51,7 +51,7 @@ public class SkipPanelPresenter {
         skipRowPresenter.getView().getRemoveButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                view.getRootPanel().add(skipRowPresenter.getView());
+                view.getRootPanel().remove(skipRowPresenter.getView());
             }
         });
     }
