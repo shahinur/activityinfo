@@ -21,31 +21,8 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
- * @author yuriyz on 7/23/14.
+ * @author yuriyz on 7/25/14.
  */
-public class SkipPanel extends Composite {
-
-    private static OurUiBinder uiBinder = GWT.create(OurUiBinder.class);
-
-    interface OurUiBinder extends UiBinder<Widget, SkipPanel> {
-    }
-
-    @UiField
-    HTMLPanel rootPanel;
-
-    public SkipPanel() {
-        initWidget(uiBinder.createAndBindUi(this));
-    }
-
-    public HTMLPanel getRootPanel() {
-        return rootPanel;
-    }
+public class ExpressionBuilder {
 }

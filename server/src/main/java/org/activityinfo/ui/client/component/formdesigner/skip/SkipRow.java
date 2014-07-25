@@ -24,28 +24,56 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
 /**
- * @author yuriyz on 7/23/14.
+ * @author yuriyz on 7/24/14.
  */
-public class SkipPanel extends Composite {
+public class SkipRow extends Composite {
 
     private static OurUiBinder uiBinder = GWT.create(OurUiBinder.class);
 
-    interface OurUiBinder extends UiBinder<Widget, SkipPanel> {
+    interface OurUiBinder extends UiBinder<Widget, SkipRow> {
     }
 
     @UiField
-    HTMLPanel rootPanel;
+    Button removeButton;
+    @UiField
+    Button addButton;
+    @UiField
+    HTMLPanel valueContainer;
+    @UiField
+    ListBox function;
+    @UiField
+    ListBox formfield;
+    @UiField
+    HTMLPanel skipGroup;
 
-    public SkipPanel() {
+    public SkipRow() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
-    public HTMLPanel getRootPanel() {
-        return rootPanel;
+    public Button getRemoveButton() {
+        return removeButton;
+    }
+
+    public Button getAddButton() {
+        return addButton;
+    }
+
+    public HTMLPanel getValueContainer() {
+        return valueContainer;
+    }
+
+    public ListBox getFunction() {
+        return function;
+    }
+
+    public ListBox getFormfield() {
+        return formfield;
+    }
+
+    public HTMLPanel getSkipGroup() {
+        return skipGroup;
     }
 }
