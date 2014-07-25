@@ -15,8 +15,13 @@ public abstract class BinaryInfixFunction<T> extends ExprFunction<T, T> {
     }
 
     @Override
-    public final String getName() {
+    public final String getId() {
         return symbol;
+    }
+
+    @Override
+    public String getLabel() {
+        return getId();
     }
 
     @Override

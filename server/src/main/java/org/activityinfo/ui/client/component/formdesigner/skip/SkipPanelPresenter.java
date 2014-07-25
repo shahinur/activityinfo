@@ -54,6 +54,10 @@ public class SkipPanelPresenter {
                 view.getRootPanel().remove(skipRowPresenter.getView());
             }
         });
+
+        if (view.getRootPanel().getWidgetCount() == 1) { // disable join function for first row
+            skipRowPresenter.getView().getJoinFunction().setVisible(false);
+        }
     }
 
     public SkipPanel getView() {
