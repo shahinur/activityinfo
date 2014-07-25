@@ -21,15 +21,21 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.user.client.ui.ListBox;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.TextType;
-import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.core.shared.expr.ExprFunction;
+import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
+import org.activityinfo.core.shared.expr.functions.FieldTypeToFunctionRegistry;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -37,31 +43,80 @@ import java.util.List;
  */
 public class SkipRowPresenter {
 
-    final FieldWidgetContainer fieldWidgetContainer;
+    private final FieldWidgetContainer fieldWidgetContainer;
     private final SkipRow view = new SkipRow();
+    private final FormFieldWidgetFactory widgetFactory;
+    private FormFieldWidget valueWidget = null;
 
     public SkipRowPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
-        initFormField(view.getFormfield());
+        this.widgetFactory = new FormFieldWidgetFactory(fieldWidgetContainer.getFormDesigner().getResourceLocator());
+
+        initFormFieldBox();
+        initFunction();
+        initValueWidget();
+        initJoinFunction();
     }
 
-    private void initFormField(ListBox formfieldBox) {
-        int defaultValueIndex = 0;
+    // depends on selected field type
+    private void initValueWidget() {
+        view.getValueContainer().clear();
 
-        List<FieldTypeClass> registeredTypes = Lists.newArrayList(TypeRegistry.get().getTypeClasses());
-        for (int i = 0; i < registeredTypes.size(); i++) {
-            formfieldBox.addItem(registeredTypes.get(i).getLabel(), registeredTypes.get(i).getId());
-            if (registeredTypes.get(i).getId() == TextType.INSTANCE.getId()) {
-                defaultValueIndex = i;
-            }
-        }
-        formfieldBox.setSelectedIndex(defaultValueIndex);
-        formfieldBox.addChangeHandler(new ChangeHandler() {
+        ValueUpdater valueUpdater = new ValueUpdater() {
             @Override
-            public void onChange(ChangeEvent event) {
+            public void update(Object value) {
 
+            }
+        };
+
+        widgetFactory.createWidget(getSelectedFormField(), valueUpdater).then(new Function<FormFieldWidget, Void>() {
+            @Nullable
+            @Override
+            public Void apply(@Nullable FormFieldWidget widget) {
+                valueWidget = widget;
+                view.getValueContainer().add(widget);
+                return null;
             }
         });
+    }
+
+    private void initFormFieldBox() {
+        view.getFormfield().clear();
+
+        List<FormField> formFields = Lists.newArrayList(fieldWidgetContainer.getFormDesigner().getFormClass().getFields());
+        formFields.remove(fieldWidgetContainer.getFormField()); // remove selected field
+
+        for (FormField formField :  formFields) {
+            view.getFormfield().addItem(formField.getLabel(), formField.getId().asString());
+        }
+        view.getFormfield().addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                initFunction();
+                initValueWidget();
+            }
+        });
+    }
+
+    public FormField getSelectedFormField() {
+        String formFieldId = view.getFormfield().getValue(view.getFormfield().getSelectedIndex());
+        return fieldWidgetContainer.getFormDesigner().getFormClass().getField(ResourceId.create(formFieldId));
+    }
+
+    // depends on selected field type
+    private void initFunction() {
+        view.getFunction().clear();
+
+        List<ExprFunction> functions = FieldTypeToFunctionRegistry.get().getFunctions(getSelectedFormField().getType().getTypeClass());
+        for (ExprFunction function : functions) {
+            view.getFunction().addItem(function.getLabel(), function.getId());
+        }
+    }
+
+    private void initJoinFunction() {
+        view.getJoinFunction().addItem(BooleanFunctions.AND.getLabel(), BooleanFunctions.AND.getId());
+        view.getJoinFunction().addItem(BooleanFunctions.OR.getLabel(), BooleanFunctions.OR.getId());
+        view.getJoinFunction().setSelectedIndex(0);
     }
 
     public SkipRow getView() {

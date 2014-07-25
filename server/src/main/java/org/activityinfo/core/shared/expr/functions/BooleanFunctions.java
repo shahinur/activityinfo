@@ -21,10 +21,12 @@ package org.activityinfo.core.shared.expr.functions;
  * #L%
  */
 
+import com.google.common.collect.Maps;
 import org.activityinfo.core.shared.expr.ExprFunction;
 import org.activityinfo.core.shared.expr.ExprNode;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author yuriyz on 7/23/14.
@@ -34,8 +36,13 @@ public class BooleanFunctions {
     public static final ExprFunction<Boolean, Boolean> AND = new ExprFunction<Boolean, Boolean>() {
 
         @Override
-        public String getName() {
-            return "AND";
+        public String getId() {
+            return "&&";
+        }
+
+        @Override
+        public String getLabel() {
+            return "And";
         }
 
         @Override
@@ -51,8 +58,13 @@ public class BooleanFunctions {
     public static final ExprFunction<Boolean, Boolean> OR = new ExprFunction<Boolean, Boolean>() {
 
         @Override
-        public String getName() {
-            return "OR";
+        public String getId() {
+            return "||";
+        }
+
+        @Override
+        public String getLabel() {
+            return "Or";
         }
 
         @Override
@@ -68,8 +80,13 @@ public class BooleanFunctions {
     public static final ExprFunction<Boolean, Object> EQUAL = new ExprFunction<Boolean, Object>() {
 
         @Override
-        public String getName() {
-            return "EQUAL";
+        public String getId() {
+            return "==";
+        }
+
+        @Override
+        public String getLabel() {
+            return "Equal";
         }
 
         @Override
@@ -91,8 +108,13 @@ public class BooleanFunctions {
     public static final ExprFunction<Boolean, Object> NOT_EQUAL = new ExprFunction<Boolean, Object>() {
 
         @Override
-        public String getName() {
-            return "NOT_EQUAL";
+        public String getId() {
+            return "!=";
+        }
+
+        @Override
+        public String getLabel() {
+            return "Not equal";
         }
 
         @Override
@@ -107,8 +129,13 @@ public class BooleanFunctions {
 
     public static final ExprFunction<Boolean, Boolean> NOT = new ExprFunction<Boolean, Boolean>() {
         @Override
-        public String getName() {
-            return "not";
+        public String getId() {
+            return "!";
+        }
+
+        @Override
+        public String getLabel() {
+            return "Not";
         }
 
         @Override
@@ -117,24 +144,17 @@ public class BooleanFunctions {
         }
     };
 
+    private static final Map<String, ExprFunction<Boolean, ?>> registry = Maps.newHashMap();
+
+    static {
+        registry.put(AND.getId(), AND);
+        registry.put(OR.getId(), OR);
+        registry.put(NOT.getId(), NOT);
+        registry.put(EQUAL.getId(), EQUAL);
+        registry.put(NOT_EQUAL.getId(), NOT_EQUAL);
+    }
+
     public static ExprFunction<Boolean, ?> getBooleanFunction(String token) {
-        if (token.equals("&&")) {
-            return AND;
-
-        } else if (token.equals("||")) {
-            return OR;
-
-        } else if (token.equals("!")) {
-            return NOT;
-
-        } else if (token.equals("==")) {
-            return EQUAL;
-
-        } else if (token.equals("!=")) {
-            return NOT_EQUAL;
-
-        } else {
-            throw new IllegalArgumentException();
-        }
+        return registry.get(token);
     }
 }

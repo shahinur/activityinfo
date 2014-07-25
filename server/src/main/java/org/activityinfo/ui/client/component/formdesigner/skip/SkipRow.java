@@ -48,6 +48,8 @@ public class SkipRow extends Composite {
     ListBox formfield;
     @UiField
     HTMLPanel skipGroup;
+    @UiField
+    ListBox joinFunction;
 
     public SkipRow() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -75,5 +77,9 @@ public class SkipRow extends Composite {
 
     public HTMLPanel getSkipGroup() {
         return skipGroup;
+    }
+
+    public ListBox getJoinFunction() {
+        return joinFunction;
     }
 }
