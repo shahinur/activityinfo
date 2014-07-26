@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <userlogin UserId="165" Email="alex@bedatadriven.com" Password="$2a$10$F3GSXu6cBJeVK.HnsnSnC.D52bLAqTLVm9.72MYJW8gc73ehYpkVm" Locale="en" Name="Alex Bertram" emailnotification="true" dateCreated="1970-01-01"/>
+  <userlogin UserId="375" Email="cbarnhoorn@bedatadriven.com" Password="$2a$10$m9E2WGniHKlZJVzyXG2kP.KstNmJUfGmdGO62OvDFKAY4NFdUJbKu" Locale="fr" Name="Claire Barnhoorn" emailnotification="true" dateCreated="1970-01-01"/>
+  <userlogin UserId="2195" Email="bostoen@irc.nl" Password="$2a$10$fGDZKQdFuffSG5GyN6JpDO/5OUNbfA9Z4xrIhRiqUitfI.MtdvDVO" Locale="en" Name="KRISTOF BOSTOEN" emailnotification="false" organization="IRC International Water and Sanitation Centre" jobtitle="Senior Programme officer etc." dateCreated="2013-11-19"/>
+  <userlogin UserId="3955" Email="dickinson@ircwash.org" Password="$2a$10$MV9wl4XTCo60GNbUOPVBVuewhVivul8D0rbs48xf82O7Q/SDI08vu" Locale="en" Name="Nicolas Dickinson" emailnotification="true" organization="IRC" jobtitle="Senior Programme Officer" dateCreated="2014-05-24"/>
+  <userlogin UserId="4095" Email="jacimovic@ircwash.org" Password="$2a$10$XBMpfmTWSc1GZ17DRLiaXuk1sEn418LMB157zV5kf2UsAS69ICOdW" Locale="en" Name="Ruzica Jacimovic" emailnotification="true" organization="" jobtitle="" invitedBy="2195" dateCreated="2014-06-10"/>
+  <userlogin UserId="4099" Email="carrasco@ircwash.org" Password="$2a$10$kTqLUGMUT4MgjYviUQFbQe2F.XZf1NFm0XRyo3jDETWYWWloEw.6m" Locale="en" Name="M&#233;lanie Carrasco" emailnotification="false" organization="" jobtitle="" invitedBy="2195" dateCreated="2014-06-10"/>
+  <userlogin UserId="4100" Email="pezon@ircwash.org" Password="$2a$10$dx5FRwO51WqAwf7OIZC1cuZRkCz5.uXTvyFUCzB/JKMVpc/YfbFV." Locale="en" Name="Chritelle Pezon" emailnotification="true" organization="" jobtitle="" invitedBy="2195" dateCreated="2014-06-10"/>
+  <userlogin UserId="4143" Email="oosterveen@ircwash.org" Password="$2a$10$WcMDKg2acoyU94wC/XBFE.5RI1uFoh7hS7NN06lqo.iimBcDBcMnu" Locale="en" Name="Harry Oosterveen" emailnotification="true" organization="" jobtitle="" invitedBy="2195" dateCreated="2014-06-19"/>
+  <userlogin UserId="4144" Email="adank@ircwash.org" Password="$2a$10$sMFUOwixh9dOubKa0xta1ubDUj7g6KrjbWF2pduHoGCGWl9ui5I7u" Locale="en" Name="Marieke Adank" emailnotification="true" organization="" jobtitle="" invitedBy="2195" dateCreated="2014-06-19"/>
+  <userlogin UserId="4145" changePasswordKey="11ba52577640bd6cdf2422cf172f19fc" Email="bostoen@ircwash.org" Locale="en" Name="Kristof bostoen" emailnotification="false" organization="" jobtitle="" invitedBy="4144" dateCreated="2014-06-19"/>
+  <userlogin UserId="4374" Email="jacimovic+lcca@ircwash.org" Password="$2a$10$zWfEjkHPXvT46.S.mfQagu.ssI/LHq3OEYSUIQ1NEKmo7jzolpQHC" Locale="en" Name="Surveyors 1-40" emailnotification="false" organization="" jobtitle="" invitedBy="4095" dateCreated="2014-07-16"/>
+  <country CountryId="317" x1="32.9999389648438" y1="3.40242195129395" x2="47.9861793518066" y2="14.8935699462891" ISO2="ET" Name="Ethiopia"/>
+  <locationtype locationtypeid="50598" Name="Country" Reuse="false" CountryId="317" workflowId="closed"/>
+  <location LocationID="50598" Name="Ethiopia" X="40.493059158325195" Y="9.147995948791525" LocationTypeID="50598" timeEdited="1397595403000" workflowStatusId="validated"/>
+  <userdatabase DatabaseId="1350" FullName="Cost per service level in Ethiopia and Chad" Name="UNHCR LCCA" CountryId="317" OwnerUserId="2195" version="1406315419739"/>
+  <userpermission UserPermissionId="6693" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1612" UserId="4095" version="1404828205893"/>
+  <userpermission UserPermissionId="6698" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1612" UserId="4099" version="1404828205865"/>
+  <userpermission UserPermissionId="6699" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="false" allowManageUsers="false" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1612" UserId="4100" version="1402472195847"/>
+  <userpermission UserPermissionId="6842" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1629" UserId="4143" version="1403172309355"/>
+  <userpermission UserPermissionId="6843" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="false" allowManageUsers="false" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1629" UserId="4144" version="1403167727582"/>
+  <userpermission UserPermissionId="6909" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1629" UserId="375" version="1403626545479"/>
+  <userpermission UserPermissionId="7141" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1612" UserId="4145" version="1405478629664"/>
+  <userpermission UserPermissionId="7152" AllowDesign="false" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="false" allowManageUsers="false" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1612" UserId="4374" version="1406321234704"/>
+  <userpermission UserPermissionId="7153" AllowDesign="true" AllowEdit="true" AllowEditAll="true" allowManageAllUsers="true" allowManageUsers="true" AllowView="true" AllowViewAll="true" DatabaseId="1350" PartnerId="1612" UserId="165" version="1405569654517"/>
+  <userpermission UserPermissionId="7188" AllowDesign="false" AllowEdit="true" AllowEditAll="false" allowManageAllUsers="false" allowManageUsers="false" AllowView="true" AllowViewAll="false" DatabaseId="1350" PartnerId="1612" UserId="3955" version="1406019215967"/>
+  <activity ActivityId="6464" AllowEdit="false" Name="Bambasi Water Service Ladders Survey" ReportingFrequency="0" SortOrder="4" DatabaseId="1350" LocationTypeId="50598" published="0"/>
+  <indicator IndicatorId="36080" Aggregation="0" dateDeleted="2014-07-08 10:54:43.0" description="Choose the name of the camp from Drop Down Menu" ListHeader="CampName" name="Camp Name" SortOrder="1" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36082" Aggregation="0" dateDeleted="2014-07-08 10:54:46.0" description="Choose the water point number or code from drop down menu" ListHeader="WaterPointNumber" name="Water Point Number" SortOrder="1" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36083" Aggregation="0" dateDeleted="2014-07-08 10:55:00.0" ListHeader="Date" name="Date" SortOrder="1" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36084" Aggregation="0" dateDeleted="2014-07-08 10:55:04.0" description="Enter surveyor code/number" ListHeader="SurveyorID" name="Surveyor Number" SortOrder="1" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36086" Aggregation="0" dateDeleted="2014-07-08 10:55:31.0" description="Yes / No question" ListHeader="WaterMeter" name="Is there a functional meter at the point of collection?" SortOrder="1" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36087" Aggregation="1" dateDeleted="2014-07-17 03:56:05.0" description="Read the water meter before you start survey" ListHeader="WaterMeterReadingStart" name="Water Meter reading at the beginning of the day" SortOrder="4" units="Liters or m3" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36088" Aggregation="2" dateDeleted="2014-07-17 03:53:34.0" description="Water meter reading at the end of the survey (after the water distribution is over)" ListHeader="WaterMeterReadingFinish" name="Water meter reading at the end of the day" SortOrder="1" units="liters or m3" ActivityId="6464" mandatory="true" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36089" Aggregation="0" dateDeleted="2014-07-08 10:58:06.0" ListHeader="UnhcrID" name="Do you have an UNHCR ID?" SortOrder="8" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36090" Aggregation="0" description="Enter ID number.  &#xA;If person do not have its ID enter 0000" ListHeader="IDnumber" name="I3. If YES, what is UNHCR ID number?" SortOrder="11" units="no units" ActivityId="6464" mandatory="false" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36092" Aggregation="0" dateDeleted="2014-07-08 11:02:40.0" ListHeader="ReasonIDnotHave" name="Why you do not have UNHCR ID?" SortOrder="8" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36095" Aggregation="0" dateDeleted="2014-07-08 11:07:12.0" ListHeader="CampBlockNameHH" name="Do you know the name of the block / area you live in?" SortOrder="13" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36098" Aggregation="0" dateDeleted="2014-07-21 15:55:14.0" description="Enter first If person does not know enter 0000." ListHeader="NameBlock HH" name="10. What is the code of the block you live in?" SortOrder="17" ActivityId="6464" mandatory="false" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36099" Aggregation="0" description="If the person does know enter 0000." ListHeader="TimeToWP" name="L5. How long does it take you to come here?" SortOrder="20" units="minutes" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36100" Aggregation="0" description="If person collects water only for himself, input number 1" ListHeader="NumberFamilyMembers" name="Q1. For how many family members is the water you collect ?" SortOrder="21" units="people" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36101" Aggregation="0" dateDeleted="2014-07-08 11:03:27.0" ListHeader="Gender" name="Respondent gender" SortOrder="8" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36102" Aggregation="0" dateDeleted="2014-07-08 11:04:37.0" ListHeader="RespondentAge" name="Age of respondent" SortOrder="9" units="years" ActivityId="6464" mandatory="true" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36103" Aggregation="0" dateDeleted="2014-07-08 11:06:05.0" ListHeader="StandardJarricane" name="Is person using standard-sized jerricane?" SortOrder="10" units="" ActivityId="6464" mandatory="true" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36104" Aggregation="0" description="Observation" ListHeader="JarricaneSize" name="Q2. TOTAL NUMBER of jerricanes that person fills up:" SortOrder="22" units="peaces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36105" Aggregation="0" dateDeleted="2014-07-18 10:47:30.0" ListHeader="JarricaneQuantity" name="16. Number of jarricane collected" SortOrder="17" units="pcs" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36106" Aggregation="0" description="For person without ID, provide one CODE ID and enter its number here.&#xA;If person has ID, enter 0000" name="I5. Provided code ID:" SortOrder="15" ActivityId="6464" mandatory="false" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36185" Aggregation="0" description="Enter your number" name="D3. Surveyor number" SortOrder="8" ActivityId="6464" mandatory="false" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36186" Aggregation="0" dateDeleted="2014-07-18 10:48:05.0" name="14. Enter number of jerricanes of 5 litres" SortOrder="17" units="households" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36187" Aggregation="0" description="Observation. If none, enter 0." name="Q3. Enter number of jerricanes of 5 litres" SortOrder="23" units="peaces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36188" Aggregation="0" description="Observation. If none, enter 0." name="Q4. Enter number of jerricanes of 10 litres" SortOrder="24" units="peaces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36189" Aggregation="0" description="Observation. If none, enter 0." name="Q5. Enter number of jerricanes of 15 litres" SortOrder="25" units="peaces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36190" Aggregation="0" description="Observation. If none, enter 0." name="Q6. Enter number of jerricanes of 20 litres" SortOrder="26" units="peaces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36191" Aggregation="0" description="Observation. If none, enter 0." name="Q8. Enter number of jerricanes of other size" SortOrder="28" units="peaces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36192" Aggregation="0" description="Observation. If none, enter 0." name="Q9. Enter the size of the other jerricanes" SortOrder="29" units="liters" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36199" Aggregation="0" description="Enter the Block number. If person do not know, enter 0000." name="L2. In which block do you live?" SortOrder="17" units="Block number" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36201" Aggregation="2" description="Enter Community number. If person do not know enter 0000." name="L4. In which community do you live?" SortOrder="19" units="Comm. number" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36345" Aggregation="0" description="Observation. If none, enter 0." name="Q7. Enter number of jerricanes of 25 liters" SortOrder="27" units="pieces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36346" Aggregation="0" dateDeleted="2014-07-24 16:25:02.0" description="If person has code we provide, copy code here.&#xA;If not, enter 0000." name="I7. If YES, what is it?" SortOrder="15" ActivityId="6464" mandatory="false" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36347" Aggregation="0" description="Observation. If none, enter 0." name="Q10. TOTAL NUMBER of buckets that person fills up:" SortOrder="30" units="pieces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="36348" Aggregation="0" description="Observation. If none, enter 0." name="Q11. Enter number of buckets of 5 liters:" SortOrder="31" units="pieces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="37047" Aggregation="0" description="Observation. If none, enter 0." name="Q12. Enter number of buckets of 12 liters:" SortOrder="32" units="pieces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="37048" Aggregation="0" description="Observation. If none, enter 0." name="Q13. Enter number of buckets of 15 liters:" SortOrder="33" units="pieces" ActivityId="6464" mandatory="false" Type="QUANTITY" calculatedAutomatically="false"/>
+  <indicator IndicatorId="37058" Aggregation="0" description="Enter the code&#xA;If person do not have it enter 0000" name="I7. If yes, what is it?" SortOrder="13" ActivityId="6464" mandatory="false" Type="FREE_TEXT" calculatedAutomatically="false"/>
+  <attributegroupinactivity AttributeGroupId="25152" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25153" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25154" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25155" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25156" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25157" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25158" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25159" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25160" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25161" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25162" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25467" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25468" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25470" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25549" ActivityId="6464"/>
+  <attributegroupinactivity AttributeGroupId="25623" ActivityId="6464"/>
+  <attributegroup AttributeGroupId="25152" dateDeleted="2014-07-08 11:14:04.0" multipleAllowed="false" name="Camp Name" sortOrder="0" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25153" multipleAllowed="false" name="D2. Water Point Number" sortOrder="7" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25154" dateDeleted="2014-07-08 11:13:17.0" multipleAllowed="false" name="Date" sortOrder="2" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25155" dateDeleted="2014-07-18 10:25:51.0" multipleAllowed="false" name="4. Surveyor Number" sortOrder="8" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25156" dateDeleted="2014-07-17 03:53:34.0" multipleAllowed="false" name="Is there a functional meter at the point of collection?" sortOrder="4" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25157" multipleAllowed="false" name="I2. Do you have an UNHCR ID?" sortOrder="10" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25158" multipleAllowed="false" name="I4. If NO, why you do not have ID?" sortOrder="14" mandatory="false" workflow="false"/>
+  <attributegroup AttributeGroupId="25159" dateDeleted="2014-07-18 10:46:20.0" multipleAllowed="false" name="13. Respondent gender" sortOrder="16" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25160" dateDeleted="2014-07-18 10:46:20.0" multipleAllowed="false" name="14. Age of respondent" sortOrder="17" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25161" dateDeleted="2014-07-17 03:55:39.0" multipleAllowed="true" name="Is person using standard-sized jerricane?" sortOrder="17" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25162" multipleAllowed="false" name="L1. Do you know the code of the block you live in?" sortOrder="16" mandatory="false" workflow="false"/>
+  <attributegroup AttributeGroupId="25467" multipleAllowed="false" name="D1. Camp Name" sortOrder="6" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25468" multipleAllowed="false" name="I1. Gender / Age of respondant:" sortOrder="9" mandatory="false" workflow="false"/>
+  <attributegroup AttributeGroupId="25470" multipleAllowed="true" name="L3. In which zone do you live?" sortOrder="18" mandatory="true" workflow="false"/>
+  <attributegroup AttributeGroupId="25549" dateDeleted="2014-07-24 16:25:02.0" multipleAllowed="true" name="I6. Were you provided survey number before?" sortOrder="14" mandatory="false" workflow="false"/>
+  <attributegroup AttributeGroupId="25623" multipleAllowed="true" name="I6. Were you provided a CODE ID?" sortOrder="12" mandatory="false" workflow="false"/>
+  <attribute AttributeId="119531" Name="Bambasi Camp, Ethiopia" SortOrder="1" AttributeGroupId="25152"/>
+  <attribute AttributeId="119532" Name="XXX Camp, Ethiopia" SortOrder="2" AttributeGroupId="25152"/>
+  <attribute AttributeId="119533" Name="A1" SortOrder="0" AttributeGroupId="25153"/>
+  <attribute AttributeId="119534" dateDeleted="2014-07-24 16:16:30.0" Name="A2" SortOrder="1" AttributeGroupId="25153"/>
+  <attribute AttributeId="119535" dateDeleted="2014-07-24 16:16:30.0" Name="A3" SortOrder="2" AttributeGroupId="25153"/>
+  <attribute AttributeId="119536" dateDeleted="2014-07-24 16:16:30.0" Name="A4" SortOrder="3" AttributeGroupId="25153"/>
+  <attribute AttributeId="119537" Name="A5" SortOrder="1" AttributeGroupId="25153"/>
+  <attribute AttributeId="119538" Name="A6" SortOrder="2" AttributeGroupId="25153"/>
+  <attribute AttributeId="119539" dateDeleted="2014-07-24 16:16:30.0" Name="A7" SortOrder="6" AttributeGroupId="25153"/>
+  <attribute AttributeId="119540" Name="A8" SortOrder="3" AttributeGroupId="25153"/>
+  <attribute AttributeId="119541" dateDeleted="2014-07-24 16:16:30.0" Name="A9" SortOrder="8" AttributeGroupId="25153"/>
+  <attribute AttributeId="119542" Name="A10" SortOrder="4" AttributeGroupId="25153"/>
+  <attribute AttributeId="119543" Name="A11" SortOrder="5" AttributeGroupId="25153"/>
+  <attribute AttributeId="119544" dateDeleted="2014-07-24 16:16:30.0" Name="B1" SortOrder="11" AttributeGroupId="25153"/>
+  <attribute AttributeId="119545" dateDeleted="2014-07-24 16:16:30.0" Name="B2" SortOrder="12" AttributeGroupId="25153"/>
+  <attribute AttributeId="119546" Name="B3" SortOrder="6" AttributeGroupId="25153"/>
+  <attribute AttributeId="119547" Name="B4" SortOrder="7" AttributeGroupId="25153"/>
+  <attribute AttributeId="119548" Name="B5" SortOrder="8" AttributeGroupId="25153"/>
+  <attribute AttributeId="119549" Name="B6" SortOrder="9" AttributeGroupId="25153"/>
+  <attribute AttributeId="119550" dateDeleted="2014-07-24 16:16:30.0" Name="B7" SortOrder="17" AttributeGroupId="25153"/>
+  <attribute AttributeId="119551" dateDeleted="2014-07-24 16:16:30.0" Name="B8" SortOrder="18" AttributeGroupId="25153"/>
+  <attribute AttributeId="119552" Name="B9" SortOrder="10" AttributeGroupId="25153"/>
+  <attribute AttributeId="119553" dateDeleted="2014-07-24 16:16:30.0" Name="B10" SortOrder="20" AttributeGroupId="25153"/>
+  <attribute AttributeId="119554" Name="B11" SortOrder="11" AttributeGroupId="25153"/>
+  <attribute AttributeId="119555" dateDeleted="2014-07-24 16:16:31.0" Name="B12" SortOrder="22" AttributeGroupId="25153"/>
+  <attribute AttributeId="119556" Name="B13" SortOrder="12" AttributeGroupId="25153"/>
+  <attribute AttributeId="119557" Name="C1" SortOrder="13" AttributeGroupId="25153"/>
+  <attribute AttributeId="119558" dateDeleted="2014-07-24 16:16:31.0" Name="C2" SortOrder="25" AttributeGroupId="25153"/>
+  <attribute AttributeId="119559" dateDeleted="2014-07-24 16:16:31.0" Name="C3" SortOrder="26" AttributeGroupId="25153"/>
+  <attribute AttributeId="119560" Name="C4" SortOrder="14" AttributeGroupId="25153"/>
+  <attribute AttributeId="119561" dateDeleted="2014-07-24 16:16:31.0" Name="C5" SortOrder="28" AttributeGroupId="25153"/>
+  <attribute AttributeId="119562" dateDeleted="2014-07-24 16:16:31.0" Name="C6" SortOrder="29" AttributeGroupId="25153"/>
+  <attribute AttributeId="119563" Name="C7" SortOrder="15" AttributeGroupId="25153"/>
+  <attribute AttributeId="119564" dateDeleted="2014-07-24 16:16:31.0" Name="C8" SortOrder="31" AttributeGroupId="25153"/>
+  <attribute AttributeId="119565" Name="C9" SortOrder="16" AttributeGroupId="25153"/>
+  <attribute AttributeId="119566" dateDeleted="2014-07-24 16:16:31.0" Name="C10" SortOrder="33" AttributeGroupId="25153"/>
+  <attribute AttributeId="119567" dateDeleted="2014-07-24 16:16:31.0" Name="C11" SortOrder="34" AttributeGroupId="25153"/>
+  <attribute AttributeId="119568" Name="E01" SortOrder="1" AttributeGroupId="25155"/>
+  <attribute AttributeId="119569" Name="E02" SortOrder="2" AttributeGroupId="25155"/>
+  <attribute AttributeId="119570" Name="E03" SortOrder="3" AttributeGroupId="25155"/>
+  <attribute AttributeId="119571" Name="E04" SortOrder="4" AttributeGroupId="25155"/>
+  <attribute AttributeId="119572" Name="E05" SortOrder="5" AttributeGroupId="25155"/>
+  <attribute AttributeId="119573" Name="E06" SortOrder="6" AttributeGroupId="25155"/>
+  <attribute AttributeId="119574" Name="Yes" SortOrder="1" AttributeGroupId="25156"/>
+  <attribute AttributeId="119575" Name="No" SortOrder="2" AttributeGroupId="25156"/>
+  <attribute AttributeId="119576" Name="Yes" SortOrder="1" AttributeGroupId="25157"/>
+  <attribute AttributeId="119577" Name="No" SortOrder="2" AttributeGroupId="25157"/>
+  <attribute AttributeId="119578" Name="I forgot it" SortOrder="1" AttributeGroupId="25158"/>
+  <attribute AttributeId="119579" Name="A member of my family is registered, but not me" SortOrder="2" AttributeGroupId="25158"/>
+  <attribute AttributeId="119580" Name="I live outside the camp" SortOrder="3" AttributeGroupId="25158"/>
+  <attribute AttributeId="119581" Name="I an new and not registered yet" SortOrder="4" AttributeGroupId="25158"/>
+  <attribute AttributeId="119582" dateDeleted="2014-07-18 10:32:11.0" Name="Other" SortOrder="5" AttributeGroupId="25158"/>
+  <attribute AttributeId="119583" Name="Female" SortOrder="1" AttributeGroupId="25159"/>
+  <attribute AttributeId="119584" Name="Male" SortOrder="2" AttributeGroupId="25159"/>
+  <attribute AttributeId="119585" Name="Adult" SortOrder="1" AttributeGroupId="25160"/>
+  <attribute AttributeId="119586" Name="Child" SortOrder="2" AttributeGroupId="25160"/>
+  <attribute AttributeId="119587" Name="Teenager / Adolescent" SortOrder="3" AttributeGroupId="25160"/>
+  <attribute AttributeId="119588" Name="Yes" SortOrder="1" AttributeGroupId="25161"/>
+  <attribute AttributeId="119589" Name="No" SortOrder="2" AttributeGroupId="25161"/>
+  <attribute AttributeId="119590" Name="Mix of standard and non-standard jarricanes" SortOrder="3" AttributeGroupId="25161"/>
+  <attribute AttributeId="119591" Name="Yes" SortOrder="1" AttributeGroupId="25162"/>
+  <attribute AttributeId="119592" Name="No" SortOrder="2" AttributeGroupId="25162"/>
+  <attribute AttributeId="119850" Name="Bambasi" SortOrder="0" AttributeGroupId="25467"/>
+  <attribute AttributeId="119851" Name="Boy" SortOrder="1" AttributeGroupId="25468"/>
+  <attribute AttributeId="119852" Name="Girl" SortOrder="1" AttributeGroupId="25468"/>
+  <attribute AttributeId="119853" Name="Man" SortOrder="1" AttributeGroupId="25468"/>
+  <attribute AttributeId="119854" Name="Woman" SortOrder="1" AttributeGroupId="25468"/>
+  <attribute AttributeId="119855" Name="Not Relevant" SortOrder="6" AttributeGroupId="25158"/>
+  <attribute AttributeId="119858" Name="Zone A" SortOrder="1" AttributeGroupId="25470"/>
+  <attribute AttributeId="119859" Name="Zone B" SortOrder="1" AttributeGroupId="25470"/>
+  <attribute AttributeId="119860" Name="Zone C" SortOrder="1" AttributeGroupId="25470"/>
+  <attribute AttributeId="119861" Name="Not Relevant" SortOrder="4" AttributeGroupId="25470"/>
+  <attribute AttributeId="119862" Name="C12" SortOrder="17" AttributeGroupId="25153"/>
+  <attribute AttributeId="119863" Name="C13" SortOrder="18" AttributeGroupId="25153"/>
+  <attribute AttributeId="119930" Name="SWB6" SortOrder="19" AttributeGroupId="25153"/>
+  <attribute AttributeId="119931" dateDeleted="2014-07-23 17:11:52.0" Name="HDW7" SortOrder="39" AttributeGroupId="25153"/>
+  <attribute AttributeId="120161" Name="Yes" SortOrder="1" AttributeGroupId="25549"/>
+  <attribute AttributeId="120162" Name="No" SortOrder="1" AttributeGroupId="25549"/>
+  <attribute AttributeId="121123" Name="Yes" SortOrder="1" AttributeGroupId="25623"/>
+  <attribute AttributeId="121124" Name="No" SortOrder="1" AttributeGroupId="25623"/>
+  <partner PartnerId="1612" name="IRC LCCA staff"/>
+  <partner PartnerId="1629" FullName="testers" name="IRC testers"/>
+  <partnerInDatabase PartnerId="1612" DatabaseId="1350"/>
+  <partnerInDatabase PartnerId="1629" DatabaseId="1350"/>
+</dataset>
