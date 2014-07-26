@@ -70,7 +70,7 @@
 <#if (partnerRange?size > 1)>
     <select1 ref="/data/partner">
         <label>${label.odkPartner?xml}</label>
-        <#list patnerRange as partner>
+        <#list partnerRange as partner>
             <item>
                 <label>${partner.name?xml}</label>
                 <value>${partner.id?c}</value>
