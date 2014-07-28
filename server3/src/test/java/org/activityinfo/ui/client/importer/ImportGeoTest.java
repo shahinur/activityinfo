@@ -9,8 +9,8 @@ import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.strategy.FieldImportStrategies;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.ui.client.component.importDialog.Importer;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
@@ -20,11 +20,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import static com.google.common.io.Resources.getResource;
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
