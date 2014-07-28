@@ -48,7 +48,7 @@ public class SkipExpressionTest {
     FormClass formClass;
 
     @Before
-    public void setUser() {
+    public void setUp() {
         formClass = createFormClass();
     }
 
@@ -62,11 +62,11 @@ public class SkipExpressionTest {
         eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
     }
 
-    private void eval(String skipExpresison, Boolean expectedValue, FormInstance instance) {
-        ExprLexer lexer = new ExprLexer(skipExpresison);
+    private void eval(String skipExpression, Boolean expectedValue, FormInstance instance) {
+        ExprLexer lexer = new ExprLexer(skipExpression);
         ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(instance, formClass));
         ExprNode<Boolean> expr = parser.parse();
-        Assert.assertEquals(skipExpresison, expectedValue, expr.evalReal());
+        Assert.assertEquals(skipExpression, expectedValue, expr.evalReal());
     }
 
     private EnumValue enumValue(ResourceId formField, String label) {

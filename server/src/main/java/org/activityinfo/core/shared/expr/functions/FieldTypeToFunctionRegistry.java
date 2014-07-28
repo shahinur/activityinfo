@@ -74,6 +74,10 @@ public class FieldTypeToFunctionRegistry {
                 BooleanFunctions.EQUAL,
                 BooleanFunctions.NOT_EQUAL
         ));
+        typeMap.put(ReferenceType.TypeClass.INSTANCE, Lists.<ExprFunction>newArrayList(
+                BooleanFunctions.EQUAL,
+                BooleanFunctions.NOT_EQUAL
+        ));
     }
 
     public List<ExprFunction> getFunctions(FieldTypeClass typeClass) {

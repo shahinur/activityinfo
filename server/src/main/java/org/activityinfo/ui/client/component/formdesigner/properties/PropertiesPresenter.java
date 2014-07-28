@@ -57,6 +57,7 @@ public class PropertiesPresenter {
     private HandlerRegistration descriptionKeyUpHandler;
     private HandlerRegistration requiredValueChangeHandler;
     private HandlerRegistration readonlyValueChangeHandler;
+    private HandlerRegistration skipButtonClickHandler;
 
     public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
         this.view = view;
@@ -104,6 +105,9 @@ public class PropertiesPresenter {
         if (readonlyValueChangeHandler != null) {
             readonlyValueChangeHandler.removeHandler();
         }
+        if (skipButtonClickHandler != null) {
+            skipButtonClickHandler.removeHandler();
+        }
     }
 
     private void show(final FieldWidgetContainer fieldWidgetContainer) {
@@ -121,7 +125,7 @@ public class PropertiesPresenter {
         view.getRequired().setValue(formField.isRequired());
 
         setSkipState(formField);
-        view.getSkipButton().addClickHandler(new ClickHandler() {
+        skipButtonClickHandler = view.getSkipButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 SkipDialog dialog = new SkipDialog(fieldWidgetContainer, PropertiesPresenter.this);
