@@ -595,7 +595,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                             indicatorValue = row.getDate("DateValue");
                         } else if (indicatorType == FieldTypeClass.BOOLEAN) {
                             if (!row.isNull("BooleanValue")) {
-                                indicatorValue = row.getDate("BooleanValue");
+                                indicatorValue = row.getBoolean("BooleanValue");
                             }
                         }
                     }
