@@ -553,28 +553,18 @@
     <!-- Run a more time-intensive check periodically to
          monitor code quality -->
     <profile>
-      <id>quality</id>
+      <id>compile-report</id>
       <build>
         <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>findbugs-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-                <configuration>
-                  <failOnError>false</failOnError>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <compileReport>true</compileReport>
+              <modules>
+                <module>org.activityinfo.ui.ActivityInfoCI</module>
+                <module>org.activityinfo.ui.AI</module>
+              </modules>
             </configuration>
           </plugin>
         </plugins>
