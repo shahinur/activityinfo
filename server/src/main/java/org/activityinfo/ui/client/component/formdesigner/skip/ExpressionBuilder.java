@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner.container;
+package org.activityinfo.ui.client.component.formdesigner.skip;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,17 +21,32 @@ package org.activityinfo.ui.client.component.formdesigner.container;
  * #L%
  */
 
-import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
+import java.util.List;
 
 /**
- * @author yuriyz on 7/14/14.
+ * @author yuriyz on 7/25/14.
  */
-public interface WidgetContainer {
+public class ExpressionBuilder {
 
-    public Widget asWidget();
+    private List<RowData> rows;
+    private String expression = "";
 
-    public Widget getDragHandle();
+    public ExpressionBuilder(List<RowData> rows) {
+        this.rows = rows;
+    }
 
-    public FormDesigner getFormDesigner();
+    public String build() {
+        for (int i = 0; i < rows.size(); i++) {
+            handleRow(rows.get(i), i);
+        }
+        return expression;
+    }
+
+    private void handleRow(RowData row, int index) {
+        if (index != 0) {
+            expression += row.getJoinFunction().getId();
+        }
+
+//        String selectedValue = row.getJoinFunction().getValue(row.getJoinFunction().getSelectedIndex());
+    }
 }

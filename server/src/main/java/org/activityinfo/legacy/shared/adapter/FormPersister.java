@@ -171,11 +171,14 @@ public class FormPersister {
         } else if(field.getType() instanceof NarrativeType) {
             indicator.setType(FieldTypeClass.NARRATIVE);
 
+        } else if (field.getType() instanceof BooleanType) {
+            indicator.setType(FieldTypeClass.BOOLEAN);
+
         } else {
             indicator.setType(FieldTypeClass.FREE_TEXT);
         }
 
-        if(created) {
+        if (created) {
             CreateEntity create = new CreateEntity(indicator);
             oldIds.put(create, field.getId());
             commands.add(create);
@@ -279,7 +282,9 @@ public class FormPersister {
 
         return field.getType() instanceof QuantityType ||
                field.getType() instanceof NarrativeType ||
-               field.getType() instanceof TextType;
+               field.getType() instanceof TextType ||
+               field.getType() instanceof BooleanType
+                ;
     }
 
 

@@ -57,7 +57,6 @@ import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
-import org.activityinfo.ui.client.page.instance.InstancePage;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
 
 import javax.annotation.Nullable;
@@ -113,6 +112,8 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
         this.view.init(this, db, treeStore);
         this.view.setActionEnabled(UIActions.DELETE, false);
+        this.view.setActionEnabled(UIActions.EDIT, false);
+        this.view.setActionEnabled(UIActions.OPEN_TABLE, false);
     }
 
     public void refresh() {
