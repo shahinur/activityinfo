@@ -2,6 +2,7 @@ package org.activityinfo.model.type;
 
 import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.time.LocalDateType;
@@ -25,6 +26,7 @@ public class TypeRegistry {
     private Map<String, FieldTypeClass> typeMap = Maps.newHashMap();
 
     private TypeRegistry() {
+        register(EnumType.TypeClass.INSTANCE);
         register(ReferenceType.TypeClass.INSTANCE);
         register(TextType.INSTANCE);
         register(QuantityType.TypeClass.INSTANCE);
