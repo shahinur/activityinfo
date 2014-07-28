@@ -23,7 +23,6 @@ import java.io.IOException;
 
 import static com.google.common.io.Resources.getResource;
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
