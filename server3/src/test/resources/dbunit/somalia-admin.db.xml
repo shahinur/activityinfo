@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <country CountryId="451" x1="40.9886322021484" y1="-1.66205310821533" x2="51.4130325317383" y2="11.9852027893066" ISO2="SO" Name="Somalia"/>
+  <adminlevel AdminLevelId="1451" Name="Region" CountryId="451" polygons="false" version="3" deleted="false"/>
+  <adminlevel AdminLevelId="1517" Name="District" CountryId="451" ParentId="1451" polygons="false" version="0" deleted="false"/>
+  <adminentity AdminEntityId="2688" AdminLevelId="1451" Name="Awdal"/>
+  <adminentity AdminEntityId="2689" AdminLevelId="1451" Name="Bakol (Bakool)"/>
+  <adminentity AdminEntityId="2690" AdminLevelId="1451" Name="Bari (North East)"/>
+  <adminentity AdminEntityId="2691" AdminLevelId="1451" Name="Bay"/>
+  <adminentity AdminEntityId="2692" AdminLevelId="1451" Name="Banadir (Banaadir - Mogadishu)"/>
+  <adminentity AdminEntityId="2693" AdminLevelId="1451" Name="Galgaduud (Galgadoud)"/>
+  <adminentity AdminEntityId="2694" AdminLevelId="1451" Name="Gedo (Gedu)"/>
+  <adminentity AdminEntityId="2695" AdminLevelId="1451" Name="Hiran (Hiiraan)"/>
+  <adminentity AdminEntityId="2696" AdminLevelId="1451" Name="Jubbada Hoose (Lower Juba)"/>
+  <adminentity AdminEntityId="2697" AdminLevelId="1451" Name="Shabeellaha Hoose (Lower Shabelle)"/>
+  <adminentity AdminEntityId="2698" AdminLevelId="1451" Name="Jubbada Dhexe (Middle Juba)"/>
+  <adminentity AdminEntityId="2699" AdminLevelId="1451" Name="Shabeellaha Dhexe (Middle Shabelle)"/>
+  <adminentity AdminEntityId="2700" AdminLevelId="1451" Name="Mudug"/>
+  <adminentity AdminEntityId="2701" AdminLevelId="1451" Name="Nugal (Nugaal)"/>
+  <adminentity AdminEntityId="2702" AdminLevelId="1451" Name="Sanag (Sanaag)"/>
+  <adminentity AdminEntityId="2703" AdminLevelId="1451" Name="Sool (Soul)"/>
+  <adminentity AdminEntityId="2704" AdminLevelId="1451" Name="Toghdeer (Tojtier)"/>
+  <adminentity AdminEntityId="2705" AdminLevelId="1451" Name="Woqooyi Galbeed"/>
+  <adminentity AdminEntityId="322833" AdminEntityParentId="2699" AdminLevelId="1517" Name="Aadan"/>
+  <adminentity AdminEntityId="322834" AdminEntityParentId="2697" AdminLevelId="1517" Name="Afgooye (Afgoi)"/>
+  <adminentity AdminEntityId="322835" AdminEntityParentId="2696" AdminLevelId="1517" Name="Afmadow"/>
+  <adminentity AdminEntityId="322836" AdminEntityParentId="2694" AdminLevelId="1517" Name="Baar-Dheere"/>
+  <adminentity AdminEntityId="322837" AdminEntityParentId="2696" AdminLevelId="1517" Name="Badhaadhe"/>
+  <adminentity AdminEntityId="322838" AdminEntityParentId="2702" AdminLevelId="1517" Name="Badhan"/>
+  <adminentity AdminEntityId="322839" AdminEntityParentId="2688" AdminLevelId="1517" Name="Baki"/>
+  <adminentity AdminEntityId="322840" AdminEntityParentId="2699" AdminLevelId="1517" Name="Balcad"/>
+  <adminentity AdminEntityId="322841" AdminEntityParentId="2690" AdminLevelId="1517" Name="Bander-Beyla (Benderbela)"/>
+  <adminentity AdminEntityId="322842" AdminEntityParentId="2697" AdminLevelId="1517" Name="Baraawe"/>
+  <adminentity AdminEntityId="322843" AdminEntityParentId="2691" AdminLevelId="1517" Name="Baydhabo"/>
+  <adminentity AdminEntityId="322844" AdminEntityParentId="2695" AdminLevelId="1517" Name="Beled Weyn"/>
+  <adminentity AdminEntityId="322845" AdminEntityParentId="2694" AdminLevelId="1517" Name="Beled Xaawo (Bula-hawa)"/>
+  <adminentity AdminEntityId="322846" AdminEntityParentId="2705" AdminLevelId="1517" Name="Berbera"/>
+  <adminentity AdminEntityId="322847" AdminEntityParentId="2688" AdminLevelId="1517" Name="Boorama"/>
+  <adminentity AdminEntityId="322848" AdminEntityParentId="2690" AdminLevelId="1517" Name="Bosaaso"/>
+  <adminentity AdminEntityId="322849" AdminEntityParentId="2698" AdminLevelId="1517" Name="Bu&apos;aale"/>
+  <adminentity AdminEntityId="322850" AdminEntityParentId="2704" AdminLevelId="1517" Name="Burao"/>
+  <adminentity AdminEntityId="322851" AdminEntityParentId="2701" AdminLevelId="1517" Name="Burtinle"/>
+  <adminentity AdminEntityId="322852" AdminEntityParentId="2704" AdminLevelId="1517" Name="Buuhoodle"/>
+  <adminentity AdminEntityId="322853" AdminEntityParentId="2695" AdminLevelId="1517" Name="Buulo Burdo (Bulo-Burte)"/>
+  <adminentity AdminEntityId="322854" AdminEntityParentId="2691" AdminLevelId="1517" Name="Buur Xakaba (Bur Hacaba)"/>
+  <adminentity AdminEntityId="322855" AdminEntityParentId="2693" AdminLevelId="1517" Name="Caabudwaaq"/>
+  <adminentity AdminEntityId="322856" AdminEntityParentId="2693" AdminLevelId="1517" Name="Cadaado"/>
+  <adminentity AdminEntityId="322857" AdminEntityParentId="2699" AdminLevelId="1517" Name="Cadale"/>
+  <adminentity AdminEntityId="322858" AdminEntityParentId="2690" AdminLevelId="1517" Name="Calawla (Alula)"/>
+  <adminentity AdminEntityId="322859" AdminEntityParentId="2703" AdminLevelId="1517" Name="Caynabo"/>
+  <adminentity AdminEntityId="322860" AdminEntityParentId="2689" AdminLevelId="1517" Name="Ceel Barde (El Barde)"/>
+  <adminentity AdminEntityId="322861" AdminEntityParentId="2693" AdminLevelId="1517" Name="Ceel Buur (El Bur)"/>
+  <adminentity AdminEntityId="322862" AdminEntityParentId="2693" AdminLevelId="1517" Name="Ceel Dheer (El Dere)"/>
+  <adminentity AdminEntityId="322863" AdminEntityParentId="2694" AdminLevelId="1517" Name="Ceel Waaq (El Wak)"/>
+  <adminentity AdminEntityId="322864" AdminEntityParentId="2702" AdminLevelId="1517" Name="Ceel-Afwein"/>
+  <adminentity AdminEntityId="322865" AdminEntityParentId="2702" AdminLevelId="1517" Name="Ceerigaabo (Erigavo)"/>
+  <adminentity AdminEntityId="322866" AdminEntityParentId="2693" AdminLevelId="1517" Name="Dhuusamareeb"/>
+  <adminentity AdminEntityId="322867" AdminEntityParentId="2691" AdminLevelId="1517" Name="Diinsoor"/>
+  <adminentity AdminEntityId="322868" AdminEntityParentId="2694" AdminLevelId="1517" Name="Dolow"/>
+  <adminentity AdminEntityId="322869" AdminEntityParentId="2701" AdminLevelId="1517" Name="Eyl"/>
+  <adminentity AdminEntityId="322870" AdminEntityParentId="2700" AdminLevelId="1517" Name="Gaalkacayo"/>
+  <adminentity AdminEntityId="322871" AdminEntityParentId="2705" AdminLevelId="1517" Name="Gabiley"/>
+  <adminentity AdminEntityId="322872" AdminEntityParentId="2694" AdminLevelId="1517" Name="Garbahaaray"/>
+  <adminentity AdminEntityId="322873" AdminEntityParentId="2701" AdminLevelId="1517" Name="Garoowe"/>
+  <adminentity AdminEntityId="322874" AdminEntityParentId="2700" AdminLevelId="1517" Name="Goldogob"/>
+  <adminentity AdminEntityId="322875" AdminEntityParentId="2705" AdminLevelId="1517" Name="Hargeysa"/>
+  <adminentity AdminEntityId="322876" AdminEntityParentId="2700" AdminLevelId="1517" Name="Hobyo"/>
+  <adminentity AdminEntityId="322877" AdminEntityParentId="2690" AdminLevelId="1517" Name="Iskushuban"/>
+  <adminentity AdminEntityId="322878" AdminEntityParentId="2695" AdminLevelId="1517" Name="Jalalaqsi"/>
+  <adminentity AdminEntityId="322879" AdminEntityParentId="2696" AdminLevelId="1517" Name="Jamaame"/>
+  <adminentity AdminEntityId="322880" AdminEntityParentId="2700" AdminLevelId="1517" Name="Jariiban"/>
+  <adminentity AdminEntityId="322881" AdminEntityParentId="2699" AdminLevelId="1517" Name="Jawhar"/>
+  <adminentity AdminEntityId="322882" AdminEntityParentId="2698" AdminLevelId="1517" Name="Jilib"/>
+  <adminentity AdminEntityId="322883" AdminEntityParentId="2696" AdminLevelId="1517" Name="Kismaayo"/>
+  <adminentity AdminEntityId="322884" AdminEntityParentId="2697" AdminLevelId="1517" Name="Kuntuwaaray"/>
+  <adminentity AdminEntityId="322885" AdminEntityParentId="2703" AdminLevelId="1517" Name="Lascaanod (Lasanod)"/>
+  <adminentity AdminEntityId="322886" AdminEntityParentId="2688" AdminLevelId="1517" Name="Lughaya"/>
+  <adminentity AdminEntityId="322887" AdminEntityParentId="2694" AdminLevelId="1517" Name="Luuk"/>
+  <adminentity AdminEntityId="322888" AdminEntityParentId="2697" AdminLevelId="1517" Name="Marka"/>
+  <adminentity AdminEntityId="322889" AdminEntityParentId="2692" AdminLevelId="1517" Name="Mogadisho"/>
+  <adminentity AdminEntityId="322890" AdminEntityParentId="2704" AdminLevelId="1517" Name="Oodweyne"/>
+  <adminentity AdminEntityId="322891" AdminEntityParentId="2690" AdminLevelId="1517" Name="Qandala"/>
+  <adminentity AdminEntityId="322892" AdminEntityParentId="2691" AdminLevelId="1517" Name="Qansax Dheere"/>
+  <adminentity AdminEntityId="322893" AdminEntityParentId="2690" AdminLevelId="1517" Name="Qardho"/>
+  <adminentity AdminEntityId="322894" AdminEntityParentId="2697" AdminLevelId="1517" Name="Qoryooley"/>
+  <adminentity AdminEntityId="322895" AdminEntityParentId="2689" AdminLevelId="1517" Name="Rab Dhuure"/>
+  <adminentity AdminEntityId="322896" AdminEntityParentId="2698" AdminLevelId="1517" Name="Saakow"/>
+  <adminentity AdminEntityId="322897" AdminEntityParentId="2697" AdminLevelId="1517" Name="Sablale"/>
+  <adminentity AdminEntityId="322898" AdminEntityParentId="2688" AdminLevelId="1517" Name="Saylac"/>
+  <adminentity AdminEntityId="322899" AdminEntityParentId="2704" AdminLevelId="1517" Name="Sheekh"/>
+  <adminentity AdminEntityId="322900" AdminEntityParentId="2703" AdminLevelId="1517" Name="Taleex"/>
+  <adminentity AdminEntityId="322901" AdminEntityParentId="2689" AdminLevelId="1517" Name="Tiyeeglow"/>
+  <adminentity AdminEntityId="322902" AdminEntityParentId="2689" AdminLevelId="1517" Name="Wajid"/>
+  <adminentity AdminEntityId="322903" AdminEntityParentId="2697" AdminLevelId="1517" Name="Wanla Waeyn"/>
+  <adminentity AdminEntityId="322904" AdminEntityParentId="2700" AdminLevelId="1517" Name="Xarardheere (Harardere)"/>
+  <adminentity AdminEntityId="322905" AdminEntityParentId="2703" AdminLevelId="1517" Name="Xudun"/>
+  <adminentity AdminEntityId="322906" AdminEntityParentId="2689" AdminLevelId="1517" Name="Xudur (Hudur)"/>
+
+
+  <userLogin userId="1" name="Gavin" email="user1@user.com"
+             locale="fr" emailnotification="1" organization="" jobtitle=""/>
+
+  <userDatabase databaseId="1" name="Cluster" countryId="1"
+                ownerUserId="1" lastSchemaUpdate="2014-01-01"/>
+
+
+  <locationtype locationtypeid="1451" Name="Village" Reuse="false" CountryId="451" workflowId="open"
+                databaseId="1"/>
+
+
+</dataset>

@@ -25,13 +25,17 @@ public class GeographicPointImporter implements FieldImporter {
     private final CoordinateParser[] coordinateParsers;
     private final List<FieldImporterColumn> fieldImporterColumns;
 
-    public GeographicPointImporter(ResourceId fieldId, ColumnAccessor[] sourceColumns, ImportTarget[] targetSites) {
+    public GeographicPointImporter(ResourceId fieldId, ColumnAccessor[] sourceColumns, ImportTarget[] targetSites,
+                                   CoordinateParser.NumberFormatter coordinateNumberFormatter) {
         this.fieldId = fieldId;
         this.sourceColumns = sourceColumns;
-        this.coordinateParsers = new CoordinateParser[]{
-                new CoordinateParser(CoordinateAxis.LATITUDE, JsCoordinateNumberFormatter.INSTANCE),
-                new CoordinateParser(CoordinateAxis.LONGITUDE, JsCoordinateNumberFormatter.INSTANCE)
-        };
+        CoordinateParser latitudeParser = new CoordinateParser(CoordinateAxis.LATITUDE, coordinateNumberFormatter);
+        CoordinateParser longitudeParser = new CoordinateParser(CoordinateAxis.LONGITUDE, coordinateNumberFormatter);
+
+        latitudeParser.setRequireSign(false);
+        longitudeParser.setRequireSign(false);
+
+        this.coordinateParsers = new CoordinateParser[]{latitudeParser, longitudeParser };
         this.fieldImporterColumns = Arrays.asList(
                 new FieldImporterColumn(targetSites[0], sourceColumns[0]),
                 new FieldImporterColumn(targetSites[1], sourceColumns[1]));

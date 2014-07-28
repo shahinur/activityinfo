@@ -27,7 +27,11 @@ class InitialSelection {
     }
 
     public Promise<Void> fetch(ResourceLocator locator, Set<ResourceId> ids) {
-        return fetchLabelAndParentIds(locator, ids);
+        if(ids == null || ids.isEmpty()) {
+            return Promise.done();
+        } else {
+            return fetchLabelAndParentIds(locator, ids);
+        }
     }
 
     private Promise<Void> fetchLabelAndParentIds(final ResourceLocator locator, Set<ResourceId> instanceIds) {

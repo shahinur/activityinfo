@@ -33,6 +33,7 @@ public class SingleClassTargetBuilder {
 
         ResourceId rangeClassId = FormClassSet.of(rootField.getRange()).unique();
 
-        return new SingleClassImporter(rangeClassId, sourceColumns, referenceValues, fieldImporterColumns, rootField.getFieldId());
+        return new SingleClassImporter(rangeClassId, rootField.getField().isRequired(),
+                sourceColumns, referenceValues, fieldImporterColumns, rootField.getFieldId());
     }
 }

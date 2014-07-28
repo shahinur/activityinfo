@@ -47,7 +47,6 @@ public class CreateSite implements MutatingCommand<CreateResult>, SiteCommand {
     public CreateSite(SiteDTO site) {
         assert site.getId() != 0;
         assert site.getActivityId() != 0;
-        assert site.getLocationId() != 0;
         assert site.getPartner() != null;
 
         properties = new RpcMap();

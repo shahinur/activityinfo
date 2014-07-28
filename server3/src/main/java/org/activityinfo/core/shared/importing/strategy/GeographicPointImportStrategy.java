@@ -1,6 +1,7 @@
 package org.activityinfo.core.shared.importing.strategy;
 
 import com.google.common.base.Objects;
+import org.activityinfo.core.shared.type.converter.ConverterFactory;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.i18n.shared.I18N;
@@ -13,6 +14,11 @@ public class GeographicPointImportStrategy implements FieldImportStrategy {
 
     static final TargetSiteId LATITUDE = new TargetSiteId("latitude");
     static final TargetSiteId LONGITUDE = new TargetSiteId("longitude");
+    private final ConverterFactory converterFactory;
+
+    public GeographicPointImportStrategy(ConverterFactory converterFactory) {
+        this.converterFactory = converterFactory;
+    }
 
     @Override
     public boolean accept(FormTree.Node fieldNode) {
@@ -44,6 +50,7 @@ public class GeographicPointImportStrategy implements FieldImportStrategy {
                 latitudeTarget(node),
                 longitudeTarget(node) };
 
-        return new GeographicPointImporter(node.getFieldId(), sourceColumns, targets);
+        return new GeographicPointImporter(node.getFieldId(), sourceColumns, targets,
+                converterFactory.getCoordinateNumberFormatter());
     }
 }

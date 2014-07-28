@@ -20,8 +20,12 @@ public class ConverterFactory {
     private final DateToStringConverter dateToStringConverter;
     private final QuantityToStringConverter quantityParser;
     private final StringToQuantityConverter stringToQuantityFormatter;
+    private CoordinateParser.NumberFormatter coordinateNumberFormatter;
 
-    public ConverterFactory(QuantityFormatterFactory quantityFormatterFactory, DateFormatter dateFormatter) {
+    public ConverterFactory(QuantityFormatterFactory quantityFormatterFactory,
+                            DateFormatter dateFormatter,
+                            CoordinateParser.NumberFormatter coordinateNumberFormatter) {
+        this.coordinateNumberFormatter = coordinateNumberFormatter;
         quantityParser = new QuantityToStringConverter(quantityFormatterFactory.create());
         stringToQuantityFormatter = new StringToQuantityConverter(quantityFormatterFactory.create());
         dateToStringConverter = new DateToStringConverter(dateFormatter);
@@ -65,9 +69,13 @@ public class ConverterFactory {
             return stringToQuantityFormatter;
         } else if(fieldType == FieldTypeClass.LOCAL_DATE) {
             return StringToDateConverter.INSTANCE;
-        } else if(fieldType == FieldTypeClass.FREE_TEXT) {
+        } else if(fieldType == FieldTypeClass.FREE_TEXT || fieldType == FieldTypeClass.NARRATIVE) {
             return NullConverter.INSTANCE;
         }
         throw new UnsupportedOperationException(fieldType.getId());
+    }
+
+    public CoordinateParser.NumberFormatter getCoordinateNumberFormatter() {
+        return coordinateNumberFormatter;
     }
 }

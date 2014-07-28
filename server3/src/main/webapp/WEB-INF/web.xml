@@ -42,7 +42,21 @@
   <!--  Require SSL for login at least -->
   <security-constraint>
     <web-resource-collection>
+      <web-resource-name>login</web-resource-name>
       <url-pattern>/login</url-pattern>
+    </web-resource-collection>
+    <user-data-constraint>
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <!--  Force ODK to use HTTPS -->
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>xform</web-resource-name>
+      <url-pattern>/formList</url-pattern>
+      <url-pattern>/formSubmission</url-pattern>
+      <url-pattern>/activityForm</url-pattern>
     </web-resource-collection>
     <user-data-constraint>
       <transport-guarantee>CONFIDENTIAL</transport-guarantee>

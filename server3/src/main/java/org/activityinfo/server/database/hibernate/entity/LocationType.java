@@ -52,7 +52,10 @@ public class LocationType implements Serializable {
     public LocationType() {
     }
 
-    @Id @JsonProperty @Column(name = "LocationTypeId", unique = true, nullable = false)
+    @Id
+    @JsonProperty
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "LocationTypeId", unique = true, nullable = false)
     public int getId() {
         return this.id;
     }
