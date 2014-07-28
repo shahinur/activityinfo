@@ -47,6 +47,7 @@ public class SkipRowPresenter {
     private final SkipRow view = new SkipRow();
     private final FormFieldWidgetFactory widgetFactory;
     private FormFieldWidget valueWidget = null;
+    private Object value;
 
     public SkipRowPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
@@ -65,7 +66,7 @@ public class SkipRowPresenter {
         ValueUpdater valueUpdater = new ValueUpdater() {
             @Override
             public void update(Object value) {
-
+                SkipRowPresenter.this.value = value;
             }
         };
 
@@ -121,5 +122,9 @@ public class SkipRowPresenter {
 
     public SkipRow getView() {
         return view;
+    }
+
+    public Object getValue() {
+        return value;
     }
 }

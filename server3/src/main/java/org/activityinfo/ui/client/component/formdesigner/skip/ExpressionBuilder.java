@@ -21,8 +21,32 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
+import java.util.List;
+
 /**
  * @author yuriyz on 7/25/14.
  */
 public class ExpressionBuilder {
+
+    private List<RowData> rows;
+    private String expression = "";
+
+    public ExpressionBuilder(List<RowData> rows) {
+        this.rows = rows;
+    }
+
+    public String build() {
+        for (int i = 0; i < rows.size(); i++) {
+            handleRow(rows.get(i), i);
+        }
+        return expression;
+    }
+
+    private void handleRow(RowData row, int index) {
+        if (index != 0) {
+            expression += row.getJoinFunction().getId();
+        }
+
+//        String selectedValue = row.getJoinFunction().getValue(row.getJoinFunction().getSelectedIndex());
+    }
 }
