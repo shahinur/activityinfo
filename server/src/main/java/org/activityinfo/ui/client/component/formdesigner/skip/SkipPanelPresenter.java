@@ -21,9 +21,15 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author yuriyz on 7/24/14.
@@ -32,6 +38,7 @@ public class SkipPanelPresenter {
 
     private final FieldWidgetContainer fieldWidgetContainer;
     private final SkipPanel view = new SkipPanel();
+    private final Map<SkipRow, SkipRowPresenter> map = Maps.newHashMap();
 
     public SkipPanelPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
@@ -42,6 +49,8 @@ public class SkipPanelPresenter {
     private void addRow(final FieldWidgetContainer fieldWidgetContainer) {
         final SkipRowPresenter skipRowPresenter = new SkipRowPresenter(fieldWidgetContainer);
         view.getRootPanel().add(skipRowPresenter.getView());
+        map.put(skipRowPresenter.getView(), skipRowPresenter);
+
         skipRowPresenter.getView().getAddButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -52,6 +61,7 @@ public class SkipPanelPresenter {
             @Override
             public void onClick(ClickEvent event) {
                 view.getRootPanel().remove(skipRowPresenter.getView());
+                map.remove(skipRowPresenter.getView());
             }
         });
 
@@ -69,6 +79,18 @@ public class SkipPanelPresenter {
     }
 
     private String buildSkipExpression() {
-        return "skip expression build is under construction"; // todo
+        return new ExpressionBuilder(createRowDataList()).build();
+    }
+
+    private List<RowData> createRowDataList() {
+        final List<RowData> result = Lists.newArrayList();
+        final int widgetCount = view.getRootPanel().getWidgetCount();
+        final FormClass formClass = fieldWidgetContainer.getFormDesigner().getFormClass();
+
+        for (int i = 0; i < widgetCount; i++) {
+            SkipRow skipRow = (SkipRow) view.getRootPanel().getWidget(i);
+            result.add(RowDataFactory.create(skipRow, map.get(skipRow).getValue(), formClass));
+        }
+        return result;
     }
 }
