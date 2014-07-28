@@ -21,11 +21,11 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.shared.expr.ExprFunction;
 import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.activityinfo.core.shared.expr.functions.FieldTypeToFunctionRegistry;
@@ -35,7 +35,6 @@ import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -70,13 +69,16 @@ public class SkipRowPresenter {
             }
         };
 
-        widgetFactory.createWidget(getSelectedFormField(), valueUpdater).then(new Function<FormFieldWidget, Void>() {
-            @Nullable
+        widgetFactory.createWidget(getSelectedFormField(), valueUpdater).then(new AsyncCallback<FormFieldWidget>() {
             @Override
-            public Void apply(@Nullable FormFieldWidget widget) {
+            public void onFailure(Throwable caught) {
+                caught.printStackTrace();
+            }
+
+            @Override
+            public void onSuccess(FormFieldWidget widget) {
                 valueWidget = widget;
                 view.getValueContainer().add(widget);
-                return null;
             }
         });
     }
