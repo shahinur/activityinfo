@@ -4,23 +4,23 @@ import org.activityinfo.core.shared.expr.ExprFunction;
 
 public class ArithmeticFunctions {
 
-    public static final ExprFunction BINARY_PLUS = new BinaryInfixFunction("+") {
+    public static final ExprFunction<Double, Double> BINARY_PLUS = new BinaryInfixFunction<Double>("+") {
 
         @Override
-        public double applyReal(double x, double y) {
+        public Double applyReal(Double x, Double y) {
             return x + y;
         }
     };
 
-    public static final ExprFunction DIVIDE = new BinaryInfixFunction("/") {
+    public static final ExprFunction<Double, Double> DIVIDE = new BinaryInfixFunction<Double>("/") {
 
         @Override
-        public double applyReal(double x, double y) {
+        public Double applyReal(Double x, Double y) {
             return x / y;
         }
     };
 
-    public static ExprFunction getBinaryInfix(String name) {
+    public static ExprFunction<Double, Double> getBinaryInfix(String name) {
         if (name.equals("+")) {
             return BINARY_PLUS;
 

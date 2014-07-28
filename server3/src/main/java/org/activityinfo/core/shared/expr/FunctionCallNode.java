@@ -4,32 +4,32 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class FunctionCallNode extends ExprNode {
+public class FunctionCallNode<T, K> extends ExprNode<T> {
 
     @Nonnull
-    private ExprFunction function;
+    private ExprFunction<T, K> function;
 
     @Nonnull
-    private List<ExprNode> arguments;
+    private List<ExprNode<K>> arguments;
 
-    public FunctionCallNode(ExprFunction function, List<ExprNode> arguments) {
+    public FunctionCallNode(ExprFunction<T, K> function, List<ExprNode<K>> arguments) {
         super();
         this.function = function;
         this.arguments = arguments;
     }
 
-    public FunctionCallNode(ExprFunction function, ExprNode... arguments) {
+    public FunctionCallNode(ExprFunction<T, K> function, ExprNode<K>... arguments) {
         this(function, Arrays.asList(arguments));
     }
 
     @Override
-    public double evalReal() {
+    public T evalReal() {
         return function.applyReal(arguments);
     }
 
     @Override
     public String toString() {
-        return arguments.get(0) + " " + function.getName() + " " + arguments.get(1);
+        return arguments.get(0) + " " + function.getId() + " " + arguments.get(1);
     }
 
     @Override

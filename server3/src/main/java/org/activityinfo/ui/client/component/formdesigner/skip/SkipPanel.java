@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner.container;
+package org.activityinfo.ui.client.component.formdesigner.skip;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,17 +21,31 @@ package org.activityinfo.ui.client.component.formdesigner.container;
  * #L%
  */
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 
 /**
- * @author yuriyz on 7/14/14.
+ * @author yuriyz on 7/23/14.
  */
-public interface WidgetContainer {
+public class SkipPanel extends Composite {
 
-    public Widget asWidget();
+    private static OurUiBinder uiBinder = GWT.create(OurUiBinder.class);
 
-    public Widget getDragHandle();
+    interface OurUiBinder extends UiBinder<Widget, SkipPanel> {
+    }
 
-    public FormDesigner getFormDesigner();
+    @UiField
+    HTMLPanel rootPanel;
+
+    public SkipPanel() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
+
+    public HTMLPanel getRootPanel() {
+        return rootPanel;
+    }
 }
