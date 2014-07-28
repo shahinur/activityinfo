@@ -21,6 +21,8 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
+import org.activityinfo.model.resource.ResourceId;
+
 import java.util.List;
 
 /**
@@ -47,6 +49,20 @@ public class ExpressionBuilder {
             expression += row.getJoinFunction().getId();
         }
 
-//        String selectedValue = row.getJoinFunction().getValue(row.getJoinFunction().getSelectedIndex());
+        // field id
+        expression += "{" + row.getFieldId().getId().asString() + "}";
+
+        // boolean function
+        expression += row.getFunction().getId();
+
+        // value
+        Object value = row.getValue();
+        if (value instanceof ResourceId) {
+            expression += "{" + ((ResourceId) value).asString() + "}";
+        } else if (value instanceof Boolean || value instanceof Number || value instanceof String) {
+            expression += value;
+        } else {
+            throw new UnsupportedOperationException("Not supported value: " + value);
+        }
     }
 }
