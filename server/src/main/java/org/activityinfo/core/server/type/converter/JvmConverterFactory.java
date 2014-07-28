@@ -15,7 +15,8 @@ public class JvmConverterFactory {
         if(INSTANCE == null) {
             INSTANCE = new ConverterFactory(
                     new JavaTextQuantityFormatterFactory(),
-                    new JavaDateFormatterFactory().create());
+                    new JavaDateFormatterFactory().create(),
+                    new JreNumberFormats());
         }
         return INSTANCE;
     }

@@ -14,9 +14,11 @@
                     </meta>
                     <activity>${id?c}</activity>
 
-                    <partner><#if database.partners?size == 1>${database.partners[0].id?c}</#if></partner>
+                    <partner><#if partnerRange?size == 1>${partnerRange[0].id?c}</#if></partner>
+                    <#if !locationType.nationwide >
                     <locationname/>
                     <gps/>
+                    </#if>
                     <date1>${.now?string("yyyy-MM-dd")}</date1>
                     <date2>${.now?string("yyyy-MM-dd")}</date2>
 
@@ -37,7 +39,7 @@
             <bind nodeset="/data/meta/instanceID" type="string" readonly="true()" calculate="concat('uuid:',uuid())"/>
             <bind nodeset="/data/activity" required="true()"/>
             <bind nodeset="/data/partner" required="true()"/>
-            <bind nodeset="/data/gps" type="geopoint" required="true()"/>
+            <bind nodeset="/data/gps" type="geopoint" required="false()"/>
             <bind nodeset="/data/date1" type="date" required="true()"/>
             <bind nodeset="/data/date2" type="date" required="true()"
                   constraint=". >= /data/date1" jr:constraintMsg="date must be on or after /data/date1"/>
@@ -65,10 +67,10 @@
     </h:head>
 
 <h:body>
-<#if (database.partners?size > 1)>
+<#if (partnerRange?size > 1)>
     <select1 ref="/data/partner">
         <label>${label.odkPartner?xml}</label>
-        <#list database.partners as partner>
+        <#list partnerRange as partner>
             <item>
                 <label>${partner.name?xml}</label>
                 <value>${partner.id?c}</value>
@@ -77,6 +79,7 @@
     </select1>
 </#if>
 
+    <#if !locationType.nationwide >
     <group>
         <label>${locationType.name?xml}</label>
         <input ref="/data/locationname">
@@ -86,6 +89,7 @@
         <label>${label.odkLocationCoordinates?xml}</label>
         </input>
     </group>
+    </#if>
 
     <group>
         <input ref="/data/date1">
@@ -101,6 +105,10 @@
         <#if field.entityName == "Indicator">
             <input ref="/data/I${field.id?c}">
             <label>${field.name?xml}</label>
+            <#if field.description?? >
+            <hint>${field.description}</hint>
+            </#if>
+
             </input>
         </#if>
 

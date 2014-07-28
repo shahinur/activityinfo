@@ -39,7 +39,7 @@ public class ImportPresenter {
     private ImportDialog dialogBox = new ImportDialog();
     private FullScreenOverlay overlay = new FullScreenOverlay();
 
-    private ListIterator<ImportPage> pages;
+    private List<ImportPage> pages;
     private ImportPage currentPage;
 
     public ImportPresenter(ResourceLocator resourceLocator, FormTree formTree) {
@@ -50,7 +50,7 @@ public class ImportPresenter {
         final ColumnMappingPage matchingPage = new ColumnMappingPage(importModel, createMatchingColumnActions(), eventBus);
         final ValidationPage validationPage = new ValidationPage(importModel, importer);
 
-        pages = Lists.<ImportPage>newArrayList(chooseSourcePage, matchingPage, validationPage).listIterator();
+        pages = Lists.<ImportPage>newArrayList(chooseSourcePage, matchingPage, validationPage);
 
         dialogBox.getPreviousButton().addClickHandler(new ClickHandler() {
             @Override
@@ -163,7 +163,7 @@ public class ImportPresenter {
     }
 
     public void show() {
-        gotoPage(pages.next());
+        gotoPage(pages.get(0));
         overlay.show(dialogBox);
     }
 
@@ -175,13 +175,10 @@ public class ImportPresenter {
     }
 
     private void nextPage() {
-        if (pages.hasNext()) {
+        int nextIndex = pages.indexOf(currentPage) + 1;
+        if (nextIndex < pages.size()) {
             if (currentPage.isValid()) {
-                ImportPage next = pages.next();
-                if (next.equals(currentPage)) {
-                    next = pages.next();
-                }
-                gotoPage(next);
+                gotoPage(pages.get(nextIndex));
             } else {
                 currentPage.fireStateChanged();
             }
@@ -189,20 +186,18 @@ public class ImportPresenter {
     }
 
     private void previousPage() {
-        if (pages.hasPrevious()) {
-            ImportPage previous = pages.previous();
-            if (previous.equals(currentPage)) {
-                previous = pages.previous();
-            }
-            gotoPage(previous);
+        int prevIndex = pages.indexOf(currentPage) - 1;
+        if (prevIndex >= 0) {
+            gotoPage(pages.get(prevIndex));
         }
         dialogBox.setStatusText(""); // clear status text
     }
 
     private void setButtonsState() {
-        dialogBox.getPreviousButton().setEnabled(pages.hasPrevious() && pages.previousIndex() > 0);
-        dialogBox.getNextButton().setEnabled(pages.hasNext());
-        dialogBox.getFinishButton().setVisible(!pages.hasNext() && currentPage.isValid());
+        int index = pages.indexOf(currentPage);
+        dialogBox.getPreviousButton().setEnabled((index-1) >= 0);
+        dialogBox.getNextButton().setEnabled((index+1) < pages.size());
+        dialogBox.getFinishButton().setVisible((index+1) == pages.size() && currentPage.isValid());
     }
 
     public EventBus getEventBus() {
