@@ -1,5 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Resources;
 import com.google.inject.Inject;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.MockHibernateModule;
@@ -10,42 +12,19 @@ import org.junit.runner.RunWith;
 
 import java.text.SimpleDateFormat;
 
+import static com.google.common.io.Resources.getResource;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(InjectionSupport.class)
-@Modules({
-        TestDatabaseModule.class,
-        MockHibernateModule.class
-})
+@Modules({TestDatabaseModule.class, MockHibernateModule.class})
 public class FormParserTest {
 
     @Inject
     private FormParser parser;
 
-    // @formatter:off
-    private static String xml =
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                    "<data id=\"siteform\">" +
-                    "<meta>" +
-                    "<instanceID>uuid:23b56e39-ef50-4510-b85f-c454cd5465c1</instanceID>" +
-                    "</meta>" +
-                    "<activity>927</activity>" +
-                    "<partner>274</partner>" +
-                    "<locationname>Some location</locationname>" +
-                    "<gps>52.144802074999994 5.377899974999999</gps>" +
-                    "<date1>2012-07-05</date1>" +
-                    "<date2>2013-08-07</date2>" +
-                    "<I4410>1.1</I4410>" +
-                    "<I4411>2.5</I4411>" +
-                    "<AG991>2419 2420</AG991>" +
-                    "<comments>Some comment</comments>" +
-                    "</data>";
-    // @formatter:on
-
     @Test
     public void testParseSiteForm() throws Exception {
-        // URL url = FormParserTest.class.getResource("/org/activityinfo/server/endpoint/odk/form-instance.xml");
-        // String xml = Files.toString(new File(url.getPath()), Charsets.UTF_8);
+        String xml = Resources.toString(getResource(FormParserTest.class, "form-instance.xml"), Charsets.UTF_8);
 
         SiteFormData data = parser.parse(xml);
 

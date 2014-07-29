@@ -227,7 +227,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
         boolean permissionToEdit = activity.isAllowedToEdit(site);
         toolBar.setActionEnabled(UIActions.EDIT, permissionToEdit && !site.isLinked());
         toolBar.setActionEnabled(UIActions.DELETE, permissionToEdit && !site.isLinked());
-        toolBar.setActionEnabled(UIActions.IMPORT, true);
 
         detailTab.setSite(site);
         attachmentsTab.setSite(site);
@@ -247,7 +246,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     private void onNoSelection() {
         toolBar.setActionEnabled(UIActions.EDIT, false);
         toolBar.setActionEnabled(UIActions.DELETE, false);
-        toolBar.setActionEnabled(UIActions.IMPORT, false);
         monthlyPanel.onNoSelection();
     }
 
@@ -327,7 +325,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
         if (IMPORT_FUNCTION_ENABLED) {
             toolBar.setActionEnabled(UIActions.IMPORT, activities.size() == 1);
         }
-
 
         // adding is also only enabled for one activity, but we have to
         // lookup to see whether it possible for this activity

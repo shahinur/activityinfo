@@ -80,9 +80,9 @@ public class SchemaCache implements DispatchListener {
 
     @Override
     public void beforeDispatched(Command command) {
-        if (command instanceof UpdateEntity && isSchemaEntity(((UpdateEntity) command).getEntityName())) {
+        if (command instanceof UpdateEntity) {
             clearCache();
-        } else if (command instanceof CreateEntity && isSchemaEntity(((CreateEntity) command).getEntityName())) {
+        } else if (command instanceof CreateEntity) {
             clearCache();
         } else if (command instanceof AddPartner || command instanceof RemovePartner) {
             clearCache();
