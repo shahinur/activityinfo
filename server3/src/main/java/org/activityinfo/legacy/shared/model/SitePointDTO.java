@@ -29,8 +29,9 @@ package org.activityinfo.legacy.shared.model;
  * {@link org.activityinfo.server.database.hibernate.entity.Location Location}
  * location that includes only the id and geographic position.
  *
- * @author Alex Bertram
+ * @deprecated
  */
+@Deprecated
 public final class SitePointDTO implements DTO {
 
     private int siteId;

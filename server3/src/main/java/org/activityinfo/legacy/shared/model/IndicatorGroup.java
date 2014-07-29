@@ -35,6 +35,7 @@ import java.util.List;
  *
  * @author Alex Bertram (akbertram@gmail.com)
  */
+@Deprecated
 public final class IndicatorGroup extends BaseModelData implements ProvidesKey {
 
     private List<IndicatorDTO> indicators = new ArrayList<IndicatorDTO>();

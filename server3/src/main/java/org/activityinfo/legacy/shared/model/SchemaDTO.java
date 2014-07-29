@@ -41,6 +41,7 @@ import java.util.Set;
  *
  * @author Alex Bertram
  */
+@Deprecated
 public final class SchemaDTO extends BaseModelData implements DTO {
 
     private long version;

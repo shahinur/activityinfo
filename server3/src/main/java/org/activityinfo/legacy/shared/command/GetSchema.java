@@ -31,6 +31,7 @@ import org.activityinfo.legacy.shared.model.SchemaDTO;
  *
  * @author Alex Bertram
  */
+@Deprecated
 public class GetSchema implements Command<SchemaDTO> {
 
     @Override

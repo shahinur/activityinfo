@@ -41,8 +41,10 @@ import org.codehaus.jackson.map.annotate.JsonView;
  * {@link org.activityinfo.server.database.hibernate.entity.Indicator} domain
  * object.
  *
+ * @deprecated See {@link org.activityinfo.model.form.FormField}
  * @author Alex Bertram
  */
+@Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
 public final class IndicatorDTO extends BaseModelData implements EntityDTO, ProvidesKey, IsFormField {
     public final static int AGGREGATE_SUM = 0;

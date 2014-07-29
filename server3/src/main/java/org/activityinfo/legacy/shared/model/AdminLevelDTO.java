@@ -30,7 +30,9 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
  * object.
  *
  * @author Alex Bertram
+ * @deprecated To be replaced with {@link org.activityinfo.model.form.FormClass}
  */
+@Deprecated
 public final class AdminLevelDTO extends BaseModelData implements DTO {
     public static final String PROPERTY_PREFIX = "E";
 

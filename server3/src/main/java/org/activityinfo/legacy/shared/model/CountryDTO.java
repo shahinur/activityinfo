@@ -36,7 +36,9 @@ import java.util.List;
  * One-to-one DTO for
  * {@link org.activityinfo.server.database.hibernate.entity.Country} domain
  * objects.
+ * @deprecated To be replaced with {@link org.activityinfo.core.shared.Resource}
  */
+@Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
 public final class CountryDTO extends BaseModelData implements DTO {
 

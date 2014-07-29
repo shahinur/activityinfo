@@ -30,8 +30,9 @@ import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
  * {@link org.activityinfo.server.database.hibernate.entity.AdminEntity} domain
  * object.
  *
- * @author Alex Bertram
+ * @deprecated To be replaced with {@link org.activityinfo.core.shared.Resource}
  */
+@Deprecated
 public final class AdminEntityDTO extends BaseModelData implements EntityDTO {
     private Extents bounds;
 

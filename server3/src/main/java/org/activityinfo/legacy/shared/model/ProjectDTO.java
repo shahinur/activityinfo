@@ -32,6 +32,10 @@ import org.codehaus.jackson.map.annotate.JsonView;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @deprecated TO be replaced with {@link org.activityinfo.core.shared.Resource}
+ */
+@Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
 public final class ProjectDTO extends BaseModelData implements EntityDTO, HasLockedPeriod {
 
