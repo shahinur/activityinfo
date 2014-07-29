@@ -72,6 +72,7 @@ class Presenter {
         });
     }
 
+
     private void onUserSelection(Level level, Projection selectedItem) {
         if(selectedItem == null) {
             this.selection.remove(level.getClassId());

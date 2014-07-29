@@ -184,12 +184,12 @@ public class ColumnMappingPage extends ResizeComposite implements ImportPage {
 
     @Override
     public boolean hasNextStep() {
-        return getSelectedColumn().getIndex() + 1 < importModel.getSource().getColumns().size();
+        return false;
     }
 
     @Override
     public boolean hasPreviousStep() {
-        return getSelectedColumn().getIndex() > 0;
+        return false;
     }
 
     @Override
@@ -221,13 +221,7 @@ public class ColumnMappingPage extends ResizeComposite implements ImportPage {
 
     @Override
     public void nextStep() {
-//        if (importModel.getColumnAction(getSelectedColumn()) != null) {
-//            SourceColumn nextColumn = importModel.getSourceColumn(getSelectedColumn().getIndex() + 1);
-//            columnSelectionModel.setSelected(nextColumn, true);
-//            onNextPage();
-//        } else {
-//            fieldSelectorPanel.addStyleName(ColumnMappingStyles.INSTANCE.incomplete());
-//        }
+
     }
 
     private void onNextPage() {
@@ -236,7 +230,6 @@ public class ColumnMappingPage extends ResizeComposite implements ImportPage {
 
     @Override
     public void previousStep() {
-//        SourceColumn prevColumn = importModel.getSourceColumn(getSelectedColumn().getIndex() - 1);
-//        columnSelectionModel.setSelected(prevColumn, true);
+
     }
 }

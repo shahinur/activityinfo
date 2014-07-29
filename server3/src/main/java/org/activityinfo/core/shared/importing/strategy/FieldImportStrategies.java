@@ -15,9 +15,9 @@ public class FieldImportStrategies {
     private List<FieldImportStrategy> strategies = Lists.newArrayList();
 
     private FieldImportStrategies(ConverterFactory converterFactory) {
+        strategies.add(new GeographicPointImportStrategy(converterFactory));
         strategies.add(new SingleClassReferenceStrategy());
         strategies.add(new DataFieldImportStrategy(converterFactory));
-        strategies.add(new GeographicPointImportStrategy());
         strategies.add(new HierarchyReferenceStrategy());
     }
 

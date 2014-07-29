@@ -1,12 +1,14 @@
 package org.activityinfo.core.shared.importing.match.names;
 
 import com.google.common.collect.Lists;
+import org.activityinfo.core.shared.importing.strategy.InstanceScorer;
 import org.junit.Test;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 
 
@@ -70,6 +72,15 @@ public class LatinPlaceNameScorerTest {
         double denominator = "BENKADI".length() + "FOUNIA".length();
 
         assertThat(score, closeTo(numerator / denominator, 0.01));
+    }
+
+    @Test
+    public void somalia() {
+        LatinPlaceNameScorer scorer = new LatinPlaceNameScorer();
+
+        double score = scorer.score("Jubbada Hoose (Lower Juba)", "Lower Juba");
+        System.out.println(score);
+        assertThat(score, greaterThan(InstanceScorer.MINIMUM_SCORE));
     }
 //
 //    @Test

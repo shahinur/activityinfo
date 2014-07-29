@@ -37,7 +37,11 @@ public class DataFieldImporter implements FieldImporter {
 
     private ValidationResult validate(SourceRow row) {
         if(source.isMissing(row)) {
-            return ValidationResult.MISSING;
+            if(target.getFormField().isRequired()) {
+                return ValidationResult.error("Required value is missing");
+            } else {
+                return ValidationResult.MISSING;
+            }
         }
         try {
             Object value = converter.convert(source.getValue(row));
