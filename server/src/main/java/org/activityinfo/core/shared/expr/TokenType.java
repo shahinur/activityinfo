@@ -24,6 +24,16 @@ public enum TokenType {
     BRACE_END(false),
 
     /**
+     * """
+     */
+    STRING_START(false),
+
+    /**
+     * """
+     */
+    STRING_END(false),
+
+    /**
      * Operator : +, /, -
      */
     OPERATOR(true),
@@ -49,6 +59,8 @@ public enum TokenType {
      * Boolean literal : true, false
      */
     BOOLEAN_LITERAL(false),
+
+    STRING_LITERAL(false),
 
     /**
      * Whitespace

@@ -69,6 +69,25 @@ public class ExprParserTest {
     }
 
     @Test
+    public void stringTokenizing() {
+        expect("\"true\"",
+                new Token(TokenType.STRING_START, 0, "\""),
+                new Token(TokenType.STRING_LITERAL, 1, "true"),
+                new Token(TokenType.STRING_END, 5, "\"")
+        );
+        expect("\"1\"",
+                new Token(TokenType.STRING_START, 0, "\""),
+                new Token(TokenType.STRING_LITERAL, 1, "1"),
+                new Token(TokenType.STRING_END, 2, "\"")
+        );
+        expect("\"1a1\"",
+                new Token(TokenType.STRING_START, 0, "\""),
+                new Token(TokenType.STRING_LITERAL, 1, "1a1"),
+                new Token(TokenType.STRING_END, 4, "\"")
+        );
+    }
+
+    @Test
     public void placeholderTokenizing() {
         expect("{i1}+{i2}",
                 new Token(TokenType.BRACE_START, 0, "{"),

@@ -87,7 +87,7 @@ public class ExpressionBuilderTest {
         row.setValue("val");
         row.setJoinFunction(BooleanFunctions.AND);
 
-        expr("{test_text}==val", row);
+        expr("{test_text}==\"val\"", row);
     }
 
     private void expr(String expectedExpression, RowData... rows) {
