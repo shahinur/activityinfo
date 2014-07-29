@@ -54,7 +54,10 @@
           <ui:text from='{i18n.defineSkipLogic}'/>
         </g:Button>
       </div>
-      <span class="hide help-block" ui:field="skipExpression"/>
+      <div class="col-xs-4"></div>
+      <div class="col-xs-8">
+        <span class="hide help-block" ui:field="skipExpression"/>
+      </div>
     </g:HTMLPanel>
   </g:HTMLPanel>
 </ui:UiBinder>

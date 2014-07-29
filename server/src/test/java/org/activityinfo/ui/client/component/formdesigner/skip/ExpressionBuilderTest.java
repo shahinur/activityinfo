@@ -35,6 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author yuriyz on 7/28/14.
@@ -60,13 +61,13 @@ public class ExpressionBuilderTest {
     @Test
     public void simpleEnumValueExpression() {
         RowData row = new RowData();
-        row.setFieldId(formClass.getField(GENDER_FIELD_ID));
+        row.setFormField(formClass.getField(GENDER_FIELD_ID));
         row.setFunction(BooleanFunctions.EQUAL);
         row.setValue(enumValue(GENDER_FIELD_ID, "Male").getId());
         row.setJoinFunction(BooleanFunctions.AND);
 
         RowData row2 = new RowData();
-        row2.setFieldId(formClass.getField(PREGNANT_FIELD_ID));
+        row2.setFormField(formClass.getField(PREGNANT_FIELD_ID));
         row2.setFunction(BooleanFunctions.NOT_EQUAL);
         row2.setValue(enumValue(PREGNANT_FIELD_ID, "No").getId());
         row2.setJoinFunction(BooleanFunctions.OR);
@@ -81,7 +82,7 @@ public class ExpressionBuilderTest {
     @Test
     public void text() {
         RowData row = new RowData();
-        row.setFieldId(formClass.getField(TEXT_FIELD_ID));
+        row.setFormField(formClass.getField(TEXT_FIELD_ID));
         row.setFunction(BooleanFunctions.EQUAL);
         row.setValue("val");
         row.setJoinFunction(BooleanFunctions.AND);
@@ -89,10 +90,15 @@ public class ExpressionBuilderTest {
         expr("{test_text}==val", row);
     }
 
-    private void expr(String exprectedExpression, RowData... rows) {
-        String createExpression = new ExpressionBuilder(Arrays.asList(rows)).build();
+    private void expr(String expectedExpression, RowData... rows) {
+        List<RowData> rowList = Arrays.asList(rows);
+        String createExpression = new ExpressionBuilder(rowList).build();
         System.out.println("Built expression: " + createExpression);
-        Assert.assertEquals(createExpression, exprectedExpression);
+        Assert.assertEquals(createExpression, expectedExpression);
+
+        RowDataBuilder builder = new RowDataBuilder(formClass);
+        List<RowData> createRows = builder.build(createExpression);
+        Assert.assertEquals(rowList, createRows);
     }
 
     private EnumValue enumValue(ResourceId formField, String label) {

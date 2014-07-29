@@ -23,7 +23,6 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
 
 import org.activityinfo.core.shared.expr.ExprFunction;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.ResourceId;
 
 /**
  * @author yuriyz on 7/25/14.
@@ -31,7 +30,7 @@ import org.activityinfo.model.resource.ResourceId;
 public class RowData {
 
     private FormField formField;
-    private ExprFunction<Boolean, ?> joinFunction;
+    private ExprFunction<Boolean, ?> joinFunction = RowDataBuilder.DEFAULT_JOIN_FUNCTION;
     private ExprFunction<Boolean, ?> function;
     private Object value;
 
@@ -45,11 +44,11 @@ public class RowData {
         this.value = value;
     }
 
-    public FormField getFieldId() {
+    public FormField getFormField() {
         return formField;
     }
 
-    public void setFieldId(FormField formField) {
+    public void setFormField(FormField formField) {
         this.formField = formField;
     }
 
@@ -75,5 +74,30 @@ public class RowData {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RowData rowData = (RowData) o;
+
+        if (formField != null ? !formField.equals(rowData.formField) : rowData.formField != null) return false;
+        if (function != null ? !function.equals(rowData.function) : rowData.function != null) return false;
+        if (joinFunction != null ? !joinFunction.equals(rowData.joinFunction) : rowData.joinFunction != null)
+            return false;
+        if (value != null ? !value.equals(rowData.value) : rowData.value != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = formField != null ? formField.hashCode() : 0;
+        result = 31 * result + (joinFunction != null ? joinFunction.hashCode() : 0);
+        result = 31 * result + (function != null ? function.hashCode() : 0);
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 }

@@ -50,7 +50,7 @@ public class ExpressionBuilder {
         }
 
         // field id
-        expression += "{" + row.getFieldId().getId().asString() + "}";
+        expression += "{" + row.getFormField().getId().asString() + "}";
 
         // boolean function
         expression += row.getFunction().getId();

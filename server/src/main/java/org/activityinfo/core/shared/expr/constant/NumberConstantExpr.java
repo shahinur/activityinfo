@@ -1,10 +1,12 @@
-package org.activityinfo.core.shared.expr;
+package org.activityinfo.core.shared.expr.constant;
 
-public class ConstantExpr extends ExprNode<Double> {
+import org.activityinfo.core.shared.expr.ExprNode;
+
+public class NumberConstantExpr extends ExprNode<Double> implements IsConstantExpr  {
 
     private double value;
 
-    public ConstantExpr(double value) {
+    public NumberConstantExpr(double value) {
         super();
         this.value = value;
     }
@@ -44,7 +46,7 @@ public class ConstantExpr extends ExprNode<Double> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        ConstantExpr other = (ConstantExpr) obj;
+        NumberConstantExpr other = (NumberConstantExpr) obj;
         if (Double.doubleToLongBits(value) != Double
                 .doubleToLongBits(other.value)) {
             return false;
