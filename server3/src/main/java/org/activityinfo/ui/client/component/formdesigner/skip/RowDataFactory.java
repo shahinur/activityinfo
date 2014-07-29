@@ -37,7 +37,7 @@ public class RowDataFactory {
         final ResourceId fieldId = ResourceId.create(skipRow.getFormfield().getValue(skipRow.getFormfield().getSelectedIndex()));
 
         final RowData rowData = new RowData();
-        rowData.setFieldId(formClass.getField(fieldId));
+        rowData.setFormField(formClass.getField(fieldId));
         rowData.setJoinFunction(BooleanFunctions.getBooleanFunction(skipRow.getJoinFunction().getValue(skipRow.getJoinFunction().getSelectedIndex())));
         rowData.setFunction(BooleanFunctions.getBooleanFunction(skipRow.getFunction().getValue(skipRow.getFunction().getSelectedIndex())));
         rowData.setValue(value);

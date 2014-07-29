@@ -21,11 +21,13 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ListBox;
 import org.activityinfo.core.shared.expr.ExprFunction;
 import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.activityinfo.core.shared.expr.functions.FieldTypeToFunctionRegistry;
@@ -47,6 +49,7 @@ public class SkipRowPresenter {
     private final FormFieldWidgetFactory widgetFactory;
     private FormFieldWidget valueWidget = null;
     private Object value;
+    private RowData rowData;
 
     public SkipRowPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
@@ -79,6 +82,10 @@ public class SkipRowPresenter {
             public void onSuccess(FormFieldWidget widget) {
                 valueWidget = widget;
                 view.getValueContainer().add(widget);
+
+                if (rowData != null) {
+                    valueWidget.setValue(rowData.getValue());
+                }
             }
         });
     }
@@ -128,5 +135,23 @@ public class SkipRowPresenter {
 
     public Object getValue() {
         return value;
+    }
+
+    public void updateWith(final RowData rowData) {
+        this.rowData = rowData;
+        setSelectedValue(view.getJoinFunction(), rowData.getJoinFunction().getId());
+        setSelectedValue(view.getFunction(), rowData.getFunction().getId());
+        setSelectedValue(view.getFormfield(), rowData.getFormField().getId().asString());
+        initValueWidget();
+    }
+
+    private static void setSelectedValue(ListBox listBox, String value) {
+        for (int i = 0; i< listBox.getItemCount(); i++) {
+            String itemValue = listBox.getValue(i);
+            if (!Strings.isNullOrEmpty(itemValue) && itemValue.equals(value)) {
+                listBox.setSelectedIndex(i);
+                return;
+            }
+        }
     }
 }

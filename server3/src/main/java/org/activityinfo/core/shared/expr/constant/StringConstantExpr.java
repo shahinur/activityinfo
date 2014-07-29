@@ -1,4 +1,4 @@
-package org.activityinfo.core.shared.expr;
+package org.activityinfo.core.shared.expr.constant;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,30 +21,32 @@ package org.activityinfo.core.shared.expr;
  * #L%
  */
 
+import org.activityinfo.core.shared.expr.ExprNode;
+
 /**
- * @author yuriyz on 7/23/14.
+ * @author yuriyz on 7/28/14.
  */
-public class BooleanConstantExpr extends ExprNode<Boolean> {
+public class StringConstantExpr extends ExprNode<String> implements IsConstantExpr {
 
-    private boolean value;
+    private String value;
 
-    public BooleanConstantExpr(boolean value) {
+    public StringConstantExpr(String value) {
         super();
         this.value = value;
     }
 
-    public boolean getValue() {
+    public String getValue() {
         return value;
     }
 
     @Override
-    public Boolean evalReal() {
+    public String evalReal() {
         return value;
     }
 
     @Override
     public String toString() {
-        return Boolean.toString(value);
+        return value;
     }
 
     @Override
@@ -52,15 +54,15 @@ public class BooleanConstantExpr extends ExprNode<Boolean> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        BooleanConstantExpr that = (BooleanConstantExpr) o;
+        StringConstantExpr that = (StringConstantExpr) o;
 
-        if (value != that.value) return false;
+        if (value != null ? !value.equals(that.value) : that.value != null) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return (value ? 1 : 0);
+        return value != null ? value.hashCode() : 0;
     }
 }
