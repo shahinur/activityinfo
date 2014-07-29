@@ -83,7 +83,9 @@ public class FormInstance implements IsResource {
     public Resource asResource() {
         Resource resource = Resources.createResource();
         resource.setId(id);
-        resource.setOwnerId(parentId);
+        if (parentId != null) {
+            resource.setOwnerId(parentId);
+        }
         resource.set("classId", classId);
         resource.set("values", getValueRecord());
         return resource;
