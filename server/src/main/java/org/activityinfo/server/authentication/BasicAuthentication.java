@@ -33,8 +33,11 @@ import org.activityinfo.server.database.hibernate.entity.User;
 
 import javax.persistence.NoResultException;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 public class BasicAuthentication {
+
+    private static final Logger LOGGER = Logger.getLogger(BasicAuthentication.class.getName());
 
     private final ServerSideAuthProvider authProvider;
     private final Provider<UserDAO> userDAO;
@@ -83,6 +86,8 @@ public class BasicAuthentication {
             return null;
         }
         if (!auth.toUpperCase().startsWith("BASIC ")) {
+
+            LOGGER.severe("Unsupported authorization header [" + auth + "]");
             // we only do BASIC
             return null;
         }

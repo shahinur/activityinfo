@@ -3,16 +3,18 @@ package org.activityinfo.server.endpoint.odk;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.inject.Inject;
 import com.sun.jersey.multipart.FormDataParam;
-import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
+import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.server.database.hibernate.dao.Geocoder;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
+import org.activityinfo.server.database.hibernate.entity.Location;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormAttributeGroup;
 import org.activityinfo.server.endpoint.odk.SiteFormData.FormIndicator;
 import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
@@ -45,9 +47,6 @@ public class FormSubmissionResource extends ODKResource {
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
     public Response submit(@FormDataParam("xml_submission_file") String xml) throws Exception {
-        if (enforceAuthorization()) {
-            return askAuthentication();
-        }
         LOGGER.fine("ODK form submitted by user " + getUser().getEmail() + " (" + getUser().getId() + ")");
 
         LOGGER.info("XML:\n" + xml);
@@ -71,6 +70,16 @@ public class FormSubmissionResource extends ODKResource {
         } else if(data.getDate1() == null || data.getDate2() == null || data.getDate2().before(data.getDate1())) {
             LOGGER.severe("Invalid dates: date1=" + data.getDate1() + ", date2=" + data.getDate2());
             return badRequest("Invalid dates");
+        }
+
+        // Workaround: assign anonymous submissions to owner of form
+        if(!auth.isAuthenticated()) {
+            LOGGER.info("Setting authentication to form owner");
+
+            User owner = entityManager.get().find(Activity.class, data.getActivity()).getDatabase().getOwner();
+            LOGGER.info("Owner = " + owner.getEmail());
+
+            auth.set(owner);
         }
 
         // check if activity exists
