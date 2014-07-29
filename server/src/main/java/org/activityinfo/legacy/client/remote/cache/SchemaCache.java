@@ -55,7 +55,6 @@ public class SchemaCache implements DispatchListener {
     public SchemaCache(DispatchEventSource source) {
 
         source.registerProxy(GetSchema.class, new SchemaProxy());
-        source.registerProxy(GetFormViewModel.class, new FormViewProxy());
         source.registerListener(GetSchema.class, this);
         source.registerListener(UpdateEntity.class, this);
         source.registerListener(CreateEntity.class, this);
@@ -63,7 +62,6 @@ public class SchemaCache implements DispatchListener {
         source.registerListener(RemovePartner.class, this);
         source.registerListener(RequestChange.class, this);
         source.registerListener(BatchCommand.class, this);
-        source.registerListener(GetFormViewModel.class, this);
         source.registerListener(BatchCommand.class, this);
 
         schemaEntityTypes.add("UserDatabase");
@@ -133,25 +131,6 @@ public class SchemaCache implements DispatchListener {
 
     }
 
-
-    private class FormViewProxy implements CommandCache<GetFormViewModel> {
-        @Override
-        public CacheResult maybeExecute(GetFormViewModel command) {
-            int activityId = command.getActivityId();
-            if(schema != null) {
-                return new CacheResult<>(schema.getActivityById(activityId));
-            } else if(activityMap.containsKey(activityId)) {
-                return new CacheResult<>(activityMap.get(activityId));
-            } else {
-                return CacheResult.couldNotExecute();
-            }
-        }
-
-        @Override
-        public void clear() {
-            clearCache();
-        }
-    }
 
     private class SchemaProxy implements CommandCache<GetSchema> {
         @Override

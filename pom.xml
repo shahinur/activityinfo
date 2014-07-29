@@ -99,6 +99,8 @@
     <module>core/promises</module>
     <module>geoadmin</module>
     <module>server</module>
+    <module>core/serialization-gwt</module>
+    <module>core/model-translatable</module>
   </modules>
 
   <dependencies>

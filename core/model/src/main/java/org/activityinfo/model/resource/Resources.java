@@ -1,5 +1,11 @@
 package org.activityinfo.model.resource;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+
+import java.util.Map;
 import java.util.Objects;
 
 public class Resources {
@@ -48,5 +54,41 @@ public class Resources {
             }
         }
         return true;
+    }
+
+    public static Resource fromJson(String json) {
+        JsonParser parser = new JsonParser();
+        Resource resource = Resources.createResource();
+
+        JsonObject resourceObject = parser.parse(json).getAsJsonObject();
+
+        for(Map.Entry<String, JsonElement> property : resourceObject.entrySet()) {
+            String name = property.getKey();
+            if(name.equals("@id")) {
+                resource.setId(ResourceId.create(resourceObject.getAsJsonPrimitive(name).getAsString()));
+            } else if(name.equals("@owner")) {
+                resource.setOwnerId(ResourceId.create(resourceObject.getAsJsonPrimitive(name).getAsString()));
+            } else  {
+                // normal value
+                if(property.getValue().isJsonPrimitive()) {
+                    JsonPrimitive value = property.getValue().getAsJsonPrimitive();
+                    if(value.isString()) {
+                        resource.set(name, value.getAsString());
+                    } else if(value.isNumber()) {
+                        resource.set(name, value.getAsDouble());
+                    } else if(value.isBoolean()) {
+                        resource.set(name, value.getAsBoolean());
+                    } else {
+                        throw new UnsupportedOperationException("value: " + value);
+                    }
+                } else if(property.getValue().isJsonNull()) {
+                    // noop
+                } else {
+                    throw new UnsupportedOperationException("value: " + property);
+                }
+            }
+        }
+
+        return resource;
     }
 }
