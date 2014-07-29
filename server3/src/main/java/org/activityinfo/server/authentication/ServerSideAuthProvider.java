@@ -51,7 +51,7 @@ public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {
     }
 
     public boolean isAuthenticated() {
-        return currentUser.get() != null;
+        return currentUser.get() != null && !currentUser.get().isAnonymous();
     }
 
     public void set(AuthenticatedUser user) {

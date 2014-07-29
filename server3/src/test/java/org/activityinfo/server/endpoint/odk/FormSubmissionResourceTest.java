@@ -6,7 +6,7 @@ import com.google.common.io.Resources;
 import com.google.gwt.junit.GWTMockUtilities;
 import com.google.inject.Inject;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.SiteDTO;
@@ -18,14 +18,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
-
 import java.io.IOException;
 
 import static com.google.common.io.Resources.getResource;
-import static com.google.common.io.Resources.toString;
-import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertThat;
 
 @RunWith(InjectionSupport.class)
@@ -92,6 +88,21 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
         assertThat(site.getIndicatorDoubleValue(37047), equalTo(0.0));
         assertThat(site.getIndicatorDoubleValue(37048), equalTo(0.0));
     }
+
+
+    @Test
+    public void testSubmitAutoIdentify() throws Exception {
+
+        setUser(AuthenticatedUser.getAnonymous().getUserId());
+
+        Response response = resource.submit(getTestXml());
+        assertThat(response.getStatus(), equalTo(201));
+
+        SiteResult sites = execute(GetSites.byActivity(6464));
+        assertThat(sites.getData(), Matchers.hasSize(1));
+
+    }
+
 
     private String getTestXml() throws IOException {
         return Resources.toString(getResource(FormSubmissionResourceTest.class, "lcca-instance.xml"), Charsets.UTF_8);

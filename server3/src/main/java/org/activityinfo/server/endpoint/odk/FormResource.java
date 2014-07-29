@@ -24,7 +24,7 @@ public class FormResource extends ODKResource {
         if (enforceAuthorization()) {
             return askAuthentication();
         }
-        LOGGER.finer("ODK activityform " + id + " requested by " +
+        LOGGER.finer("ODK activity form " + id + " requested by " +
                      getUser().getEmail() + " (" + getUser().getId() + ")");
 
         SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
