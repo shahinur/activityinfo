@@ -11,6 +11,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.core.shared.expr.ExprLexer;
+import org.activityinfo.core.shared.expr.ExprNode;
+import org.activityinfo.core.shared.expr.ExprParser;
+import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.*;
@@ -177,6 +181,19 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
             container.setInvalid(I18N.CONSTANTS.requiredFieldMessage());
         } else {
             container.setValid();
+        }
+
+        applySkipLogic(field);
+    }
+
+    private void applySkipLogic(FormField field) {
+        if (field.hasSkipExpression()) {
+            ExprLexer lexer = new ExprLexer(field.getSkipExpression());
+            ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(FormInstance.fromResource(workingInstance), formClass));
+            ExprNode<Boolean> expr = parser.parse();
+
+            FieldContainer container = containers.get(field.getId());
+            container.getFieldWidget().setReadOnly(expr.evalReal());
         }
     }
 
