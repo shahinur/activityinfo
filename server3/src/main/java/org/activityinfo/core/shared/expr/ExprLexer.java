@@ -14,6 +14,7 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
     private String string;
     private int currentCharIndex;
     private int currentTokenStart = 0;
+    private boolean startedStringLiteral = false;
 
     private static final String VALID_OPERATORS = "+-/*";
 
@@ -78,7 +79,18 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         } else if (c == '}') {
             return finishToken(TokenType.BRACE_END);
 
-        } else if (StringUtil.isWhitespace(c)) {
+        } else if (c == '"') {
+            if (!startedStringLiteral) {
+                startedStringLiteral = true;
+                return finishToken(TokenType.STRING_START);
+            } else {
+                startedStringLiteral = false;
+                return finishToken(TokenType.STRING_END);
+            }
+        } else if (startedStringLiteral && (isSymbolStart(c) || isNumberPart(c))) {
+            return readSymbol(TokenType.STRING_LITERAL);
+
+        }else if (StringUtil.isWhitespace(c)) {
             return readWhitespace();
 
         } else if (isNumberPart(c)) {
@@ -94,7 +106,7 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
             return readBooleanOperator(c);
 
         } else if (isSymbolStart(c)) {
-            return readSymbol();
+            return readSymbol(TokenType.SYMBOL);
 
         } else {
             throw new RuntimeException("Symbol '" + c + "' is not supported");
@@ -161,11 +173,11 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         return finishToken(TokenType.NUMBER);
     }
 
-    private Token readSymbol() {
+    private Token readSymbol(TokenType tokenType) {
         while (!isEndOfInput() && isSymbolChar(peekChar())) {
             consumeChar();
         }
-        return finishToken(TokenType.SYMBOL);
+        return finishToken(tokenType);
     }
 
     private Token readBooleanLiteral(char c) {
