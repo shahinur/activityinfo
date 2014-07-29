@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  ActivityInfo Server
+  %%
+  Copyright (C) 2009 - 2013 UNICEF
+  %%
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/gpl-3.0.html>.
+  #L%
+  -->
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+  <changeSet author="alex" id="026-01">
+    <comment>
+      Migration towards resources
+    </comment>
+    <createTable tableName="resource">
+      <column name="id" type="varchar(64)">
+        <constraints nullable="false" primaryKey="true"/>
+      </column>
+      <column name="ownerId" type="varchar(64)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="classId" type="varchar(64)"/>
+      <column name="json" type="longtext"/>
+    </createTable>
+    <createIndex indexName="idx_resource_owner"
+                 tableName="resource"
+                 unique="false">
+      <column name="ownerId" type="varchar(64)"/>
+    </createIndex>
+    <createIndex indexName="idx_resource_class"
+                 tableName="resource"
+                 unique="false">
+      <column name="classId" type="varchar(64)"/>
+    </createIndex>
+  </changeSet>
+
+
+</databaseChangeLog>

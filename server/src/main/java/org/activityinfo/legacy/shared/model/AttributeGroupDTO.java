@@ -41,7 +41,10 @@ import java.util.List;
  * One-to-one DTO for the
  * {@link org.activityinfo.server.database.hibernate.entity.AttributeGroup}
  * domain object
+ * @deprecated Will be replaced with {@link org.activityinfo.model.form.FormField} of type
+ * {@link org.activityinfo.model.type.enumerated.EnumType}
  */
+@Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
 public final class AttributeGroupDTO extends BaseModelData implements EntityDTO, IsFormField {
     private static final long serialVersionUID = 7927425202152761370L;

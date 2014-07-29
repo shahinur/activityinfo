@@ -32,8 +32,9 @@ import org.codehaus.jackson.map.annotate.JsonView;
  * One-to-One DTO for the {@link org.activityinfo.legacy.shared.model.AttributeDTO}
  * domain object
  *
- * @author Alex Bertram
+ * @deprecated Will be replaced with {@link org.activityinfo.model.type.enumerated.EnumValue}
  */
+@Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
 public final class AttributeDTO extends BaseModelData implements EntityDTO {
 

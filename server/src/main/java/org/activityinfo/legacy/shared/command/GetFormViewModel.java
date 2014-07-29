@@ -5,7 +5,9 @@ import org.activityinfo.legacy.shared.model.ActivityDTO;
 /**
  * Retrieves a FormClass (ActivityDTO for now)
  *
+ * @deprecated
  */
+@Deprecated
 public class GetFormViewModel implements Command<ActivityDTO> {
 
     private int activityId;

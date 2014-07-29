@@ -39,7 +39,9 @@ import java.util.*;
  * One-to-one DTO for the Activity table.
  *
  * @author Alex Bertram
+ * @deprecated To be replaced with {@link org.activityinfo.model.form.FormClass}
  */
+@Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
 public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLockedPeriod, ProvidesKey, IsFormClass {
 

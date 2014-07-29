@@ -30,6 +30,10 @@ import org.activityinfo.core.shared.model.AiLatLng;
 
 import java.util.List;
 
+/**
+ * @deprecated  Will be replaced with {@link org.activityinfo.model.resource.Resource}
+ */
+@Deprecated
 public class LocationDTO extends BaseModelData implements EntityDTO, HasAdminEntityValues {
 
     public static final String NAME_PROPERTY = "name";

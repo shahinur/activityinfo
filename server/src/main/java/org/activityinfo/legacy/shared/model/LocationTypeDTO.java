@@ -40,8 +40,10 @@ import java.util.List;
  * {@link org.activityinfo.server.database.hibernate.entity.LocationType
  * LocationType} domain object.
  *
+ * @deprecated Will be replaced with {@link org.activityinfo.model.form.FormClass}
  * @author Alex Bertram
  */
+@Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
 public final class LocationTypeDTO extends BaseModelData implements EntityDTO, IsFormClass {
 

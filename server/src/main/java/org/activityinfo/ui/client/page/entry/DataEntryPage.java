@@ -40,7 +40,6 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
@@ -48,6 +47,7 @@ import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.ui.client.ClientContext;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.component.importDialog.ImportPresenter;
@@ -56,7 +56,6 @@ import org.activityinfo.ui.client.page.common.toolbar.ActionListener;
 import org.activityinfo.ui.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.entry.column.DefaultColumnModelProvider;
-import org.activityinfo.ui.client.page.entry.form.PrintDataEntryForm;
 import org.activityinfo.ui.client.page.entry.form.SiteDialogCallback;
 import org.activityinfo.ui.client.page.entry.form.SiteDialogLauncher;
 import org.activityinfo.ui.client.page.entry.grouping.GroupingComboBox;
@@ -387,11 +386,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
                             }
                         }
                     });
-
-        } else if (UIActions.PRINT.equals(actionId)) {
-            int activityId = currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity);
-            PrintDataEntryForm form = new PrintDataEntryForm(dispatcher);
-            form.print(activityId);
 
         } else if (UIActions.EXPORT.equals(actionId)) {
             Window.Location.assign(GWT.getModuleBaseURL() + "export?filter=" +
