@@ -147,7 +147,10 @@ public class QueryExecutor {
                 return dispatcher.execute(new GetSchema())
                                  .then(new PartnerListExtractor(criteria))
                                  .then(concatMap(new PartnerInstanceAdapter(formClassId)));
-
+            case PROJECT_CLASS_DOMAIN:
+                return dispatcher.execute(new GetSchema())
+                        .then(new ProjectListExtractor(criteria))
+                        .then(concatMap(new ProjectInstanceAdapter(formClassId)));
             default:
                 return Promise.rejected(new UnsupportedOperationException(
                         "domain not yet implemented: " + formClassId.getDomain()));
