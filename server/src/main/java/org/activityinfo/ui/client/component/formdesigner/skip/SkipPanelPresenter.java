@@ -39,14 +39,27 @@ public class SkipPanelPresenter {
     private final FieldWidgetContainer fieldWidgetContainer;
     private final SkipPanel view = new SkipPanel();
     private final Map<SkipRow, SkipRowPresenter> map = Maps.newHashMap();
+    private final RowDataBuilder rowDataBuilder;
 
     public SkipPanelPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
+        this.rowDataBuilder = new RowDataBuilder(fieldWidgetContainer.getFormDesigner().getFormClass());
 
-        addRow(fieldWidgetContainer);
+        if (fieldWidgetContainer.getFormField().hasSkipExpression()) {
+            List<RowData> build = rowDataBuilder.build(fieldWidgetContainer.getFormField().getSkipExpression());
+            for (RowData rowData : build) {
+                SkipRowPresenter skipRowPresenter = addRow(fieldWidgetContainer);
+                skipRowPresenter.updateWith(rowData);
+            }
+        }
+
+        // add initial row if expression is not set
+        if (view.getRootPanel().getWidgetCount() == 0) {
+            addRow(fieldWidgetContainer);
+        }
     }
 
-    private void addRow(final FieldWidgetContainer fieldWidgetContainer) {
+    private SkipRowPresenter addRow(final FieldWidgetContainer fieldWidgetContainer) {
         final SkipRowPresenter skipRowPresenter = new SkipRowPresenter(fieldWidgetContainer);
         view.getRootPanel().add(skipRowPresenter.getView());
         map.put(skipRowPresenter.getView(), skipRowPresenter);
@@ -68,6 +81,7 @@ public class SkipPanelPresenter {
         if (view.getRootPanel().getWidgetCount() == 1) { // disable join function for first row
             skipRowPresenter.getView().getJoinFunction().setVisible(false);
         }
+        return skipRowPresenter;
     }
 
     public SkipPanel getView() {
