@@ -59,8 +59,10 @@ public class ExpressionBuilder {
         Object value = row.getValue();
         if (value instanceof ResourceId) {
             expression += "{" + ((ResourceId) value).asString() + "}";
-        } else if (value instanceof Boolean || value instanceof Number || value instanceof String) {
+        } else if (value instanceof Boolean || value instanceof Number) {
             expression += value;
+        } else if (value instanceof String) {
+            expression += "\"" + value + "\"";
         } else {
             throw new UnsupportedOperationException("Not supported value: " + value);
         }

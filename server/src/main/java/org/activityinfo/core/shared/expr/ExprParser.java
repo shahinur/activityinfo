@@ -29,7 +29,9 @@ public class ExprParser {
 
             @Override
             public boolean apply(Token token) {
-                return token.getType() != TokenType.WHITESPACE;
+                return token.getType() != TokenType.WHITESPACE &&
+                        token.getType() != TokenType.STRING_START &&
+                        token.getType() != TokenType.STRING_START;
             }
         }));
         this.placeholderExprResolver = placeholderExprResolver;
@@ -88,7 +90,7 @@ public class ExprParser {
             ExprNode right = parse();
             return new FunctionCallNode(function, right);
 
-        } else if (token.getType() == TokenType.SYMBOL) {
+        } else if (token.getType() == TokenType.STRING_LITERAL || token.getType() == TokenType.SYMBOL) {
             return new StringConstantExpr(token.getString());
 
         } else {

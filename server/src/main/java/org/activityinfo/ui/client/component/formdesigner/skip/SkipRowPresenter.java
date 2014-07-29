@@ -85,6 +85,7 @@ public class SkipRowPresenter {
 
                 if (rowData != null) {
                     valueWidget.setValue(rowData.getValue());
+                    SkipRowPresenter.this.value = rowData.getValue();
                 }
             }
         });

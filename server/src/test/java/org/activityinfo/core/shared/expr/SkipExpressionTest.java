@@ -28,6 +28,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.TextType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.junit.Assert;
@@ -44,6 +45,7 @@ public class SkipExpressionTest {
 
     private static final ResourceId GENDER_FIELD_ID = ResourceId.generateId();
     private static final ResourceId PREGNANT_FIELD_ID = ResourceId.generateId();
+    private static final ResourceId TEXT_FIELD_ID = ResourceId.create("test_text");
 
     FormClass formClass;
 
@@ -60,6 +62,15 @@ public class SkipExpressionTest {
         eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
         eval(String.format("{%s}!={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), false, instance);
         eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
+    }
+
+    @Test
+    public void text() {
+        FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
+        instance.set(TEXT_FIELD_ID, "1");
+
+        eval(String.format("{%s}==\"1\"", TEXT_FIELD_ID.asString()), true, instance);
+        eval(String.format("{%s}!=\"1\"", TEXT_FIELD_ID.asString()), false, instance);
     }
 
     private void eval(String skipExpression, Boolean expectedValue, FormInstance instance) {
@@ -95,9 +106,14 @@ public class SkipExpressionTest {
         pregnantField.setLabel("are you currently pregnant?");
         pregnantField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(pregnantYes, pregnantNo)));
 
+        FormField textField = new FormField(TEXT_FIELD_ID);
+        textField.setLabel("Text");
+        textField.setType(TextType.INSTANCE);
+
         final FormClass formClass = new FormClass(CuidAdapter.activityFormClass(1));
         formClass.addElement(genderField);
         formClass.addElement(pregnantField);
+        formClass.addElement(textField);
         return formClass;
     }
 }
