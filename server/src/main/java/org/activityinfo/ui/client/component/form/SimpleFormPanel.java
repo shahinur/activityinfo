@@ -177,7 +177,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         if (!Objects.equals(workingInstance.get(field.getId().asString()), newValue)) {
             workingInstance.set(field.getId().asString(), newValue);
             validate(field);
-            skipHandler.onValueChange();
+            skipHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
         }
     }
 
