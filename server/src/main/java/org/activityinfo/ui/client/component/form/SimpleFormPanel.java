@@ -182,9 +182,9 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     }
 
     private void validate(FormField field) {
-        String value = (String) workingInstance.get(field.getId().asString());
+        Object value = workingInstance.get(field.getId().asString());
         FieldContainer container = containers.get(field.getId());
-        if (field.isRequired() && Strings.isNullOrEmpty(value)) {
+        if (field.isRequired() && (value == null || (value instanceof String && Strings.isNullOrEmpty((String) value)) )) {
             container.setInvalid(I18N.CONSTANTS.requiredFieldMessage());
         } else {
             container.setValid();
