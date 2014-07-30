@@ -178,6 +178,7 @@ public class FormPersister {
         indicator.setNameInExpression(field.getNameInExpression());
         indicator.setExpression(field.getExpression());
         indicator.setCalculatedAutomatically(field.getCalculateAutomatically());
+        indicator.setSkipExpression(field.getSkipExpression());
 
         if(field.getType() instanceof QuantityType) {
             indicator.setType(FieldTypeClass.QUANTITY);
