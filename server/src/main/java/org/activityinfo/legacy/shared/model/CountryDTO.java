@@ -36,7 +36,7 @@ import java.util.List;
  * One-to-one DTO for
  * {@link org.activityinfo.server.database.hibernate.entity.Country} domain
  * objects.
- * @deprecated To be replaced with {@link org.activityinfo.core.shared.Resource}
+ * @deprecated To be replaced with {@link org.activityinfo.model.resource.Resource}
  */
 @Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
