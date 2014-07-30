@@ -88,6 +88,8 @@ public class PlaceholderExpr<T> extends ExprNode<T> {
 
     @Override
     public String toString() {
-        return "{" + placeholder + '}';
+        return "{placeholder='" + placeholder + '\'' +
+                ", value=" + value +
+                '}';
     }
 }

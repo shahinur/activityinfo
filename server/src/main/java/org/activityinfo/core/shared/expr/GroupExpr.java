@@ -22,6 +22,10 @@ public class GroupExpr<T> extends ExprNode<T> {
         return expr.evalReal();
     }
 
+    public ExprNode<T> getExpr() {
+        return expr;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

@@ -21,9 +21,11 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
+import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author yuriyz on 7/25/14.
@@ -63,6 +65,29 @@ public class ExpressionBuilder {
             expression += value;
         } else if (value instanceof String) {
             expression += "\"" + value + "\"";
+        } else if (value instanceof Set) {
+            List<ResourceId> idSet = Lists.newArrayList((Set<ResourceId>) value);
+            int size = idSet.size();
+            for (int i = 0; i < size; i++) {
+                ResourceId resourceId = idSet.get(i);
+
+                if (size > 1 && i == 0) { // wrap last statement into parenthesis if there is more than one resourceId
+                    int lastPlaceholderStartChart = expression.lastIndexOf("{");
+                    expression = expression.substring(0, lastPlaceholderStartChart) + "(" + expression.substring(lastPlaceholderStartChart);
+                }
+
+                // first element
+                if (i == 0) {
+                    expression += "{" + resourceId.asString() + "}";
+                } else { // for all other elements need to build complete statement
+                    String fieldIdPlaceholder = "{" + row.getFormField().getId().asString() + "}";
+                    expression += "||" + fieldIdPlaceholder + row.getFunction().getId() + "{" + resourceId.asString() + "}";
+                }
+
+                if (size > 1 && i == (size - 1)) { // wrap last statement into parenthesis if there is more than one resourceId
+                    expression += ")";
+                }
+            }
         } else {
             throw new UnsupportedOperationException("Not supported value: " + value);
         }
