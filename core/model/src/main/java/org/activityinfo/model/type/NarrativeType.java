@@ -3,6 +3,7 @@ package org.activityinfo.model.type;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.component.ComponentReader;
 
 /**
@@ -58,7 +59,7 @@ public enum NarrativeType implements FieldType, FieldTypeClass {
 
     @Override
     public FormClass getParameterFormClass() {
-        return null;
+        return new FormClass(ResourceId.create(getId()));
     }
 
 }

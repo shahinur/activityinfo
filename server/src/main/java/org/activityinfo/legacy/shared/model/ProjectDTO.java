@@ -33,7 +33,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * @deprecated TO be replaced with {@link org.activityinfo.core.shared.Resource}
+ * @deprecated TO be replaced with {@link org.activityinfo.model.resource.Resource}
  */
 @Deprecated
 @JsonAutoDetect(JsonMethod.NONE)
