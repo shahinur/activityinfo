@@ -1,11 +1,11 @@
 package org.activityinfo.core.client.form.tree;
 
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
+import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.hamcrest.Matchers;
@@ -31,6 +31,6 @@ public class AsyncFormTreeBuilderTest extends CommandTestCase2 {
         System.out.println(tree);
 
         assertThat(tree.getRootFormClasses().keySet(), Matchers.hasItems(formClassId));
-
     }
+
 }

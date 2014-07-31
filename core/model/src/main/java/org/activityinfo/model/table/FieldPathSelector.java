@@ -38,7 +38,8 @@ public class FieldPathSelector implements FieldSelector {
             if(formClass != null && !Objects.equals(formClass, input.getDefiningFormClass().getId())) {
                 return false;
             }
-            return fieldName.equals(input.getField().getName());
+            throw new UnsupportedOperationException(); // TODO(alex)
+           // return fieldName.equals(input.getField().getName());
         }
     }
 

@@ -35,7 +35,7 @@ import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.reports.content.MapboxLayers;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
-import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
+import org.activityinfo.ui.client.page.entry.location.resources.SiteFormResources;
 import org.activityinfo.ui.client.util.LeafletUtil;
 import org.discotools.gwt.leaflet.client.LeafletResourceInjector;
 import org.discotools.gwt.leaflet.client.Options;

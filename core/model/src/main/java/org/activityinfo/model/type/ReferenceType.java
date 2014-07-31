@@ -1,6 +1,7 @@
 package org.activityinfo.model.type;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
@@ -104,8 +105,16 @@ public class ReferenceType implements FieldType {
     public Record getParameters() {
         return new Record()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
-                .set("range", Reference.to(range))
+                .set("range", toArray(range))
                 .set("cardinality", cardinality);
+    }
+
+    private List<String> toArray(Set<ResourceId> range) {
+        List<String> ids = Lists.newArrayList();
+        for(ResourceId id : range) {
+            ids.add(id.asString());
+        }
+        return ids;
     }
 
     @Override

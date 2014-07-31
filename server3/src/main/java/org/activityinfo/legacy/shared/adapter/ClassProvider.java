@@ -1,14 +1,14 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
-import org.activityinfo.core.client.NotFoundException;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.ApplicationClassProvider;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.command.GetFormViewModel;
 import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.model.GetResource;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.promise.Promise;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
 
@@ -25,8 +25,8 @@ public class ClassProvider implements Function<ResourceId, Promise<FormClass>> {
         switch (classId.getDomain()) {
             case ACTIVITY_DOMAIN:
                 int activityId = getLegacyIdFromCuid(classId);
-                return dispatcher.execute(new GetFormViewModel(activityId))
-                                 .then(new BuiltinFormClasses.ActivityAdapter(activityId));
+                return dispatcher.execute(new GetResource(CuidAdapter.activityFormClass(activityId)))
+                                 .then(new FormClassDeserializer());
 
             case PARTNER_FORM_CLASS_DOMAIN:
                 return Promise.resolved(PartnerClassAdapter.create(getLegacyIdFromCuid(classId)));
@@ -55,7 +55,7 @@ public class ClassProvider implements Function<ResourceId, Promise<FormClass>> {
 
 
             default:
-                return Promise.rejected(new NotFoundException(classId));
+                return dispatcher.execute(new GetResource(classId)).then(new FormClassDeserializer());
         }
     }
 

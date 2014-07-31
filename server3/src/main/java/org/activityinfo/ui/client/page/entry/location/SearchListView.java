@@ -27,7 +27,7 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.google.gwt.user.client.Element;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.LocationDTO;
-import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
+import org.activityinfo.ui.client.page.entry.location.resources.SiteFormResources;
 
 import java.util.Arrays;
 

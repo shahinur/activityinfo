@@ -35,7 +35,7 @@ import org.activityinfo.legacy.shared.model.AdminEntityDTO;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 import org.activityinfo.ui.client.page.entry.admin.AdminComboBox;
 import org.activityinfo.ui.client.page.entry.admin.AdminComboBoxSet.ComboBoxFactory;
-import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
+import org.activityinfo.ui.client.page.entry.location.resources.SiteFormResources;
 
 public class SearchAdminComboBox extends ComboBox<AdminEntityDTO> implements AdminComboBox {
 

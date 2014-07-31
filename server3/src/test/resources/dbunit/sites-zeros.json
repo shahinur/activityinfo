@@ -1,0 +1,203 @@
+[
+  {
+    "@id": "a0000000003",
+    "@owner": "d0000000002",
+    "label": "Appui aux centres de santé",
+    "elements": [
+      {
+        "id": "a00000000030000000007",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P0000000002"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000030000000008",
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "R0000000002"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000030000000012",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000030000000013",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000030000000011",
+        "label": "localite",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "L0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a0000000003-1106114670",
+        "label": "outputs",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i0000000005",
+            "label": "Utilisaton rate",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "nc/hab/month"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a00000000030000000014",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "NARRATIVE"
+          },
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "a0000000004",
+    "@owner": "d0000000002",
+    "label": "Reunification of child soliders",
+    "elements": [
+      {
+        "id": "a00000000040000000007",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P0000000002"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000040000000008",
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "R0000000002"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000040000000012",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000040000000013",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000040000000011",
+        "label": "localite",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "L0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "i0000000006",
+        "label": "Number of children",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "children"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "a00000000040000000014",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "NARRATIVE"
+          },
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  }
+]

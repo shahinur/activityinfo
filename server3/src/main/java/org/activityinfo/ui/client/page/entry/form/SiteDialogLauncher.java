@@ -22,22 +22,16 @@ package org.activityinfo.ui.client.page.entry.form;
  * #L%
  */
 
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.model.legacy.KeyGenerator;
-import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.GetFormViewModel;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.LocationDTO;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.legacy.shared.model.LockedPeriodSet;
-import org.activityinfo.ui.client.page.entry.location.LocationDialog;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.ui.client.component.form.FormDialog;
+import org.activityinfo.ui.client.component.form.FormDialogCallback;
 
 public class SiteDialogLauncher {
 
@@ -52,98 +46,28 @@ public class SiteDialogLauncher {
         if (filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
             int activityId = filter.getRestrictedCategory(DimensionType.Activity);
 
-            dispatcher.execute(new GetFormViewModel(activityId), new AsyncCallback<ActivityDTO>() {
+            ResourceId formClassId = CuidAdapter.activityFormClass(activityId);
+            ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(formClassId);
+            FormInstance newInstance = new FormInstance(instanceId, formClassId);
 
+            FormDialog formDialog = new FormDialog(new ResourceLocatorAdaptor(dispatcher));
+            formDialog.show(newInstance, new FormDialogCallback() {
                 @Override
-                public void onFailure(Throwable caught) {
-                    Log.error("Unable to add site", caught);
-                }
-
-                @Override
-                public void onSuccess(ActivityDTO activity) {
-                    Log.trace("adding site for activity " + activity + ", locationType = " + activity.getLocationType());
-
-                    if (activity.getLocationType().isAdminLevel()) {
-                        addNewSiteWithBoundLocation(activity, callback);
-
-                    } else if (activity.getLocationType().isNationwide()) {
-                        addNewSiteWithNoLocation(activity, callback);
-
-                    } else {
-                        chooseLocationThenAddSite(activity, callback);
-                    }
+                public void onPersisted(FormInstance instance) {
+                    callback.onSaved(new SiteDTO(instance));
                 }
             });
         }
     }
 
     public void editSite(final SiteDTO site, final SiteDialogCallback callback) {
-        dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
+        FormDialog formDialog = new FormDialog(new ResourceLocatorAdaptor(dispatcher));
+        formDialog.show(site.getInstanceId(), new FormDialogCallback() {
             @Override
-            public void onFailure(Throwable caught) {
-            }
-
-            @Override
-            public void onSuccess(SchemaDTO schema) {
-                ActivityDTO activity = schema.getActivityById(site.getActivityId());
-
-                // check whether the site has been locked
-                // (this only applies to Once-reported activities because
-                //  otherwise the date criteria applies to the monthly report)
-                if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-                    LockedPeriodSet locks = new LockedPeriodSet(schema);
-                    if (locks.isLocked(site)) {
-                        MessageBox.alert(I18N.CONSTANTS.lockedSiteTitle(), I18N.CONSTANTS.siteIsLocked(), null);
-                        return;
-                    }
-                }
-
-                SiteDialog dialog = new SiteDialog(dispatcher, activity);
-                dialog.showExisting(site, callback);
+            public void onPersisted(FormInstance instance) {
+                callback.onSaved(new SiteDTO(instance));
             }
         });
-    }
-
-    private void chooseLocationThenAddSite(final ActivityDTO activity, final SiteDialogCallback callback) {
-        LocationDialog dialog = new LocationDialog(dispatcher,
-                activity.getLocationType());
-
-        dialog.show(new LocationDialog.Callback() {
-
-            @Override
-            public void onSelected(LocationDTO location, boolean isNew) {
-                SiteDTO newSite = new SiteDTO();
-                newSite.setActivityId(activity.getId());
-                newSite.setLocation(location);
-
-                SiteDialog dialog = new SiteDialog(dispatcher, activity);
-                dialog.showNew(newSite, location, isNew, callback);
-            }
-        });
-    }
-
-    private void addNewSiteWithBoundLocation(ActivityDTO activity, SiteDialogCallback callback) {
-        SiteDTO newSite = new SiteDTO();
-        newSite.setActivityId(activity.getId());
-
-        LocationDTO location = new LocationDTO();
-        location.setId(new KeyGenerator().generateInt());
-        location.setLocationTypeId(activity.getLocationTypeId());
-
-        SiteDialog dialog = new SiteDialog(dispatcher, activity);
-        dialog.showNew(newSite, location, true, callback);
-    }
-
-    private void addNewSiteWithNoLocation(ActivityDTO activity, SiteDialogCallback callback) {
-        SiteDTO newSite = new SiteDTO();
-        newSite.setActivityId(activity.getId());
-
-        LocationDTO location = new LocationDTO();
-        location.setId(activity.getLocationTypeId());
-        location.setLocationTypeId(activity.getLocationTypeId());
-
-        SiteDialog dialog = new SiteDialog(dispatcher, activity);
-        dialog.showNew(newSite, location, true, callback);
     }
 }

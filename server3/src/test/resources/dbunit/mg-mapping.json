@@ -1,0 +1,184 @@
+[
+  {
+    "@id": "C00000010260093034990",
+    "@owner": "d0000001026",
+    "_class": "_folder",
+    "label": "après"
+  },
+  {
+    "@id": "a0000002509",
+    "@owner": "C00000010260093034990",
+    "label": "réhabilitation reconstruction",
+    "elements": [
+      {
+        "id": "a00000025090000000007",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P0000001026"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000025090000000008",
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "R0000001026"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000025090000000012",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000025090000000013",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000025090000000011",
+        "label": "Fokotany",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "E0000001512"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000025090093030929",
+        "label": "apres",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i0000012441",
+            "label": "nombre d'école réhabilitée",
+            "required": true,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "nombre"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000012442",
+            "label": "nombre d'école reconstruite",
+            "required": true,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "nombre"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000012443",
+            "label": "nombre de salle réhabilitée",
+            "required": true,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "nombre"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "i0000012444",
+        "label": "nombre de salle reconstruite",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "nombre"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000012445",
+        "label": "nombre d'élèves bénéficiaires",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "nombre"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000012446",
+        "label": "nombre de garçon bénéficiaire",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "nombre"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000012447",
+        "label": "nombre de fille bénéficiaire",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "nombre"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "a00000025090000000014",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "NARRATIVE"
+          },
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  }
+]

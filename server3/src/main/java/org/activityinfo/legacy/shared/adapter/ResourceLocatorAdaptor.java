@@ -10,6 +10,7 @@ import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.criteria.IdCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.model.PutResource;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.IsResource;
@@ -54,7 +55,7 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
                 return new LocationPersister(dispatcher, instance).persist();
             }
         } else if(resource instanceof FormClass) {
-            return new FormPersister(dispatcher, (FormClass)resource).persist();
+            return dispatcher.execute(new PutResource(resource)).thenDiscardResult();
         }
         return Promise.rejected(new UnsupportedOperationException());
     }
