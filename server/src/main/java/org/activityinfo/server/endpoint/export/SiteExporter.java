@@ -30,6 +30,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
+import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.server.command.DispatcherSync;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -39,11 +40,15 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Exports sites in Excel format
  */
 public class SiteExporter {
+
+    private static final Logger LOGGER = Logger.getLogger(SiteExporter.class.getName());
 
     private static final int MAX_WORKSHEET_LENGTH = 31;
 
@@ -59,6 +64,7 @@ public class SiteExporter {
     private static final int PARTNER_COLUMN_WIDTH = 16;
     private static final int HEADER_CELL_HEIGHT = 75;
     private static final int CHARACTERS_PER_WIDTH_UNIT = 255;
+    private static final int SITE_BATCH_SIZE = 100;
 
     private final DispatcherSync dispatcher;
 
@@ -265,7 +271,7 @@ public class SiteExporter {
 
     }
 
-    private List<SiteDTO> querySites(ActivityDTO activity, Filter filter) {
+    private SiteResult querySites(ActivityDTO activity, Filter filter, int offset) {
 
         Filter effectiveFilter = new Filter(filter);
         effectiveFilter.addRestriction(DimensionType.Activity, activity.getId());
@@ -273,60 +279,75 @@ public class SiteExporter {
         GetSites query = new GetSites();
         query.setFilter(effectiveFilter);
         query.setSortInfo(new SortInfo("date2", SortDir.DESC));
+        query.setOffset(offset);
+        query.setLimit(SITE_BATCH_SIZE);
 
-        return dispatcher.execute(query).getData();
+        return dispatcher.execute(query);
     }
 
     private void createDataRows(ActivityDTO activity, Filter filter, Sheet sheet) {
 
         int rowIndex = 2;
-        for (SiteDTO site : querySites(activity, filter)) {
 
-            Row row = sheet.createRow(rowIndex++);
-            int column = 0;
+        // query in batches in order to avoid sinking MySQL
+        int offset = 0;
+        while(true) {
+            LOGGER.log(Level.INFO, "Fetching batching at offset " + offset);
 
-            createCell(row, column++, site.getDate1());
-            createCell(row, column++, site.getDate2());
-            createCell(row, column++, site.getPartnerName());
-
-            createCell(row, column++, site.getLocationName());
-
-            createCell(row, column++, site.getLocationAxe());
-
-            for (Integer indicatorId : indicators) {
-                createIndicatorValueCell(row, column++, site.getIndicatorValue(indicatorId));
+            SiteResult batch = querySites(activity, filter, offset);
+            for (SiteDTO site : batch.getData()) {
+                addDataRow(sheet, rowIndex++, site);
             }
-
-            for (Integer attribId : attributes) {
-
-                Boolean value = site.getAttributeValue(attribId);
-                if (value != null) {
-                    Cell valueCell = createCell(row, column, value);
-                    valueCell.setCellStyle(attribValueStyle);
-                }
-                column++;
+            offset += batch.getData().size();
+            if(offset >= batch.getTotalLength()) {
+                break;
             }
+        }
+    }
 
-            for (Integer levelId : levels) {
-                AdminEntityDTO entity = site.getAdminEntity(levelId);
-                if (entity != null) {
-                    createCell(row, column, "");
-                    createCell(row, column + 1, entity.getName());
-                }
-                column += 2;
-            }
+    private void addDataRow(Sheet sheet, int rowIndex, SiteDTO site) {
+        Row row = sheet.createRow(rowIndex);
+        int column = 0;
 
-            if (site.hasLatLong()) {
-                createCoordCell(row, column, site.getLongitude());
-                createCoordCell(row, column + 1, site.getLatitude());
-            }
-            column += 2;
+        createCell(row, column++, site.getDate1());
+        createCell(row, column++, site.getDate2());
+        createCell(row, column++, site.getPartnerName());
 
-            if (!Strings.isNullOrEmpty(site.getComments())) {
-                createCell(row, column, site.getComments());
-            }
+        createCell(row, column++, site.getLocationName());
+
+        createCell(row, column++, site.getLocationAxe());
+
+        for (Integer indicatorId : indicators) {
+            createIndicatorValueCell(row, column++, site.getIndicatorValue(indicatorId));
+        }
+
+        for (Integer attribId : attributes) {
+
+            boolean value = site.getAttributeValue(attribId);
+            Cell valueCell = createCell(row, column, value);
+            valueCell.setCellStyle(attribValueStyle);
             column++;
         }
+
+        for (Integer levelId : levels) {
+            AdminEntityDTO entity = site.getAdminEntity(levelId);
+            if (entity != null) {
+                createCell(row, column, "");
+                createCell(row, column + 1, entity.getName());
+            }
+            column += 2;
+        }
+
+        if (site.hasLatLong()) {
+            createCoordCell(row, column, site.getLongitude());
+            createCoordCell(row, column + 1, site.getLatitude());
+        }
+        column += 2;
+
+        if (!Strings.isNullOrEmpty(site.getComments())) {
+            createCell(row, column, site.getComments());
+        }
+        column++;
     }
 
     private Cell createHeaderCell(Row headerRow, int columnIndex, String text, CellStyle style) {

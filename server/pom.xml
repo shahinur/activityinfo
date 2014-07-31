@@ -108,6 +108,12 @@
       <version>${appengine.export.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.appengine.tools</groupId>
+      <artifactId>appengine-gcs-client</artifactId>
+      <version>RELEASE</version>
+    </dependency>
+
     <!-- Database dependencies -->
 
     <dependency>
@@ -180,7 +186,7 @@
     <dependency>
       <groupId>com.extjs</groupId>
       <artifactId>gxt</artifactId>
-      <version>2.3.1-gwt26-bdd-6-SNAPSHOT</version>
+      <version>2.3.1-gwt26-bdd-9</version>
     </dependency>
     <dependency>
       <groupId>org.discotools.gwt.leaflet</groupId>
