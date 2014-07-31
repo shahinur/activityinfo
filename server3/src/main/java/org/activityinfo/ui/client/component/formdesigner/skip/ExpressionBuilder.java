@@ -38,7 +38,6 @@ import java.util.Set;
 public class ExpressionBuilder {
 
     private List<RowData> rows;
-    private String expression = "";
 
     public ExpressionBuilder(List<RowData> rows) {
         this.rows = rows;
