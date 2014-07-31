@@ -30,10 +30,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
@@ -41,7 +39,10 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.DeleteSite;
+import org.activityinfo.legacy.shared.command.DimensionType;
+import org.activityinfo.legacy.shared.command.Filter;
+import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
@@ -61,6 +62,7 @@ import org.activityinfo.ui.client.page.entry.form.SiteDialogLauncher;
 import org.activityinfo.ui.client.page.entry.grouping.GroupingComboBox;
 import org.activityinfo.ui.client.page.entry.place.DataEntryPlace;
 import org.activityinfo.ui.client.page.entry.sitehistory.SiteHistoryTab;
+import org.activityinfo.ui.client.page.report.ExportDialog;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 import java.util.Set;
@@ -388,8 +390,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
                     });
 
         } else if (UIActions.EXPORT.equals(actionId)) {
-            Window.Location.assign(GWT.getModuleBaseURL() + "export?filter=" +
-                                   FilterUrlSerializer.toUrlFragment(currentPlace.getFilter()));
+            ExportDialog dialog = new ExportDialog(dispatcher);
+            dialog.exportSites(currentPlace.getFilter());
 
         } else if ("EMBED".equals(actionId)) {
             EmbedDialog dialog = new EmbedDialog(dispatcher);
