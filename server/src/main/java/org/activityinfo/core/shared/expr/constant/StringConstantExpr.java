@@ -46,7 +46,12 @@ public class StringConstantExpr extends ExprNode<String> implements IsConstantEx
 
     @Override
     public String toString() {
-        return value;
+        return asExpression();
+    }
+
+    @Override
+    public String asExpression() {
+        return "\"" + value + "\"";
     }
 
     @Override

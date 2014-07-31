@@ -22,6 +22,11 @@ public class NumberConstantExpr extends ExprNode<Double> implements IsConstantEx
 
     @Override
     public String toString() {
+        return asExpression();
+    }
+
+    @Override
+    public String asExpression() {
         return Double.toString(value);
     }
 

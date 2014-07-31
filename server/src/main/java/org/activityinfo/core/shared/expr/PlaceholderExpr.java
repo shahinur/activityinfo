@@ -86,10 +86,12 @@ public class PlaceholderExpr<T> extends ExprNode<T> {
         return result;
     }
 
+    public String asExpression() {
+        return "{" + placeholder + "}";
+    }
+
     @Override
     public String toString() {
-        return "{placeholder='" + placeholder + '\'' +
-                ", value=" + value +
-                '}';
+        return asExpression();
     }
 }
