@@ -23,6 +23,7 @@ package org.activityinfo.server.database;
  */
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
+import com.google.common.base.Charsets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -97,7 +98,7 @@ public class LoadDataSet extends Statement {
 
         JsonParser parser = new JsonParser();
         JsonArray resourcesArray;
-        try(Reader reader = new InputStreamReader(target.getClass().getResourceAsStream(jsonName))) {
+        try(Reader reader = new InputStreamReader(target.getClass().getResourceAsStream(jsonName), Charsets.UTF_8)) {
             resourcesArray = parser.parse(reader).getAsJsonArray();
         }
 
