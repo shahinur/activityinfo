@@ -11,21 +11,20 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.expr.ExprLexer;
-import org.activityinfo.core.shared.expr.ExprNode;
-import org.activityinfo.core.shared.expr.ExprParser;
-import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.*;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.ui.client.component.form.field.EnumFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
+import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 import org.activityinfo.ui.client.widget.DisplayWidget;
 
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,6 +55,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private FormClass formClass;
     private ResourceLocator locator;
+    private SkipHandler skipHandler;
 
     public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
                            FormFieldWidgetFactory widgetFactory) {
@@ -70,6 +70,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         this.containerFactory = containerFactory;
         this.widgetFactory = widgetFactory;
         this.withScroll = withScroll;
+        this.skipHandler = new SkipHandler(this);
 
         panel = new FlowPanel();
         panel.setStyleName(FormPanelStyles.INSTANCE.formPanel());
@@ -104,6 +105,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private Promise<Void> buildForm(final FormClass formClass) {
         this.formClass = formClass;
+        this.skipHandler.formClassChanged();
 
         try {
             return createWidgets().then(new Function<Void, Void>() {
@@ -149,7 +151,11 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         for (Map.Entry<ResourceId, FieldContainer> entry : containers.entrySet()) {
             FieldContainer container = entry.getValue();
             FormFieldWidget fieldWidget = container.getFieldWidget();
-            tasks.add(fieldWidget.setValue(workingInstance.get(entry.getKey().asString())));
+            Object value = workingInstance.get(entry.getKey().asString());
+            if (value == null && (fieldWidget instanceof ReferenceFieldWidget || fieldWidget instanceof EnumFieldWidget)) {
+                value = new HashSet();
+            }
+            tasks.add(fieldWidget.setValue(value));
             container.setValid();
         }
 
@@ -171,29 +177,17 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         if (!Objects.equals(workingInstance.get(field.getId().asString()), newValue)) {
             workingInstance.set(field.getId().asString(), newValue);
             validate(field);
+            skipHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
         }
     }
 
     private void validate(FormField field) {
-        String value = (String) workingInstance.get(field.getId().asString());
+        Object value = workingInstance.get(field.getId().asString());
         FieldContainer container = containers.get(field.getId());
-        if (field.isRequired() && Strings.isNullOrEmpty(value)) {
+        if (field.isRequired() && (value == null || (value instanceof String && Strings.isNullOrEmpty((String) value)) )) {
             container.setInvalid(I18N.CONSTANTS.requiredFieldMessage());
         } else {
             container.setValid();
-        }
-
-        applySkipLogic(field);
-    }
-
-    private void applySkipLogic(FormField field) {
-        if (field.hasSkipExpression()) {
-            ExprLexer lexer = new ExprLexer(field.getSkipExpression());
-            ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(FormInstance.fromResource(workingInstance), formClass));
-            ExprNode<Boolean> expr = parser.parse();
-
-            FieldContainer container = containers.get(field.getId());
-            container.getFieldWidget().setReadOnly(expr.evalReal());
         }
     }
 
@@ -211,4 +205,11 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         return withScroll ? scrollPanel : panel;
     }
 
+    public FormClass getFormClass() {
+        return formClass;
+    }
+
+    public FieldContainer getFieldContainer(ResourceId fieldId) {
+        return containers.get(fieldId);
+    }
 }
