@@ -30,6 +30,7 @@ public class CuidAdapter {
 
     public static final char ATTRIBUTE_GROUP_FIELD_DOMAIN = 'Q';
 
+    public static final char MONTHLY_REPORT = 'm';
 
     public static final char ATTRIBUTE_DOMAIN = 't';
 
@@ -61,6 +62,8 @@ public class CuidAdapter {
     public static final int COMMENT_FIELD = 14;
 
     public static final int BLOCK_SIZE = 10;
+    public static final String CLASS_FIELD = "_class";
+
 
     /**
      * Avoid instance creation.

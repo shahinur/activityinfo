@@ -195,6 +195,7 @@ public class FormClass implements IsResource, FormElementContainer {
 
     public static FormClass fromResource(Resource resource) {
         FormClass formClass = new FormClass(resource.getId());
+        formClass.setOwnerId(resource.getOwnerId());
         formClass.setLabel(resource.getString("label"));
         formClass.elements.addAll(fromRecords(resource.getId(), resource.getRecordList("elements")));
         return formClass;
@@ -203,13 +204,13 @@ public class FormClass implements IsResource, FormElementContainer {
     private static List<FormElement> fromRecords(ResourceId formClassId, List<Record> elementArray) {
         List<FormElement> elements = Lists.newArrayList();
         for(Record elementRecord : elementArray) {
-            if("section".equals(elementRecord.getString("type"))) {
+            if("section".equals(elementRecord.isString("type"))) {
                 FormSection section = new FormSection(ResourceId.create(elementRecord.getString("id")));
                 section.setLabel(elementRecord.getString("label"));
                 section.getElements().addAll(fromRecords(formClassId, elementRecord.getRecordList("elements")));
                 elements.add(section);
             } else {
-                elements.add(FormField.fromRecord(formClassId, elementRecord));
+                elements.add(FormField.fromRecord(elementRecord));
             }
         }
         return elements;

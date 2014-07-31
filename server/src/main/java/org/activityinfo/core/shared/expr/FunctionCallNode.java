@@ -37,11 +37,6 @@ public class FunctionCallNode<T, K> extends ExprNode<T> {
         return function;
     }
 
-    @Nonnull
-    public List<ExprNode<K>> getArguments() {
-        return arguments;
-    }
-
     @Override
     public String toString() {
         return arguments.get(0) + " " + function.getId() + " " + arguments.get(1);

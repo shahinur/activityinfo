@@ -256,20 +256,34 @@ class PropertyBag<T extends PropertyBag> {
         if(value == null) {
             properties.remove(propertyName);
 
-        } else if(value instanceof String ||
-                  value instanceof Number ||
-                  value instanceof Record ||
-                  value instanceof Boolean ||
-                  value instanceof List ||
-                  value instanceof ResourceId
-                ) {
-
-           properties.put(propertyName, value);
+        } else if(value instanceof ResourceId) {
+            properties.put(propertyName, ((ResourceId) value).asString());
 
         } else {
-            throw new IllegalArgumentException("Invalid field type: " + value.getClass().getName());
+            assert validPropertyValue(value) : "Invalid " + propertyName + " = " + value +
+                                               " (" + value.getClass().getName() + ")";
+
+            properties.put(propertyName, value);
+
         }
         return (T)this;
+    }
+
+    private boolean validPropertyValue(Object value) {
+        if(value instanceof List) {
+            for(Object element : (List)value) {
+                if(!validPropertyValue(element)) {
+                    return false;
+                }
+            }
+            return true;
+
+        } else {
+            return value instanceof String ||
+                   value instanceof Number ||
+                   value instanceof Record ||
+                   value instanceof Boolean;
+        }
     }
 
     /**
