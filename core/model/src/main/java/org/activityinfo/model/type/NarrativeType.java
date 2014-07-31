@@ -62,4 +62,8 @@ public enum NarrativeType implements FieldType, FieldTypeClass {
         return new FormClass(ResourceId.create(getId()));
     }
 
+    @Override
+    public String getXFormType() {
+        return null;
+    }
 }

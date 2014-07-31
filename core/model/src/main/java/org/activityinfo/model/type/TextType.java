@@ -68,4 +68,9 @@ public enum TextType implements FieldType, FieldTypeClass {
     public FormClass getParameterFormClass() {
         return new FormClass(ResourceIdPrefixType.TYPE.id("text"));
     }
+
+    @Override
+    public String getXFormType() {
+        return "string";
+    }
 }
