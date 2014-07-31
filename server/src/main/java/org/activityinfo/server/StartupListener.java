@@ -43,6 +43,7 @@ import org.activityinfo.server.geo.GeometryModule;
 import org.activityinfo.server.login.LoginModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
+import org.activityinfo.server.store.ResourceStoreModule;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.blob.BlobServiceModule;
 import org.activityinfo.server.util.config.ConfigModule;
@@ -96,6 +97,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new LocaleModule(),
                 new JaxRsModule(),
                 new RestApiModule(),
+                new ResourceStoreModule(),
                 new ODKModule());
     }
 

@@ -27,4 +27,9 @@ public interface FieldType {
     ComponentReader<String> getStringReader(String fieldName, String componentId);
 
     ComponentReader<LocalDate> getDateReader(String name, String componentId);
+
+    /**
+     * @return the corresponding data type for an XForm instance
+     */
+    String getXFormType();
 }

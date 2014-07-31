@@ -5,33 +5,29 @@ import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.inject.Inject;
-import com.google.inject.util.Providers;
-import com.sun.jersey.api.view.Viewable;
 import freemarker.template.Configuration;
-import freemarker.template.Template;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.Modules;
-import org.activityinfo.server.branding.ScaffoldingDirective;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.util.jaxrs.FreemarkerViewProcessor;
+import org.activityinfo.server.endpoint.odk.xform.Html;
+import org.activityinfo.server.store.ResourceStoreModule;
 import org.activityinfo.server.util.locale.LocaleModule;
-import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.net.URL;
-import java.util.Locale;
+import java.nio.file.Paths;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 @RunWith(InjectionSupport.class)
-@Modules(LocaleModule.class)
+@Modules({LocaleModule.class, ResourceStoreModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class FormResourceTest extends CommandTestCase2 {
 
@@ -44,20 +40,12 @@ public class FormResourceTest extends CommandTestCase2 {
     @Test
     public void getBlankForm() throws Exception {
         Response form = this.resource.form(1);
-        Viewable viewable = (Viewable) form.getEntity();
-
-        ScaffoldingDirective scaffoldingDirective = EasyMock.createMock(ScaffoldingDirective.class);
-        EasyMock.replay(scaffoldingDirective);
-
-        FreemarkerViewProcessor processor = new FreemarkerViewProcessor(templateConfig, Providers.of(Locale.ENGLISH),
-                scaffoldingDirective);
-        Template template = processor.resolve(viewable.getTemplateName());
-
         File file = new File(targetDir(), "form.xml");
-        try (OutputStream out = new FileOutputStream(file)) {
-            processor.writeTo(template, viewable, out);
-        }
+        JAXBContext context = JAXBContext.newInstance(Html.class);
+        Marshaller marshaller = context.createMarshaller();
 
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(form.getEntity(), file);
         validate(file);
     }
 
@@ -74,7 +62,7 @@ public class FormResourceTest extends CommandTestCase2 {
 
 
         URL validatorJar = Resources.getResource(FormResourceTest.class, "odk-validate-1.4.3.jar");
-        String[] command = {"java", "-jar", validatorJar.getFile(), file.getAbsolutePath()};
+        String[] command = {"java", "-jar", Paths.get(validatorJar.toURI()).toString(), file.getAbsolutePath()};
 
         System.out.println(Joiner.on(' ').join(command));
 

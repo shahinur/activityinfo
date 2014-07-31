@@ -84,6 +84,10 @@ public enum LocalDateType implements FieldType, FieldTypeClass {
         };
     }
 
+    @Override
+    public String getXFormType() {
+        return "date";
+    }
 
     public static LocalDate asLocalDate(Record record) {
         return LocalDate.parse(record.getString("date"));

@@ -88,4 +88,9 @@ public enum BooleanType implements FieldType, FieldTypeClass {
     public FormClass getParameterFormClass() {
         return new FormClass(ResourceIdPrefixType.TYPE.id("boolean"));
     }
+
+    @Override
+    public String getXFormType() {
+        return "boolean";
+    }
 }
