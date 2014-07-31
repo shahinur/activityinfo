@@ -7,17 +7,17 @@ import com.google.gwt.core.client.testing.StubScheduler;
 import com.google.gwt.junit.GWTMockUtilities;
 import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
 import org.activityinfo.core.shared.importing.model.ColumnAction;
+import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.model.MapExistingAction;
 import org.activityinfo.core.shared.importing.source.SourceColumn;
 import org.activityinfo.core.shared.importing.source.SourceRow;
-import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.strategy.FieldImporterColumn;
 import org.activityinfo.core.shared.importing.strategy.ImportTarget;
 import org.activityinfo.core.shared.importing.validation.ValidatedRow;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.ui.client.component.importDialog.Importer;
 import org.junit.Before;
@@ -38,6 +38,7 @@ public class AbstractImporterTest extends CommandTestCase2 {
 
     @Before
     public void setupAdapters() {
+
         resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
         scheduler = new StubScheduler();

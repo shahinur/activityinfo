@@ -128,7 +128,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         SchemaDTO schema = dispatcher.execute(new GetSchema());
 
-        List<SiteDTO> sites = querySites(user, schema, actvityId);
+        List<SiteDTO> sites = querySites(actvityId);
 
         xml.startDocument();
 
@@ -185,7 +185,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         return activity.getName() + " à " + pm.getLocationName() + " (" + pm.getPartnerName() + ")";
     }
 
-    private List<SiteDTO> querySites(User user, SchemaDTO schema, int activityId) {
+    private List<SiteDTO> querySites(int activityId) {
 
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, activityId);

@@ -36,10 +36,9 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import org.activityinfo.core.shared.workflow.Workflow;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.model.CountryDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
-import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
+import org.activityinfo.ui.client.page.entry.location.resources.SiteFormResources;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 /**

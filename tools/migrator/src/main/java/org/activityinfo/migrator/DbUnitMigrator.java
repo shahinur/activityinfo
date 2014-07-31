@@ -7,7 +7,8 @@ import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
 import org.dbunit.ext.mysql.MySqlConnection;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
 import java.sql.*;
 
 /**
@@ -49,13 +50,24 @@ public class DbUnitMigrator {
 
     private void migrateDbUnit(Connection connection, File file) throws Exception {
 
-//        if(!file.getName().contains("brac")) {
-//            return;
-//        }
         System.out.println("Migrating " + file.getName());
 
-        loadDataset(connection, file);
-        dumpToJson(connection, file);
+        try {
+            loadDataset(connection, file);
+            migrate(connection, file);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void migrate(Connection jdbcConnection, File file) throws Exception {
+
+        String fileName = file.getName().replace(".db.xml", ".json");
+        File migratedFile = new File(file.getParentFile(), fileName);
+
+        JsonTestUnitWriter writer = new JsonTestUnitWriter(migratedFile);
+        new MySqlMigrator().migrate(jdbcConnection, writer);
+        writer.finish();
     }
 
     private void loadDataset(Connection connection, File file) throws Exception {
@@ -66,20 +78,13 @@ public class DbUnitMigrator {
         try(FileReader reader = new FileReader(file)) {
             dataSet = new LowerCaseDataSet(
                     new FlatXmlDataSetBuilder()
-                       .setDtdMetadata(true)
-                       .setColumnSensing(true)
-                       .build(reader));
+                            .setDtdMetadata(true)
+                            .setColumnSensing(true)
+                            .build(reader));
         }
 
         IDatabaseConnection dbUnitConnection = new MySqlConnection(connection, null);
         InsertIdentityOperation.INSERT.execute(dbUnitConnection, dataSet);
-    }
-
-
-    private void dumpToJson(Connection connection, File dbUnitFile) throws IOException, SQLException {
-        File jsonFile = new File(dbUnitFile.getParentFile(),
-                dbUnitFile.getName().replaceFirst("\\.db\\.xml$", ".json"));
-        new MySqlMigrator().migrate(connection, jsonFile);
     }
 
     private void removeAllRows(Connection connection) throws Exception {
@@ -107,6 +112,8 @@ public class DbUnitMigrator {
 
     private Connection openConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/activityinfo-test", "root", "root");
+        return DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/activityinfo-test?zeroDateTimeBehavior=convertToNull",
+                "root", "root");
     }
 }

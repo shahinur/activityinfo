@@ -1,0 +1,208 @@
+[
+  {
+    "@id": "a0000000001",
+    "@owner": "d0000000001",
+    "label": "Household Survey",
+    "elements": [
+      {
+        "id": "a00000000010000000007",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000010000000008",
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "R0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000010000000012",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000010000000013",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000010000000011",
+        "label": "Upzilla",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "E0000000003"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "i0000000001",
+        "label": "NumAdultFemale",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "women"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000000002",
+        "label": "NumAdultMale",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "men"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "a00000000010000000014",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "NARRATIVE"
+          },
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "a0000000002",
+    "@owner": "d0000000001",
+    "label": "Training",
+    "elements": [
+      {
+        "id": "a00000000020000000007",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000020000000008",
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "R0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000020000000012",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000020000000013",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000020000000011",
+        "label": "Village",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "L0000000002"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "i0000000003",
+        "label": "NumberTrained",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "individuals"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "a00000000020000000014",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "NARRATIVE"
+          },
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  }
+]

@@ -1,5 +1,6 @@
 package org.activityinfo.model.type.enumerated;
 
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 
 public class EnumValue {
@@ -25,5 +26,20 @@ public class EnumValue {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public Record asRecord() {
+        return new Record()
+                .set("id", id.asString())
+                .set("label", label);
+    }
+
+    public static EnumValue fromRecord(Record record) {
+        return new EnumValue(ResourceId.create(record.getString("id")), record.getString("label"));
+    }
+
+    @Override
+    public String toString() {
+        return id + ":" + label;
     }
 }

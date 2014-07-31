@@ -1,0 +1,87 @@
+[
+  {
+    "@id": "a0000000001",
+    "@owner": "d0000000001",
+    "label": "NFI",
+    "elements": [
+      {
+        "id": "a00000000010000000007",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000010000000008",
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "R0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000010000000012",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000010000000013",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000010000000011",
+        "label": "localite",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "L0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000010000000014",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "NARRATIVE"
+          },
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  }
+]

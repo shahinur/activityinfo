@@ -30,7 +30,15 @@ public class EnumType implements FieldType {
 
         @Override
         public FieldType createType(Record typeParameters) {
-            return new EnumType();
+
+            Cardinality cardinality = Cardinality.valueOf(typeParameters.getString("cardinality"));
+
+            List<EnumValue> enumValues = Lists.newArrayList();
+            List<Record> enumValueRecords = typeParameters.getRecordList("values");
+            for(Record record : enumValueRecords) {
+                enumValues.add(EnumValue.fromRecord(record));
+            }
+            return new EnumType(cardinality, enumValues);
         }
 
         @Override
@@ -77,8 +85,19 @@ public class EnumType implements FieldType {
 
     @Override
     public Record getParameters() {
-        return new Record().set("classId", getTypeClass().getParameterFormClass().getId());
+
+        List<Record> enumValueRecords = Lists.newArrayList();
+        for(EnumValue enumValue : getValues()) {
+            enumValueRecords.add(enumValue.asRecord());
+        }
+
+        return new Record()
+                .set("classId", getTypeClass().getParameterFormClass().getId())
+                .set("cardinality", cardinality.name())
+                .set("values", enumValueRecords);
     }
+
+
 
     @Override
     public ComponentReader<String> getStringReader(String fieldName, String componentId) {

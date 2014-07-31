@@ -1,0 +1,516 @@
+[
+  {
+    "@id": "a0000006464",
+    "@owner": "d0000001350",
+    "label": "Bambasi Water Service Ladders Survey",
+    "elements": [
+      {
+        "id": "a00000064640000000007",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P0000001350"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000064640000000008",
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "R0000001350"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000064640000000012",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000064640000000013",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000064640000000011",
+        "label": "Country",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "L0000050598"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "Q0000025152",
+        "label": "Camp Name",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025154",
+        "label": "Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025156",
+        "label": "Is there a functional meter at the point of collection?",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025467",
+        "label": "D1. Camp Name",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025153",
+        "label": "D2. Water Point Number",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025155",
+        "label": "4. Surveyor Number",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025468",
+        "label": "I1. Gender / Age of respondant:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025157",
+        "label": "I2. Do you have an UNHCR ID?",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025623",
+        "label": "I6. Were you provided a CODE ID?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025158",
+        "label": "I4. If NO, why you do not have ID?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025549",
+        "label": "I6. Were you provided survey number before?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025162",
+        "label": "L1. Do you know the code of the block you live in?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025159",
+        "label": "13. Respondent gender",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025161",
+        "label": "Is person using standard-sized jerricane?",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025160",
+        "label": "14. Age of respondent",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q0000025470",
+        "label": "L3. In which zone do you live?",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "i0000036185",
+        "label": "D3. Surveyor number",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036090",
+        "label": "I3. If YES, what is UNHCR ID number?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "no units"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000037058",
+        "label": "I7. If yes, what is it?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036106",
+        "label": "I5. Provided code ID:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036199",
+        "label": "L2. In which block do you live?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "Block number"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036201",
+        "label": "L4. In which community do you live?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "Comm. number"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036099",
+        "label": "L5. How long does it take you to come here?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "minutes"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036100",
+        "label": "Q1. For how many family members is the water you collect ?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "people"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036104",
+        "label": "Q2. TOTAL NUMBER of jerricanes that person fills up:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036187",
+        "label": "Q3. Enter number of jerricanes of 5 litres",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036188",
+        "label": "Q4. Enter number of jerricanes of 10 litres",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036189",
+        "label": "Q5. Enter number of jerricanes of 15 litres",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036190",
+        "label": "Q6. Enter number of jerricanes of 20 litres",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036345",
+        "label": "Q7. Enter number of jerricanes of 25 liters",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036191",
+        "label": "Q8. Enter number of jerricanes of other size",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036192",
+        "label": "Q9. Enter the size of the other jerricanes",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "liters"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036347",
+        "label": "Q10. TOTAL NUMBER of buckets that person fills up:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000036348",
+        "label": "Q11. Enter number of buckets of 5 liters:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000037047",
+        "label": "Q12. Enter number of buckets of 12 liters:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i0000037048",
+        "label": "Q13. Enter number of buckets of 15 liters:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "a00000064640000000014",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "NARRATIVE"
+          },
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  }
+]

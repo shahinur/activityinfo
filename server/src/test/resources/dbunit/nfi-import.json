@@ -1,0 +1,489 @@
+[
+  {
+    "@id": "a0000000033",
+    "@owner": "d0000000004",
+    "label": "Distribution NFI",
+    "elements": [
+      {
+        "id": "a00000000330000000007",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P0000000004"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000330000000008",
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "R0000000004"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000330000000012",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000330000000013",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "parameters": {
+            "classId": "_type:localDate"
+          },
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a00000000330000000011",
+        "label": "Localité",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "L0000000001"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000000332080962902",
+        "label": "NFI - Bénéficiaires (ménages)",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i0000000118",
+            "label": "Nombre de ménages ayant reçu une assistance en NFI",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000119",
+            "label": "dont déplacés",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000121",
+            "label": "dont retournés",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000123",
+            "label": "dont familles d'accueil",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000122",
+            "label": "dont rapatriés",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000125",
+            "label": "dont autochtones vulnerables",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000124",
+            "label": "dont victimes de catastrophes naturelles",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a00000000331830977311",
+        "label": "Les femmes et les enfants",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i0000000733",
+            "label": "Nombre de filles chefs de ménage récipiendaires de l’aide",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "enfants"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000734",
+            "label": "Nombre de garçons chefs de ménage récipiendaires de l’aide",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "enfants"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000732",
+            "label": "Nombre de femmes principales récipiendaires de l’aide",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "femme"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a00000000331299322097",
+        "label": "BP5 et autres NFIs spécifiques",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i0000000735",
+            "label": "Nombre de kits hygiène intime (KHI) distribués",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "kits"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000736",
+            "label": "Nombre de ménages ayant bénéficié de MIIs",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000737",
+            "label": "Nombre de ménages ayant bénéficié de BP5 ",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a00000000330190998694",
+        "label": "Bénéficiaires Abri durable",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i0000001258",
+            "label": "Nombre de ménages ayant reçu une assistance en abri durable",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000001261",
+            "label": "N. ménages déplacés assistés en abri durable",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000001259",
+            "label": "N. ménages retournés assistés en abri durable",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000001260",
+            "label": "N. familles d'accueil assistées en abri durable",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "familles"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000001262",
+            "label": "N. ménages rapatriés assistés en abri durable",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000001263",
+            "label": "N. ménages victimes de catastrophe naturelle assistés en abri durable",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000001264",
+            "label": "N. autres menages vulnérables assistés en abri durable",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a00000000331830564533",
+        "label": "NFI - Bénéficiaires (personnes)",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i0000000126",
+            "label": "Nombre de personnes ayant reçu une assistance en NFI",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "personnes"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000127",
+            "label": "dont femmes (>18 ans)",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "femmes"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000128",
+            "label": "dont hommes (>18 ans)",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "hommes"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a0000000033-467021298",
+        "label": "Bénéficiaires Abri d'urgence (Bâche)",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i0000000129",
+            "label": "Nombre de ménages ayant reçu une assistance en abri d'urgence (bâche)",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000274",
+            "label": "dont déplaces",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "menages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000275",
+            "label": "dont retournés",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000276",
+            "label": "dont familles d'accueille",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000278",
+            "label": "dont rapatries",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000004736",
+            "label": "dont autochtones vulnerables",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "ménages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i0000000277",
+            "label": "dont victimes de catastrophe naturelles",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "menages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a00000000330000000014",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "NARRATIVE"
+          },
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  }
+]
