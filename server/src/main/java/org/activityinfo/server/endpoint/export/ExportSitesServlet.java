@@ -129,7 +129,7 @@ public class ExportSitesServlet extends HttpServlet {
         if(metadata == null) {
             resp.setStatus(HttpServletResponse.SC_ACCEPTED);
         } else {
-            resp.setStatus(HttpServletResponse.SC_CREATED);
+            resp.setStatus(HttpServletResponse.SC_OK);
         }
     }
 
