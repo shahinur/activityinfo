@@ -39,8 +39,6 @@ import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.core.shared.expr.*;
-import org.activityinfo.model.form.FormFieldType;
-import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.command.DimensionType;
@@ -48,6 +46,8 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -566,8 +566,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                                  .where("P.SiteId")
                                  .in(siteMap.keySet())
                                  .and("I.dateDeleted IS NULL");
-
-        Log.info(query.toString());
 
         query.execute(tx, new SqlResultCallback() {
 
