@@ -31,18 +31,18 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.TextType;
-import org.activityinfo.model.type.enumerated.EnumType;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author yuriyz on 7/28/14.
  */
 public class RowDataBuilder {
 
-    public static final ExprFunction<Boolean,Boolean> DEFAULT_JOIN_FUNCTION = BooleanFunctions.AND;
+    public static final ExprFunction<Boolean, Boolean> DEFAULT_JOIN_FUNCTION = BooleanFunctions.AND;
 
+    private List<RowData> rows = Lists.newArrayList(); // keep list, order is important!
     private FormClass formClass;
 
     public RowDataBuilder(FormClass formClass) {
@@ -50,113 +50,114 @@ public class RowDataBuilder {
     }
 
     public List<RowData> build(String skipExpression) {
-        List<RowData> result = Lists.newArrayList();
         ExprLexer lexer = new ExprLexer(skipExpression);
         ExprParser parser = new ExprParser(lexer);
         ExprNode node = parser.parse();
-        parse(node, result, DEFAULT_JOIN_FUNCTION);
-        return result;
+        parse(node, DEFAULT_JOIN_FUNCTION);
+        return rows;
     }
 
-    private void parse(ExprNode node, List<RowData> result, ExprFunction joinFunction) {
-        if (node instanceof FunctionCallNode) {
-            FunctionCallNode functionCallNode = (FunctionCallNode) node;
-            List arguments = functionCallNode.getArguments();
+    private void parse(ExprNode node, ExprFunction joinFunction) {
+        boolean wrappedByGroup = false;
+        if (node instanceof GroupExpr) {
+            node = ((GroupExpr) node).getExpr();
+            wrappedByGroup = true;
+        }
 
-            if (arguments.size() == 2) {
-                if (arguments.get(0) instanceof PlaceholderExpr) {
+        // handle Function call node
+        if (node instanceof FunctionCallNode && ((FunctionCallNode) node).getArguments().size() == 2) {
+            final FunctionCallNode functionCallNode = (FunctionCallNode) node;
+            final ExprNode arg1 = (ExprNode) functionCallNode.getArguments().get(0);
+            final ExprNode arg2 = (ExprNode) functionCallNode.getArguments().get(1);
 
-                    PlaceholderExpr placeholderExpr = (PlaceholderExpr) arguments.get(0);
-                    FormField field = formClass.getField(ResourceId.create(placeholderExpr.getPlaceholder()));
+            if (arg1 instanceof PlaceholderExpr) {
 
-                    if (arguments.get(1) instanceof IsConstantExpr) {
-                        ExprNode secondArgument = (ExprNode) arguments.get(1);
+                if (isFieldFunction(functionCallNode.getFunction())) {
+                    final FormField field = formClass.getField(ResourceId.create(placeholder(arg1)));
 
-                        Object literalValue = normalizeValue(secondArgument.evalReal(), field.getType());
+                    final RowData row = getOrCreateRow(field);
+                    row.setFunction(functionCallNode.getFunction());
+                    row.setJoinFunction(joinFunction);
 
-                        RowData row = new RowData();
-                        row.setValue(literalValue);
-                        row.setFormField(field);
-                        row.setFunction(functionCallNode.getFunction());
-                        row.setJoinFunction(joinFunction);
-                        result.add(row);
+                    if (setValueInRow(row, arg2, field, wrappedByGroup)) {
                         return;
-                    } else if (arguments.get(1) instanceof PlaceholderExpr) {
-                        PlaceholderExpr secondArgument = (PlaceholderExpr) arguments.get(1);
+                    } else if (arg2 instanceof FunctionCallNode) {
+                        final FunctionCallNode arg2Node = (FunctionCallNode) arg2;
 
-                        RowData row = new RowData();
-                        row.setValue(Sets.newHashSet(ResourceId.create(secondArgument.getPlaceholder())));
-                        row.setFormField(field);
-                        row.setFunction(functionCallNode.getFunction());
-                        row.setJoinFunction(joinFunction);
-                        result.add(row);
-                        return;
-                    } else if (arguments.get(1) instanceof FunctionCallNode) {
-                        FunctionCallNode nestedFunctionCall = (FunctionCallNode) arguments.get(1);
-                        List nestedArguments = nestedFunctionCall.getArguments();
-                        if (nestedArguments.get(0) instanceof PlaceholderExpr && nestedArguments.get(1) instanceof FunctionCallNode
-                                && field.getType() instanceof EnumType ) {
-                            PlaceholderExpr secondArgument = (PlaceholderExpr) nestedArguments.get(0);
-
-                            RowData row = new RowData();
-                            row.setValue(Sets.newHashSet(ResourceId.create(secondArgument.getPlaceholder())));
-                            row.setFormField(field);
-                            row.setFunction(functionCallNode.getFunction());
-                            row.setJoinFunction(joinFunction);
-                            result.add(row);
-
-                            parse((ExprNode) nestedArguments.get(1), result, nestedFunctionCall.getFunction());
+                        if (isFieldFunction(arg2Node.getFunction())) {
+                            parse(arg2Node, arg2Node.getFunction());
                             return;
-                        } else
-                        if (nestedArguments.get(0) instanceof PlaceholderExpr && nestedArguments.get(1) instanceof GroupExpr && ((GroupExpr)nestedArguments.get(1)).getExpr() instanceof FunctionCallNode) {
-                            PlaceholderExpr firstArgument = (PlaceholderExpr) nestedArguments.get(0);
-                            FunctionCallNode groupArgument = (FunctionCallNode) ((GroupExpr) nestedArguments.get(1)).getExpr();
+                        } else {
+                            // not field function -> means &&, || (but not ==, !=)
 
-                            field = formClass.getField(ResourceId.create(((PlaceholderExpr)groupArgument.getArguments().get(0)).getPlaceholder()));
+                            final ExprNode nestArg1 = (ExprNode) arg2Node.getArguments().get(0);
+                            final ExprNode nestArg2 = (ExprNode) arg2Node.getArguments().get(1);
 
-                            HashSet<ResourceId> enumValues = Sets.newHashSet(ResourceId.create(firstArgument.getPlaceholder()));
+                            setValueInRow(row, nestArg1, field, false);
 
-                            RowData row = new RowData();
-                            row.setValue(enumValues);
-                            row.setFormField(field);
-                            row.setFunction(groupArgument.getFunction());
-                            row.setJoinFunction(joinFunction);
-                            result.add(row);
-
-                            handleEnumValues(field, enumValues, groupArgument);
-
-                            //parse((ExprNode) nestedArguments.get(1), result, nestedFunctionCall.getFunction());
-                            return;
+                            if (nestArg2 instanceof FunctionCallNode || nestArg2 instanceof GroupExpr) {
+                                parse(nestArg2, arg2Node.getFunction());
+                                return;
+                            } else {
+                                throw new UnsupportedOperationException();
+                            }
                         }
                     }
                 }
             }
-            throw new UnsupportedOperationException();
-
         }
+        throw new UnsupportedOperationException();
     }
 
-    private static void handleEnumValues(FormField formField, HashSet<ResourceId> enumValues, FunctionCallNode node) {
-        Object arg1 = node.getArguments().get(0);
-        Object arg2 = node.getArguments().get(1);
-        if (arg1 instanceof PlaceholderExpr) {
-            PlaceholderExpr placeholderArg1 = (PlaceholderExpr) arg1;
-            if (placeholderArg1.getPlaceholder().equals(formField.getId().asString())) {
-                if (arg2 instanceof PlaceholderExpr) {
-                    enumValues.add(ResourceId.create(((PlaceholderExpr)arg2).getPlaceholder()));
-                    return;
-                }
-                handleEnumValues(formField, enumValues, (FunctionCallNode) arg2);
-            } else if (arg2 instanceof FunctionCallNode) {
-                enumValues.add(ResourceId.create(placeholderArg1.getPlaceholder()));
-                handleEnumValues(formField, enumValues, (FunctionCallNode) arg2);
-            } else if (arg2 instanceof PlaceholderExpr) {
-                enumValues.add(ResourceId.create(((PlaceholderExpr)arg2).getPlaceholder()));
+    private RowData getOrCreateRow(FormField formField) {
+        // search, maybe row is already present
+        for (RowData row : rows) {
+            if (row.getFormField().equals(formField)) {
+                return row;
             }
         }
+
+        // create new row
+        RowData row = new RowData();
+        row.setFormField(formField);
+        rows.add(row);
+        return row;
     }
 
-    private Object normalizeValue(Object value, FieldType type) {
+    /**
+     * Returns whether value was set in row or not.
+     *
+     * @param row       row
+     * @param node      node
+     * @param formField form field
+     * @return Returns whether value was set in row or not
+     */
+    private static boolean setValueInRow(RowData row, ExprNode node, FormField formField, boolean wrappedByGroup) {
+        if (node instanceof IsConstantExpr) {
+            row.setValue(normalizeValue(node.evalReal(), formField.getType()));
+            return true;
+        } else if (node instanceof PlaceholderExpr) {
+            if (row.getValue() instanceof Set) { // update existing value
+                ((Set)row.getValue()).add(ResourceId.create(placeholder(node)));
+            } else { // create value
+                row.setValue(Sets.newHashSet(ResourceId.create(placeholder(node))));
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    private static boolean isFieldFunction(ExprFunction exprFunction) {
+        return exprFunction == BooleanFunctions.EQUAL || exprFunction == BooleanFunctions.NOT_EQUAL;
+    }
+
+    private static String placeholder(ExprNode node) {
+        PlaceholderExpr placeholderExpr = (PlaceholderExpr) node;
+        return placeholderExpr.getPlaceholder();
+    }
+
+    private static Object normalizeValue(Object value, FieldType type) {
         if (value != null) {
             if (type instanceof TextType) {
                 return value.toString();
