@@ -1,11 +1,7 @@
 package org.activityinfo.model.resource;
 
 import com.google.gson.*;
-import com.google.gson.internal.Streams;
-import com.google.gson.stream.JsonWriter;
 
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -132,17 +128,7 @@ public class Resources {
     public static String toJson(Resource resource) {
         JsonObject resourceObject = toJsonObject(resource);
 
-        StringWriter stringWriter = new StringWriter();
-        JsonWriter jsonWriter = new JsonWriter(stringWriter);
-        jsonWriter.setLenient(true);
-        jsonWriter.setIndent("  ");
-        try {
-            Streams.write(resourceObject, jsonWriter);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return stringWriter.toString();
+        return resourceObject.toString();
     }
 
     public static JsonObject toJsonObject(Resource resource) {
