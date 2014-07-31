@@ -143,11 +143,11 @@ class PropertyBag<T extends PropertyBag> {
 
     @Nonnull
     public ResourceId getResourceId(String propertyName) {
-        ResourceId value = (ResourceId) properties.get(propertyName);
+        String value = (String) properties.get(propertyName);
         if(value == null) {
             throw new NullPointerException(propertyName);
         }
-        return value;
+        return ResourceId.create(value);
     }
 
     public ResourceId isResourceId(String propertyName) {
