@@ -46,6 +46,11 @@ public class BooleanConstantExpr extends ExprNode<Boolean> implements IsConstant
 
     @Override
     public String toString() {
+        return asExpression();
+    }
+
+    @Override
+    public String asExpression() {
         return Boolean.toString(value);
     }
 
