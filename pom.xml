@@ -99,6 +99,7 @@
     <module>core/promises</module>
     <module>geoadmin</module>
     <module>server</module>
+    <module>tools/migrator</module>
   </modules>
 
   <dependencies>

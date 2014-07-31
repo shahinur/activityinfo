@@ -4,7 +4,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.TypeRegistry;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
@@ -17,7 +19,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class FormField extends FormElement {
     private final ResourceId id;
-    private String name;
     private String label;
     private String description;
     private String expression;
@@ -36,14 +37,11 @@ public class FormField extends FormElement {
 
     public FormField(ResourceId formClassId, String name) {
         this.id = FieldId.fieldId(formClassId, name);
-        this.name = name;
     }
 
     public ResourceId getId() {
         return id;
     }
-
-    public String getName() { return name; }
 
     @NotNull
     public String getLabel() {
@@ -194,7 +192,7 @@ public class FormField extends FormElement {
         assert type != null : id + " has no type";
 
         Record record = new Record();
-        record.set("name", name);
+        record.set("id", id.asString());
         record.set("label", label);
         record.set("type", toRecord(type));
         record.set("required", required);
@@ -210,8 +208,9 @@ public class FormField extends FormElement {
         return record;
     }
 
-    public static FormElement fromRecord(ResourceId formClassId, Record record) {
-        FormField formField = new FormField(formClassId, record.getString("name"))
+
+    public static FormElement fromRecord(Record record) {
+        FormField formField = new FormField(ResourceId.create(record.getString("id")))
             .setLabel(record.getString("label"))
             .setType(typeFromRecord(record.getRecord("type")))
             .setRequired(record.getBoolean("required", false));
