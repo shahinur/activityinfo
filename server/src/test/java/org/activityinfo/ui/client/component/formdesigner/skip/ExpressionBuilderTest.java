@@ -101,10 +101,9 @@ public class ExpressionBuilderTest {
         System.out.println("Built expression: " + createExpression);
         Assert.assertEquals(expectedExpression, createExpression);
 
-        // todo turn off row data build -> it's under construction right now
-//        RowDataBuilder builder = new RowDataBuilder(formClass);
-//        List<RowData> createRows = builder.build(createExpression);
-//        Assert.assertEquals(rowList, createRows);
+        RowDataBuilder builder = new RowDataBuilder(formClass);
+        List<RowData> createRows = builder.build(createExpression);
+        Assert.assertEquals(rowList, createRows);
     }
 
     private EnumValue enumValue(ResourceId formField, String label) {
