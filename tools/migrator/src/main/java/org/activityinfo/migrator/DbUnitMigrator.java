@@ -29,7 +29,7 @@ public class DbUnitMigrator {
 
     public void migrate() throws Exception {
         // find all dbunit fixtures recursively
-        try(Connection connection = openConnection) {
+        try(Connection connection = openConnection()) {
             File root = new File(".");
             findDbUnitFixtures(connection, root);
         }
