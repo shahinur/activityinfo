@@ -2,7 +2,7 @@ package org.activityinfo.server.endpoint.odk.xform;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class Instance {
+public class Meta {
     @XmlElement
-    public Data data;
+    public InstanceId instanceID;
 }

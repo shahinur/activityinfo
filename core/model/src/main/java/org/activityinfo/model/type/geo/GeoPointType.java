@@ -62,10 +62,6 @@ public enum GeoPointType implements FieldType, FieldTypeClass {
         return new NullComponentReader<>();
     }
 
-    @Override
-    public String getXFormType() {
-        return null;
-    }
 
     public static Record fromXY(double x, double y) {
         return new Record()
