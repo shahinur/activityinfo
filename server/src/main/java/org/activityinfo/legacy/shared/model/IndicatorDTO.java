@@ -334,6 +334,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         field.setLabel(getName());
         field.setDescription(getDescription());
         field.setCalculation(getExpression());
+        field.setNameInExpression(getNameInExpression());
 
         if(getType() == TextType.INSTANCE) {
             field.setType(TextType.INSTANCE);

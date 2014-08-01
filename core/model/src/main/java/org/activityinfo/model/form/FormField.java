@@ -27,6 +27,7 @@ public class FormField extends FormElement {
     private Set<ResourceId> superProperties = Sets.newHashSet();
     private boolean required;
     private String calculation;
+    private String nameInExpression;
 
     public FormField(ResourceId id) {
         checkNotNull(id);
@@ -127,6 +128,14 @@ public class FormField extends FormElement {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public String getNameInExpression() {
+        return nameInExpression;
+    }
+
+    public void setNameInExpression(String nameInExpression) {
+        this.nameInExpression = nameInExpression;
     }
 
     @Override

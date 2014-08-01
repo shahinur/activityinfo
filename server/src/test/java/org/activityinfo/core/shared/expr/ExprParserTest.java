@@ -135,7 +135,10 @@ public class ExprParserTest {
     public void evaluateExpr() {
         evaluate("1", 1);
         evaluate("1+1", 2);
+        evaluate("1+1+4", 6);
         evaluate("(5+5)/2", 5);
+        evaluate("2*3", 6);
+        evaluate("3*(400/100)", 12);
     }
 
     private void expect(String string, Token... tokens) {

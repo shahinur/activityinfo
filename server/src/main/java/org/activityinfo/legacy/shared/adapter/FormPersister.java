@@ -162,6 +162,7 @@ public class FormPersister {
         indicator.setMandatory(field.isRequired());
         indicator.setDescription(field.getDescription());
         indicator.set("sortOrder", sortOrder);
+        indicator.setNameInExpression(field.getNameInExpression());
 
         if(field.getType() instanceof QuantityType) {
             indicator.setType(FieldTypeClass.QUANTITY);
