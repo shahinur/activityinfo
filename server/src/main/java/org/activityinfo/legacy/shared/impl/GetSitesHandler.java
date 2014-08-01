@@ -664,7 +664,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                                             double value = site.getIndicatorDoubleValue(indicatorId);
                                             placeholderExpr.setValue(value);
                                             return;
-                                        } catch (NumberFormatException e) {
+                                        } catch (Exception e) {
                                             // it seems we don't have valid indicator id, try to check 'name in expression'
                                             for (final SqlResultSetRow row : results.getRows()) {
                                                 String placeholderString = placeholder.getPlaceholder();
