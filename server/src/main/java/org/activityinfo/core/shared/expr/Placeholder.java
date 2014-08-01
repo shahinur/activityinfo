@@ -34,12 +34,16 @@ public class Placeholder {
 
     public Placeholder(String placeholder) {
         this.placeholder = placeholder;
-        this.isRowLevel = !placeholder.contains("_");
-        if (isRowLevel) {
-            fieldId = ResourceId.create(placeholder);
-        } else {
-            throw new UnsupportedOperationException();
-        }
+        fieldId = ResourceId.create(placeholder);
+        this.isRowLevel = true;
+
+        // NOTE: for now we support only row level calculations
+//        this.isRowLevel = !placeholder.contains("_");
+//        if (isRowLevel) {
+//            fieldId = ResourceId.create(placeholder);
+//        } else {
+//            throw new UnsupportedOperationException("Placeholder: " + placeholder);
+//        }
     }
 
     public boolean isRowLevel() {

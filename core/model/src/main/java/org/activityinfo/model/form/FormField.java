@@ -28,6 +28,7 @@ public class FormField extends FormElement {
     private boolean required;
     private String calculation;
     private String nameInExpression;
+    private boolean calculateAutomatically;
 
     public FormField(ResourceId id) {
         checkNotNull(id);
@@ -136,6 +137,14 @@ public class FormField extends FormElement {
 
     public void setNameInExpression(String nameInExpression) {
         this.nameInExpression = nameInExpression;
+    }
+
+    public boolean getCalculateAutomatically() {
+        return calculateAutomatically;
+    }
+
+    public void setCalculateAutomatically(boolean calculateAutomatically) {
+        this.calculateAutomatically = calculateAutomatically;
     }
 
     @Override

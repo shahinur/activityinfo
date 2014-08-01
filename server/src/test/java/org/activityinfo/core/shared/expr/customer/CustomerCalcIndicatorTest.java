@@ -68,6 +68,9 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
         newSite.setIndicatorValue(fieldId("EXP"), 3);
         newSite.setIndicatorValue(fieldId("WATER_ALLOC"), 400);
+        newSite.setIndicatorValue(fieldId("PCT_INITIAL"), 50);
+        newSite.setIndicatorValue(fieldId("PCT_INITIAL_HARD"), 20);
+        newSite.setIndicatorValue(fieldId("PCT_INITIAL_SOFT"), 30);
 
         CreateResult createSiteResult = execute(new CreateSite(newSite));
 
@@ -81,8 +84,12 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
         SiteDTO siteDTO = loadResult.getData().get(0);
 
         Assert.assertEquals(indicatorValue(siteDTO, "WATER_EXP"), 12, 0); // WATER_EXP = EXP * (WATER_ALLOC / 100)
-
+        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL"), 6, 0); // INITIAL = WATER_EXP * (PCT_INITIAL / 100)
+        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_HARD"), 2.4, 0.000000000000001); // INITIAL_HARD = WATER_EXP * (PCT_INITIAL_HARD / 100)
+        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_SOFT"), 3.6, 0.000000000000001); // INITIAL_SOFT = WATER_EXP * (PCT_INITIAL_HARD / 100)
+        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_TOTAL"), 12, 0.000000000000001); // INITIAL_TOTAL = INITIAL + INITIAL_HARD + INITIAL_SOFT
     }
+
 
     private Double indicatorValue(SiteDTO siteDTO, String nameInExpression) {
         int indicatorId = CuidAdapter.getLegacyIdFromCuid(field(nameInExpression).getId());
@@ -192,26 +199,36 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
         waterExpField.setType(new QuantityType().setUnits("%"));
         waterExpField.setLabel("Expenditure on water programme");
         waterExpField.setNameInExpression("WATER_EXP");
+        waterExpField.setExpression("{EXP}*({WATER_ALLOC}/100)");
+        waterExpField.setCalculateAutomatically(true);
 
         FormField initialField = new FormField(ResourceId.generateId());
         initialField.setType(new QuantityType().setUnits("%"));
         initialField.setLabel("Value of Initial Cost - Not specified");
         initialField.setNameInExpression("INITIAL");
+        initialField.setCalculateAutomatically(true);
+        initialField.setExpression("{WATER_EXP}*({PCT_INITIAL}/100)");
 
         FormField initialHardField = new FormField(ResourceId.generateId());
         initialHardField.setType(new QuantityType().setUnits("%"));
         initialHardField.setLabel("Value of Initial Cost - Cap Hard");
         initialHardField.setNameInExpression("INITIAL_HARD");
+        initialHardField.setCalculateAutomatically(true);
+        initialHardField.setExpression("{WATER_EXP}*({PCT_INITIAL_HARD}/100)");
 
         FormField initialSoftField = new FormField(ResourceId.generateId());
         initialSoftField.setType(new QuantityType().setUnits("%"));
         initialSoftField.setLabel("Value of Initial Cost – Cap Soft");
         initialSoftField.setNameInExpression("INITIAL_SOFT");
+        initialSoftField.setCalculateAutomatically(true);
+        initialSoftField.setExpression("{WATER_EXP}*({PCT_INITIAL_SOFT}/100)");
 
         FormField initialTotalField = new FormField(ResourceId.generateId());
         initialTotalField.setType(new QuantityType().setUnits("%"));
         initialTotalField.setLabel("Total Value of Initial Cost");
         initialTotalField.setNameInExpression("INITIAL_TOTAL");
+        initialTotalField.setCalculateAutomatically(true);
+        initialTotalField.setExpression("{INITIAL}+{INITIAL_HARD}+{INITIAL_SOFT}");
 
         formClass.addElement(expField);
         formClass.addElement(waterAllocField);

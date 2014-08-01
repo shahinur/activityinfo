@@ -163,6 +163,8 @@ public class FormPersister {
         indicator.setDescription(field.getDescription());
         indicator.set("sortOrder", sortOrder);
         indicator.setNameInExpression(field.getNameInExpression());
+        indicator.setExpression(field.getExpression());
+        indicator.setCalculatedAutomatically(field.getCalculateAutomatically());
 
         if(field.getType() instanceof QuantityType) {
             indicator.setType(FieldTypeClass.QUANTITY);
