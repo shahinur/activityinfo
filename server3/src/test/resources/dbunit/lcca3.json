@@ -77,6 +77,16 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119531",
+                "label": "Bambasi Camp, Ethiopia"
+              },
+              {
+                "id": "t0000119532",
+                "label": "XXX Camp, Ethiopia"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -101,6 +111,16 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119574",
+                "label": "Yes"
+              },
+              {
+                "id": "t0000119575",
+                "label": "No"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -113,6 +133,12 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119850",
+                "label": "Bambasi"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -125,6 +151,88 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119533",
+                "label": "A1"
+              },
+              {
+                "id": "t0000119537",
+                "label": "A5"
+              },
+              {
+                "id": "t0000119538",
+                "label": "A6"
+              },
+              {
+                "id": "t0000119540",
+                "label": "A8"
+              },
+              {
+                "id": "t0000119542",
+                "label": "A10"
+              },
+              {
+                "id": "t0000119543",
+                "label": "A11"
+              },
+              {
+                "id": "t0000119546",
+                "label": "B3"
+              },
+              {
+                "id": "t0000119547",
+                "label": "B4"
+              },
+              {
+                "id": "t0000119548",
+                "label": "B5"
+              },
+              {
+                "id": "t0000119549",
+                "label": "B6"
+              },
+              {
+                "id": "t0000119552",
+                "label": "B9"
+              },
+              {
+                "id": "t0000119554",
+                "label": "B11"
+              },
+              {
+                "id": "t0000119556",
+                "label": "B13"
+              },
+              {
+                "id": "t0000119557",
+                "label": "C1"
+              },
+              {
+                "id": "t0000119560",
+                "label": "C4"
+              },
+              {
+                "id": "t0000119563",
+                "label": "C7"
+              },
+              {
+                "id": "t0000119565",
+                "label": "C9"
+              },
+              {
+                "id": "t0000119862",
+                "label": "C12"
+              },
+              {
+                "id": "t0000119863",
+                "label": "C13"
+              },
+              {
+                "id": "t0000119930",
+                "label": "SWB6"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -137,6 +245,32 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119568",
+                "label": "E01"
+              },
+              {
+                "id": "t0000119569",
+                "label": "E02"
+              },
+              {
+                "id": "t0000119570",
+                "label": "E03"
+              },
+              {
+                "id": "t0000119571",
+                "label": "E04"
+              },
+              {
+                "id": "t0000119572",
+                "label": "E05"
+              },
+              {
+                "id": "t0000119573",
+                "label": "E06"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -149,6 +283,24 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119851",
+                "label": "Boy"
+              },
+              {
+                "id": "t0000119852",
+                "label": "Girl"
+              },
+              {
+                "id": "t0000119853",
+                "label": "Man"
+              },
+              {
+                "id": "t0000119854",
+                "label": "Woman"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -161,6 +313,16 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119576",
+                "label": "Yes"
+              },
+              {
+                "id": "t0000119577",
+                "label": "No"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -173,6 +335,16 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000121123",
+                "label": "Yes"
+              },
+              {
+                "id": "t0000121124",
+                "label": "No"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
@@ -185,6 +357,28 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119578",
+                "label": "I forgot it"
+              },
+              {
+                "id": "t0000119579",
+                "label": "A member of my family is registered, but not me"
+              },
+              {
+                "id": "t0000119580",
+                "label": "I live outside the camp"
+              },
+              {
+                "id": "t0000119581",
+                "label": "I an new and not registered yet"
+              },
+              {
+                "id": "t0000119855",
+                "label": "Not Relevant"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -197,6 +391,16 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000120162",
+                "label": "No"
+              },
+              {
+                "id": "t0000120161",
+                "label": "Yes"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
@@ -209,6 +413,16 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119591",
+                "label": "Yes"
+              },
+              {
+                "id": "t0000119592",
+                "label": "No"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -221,6 +435,16 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119583",
+                "label": "Female"
+              },
+              {
+                "id": "t0000119584",
+                "label": "Male"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -233,6 +457,20 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119588",
+                "label": "Yes"
+              },
+              {
+                "id": "t0000119589",
+                "label": "No"
+              },
+              {
+                "id": "t0000119590",
+                "label": "Mix of standard and non-standard jarricanes"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
@@ -245,6 +483,20 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119585",
+                "label": "Adult"
+              },
+              {
+                "id": "t0000119586",
+                "label": "Child"
+              },
+              {
+                "id": "t0000119587",
+                "label": "Teenager / Adolescent"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "SINGLE"
           },
@@ -257,6 +509,24 @@
         "required": true,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000119858",
+                "label": "Zone A"
+              },
+              {
+                "id": "t0000119860",
+                "label": "Zone C"
+              },
+              {
+                "id": "t0000119859",
+                "label": "Zone B"
+              },
+              {
+                "id": "t0000119861",
+                "label": "Not Relevant"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
