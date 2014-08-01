@@ -5,7 +5,6 @@ import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.inject.Inject;
-import freemarker.template.Configuration;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.Modules;
 import org.activityinfo.server.command.CommandTestCase2;
@@ -33,9 +32,6 @@ public class FormResourceTest extends CommandTestCase2 {
 
     @Inject
     public FormResource resource;
-
-    @Inject
-    public Configuration templateConfig;
 
     @Test
     public void getBlankForm() throws Exception {

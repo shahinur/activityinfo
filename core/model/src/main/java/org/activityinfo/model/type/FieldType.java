@@ -2,6 +2,7 @@ package org.activityinfo.model.type;
 
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.component.ComponentReader;
 
 public interface FieldType {
@@ -22,8 +23,4 @@ public interface FieldType {
 
     ComponentReader<LocalDate> getDateReader(String fieldName, String componentId);
 
-    /**
-     * @return the corresponding data type for an XForm instance
-     */
-    String getXFormType();
 }

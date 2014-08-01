@@ -141,10 +141,6 @@ public class ReferenceType implements ParametrizedFieldType {
        return new NullComponentReader<>();
     }
 
-    @Override
-    public String getXFormType() {
-        return null;
-    }
 
     /**
      * Convenience constructor for ReferenceTypes with single cardinality

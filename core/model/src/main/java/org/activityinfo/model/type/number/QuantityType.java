@@ -95,8 +95,4 @@ public class QuantityType implements ParametrizedFieldType {
         return new NullComponentReader<>();
     }
 
-    @Override
-    public String getXFormType() {
-        return "decimal";
-    }
 }

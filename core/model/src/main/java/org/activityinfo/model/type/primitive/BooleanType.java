@@ -29,7 +29,7 @@ import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
 
 /**
- * Value type that represents a boolean value, either true or false.
+ * @author yuriyz on 7/21/14.
  */
 public class BooleanType implements FieldType {
 
@@ -73,8 +73,4 @@ public class BooleanType implements FieldType {
         return new NullComponentReader<>();
     }
 
-    @Override
-    public String getXFormType() {
-        return "boolean";
-    }
 }

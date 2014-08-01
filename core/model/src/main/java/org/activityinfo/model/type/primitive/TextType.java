@@ -58,8 +58,5 @@ public class TextType implements FieldType {
         return new NullComponentReader<>();
     }
 
-    @Override
-    public String getXFormType() {
-        return "string";
-    }
+
 }

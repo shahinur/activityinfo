@@ -5,7 +5,7 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.component.ComponentReader;
 
 /**
- * Value type that represents a FieldType containing paragraph-like text.
+ * FieldType containing paragraph-like text.
  *
  */
 public class NarrativeType implements FieldType {
@@ -53,8 +53,4 @@ public class NarrativeType implements FieldType {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public String getXFormType() {
-        return null;
-    }
 }

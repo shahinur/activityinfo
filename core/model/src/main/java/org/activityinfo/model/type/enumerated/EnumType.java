@@ -107,8 +107,4 @@ public class EnumType implements ParametrizedFieldType {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public String getXFormType() {
-        return null;
-    }
 }
