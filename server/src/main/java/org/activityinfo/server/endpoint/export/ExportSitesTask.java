@@ -60,7 +60,9 @@ public class ExportSitesTask extends HttpServlet {
                 .mimeType("application/vnd.ms-excel")
                 .contentDisposition("attachment; filename=" + req.getParameter("filename"))
                 .build();
-        GcsFilename fileName = new GcsFilename(EXPORT_BUCKET_NAME, req.getParameter("exportId"));
+        GcsFilename fileName = new GcsFilename(EXPORT_BUCKET_NAME,
+                req.getParameter("exportId"));
+
         try(OutputStream outputStream = Channels.newOutputStream(gcs.createOrReplace(fileName, fileOptions))) {
             export.getBook().write(outputStream);
         }

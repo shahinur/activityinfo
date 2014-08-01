@@ -117,7 +117,7 @@ public class ExportDialog extends Dialog {
             @Override
             public void onSuccess(UrlResult result) {
                 if (!canceled) {
-                    showDownloadFinished(result.getUrl());
+                    initiateDownload(result.getUrl());
                 }
             }
         });
@@ -140,7 +140,7 @@ public class ExportDialog extends Dialog {
         });
     }
 
-    private void showDownloadFinished(String url) {
+    private void initiateDownload(String url) {
         bar.reset();
         bar.updateProgress(1.0, I18N.CONSTANTS.downloadReady());
         button.setText(I18N.CONSTANTS.close());
@@ -161,15 +161,15 @@ public class ExportDialog extends Dialog {
             @Override
             public void onResponseReceived(Request request, Response response) {
                 final String exportId = response.getText();
-                waitForCompletion(exportId).then(new AsyncCallback<Void>() {
+                getDownloadUrl(exportId).then(new AsyncCallback<String>() {
                     @Override
                     public void onFailure(Throwable caught) {
                         showError();
                     }
 
                     @Override
-                    public void onSuccess(Void result) {
-                        showDownloadFinished("/ActivityInfo/export?serve=" + exportId);
+                    public void onSuccess(String downloadUrl) {
+                        initiateDownload(downloadUrl);
                     }
                 });
             }
@@ -186,43 +186,42 @@ public class ExportDialog extends Dialog {
         }
     }
 
-    private Promise<Void> waitForCompletion(String exportId) {
-        final Promise<Void> completion = new Promise<>();
-        schedulePoll(exportId, completion);
-        return completion;
+    private Promise<String> getDownloadUrl(String exportId) {
+        final Promise<String> url = new Promise<>();
+        schedulePoll(exportId, url);
+        return url;
     }
 
-    private void schedulePoll(final String exportId, final Promise<Void> completion) {
+    private void schedulePoll(final String exportId, final Promise<String> downloadUrl) {
         Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
             @Override
             public boolean execute() {
-                pollServer(exportId, completion);
+                pollServer(exportId, downloadUrl);
                 return false;
             }
         }, 1000);
     }
 
-    private void pollServer(final String exportId, final Promise<Void> completion) {
-        RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/ActivityInfo/export?status=" + exportId);
+    private void pollServer(final String exportId, final Promise<String> downloadUrl) {
+        RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/ActivityInfo/export?id=" + exportId);
         request.setCallback(new RequestCallback() {
             @Override
             public void onResponseReceived(Request request, Response response) {
                 if(response.getStatusCode() == 200) {
-                    completion.onSuccess(null);
+                    downloadUrl.onSuccess(response.getText());
                 } else {
-                    schedulePoll(exportId, completion);
+                    schedulePoll(exportId, downloadUrl);
                 }
             }
-
             @Override
             public void onError(Request request, Throwable exception) {
-                completion.onFailure(exception);
+                downloadUrl.onFailure(exception);
             }
         });
         try {
             request.send();
         } catch (RequestException e) {
-            completion.onFailure(e);
+            downloadUrl.onFailure(e);
         }
     }
 

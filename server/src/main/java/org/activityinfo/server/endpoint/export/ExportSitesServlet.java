@@ -81,7 +81,6 @@ public class ExportSitesServlet extends HttpServlet {
         // Create a unique key from which the user can retrieve the file from GCS
         String exportId = Long.toString(Math.abs(random.nextLong()), 16);
 
-
         TaskOptions options = TaskOptions.Builder.withUrl(ExportSitesTask.END_POINT);
         for(Map.Entry<String, String[]> entry : req.getParameterMap().entrySet()) {
             options.param(entry.getKey(), entry.getValue()[0]);
@@ -101,47 +100,29 @@ public class ExportSitesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        if(!Strings.isNullOrEmpty(req.getParameter("status"))) {
-            // Provide a status update on the serve
-            sendExportStatus(req.getParameter("status"), resp);
+        String exportId = req.getParameter("id");
 
-        } else if(!Strings.isNullOrEmpty(req.getParameter("serve"))) {
-            // actually serve the result
-            serveExport(req.getParameter("serve"), req, resp);
-        }
-    }
-
-    private void sendExcelHeaders(HttpServletRequest req, HttpServletResponse resp) {
-        resp.setContentType("application/vnd.ms-excel");
-        if (req.getHeader("User-Agent").contains("MSIE")) {
-            resp.addHeader("Content-Disposition", "attachment; filename=ActivityInfo.xls");
-        } else {
-            resp.addHeader("Content-Disposition", "attachment; filename=" + fileName());
-        }
-    }
-
-    private void sendExportStatus(String exportId, HttpServletResponse resp) throws IOException {
-
+        // First determine whether the file is available
         GcsService gcs = GcsServiceFactory.createGcsService();
         GcsFilename fileName = new GcsFilename("activityinfo-generated", exportId);
         GcsFileMetadata metadata = gcs.getMetadata(fileName);
 
         if(metadata == null) {
-            resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+
         } else {
+            // First determine whether the file is available
+
+            GcsAppIdentityServiceUrlSigner signer = new GcsAppIdentityServiceUrlSigner();
+            String url;
+            try {
+                url = signer.getSignedUrl("GET", ExportSitesTask.EXPORT_BUCKET_NAME + "/" + exportId);
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to sign url", e);
+            }
+
             resp.setStatus(HttpServletResponse.SC_OK);
-        }
-    }
-
-    private void serveExport(String exportId, HttpServletRequest req,  HttpServletResponse resp) throws IOException {
-
-        GcsService gcs = GcsServiceFactory.createGcsService();
-        GcsFilename fileName = new GcsFilename(ExportSitesTask.EXPORT_BUCKET_NAME, exportId);
-
-        sendExcelHeaders(req, resp);
-
-        try(InputStream inputStream = Channels.newInputStream(gcs.openReadChannel(fileName, 0))) {
-            ByteStreams.copy(inputStream, resp.getOutputStream());
+            resp.getOutputStream().print(url);
         }
     }
 
