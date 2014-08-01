@@ -77,6 +77,16 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000000002",
+                "label": "Deplacement"
+              },
+              {
+                "id": "t0000000001",
+                "label": "Retour"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },

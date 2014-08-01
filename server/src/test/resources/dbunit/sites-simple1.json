@@ -83,6 +83,16 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000000003",
+                "label": "Casserole"
+              },
+              {
+                "id": "t0000000004",
+                "label": "Soap"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
@@ -119,6 +129,16 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000000002",
+                "label": "Deplacement"
+              },
+              {
+                "id": "t0000000001",
+                "label": "Catastrophe Naturelle"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
@@ -291,6 +311,16 @@
         "required": false,
         "type": {
           "parameters": {
+            "values": [
+              {
+                "id": "t0000000002",
+                "label": "Deplacement"
+              },
+              {
+                "id": "t0000000001",
+                "label": "Catastrophe Naturelle"
+              }
+            ],
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },

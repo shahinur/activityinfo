@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,8 @@ public class ActivityMigrator extends ResourceMigrator {
                 "FROM activity A " +
                 "LEFT JOIN locationtype L on (A.locationtypeid=L.locationtypeid)";
 
-        Map<Integer, List<FormField>> attributes = queryAttributeGroups(connection);
+        Map<Integer, List<EnumValue>> attributes = queryAttributes(connection);
+        Map<Integer, List<FormField>> attributeGroups = queryAttributeGroups(connection, attributes);
         Map<Integer, List<FormElement>> indicators = queryIndicators(connection);
 
         try(Statement statement = connection.createStatement()) {
@@ -74,7 +76,7 @@ public class ActivityMigrator extends ResourceMigrator {
                         ownerId = categoryId;
                     }
 
-                    writeSiteForm(ownerId, rs, indicators.get(activityId), attributes.get(activityId), writer);
+                    writeSiteForm(ownerId, rs, indicators.get(activityId), attributeGroups.get(activityId), writer);
                 }
             }
         }
@@ -122,7 +124,8 @@ public class ActivityMigrator extends ResourceMigrator {
         return activityMap;
     }
 
-    private Map<Integer, List<FormField>> queryAttributeGroups(Connection connection) throws SQLException {
+    private Map<Integer, List<FormField>> queryAttributeGroups(Connection connection,
+                                                               Map<Integer, List<EnumValue>> valueMap) throws SQLException {
         String sql = "SELECT * " +
                      "FROM attributegroup G " +
                      "INNER JOIN attributegroupinactivity A on G.attributeGroupId = A.attributeGroupId " +
@@ -138,19 +141,21 @@ public class ActivityMigrator extends ResourceMigrator {
                     List<FormField> fields = activityMap.get(activityId);
                     if(fields == null) {
                         activityMap.put(activityId, fields = Lists.newArrayList());
+
+
                     }
 
-                    // todo
+                    int groupId = rs.getInt("attributeGroupId");
+
                     Cardinality cardinality = rs.getBoolean("multipleAllowed") ?
                             Cardinality.MULTIPLE : Cardinality.SINGLE;
 
-                    List<EnumValue> values = Lists.newArrayList();
-                    // TODO(alex) add attributes
-//                    for(AttributeDTO attribute : getAttributes()) {
-//                        values.add(new EnumValue(CuidAdapter.attributeId(attribute.getId()), attribute.getName()));
-//                    }
+                    List<EnumValue> values = valueMap.get(groupId);
+                    if(values == null) {
+                        values = Collections.emptyList();
+                    }
 
-                    fields.add(new FormField(CuidAdapter.attributeGroupField(rs.getInt("attributeGroupId")))
+                    fields.add(new FormField(CuidAdapter.attributeGroupField(groupId))
                             .setLabel(rs.getString("name"))
                             .setType(new EnumType(cardinality, values))
                             .setRequired(rs.getBoolean("mandatory")));
@@ -159,6 +164,38 @@ public class ActivityMigrator extends ResourceMigrator {
         }
         return activityMap;
     }
+
+
+    private Map<Integer, List<EnumValue>> queryAttributes(Connection connection) throws SQLException {
+
+        String sql = "SELECT * " +
+                     "FROM attribute A " +
+                     "WHERE A.dateDeleted is null " +
+                     "ORDER BY sortOrder";
+
+        Map<Integer, List<EnumValue>> groupMap = Maps.newHashMap();
+
+
+        try(Statement statement = connection.createStatement()) {
+            try(ResultSet rs = statement.executeQuery(sql)) {
+                while(rs.next()) {
+                    int attributeGroupId = rs.getInt("AttributeGroupId");
+
+                    List<EnumValue> values = groupMap.get(attributeGroupId);
+                    if(values == null) {
+                        groupMap.put(attributeGroupId, values = Lists.newArrayList());
+                    }
+
+                    int attributeId = rs.getInt("attributeId");
+                    String attributeName = rs.getString("name");
+
+                    values.add(new EnumValue(CuidAdapter.attributeId(attributeId), attributeName));
+                }
+            }
+        }
+        return groupMap;
+    }
+
 
     private FormField indicatorField(ResultSet rs) throws SQLException {
         FormField field = new FormField(

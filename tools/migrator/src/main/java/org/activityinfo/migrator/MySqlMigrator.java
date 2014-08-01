@@ -6,6 +6,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.Resources;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -34,6 +35,15 @@ public class MySqlMigrator {
         migrators.add(new ActivityMigrator());
         //        migrators.add(new SiteTable());
         //        migrators.add(new ReportingPeriodTable());
+    }
+
+    public static void main(String[] args) throws Exception {
+        Class.forName("com.mysql.jdbc.Driver");
+        try(Connection connection = DriverManager.getConnection(
+                "jdbc:mysql://" + args[0] + ":3306/activityinfo?zeroDateTimeBehavior=convertToNull", args[1], args[2])) {
+
+            new MySqlMigrator().migrate(connection);
+        }
     }
 
     public void migrate(Connection connection) throws Exception {
