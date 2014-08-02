@@ -94,6 +94,10 @@ public class CuidAdapter {
         return ResourceId.create(domain + block(id));
     }
 
+    public static final ResourceId resourceId(char domain, int id) {
+        return cuid(domain, id);
+    }
+
     public static int getLegacyIdFromCuid(ResourceId id) {
         if(id.getDomain() == '_') {
             return 0;
@@ -102,19 +106,14 @@ public class CuidAdapter {
         }
     }
 
-    /**
-     * @return the {@code FormField} ResourceId for the Partner field of a given Activity {@code FormClass}
-     */
-    public static ResourceId partnerField(int activityId) {
-        return field(activityFormClass(activityId), PARTNER_FIELD);
-    }
-
-    public static ResourceId projectField(int activityId) {
-        return field(activityFormClass(activityId), PROJECT_FIELD);
-    }
-
+    @Deprecated
     public static ResourceId partnerInstanceId(int partnerId) {
         return cuid(PARTNER_DOMAIN, partnerId);
+    }
+
+    public static ResourceId partnerInstanceId(int databaseId, int partnerId) {
+        return ResourceId.create(String.valueOf(DATABASE_DOMAIN) + databaseId +
+                                 String.valueOf(PARTNER_DOMAIN) + partnerId);
     }
 
     /**

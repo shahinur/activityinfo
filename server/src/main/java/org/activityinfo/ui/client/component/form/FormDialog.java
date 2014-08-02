@@ -24,11 +24,10 @@ package org.activityinfo.ui.client.component.form;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.inject.util.Providers;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
@@ -109,10 +108,11 @@ public class FormDialog {
     public void save() {
         dialog.getStatusLabel().setText(I18N.CONSTANTS.saving());
         dialog.getPrimaryButton().setEnabled(false);
-        resourceLocator.persist(FormInstance.fromResource(formPanel.getInstance())).then(new AsyncCallback<Void>() {
+        resourceLocator.persist(formPanel.getInstance()).then(new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
+                Log.error("Save failed", caught);
                 dialog.getStatusLabel().setText(ExceptionOracle.getExplanation(caught));
                         dialog.getPrimaryButton().setEnabled(true);
             }
@@ -120,7 +120,7 @@ public class FormDialog {
             @Override
             public void onSuccess(Void result) {
                 dialog.hide();
-                callback.onPersisted(FormInstance.fromResource(formPanel.getInstance()));
+                callback.onPersisted(formPanel.getInstance());
             }
         });
     }

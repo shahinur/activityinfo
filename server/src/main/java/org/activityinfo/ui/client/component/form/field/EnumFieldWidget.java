@@ -21,6 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.promise.Promise;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class EnumFieldWidget implements FormFieldWidget<Set<ResourceId>> {
+public class EnumFieldWidget implements FormFieldWidget<ReferenceValue> {
 
 
     public interface Templates extends SafeHtmlTemplates {
@@ -40,8 +41,6 @@ public class EnumFieldWidget implements FormFieldWidget<Set<ResourceId>> {
 
         @Template("<span class='enum-add'>+ {0}</span>")
         SafeHtml addChoice(String label);
-
-
     }
 
 
@@ -59,7 +58,7 @@ public class EnumFieldWidget implements FormFieldWidget<Set<ResourceId>> {
     private final List<CheckBox> controls;
 
 
-    public EnumFieldWidget(EnumType enumType, final ValueUpdater valueUpdater) {
+    public EnumFieldWidget(EnumType enumType, final ValueUpdater<ReferenceValue> valueUpdater) {
         this.enumType = enumType;
         this.groupName = "group" + (nextId++);
         boxPanel = new FlowPanel();
@@ -175,23 +174,28 @@ public class EnumFieldWidget implements FormFieldWidget<Set<ResourceId>> {
         }
     }
 
-    private Set<ResourceId> updatedValue() {
+    private ReferenceValue updatedValue() {
         final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
                 value.add(ResourceId.create(control.getFormValue()));
             }
         }
-        return value;
+        return new ReferenceValue(value);
     }
 
     @Override
-    public Promise<Void> setValue(Set<ResourceId> value) {
+    public Promise<Void> setValue(ReferenceValue value) {
         for (CheckBox entry : controls) {
             ResourceId resourceId = ResourceId.create(entry.getFormValue());
-            entry.setValue(value.contains(resourceId));
+            entry.setValue(value.getResourceIds().contains(resourceId));
         }
         return Promise.done();
+    }
+
+    @Override
+    public void clearValue() {
+        setValue(ReferenceValue.EMPTY);
     }
 
     @Override

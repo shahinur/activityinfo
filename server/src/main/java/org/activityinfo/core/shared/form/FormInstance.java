@@ -21,28 +21,40 @@ package org.activityinfo.core.shared.form;
  * #L%
  */
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.model.resource.*;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.geo.GeoPoint;
+import org.activityinfo.model.type.number.Quantity;
+import org.activityinfo.model.type.primitive.BooleanFieldValue;
+import org.activityinfo.model.type.primitive.TextValue;
+import org.activityinfo.model.type.time.LocalDate;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
 /**
+ *
+ * Wrapper for a {@code Record} or {@code Resource} that exposes its properties
+ * as {@code FieldValue}s
+ *
  * @author yuriyz on 1/29/14.
  */
 public class FormInstance implements IsResource {
 
     private ResourceId id;
     private ResourceId classId;
-    private final Map<ResourceId, Object> valueMap = Maps.newHashMap();
     private ResourceId parentId;
+    private PropertyBag propertyBag;
 
     /**
      * Constructs a new FormInstance. To obtain an id for a new instance
@@ -55,6 +67,7 @@ public class FormInstance implements IsResource {
         Preconditions.checkNotNull(id, classId);
         this.id = id;
         this.classId = classId;
+        this.propertyBag = new PropertyBag();
     }
 
     @Override
@@ -64,18 +77,8 @@ public class FormInstance implements IsResource {
 
     public static FormInstance fromResource(Resource resource) {
         FormInstance instance = new FormInstance(resource.getId(), resource.getResourceId("classId"));
-        instance.setParentId(resource.getOwnerId());
-        instance.valueMap.clear();
-        instance.valueMap.putAll(fromValueRecord(resource.getProperties()));
+        instance.propertyBag.setAll(resource);
         return instance;
-    }
-
-    public static Map<ResourceId, Object> fromValueRecord(Map<String, Object> properties) {
-        final Map<ResourceId, Object> valueMap = Maps.newHashMap();
-        for (Map.Entry<String, Object> entry : properties.entrySet()) {
-            valueMap.put(ResourceId.create(entry.getKey()), entry.getValue());
-        }
-        return valueMap;
     }
 
     @Override
@@ -86,9 +89,7 @@ public class FormInstance implements IsResource {
             resource.setOwnerId(parentId);
         }
         resource.set("classId", classId);
-        for (Map.Entry<ResourceId, Object> entry : valueMap.entrySet()) {
-            resource.set(entry.getKey().asString(), entry.getValue());
-        }
+        resource.setAll(propertyBag);
         return resource;
     }
 
@@ -96,7 +97,7 @@ public class FormInstance implements IsResource {
         return classId;
     }
 
-    public void setParentId(ResourceId parentId) {
+    public void setOwnerId(ResourceId parentId) {
         this.parentId = parentId;
     }
 
@@ -105,35 +106,109 @@ public class FormInstance implements IsResource {
     }
 
     public Map<ResourceId, Object> getValueMap() {
-        return valueMap;
+        Map<ResourceId, Object> valueMap = Maps.newHashMap();
+        for(Object key : propertyBag.getProperties().keySet()) {
+            String fieldName = (String)key;
+            ResourceId fieldId = ResourceId.create(fieldName);
+            Object value = propertyBag.get(fieldName);
+
+            if(value instanceof String) {
+                valueMap.put(fieldId, value);
+            } else if(value instanceof Record) {
+                valueMap.put(fieldId,
+                        TypeRegistry.get().deserializeFieldValue((Record)value));
+            } else {
+                throw new UnsupportedOperationException("value: " + value);
+            }
+        }
+        return Collections.unmodifiableMap(valueMap);
     }
 
     public void removeAll(Set<ResourceId> fieldIds) {
         for (ResourceId fieldId : fieldIds) {
-            valueMap.remove(fieldId);
+            propertyBag.remove(fieldId.asString());
         }
     }
 
     public void set(@NotNull ResourceId fieldId, Object fieldValue) {
         Preconditions.checkNotNull(fieldId);
-        if (fieldValue instanceof LocalDate) {
-            // not sure if we want to use LocalDate or Date here -- may only matter at the moment
-            // of serialization
-            fieldValue = ((LocalDate) fieldValue).atMidnightInMyTimezone();
+        if (fieldValue == null) {
+            propertyBag.remove(fieldId.asString());
+
+        } else if (fieldValue instanceof ResourceId) {
+            // TODO(alex) once rest of code has been updated
+            propertyBag.set(fieldId.asString(), new ReferenceValue((ResourceId)fieldValue).toRecord());
+
+        } else if (fieldValue instanceof Date) {
+            // TODO(alex) once rest of code has been updated
+            propertyBag.set(fieldId.asString(), new LocalDate((Date)fieldValue).toRecord());
+
+        } else if (fieldValue instanceof Number) {
+            // TODO(alex) once rest of code has been updated
+
+            Quantity quantity = new Quantity(((Number) fieldValue).doubleValue(), null);
+            propertyBag.set(fieldId.asString(), quantity.toRecord());
+
+        } else if (fieldValue instanceof String) {
+            propertyBag.set(fieldId.asString(), (String) fieldValue);
+
+        } else if (fieldValue instanceof TextValue) {
+            propertyBag.set(fieldId.asString(), ((TextValue) fieldValue).toString());
+
+        } else if (fieldValue instanceof BooleanFieldValue) {
+            propertyBag.set(fieldId.asString(), fieldValue == BooleanFieldValue.TRUE);
+
+        } else if(fieldValue instanceof Boolean) {
+            propertyBag.set(fieldId.asString(), (Boolean)fieldValue);
+
+        } else if(fieldValue instanceof IsRecord) {
+            propertyBag.set(fieldId.asString(), ((IsRecord) fieldValue).toRecord());
+
+        } else {
+            throw new UnsupportedOperationException(fieldId + " = " + fieldValue);
         }
-        valueMap.put(fieldId, fieldValue);
     }
 
-    public Object get(ResourceId fieldId) {
-        return valueMap.get(fieldId);
+    public FieldValue get(ResourceId fieldId) {
+        Object value = propertyBag.get(fieldId.asString());
+        if(value == null) {
+            return null;
+        } else if(value instanceof String) {
+            return TextValue.valueOf((String) value);
+        } else if(value instanceof Boolean) {
+            Boolean booleanValue = (Boolean) value;
+            return BooleanFieldValue.valueOf(booleanValue);
+        } else if(value instanceof Record) {
+            Record record = (Record)value;
+            return TypeRegistry.get().deserializeFieldValue(record);
+        } else {
+            throw new UnsupportedOperationException(fieldId.asString() + " = " + value);
+        }
+    }
+
+    /**
+     * Returns the value of {@code fieldId} if the value is present and of
+     * the specified {@code typeClass}, or {@code null} otherwise.
+     */
+    public FieldValue get(ResourceId fieldId, FieldTypeClass typeClass) {
+        FieldValue value = get(fieldId);
+        if(value.getTypeClass() == typeClass) {
+            return value;
+        } else {
+            return null;
+        }
+    }
+
+    public ResourceId getInstanceId(ResourceId fieldId) {
+        final FieldValue value = get(fieldId);
+        if(value instanceof ReferenceValue) {
+            return ((ReferenceValue) value).getResourceIds().iterator().next();
+        }
+        return null;
     }
 
     public String getString(ResourceId fieldId) {
-        final Object value = get(fieldId);
-        if (value instanceof String) {
-            return (String) value;
-        }
-        return null;
+        return propertyBag.isString(fieldId.asString());
     }
 
     public LocalDate getDate(ResourceId fieldId) {
@@ -144,43 +219,34 @@ public class FormInstance implements IsResource {
         return null;
     }
 
-    public ResourceId getInstanceId(ResourceId fieldId) {
-        final Object value = get(fieldId);
-        if(value instanceof ResourceId) {
-            return (ResourceId) value;
-        }
-        return null;
-    }
-
-
     public Set<ResourceId> getReferences(ResourceId fieldId) {
-        final Object value = get(fieldId);
-        if(value instanceof ResourceId) {
-            return Collections.singleton((ResourceId)value);
-        } else if(value instanceof Set) {
-            return (Set<ResourceId>)value;
+        FieldValue value = get(fieldId);
+        if(value instanceof ReferenceValue) {
+            return ((ReferenceValue) value).getResourceIds();
+        } else {
+            return Collections.emptySet();
         }
-        return Sets.newHashSet();
     }
 
     public Double getDouble(ResourceId fieldId) {
-        final Object value = get(fieldId);
-        if (value instanceof Double) {
-            return (Double) value;
+        FieldValue value = get(fieldId);
+        if(value instanceof Quantity) {
+            return ((Quantity) value).getValue();
         }
         return null;
     }
 
     public FormInstance copy() {
         final FormInstance copy = new FormInstance(getId(), getClassId());
-        copy.getValueMap().putAll(this.getValueMap());
+        copy.propertyBag.setAll(propertyBag);
         return copy;
     }
 
     public AiLatLng getPoint(ResourceId fieldId) {
-        final Object value = get(fieldId);
-        if (value instanceof AiLatLng) {
-            return (AiLatLng) value;
+        FieldValue value = get(fieldId);
+        if(value instanceof GeoPoint) {
+            GeoPoint geoPoint = (GeoPoint) value;
+            return new AiLatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
         }
         return null;
     }
@@ -190,7 +256,7 @@ public class FormInstance implements IsResource {
         return "FormInstance{" +
                 "id=" + id +
                 ", classId=" + classId +
-                ", valueMap=" + valueMap +
+                ", valueMap=" + propertyBag +
                 '}';
     }
 

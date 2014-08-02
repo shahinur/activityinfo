@@ -2,13 +2,10 @@ package org.activityinfo.migrator;
 
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.migrator.tables.ActivityTable;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -32,7 +29,7 @@ public class MySqlMigrator {
         //        migrators.add(new PartnerTable());
         //        migrators.add(new AttributeGroupTable());
         //        migrators.add(new AttributeTable());
-        migrators.add(new ActivityMigrator());
+        migrators.add(new ActivityTable());
         //        migrators.add(new SiteTable());
         //        migrators.add(new ReportingPeriodTable());
     }
@@ -48,28 +45,14 @@ public class MySqlMigrator {
 
     public void migrate(Connection connection) throws Exception {
 
-        final PreparedStatement statement = connection.prepareStatement(
-                "REPLACE INTO resource (id, ownerId, json) VALUES (?, ?, ?)");
+        MySqlResourceWriter writer = new MySqlResourceWriter(connection);
+
 
         for(final ResourceMigrator migrator : migrators) {
-
-            migrator.getResources(connection, new ResourceWriter() {
-                @Override
-                public void write(Resource resource) {
-                    if(resource == null) {
-                        throw new NullPointerException(migrator.getClass().getName());
-                    }
-                    try {
-                        statement.setString(1, resource.getId().asString());
-                        statement.setString(2, resource.getId().asString());
-                        statement.setString(3, Resources.toJson(resource));
-                        statement.executeUpdate();
-                    } catch(SQLException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
+            migrator.getResources(connection, writer);
         }
+
+        writer.close();
     }
 
     public void migrate(Connection connection, ResourceWriter writer) throws Exception {

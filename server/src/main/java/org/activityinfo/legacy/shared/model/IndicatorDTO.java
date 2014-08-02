@@ -24,13 +24,14 @@ package org.activityinfo.legacy.shared.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.command.Month;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.NarrativeType;
-import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.TypeRegistry;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -56,9 +57,6 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public static final int UNITS_MAX_LENGTH = 15;
     public static final int MAX_LIST_HEADER_LENGTH = 29;
     public static final int MAX_CATEGORY_LENGTH = 50;
-
-    // ensure that serializer/deserializer is generated for FormFieldType
-    private FieldTypeClass type;
 
     public IndicatorDTO() {
         super();
@@ -203,11 +201,11 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public FieldTypeClass getType() {
-        return get("type");
+        return TypeRegistry.get().getTypeClass((String)get("type"));
     }
 
     public void setType(FieldTypeClass type) {
-        set("type", type);
+        set("type", type.getId());
     }
 
     public void setMandatory(boolean mandatory) {
@@ -347,10 +345,10 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         field.setCalculation(getExpression());
         field.setSkipExpression(getSkipExpression());
 
-        if(getType() == TextType.INSTANCE) {
+        if(getType() == TextType.TYPE_CLASS) {
             field.setType(TextType.INSTANCE);
 
-        } else if(getType() == NarrativeType.INSTANCE) {
+        } else if(getType() == NarrativeType.TYPE_CLASS) {
             field.setType(NarrativeType.INSTANCE);
 
         } else {

@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Base class for Resource and Record
  */
-class PropertyBag<T extends PropertyBag> {
+public class PropertyBag<T extends PropertyBag> {
 
     private final Map<String, Object> properties = Maps.newHashMap();
 
@@ -37,13 +37,22 @@ class PropertyBag<T extends PropertyBag> {
         return properties.containsKey(propertyName);
     }
 
+    /**
+     * @return the value of the given boolean property
+     * @throws java.lang.NullPointerException
+     */
+    public boolean getBoolean(String propertyName) {
+        return (Boolean) getNonNullPropertyValue(propertyName);
+    }
 
     /**
      * @return the value of the given boolean property, or the {@code defaultValue}
-     * if there is no value for this property or the value is not of Boolean type.
+     * @throws java.lang.ClassCastException if the value of the property is not a boolean
+     * @throws java.lang.NullPointerException if there is no value for the property
      */
     public boolean getBoolean(String propertyName, boolean defaultValue) {
         Object value = properties.get(propertyName);
+
         if(value == Boolean.TRUE) {
             return true;
         } else if(value == Boolean.FALSE) {
@@ -84,11 +93,7 @@ class PropertyBag<T extends PropertyBag> {
      */
     @Nonnull
     public String getString(String propertyName) {
-        String value = (String) properties.get(propertyName);
-        if(value == null) {
-            throw new NullPointerException(propertyName + " is not present in " + this);
-        }
-        return value;
+        return (String) getNonNullPropertyValue(propertyName);
     }
 
     public String isString(String propertyName) {
@@ -105,11 +110,7 @@ class PropertyBag<T extends PropertyBag> {
      */
     @Nonnull
     public Record getRecord(String propertyName) {
-        Record value = (Record) properties.get(propertyName);
-        if(value == null) {
-            throw new NullPointerException(propertyName);
-        }
-        return value;
+        return (Record) getNonNullPropertyValue(propertyName);
     }
 
     public Record isRecord(String propertyName) {
@@ -131,14 +132,6 @@ class PropertyBag<T extends PropertyBag> {
             throw new NullPointerException(propertyName);
         }
         return value;
-    }
-
-    public Resource isResource(String propertyName) {
-        Object value = properties.get(propertyName);
-        if(value instanceof Resource) {
-            return (Resource) value;
-        }
-        return null;
     }
 
     @Nonnull
@@ -164,10 +157,7 @@ class PropertyBag<T extends PropertyBag> {
      * @throws java.lang.NullPointerException if there is no value for the property
      */
     public double getDouble(String propertyName) {
-        Number value = (Number)properties.get(propertyName);
-        if(value == null) {
-            throw new NullPointerException(propertyName);
-        }
+        Number value = (Number) getNonNullPropertyValue(propertyName);
         return value.doubleValue();
     }
 
@@ -182,6 +172,11 @@ class PropertyBag<T extends PropertyBag> {
             properties.put(propertyName, record);
         }
         return (T)this;
+    }
+
+
+    public void remove(String fieldName) {
+        properties.remove(fieldName);
     }
 
     /**
@@ -239,6 +234,18 @@ class PropertyBag<T extends PropertyBag> {
         return (T)this;
     }
 
+    public void clear() {
+        properties.clear();
+    }
+
+    private Object getNonNullPropertyValue(String propertyName) {
+        Object value = properties.get(propertyName);
+        if(value == null) {
+            throw new NullPointerException(propertyName);
+        }
+        return value;
+    }
+
     /**
      * Sets the named property to the given value,
      * or removes the property if the {@code value} is null.
@@ -293,6 +300,10 @@ class PropertyBag<T extends PropertyBag> {
     public T set(String propertyName, boolean booleanValue) {
         properties.put(propertyName, booleanValue);
         return (T)this;
+    }
+
+    public void setAll(PropertyBag propertyBag) {
+        properties.putAll(propertyBag.properties);
     }
 
     public Map<String, Object> getProperties() {

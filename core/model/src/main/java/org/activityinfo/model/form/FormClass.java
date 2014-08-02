@@ -3,7 +3,6 @@ package org.activityinfo.model.form;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.*;
-import org.activityinfo.model.type.FieldType;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -38,7 +37,6 @@ public class FormClass implements IsResource, FormElementContainer {
     private String label;
     private String description;
     private final List<FormElement> elements = Lists.newArrayList();
-    private int cacheId;
 
     public FormClass(ResourceId id) {
         Preconditions.checkNotNull(id);
@@ -50,7 +48,6 @@ public class FormClass implements IsResource, FormElementContainer {
         copy.setOwnerId(this.getOwnerId());
         copy.getElements().addAll(this.getElements());
         copy.setLabel(this.getLabel());
-        copy.setCacheId(this.getCacheId());
         return copy;
     }
 
@@ -173,21 +170,6 @@ public class FormClass implements IsResource, FormElementContainer {
         return this;
     }
 
-    public FormField addField(String id, String name, FieldType type) {
-        FormField field = new FormField(ResourceId.create(this.id.asString() + ":" + id), name);
-        field.setType(type);
-        elements.add(field);
-        return field;
-    }
-
-    public int getCacheId() {
-        return cacheId;
-    }
-
-    public void setCacheId(int cacheId) {
-        this.cacheId = cacheId;
-    }
-
     @Override
     public String toString() {
         return "<FormClass: " + getLabel() + ">";
@@ -197,17 +179,17 @@ public class FormClass implements IsResource, FormElementContainer {
         FormClass formClass = new FormClass(resource.getId());
         formClass.setOwnerId(resource.getOwnerId());
         formClass.setLabel(resource.getString("label"));
-        formClass.elements.addAll(fromRecords(resource.getId(), resource.getRecordList("elements")));
+        formClass.elements.addAll(fromRecords(resource.getRecordList("elements")));
         return formClass;
     }
 
-    private static List<FormElement> fromRecords(ResourceId formClassId, List<Record> elementArray) {
+    private static List<FormElement> fromRecords(List<Record> elementArray) {
         List<FormElement> elements = Lists.newArrayList();
         for(Record elementRecord : elementArray) {
             if("section".equals(elementRecord.isString("type"))) {
                 FormSection section = new FormSection(ResourceId.create(elementRecord.getString("id")));
                 section.setLabel(elementRecord.getString("label"));
-                section.getElements().addAll(fromRecords(formClassId, elementRecord.getRecordList("elements")));
+                section.getElements().addAll(fromRecords(elementRecord.getRecordList("elements")));
                 elements.add(section);
             } else {
                 elements.add(FormField.fromRecord(elementRecord));

@@ -1,7 +1,6 @@
 package org.activityinfo.ui.client.component.form;
 
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -16,15 +15,13 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.*;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.ui.client.component.form.field.EnumFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
-import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 import org.activityinfo.ui.client.widget.DisplayWidget;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -51,7 +48,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     /**
      * A new version of the instance, being updated by the user
      */
-    private Resource workingInstance;
+    private FormInstance workingInstance;
 
     private FormClass formClass;
     private ResourceLocator locator;
@@ -77,7 +74,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         scrollPanel = new ScrollPanel(panel);
     }
 
-    public Resource getInstance() {
+    public FormInstance getInstance() {
         return workingInstance;
     }
 
@@ -144,18 +141,18 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     public Promise<Void> setValue(Resource instance) {
         this.instance = instance;
-        this.workingInstance = instance.copy();
+        this.workingInstance = FormInstance.fromResource(instance);
 
         List<Promise<Void>> tasks = Lists.newArrayList();
 
-        for (Map.Entry<ResourceId, FieldContainer> entry : containers.entrySet()) {
-            FieldContainer container = entry.getValue();
-            FormFieldWidget fieldWidget = container.getFieldWidget();
-            Object value = workingInstance.get(entry.getKey().asString());
-            if (value == null && (fieldWidget instanceof ReferenceFieldWidget || fieldWidget instanceof EnumFieldWidget)) {
-                value = new HashSet();
+        for (FieldContainer container : containers.values()) {
+            FormField field = container.getField();
+            FieldValue value = workingInstance.get(field.getId());
+            if(value != null && value.getTypeClass() == field.getType().getTypeClass()) {
+                tasks.add(container.getFieldWidget().setValue(value));
+            } else {
+                container.getFieldWidget().clearValue();
             }
-            tasks.add(fieldWidget.setValue(value));
             container.setValid();
         }
 
@@ -174,21 +171,28 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     }
 
     private void onFieldUpdated(FormField field, Object newValue) {
-        if (!Objects.equals(workingInstance.get(field.getId().asString()), newValue)) {
-            workingInstance.set(field.getId().asString(), newValue);
+        if (!Objects.equals(workingInstance.get(field.getId()), newValue)) {
+            workingInstance.set(field.getId(), newValue);
             validate(field);
             skipHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
         }
     }
 
     private void validate(FormField field) {
-        Object value = workingInstance.get(field.getId().asString());
+        FieldValue value = getCurrentValue(field);
+        if(value.getTypeClass() != field.getType().getTypeClass()) {
+            value = null;
+        }
         FieldContainer container = containers.get(field.getId());
-        if (field.isRequired() && (value == null || (value instanceof String && Strings.isNullOrEmpty((String) value)) )) {
+        if (field.isRequired() && value == null) {
             container.setInvalid(I18N.CONSTANTS.requiredFieldMessage());
         } else {
             container.setValid();
         }
+    }
+
+    private FieldValue getCurrentValue(FormField field) {
+        return workingInstance.get(field.getId());
     }
 
     private Widget createHeader(int depth, FormSection section) {
@@ -212,4 +216,6 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     public FieldContainer getFieldContainer(ResourceId fieldId) {
         return containers.get(fieldId);
     }
+
+
 }

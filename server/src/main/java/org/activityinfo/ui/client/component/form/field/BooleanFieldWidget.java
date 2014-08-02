@@ -27,12 +27,13 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.promise.Promise;
 
 /**
  * @author yuriyz on 7/21/14.
  */
-public class BooleanFieldWidget implements FormFieldWidget {
+public class BooleanFieldWidget implements FormFieldWidget<BooleanFieldValue> {
 
     private final CheckBox checkBox;
 
@@ -52,9 +53,14 @@ public class BooleanFieldWidget implements FormFieldWidget {
     }
 
     @Override
-    public Promise<Void> setValue(Object value) {
-        checkBox.setValue((Boolean) value);
+    public Promise<Void> setValue(BooleanFieldValue value) {
+        checkBox.setValue(value.asBoolean());
         return Promise.done();
+    }
+
+    @Override
+    public void clearValue() {
+        checkBox.setValue(false);
     }
 
     @Override

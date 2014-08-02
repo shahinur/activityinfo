@@ -4,9 +4,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
@@ -33,10 +31,6 @@ public class FormField extends FormElement {
     public FormField(ResourceId id) {
         checkNotNull(id);
         this.id = id;
-    }
-
-    public FormField(ResourceId formClassId, String name) {
-        this.id = FieldId.fieldId(formClassId, name);
     }
 
     public ResourceId getId() {
@@ -76,6 +70,7 @@ public class FormField extends FormElement {
     }
 
     public FieldType getType() {
+        assert type != null : "type is missing for " + id;
         return type;
     }
 
@@ -204,10 +199,11 @@ public class FormField extends FormElement {
     private Record toRecord(FieldType type) {
         Record record = new Record();
         record.set("typeClass", type.getTypeClass().getId());
-        record.set("parameters", type.getParameters());
+        if(type instanceof ParametrizedFieldType) {
+            record.set("parameters", ((ParametrizedFieldType)type).getParameters());
+        }
         return record;
     }
-
 
     public static FormElement fromRecord(Record record) {
         FormField formField = new FormField(ResourceId.create(record.getString("id")))
@@ -224,9 +220,12 @@ public class FormField extends FormElement {
     private static FieldType typeFromRecord(Record record) {
         String typeClassId = record.getString("typeClass");
         FieldTypeClass typeClass = TypeRegistry.get().getTypeClass(typeClassId);
-        return typeClass.createType(record.isRecord("parameters"));
+        if(typeClass instanceof ParametrizedFieldTypeClass) {
+            return ((ParametrizedFieldTypeClass)typeClass).deserializeType(record.getRecord("parameters"));
+        } else {
+            return typeClass.createType();
+        }
     }
-
 
     public void setCalculation(String calculation) {
         this.calculation = calculation;
