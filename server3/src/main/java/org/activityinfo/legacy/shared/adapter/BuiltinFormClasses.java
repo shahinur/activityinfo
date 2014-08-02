@@ -5,7 +5,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.primitive.TextType;
 
 /**
  * In the old legacy, many "FormClasses" were builtins, defined as part

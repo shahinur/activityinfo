@@ -1,8 +1,11 @@
-package org.activityinfo.migrator;
+package org.activityinfo.migrator.tables;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import org.activityinfo.migrator.ResourceMigrator;
+import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
@@ -17,20 +20,21 @@ import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.time.LocalDateIntervalType;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
 
-public class ActivityMigrator extends ResourceMigrator {
+public class ActivityTable extends ResourceMigrator {
 
     private final String NAME_FIELD_NAME = "label";
 
@@ -51,11 +55,13 @@ public class ActivityMigrator extends ResourceMigrator {
                 "L.Name locationTypeName, " +
                 "L.BoundAdminLevelId " +
                 "FROM activity A " +
-                "LEFT JOIN locationtype L on (A.locationtypeid=L.locationtypeid)";
+                "LEFT JOIN locationtype L on (A.locationtypeid=L.locationtypeid) " +
+                "LEFT JOIN userdatabase d on (A.databaseId=d.DatabaseId) " +
+                "WHERE d.dateDeleted is null and A.dateDeleted is null ";
 
         Map<Integer, List<EnumValue>> attributes = queryAttributes(connection);
-        Map<Integer, List<FormField>> attributeGroups = queryAttributeGroups(connection, attributes);
-        Map<Integer, List<FormElement>> indicators = queryIndicators(connection);
+        Map<Integer, List<FormElement>> indicators = queryFields(connection, attributes);
+        Set<ResourceId> categories = Sets.newHashSet();
 
         try(Statement statement = connection.createStatement()) {
             try(ResultSet rs = statement.executeQuery(sql)) {
@@ -72,11 +78,14 @@ public class ActivityMigrator extends ResourceMigrator {
                         ownerId = databaseResourceId;
                     } else {
                         ResourceId categoryId = CuidAdapter.activityCategoryFolderId(databaseId, category);
-                        writer.write(categoryResource(databaseResourceId, categoryId, category));
                         ownerId = categoryId;
+                        if(!categories.contains(categoryId)) {
+                            writer.write(categoryResource(databaseResourceId, categoryId, category));
+                            categories.add(categoryId);
+                        }
                     }
 
-                    writeSiteForm(ownerId, rs, indicators.get(activityId), attributeGroups.get(activityId), writer);
+                    writeSiteForm(ownerId, rs, indicators.get(activityId), writer);
                 }
             }
         }
@@ -90,9 +99,37 @@ public class ActivityMigrator extends ResourceMigrator {
                         .set(NAME_FIELD_NAME, category);
     }
 
-    private Map<Integer, List<FormElement>> queryIndicators(Connection connection) throws SQLException {
-        String indicatorQuery = "SELECT * FROM indicator " +
-                                "WHERE dateDeleted IS NULL " +
+    private Map<Integer, List<FormElement>> queryFields(
+            Connection connection, Map<Integer, List<EnumValue>> attributes) throws SQLException {
+
+        String indicatorQuery = "(SELECT " +
+                                        "ActivityId, " +
+                                        "IndicatorId as Id, " +
+                                        "Category, " +
+                                        "Name, " +
+                                        "Description, " +
+                                        "Mandatory, " +
+                                        "Type, " +
+                                        "NULL as MultipleAllowed, " +
+                                        "units, " +
+                                        "SortOrder " +
+                                    "FROM indicator " +
+                                    "WHERE dateDeleted IS NULL) " +
+                                "UNION ALL " +
+                                "(SELECT " +
+                                        "A.ActivityId, " +
+                                        "G.attributeGroupId as Id, " +
+                                        "NULL as Category, " +
+                                        "Name, " +
+                                        "NULL as Description, " +
+                                        "Mandatory, " +
+                                        "'ENUM' as Type, " +
+                                        "multipleAllowed, " +
+                                        "NULL as Units, " +
+                                        "SortOrder " +
+                                    "FROM attributegroup G " +
+                                    "INNER JOIN attributegroupinactivity A on G.attributeGroupId = A.attributeGroupId " +
+                                    "WHERE dateDeleted is null) " +
                                 "ORDER BY SortOrder";
 
         Map<Integer, List<FormElement>> activityMap = Maps.newHashMap();
@@ -107,7 +144,7 @@ public class ActivityMigrator extends ResourceMigrator {
 
                     String category = rs.getString("Category");
                     if(Strings.isNullOrEmpty(category)) {
-                        list.add(indicatorField(rs));
+                        list.add(createField(rs, attributes));
 
                     } else {
                         FormSection categorySection = findCategorySection(list, category);
@@ -116,49 +153,8 @@ public class ActivityMigrator extends ResourceMigrator {
                             categorySection.setLabel(category);
                             list.add(categorySection);
                         }
-                        categorySection.addElement(indicatorField(rs));
+                        categorySection.addElement(createField(rs, attributes));
                     }
-                }
-            }
-        }
-        return activityMap;
-    }
-
-    private Map<Integer, List<FormField>> queryAttributeGroups(Connection connection,
-                                                               Map<Integer, List<EnumValue>> valueMap) throws SQLException {
-        String sql = "SELECT * " +
-                     "FROM attributegroup G " +
-                     "INNER JOIN attributegroupinactivity A on G.attributeGroupId = A.attributeGroupId " +
-                     "ORDER BY sortOrder";
-
-        Map<Integer, List<FormField>> activityMap = Maps.newHashMap();
-
-        try(Statement statement = connection.createStatement()) {
-            try(ResultSet rs = statement.executeQuery(sql)) {
-                while(rs.next()) {
-                    int activityId = rs.getInt("ActivityId");
-
-                    List<FormField> fields = activityMap.get(activityId);
-                    if(fields == null) {
-                        activityMap.put(activityId, fields = Lists.newArrayList());
-
-
-                    }
-
-                    int groupId = rs.getInt("attributeGroupId");
-
-                    Cardinality cardinality = rs.getBoolean("multipleAllowed") ?
-                            Cardinality.MULTIPLE : Cardinality.SINGLE;
-
-                    List<EnumValue> values = valueMap.get(groupId);
-                    if(values == null) {
-                        values = Collections.emptyList();
-                    }
-
-                    fields.add(new FormField(CuidAdapter.attributeGroupField(groupId))
-                            .setLabel(rs.getString("name"))
-                            .setType(new EnumType(cardinality, values))
-                            .setRequired(rs.getBoolean("mandatory")));
                 }
             }
         }
@@ -197,21 +193,52 @@ public class ActivityMigrator extends ResourceMigrator {
     }
 
 
-    private FormField indicatorField(ResultSet rs) throws SQLException {
-        FormField field = new FormField(
-                CuidAdapter.indicatorField(rs.getInt("IndicatorId")))
+    private FormField createField(ResultSet rs, Map<Integer, List<EnumValue>> attributes) throws SQLException {
+
+        ResourceId fieldId;
+        if(rs.getString("Type").equals("ENUM")) {
+            fieldId = ResourceId.create("I" + rs.getInt("id"));
+        } else {
+            fieldId = ResourceId.create("A" + rs.getInt("id"));
+        }
+
+        FormField field = new FormField(fieldId)
                 .setLabel(rs.getString("Name"))
                 .setRequired(rs.getInt("Mandatory") == 1)
-                .setDescription(rs.getString("Description"))
-                .setExpression(Strings.emptyToNull(rs.getString("Expression")));
+                .setDescription(rs.getString("Description"));
 
         switch (rs.getString("Type")) {
             default:
             case "QUANTITY":
                 field.setType(new QuantityType().setUnits(rs.getString("units")));
                 break;
+            case "FREE_TEXT":
+                field.setType(TextType.INSTANCE);
+                break;
+            case "NARRATIVE":
+                field.setType(TextType.INSTANCE);
+                break;
+            case "ENUM":
+                field.setType(createEnumType(rs, attributes));
+                break;
         }
         return field;
+    }
+
+    private EnumType createEnumType(ResultSet rs, Map<Integer, List<EnumValue>> attributes) throws SQLException {
+
+        Cardinality cardinality;
+        if(rs.getBoolean("multipleAllowed")) {
+            cardinality = Cardinality.MULTIPLE;
+        } else {
+            cardinality = Cardinality.SINGLE;
+        }
+
+        List<EnumValue> enumValues = attributes.get(rs.getInt("id"));
+        if(enumValues == null) {
+            enumValues = Lists.newArrayList();
+        }
+        return new EnumType(cardinality, enumValues);
     }
 
     private FormSection findCategorySection(List<FormElement> section, String category) {
@@ -224,9 +251,7 @@ public class ActivityMigrator extends ResourceMigrator {
     }
 
     private void writeSiteForm(ResourceId ownerId,
-                               ResultSet rs,
-                               List<FormElement> indicators,
-                               List<FormField> attributes,
+                               ResultSet rs, List<FormElement> indicators,
                                ResourceWriter writer) throws SQLException, IOException {
 
 
@@ -238,28 +263,22 @@ public class ActivityMigrator extends ResourceMigrator {
         siteForm.setLabel(rs.getString("name"));
         siteForm.setParentId(ownerId);
 
-        FormField partnerField = new FormField(CuidAdapter.field(classId, CuidAdapter.PARTNER_FIELD))
+        FormField partnerField = new FormField(ResourceId.create("partner"))
                 .setLabel("Partner")
                 .setType(ReferenceType.single(CuidAdapter.partnerFormClass(databaseId)))
                 .setRequired(true);
         siteForm.addElement(partnerField);
 
-        FormField projectField = new FormField(CuidAdapter.field(classId, CuidAdapter.PROJECT_FIELD))
+        FormField projectField = new FormField(ResourceId.create("project"))
                 .setLabel("Project")
                 .setType(ReferenceType.single(CuidAdapter.projectFormClass(databaseId)));
         siteForm.addElement(projectField);
 
-        FormField startDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.START_DATE_FIELD))
-                .setLabel("Start Date")  // TODO i18n
-                .setType(LocalDateType.INSTANCE)
+        FormField dateField = new FormField(CuidAdapter.field(classId, CuidAdapter.START_DATE_FIELD))
+                .setLabel("Date")
+                .setType(LocalDateIntervalType.INSTANCE)
                 .setRequired(true);
-        siteForm.addElement(startDateField);
-
-        FormField endDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.END_DATE_FIELD))
-                .setLabel("End Date")  // TODO i18N
-                .setType(LocalDateType.INSTANCE)
-                .setRequired(true);
-        siteForm.addElement(endDateField);
+        siteForm.addElement(dateField);
 
         FormField locationField = new FormField(CuidAdapter.locationField(activityId))
                 .setLabel(rs.getString("locationTypeName"))
@@ -268,9 +287,6 @@ public class ActivityMigrator extends ResourceMigrator {
         siteForm.addElement(locationField);
 
 
-        if(attributes != null) {
-            siteForm.getElements().addAll(attributes);
-        }
         if(indicators != null) {
             siteForm.getElements().addAll(indicators);
         }
@@ -281,7 +297,6 @@ public class ActivityMigrator extends ResourceMigrator {
         siteForm.addElement(commentsField);
 
         writer.write(siteForm.asResource());
-
     }
 
     private ResourceId locationRange(ResultSet rs) throws SQLException {

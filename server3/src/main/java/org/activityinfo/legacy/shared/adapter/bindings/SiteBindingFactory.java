@@ -2,11 +2,11 @@ package org.activityinfo.legacy.shared.adapter.bindings;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.model.legacy.KeyGenerator;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.Map;
 import java.util.Set;
@@ -54,6 +54,13 @@ public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
         return binding;
     }
 
+    private ResourceId partnerField(int id) {
+        return CuidAdapter.field(activityFormClass(id), PARTNER_FIELD);
+    }
+
+    private ResourceId projectField(int id) {
+        return CuidAdapter.field(activityFormClass(id), PROJECT_FIELD);
+    }
 
     private class AttributeGroupBinding implements FieldBinding<SiteDTO> {
 

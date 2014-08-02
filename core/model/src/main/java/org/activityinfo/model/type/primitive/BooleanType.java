@@ -1,4 +1,4 @@
-package org.activityinfo.model.type;
+package org.activityinfo.model.type.primitive;
 /*
  * #%L
  * ActivityInfo Server
@@ -22,38 +22,39 @@ package org.activityinfo.model.type;
  */
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
 
 /**
- * @author yuriyz on 7/21/14.
+ * Value type that represents a boolean value, either true or false.
  */
-public enum BooleanType implements FieldType, FieldTypeClass {
+public class BooleanType implements FieldType {
 
-    INSTANCE;
+    public static final FieldType INSTANCE = new BooleanType();
 
-    @Override
-    public String getId() {
-        return "BOOLEAN";
-    }
+    public static final FieldTypeClass TYPE_CLASS = new FieldTypeClass() {
+        @Override
+        public String getId() {
+            return "boolean";
+        }
 
-    @Override
-    public String getLabel() {
-        return "Boolean";
-    }
+        @Override
+        public String getLabel() {
+            return "Boolean";
+        }
+
+        @Override
+        public FieldType createType() {
+            return INSTANCE;
+        }
+    };
 
     @Override
     public FieldTypeClass getTypeClass() {
-        return this;
-    }
-
-    @Override
-    public Record getParameters() {
-        return new Record().set("classId", getTypeClass().getParameterFormClass().getId());
+        return TYPE_CLASS;
     }
 
     @Override
@@ -70,23 +71,6 @@ public enum BooleanType implements FieldType, FieldTypeClass {
     @Override
     public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
         return new NullComponentReader<>();
-    }
-
-
-    @Override
-    public FieldType createType(Record typeParameters) {
-        return this;
-    }
-
-    @Override
-    public FieldType createType() {
-        return this;
-    }
-
-
-    @Override
-    public FormClass getParameterFormClass() {
-        return new FormClass(ResourceIdPrefixType.TYPE.id("boolean"));
     }
 
     @Override

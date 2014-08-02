@@ -7,23 +7,24 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.DoubleBox;
 
-public class QuantityFieldWidget implements FormFieldWidget {
+public class QuantityFieldWidget implements FormFieldWidget<Quantity> {
 
     private FlowPanel panel;
     private DoubleBox box;
     private final Label unitsLabel;
 
 
-    public QuantityFieldWidget(final QuantityType type, final ValueUpdater valueUpdater) {
+    public QuantityFieldWidget(final QuantityType type, final ValueUpdater<Quantity> valueUpdater) {
         box = new DoubleBox();
         box.addValueChangeHandler(new ValueChangeHandler<Double>() {
             @Override
             public void onValueChange(ValueChangeEvent<Double> event) {
-                valueUpdater.update(event.getValue());
+                valueUpdater.update(new Quantity(event.getValue(), type.getUnits()));
             }
         });
 
@@ -40,9 +41,14 @@ public class QuantityFieldWidget implements FormFieldWidget {
     }
 
     @Override
-    public Promise<Void> setValue(Object value) {
-        box.setValue((Double) value);
+    public Promise<Void> setValue(Quantity value) {
+        box.setValue(value.getValue());
         return Promise.done();
+    }
+
+    @Override
+    public void clearValue() {
+        box.setValue(null);
     }
 
     @Override

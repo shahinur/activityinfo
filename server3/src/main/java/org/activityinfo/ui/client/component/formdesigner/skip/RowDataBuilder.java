@@ -30,7 +30,10 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.primitive.TextValue;
 
 import java.util.List;
 import java.util.Set;
@@ -136,11 +139,17 @@ public class RowDataBuilder {
         if (node instanceof IsConstantExpr) {
             row.setValue(normalizeValue(node.evalReal(), formField.getType()));
             return true;
+
         } else if (node instanceof PlaceholderExpr) {
-            if (row.getValue() instanceof Set) { // update existing value
-                ((Set)row.getValue()).add(ResourceId.create(placeholder(node)));
+            ResourceId newItem = ResourceId.create(placeholder(node));
+
+            if (row.getValue() instanceof ReferenceValue) { // update existing value
+                ReferenceValue oldValue = (ReferenceValue)row.getValue();
+                Set<ResourceId> newValue = Sets.newHashSet(oldValue.getResourceIds());
+                newValue.add(newItem);
+                row.setValue(new ReferenceValue(newValue));
             } else { // create value
-                row.setValue(Sets.newHashSet(ResourceId.create(placeholder(node))));
+                row.setValue(new ReferenceValue(newItem));
             }
             return true;
         }
@@ -157,12 +166,12 @@ public class RowDataBuilder {
         return placeholderExpr.getPlaceholder();
     }
 
-    private static Object normalizeValue(Object value, FieldType type) {
+    private static FieldValue normalizeValue(Object value, FieldType type) {
         if (value != null) {
             if (type instanceof TextType) {
-                return value.toString();
+                return TextValue.valueOf(value.toString());
             }
         }
-        return value;
+        return null;
     }
 }

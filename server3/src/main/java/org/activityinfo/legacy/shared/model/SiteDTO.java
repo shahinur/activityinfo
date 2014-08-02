@@ -25,8 +25,6 @@ package org.activityinfo.legacy.shared.model;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.model.form.FieldId;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 
@@ -76,24 +74,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         super(site.getProperties());
     }
 
-    /**
-     * Creates a SiteDTO legacy object from a FormInstance
-     *
-     * @param instance
-     */
-    public SiteDTO(FormInstance instance) {
 
-        // start moving SiteDTO closer to FormInstance
-        // TODO(alex) this will break quite a bit but it's time...
-
-        setId(CuidAdapter.getLegacyIdFromCuid(instance.getId()));
-        setActivityId(CuidAdapter.getLegacyIdFromCuid(instance.getClassId()));
-
-        for(ResourceId fieldId : instance.getValueMap().keySet()) {
-            String name = FieldId.getFieldName(fieldId);
-            set(name, instance.get(fieldId));
-        }
-    }
 
     /**
      * Sets this site's id

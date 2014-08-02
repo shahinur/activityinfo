@@ -22,6 +22,7 @@ package org.activityinfo.ui.client.page.entry.form;
  * #L%
  */
 
+import com.google.gwt.user.client.Window;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
@@ -54,7 +55,7 @@ public class SiteDialogLauncher {
             formDialog.show(newInstance, new FormDialogCallback() {
                 @Override
                 public void onPersisted(FormInstance instance) {
-                    callback.onSaved(new SiteDTO(instance));
+                    Window.alert("Refresh the grid to see changes.");
                 }
             });
         }
@@ -66,7 +67,7 @@ public class SiteDialogLauncher {
         formDialog.show(site.getInstanceId(), new FormDialogCallback() {
             @Override
             public void onPersisted(FormInstance instance) {
-                callback.onSaved(new SiteDTO(instance));
+                Window.alert("Refresh the grid to see changes.");
             }
         });
     }
