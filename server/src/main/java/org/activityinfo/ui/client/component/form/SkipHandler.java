@@ -26,7 +26,6 @@ import org.activityinfo.core.shared.expr.ExprLexer;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
 import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
-import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.model.form.FormField;
 
 import java.util.List;
@@ -52,7 +51,8 @@ public class SkipHandler {
     private void applySkipLogic(FormField field) {
         if (field.hasSkipExpression()) {
             ExprLexer lexer = new ExprLexer(field.getSkipExpression());
-            ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(FormInstance.fromResource(simpleFormPanel.getInstance()), simpleFormPanel.getFormClass()));
+            ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(
+                    simpleFormPanel.getInstance(), simpleFormPanel.getFormClass()));
             ExprNode<Boolean> expr = parser.parse();
 
             FieldContainer fieldContainer = simpleFormPanel.getFieldContainer(field.getId());

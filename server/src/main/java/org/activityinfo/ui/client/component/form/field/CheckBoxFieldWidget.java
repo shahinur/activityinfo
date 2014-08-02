@@ -35,6 +35,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.RadioButton;
 
@@ -89,23 +90,29 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
         }
     }
 
-    private Set<ResourceId> updatedValue() {
+    private ReferenceValue updatedValue() {
         final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
                 value.add(ResourceId.create(control.getFormValue()));
             }
         }
-        return value;
+        return new ReferenceValue(value);
     }
 
     @Override
-    public Promise<Void> setValue(Set<ResourceId> value) {
+    public Promise<Void> setValue(ReferenceValue value) {
+        Set<ResourceId> ids = value.getResourceIds();
         for (CheckBox entry : controls) {
             ResourceId resourceId = ResourceId.create(entry.getFormValue());
-            entry.setValue(value.contains(resourceId));
+            entry.setValue(ids.contains(resourceId));
         }
         return Promise.done();
+    }
+
+    @Override
+    public void clearValue() {
+       setValue(ReferenceValue.EMPTY);
     }
 
     @Override

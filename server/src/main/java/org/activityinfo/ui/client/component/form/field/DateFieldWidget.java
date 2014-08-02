@@ -30,6 +30,7 @@ import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import org.activityinfo.core.shared.type.formatter.DateFormatterFactory;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.promise.Promise;
 
 import java.util.Date;
@@ -55,12 +56,12 @@ import java.util.Date;
  * {@example com.google.gwt.examples.DateBoxExample}
  * </p>
  */
-public class DateFieldWidget implements FormFieldWidget<Date> {
+public class DateFieldWidget implements FormFieldWidget<LocalDate> {
 
     private final DateBox dateBox;
     private boolean readOnly;
 
-    public DateFieldWidget(final ValueUpdater valueUpdater) {
+    public DateFieldWidget(final ValueUpdater<LocalDate> valueUpdater) {
         dateBox = new DateBox(new DatePicker(), null, createFormat()) {
             @Override
             public void showDatePicker() {
@@ -74,7 +75,7 @@ public class DateFieldWidget implements FormFieldWidget<Date> {
         dateBox.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> event) {
-                valueUpdater.update(event.getValue());
+                valueUpdater.update(new LocalDate(event.getValue()));
             }
         });
     }
@@ -90,9 +91,14 @@ public class DateFieldWidget implements FormFieldWidget<Date> {
     }
 
     @Override
-    public Promise<Void> setValue(Date value) {
-        dateBox.setValue(value);
+    public Promise<Void> setValue(LocalDate value) {
+        dateBox.setValue(value.atMidnightInMyTimezone());
         return Promise.done();
+    }
+
+    @Override
+    public void clearValue() {
+        dateBox.setValue(null);
     }
 
     @Override

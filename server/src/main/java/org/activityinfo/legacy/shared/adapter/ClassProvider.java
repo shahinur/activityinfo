@@ -34,9 +34,6 @@ public class ClassProvider implements Function<ResourceId, Promise<FormClass>> {
             case PROJECT_CLASS_DOMAIN:
                 return Promise.resolved(BuiltinFormClasses.projectFormClass(getLegacyIdFromCuid(classId)));
 
-            case ATTRIBUTE_GROUP_DOMAIN:
-                return dispatcher.execute(new GetSchema())
-                                 .then(new AttributeClassAdapter(getLegacyIdFromCuid(classId)));
 
             case ADMIN_LEVEL_DOMAIN:
                 return dispatcher.execute(new GetSchema())

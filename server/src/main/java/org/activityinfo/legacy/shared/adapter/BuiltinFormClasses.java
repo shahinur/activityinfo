@@ -1,13 +1,13 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.primitive.TextType;
 
 import javax.annotation.Nullable;
 

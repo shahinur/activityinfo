@@ -28,9 +28,13 @@ import org.activityinfo.core.shared.expr.constant.NumberConstantExpr;
 import org.activityinfo.core.shared.expr.constant.StringConstantExpr;
 import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.number.Quantity;
+import org.activityinfo.model.type.primitive.BooleanFieldValue;
+import org.activityinfo.model.type.primitive.TextValue;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author yuriyz on 7/25/14.
@@ -54,18 +58,16 @@ public class ExpressionBuilder {
 
         ExprNode right = null;
 
-        Object value = row.getValue();
+        FieldValue value = row.getValue();
 
-        if (value instanceof ResourceId) {
-            right = new PlaceholderExpr(row.getFormField().getId().asString());
-        } else if (value instanceof Boolean) {
-            right = new BooleanConstantExpr((Boolean) value);
-        } else if (value instanceof Double) {
-            right = new NumberConstantExpr((Double) value);
-        } else if (value instanceof String) {
-            right = new StringConstantExpr((String) value);
-        } else if (value instanceof Set) {
-            List<ResourceId> idSet = Lists.newArrayList((Set<ResourceId>) value);
+        if (value instanceof BooleanFieldValue) {
+            right = new BooleanConstantExpr((BooleanFieldValue)value);
+        } else if (value instanceof Quantity) {
+            right = new NumberConstantExpr(((Quantity) value).getValue());
+        } else if (value instanceof TextValue) {
+            right = new StringConstantExpr( ((TextValue)value).toString());
+        } else if (value instanceof ReferenceValue) {
+            List<ResourceId> idSet = Lists.newArrayList(((ReferenceValue)value).getResourceIds());
             int size = idSet.size();
             if (size == 1) {
                 right = new PlaceholderExpr(idSet.get(0).asString());

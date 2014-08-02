@@ -7,16 +7,16 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
 import org.activityinfo.model.type.component.ComponentReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnumType implements FieldType {
+public class EnumType implements ParametrizedFieldType {
 
-    public enum TypeClass implements FieldTypeClass {
-        INSTANCE;
+    public static final ParametrizedFieldTypeClass TYPE_CLASS = new ParametrizedFieldTypeClass() {
 
         @Override
         public String getId() {
@@ -29,7 +29,7 @@ public class EnumType implements FieldType {
         }
 
         @Override
-        public FieldType createType(Record typeParameters) {
+        public FieldType deserializeType(Record typeParameters) {
 
             Cardinality cardinality = Cardinality.valueOf(typeParameters.getString("cardinality"));
 
@@ -50,7 +50,7 @@ public class EnumType implements FieldType {
         public FormClass getParameterFormClass() {
             return new FormClass(ResourceIdPrefixType.TYPE.id("enum"));
         }
-    }
+    };
 
     private final Cardinality cardinality;
     private final List<EnumValue> values;
@@ -79,8 +79,8 @@ public class EnumType implements FieldType {
     }
 
     @Override
-    public FieldTypeClass getTypeClass() {
-        return TypeClass.INSTANCE;
+    public ParametrizedFieldTypeClass getTypeClass() {
+        return TYPE_CLASS;
     }
 
     @Override
@@ -96,8 +96,6 @@ public class EnumType implements FieldType {
                 .set("cardinality", cardinality.name())
                 .set("values", enumValueRecords);
     }
-
-
 
     @Override
     public ComponentReader<String> getStringReader(String fieldName, String componentId) {

@@ -28,10 +28,15 @@ import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.BooleanType;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
@@ -79,6 +84,9 @@ public class FormFieldWidgetFactory {
 
         } else if (type instanceof LocalDateType) {
             return Promise.resolved(new DateFieldWidget(valueUpdater));
+
+        } else if (type instanceof LocalDateIntervalType) {
+            return Promise.resolved(new DateIntervalFieldWidget(valueUpdater));
 
         } else if (type instanceof GeoPointType) {
             return Promise.resolved(new GeographicPointWidget(valueUpdater));

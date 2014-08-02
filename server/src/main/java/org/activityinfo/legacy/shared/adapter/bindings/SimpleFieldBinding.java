@@ -1,9 +1,9 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.legacy.shared.model.EntityDTO;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.Map;
 
@@ -34,6 +34,10 @@ public class SimpleFieldBinding implements FieldBinding<EntityDTO> {
 
     @Override
     public void populateChangeMap(FormInstance instance, Map<String, Object> changeMap) {
-        changeMap.put(propertyName, instance.get(fieldId));
+        Object value = instance.get(fieldId);
+        if(value instanceof org.activityinfo.model.type.time.LocalDate) {
+            value = ((org.activityinfo.model.type.time.LocalDate)value).atMidnightInMyTimezone();
+        }
+        changeMap.put(propertyName, value);
     }
 }

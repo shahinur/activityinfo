@@ -25,8 +25,10 @@ package org.activityinfo.legacy.shared.model;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FieldId;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.*;
 
@@ -75,6 +77,8 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
     public SiteDTO(SiteDTO site) {
         super(site.getProperties());
     }
+
+
 
     /**
      * Sets this site's id
@@ -438,9 +442,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         }
         SiteDTO siteModel = (SiteDTO) o;
         if (getId() != siteModel.getId()) {
-            return false;
-        }
-        if (!Objects.equals(get("reportingPeriodId"), siteModel.get("reportingPeriodId"))) {
             return false;
         }
         return true;

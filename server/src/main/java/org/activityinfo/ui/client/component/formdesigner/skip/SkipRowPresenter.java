@@ -33,6 +33,7 @@ import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.activityinfo.core.shared.expr.functions.FieldTypeToFunctionRegistry;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
@@ -48,7 +49,7 @@ public class SkipRowPresenter {
     private final SkipRow view = new SkipRow();
     private final FormFieldWidgetFactory widgetFactory;
     private FormFieldWidget valueWidget = null;
-    private Object value;
+    private FieldValue value;
     private RowData rowData;
 
     public SkipRowPresenter(final FieldWidgetContainer fieldWidgetContainer) {
@@ -65,9 +66,9 @@ public class SkipRowPresenter {
     private void initValueWidget() {
         view.getValueContainer().clear();
 
-        ValueUpdater valueUpdater = new ValueUpdater() {
+        ValueUpdater<FieldValue> valueUpdater = new ValueUpdater<FieldValue>() {
             @Override
-            public void update(Object value) {
+            public void update(FieldValue value) {
                 SkipRowPresenter.this.value = value;
             }
         };
@@ -134,7 +135,7 @@ public class SkipRowPresenter {
         return view;
     }
 
-    public Object getValue() {
+    public FieldValue getValue() {
         return value;
     }
 

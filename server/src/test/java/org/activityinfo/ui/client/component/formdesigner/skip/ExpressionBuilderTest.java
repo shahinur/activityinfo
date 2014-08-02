@@ -28,9 +28,10 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.TextType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.primitive.TextValue;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -89,7 +90,7 @@ public class ExpressionBuilderTest {
         RowData row = new RowData();
         row.setFormField(formClass.getField(TEXT_FIELD_ID));
         row.setFunction(BooleanFunctions.EQUAL);
-        row.setValue("val");
+        row.setValue(TextValue.valueOf("val"));
         row.setJoinFunction(BooleanFunctions.AND);
 
         expr("{test_text}==\"val\"", row);

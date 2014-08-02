@@ -24,9 +24,13 @@ package org.activityinfo.core.shared.expr.functions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.core.shared.expr.ExprFunction;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.BooleanType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 import java.util.List;
@@ -50,31 +54,31 @@ public class FieldTypeToFunctionRegistry {
     private Map<FieldTypeClass, List<ExprFunction>> typeMap = Maps.newHashMap();
 
     private FieldTypeToFunctionRegistry() {
-        typeMap.put(EnumType.TypeClass.INSTANCE, Lists.<ExprFunction>newArrayList(
+        typeMap.put(EnumType.TYPE_CLASS, Lists.<ExprFunction>newArrayList(
                 BooleanFunctions.EQUAL,
                 BooleanFunctions.NOT_EQUAL
         ));
-        typeMap.put(TextType.INSTANCE, Lists.<ExprFunction>newArrayList(
+        typeMap.put(TextType.TYPE_CLASS, Lists.<ExprFunction>newArrayList(
                 BooleanFunctions.EQUAL,
                 BooleanFunctions.NOT_EQUAL
         ));
-        typeMap.put(NarrativeType.INSTANCE, Lists.<ExprFunction>newArrayList(
+        typeMap.put(NarrativeType.TYPE_CLASS, Lists.<ExprFunction>newArrayList(
                 BooleanFunctions.EQUAL,
                 BooleanFunctions.NOT_EQUAL
         ));
-        typeMap.put(BooleanType.INSTANCE, Lists.<ExprFunction>newArrayList(
+        typeMap.put(BooleanType.TYPE_CLASS, Lists.<ExprFunction>newArrayList(
                 BooleanFunctions.EQUAL,
                 BooleanFunctions.NOT_EQUAL
         ));
-        typeMap.put(QuantityType.TypeClass.INSTANCE, Lists.<ExprFunction>newArrayList(
+        typeMap.put(QuantityType.TYPE_CLASS, Lists.<ExprFunction>newArrayList(
                 BooleanFunctions.EQUAL,
                 BooleanFunctions.NOT_EQUAL
         ));
-        typeMap.put(LocalDateType.INSTANCE, Lists.<ExprFunction>newArrayList(
+        typeMap.put(LocalDateType.TYPE_CLASS, Lists.<ExprFunction>newArrayList(
                 BooleanFunctions.EQUAL,
                 BooleanFunctions.NOT_EQUAL
         ));
-        typeMap.put(ReferenceType.TypeClass.INSTANCE, Lists.<ExprFunction>newArrayList(
+        typeMap.put(ReferenceType.TYPE_CLASS, Lists.<ExprFunction>newArrayList(
                 BooleanFunctions.EQUAL,
                 BooleanFunctions.NOT_EQUAL
         ));

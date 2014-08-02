@@ -5,20 +5,20 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.core.client.InstanceQuery;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.promise.Promise;
-import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.legacy.shared.command.GetLocations;
 import org.activityinfo.legacy.shared.command.result.LocationResult;
 import org.activityinfo.legacy.shared.model.LocationDTO;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.hamcrest.Matchers;
@@ -33,9 +33,9 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.core.shared.criteria.ParentCriteria.isChildOf;
-import static org.activityinfo.model.legacy.CuidAdapter.*;
 import static org.activityinfo.legacy.shared.adapter.LocationClassAdapter.getAdminFieldId;
 import static org.activityinfo.legacy.shared.adapter.LocationClassAdapter.getNameFieldId;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -72,11 +72,6 @@ public class ResourceLocatorAdaptorTest extends CommandTestCase2 {
     @Before
     public final void setup() {
         resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
-    }
-
-    @Test
-    public void simpleAttributeQuery() {
-        assertThat(queryByClass(attributeGroupFormClass(CAUSE_ATTRIBUTE_GROUP_ID)), Matchers.hasSize(2));
     }
 
     @Test
@@ -240,7 +235,7 @@ public class ResourceLocatorAdaptorTest extends CommandTestCase2 {
         ResourceLocatorAdaptor adapter = new ResourceLocatorAdaptor(getDispatcher());
         FieldPath villageName = new FieldPath(getNameFieldId(VILLAGE_CLASS));
         FieldPath provinceName = new FieldPath(getAdminFieldId(VILLAGE_CLASS), field(PROVINCE_CLASS, CuidAdapter.NAME_FIELD));
-        FieldPath partnerName = new FieldPath(partnerField(NFI_DIST_ID), field(partnerClassId, NAME_FIELD));
+        FieldPath partnerName = new FieldPath(field(CuidAdapter.activityFormClass(NFI_DIST_ID), PARTNER_FIELD), field(partnerClassId, NAME_FIELD));
         FieldPath indicator1 = new FieldPath(indicatorField(1));
         FieldPath startDate = new FieldPath(field(NFI_DIST_FORM_CLASS, CuidAdapter.START_DATE_FIELD));
         FieldPath endDate = new FieldPath(field(NFI_DIST_FORM_CLASS, CuidAdapter.END_DATE_FIELD));

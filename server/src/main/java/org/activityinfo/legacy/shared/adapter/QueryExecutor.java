@@ -99,8 +99,6 @@ public class QueryExecutor {
                     entityQuery.setEntityIds(ids);
                 }
                 return dispatcher.execute(entityQuery).then(new ListResultAdapter<>(new AdminEntityInstanceAdapter()));
-            case ATTRIBUTE_DOMAIN:
-                return dispatcher.execute(new GetSchema()).then(new AttributeInstanceListAdapter(criteria));
 
             case LOCATION_DOMAIN:
                 return dispatcher.execute(new GetLocations(Lists.newArrayList(ids)))
@@ -132,9 +130,6 @@ public class QueryExecutor {
         }
 
         switch (formClassId.getDomain()) {
-            case ATTRIBUTE_GROUP_DOMAIN:
-                return dispatcher.execute(new GetSchema()).then(new AttributeInstanceListAdapter(criteria));
-
             case ADMIN_LEVEL_DOMAIN:
                 return dispatcher.execute(adminQuery(formClassId))
                                  .then(new ListResultAdapter<>(new AdminEntityInstanceAdapter()));

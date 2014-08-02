@@ -15,44 +15,54 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class ReferenceType implements FieldType {
+/**
+ * A type that represents a link or reference to another {@code Resource}
+ */
+public class ReferenceType implements ParametrizedFieldType {
 
-    public enum TypeClass implements FieldTypeClass {
-        INSTANCE {
+    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
 
-            @Override
-            public String getId() {
-                return "REFERENCE";
-            }
-
-            @Override
-            public String getLabel() {
-                return "Reference";
-            }
-
-            @Override
-            public FieldType createType(Record parameters) {
-                ReferenceType type = new ReferenceType();
-                type.setCardinality(Cardinality.valueOf(parameters.getString("cardinality")));
-                type.setRange(parameters.getStringList("range"));
-                return type;
-            }
-
-            @Override
-            public FieldType createType() {
-                return new ReferenceType()
-                        .setCardinality(Cardinality.SINGLE)
-                        .setRange(Collections.<ResourceId>emptySet());
-            }
-
-            @Override
-            public FormClass getParameterFormClass() {
-                FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("ref"));
-                // todo
-                return formClass;
-            }
+        private TypeClass() {
         }
-    }
+
+        @Override
+        public String getId() {
+            return "REFERENCE";
+        }
+
+        @Override
+        public String getLabel() {
+            return "Reference";
+        }
+
+        @Override
+        public FieldType createType() {
+            return new ReferenceType()
+                    .setCardinality(Cardinality.SINGLE)
+                    .setRange(Collections.<ResourceId>emptySet());
+        }
+
+        @Override
+        public FieldType deserializeType(Record parameters) {
+            ReferenceType type = new ReferenceType();
+            type.setCardinality(Cardinality.valueOf(parameters.getString("cardinality")));
+            type.setRange(parameters.getStringList("range"));
+            return type;
+        }
+
+        @Override
+        public FieldValue deserialize(Record record) {
+            return ReferenceValue.fromRecord(record);
+        }
+
+        @Override
+        public FormClass getParameterFormClass() {
+            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("ref"));
+            return formClass;
+        }
+    };
+
+    public static final TypeClass TYPE_CLASS = new TypeClass();
 
     private Cardinality cardinality;
     private Set<ResourceId> range;
@@ -61,8 +71,8 @@ public class ReferenceType implements FieldType {
     }
 
     @Override
-    public FieldTypeClass getTypeClass() {
-        return TypeClass.INSTANCE;
+    public ParametrizedFieldTypeClass getTypeClass() {
+        return TYPE_CLASS;
     }
 
     public Cardinality getCardinality() {
@@ -85,7 +95,6 @@ public class ReferenceType implements FieldType {
     public void setRange(ResourceId formClassId) {
         this.range = Collections.singleton(formClassId);
     }
-
 
     private void setRange(List<String> range) {
         Set<ResourceId> formClassIds = Sets.newHashSet();
@@ -160,5 +169,4 @@ public class ReferenceType implements FieldType {
         type.setRange(Sets.newHashSet(formClassIds));
         return type;
     }
-
 }

@@ -1,10 +1,10 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.DTO;
 import org.activityinfo.legacy.shared.model.EntityDTO;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.Map;
 

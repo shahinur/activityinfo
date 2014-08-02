@@ -35,6 +35,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.ui.client.component.form.SimpleFormPanel;
 import org.activityinfo.ui.client.component.form.VerticalFieldContainer;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
@@ -166,7 +167,14 @@ public class PropertiesPresenter {
         currentDesignWidget = new SimpleFormPanel(locator,
                 new VerticalFieldContainer.Factory(),
                 new FormFieldWidgetFactory(locator), false);
-        currentDesignWidget.show(Resources.createResource(formField.getType().getParameters()));
+        if(formField.getType() instanceof ParametrizedFieldType) {
+            ParametrizedFieldType parametrizedType = (ParametrizedFieldType) formField.getType();
+            currentDesignWidget.asWidget().setVisible(true);
+            currentDesignWidget.show(Resources.createResource(parametrizedType.getParameters()));
+
+        } else {
+            currentDesignWidget.asWidget().setVisible(false);
+        }
         view.getPanel().add(currentDesignWidget);
     }
 
