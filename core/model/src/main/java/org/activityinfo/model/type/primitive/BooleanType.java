@@ -72,9 +72,4 @@ public class BooleanType implements FieldType {
     public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
         return new NullComponentReader<>();
     }
-
-    @Override
-    public String getXFormType() {
-        return "boolean";
-    }
 }
