@@ -57,8 +57,4 @@ public class GeoPointType implements FieldType {
         return new NullComponentReader<>();
     }
 
-    @Override
-    public String getXFormType() {
-        return null;
-    }
 }
