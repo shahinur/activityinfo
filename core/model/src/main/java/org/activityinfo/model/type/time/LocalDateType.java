@@ -88,8 +88,4 @@ public class LocalDateType implements FieldType {
         };
     }
 
-    @Override
-    public String getXFormType() {
-        return "date";
-    }
 }

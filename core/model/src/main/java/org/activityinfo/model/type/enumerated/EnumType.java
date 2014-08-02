@@ -106,9 +106,4 @@ public class EnumType implements ParametrizedFieldType {
     public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
         throw new UnsupportedOperationException();
     }
-
-    @Override
-    public String getXFormType() {
-        return null;
-    }
 }

@@ -49,8 +49,4 @@ public class LocalDateIntervalType implements FieldType {
         return null;
     }
 
-    @Override
-    public String getXFormType() {
-        throw new UnsupportedOperationException("does not map to a single xform field");
-    }
 }
