@@ -1,8 +1,13 @@
 package org.activityinfo.model.table;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.resource.IsRecord;
+import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 
 import java.util.LinkedList;
@@ -14,40 +19,75 @@ import java.util.Objects;
  */
 public class FieldPathSelector implements FieldSelector {
 
-    public static class Step implements Predicate<FormTree.Node> {
+
+    public static class Step implements Predicate<FormTree.Node>, IsRecord {
         private ResourceId formClass;
-        private String fieldName;
+        private ResourceId fieldId;
+
+
 
         /**
-         * Step which matches a specific formClass and fieldName
+         * Step which matches a specific formClass and fieldId
          */
-        public Step(ResourceId formClass, String fieldName) {
+        public Step(ResourceId formClass, ResourceId fieldId) {
+            assert formClass != null;
+            assert fieldId != null;
+
             this.formClass = formClass;
-            this.fieldName = fieldName;
+            this.fieldId = fieldId;
         }
 
         /**
-         * Step which matches only on fieldName
+         * Step which matches only on fieldId
          */
-        public Step(String fieldName) {
-            this.fieldName = fieldName;
+        public Step(ResourceId fieldId) {
+            assert fieldId != null;
+
+            this.fieldId = fieldId;
         }
+
 
         @Override
         public boolean apply(FormTree.Node input) {
-            if(formClass != null && !Objects.equals(formClass, input.getDefiningFormClass().getId())) {
-                return false;
+            if(formClass != null) {
+                if(!Objects.equals(formClass, input.getDefiningFormClass().getId())) {
+                    return false;
+                }
             }
-            throw new UnsupportedOperationException(); // TODO(alex)
-           // return fieldName.equals(input.getField().getName());
+            return input.getFieldId().equals(fieldId) ||
+                   input.getField().getSuperProperties().contains(fieldId);
+        }
+
+        @Override
+        public Record asRecord() {
+            Record record = new Record();
+            if(formClass != null) {
+                record.set("formClass", formClass.asString());
+            }
+            record.set("fieldId", fieldId.asString());
+            return record;
         }
     }
 
     private final LinkedList<Step> steps = Lists.newLinkedList();
 
-    public FieldPathSelector(String... fieldNames) {
-        for(String fieldName : fieldNames) {
-            steps.add(new Step(fieldName));
+    private FieldPathSelector() {
+
+    }
+
+    /**
+     * Selects the specific field of the given FormClass, wherever it appears
+     * in the heirarchy
+     * @param classId
+     * @param fieldId
+     */
+    public FieldPathSelector(ResourceId classId, ResourceId fieldId) {
+        steps.add(new Step(classId, fieldId));
+    }
+
+    public FieldPathSelector(Iterable<ResourceId> fieldIds) {
+        for(ResourceId fieldId : fieldIds) {
+            steps.add(new Step(fieldId));
         }
     }
 
@@ -72,5 +112,27 @@ public class FieldPathSelector implements FieldSelector {
                 }
             }
         }
+    }
+
+    @Override
+    public Record asRecord() {
+        Record record = new Record();
+        record.set("path", Records.toRecordList(steps));
+
+        return record;
+    }
+
+    public static FieldPathSelector fromRecord(Record record) {
+        FieldPathSelector selector = new FieldPathSelector();
+        for(Record stepRecord : record.getRecordList("path")) {
+            String formClassId = stepRecord.isString("formClass");
+            String fieldId = stepRecord.getString("fieldId");
+            if(formClassId != null) {
+                selector.steps.add(new Step(ResourceId.create(formClassId), ResourceId.create(fieldId)));
+            } else {
+                selector.steps.add(new Step(ResourceId.create(fieldId)));
+            }
+        }
+        return selector;
     }
 }

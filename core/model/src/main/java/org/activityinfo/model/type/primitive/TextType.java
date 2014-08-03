@@ -58,4 +58,8 @@ public class TextType implements FieldType {
         return new NullComponentReader<>();
     }
 
+    @Override
+    public String toString() {
+        return "TextType";
+    }
 }

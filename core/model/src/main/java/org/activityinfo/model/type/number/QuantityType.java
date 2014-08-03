@@ -94,4 +94,9 @@ public class QuantityType implements ParametrizedFieldType {
     public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
         return new NullComponentReader<>();
     }
+
+    @Override
+    public String toString() {
+        return "QuantityType";
+    }
 }

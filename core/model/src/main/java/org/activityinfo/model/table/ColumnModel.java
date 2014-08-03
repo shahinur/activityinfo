@@ -1,17 +1,16 @@
 package org.activityinfo.model.table;
 
-import org.activityinfo.model.table.summary.UniqueValue;
+import org.activityinfo.model.resource.IsRecord;
+import org.activityinfo.model.resource.Record;
 
 /**
  * Defines a Column within a Table request
  */
-public class ColumnModel {
+public class ColumnModel implements IsRecord {
 
     private String id;
     private ColumnType type = ColumnType.STRING;
     private ColumnSource source;
-
-    private SummaryFunction summaryFunction = UniqueValue.INSTANCE;
 
     /**
      *
@@ -39,6 +38,10 @@ public class ColumnModel {
         return source;
     }
 
+    public void setSource(ColumnSource source) {
+        this.source = source;
+    }
+
     /**
      * Sets the source of this column to a new
      * {@code FieldSource}
@@ -63,11 +66,32 @@ public class ColumnModel {
         this.source = new ResourceIdSource();
     }
 
-    public SummaryFunction getSummaryFunction() {
-        return summaryFunction;
+    @Override
+    public Record asRecord() {
+        Record record = new Record();
+        record.set("id", id);
+        record.set("type", type.name());
+        record.set("source", source.asRecord());
+        return record;
     }
 
-    public void setSummaryFunction(SummaryFunction summaryFunction) {
-        this.summaryFunction = summaryFunction;
+    public static ColumnModel fromRecords(Record record) {
+        ColumnModel model = new ColumnModel();
+        model.setId(record.getString("id"));
+        model.setType(ColumnType.valueOf(record.getString("type")));
+
+        Record sourceRecord = record.getRecord("source");
+        String sourceType = sourceRecord.getString("type");
+        switch(sourceType) {
+            case FieldSource.SOURCE_TYPE:
+                model.setSource(FieldSource.fromRecord(sourceRecord));
+                break;
+            case ResourceIdSource.SOURCE_TYPE:
+                model.setSource(new ResourceIdSource());
+                break;
+            default:
+                throw new IllegalArgumentException(sourceType);
+        }
+        return model;
     }
 }

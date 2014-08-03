@@ -13,7 +13,9 @@ import java.util.List;
 
 public class EnumType implements ParametrizedFieldType {
 
-    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
+    public interface EnumTypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass { }
+
+    public static final EnumTypeClass TYPE_CLASS = new EnumTypeClass() {
 
         @Override
         public String getId() {
@@ -50,11 +52,9 @@ public class EnumType implements ParametrizedFieldType {
 
         @Override
         public FieldValue deserialize(Record record) {
-            return EnumValue.fromRecord(record);
+            return EnumFieldValue.fromRecord(record);
         }
     };
-
-    public static final TypeClass TYPE_CLASS = new TypeClass();
 
     private final Cardinality cardinality;
     private final List<EnumValue> values;
@@ -92,7 +92,7 @@ public class EnumType implements ParametrizedFieldType {
 
         List<Record> enumValueRecords = Lists.newArrayList();
         for(EnumValue enumValue : getValues()) {
-            enumValueRecords.add(enumValue.toRecord());
+            enumValueRecords.add(enumValue.asRecord());
         }
 
         return new Record()
