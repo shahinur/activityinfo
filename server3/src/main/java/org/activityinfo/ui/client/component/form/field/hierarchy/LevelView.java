@@ -2,13 +2,12 @@ package org.activityinfo.ui.client.component.form.field.hierarchy;
 
 import com.google.common.base.Supplier;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import org.activityinfo.core.shared.Projection;
 import org.activityinfo.promise.Promise;
 
 import java.util.List;
 
 
-public interface LevelView extends HasSelectionHandlers<Projection> {
+public interface LevelView extends HasSelectionHandlers<Node> {
 
 
     void clearSelection();
@@ -17,7 +16,7 @@ public interface LevelView extends HasSelectionHandlers<Projection> {
 
     void setEnabled(boolean enabled);
 
-    void setSelection(Projection selection);
+    void setSelection(Node selection);
 
-    void setChoices(Supplier<Promise<List<Projection>>> choices);
+    void setChoices(Supplier<Promise<List<Node>>> choices);
 }

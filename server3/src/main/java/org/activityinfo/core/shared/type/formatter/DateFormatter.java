@@ -21,10 +21,10 @@ package org.activityinfo.core.shared.type.formatter;
  * #L%
  */
 
-import java.util.Date;
+import org.activityinfo.model.type.time.LocalDate;
 
 /**
  * @author yuriyz on 3/10/14.
  */
-public interface DateFormatter extends Formatter<Date> {
+public interface DateFormatter extends Formatter<LocalDate> {
 }

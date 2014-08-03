@@ -68,7 +68,7 @@ public class LocalDateType implements FieldType {
                 if(record == null) {
                     return null;
                 } else {
-                    return record.getString("date");
+                    return record.getString("value");
                 }
             }
         };
@@ -83,9 +83,13 @@ public class LocalDateType implements FieldType {
                 if(record == null) {
                     return null;
                 }
-                return LocalDate.parse(record.getString("date"));
+                return LocalDate.parse(record.getString("value"));
             }
         };
     }
 
+    @Override
+    public String toString() {
+        return "LocalDateType";
+    }
 }

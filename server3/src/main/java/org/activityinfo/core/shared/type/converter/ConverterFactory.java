@@ -70,7 +70,7 @@ public class ConverterFactory {
         } else if(fieldType == FieldTypeClass.LOCAL_DATE) {
             return StringToDateConverter.INSTANCE;
         } else if(fieldType == FieldTypeClass.FREE_TEXT || fieldType == FieldTypeClass.NARRATIVE) {
-            return NullConverter.INSTANCE;
+            return StringParser.INSTANCE;
         }
         throw new UnsupportedOperationException(fieldType.getId());
     }

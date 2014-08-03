@@ -33,7 +33,7 @@ public class GeoPoint implements FieldValue, IsRecord {
     }
 
     @Override
-    public Record toRecord() {
+    public Record asRecord() {
         return new Record()
             .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
             .set("latitude", latitude)
@@ -42,6 +42,10 @@ public class GeoPoint implements FieldValue, IsRecord {
 
     public static GeoPoint fromRecord(Record record) {
         return new GeoPoint(record.getDouble("latitude"), record.getDouble("longitude"));
+    }
+
+    public static GeoPoint fromXY(double x, double y) {
+        return new GeoPoint(y, x);
     }
 
     @Override

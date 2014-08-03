@@ -46,6 +46,8 @@ public class CuidAdapter {
 
     public static final char ACTIVITY_CATEGORY_DOMAIN = 'C';
 
+    public static final char USER_DOMAIN = 'U';
+
     public static final int NAME_FIELD = 1;
     public static final int ADMIN_PARENT_FIELD = 2;
     public static final int CODE_FIELD = 3;
@@ -63,6 +65,8 @@ public class CuidAdapter {
 
     public static final int BLOCK_SIZE = 10;
     public static final String CLASS_FIELD = "_class";
+
+    public static final ResourceId GEODB_ID = ResourceId.create("_geodb");
 
 
     /**
@@ -91,10 +95,11 @@ public class CuidAdapter {
     }
 
     public static final ResourceId cuid(char domain, int id) {
-        return ResourceId.create(domain + block(id));
+        return ResourceId.create(domain + Integer.toString(id));
     }
 
     public static final ResourceId resourceId(char domain, int id) {
+        assert id != 0 : "resourceId for domain " + domain + " has id = 0";
         return cuid(domain, id);
     }
 
@@ -148,19 +153,18 @@ public class CuidAdapter {
      * Generates a CUID for a FormField in a given previously-built-in FormClass using
      * the FormClass's CUID and a field index.
      *
-     * @param classId
      * @param fieldIndex
      * @return
      */
     public static ResourceId field(ResourceId classId, int fieldIndex) {
-        return ResourceId.create(classId.asString() + block(fieldIndex));
+        return ResourceId.create(classId.asString() + "f" + fieldIndex);
     }
 
     /**
      * @return the {@code FormClass} ResourceId for a given Activity
      */
     public static ResourceId activityFormClass(int activityId) {
-        return ResourceId.create(ACTIVITY_DOMAIN + block(activityId));
+        return resourceId(ACTIVITY_DOMAIN, activityId);
     }
 
 
@@ -180,14 +184,6 @@ public class CuidAdapter {
         return cuid(INDICATOR_DOMAIN, indicatorId);
     }
 
-    public static ResourceId attributeField(int attributeId) {
-        return cuid(ATTRIBUTE_DOMAIN, attributeId);
-    }
-
-    public static ResourceId siteField(int siteId) {
-        return cuid(INDICATOR_DOMAIN, siteId);
-    }
-
     /**
      * @return the {@code FormField} ResourceId for the field of a given Activity {@code FormClass} that
      * references the given AttributeGroup FormClass
@@ -197,11 +193,8 @@ public class CuidAdapter {
     }
 
     public static ResourceId activityCategoryFolderId(int dbId, String category) {
-        return ResourceId.create(ACTIVITY_CATEGORY_DOMAIN + block(dbId) + block(Math.abs(category.hashCode())));
-    }
-
-    public static ResourceId attributeGroupFormClass(int attributeGroupId) {
-        return cuid(ATTRIBUTE_GROUP_DOMAIN, attributeGroupId);
+        return ResourceId.create(ACTIVITY_CATEGORY_DOMAIN + Integer.toHexString(dbId) + "c" +
+                                 Integer.toHexString(Math.abs(category.hashCode())));
     }
 
     public static ResourceId attributeId(int attributeId) {
@@ -248,5 +241,21 @@ public class CuidAdapter {
 
     public static ResourceId generateLocationCuid() {
         return locationInstanceId(new KeyGenerator().generateInt());
+    }
+
+    public static ResourceId getAxeFieldId(ResourceId classId) {
+        return field(classId, AXE_FIELD);
+    }
+
+    public static ResourceId getAdminFieldId(ResourceId classId) {
+        return field(classId, ADMIN_FIELD);
+    }
+
+    public static ResourceId getPointFieldId(ResourceId classId) {
+        return field(classId, GEOMETRY_FIELD);
+    }
+
+    public static ResourceId getNameFieldId(ResourceId classId) {
+        return field(classId, NAME_FIELD);
     }
 }

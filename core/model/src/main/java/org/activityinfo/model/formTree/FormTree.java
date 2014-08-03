@@ -2,6 +2,7 @@ package org.activityinfo.model.formTree;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
@@ -164,6 +165,29 @@ public class FormTree {
         }
 
 
+        public List<FormClass> getRangeFormClasses() {
+            List<FormClass> formClasses = Lists.newArrayList();
+            for(FormTree.Node node : children) {
+                formClasses.add(node.getDefiningFormClass());
+            }
+            return formClasses;
+        }
+
+        /**
+         *
+         * @return a list of this of node and its ancestors, ordered from the root node to
+         * this one.
+         */
+        public List<Node> getSelfAndAncestors() {
+            LinkedList<Node> list = Lists.newLinkedList();
+            Node node = this;
+            while(!node.isRoot()) {
+                list.addFirst(node);
+                node = node.getParent();
+            }
+            list.addFirst(node);
+            return list;
+        }
     }
 
     public enum SearchOrder {

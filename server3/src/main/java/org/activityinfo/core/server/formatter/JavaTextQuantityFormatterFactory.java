@@ -2,6 +2,7 @@ package org.activityinfo.core.server.formatter;
 
 import org.activityinfo.core.shared.type.formatter.QuantityFormatter;
 import org.activityinfo.core.shared.type.formatter.QuantityFormatterFactory;
+import org.activityinfo.model.type.number.Quantity;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -15,19 +16,20 @@ public class JavaTextQuantityFormatterFactory implements QuantityFormatterFactor
         final NumberFormat format = NumberFormat.getNumberInstance();
         return new QuantityFormatter() {
             @Override
-            public String format(Double value) {
+            public String format(Quantity value) {
                 return format.format(value);
             }
 
             @Override
-            public Double parse(String valueAsString) {
+            public Quantity parse(String valueAsString) {
                 try {
                     // consider strings with '-' not at the start as invalid
                     // e.g. "2012-12-18" is not 2012.0
                     if (valueAsString.indexOf("-") > 1 || valueAsString.contains("/")) {
                         return null;
                     }
-                    return format.parse(valueAsString).doubleValue();
+                    return new Quantity(format.parse(valueAsString).doubleValue());
+
                 } catch (ParseException e) {
                     return null;
                 }

@@ -2,13 +2,12 @@ package org.activityinfo.core.shared.criteria;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A {@code Criteria} that is satisfied only if all of its

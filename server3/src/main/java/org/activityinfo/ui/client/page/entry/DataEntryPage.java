@@ -34,6 +34,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
@@ -77,6 +78,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     public static final PageId PAGE_ID = new PageId("data-entry");
 
     private final Dispatcher dispatcher;
+    private ResourceLocator resourceLocator;
     private final EventBus eventBus;
 
     private GroupingComboBox groupingComboBox;
@@ -100,9 +102,10 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     private ActionToolBar toolBar;
 
     @Inject
-    public DataEntryPage(final EventBus eventBus, Dispatcher dispatcher) {
+    public DataEntryPage(final EventBus eventBus, Dispatcher dispatcher, ResourceLocator resourceLocator) {
         this.eventBus = eventBus;
         this.dispatcher = dispatcher;
+        this.resourceLocator = resourceLocator;
 
         setLayout(new BorderLayout());
 
@@ -358,7 +361,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     public void onUIAction(String actionId) {
         if (UIActions.ADD.equals(actionId)) {
 
-            SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
+            SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher, resourceLocator);
             formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {
 
                 @Override
@@ -369,7 +372,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 
         } else if (UIActions.EDIT.equals(actionId)) {
             final SiteDTO selection = gridPanel.getSelection();
-            SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher);
+            SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher, resourceLocator);
             launcher.editSite(selection, new SiteDialogCallback() {
 
                 @Override
@@ -406,7 +409,6 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 
     protected void doImport() {
         final int activityId = currentPlace.getFilter().getRestrictedCategory(DimensionType.Activity);
-        final ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(dispatcher);
         ImportPresenter.showPresenter(CuidAdapter.activityFormClass(activityId), resourceLocator)
                        .then(new SuccessCallback<ImportPresenter>() {
                            @Override

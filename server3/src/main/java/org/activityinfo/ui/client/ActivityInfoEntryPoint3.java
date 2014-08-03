@@ -26,6 +26,7 @@ import org.activityinfo.ui.client.chrome.LeftPanel;
 import org.activityinfo.ui.client.chrome.MainPanel;
 import org.activityinfo.ui.client.inject.ClientSideAuthProvider;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
+import org.activityinfo.ui.client.service.table.RemoteJsonTableService;
 import org.activityinfo.ui.client.style.BaseStylesheet3;
 
 /**
@@ -100,6 +101,6 @@ public class ActivityInfoEntryPoint3 implements EntryPoint {
                         new RemoteDispatcher(eventBus, auth, remoteService),
                         Scheduler.get()));
 
-        return new ResourceLocatorAdaptor(dispatcher);
+        return new ResourceLocatorAdaptor(dispatcher, new RemoteJsonTableService());
     }
 }

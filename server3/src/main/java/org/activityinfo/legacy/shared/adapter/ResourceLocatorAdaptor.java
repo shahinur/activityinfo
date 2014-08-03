@@ -1,22 +1,28 @@
 package org.activityinfo.legacy.shared.adapter;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.QueryResult;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.criteria.ClassCriteria;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.core.shared.criteria.Criteria;
-import org.activityinfo.core.shared.criteria.IdCriteria;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.legacy.shared.command.result.ResourceResult;
+import org.activityinfo.legacy.shared.model.GetResource;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.model.PutResource;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
+import org.activityinfo.model.table.TableServiceAsync;
 import org.activityinfo.promise.Promise;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -26,38 +32,58 @@ import java.util.Set;
  */
 public class ResourceLocatorAdaptor implements ResourceLocator {
 
-    private final Dispatcher dispatcher;
-    private final ClassProvider classProvider;
 
-    public ResourceLocatorAdaptor(Dispatcher dispatcher) {
+    private final ApplicationClassProvider systemClassProvider = new ApplicationClassProvider();
+
+    private final Dispatcher dispatcher;
+
+    private final TableServiceAsync tableService;
+
+    private final ProjectionAdapter projectionAdapter;
+
+    public ResourceLocatorAdaptor(Dispatcher dispatcher, TableServiceAsync tableService) {
         this.dispatcher = dispatcher;
-        this.classProvider = new ClassProvider(dispatcher);
+        this.tableService = tableService;
+        this.projectionAdapter = new ProjectionAdapter(tableService);
     }
 
     @Override
     public Promise<FormClass> getFormClass(ResourceId classId) {
-        return classProvider.apply(classId);
+        if(classId.asString().startsWith("_")) {
+            return Promise.resolved(systemClassProvider.get(classId));
+        } else {
+            return dispatcher.execute(new GetResource(classId)).then(new FormClassDeserializer());
+        }
     }
 
     @Override
     public Promise<FormInstance> getFormInstance(ResourceId instanceId) {
-        return queryInstances(new IdCriteria(instanceId)).then(new SelectSingle());
+        return dispatcher.execute(new GetResource(instanceId)).then(new Function<ResourceResult, FormInstance>() {
+            @Override
+            public FormInstance apply(ResourceResult input) {
+                return FormInstance.fromResource(input.parseResource());
+            }
+        });
+    }
+
+    @Override
+    public Promise<List<Resource>> get(Set<ResourceId> resourceIds) {
+        return dispatcher.execute(new GetResource(resourceIds)).then(new Function<ResourceResult, List<Resource>>() {
+            @Override
+            public List<Resource> apply(ResourceResult input) {
+                return input.parseResources();
+            }
+        });
+    }
+
+    @Override
+    public Promise<TableData> queryTable(TableModel tableModel) {
+        return tableService.query(tableModel);
     }
 
     @Override
     public Promise<Void> persist(IsResource resource) {
-        if (resource instanceof FormInstance) {
-            FormInstance instance = (FormInstance) resource;
-            if (instance.getId().getDomain() == CuidAdapter.SITE_DOMAIN) {
-                return new SitePersister(dispatcher).persist(instance);
-
-            } else if (instance.getId().getDomain() == CuidAdapter.LOCATION_DOMAIN) {
-                return new LocationPersister(dispatcher, instance).persist();
-            }
-        } else if(resource instanceof FormClass) {
-            return dispatcher.execute(new PutResource(resource)).thenDiscardResult();
-        }
-        return Promise.rejected(new UnsupportedOperationException());
+        return dispatcher.execute(new PutResource(resource)).thenDiscardResult();
     }
 
     @Override
@@ -73,26 +99,26 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
 
     @Override
     public Promise<List<FormInstance>> queryInstances(Criteria criteria) {
-        return new QueryExecutor(dispatcher, criteria).execute();
+        throw new UnsupportedOperationException("deprecated");
+    }
+
+    @Override
+    public Promise<QueryResult> queryProjection(InstanceQuery query) {
+        return projectionAdapter.query(query);
     }
 
     @Override
     public Promise<List<Projection>> query(InstanceQuery query) {
-        return new Joiner(dispatcher, query.getFieldPaths(), query.getCriteria()).apply(query);
+        return projectionAdapter.query(query).then(new Function<QueryResult, List<Projection>>() {
+            @Override
+            public List<Projection> apply(QueryResult input) {
+                return input.getProjections();
+            }
+        });
     }
-
-    public Promise<QueryResult<Projection>> queryProjection(InstanceQuery query) {
-        return query(query).then(new InstanceQueryResultAdapter(query));
-    }
-
 
     @Override
     public Promise<Void> remove(Collection<ResourceId> resources) {
-        return new Eraser(dispatcher, resources).execute();
-    }
-
-    @Override
-    public Promise<List<FormInstance>> queryInstances(Set<ResourceId> formClassIds) {
-        return queryInstances(ClassCriteria.union(formClassIds));
+        throw new UnsupportedOperationException("todo");
     }
 }

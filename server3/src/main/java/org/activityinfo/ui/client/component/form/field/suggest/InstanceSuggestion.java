@@ -2,15 +2,17 @@ package org.activityinfo.ui.client.component.form.field.suggest;
 
 import com.google.gwt.user.client.ui.SuggestOracle;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.core.shared.form.FormInstanceLabeler;
 
 public class InstanceSuggestion implements SuggestOracle.Suggestion {
 
-    private final FormInstance instance;
+    private final ResourceId id;
+    private final String label;
 
-    public InstanceSuggestion(FormInstance instance) {
-        this.instance = instance;
+    public InstanceSuggestion(ResourceId id, String label) {
+        this.id = id;
+        this.label = label;
     }
 
     @Override
@@ -20,10 +22,10 @@ public class InstanceSuggestion implements SuggestOracle.Suggestion {
 
     @Override
     public String getReplacementString() {
-        return FormInstanceLabeler.getLabel(instance);
+        return label;
     }
 
     public ResourceId getInstanceId() {
-        return instance.getId();
+        return id;
     }
 }

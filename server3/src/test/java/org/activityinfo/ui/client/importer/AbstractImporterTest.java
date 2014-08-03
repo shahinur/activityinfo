@@ -26,36 +26,23 @@ import java.util.List;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 
-public class AbstractImporterTest extends CommandTestCase2 {
+public class AbstractImporterTest  {
     public static final int COLUMN_WIDTH = 30;
 
-    protected ResourceLocatorAdaptor resourceLocator;
-    protected AsyncFormTreeBuilder formTreeBuilder;
     protected ImportModel importModel;
     protected StubScheduler scheduler;
     protected List<ImportTarget> targets;
     protected Importer importer;
 
     @Before
-    public void setupAdapters() {
+    public final void setupAdapters() {
 
-        resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
-        formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
         scheduler = new StubScheduler();
 
         // disable GWT.create so that references in static initializers
         // don't sink our test
 
         GWTMockUtilities.disarm();
-    }
-
-    protected <T> T runScheduledAndAssertResolves(Promise<T> promise) {
-        runAll();
-        return assertResolves(promise);
-    }
-
-    private void runAll() {
-        while(scheduler.executeCommands()) {}
     }
 
     protected void dumpHeaders(List<FieldImporterColumn> importColumns) {
@@ -104,15 +91,6 @@ public class AbstractImporterTest extends CommandTestCase2 {
         }
     }
 
-    private String rowIcon(SourceRow instance) {
-//        if(!instance.isValid()) {
-//            return "x";
-//        } else {
-//            return " ";
-//        }
-        return " ";
-    }
-
     private String icon(ValidationResult status) {
         if(status.hasTypeConversionError()) {
             return "x";
@@ -158,16 +136,6 @@ public class AbstractImporterTest extends CommandTestCase2 {
     protected void showValidationGrid(ValidatedRowTable rowTable) {
         dumpHeaders(rowTable.getColumns());
         dumpRows(rowTable);
-    }
-
-    protected void validateRows() {
-//        Integer validCount = runScheduledAndAssertResolves(importer.countValidRows());
-//        System.out.println("VALID ROWS: " + validCount);
-    }
-
-    protected void matchReferences() {
-//        importer = new Importer2(importModel.getFormTree(), resourceLocator);
-//        runScheduledAndAssertResolves(importer.matchReferences());
     }
 
 }

@@ -27,8 +27,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.FormInstanceLabeler;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ReferenceValue;
@@ -43,17 +42,17 @@ import java.util.Set;
 public class ComboBoxFieldWidget implements ReferenceFieldWidget {
 
     private final ListBox dropBox;
-    private final List<FormInstance> range;
+    private InstanceLabelTable range;
 
-    public ComboBoxFieldWidget(final List<FormInstance> range, final ValueUpdater<ReferenceValue> valueUpdater) {
+    public ComboBoxFieldWidget(final InstanceLabelTable range, final ValueUpdater<ReferenceValue> valueUpdater) {
         dropBox = new ListBox(false);
         dropBox.addStyleName("form-control");
         this.range = range;
 
-        for (FormInstance instance : range) {
+        for (int i = 0; i!=range.getNumRows();++i) {
             dropBox.addItem(
-                    FormInstanceLabeler.getLabel(instance),
-                    instance.getId().asString());
+                    range.getLabel(i),
+                    range.getId(i).asString());
         }
         dropBox.addChangeHandler(new ChangeHandler() {
             @Override
@@ -64,7 +63,7 @@ public class ComboBoxFieldWidget implements ReferenceFieldWidget {
     }
 
     public List<FormInstance> getRange() {
-        return range;
+        throw new UnsupportedOperationException("this doesn't belong here!!!");
     }
 
     @Override

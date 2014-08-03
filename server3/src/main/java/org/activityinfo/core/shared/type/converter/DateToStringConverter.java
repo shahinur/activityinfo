@@ -22,6 +22,8 @@ package org.activityinfo.core.shared.type.converter;
  */
 
 import org.activityinfo.core.shared.type.formatter.DateFormatter;
+import org.activityinfo.model.type.primitive.TextValue;
+import org.activityinfo.model.type.time.LocalDate;
 
 import javax.annotation.Nonnull;
 import java.util.Date;
@@ -29,7 +31,7 @@ import java.util.Date;
 /**
  * @author yuriyz on 3/7/14.
  */
-public class DateToStringConverter implements DateConverter<String> {
+public class DateToStringConverter implements DateConverter<TextValue> {
 
     private DateFormatter formatter;
 
@@ -39,7 +41,7 @@ public class DateToStringConverter implements DateConverter<String> {
 
     @Nonnull
     @Override
-    public String convert(@Nonnull Date value) {
-        return formatter.format(value);
+    public TextValue convert(@Nonnull LocalDate value) {
+        return TextValue.valueOf(formatter.format(value));
     }
 }

@@ -1,12 +1,13 @@
 package org.activityinfo.ui.client.component.form.field.hierarchy;
 
 import com.google.common.collect.Lists;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.criteria.FormClassSet;
+import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.ReferenceValue;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class Level {
 
     ResourceId parentId;
     ResourceId parentFieldId;
+    ResourceId labelFieldId;
+
     Level parent;
     List<Level> children = Lists.newArrayList();
 
@@ -30,6 +33,8 @@ public class Level {
                 assert type.getRange().size() == 1;
                 parentId = type.getRange().iterator().next();
                 parentFieldId = field.getId();
+            } else if(field.isSubPropertyOf(ApplicationProperties.LABEL_PROPERTY)) {
+                labelFieldId = field.getId();
             }
         }
     }
@@ -67,4 +72,17 @@ public class Level {
         return children;
     }
 
+    public Node createNode(Resource resource) {
+        if(isRoot()) {
+            return new Node(resource.getId(), resource.getString(labelFieldId.asString()));
+        } else {
+
+            ReferenceValue parent = ReferenceValue.fromRecord(resource.getRecord(parentFieldId.asString()));
+
+            return new Node(
+                    resource.getId(),
+                    parent.getResourceId(),
+                    resource.getString(labelFieldId.asString()));
+        }
+    }
 }

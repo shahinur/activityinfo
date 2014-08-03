@@ -1,17 +1,702 @@
 [
   {
-    "@id": "a0000000001",
-    "@owner": "d0000000001",
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c1",
+    "@owner": "_country",
+    "_countryf1": "Rdc",
+    "classId": "_country"
+  },
+  {
+    "@id": "E1",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Province",
+    "elements": [
+      {
+        "id": "E1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1f3",
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "E2",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Territoire",
+    "elements": [
+      {
+        "id": "E2f2",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_parent"
+        },
+        "label": "Province",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "E1"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "E2f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E2f3",
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "e1",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Kinshasa",
+    "E1f3": "10"
+  },
+  {
+    "@id": "e2",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Sud Kivu",
+    "E1f3": "20"
+  },
+  {
+    "@id": "e3",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Nord Kivu",
+    "E1f3": "30"
+  },
+  {
+    "@id": "e4",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Ituri",
+    "E1f3": "40"
+  },
+  {
+    "@id": "e10",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "203",
+    "E2f1": "Bukavu",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e4"
+    }
+  },
+  {
+    "@id": "e11",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "201",
+    "E2f1": "Walungu",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "e12",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "202",
+    "E2f1": "Shabunda",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "e13",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "203",
+    "E2f1": "Kalehe",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "e21",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "203",
+    "E2f1": "Irumu",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e4"
+    }
+  },
+  {
+    "@id": "L1",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "localite",
+    "elements": [
+      {
+        "id": "L1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L1f4",
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L1f6",
+        "label": "Administrative Unit",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "E2",
+              "E1"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "L1f5",
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "L2",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Health Center",
+    "elements": [
+      {
+        "id": "L2f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L2f4",
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L2f6",
+        "label": "Administrative Unit",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "E2",
+              "E1"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "L2f5",
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "g1",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Penekusu Kivu",
+    "L1f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 1.532,
+      "latitude": 27.323
+    },
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "g2",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Ngshwe",
+    "L1f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 1.323,
+      "latitude": 28.232
+    },
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "g3",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Boga",
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e4"
+    }
+  },
+  {
+    "@id": "g4",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Boga",
+    "L1f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 3.323,
+      "latitude": 27.232
+    },
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "g9",
+    "@owner": "L2",
+    "classId": "L2",
+    "L2f6": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    },
+    "L2f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 3.23,
+      "latitude": 27.232
+    },
+    "L2f1": "CS Ngweshe"
+  },
+  {
+    "@id": "U1",
+    "@owner": "_users",
+    "email": "akbertram@gmail.com",
+    "name": "Alex",
+    "locale": "fr",
+    "password": "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+  },
+  {
+    "@id": "U2",
+    "@owner": "_users",
+    "email": "bavon@nrc.org",
+    "name": "Bavon",
+    "locale": "fr",
+    "password": "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+  },
+  {
+    "@id": "U3",
+    "@owner": "_users",
+    "email": "lisa@solidarites",
+    "name": "Lisa",
+    "locale": "fr",
+    "password": "xyz"
+  },
+  {
+    "@id": "U4",
+    "@owner": "_users",
+    "email": "marlene@solidarites",
+    "name": "Marlene",
+    "locale": "fr",
+    "password": "xyz"
+  },
+  {
+    "@id": "U5",
+    "@owner": "_users",
+    "email": "christian@nrc.org",
+    "name": "Christian",
+    "locale": "fr",
+    "password": "xyz"
+  },
+  {
+    "@id": "d1",
+    "@owner": "U1",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "name": "PEAR"
+  },
+  {
+    "@id": "d2",
+    "@owner": "U1",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "name": "PEAR Plus"
+  },
+  {
+    "@id": "d3",
+    "@owner": "U1",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "name": "Alpha"
+  },
+  {
+    "@id": "d4",
+    "@owner": "U4",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "name": "Public"
+  },
+  {
+    "@id": "P1",
+    "@owner": "d1",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P1f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "P2",
+    "@owner": "d2",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P2f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P2f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "P3",
+    "@owner": "d3",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P3f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P3f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "P4",
+    "@owner": "d4",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P4f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P4f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "d1p1",
+    "@owner": "P1",
+    "classId": "P1",
+    "P1f1": "NRC"
+  },
+  {
+    "@id": "d2p1",
+    "@owner": "P2",
+    "classId": "P2",
+    "P2f1": "NRC"
+  },
+  {
+    "@id": "d1p2",
+    "@owner": "P1",
+    "classId": "P1",
+    "P1f1": "Solidarites"
+  },
+  {
+    "@id": "d1p3",
+    "@owner": "P1",
+    "classId": "P1",
+    "P1f1": "Kivu Help"
+  },
+  {
+    "@id": "R3",
+    "@owner": "d3",
+    "classId": "_class",
+    "label": "Projects",
+    "elements": [
+      {
+        "id": "R3f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "R3f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Description",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "r1",
+    "@owner": "R3",
+    "classId": "R3",
+    "R3f10": "A project",
+    "R3f1": "Project X"
+  },
+  {
+    "@id": "R1",
+    "@owner": "d1",
+    "classId": "_class",
+    "label": "Projects",
+    "elements": [
+      {
+        "id": "R1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "R1f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Description",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "r2",
+    "@owner": "R1",
+    "R1f1": "RRMP",
+    "classId": "R1"
+  },
+  {
+    "@id": "r3",
+    "@owner": "R1",
+    "R1f1": "USAID",
+    "classId": "R1"
+  },
+  {
+    "@id": "r4",
+    "@owner": "R1",
+    "R1f1": "Kivu water",
+    "classId": "R1"
+  },
+  {
+    "@id": "a1",
+    "@owner": "d1",
+    "classId": "_class",
     "label": "NFI",
     "elements": [
       {
-        "id": "a00000000010000000007",
+        "id": "a1f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000001"
+              "P1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -20,13 +705,13 @@
         }
       },
       {
-        "id": "a00000000010000000008",
+        "id": "a1f8",
         "label": "Project",
         "required": false,
         "type": {
           "parameters": {
             "range": [
-              "R0000000001"
+              "R1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -35,35 +720,29 @@
         }
       },
       {
-        "id": "a00000000010000000012",
+        "id": "a1f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000010000000013",
+        "id": "a1f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000010000000011",
+        "id": "a1f11",
         "label": "localite",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "L0000000001"
+              "L1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -72,18 +751,58 @@
         }
       },
       {
-        "id": "Q0000000002",
+        "id": "a0000000001-1106114670",
+        "label": "outputs",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i2",
+            "label": "baches",
+            "required": false,
+            "type": {
+              "parameters": {
+                "units": "menages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i103",
+            "label": "Nb. of distributions",
+            "required": false,
+            "type": {
+              "parameters": {
+                "units": "distributions"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i675",
+            "label": "A kivu thing",
+            "required": false,
+            "type": {
+              "parameters": {
+                "units": "distributions"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "Q2",
         "label": "contenu du kit",
         "required": false,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000000003",
+                "id": "t3",
                 "label": "Casserole"
               },
               {
-                "id": "t0000000004",
+                "id": "t4",
                 "label": "Soap"
               }
             ],
@@ -94,7 +813,7 @@
         }
       },
       {
-        "id": "Q0000000003",
+        "id": "Q3",
         "label": "Something about Kivu",
         "required": false,
         "type": {
@@ -106,94 +825,16 @@
         }
       },
       {
-        "id": "Q0000000991",
-        "label": "Deleted",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "_type:enum",
-            "cardinality": "MULTIPLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "Q0000000001",
-        "label": "cause",
-        "required": false,
-        "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t0000000002",
-                "label": "Deplacement"
-              },
-              {
-                "id": "t0000000001",
-                "label": "Catastrophe Naturelle"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "MULTIPLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "a0000000001-1106114670",
-        "label": "outputs",
-        "type": "section",
-        "elements": [
-          {
-            "id": "i0000000002",
-            "label": "baches",
-            "required": false,
-            "type": {
-              "parameters": {
-                "classId": "_type:quantity",
-                "units": "menages"
-              },
-              "typeClass": "QUANTITY"
-            }
-          },
-          {
-            "id": "i0000000103",
-            "label": "Nb. of distributions",
-            "required": false,
-            "type": {
-              "parameters": {
-                "classId": "_type:quantity",
-                "units": "distributions"
-              },
-              "typeClass": "QUANTITY"
-            }
-          },
-          {
-            "id": "i0000000675",
-            "label": "A kivu thing",
-            "required": false,
-            "type": {
-              "parameters": {
-                "classId": "_type:quantity",
-                "units": "distributions"
-              },
-              "typeClass": "QUANTITY"
-            }
-          }
-        ]
-      },
-      {
         "id": "a0000000001-1183866391",
         "label": "inputs",
         "type": "section",
         "elements": [
           {
-            "id": "i0000000001",
+            "id": "i1",
             "label": "beneficiaries",
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "menages"
               },
               "typeClass": "QUANTITY"
@@ -202,103 +843,18 @@
         ]
       },
       {
-        "id": "a00000000010000000014",
-        "label": "Comments",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
-          "typeClass": "NARRATIVE"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "a0000000002",
-    "@owner": "d0000000001",
-    "label": "Distribution de Kits Scolaire",
-    "elements": [
-      {
-        "id": "a00000000020000000007",
-        "label": "Partner",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": [
-              "P0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000020000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000020000000012",
-        "label": "Start Date",
-        "required": true,
-        "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a00000000020000000013",
-        "label": "End Date",
-        "required": true,
-        "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a00000000020000000011",
-        "label": "localite",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": [
-              "L0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "Q0000000001",
+        "id": "Q1",
         "label": "cause",
         "required": false,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000000002",
+                "id": "t2",
                 "label": "Deplacement"
               },
               {
-                "id": "t0000000001",
+                "id": "t1",
                 "label": "Catastrophe Naturelle"
               }
             ],
@@ -309,31 +865,29 @@
         }
       },
       {
-        "id": "a00000000020000000014",
+        "id": "a1f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
   },
   {
-    "@id": "a0000000003",
-    "@owner": "d0000000002",
-    "label": "Appui aux centres de santé",
+    "@id": "a2",
+    "@owner": "d1",
+    "classId": "_class",
+    "label": "Distribution de Kits Scolaire",
     "elements": [
       {
-        "id": "a00000000030000000007",
+        "id": "a2f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000002"
+              "P1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -342,13 +896,13 @@
         }
       },
       {
-        "id": "a00000000030000000008",
+        "id": "a2f8",
         "label": "Project",
         "required": false,
         "type": {
           "parameters": {
             "range": [
-              "R0000000002"
+              "R1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -357,35 +911,113 @@
         }
       },
       {
-        "id": "a00000000030000000012",
+        "id": "a2f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000030000000013",
+        "id": "a2f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000030000000011",
+        "id": "a2f11",
         "label": "localite",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "L0000000001"
+              "L1"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "Q1",
+        "label": "cause",
+        "required": false,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t2",
+                "label": "Deplacement"
+              },
+              {
+                "id": "t1",
+                "label": "Catastrophe Naturelle"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "a2f14",
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "a3",
+    "@owner": "d2",
+    "classId": "_class",
+    "label": "Appui aux centres de santé",
+    "elements": [
+      {
+        "id": "a3f7",
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "P2"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a3f12",
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a3f13",
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a3f11",
+        "label": "localite",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "L1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -399,12 +1031,11 @@
         "type": "section",
         "elements": [
           {
-            "id": "i0000000005",
+            "id": "i5",
             "label": "Utilisaton rate",
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "nc/hab/month"
               },
               "typeClass": "QUANTITY"
@@ -413,31 +1044,29 @@
         ]
       },
       {
-        "id": "a00000000030000000014",
+        "id": "a3f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
   },
   {
-    "@id": "a0000000004",
-    "@owner": "d0000000002",
+    "@id": "a4",
+    "@owner": "d2",
+    "classId": "_class",
     "label": "Reunification of child soliders",
     "elements": [
       {
-        "id": "a00000000040000000007",
+        "id": "a4f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000002"
+              "P2"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -446,50 +1075,29 @@
         }
       },
       {
-        "id": "a00000000040000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000002"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000040000000012",
+        "id": "a4f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000040000000013",
+        "id": "a4f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000040000000011",
+        "id": "a4f11",
         "label": "Territorie",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "E0000000002"
+              "E2"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -498,43 +1106,40 @@
         }
       },
       {
-        "id": "i0000000006",
+        "id": "i6",
         "label": "Number of children",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "children"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "a00000000040000000014",
+        "id": "a4f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
   },
   {
-    "@id": "a0000000005",
-    "@owner": "d0000000002",
+    "@id": "a5",
+    "@owner": "d2",
+    "classId": "_class",
     "label": "Kivu water distribution",
     "elements": [
       {
-        "id": "a00000000050000000007",
+        "id": "a5f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000002"
+              "P2"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -543,50 +1148,29 @@
         }
       },
       {
-        "id": "a00000000050000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000002"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000050000000012",
+        "id": "a5f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000050000000013",
+        "id": "a5f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000050000000011",
+        "id": "a5f11",
         "label": "Territorie",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "E0000000002"
+              "E2"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -595,31 +1179,29 @@
         }
       },
       {
-        "id": "a00000000050000000014",
+        "id": "a5f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
   },
   {
-    "@id": "a0000000041",
-    "@owner": "d0000000004",
+    "@id": "a41",
+    "@owner": "d4",
+    "classId": "_class",
     "label": "Public Activity",
     "elements": [
       {
-        "id": "a00000000410000000007",
+        "id": "a41f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000004"
+              "P4"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -628,50 +1210,29 @@
         }
       },
       {
-        "id": "a00000000410000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000004"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000410000000012",
+        "id": "a41f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000410000000013",
+        "id": "a41f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000410000000011",
+        "id": "a41f11",
         "label": "Territorie",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "E0000000002"
+              "E2"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -680,16 +1241,208 @@
         }
       },
       {
-        "id": "a00000000410000000014",
+        "id": "a41f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
+  },
+  {
+    "@id": "s1",
+    "@owner": "a1",
+    "a1f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-02"
+    },
+    "Q1": {
+      "@type": "enumerated",
+      "value": [
+        "t2",
+        "t1"
+      ]
+    },
+    "classId": "a1",
+    "a1f7": {
+      "@type": "REFERENCE",
+      "value": "d1p1"
+    },
+    "a1f11": {
+      "@type": "REFERENCE",
+      "value": "g1"
+    },
+    "a1f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-01"
+    },
+    "i2": {
+      "@type": "QUANTITY",
+      "value": 500.0,
+      "units": "menages"
+    },
+    "i1": {
+      "@type": "QUANTITY",
+      "value": 1500.0,
+      "units": "menages"
+    }
+  },
+  {
+    "@id": "s2",
+    "@owner": "a1",
+    "a1f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-16"
+    },
+    "Q1": {
+      "@type": "enumerated",
+      "value": [
+        "t2",
+        "t1"
+      ]
+    },
+    "classId": "a1",
+    "a1f7": {
+      "@type": "REFERENCE",
+      "value": "d1p1"
+    },
+    "a1f11": {
+      "@type": "REFERENCE",
+      "value": "g2"
+    },
+    "a1f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-15"
+    },
+    "i2": {
+      "@type": "QUANTITY",
+      "value": 1200.0,
+      "units": "menages"
+    },
+    "i1": {
+      "@type": "QUANTITY",
+      "value": 3600.0,
+      "units": "menages"
+    }
+  },
+  {
+    "@id": "s3",
+    "@owner": "a1",
+    "a1f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-06"
+    },
+    "Q1": {
+      "@type": "REFERENCE",
+      "value": [
+        "t2",
+        "t1"
+      ]
+    },
+    "classId": "a1",
+    "a1f7": {
+      "@type": "REFERENCE",
+      "value": "d1p2"
+    },
+    "a1f11": {
+      "@type": "REFERENCE",
+      "value": "g3"
+    },
+    "a1f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-05"
+    },
+    "i2": {
+      "@type": "QUANTITY",
+      "value": 500.0,
+      "units": "menages"
+    },
+    "i1": {
+      "@type": "QUANTITY",
+      "value": 10000.0,
+      "units": "menages"
+    }
+  },
+  {
+    "@id": "s4",
+    "@owner": "a2",
+    "a2f7": {
+      "@type": "REFERENCE",
+      "value": "d1p2"
+    },
+    "classId": "a2",
+    "a2f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-06"
+    },
+    "a2f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-11-06"
+    },
+    "a2f11": {
+      "@type": "REFERENCE",
+      "value": "g4"
+    }
+  },
+  {
+    "@id": "s5",
+    "@owner": "a2",
+    "a2f7": {
+      "@type": "REFERENCE",
+      "value": "d1p1"
+    },
+    "classId": "a2",
+    "a2f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-05"
+    },
+    "a2f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-05"
+    },
+    "a2f11": {
+      "@type": "REFERENCE",
+      "value": "g3"
+    }
+  },
+  {
+    "@id": "s6",
+    "@owner": "a4",
+    "a4f7": {
+      "@type": "REFERENCE",
+      "value": "d2p1"
+    },
+    "classId": "a4",
+    "a4f11": {
+      "@type": "REFERENCE",
+      "value": "e11"
+    }
+  },
+  {
+    "@id": "s7",
+    "@owner": "a4",
+    "a4f7": {
+      "@type": "REFERENCE",
+      "value": "d2p1"
+    },
+    "classId": "a4",
+    "a4f11": {
+      "@type": "REFERENCE",
+      "value": "e12"
+    }
+  },
+  {
+    "@id": "s9",
+    "@owner": "a3",
+    "classId": "a3",
+    "a3f11": {
+      "@type": "REFERENCE",
+      "value": "g9"
+    },
+    "a3f7": {
+      "@type": "REFERENCE",
+      "value": "d2p1"
+    }
   }
 ]

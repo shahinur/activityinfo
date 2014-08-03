@@ -1,17 +1,533 @@
 [
   {
-    "@id": "a0000000001",
-    "@owner": "d0000000001",
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c1",
+    "@owner": "_country",
+    "_countryf1": "Rdc",
+    "classId": "_country"
+  },
+  {
+    "@id": "E1",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Province",
+    "elements": [
+      {
+        "id": "E1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1f3",
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "E2",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Territoire",
+    "elements": [
+      {
+        "id": "E2f2",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_parent"
+        },
+        "label": "Province",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "E1"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "E2f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E2f3",
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "e1",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Kinshasa",
+    "E1f3": "10"
+  },
+  {
+    "@id": "e2",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Sud Kivu",
+    "E1f3": "20"
+  },
+  {
+    "@id": "e3",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Nord Kivu",
+    "E1f3": "30"
+  },
+  {
+    "@id": "e4",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Ituri",
+    "E1f3": "40"
+  },
+  {
+    "@id": "e10",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "203",
+    "E2f1": "Bukavu",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e4"
+    }
+  },
+  {
+    "@id": "e11",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "201",
+    "E2f1": "Walungu",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "e12",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "202",
+    "E2f1": "Shabunda",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "e13",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "203",
+    "E2f1": "Kalehe",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "e21",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "203",
+    "E2f1": "Irumu",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "e4"
+    }
+  },
+  {
+    "@id": "L1",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "localite",
+    "elements": [
+      {
+        "id": "L1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L1f4",
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L1f6",
+        "label": "Administrative Unit",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "E2",
+              "E1"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "L1f5",
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "L2",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Health Center",
+    "elements": [
+      {
+        "id": "L2f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L2f4",
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L2f6",
+        "label": "Administrative Unit",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "E2",
+              "E1"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "L2f5",
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "g1",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Penekusu",
+    "L1f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 1.532,
+      "latitude": 27.323
+    },
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "g2",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Ngshwe",
+    "L1f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 1.323,
+      "latitude": 28.232
+    },
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "g3",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Boga",
+    "L1f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 3.323,
+      "latitude": 27.232
+    },
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e4"
+    }
+  },
+  {
+    "@id": "g4",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Boga",
+    "L1f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 3.323,
+      "latitude": 27.232
+    },
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    }
+  },
+  {
+    "@id": "g9",
+    "@owner": "L2",
+    "classId": "L2",
+    "L2f6": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    },
+    "L2f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 3.23,
+      "latitude": 27.232
+    },
+    "L2f1": "CS Ngweshe"
+  },
+  {
+    "@id": "U1",
+    "@owner": "_users",
+    "email": "akbertram@gmail.com",
+    "name": "Alex",
+    "locale": "fr",
+    "password": "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+  },
+  {
+    "@id": "d1",
+    "@owner": "U1",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "name": "PEAR"
+  },
+  {
+    "@id": "d2",
+    "@owner": "U1",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "name": "PEAR Plus"
+  },
+  {
+    "@id": "d400",
+    "@owner": "U1",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "name": "Aggdb"
+  },
+  {
+    "@id": "P1",
+    "@owner": "d1",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P1f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "P2",
+    "@owner": "d2",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P2f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P2f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "P400",
+    "@owner": "d400",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P400f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P400f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "d1p1",
+    "@owner": "P1",
+    "classId": "P1",
+    "P1f1": "NRC"
+  },
+  {
+    "@id": "d1p2",
+    "@owner": "P1",
+    "classId": "P1",
+    "P1f1": "Solidarites"
+  },
+  {
+    "@id": "a1",
+    "@owner": "d1",
+    "classId": "_class",
     "label": "NFI",
     "elements": [
       {
-        "id": "a00000000010000000007",
+        "id": "a1f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000001"
+              "P1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -20,50 +536,29 @@
         }
       },
       {
-        "id": "a00000000010000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000010000000012",
+        "id": "a1f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000010000000013",
+        "id": "a1f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000010000000011",
+        "id": "a1f11",
         "label": "localite",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "L0000000001"
+              "L1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -72,41 +567,19 @@
         }
       },
       {
-        "id": "Q0000000002",
+        "id": "Q2",
         "label": "contenu du kit",
         "required": false,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000000003",
+                "id": "t3",
                 "label": "Casserole"
               },
               {
-                "id": "t0000000004",
+                "id": "t4",
                 "label": "Soap"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "MULTIPLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "Q0000000001",
-        "label": "cause",
-        "required": false,
-        "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t0000000002",
-                "label": "Deplacement"
-              },
-              {
-                "id": "t0000000001",
-                "label": "Catastrophe Naturelle"
               }
             ],
             "classId": "_type:enum",
@@ -121,12 +594,11 @@
         "type": "section",
         "elements": [
           {
-            "id": "i0000000001",
+            "id": "i1",
             "label": "beneficiaries",
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "menages"
               },
               "typeClass": "QUANTITY"
@@ -135,103 +607,18 @@
         ]
       },
       {
-        "id": "a00000000010000000014",
-        "label": "Comments",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
-          "typeClass": "NARRATIVE"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "a0000000002",
-    "@owner": "d0000000001",
-    "label": "Distribution de Kits Scolaire",
-    "elements": [
-      {
-        "id": "a00000000020000000007",
-        "label": "Partner",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": [
-              "P0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000020000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000020000000012",
-        "label": "Start Date",
-        "required": true,
-        "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a00000000020000000013",
-        "label": "End Date",
-        "required": true,
-        "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a00000000020000000011",
-        "label": "localite",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": [
-              "L0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "Q0000000001",
+        "id": "Q1",
         "label": "cause",
         "required": false,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000000002",
+                "id": "t2",
                 "label": "Deplacement"
               },
               {
-                "id": "t0000000001",
+                "id": "t1",
                 "label": "Catastrophe Naturelle"
               }
             ],
@@ -242,31 +629,29 @@
         }
       },
       {
-        "id": "a00000000020000000014",
+        "id": "a1f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
   },
   {
-    "@id": "a0000000003",
-    "@owner": "d0000000002",
-    "label": "Appui aux centres de santé",
+    "@id": "a2",
+    "@owner": "d1",
+    "classId": "_class",
+    "label": "Distribution de Kits Scolaire",
     "elements": [
       {
-        "id": "a00000000030000000007",
+        "id": "a2f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000002"
+              "P1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -275,50 +660,29 @@
         }
       },
       {
-        "id": "a00000000030000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000002"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000030000000012",
+        "id": "a2f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000030000000013",
+        "id": "a2f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000030000000011",
+        "id": "a2f11",
         "label": "localite",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "L0000000001"
+              "L1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -327,159 +691,51 @@
         }
       },
       {
-        "id": "a0000000003-1106114670",
-        "label": "outputs",
-        "type": "section",
-        "elements": [
-          {
-            "id": "i0000000005",
-            "label": "Utilisaton rate",
-            "required": false,
-            "type": {
-              "parameters": {
-                "classId": "_type:quantity",
-                "units": "nc/hab/month"
+        "id": "Q1",
+        "label": "cause",
+        "required": false,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t2",
+                "label": "Deplacement"
               },
-              "typeClass": "QUANTITY"
-            }
-          }
-        ]
-      },
-      {
-        "id": "i0000000400",
-        "label": "Indicator Name",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "_type:quantity",
-            "units": "individuals"
+              {
+                "id": "t1",
+                "label": "Catastrophe Naturelle"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
           },
-          "typeClass": "QUANTITY"
+          "typeClass": "enumerated"
         }
       },
       {
-        "id": "a00000000030000000014",
+        "id": "a2f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
   },
   {
-    "@id": "a0000000004",
-    "@owner": "d0000000002",
-    "label": "Reunification of child soliders",
-    "elements": [
-      {
-        "id": "a00000000040000000007",
-        "label": "Partner",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": [
-              "P0000000002"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000040000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000002"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000040000000012",
-        "label": "Start Date",
-        "required": true,
-        "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a00000000040000000013",
-        "label": "End Date",
-        "required": true,
-        "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a00000000040000000011",
-        "label": "Territorie",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": [
-              "E0000000002"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "i0000000006",
-        "label": "Number of children",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "_type:quantity",
-            "units": "children"
-          },
-          "typeClass": "QUANTITY"
-        }
-      },
-      {
-        "id": "a00000000040000000014",
-        "label": "Comments",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
-          "typeClass": "NARRATIVE"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "a0000000400",
-    "@owner": "d0000000400",
+    "@id": "a400",
+    "@owner": "d400",
+    "classId": "_class",
     "label": "Appui aux centres de santé",
     "elements": [
       {
-        "id": "a00000004000000000007",
+        "id": "a400f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000400"
+              "P400"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -488,50 +744,29 @@
         }
       },
       {
-        "id": "a00000004000000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000400"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000004000000000012",
+        "id": "a400f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000004000000000013",
+        "id": "a400f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000004000000000011",
+        "id": "a400f11",
         "label": "localite",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "L0000000001"
+              "L1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -540,28 +775,142 @@
         }
       },
       {
-        "id": "i0000000401",
+        "id": "i401",
         "label": "Total",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peeps"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "a00000004000000000014",
+        "id": "a400f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
+  },
+  {
+    "@id": "s2",
+    "@owner": "a1",
+    "a1f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-16"
+    },
+    "Q1": {
+      "@type": "enumerated",
+      "value": [
+        "t2",
+        "t1"
+      ]
+    },
+    "classId": "a1",
+    "a1f7": {
+      "@type": "REFERENCE",
+      "value": "d1p1"
+    },
+    "a1f11": {
+      "@type": "REFERENCE",
+      "value": "g2"
+    },
+    "a1f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-15"
+    },
+    "i2": {
+      "@type": "QUANTITY",
+      "value": 1200.0,
+      "units": "menages"
+    },
+    "i1": {
+      "@type": "QUANTITY",
+      "value": 3600.0,
+      "units": "menages"
+    }
+  },
+  {
+    "@id": "s3",
+    "@owner": "a1",
+    "a1f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-06"
+    },
+    "Q1": {
+      "@type": "REFERENCE",
+      "value": [
+        "t2",
+        "t1"
+      ]
+    },
+    "classId": "a1",
+    "a1f7": {
+      "@type": "REFERENCE",
+      "value": "d1p2"
+    },
+    "a1f11": {
+      "@type": "REFERENCE",
+      "value": "g3"
+    },
+    "a1f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-05"
+    },
+    "i2": {
+      "@type": "QUANTITY",
+      "value": 500.0,
+      "units": "menages"
+    },
+    "i1": {
+      "@type": "QUANTITY",
+      "value": 10000.0,
+      "units": "menages"
+    }
+  },
+  {
+    "@id": "s4",
+    "@owner": "a2",
+    "a2f7": {
+      "@type": "REFERENCE",
+      "value": "d1p2"
+    },
+    "classId": "a2",
+    "a2f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-06"
+    },
+    "a2f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-11-06"
+    },
+    "a2f11": {
+      "@type": "REFERENCE",
+      "value": "g4"
+    }
+  },
+  {
+    "@id": "s5",
+    "@owner": "a2",
+    "a2f7": {
+      "@type": "REFERENCE",
+      "value": "d1p1"
+    },
+    "classId": "a2",
+    "a2f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-05"
+    },
+    "a2f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2008-10-05"
+    },
+    "a2f11": {
+      "@type": "REFERENCE",
+      "value": "g3"
+    }
   }
 ]

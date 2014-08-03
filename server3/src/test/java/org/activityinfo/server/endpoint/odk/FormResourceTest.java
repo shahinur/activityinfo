@@ -4,34 +4,33 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import com.google.inject.Inject;
-import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.fixtures.Modules;
-import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.ui.client.service.TestResourceStore;
 import org.activityinfo.server.endpoint.odk.xform.Html;
-import org.activityinfo.server.store.ResourceStoreModule;
-import org.activityinfo.server.util.locale.LocaleModule;
+import org.activityinfo.service.core.store.ResourceStore;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-@RunWith(InjectionSupport.class)
-@Modules({LocaleModule.class, ResourceStoreModule.class})
-@OnDataSet("/dbunit/sites-simple1.db.xml")
-public class FormResourceTest extends CommandTestCase2 {
 
-    @Inject
-    public FormResource resource;
+public class FormResourceTest {
+
+    private FormResource resource;
+
+    @Before
+    public void setUp() throws IOException {
+        ResourceStore store = new TestResourceStore().load("/dbunit/sites-simple1.json");
+        resource = new FormResource(store);
+    }
 
     @Test
     public void getBlankForm() throws Exception {

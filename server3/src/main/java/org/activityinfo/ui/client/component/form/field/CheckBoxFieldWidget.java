@@ -25,11 +25,11 @@ import com.google.common.collect.Sets;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.FormInstanceLabeler;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
@@ -39,7 +39,6 @@ import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.RadioButton;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -50,12 +49,11 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
 
     private final FlowPanel panel;
     private final List<CheckBox> controls;
-    private final List<FormInstance> range;
+    private SimpleEventBus eventBus;
 
-    public CheckBoxFieldWidget(ReferenceType type, List<FormInstance> range, final ValueUpdater valueUpdater) {
+    public CheckBoxFieldWidget(ReferenceType type, InstanceLabelTable table, final ValueUpdater valueUpdater) {
         panel = new FlowPanel();
         controls = new ArrayList<>();
-        this.range = range;
 
         ValueChangeHandler<Boolean> changeHandler = new ValueChangeHandler<Boolean>() {
             @Override
@@ -64,28 +62,22 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
             }
         };
 
-        String groupId = Long.toString(new Date().getTime());
-        for (final FormInstance instance : range) {
-            CheckBox checkBox = createControl(groupId, instance, type.getCardinality());
+        for (int i=0;i!=table.getNumRows(); ++i) {
+            CheckBox checkBox = createControl(table.getId(i), table.getLabel(i), type.getCardinality());
             checkBox.addValueChangeHandler(changeHandler);
             panel.add(checkBox);
             controls.add(checkBox);
         }
     }
 
-    public List<FormInstance> getRange() {
-        return range;
-    }
-
-    private CheckBox createControl(String groupId, FormInstance instance, Cardinality cardinality) {
-        final CheckBox checkBox;
-        final String label = FormInstanceLabeler.getLabel(instance);
-        if (cardinality == Cardinality.SINGLE) {
-            checkBox = new RadioButton(groupId, label);
+    private CheckBox createControl(ResourceId id, String label, Cardinality cardinality) {
+        CheckBox checkBox;
+        if(cardinality == Cardinality.SINGLE) {
+            checkBox = new RadioButton(id.asString(), label);
         } else {
             checkBox = new CheckBox(label);
         }
-        checkBox.setFormValue(instance.getId().asString());
+        checkBox.setFormValue(id.asString());
         return checkBox;
     }
 
@@ -129,5 +121,10 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
     @Override
     public Widget asWidget() {
         return panel;
+    }
+
+    @Override
+    public List<FormInstance> getRange() {
+        throw new UnsupportedOperationException("danger will robinson!! mixing UI and logic!!!");
     }
 }

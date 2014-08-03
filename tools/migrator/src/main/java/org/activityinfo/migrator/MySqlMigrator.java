@@ -2,10 +2,11 @@ package org.activityinfo.migrator;
 
 
 import com.google.common.collect.Lists;
-import org.activityinfo.migrator.tables.ActivityTable;
+import org.activityinfo.migrator.tables.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -17,21 +18,20 @@ public class MySqlMigrator {
     private List<ResourceMigrator> migrators = Lists.newArrayList();
 
     public MySqlMigrator() {
-        //        migrators.add(new GeographicDatabase());
-        //        migrators.add(new CountryTable());
-        //        migrators.add(new AdminLevelTable());
-        //        migrators.add(new AdminEntityTable());
-        //        migrators.add(new LocationTypeTable());
-        //        migrators.add(new LocationTable());
-        //        migrators.add(new UserLoginTable());
-        //        migrators.add(new UserDatabaseTable());
-        //        migrators.add(new PartnerFormClass());
-        //        migrators.add(new PartnerTable());
-        //        migrators.add(new AttributeGroupTable());
-        //        migrators.add(new AttributeTable());
+
+        migrators.add(new Geodatabase());
+        migrators.add(new CountryTable());
+        migrators.add(new AdminLevelTable());
+        migrators.add(new AdminEntityTable());
+        migrators.add(new LocationTypeTable());
+        migrators.add(new LocationTable());
+        migrators.add(new UserLoginTable());
+        migrators.add(new UserDatabaseTable());
+        migrators.add(new PartnerFormClass());
+        migrators.add(new PartnerTable());
+        migrators.add(new ProjectTable());
         migrators.add(new ActivityTable());
-        //        migrators.add(new SiteTable());
-        //        migrators.add(new ReportingPeriodTable());
+        migrators.add(new SiteTable());
     }
 
     public static void main(String[] args) throws Exception {
@@ -49,6 +49,7 @@ public class MySqlMigrator {
 
 
         for(final ResourceMigrator migrator : migrators) {
+            System.out.println("Running " + migrator.getClass().getSimpleName() + " migrator...");
             migrator.getResources(connection, writer);
         }
 
@@ -57,7 +58,7 @@ public class MySqlMigrator {
 
     public void migrate(Connection connection, ResourceWriter writer) throws Exception {
         for(ResourceMigrator migrator : migrators) {
-           migrator.getResources(connection, writer);
+            migrator.getResources(connection, writer);
         }
     }
 

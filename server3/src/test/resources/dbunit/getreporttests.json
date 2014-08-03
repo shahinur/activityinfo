@@ -1,1 +1,45 @@
-[]
+[
+  {
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "U1",
+    "@owner": "_users",
+    "email": "user1@user.com",
+    "name": "Alex",
+    "locale": "fr"
+  },
+  {
+    "@id": "U2",
+    "@owner": "_users",
+    "email": "bavon@nrcdrc.org",
+    "name": "Bavon",
+    "locale": "fr"
+  }
+]

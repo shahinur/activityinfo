@@ -57,10 +57,13 @@ public class Resources {
 
     public static Resource fromJson(String json) {
         JsonParser parser = new JsonParser();
-        Resource resource = Resources.createResource();
-
         JsonObject resourceObject = parser.parse(json).getAsJsonObject();
 
+        return fromJson(resourceObject);
+    }
+
+    public static Resource fromJson(JsonObject resourceObject) {
+        Resource resource = Resources.createResource();
         for(Map.Entry<String, JsonElement> property : resourceObject.entrySet()) {
             String name = property.getKey();
             switch (name) {
@@ -115,7 +118,7 @@ public class Resources {
         return list;
     }
 
-    private static Record recordFromJson(JsonObject jsonObject) {
+    public static Record recordFromJson(JsonObject jsonObject) {
         Record record = new Record();
         for(Map.Entry<String, JsonElement> field : jsonObject.entrySet()) {
             if(!field.getValue().isJsonNull()) {
@@ -129,6 +132,11 @@ public class Resources {
         JsonObject resourceObject = toJsonObject(resource);
 
         return resourceObject.toString();
+    }
+
+    public static String toJson(Record record) {
+        JsonObject recordObject = toJsonObject(record);
+        return recordObject.toString();
     }
 
     public static JsonObject toJsonObject(Resource resource) {
@@ -160,7 +168,7 @@ public class Resources {
         }
     }
 
-    private static JsonElement toJsonObject(Record value) {
+    private static JsonObject toJsonObject(Record value) {
         JsonObject jsonObject = new JsonObject();
         for(Map.Entry<String, Object> property :  value.getProperties().entrySet()) {
             if(property.getValue() != null) {

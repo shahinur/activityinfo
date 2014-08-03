@@ -23,16 +23,9 @@ package org.activityinfo.server.command;
  */
 
 import com.google.common.base.Joiner;
-import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.BatchCommand;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.command.UpdateEntity;
+import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.model.GetResource;
-import org.activityinfo.legacy.shared.model.Published;
-import org.activityinfo.legacy.shared.model.PutResource;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
@@ -43,13 +36,12 @@ import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.server.database.OnDataSet;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
@@ -59,16 +51,17 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
-@RunWith(InjectionSupport.class)
-@OnDataSet("/dbunit/schema1.db.xml")
-public class ActivityTest extends CommandTestCase2 {
-
+public class ActivityTest {
 
     public static final ResourceId NFI_FORM_ID = CuidAdapter.activityFormClass(1);
 
+    private ResourceLocator resourceLocator;
+
+
     @Before
-    public void setUser() {
-        setUser(1);
+    public void setUser() throws IOException {
+        resourceLocator = new TestResourceLocator("/dbunit/schema1.json");
+      //  setUser(1);
     }
 
     @Test
@@ -83,52 +76,33 @@ public class ActivityTest extends CommandTestCase2 {
         act.setOwnerId(CuidAdapter.databaseId(1));
         act.setLabel("Warshing the dishes");
 
-        execute(new PutResource(act));
+        resourceLocator.persist(act);
 
         /*
          * Reload schema to verify the changes have stuck
          */
 
-        act = FormClass.fromResource(execute(new GetResource(act.getId())).parseResource());
+        act = assertResolves(resourceLocator.getFormClass(act.getId()));
+
         assertThat(act.getLabel(), equalTo("Warshing the dishes"));
 //
 //        assertEquals("public", Published.NOT_PUBLISHED.getIndex(), act.getPublished());
     }
-
-    @Test
-    public void updateSortOrderTest() throws Throwable {
-
-        /* Update Sort Order */
-        Map<String, Object> changes1 = new HashMap<String, Object>();
-        changes1.put("sortOrder", 2);
-        Map<String, Object> changes2 = new HashMap<String, Object>();
-        changes2.put("sortOrder", 1);
-
-        execute(new BatchCommand(
-                new UpdateEntity("Activity", 1, changes1),
-                new UpdateEntity("Activity", 2, changes2)));
-
-        /* Confirm the order is changed */
-
-        SchemaDTO schema = execute(new GetSchema());
-        assertEquals(2, schema.getDatabaseById(1).getActivities().get(0).getId());
-        assertEquals(1, schema.getDatabaseById(1).getActivities().get(1).getId());
-    }
-
-    @Test
-    public void updatePublished() throws Throwable {
-
-        /* Update Sort Order */
-        Map<String, Object> changes = new HashMap<String, Object>();
-        changes.put("published", Published.ALL_ARE_PUBLISHED.getIndex());
-
-        execute(new UpdateEntity("Activity", 1, changes));
-
-        /* Confirm the order is changed */
-
-        SchemaDTO schema = execute(new GetSchema());
-        assertEquals(Published.ALL_ARE_PUBLISHED.getIndex(), schema.getActivityById(1).getPublished());
-    }
+//
+//    @Test
+//    public void updatePublished() throws Throwable {
+//
+//        /* Update Sort Order */
+//        Map<String, Object> changes = new HashMap<String, Object>();
+//        changes.put("published", Published.ALL_ARE_PUBLISHED.getIndex());
+//
+//        execute(new UpdateEntity("Activity", 1, changes));
+//
+//        /* Confirm the order is changed */
+//
+//        SchemaDTO schema = execute(new GetSchema());
+//        assertEquals(Published.ALL_ARE_PUBLISHED.getIndex(), schema.getActivityById(1).getPublished());
+//    }
 
     @Test
     public void orderFields() {
@@ -138,9 +112,8 @@ public class ActivityTest extends CommandTestCase2 {
         formClass.setOwnerId(CuidAdapter.databaseId(1));
         formClass.setLabel("Household Survey");
 
-        execute(new PutResource(formClass));
+        resourceLocator.persist(formClass);
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         formClass = assertResolves(resourceLocator.getFormClass(classId));
 
         // create three new fields with an order that mixes "attributes" and "indicators"
@@ -179,14 +152,14 @@ public class ActivityTest extends CommandTestCase2 {
     @Test
     public void createForm() {
 
+
         ResourceId classId = ResourceId.generateId();
         FormClass formClass = new FormClass(classId);
         formClass.setOwnerId(CuidAdapter.databaseId(1));
         formClass.setLabel("Household Survey");
 
-        execute(new PutResource(formClass));
+        assertResolves(resourceLocator.persist(formClass));
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         formClass = assertResolves(resourceLocator.getFormClass(classId));
 
         FormField newField = new FormField(ResourceId.generateId());
@@ -217,7 +190,6 @@ public class ActivityTest extends CommandTestCase2 {
     @Test
     public void createEnumField() {
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
 
         FormField newField = new FormField(ResourceId.generateId());
@@ -245,7 +217,7 @@ public class ActivityTest extends CommandTestCase2 {
         type.getValues().get(1).setLabel("Non");
         resourceLocator.persist(formClass);
 
-        formClass = getForm(NFI_FORM_ID);
+        formClass = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
         enumField = findField(formClass, "Do you like ice cream?");
         type = (EnumType) enumField.getType();
         assertThat(type.getCardinality(), equalTo(Cardinality.SINGLE));
@@ -257,7 +229,8 @@ public class ActivityTest extends CommandTestCase2 {
         enumField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(yes)));
         resourceLocator.persist(formClass);
 
-        enumField = findField(getForm(formClass.getId()), "Do you like ice cream?");
+        enumField = findField(assertResolves(resourceLocator.getFormClass(formClass.getId())),
+                "Do you like ice cream?");
         type = (EnumType) enumField.getType();
 
         assertThat(type.getCardinality(), equalTo(Cardinality.SINGLE));
@@ -267,14 +240,13 @@ public class ActivityTest extends CommandTestCase2 {
     @Test
     public void updateField() {
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
 
         FormField beneficiaries = find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
         beneficiaries.setLabel("Number of benes");
-        resourceLocator.persist(formClass);
+        assertResolves(resourceLocator.persist(formClass));
 
-        FormClass form = getForm(NFI_FORM_ID);
+        FormClass form = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
         assertThat(findField(form, "Number of benes"), hasProperty("label", Matchers.equalTo("Number of benes")));
     }
 
@@ -282,22 +254,21 @@ public class ActivityTest extends CommandTestCase2 {
     @Test
     public void updateIndicatorWithLongUnits() {
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
 
         FormField beneficiaries = find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
         QuantityType updatedType = new QuantityType().setUnits("imperial tonne with very long qualifying text");
         beneficiaries.setType(updatedType);
-        resourceLocator.persist(formClass);
 
-        FormClass activity = getForm(NFI_FORM_ID);
+        assertResolves(resourceLocator.persist(formClass));
+
+        FormClass activity = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
         assertThat(findField(activity, "beneficiaries").getType(), hasProperty("units", Matchers.equalTo(updatedType.getUnits())));
     }
 
     @Test
     public void deleteEnumFields() {
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
 
         // Remove attribute
@@ -308,7 +279,7 @@ public class ActivityTest extends CommandTestCase2 {
                 it.remove();
             }
         }
-        resourceLocator.persist(formClass);
+        assertResolves(resourceLocator.persist(formClass));
 
         // Ensure deleted
         formClass = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
@@ -340,12 +311,6 @@ public class ActivityTest extends CommandTestCase2 {
             }
         }
         throw new AssertionError();
-    }
-
-
-
-    private FormClass getForm(ResourceId id) {
-        return FormClass.fromResource(execute(new GetResource(id)).parseResource());
     }
 
     private FormField findField(FormClass form, String label) {

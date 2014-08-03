@@ -8,23 +8,18 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
-import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.shared.adapter.LocationClassAdapter;
-import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
+import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.database.OnDataSet;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
@@ -35,9 +30,7 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertThat;
 
 
-@RunWith(InjectionSupport.class)
-@OnDataSet("/dbunit/jordan-admin.db.xml")
-public class HierarchyTest extends CommandTestCase2 {
+public class HierarchyTest {
 
     public static final ResourceId CAMP_CLASS = CuidAdapter.locationFormClass(50505);
 
@@ -50,11 +43,11 @@ public class HierarchyTest extends CommandTestCase2 {
     private Map<ResourceId, MockLevelWidget> widgets;
 
     @Test
-    public void buildViewModelTest() {
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
+    public void buildViewModelTest() throws IOException {
+        ResourceLocator resourceLocator = new TestResourceLocator("/dbunit/jordan-admin.json");
         FormClass campForm = assertResolves(resourceLocator.getFormClass(CAMP_CLASS));
 
-        FormField adminField = campForm.getField(LocationClassAdapter.getAdminFieldId(CAMP_CLASS));
+        FormField adminField = campForm.getField(CuidAdapter.getAdminFieldId(CAMP_CLASS));
 
         Set<ResourceId> fieldValue = Collections.singleton(entity(325703));
 
@@ -77,7 +70,7 @@ public class HierarchyTest extends CommandTestCase2 {
         assertThat(presenter.getSelectionLabel(CAMP_DISTRICT_CLASS), equalTo("District 5"));
 
         // now try to get options for the root level
-        List<Projection> choices = assertResolves(widgets.get(REGION).choices.get());
+        List<Node> choices = assertResolves(widgets.get(REGION).choices.get());
         System.out.println(choices);
 
         assertThat(choices, hasSize(3));
@@ -91,7 +84,7 @@ public class HierarchyTest extends CommandTestCase2 {
 
         assertThat(widgets.get(GOVERNORATE_ID).choices, Matchers.notNullValue());
 
-        List<Projection> governorateChoices = assertResolves(widgets.get(GOVERNORATE_ID).choices.get());
+        List<Node> governorateChoices = assertResolves(widgets.get(GOVERNORATE_ID).choices.get());
         System.out.println(governorateChoices);
         assertThat(governorateChoices, hasSize(4));
     }
@@ -134,7 +127,7 @@ public class HierarchyTest extends CommandTestCase2 {
             this.label = label;
         }
 
-        private Supplier<Promise<List<Projection>>> choices;
+        private Supplier<Promise<List<Node>>> choices;
 
         @Override
         public void clearSelection() {
@@ -152,21 +145,21 @@ public class HierarchyTest extends CommandTestCase2 {
         }
 
         @Override
-        public void setSelection(Projection selection) {
-            this.selection = selection.getStringValue(ApplicationProperties.LABEL_PROPERTY);
+        public void setSelection(Node selection) {
+            this.selection = selection.getLabel();
         }
 
         @Override
-        public void setChoices(Supplier<Promise<List<Projection>>> choices) {
+        public void setChoices(Supplier<Promise<List<Node>>> choices) {
             this.choices = choices;
         }
 
         public void setSelection(String label) {
-            List<Projection> choices = assertResolves(this.choices.get());
-            for(Projection projection : choices) {
-                if(Objects.equals(projection.getStringValue(ApplicationProperties.LABEL_PROPERTY), label)) {
+            List<Node> choices = assertResolves(this.choices.get());
+            for(Node Node : choices) {
+                if(Objects.equals(Node.getLabel(), label)) {
                     this.selection = label;
-                    SelectionEvent.fire(this, projection);
+                    SelectionEvent.fire(this, Node);
                     return;
                 }
             }
@@ -174,7 +167,7 @@ public class HierarchyTest extends CommandTestCase2 {
         }
 
         @Override
-        public HandlerRegistration addSelectionHandler(SelectionHandler<Projection> handler) {
+        public HandlerRegistration addSelectionHandler(SelectionHandler<Node> handler) {
             return eventBus.addHandler(SelectionEvent.getType(), handler);
         }
 

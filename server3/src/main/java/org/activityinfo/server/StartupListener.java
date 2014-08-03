@@ -43,14 +43,13 @@ import org.activityinfo.server.geo.GeometryModule;
 import org.activityinfo.server.login.LoginModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.report.ReportModule;
-import org.activityinfo.server.store.ResourceStoreModule;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.blob.BlobServiceModule;
 import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.jaxrs.JaxRsModule;
 import org.activityinfo.server.util.locale.LocaleModule;
 import org.activityinfo.server.util.logging.LoggingModule;
-import org.activityinfo.server.util.monitoring.MonitoringModule;
+import org.activityinfo.service.core.ServiceModule;
 
 import javax.servlet.ServletContextEvent;
 import java.util.logging.Logger;
@@ -90,15 +89,14 @@ public class StartupListener extends GuiceServletContextListener {
                 new GwtRpcModule(),
                 new JsonRpcModule(),
                 new ExportModule(),
-                new MonitoringModule(),
                 new KmlModule(),
                 new BrandingModule(),
                 new BlobServiceModule(),
                 new LocaleModule(),
                 new JaxRsModule(),
                 new RestApiModule(),
-                new ResourceStoreModule(),
-                new ODKModule());
+                new ODKModule(),
+                new ServiceModule());
     }
 
 }

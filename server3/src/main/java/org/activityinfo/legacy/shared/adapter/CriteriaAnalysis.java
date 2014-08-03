@@ -26,11 +26,6 @@ public class CriteriaAnalysis extends CriteriaVisitor {
     private boolean rootOnly = false;
     private boolean classUnion = true;
 
-    /**
-     * Must be one of these ids
-     */
-    private final Multimap<Character, Integer> ids = HashMultimap.create();
-
     public ResourceId getParentCriteria() {
         return parentCriteria.iterator().next();
     }
@@ -46,14 +41,6 @@ public class CriteriaAnalysis extends CriteriaVisitor {
 
     @Override
     public void visitInstanceIdCriteria(IdCriteria criteria) {
-        // this is implicitly a union criteria
-        // separate the instances out into domains
-        for (ResourceId id : criteria.getInstanceIds()) {
-            assert id != null : "ids cannot be null";
-            if (id.getDomain() != CuidAdapter.ACTIVITY_CATEGORY_DOMAIN) {
-                ids.put(id.getDomain(), CuidAdapter.getLegacyIdFromCuid(id));
-            }
-        }
     }
 
     @Override
@@ -104,40 +91,8 @@ public class CriteriaAnalysis extends CriteriaVisitor {
         return classCriteria.size() == 1;
     }
 
-    public boolean isRestrictedByUnionOfClasses() {
-        return classUnion && !classCriteria.isEmpty();
-    }
-
-    public boolean isRestrictedById() {
-        return !ids.isEmpty();
-    }
-
-    public boolean isLocationQuery() {
-        return isRestrictedToSingleClass() && getClassRestriction().getDomain() == CuidAdapter.LOCATION_TYPE_DOMAIN;
-    }
-
-    public boolean isSiteQuery() {
-        return isRestrictedToSingleClass() && getClassRestriction().getDomain() == CuidAdapter.ACTIVITY_DOMAIN;
-    }
-
-    public boolean isAncestorQuery() {
-        return rootOnly || !parentCriteria.isEmpty();
-    }
-
     public ResourceId getClassRestriction() {
         return classCriteria.iterator().next();
-    }
-
-    public Set<ResourceId> getClassCriteria() {
-        return classCriteria;
-    }
-
-    public Multimap<Character, Integer> getIds() {
-        return ids;
-    }
-
-    public List<Integer> getIds(char domain) {
-        return Lists.newArrayList(ids.get(domain));
     }
 
     public static CriteriaAnalysis analyze(Criteria criteria) {

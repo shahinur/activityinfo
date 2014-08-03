@@ -1,1 +1,56 @@
-[]
+[
+  {
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c1",
+    "@owner": "_country",
+    "_countryf1": "Rdc",
+    "classId": "_country"
+  },
+  {
+    "@id": "c2",
+    "@owner": "_country",
+    "_countryf1": "Haiti",
+    "classId": "_country"
+  },
+  {
+    "@id": "c3",
+    "@owner": "_country",
+    "_countryf1": "Azerbaijan",
+    "classId": "_country"
+  },
+  {
+    "@id": "U1",
+    "@owner": "_users",
+    "email": "user1@user.com",
+    "name": "Alex",
+    "locale": "fr"
+  }
+]

@@ -21,13 +21,15 @@ package org.activityinfo.core.shared.type.converter;
  * #L%
  */
 
+import org.activityinfo.model.type.time.LocalDate;
+
 import javax.annotation.Nonnull;
 import java.util.Date;
 
 /**
  * @author yuriyz on 3/7/14.
  */
-public class StringToDateConverter implements StringConverter<Date> {
+public class StringToDateConverter implements StringConverter<LocalDate> {
 
     public static final StringToDateConverter INSTANCE = new StringToDateConverter();
 
@@ -36,7 +38,7 @@ public class StringToDateConverter implements StringConverter<Date> {
 
     @Nonnull
     @Override
-    public Date convert(@Nonnull String value) {
-        return new StringToLocalDateConverter().convert(value).atMidnightInMyTimezone();
+    public LocalDate convert(@Nonnull String value) {
+        return new StringToLocalDateConverter().convert(value);
     }
 }

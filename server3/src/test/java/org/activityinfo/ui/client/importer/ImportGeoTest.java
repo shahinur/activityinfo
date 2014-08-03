@@ -3,21 +3,20 @@ package org.activityinfo.ui.client.importer;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
+import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
 import org.activityinfo.core.shared.form.tree.FormTreePrettyPrinter;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.strategy.FieldImportStrategies;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
-import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.ui.client.component.importDialog.Importer;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
@@ -27,14 +26,23 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 
-@RunWith(InjectionSupport.class)
-@OnDataSet("/dbunit/somalia-admin.db.xml")
 public class ImportGeoTest extends AbstractImporterTest {
+
+    private TestResourceLocator resourceLocator;
+    private AsyncFormTreeBuilder formTreeBuilder;
 
     @Before
     public void setupLocale() {
         LocaleProxy.initialize();
     }
+
+
+    @Before
+    public void setUp() throws IOException {
+        resourceLocator = new TestResourceLocator("/dbunit/somalia-admin.json");
+        formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
+    }
+
 
     @Test
     public void test() throws IOException {
@@ -58,7 +66,9 @@ public class ImportGeoTest extends AbstractImporterTest {
                 hasProperty("label", Matchers.equalTo("Name")),
                 hasProperty("label", Matchers.equalTo("Alternate Name")),
                 hasProperty("label", Matchers.equalTo("Region Name")),
+                hasProperty("label", Matchers.equalTo("Region Code")),
                 hasProperty("label", Matchers.equalTo("District Name")),
+                hasProperty("label", Matchers.equalTo("District Code")),
                 hasProperty("label", Matchers.equalTo("Latitude")),
                 hasProperty("label", Matchers.equalTo("Longitude"))));
 

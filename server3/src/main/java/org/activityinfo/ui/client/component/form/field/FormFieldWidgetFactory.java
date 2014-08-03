@@ -22,12 +22,19 @@ package org.activityinfo.ui.client.component.form.field;
  */
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.ValueUpdater;
+import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
@@ -40,8 +47,6 @@ import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
-
-import java.util.List;
 
 /**
  * @author yuriyz on 1/28/14.
@@ -117,26 +122,32 @@ public class FormFieldWidgetFactory {
     }
 
     private Promise createSimpleListWidget(final ReferenceType type, final ValueUpdater valueUpdater) {
-        return resourceLocator
-                .queryInstances(type.getRange())
-                .then(new Function<List<FormInstance>, FormFieldWidget>() {
-                    @Override
-                    public FormFieldWidget apply(List<FormInstance> input) {
 
-                        if (input.size() < SMALL_BALANCE_NUMBER) {
-                            // Radio buttons
-                            return new CheckBoxFieldWidget(type, input, valueUpdater);
+        TableModel tableModel = new TableModel(Iterables.getOnlyElement(type.getRange()));
+        tableModel.addResourceId("id");
+        tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
 
-                        } else if (input.size() < MEDIUM_BALANCE_NUMBER) {
-                            // Dropdown list
-                            return new ComboBoxFieldWidget(input, valueUpdater);
+        return resourceLocator.queryTable(tableModel).then(new Function<TableData, FormFieldWidget>() {
+            @Override
+            public FormFieldWidget apply(TableData table) {
 
-                        } else {
-                            // Suggest box
-                            return new SuggestBoxWidget(input, valueUpdater);
-                        }
-                    }
-                });
+                InstanceLabelTable instanceLabelTable = new InstanceLabelTable(table.getColumnView("id"),
+                        table.getColumnView("label"));
+
+                if (table.getNumRows() < SMALL_BALANCE_NUMBER) {
+                    // Radio buttons
+                    return new CheckBoxFieldWidget(type, instanceLabelTable, valueUpdater);
+
+                } else if (table.getNumRows() < MEDIUM_BALANCE_NUMBER) {
+                    // Dropdown list
+                    return new ComboBoxFieldWidget(instanceLabelTable, valueUpdater);
+
+                } else {
+                    // Suggest box
+                    return new SuggestBoxWidget(instanceLabelTable, valueUpdater);
+                }
+            }
+        });
     }
 }
 

@@ -1,6 +1,7 @@
 package org.activityinfo.core.client.form.tree;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.resource.ResourceId;
@@ -11,6 +12,7 @@ import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.promise.Promise;
 
 import java.util.Collections;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**

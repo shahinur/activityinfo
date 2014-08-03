@@ -3,6 +3,7 @@ package org.activityinfo.core.client.type.formatter;
 import com.google.gwt.i18n.client.NumberFormat;
 import org.activityinfo.core.shared.type.formatter.QuantityFormatter;
 import org.activityinfo.core.shared.type.formatter.QuantityFormatterFactory;
+import org.activityinfo.model.type.number.Quantity;
 
 /**
  * Creates QuantityFormatters using the GWT i18n classes.
@@ -13,13 +14,13 @@ public class JsQuantityFormatterFactory implements QuantityFormatterFactory {
         final NumberFormat format = NumberFormat.getDecimalFormat();
         return new QuantityFormatter() {
             @Override
-            public String format(Double value) {
-                return format.format(value);
+            public String format(Quantity value) {
+                return format.format(value.getValue());
             }
 
             @Override
-            public Double parse(String valueAsString) {
-                return format.parse(valueAsString);
+            public Quantity parse(String valueAsString) {
+                return new Quantity(format.parse(valueAsString));
             }
         };
     }

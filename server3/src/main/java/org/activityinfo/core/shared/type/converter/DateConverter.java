@@ -21,10 +21,13 @@ package org.activityinfo.core.shared.type.converter;
  * #L%
  */
 
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.time.LocalDate;
+
 import java.util.Date;
 
 /**
  * @author yuriyz on 3/7/14.
  */
-public interface DateConverter<V> extends Converter<Date, V> {
+public interface DateConverter<V extends FieldValue> extends Converter<LocalDate, V> {
 }
