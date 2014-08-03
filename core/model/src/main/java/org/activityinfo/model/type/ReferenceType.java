@@ -11,6 +11,7 @@ import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +20,7 @@ import java.util.Set;
  * A type that represents a link or reference to another {@code Resource}
  */
 public class ReferenceType implements ParametrizedFieldType {
+
 
     public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
 
@@ -131,7 +133,14 @@ public class ReferenceType implements ParametrizedFieldType {
         return new ComponentReader<String>() {
             @Override
             public String read(Resource resource) {
-                return resource.getRecord(fieldName).getString("id");
+                Record fieldValue = resource.isRecord(fieldName);
+                if(fieldValue != null) {
+                    String typeId = fieldValue.getString(FieldValue.TYPE_CLASS_FIELD_NAME);
+                    if(typeId.equals(TYPE_CLASS.getId())) {
+                        return fieldValue.isString("value");
+                    }
+                }
+                return null;
             }
         };
     }
@@ -164,5 +173,48 @@ public class ReferenceType implements ParametrizedFieldType {
         type.setCardinality(Cardinality.SINGLE);
         type.setRange(Sets.newHashSet(formClassIds));
         return type;
+    }
+
+    public static FieldType multiple(Collection<ResourceId> formClassIds) {
+        ReferenceType type = new ReferenceType();
+        type.setCardinality(Cardinality.MULTIPLE);
+        type.setRange(Sets.newHashSet(formClassIds));
+        return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ReferenceType that = (ReferenceType) o;
+
+        if (cardinality != that.cardinality) {
+            return false;
+        }
+        if (!range.equals(that.range)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = cardinality.hashCode();
+        result = 31 * result + range.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ReferenceType{" +
+               "cardinality=" + cardinality +
+               ", range=" + range +
+               '}';
     }
 }

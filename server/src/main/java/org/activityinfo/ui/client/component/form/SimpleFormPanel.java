@@ -10,7 +10,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.*;
 import org.activityinfo.model.resource.Resource;
@@ -123,9 +123,9 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         return Promise.forEach(formClass.getFields(), new Function<FormField, Promise<Void>>() {
             @Override
             public Promise<Void> apply(final FormField field) {
-                return widgetFactory.createWidget(field, new ValueUpdater() {
+                return widgetFactory.createWidget(field, new ValueUpdater<FieldValue>() {
                     @Override
-                    public void update(Object value) {
+                    public void update(FieldValue value) {
                         onFieldUpdated(field, value);
                     }
                 }).then(new Function<FormFieldWidget, Void>() {
@@ -170,7 +170,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         }
     }
 
-    private void onFieldUpdated(FormField field, Object newValue) {
+    private void onFieldUpdated(FormField field, FieldValue newValue) {
         if (!Objects.equals(workingInstance.get(field.getId()), newValue)) {
             workingInstance.set(field.getId(), newValue);
             validate(field);

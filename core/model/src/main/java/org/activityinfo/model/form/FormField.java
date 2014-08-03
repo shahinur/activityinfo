@@ -42,6 +42,7 @@ public class FormField extends FormElement {
     }
 
     public FormField setLabel(String label) {
+        assert label != null;
         this.label = label;
         return this;
     }
@@ -193,6 +194,10 @@ public class FormField extends FormElement {
         record.set("expression", expression);
         record.set("relevanceConditionExpression", relevanceConditionExpression);
 
+        if(!superProperties.isEmpty()) {
+            record.set("superProperties", new ReferenceValue(superProperties).asRecord());
+        }
+
         return record;
     }
 
@@ -217,6 +222,11 @@ public class FormField extends FormElement {
         if (record.has("relevanceConditionExpression")) {
             formField.setRelevanceConditionExpression(record.getString("relevanceConditionExpression"));
         }
+        if(record.has("superProperties")) {
+            ReferenceValue superProperties = ReferenceValue.fromRecord(record.getRecord("superProperties"));
+            formField.setSuperProperties(superProperties.getResourceIds());
+        }
+
         return formField;
     }
 

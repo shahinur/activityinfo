@@ -23,6 +23,7 @@ package org.activityinfo.core.server.formatter;
 
 import org.activityinfo.core.shared.type.formatter.DateFormatter;
 import org.activityinfo.core.shared.type.formatter.DateFormatterFactory;
+import org.activityinfo.model.type.time.LocalDate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,14 +40,14 @@ public class JavaDateFormatterFactory implements DateFormatterFactory {
     public DateFormatter create() {
         return new DateFormatter() {
             @Override
-            public String format(Date value) {
+            public String format(LocalDate value) {
                 return JAVA_FORMAT.format(value);
             }
 
             @Override
-            public Date parse(String valueAsString) {
+            public LocalDate parse(String valueAsString) {
                 try {
-                    return JAVA_FORMAT.parse(valueAsString);
+                    return new LocalDate(JAVA_FORMAT.parse(valueAsString));
                 } catch (ParseException e) {
                     e.printStackTrace(); // todo log
                     return null;

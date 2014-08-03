@@ -22,13 +22,15 @@ package org.activityinfo.core.shared.type.converter;
  */
 
 import org.activityinfo.core.shared.type.formatter.QuantityFormatter;
+import org.activityinfo.model.type.number.Quantity;
+import org.activityinfo.model.type.primitive.TextValue;
 
 import javax.annotation.Nonnull;
 
 /**
  * @author yuriyz on 3/7/14.
  */
-public class QuantityToStringConverter implements QuantityConverter<String> {
+public class QuantityToStringConverter implements QuantityConverter<TextValue> {
 
     private final QuantityFormatter formatter;
 
@@ -38,7 +40,7 @@ public class QuantityToStringConverter implements QuantityConverter<String> {
 
     @Nonnull
     @Override
-    public String convert(@Nonnull Double value) {
-        return formatter.format(value);
+    public TextValue convert(@Nonnull Quantity value) {
+        return TextValue.valueOf(formatter.format(value));
     }
 }

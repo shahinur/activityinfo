@@ -21,8 +21,11 @@ package org.activityinfo.core.shared.type.converter;
  * #L%
  */
 
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.number.Quantity;
+
 /**
  * @author yuriyz on 3/7/14.
  */
-public interface QuantityConverter<V> extends Converter<Double, V> {
+public interface QuantityConverter<V extends FieldValue> extends Converter<Quantity, V> {
 }

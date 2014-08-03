@@ -1,6 +1,7 @@
 package org.activityinfo.core.shared.type.converter;
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
+
+import org.activityinfo.model.type.time.LocalDate;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;

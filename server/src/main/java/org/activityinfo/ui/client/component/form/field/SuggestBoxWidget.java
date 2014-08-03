@@ -27,8 +27,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.shared.form.FormInstance;
-import org.activityinfo.core.shared.form.FormInstanceLabeler;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ReferenceValue;
@@ -48,9 +47,9 @@ public class SuggestBoxWidget implements ReferenceFieldWidget {
     private final SuggestBox suggestBox;
 
     private ResourceId value;
-    private List<FormInstance> range;
+    private InstanceLabelTable range;
 
-    public SuggestBoxWidget(List<FormInstance> range, final ValueUpdater<ReferenceValue> valueUpdater) {
+    public SuggestBoxWidget(InstanceLabelTable range, final ValueUpdater<ReferenceValue> valueUpdater) {
         this.range = range;
         this.suggestBox = new SuggestBox(new InstanceSuggestOracle(range));
         this.suggestBox.addSelectionHandler(new SelectionHandler<SuggestOracle.Suggestion>() {
@@ -65,7 +64,7 @@ public class SuggestBoxWidget implements ReferenceFieldWidget {
     }
 
     public List<FormInstance> getRange() {
-        return range;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -98,9 +97,9 @@ public class SuggestBoxWidget implements ReferenceFieldWidget {
     }
 
     private String findDisplayLabel(ResourceId newValue) {
-        for(FormInstance instance : range) {
-            if(instance.getId().equals(newValue)) {
-                return FormInstanceLabeler.getLabel(instance);
+        for(int i=0;i!=range.getNumRows();++i) {
+            if(range.getId(i).equals(newValue)) {
+                return range.getLabel(i);
             }
         }
         return newValue.asString();

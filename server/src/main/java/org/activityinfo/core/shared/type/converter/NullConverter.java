@@ -1,5 +1,7 @@
 package org.activityinfo.core.shared.type.converter;
 
+import org.activityinfo.model.type.FieldValue;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -10,7 +12,7 @@ public enum NullConverter implements Converter  {
 
     @Nonnull
     @Override
-    public Object convert(@Nonnull Object value) {
-        return value;
+    public FieldValue convert(@Nonnull Object value) {
+        return (FieldValue)value;
     }
 }

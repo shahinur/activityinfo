@@ -1,5 +1,7 @@
 package org.activityinfo.model.type;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -37,9 +39,13 @@ public class ReferenceValue implements FieldValue, IsRecord {
         return resourceIds;
     }
 
+    public ResourceId getResourceId() {
+        Preconditions.checkState(resourceIds.size() == 1);
+        return resourceIds.iterator().next();
+    }
 
     @Override
-    public Record toRecord() {
+    public Record asRecord() {
         Record record = new Record();
         record.set(TYPE_CLASS_FIELD_NAME, ReferenceType.TYPE_CLASS.getId());
 
@@ -79,17 +85,29 @@ public class ReferenceValue implements FieldValue, IsRecord {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         ReferenceValue that = (ReferenceValue) o;
 
-        return !(resourceIds != null ? !resourceIds.equals(that.resourceIds) : that.resourceIds != null);
+        if (!resourceIds.equals(that.resourceIds)) {
+            return false;
+        }
 
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return resourceIds != null ? resourceIds.hashCode() : 0;
+        return resourceIds.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ReferenceValue[" + Joiner.on(", ").join(resourceIds) + "]";
     }
 }

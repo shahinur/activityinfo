@@ -50,6 +50,11 @@
       <column name="classId" type="varchar(64)"/>
     </createIndex>
   </changeSet>
-
+  <changeSet id="026-02" author="alex">
+    <comment>Set resource id key to be case sensitive</comment>
+    <sql>
+      ALTER TABLE resource MODIFY id VARCHAR(64) BINARY
+    </sql>
+  </changeSet>
 
 </databaseChangeLog>

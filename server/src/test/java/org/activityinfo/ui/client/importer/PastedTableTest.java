@@ -108,8 +108,5 @@ public class PastedTableTest {
                      hasProperty("header", equalTo("Pcode")),
                      hasProperty("header", equalTo("Latitude")),
                      hasProperty("header", equalTo("Longitude"))));
-
-
-
     }
 }

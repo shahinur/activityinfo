@@ -24,6 +24,7 @@ package org.activityinfo.core.client.type.formatter;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import org.activityinfo.core.shared.type.formatter.DateFormatter;
 import org.activityinfo.core.shared.type.formatter.DateFormatterFactory;
+import org.activityinfo.model.type.time.LocalDate;
 
 import java.util.Date;
 
@@ -38,13 +39,13 @@ public class JsDateFormatterFactory implements DateFormatterFactory {
     public DateFormatter create() {
         return new DateFormatter() {
             @Override
-            public String format(Date value) {
-                return GWT_FORMAT.format(value);
+            public String format(LocalDate value) {
+                return value.toString();
             }
 
             @Override
-            public Date parse(String valueAsString) {
-                return GWT_FORMAT.parse(valueAsString);
+            public LocalDate parse(String valueAsString) {
+                return new LocalDate(GWT_FORMAT.parse(valueAsString));
             }
         };
     }

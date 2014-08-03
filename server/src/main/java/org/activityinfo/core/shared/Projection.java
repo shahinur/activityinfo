@@ -13,7 +13,10 @@ import java.util.Set;
 /**
  * A projection of a set of {@code FormField}s as well as nested
  * {@code FormField}s reachable through {@code REFERENCE} fields.
+ *
+ * @deprecated Query using {@link org.activityinfo.model.table.TableModel} instead
  */
+@Deprecated
 public class Projection {
 
     private final Map<FieldPath, Object> values = Maps.newHashMap();

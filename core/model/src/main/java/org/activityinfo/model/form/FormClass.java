@@ -165,6 +165,13 @@ public class FormClass implements IsResource, FormElementContainer {
         return this;
     }
 
+
+    public FormField addField(ResourceId fieldId) {
+        FormField field = new FormField(fieldId);
+        elements.add(field);
+        return field;
+    }
+
     public FormClass insertElement(int index, FormElement element) {
         elements.add(index, element);
         return this;
@@ -202,6 +209,7 @@ public class FormClass implements IsResource, FormElementContainer {
         Resource resource = Resources.createResource();
         resource.setId(id);
         resource.setOwnerId(ownerId);
+        resource.set("classId", CLASS_ID);
         resource.set("label", label);
         resource.set("elements", FormElement.asRecordList(elements));
         return resource;

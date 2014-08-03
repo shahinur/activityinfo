@@ -21,8 +21,10 @@ package org.activityinfo.core.shared.type.converter;
  * #L%
  */
 
+import org.activityinfo.model.type.FieldValue;
+
 /**
  * @author yuriyz on 3/7/14.
  */
-public interface StringConverter<V> extends Converter<String, V> {
+public interface StringConverter<V extends FieldValue> extends Converter<String, V> {
 }

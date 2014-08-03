@@ -1,17 +1,253 @@
 [
   {
-    "@id": "a0000006464",
-    "@owner": "d0000001350",
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c317",
+    "@owner": "_country",
+    "_countryf3": "ET",
+    "_countryf1": "Ethiopia",
+    "classId": "_country"
+  },
+  {
+    "@id": "L50598",
+    "@owner": "c317",
+    "classId": "_class",
+    "label": "Country",
+    "elements": [
+      {
+        "id": "L50598f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L50598f4",
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L50598f5",
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "g50598",
+    "@owner": "L50598",
+    "L50598f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 40.493059158325195,
+      "latitude": 9.147995948791525
+    },
+    "L50598f1": "Ethiopia",
+    "classId": "L50598"
+  },
+  {
+    "@id": "U165",
+    "@owner": "_users",
+    "email": "alex@bedatadriven.com",
+    "name": "Alex Bertram",
+    "locale": "en",
+    "password": "$2a$10$F3GSXu6cBJeVK.HnsnSnC.D52bLAqTLVm9.72MYJW8gc73ehYpkVm"
+  },
+  {
+    "@id": "U375",
+    "@owner": "_users",
+    "email": "cbarnhoorn@bedatadriven.com",
+    "name": "Claire Barnhoorn",
+    "locale": "fr",
+    "password": "$2a$10$m9E2WGniHKlZJVzyXG2kP.KstNmJUfGmdGO62OvDFKAY4NFdUJbKu"
+  },
+  {
+    "@id": "U2195",
+    "@owner": "_users",
+    "organization": "IRC International Water and Sanitation Centre",
+    "email": "bostoen@irc.nl",
+    "name": "KRISTOF BOSTOEN",
+    "locale": "en",
+    "password": "$2a$10$fGDZKQdFuffSG5GyN6JpDO/5OUNbfA9Z4xrIhRiqUitfI.MtdvDVO",
+    "jobTitle": "Senior Programme officer etc."
+  },
+  {
+    "@id": "U3955",
+    "@owner": "_users",
+    "organization": "IRC",
+    "email": "dickinson@ircwash.org",
+    "name": "Nicolas Dickinson",
+    "locale": "en",
+    "password": "$2a$10$MV9wl4XTCo60GNbUOPVBVuewhVivul8D0rbs48xf82O7Q/SDI08vu",
+    "jobTitle": "Senior Programme Officer"
+  },
+  {
+    "@id": "U4095",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "jacimovic@ircwash.org",
+    "name": "Ruzica Jacimovic",
+    "locale": "en",
+    "password": "$2a$10$XBMpfmTWSc1GZ17DRLiaXuk1sEn418LMB157zV5kf2UsAS69ICOdW"
+  },
+  {
+    "@id": "U4099",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "carrasco@ircwash.org",
+    "name": "Mélanie Carrasco",
+    "locale": "en",
+    "password": "$2a$10$kTqLUGMUT4MgjYviUQFbQe2F.XZf1NFm0XRyo3jDETWYWWloEw.6m"
+  },
+  {
+    "@id": "U4100",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "pezon@ircwash.org",
+    "name": "Chritelle Pezon",
+    "locale": "en",
+    "password": "$2a$10$dx5FRwO51WqAwf7OIZC1cuZRkCz5.uXTvyFUCzB/JKMVpc/YfbFV."
+  },
+  {
+    "@id": "U4143",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "oosterveen@ircwash.org",
+    "name": "Harry Oosterveen",
+    "locale": "en",
+    "password": "$2a$10$WcMDKg2acoyU94wC/XBFE.5RI1uFoh7hS7NN06lqo.iimBcDBcMnu"
+  },
+  {
+    "@id": "U4144",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "adank@ircwash.org",
+    "name": "Marieke Adank",
+    "locale": "en",
+    "password": "$2a$10$sMFUOwixh9dOubKa0xta1ubDUj7g6KrjbWF2pduHoGCGWl9ui5I7u"
+  },
+  {
+    "@id": "U4145",
+    "@owner": "_users",
+    "invitedBy": "U4144",
+    "email": "bostoen@ircwash.org",
+    "name": "Kristof bostoen",
+    "locale": "en"
+  },
+  {
+    "@id": "U4374",
+    "@owner": "_users",
+    "invitedBy": "U4095",
+    "email": "jacimovic+lcca@ircwash.org",
+    "name": "Surveyors 1-40",
+    "locale": "en",
+    "password": "$2a$10$zWfEjkHPXvT46.S.mfQagu.ssI/LHq3OEYSUIQ1NEKmo7jzolpQHC"
+  },
+  {
+    "@id": "d1350",
+    "@owner": "U2195",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c317"
+    },
+    "name": "UNHCR LCCA"
+  },
+  {
+    "@id": "P1350",
+    "@owner": "d1350",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P1350f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P1350f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "d1350p1612",
+    "@owner": "P1350",
+    "P1350f1": "IRC LCCA staff",
+    "classId": "P1350"
+  },
+  {
+    "@id": "d1350p1629",
+    "@owner": "P1350",
+    "P1350f1": "IRC testers",
+    "classId": "P1350",
+    "P1350f10": "testers"
+  },
+  {
+    "@id": "a6464",
+    "@owner": "d1350",
+    "classId": "_class",
     "label": "Bambasi Water Service Ladders Survey",
     "elements": [
       {
-        "id": "a00000064640000000007",
+        "id": "a6464f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000001350"
+              "P1350"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -20,50 +256,29 @@
         }
       },
       {
-        "id": "a00000064640000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000001350"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000064640000000012",
+        "id": "a6464f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000064640000000013",
+        "id": "a6464f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000064640000000011",
+        "id": "a6464f11",
         "label": "Country",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "L0000050598"
+              "L50598"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -72,70 +287,14 @@
         }
       },
       {
-        "id": "Q0000025152",
-        "label": "Camp Name",
-        "required": true,
-        "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t0000119531",
-                "label": "Bambasi Camp, Ethiopia"
-              },
-              {
-                "id": "t0000119532",
-                "label": "XXX Camp, Ethiopia"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "Q0000025154",
-        "label": "Date",
-        "required": true,
-        "type": {
-          "parameters": {
-            "classId": "_type:enum",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "Q0000025156",
-        "label": "Is there a functional meter at the point of collection?",
-        "required": true,
-        "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t0000119574",
-                "label": "Yes"
-              },
-              {
-                "id": "t0000119575",
-                "label": "No"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "Q0000025467",
+        "id": "Q25467",
         "label": "D1. Camp Name",
         "required": true,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000119850",
+                "id": "t119850",
                 "label": "Bambasi"
               }
             ],
@@ -146,90 +305,90 @@
         }
       },
       {
-        "id": "Q0000025153",
+        "id": "Q25153",
         "label": "D2. Water Point Number",
         "required": true,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000119533",
+                "id": "t119533",
                 "label": "A1"
               },
               {
-                "id": "t0000119537",
+                "id": "t119537",
                 "label": "A5"
               },
               {
-                "id": "t0000119538",
+                "id": "t119538",
                 "label": "A6"
               },
               {
-                "id": "t0000119540",
+                "id": "t119540",
                 "label": "A8"
               },
               {
-                "id": "t0000119542",
+                "id": "t119542",
                 "label": "A10"
               },
               {
-                "id": "t0000119543",
+                "id": "t119543",
                 "label": "A11"
               },
               {
-                "id": "t0000119546",
+                "id": "t119546",
                 "label": "B3"
               },
               {
-                "id": "t0000119547",
+                "id": "t119547",
                 "label": "B4"
               },
               {
-                "id": "t0000119548",
+                "id": "t119548",
                 "label": "B5"
               },
               {
-                "id": "t0000119549",
+                "id": "t119549",
                 "label": "B6"
               },
               {
-                "id": "t0000119552",
+                "id": "t119552",
                 "label": "B9"
               },
               {
-                "id": "t0000119554",
+                "id": "t119554",
                 "label": "B11"
               },
               {
-                "id": "t0000119556",
+                "id": "t119556",
                 "label": "B13"
               },
               {
-                "id": "t0000119557",
+                "id": "t119557",
                 "label": "C1"
               },
               {
-                "id": "t0000119560",
+                "id": "t119560",
                 "label": "C4"
               },
               {
-                "id": "t0000119563",
+                "id": "t119563",
                 "label": "C7"
               },
               {
-                "id": "t0000119565",
+                "id": "t119565",
                 "label": "C9"
               },
               {
-                "id": "t0000119862",
+                "id": "t119862",
                 "label": "C12"
               },
               {
-                "id": "t0000119863",
+                "id": "t119863",
                 "label": "C13"
               },
               {
-                "id": "t0000119930",
+                "id": "t119930",
                 "label": "SWB6"
               }
             ],
@@ -240,64 +399,34 @@
         }
       },
       {
-        "id": "Q0000025155",
-        "label": "4. Surveyor Number",
-        "required": true,
+        "id": "i36185",
+        "label": "D3. Surveyor number",
+        "required": false,
         "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t0000119568",
-                "label": "E01"
-              },
-              {
-                "id": "t0000119569",
-                "label": "E02"
-              },
-              {
-                "id": "t0000119570",
-                "label": "E03"
-              },
-              {
-                "id": "t0000119571",
-                "label": "E04"
-              },
-              {
-                "id": "t0000119572",
-                "label": "E05"
-              },
-              {
-                "id": "t0000119573",
-                "label": "E06"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "enumerated"
+          "typeClass": "FREE_TEXT"
         }
       },
       {
-        "id": "Q0000025468",
+        "id": "Q25468",
         "label": "I1. Gender / Age of respondant:",
         "required": false,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000119851",
+                "id": "t119851",
                 "label": "Boy"
               },
               {
-                "id": "t0000119852",
+                "id": "t119852",
                 "label": "Girl"
               },
               {
-                "id": "t0000119853",
+                "id": "t119853",
                 "label": "Man"
               },
               {
-                "id": "t0000119854",
+                "id": "t119854",
                 "label": "Woman"
               }
             ],
@@ -308,18 +437,18 @@
         }
       },
       {
-        "id": "Q0000025157",
+        "id": "Q25157",
         "label": "I2. Do you have an UNHCR ID?",
         "required": true,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000119576",
+                "id": "t119576",
                 "label": "Yes"
               },
               {
-                "id": "t0000119577",
+                "id": "t119577",
                 "label": "No"
               }
             ],
@@ -330,18 +459,26 @@
         }
       },
       {
-        "id": "Q0000025623",
+        "id": "i36090",
+        "label": "I3. If YES, what is UNHCR ID number?",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "Q25623",
         "label": "I6. Were you provided a CODE ID?",
         "required": false,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000121123",
+                "id": "t121123",
                 "label": "Yes"
               },
               {
-                "id": "t0000121124",
+                "id": "t121124",
                 "label": "No"
               }
             ],
@@ -352,30 +489,38 @@
         }
       },
       {
-        "id": "Q0000025158",
+        "id": "i37058",
+        "label": "I7. If yes, what is it?",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "Q25158",
         "label": "I4. If NO, why you do not have ID?",
         "required": false,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000119578",
+                "id": "t119578",
                 "label": "I forgot it"
               },
               {
-                "id": "t0000119579",
+                "id": "t119579",
                 "label": "A member of my family is registered, but not me"
               },
               {
-                "id": "t0000119580",
+                "id": "t119580",
                 "label": "I live outside the camp"
               },
               {
-                "id": "t0000119581",
+                "id": "t119581",
                 "label": "I an new and not registered yet"
               },
               {
-                "id": "t0000119855",
+                "id": "t119855",
                 "label": "Not Relevant"
               }
             ],
@@ -386,40 +531,26 @@
         }
       },
       {
-        "id": "Q0000025549",
-        "label": "I6. Were you provided survey number before?",
+        "id": "i36106",
+        "label": "I5. Provided code ID:",
         "required": false,
         "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t0000120162",
-                "label": "No"
-              },
-              {
-                "id": "t0000120161",
-                "label": "Yes"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "MULTIPLE"
-          },
-          "typeClass": "enumerated"
+          "typeClass": "FREE_TEXT"
         }
       },
       {
-        "id": "Q0000025162",
+        "id": "Q25162",
         "label": "L1. Do you know the code of the block you live in?",
         "required": false,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000119591",
+                "id": "t119591",
                 "label": "Yes"
               },
               {
-                "id": "t0000119592",
+                "id": "t119592",
                 "label": "No"
               }
             ],
@@ -430,100 +561,37 @@
         }
       },
       {
-        "id": "Q0000025159",
-        "label": "13. Respondent gender",
-        "required": true,
+        "id": "i36199",
+        "label": "L2. In which block do you live?",
+        "required": false,
         "type": {
           "parameters": {
-            "values": [
-              {
-                "id": "t0000119583",
-                "label": "Female"
-              },
-              {
-                "id": "t0000119584",
-                "label": "Male"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "SINGLE"
+            "units": "Block number"
           },
-          "typeClass": "enumerated"
+          "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "Q0000025161",
-        "label": "Is person using standard-sized jerricane?",
-        "required": true,
-        "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t0000119588",
-                "label": "Yes"
-              },
-              {
-                "id": "t0000119589",
-                "label": "No"
-              },
-              {
-                "id": "t0000119590",
-                "label": "Mix of standard and non-standard jarricanes"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "MULTIPLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "Q0000025160",
-        "label": "14. Age of respondent",
-        "required": true,
-        "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t0000119585",
-                "label": "Adult"
-              },
-              {
-                "id": "t0000119586",
-                "label": "Child"
-              },
-              {
-                "id": "t0000119587",
-                "label": "Teenager / Adolescent"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "Q0000025470",
+        "id": "Q25470",
         "label": "L3. In which zone do you live?",
         "required": true,
         "type": {
           "parameters": {
             "values": [
               {
-                "id": "t0000119858",
+                "id": "t119858",
                 "label": "Zone A"
               },
               {
-                "id": "t0000119860",
+                "id": "t119860",
                 "label": "Zone C"
               },
               {
-                "id": "t0000119859",
+                "id": "t119859",
                 "label": "Zone B"
               },
               {
-                "id": "t0000119861",
+                "id": "t119861",
                 "label": "Not Relevant"
               }
             ],
@@ -534,250 +602,175 @@
         }
       },
       {
-        "id": "i0000036185",
-        "label": "D3. Surveyor number",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "_type:quantity"
-          },
-          "typeClass": "QUANTITY"
-        }
-      },
-      {
-        "id": "i0000036090",
-        "label": "I3. If YES, what is UNHCR ID number?",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "_type:quantity",
-            "units": "no units"
-          },
-          "typeClass": "QUANTITY"
-        }
-      },
-      {
-        "id": "i0000037058",
-        "label": "I7. If yes, what is it?",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "_type:quantity"
-          },
-          "typeClass": "QUANTITY"
-        }
-      },
-      {
-        "id": "i0000036106",
-        "label": "I5. Provided code ID:",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "_type:quantity"
-          },
-          "typeClass": "QUANTITY"
-        }
-      },
-      {
-        "id": "i0000036199",
-        "label": "L2. In which block do you live?",
-        "required": false,
-        "type": {
-          "parameters": {
-            "classId": "_type:quantity",
-            "units": "Block number"
-          },
-          "typeClass": "QUANTITY"
-        }
-      },
-      {
-        "id": "i0000036201",
+        "id": "i36201",
         "label": "L4. In which community do you live?",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "Comm. number"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036099",
+        "id": "i36099",
         "label": "L5. How long does it take you to come here?",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "minutes"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036100",
+        "id": "i36100",
         "label": "Q1. For how many family members is the water you collect ?",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "people"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036104",
+        "id": "i36104",
         "label": "Q2. TOTAL NUMBER of jerricanes that person fills up:",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036187",
+        "id": "i36187",
         "label": "Q3. Enter number of jerricanes of 5 litres",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036188",
+        "id": "i36188",
         "label": "Q4. Enter number of jerricanes of 10 litres",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036189",
+        "id": "i36189",
         "label": "Q5. Enter number of jerricanes of 15 litres",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036190",
+        "id": "i36190",
         "label": "Q6. Enter number of jerricanes of 20 litres",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036345",
+        "id": "i36345",
         "label": "Q7. Enter number of jerricanes of 25 liters",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036191",
+        "id": "i36191",
         "label": "Q8. Enter number of jerricanes of other size",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036192",
+        "id": "i36192",
         "label": "Q9. Enter the size of the other jerricanes",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "liters"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036347",
+        "id": "i36347",
         "label": "Q10. TOTAL NUMBER of buckets that person fills up:",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000036348",
+        "id": "i36348",
         "label": "Q11. Enter number of buckets of 5 liters:",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000037047",
+        "id": "i37047",
         "label": "Q12. Enter number of buckets of 12 liters:",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000037048",
+        "id": "i37048",
         "label": "Q13. Enter number of buckets of 15 liters:",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "a00000064640000000014",
+        "id": "a6464f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }

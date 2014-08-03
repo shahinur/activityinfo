@@ -14,6 +14,7 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
@@ -22,6 +23,7 @@ import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
+import org.activityinfo.model.type.time.LocalDateType;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -36,7 +38,6 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class ActivityTable extends ResourceMigrator {
 
-    private final String NAME_FIELD_NAME = "label";
 
     public static final int ONCE = 0;
     public static final int MONTHLY = 1;
@@ -60,7 +61,8 @@ public class ActivityTable extends ResourceMigrator {
                 "WHERE d.dateDeleted is null and A.dateDeleted is null ";
 
         Map<Integer, List<EnumValue>> attributes = queryAttributes(connection);
-        Map<Integer, List<FormElement>> indicators = queryFields(connection, attributes);
+        Map<Integer, List<FormElement>> fields = queryFields(connection, attributes);
+        Set<Integer> databasesWithProjects = queryDatabasesWithProjects(connection);
         Set<ResourceId> categories = Sets.newHashSet();
 
         try(Statement statement = connection.createStatement()) {
@@ -85,18 +87,34 @@ public class ActivityTable extends ResourceMigrator {
                         }
                     }
 
-                    writeSiteForm(ownerId, rs, indicators.get(activityId), writer);
+                    writeSiteForm(ownerId, rs, fields.get(activityId), databasesWithProjects, writer);
                 }
             }
         }
+    }
+
+    private Set<Integer> queryDatabasesWithProjects(Connection connection) throws SQLException {
+
+        String sql = "SELECT distinct databaseId from project WHERE dateDeleted is null";
+
+        Set<Integer> databases = Sets.newHashSet();
+
+        try(Statement statement = connection.createStatement()) {
+            try (ResultSet rs = statement.executeQuery(sql)) {
+                while (rs.next()) {
+                    databases.add(rs.getInt(1));
+                }
+            }
+        }
+        return databases;
     }
 
     private Resource categoryResource(ResourceId databaseId, ResourceId categoryId, String category) {
         return Resources.createResource()
                         .setId(categoryId)
                         .setOwnerId(databaseId)
-                        .set(CLASS_FIELD, "_folder")
-                        .set(NAME_FIELD_NAME, category);
+                        .set(CLASS_FIELD, FolderClass.CLASS_ID)
+                        .set(FolderClass.LABEL_FIELD_ID.asString(), category);
     }
 
     private Map<Integer, List<FormElement>> queryFields(
@@ -197,9 +215,9 @@ public class ActivityTable extends ResourceMigrator {
 
         ResourceId fieldId;
         if(rs.getString("Type").equals("ENUM")) {
-            fieldId = ResourceId.create("I" + rs.getInt("id"));
+            fieldId = CuidAdapter.attributeGroupField(rs.getInt("id"));
         } else {
-            fieldId = ResourceId.create("A" + rs.getInt("id"));
+            fieldId = CuidAdapter.indicatorField(rs.getInt("id"));
         }
 
         FormField field = new FormField(fieldId)
@@ -251,7 +269,9 @@ public class ActivityTable extends ResourceMigrator {
     }
 
     private void writeSiteForm(ResourceId ownerId,
-                               ResultSet rs, List<FormElement> indicators,
+                               ResultSet rs,
+                               List<FormElement> indicators,
+                               Set<Integer> databasesWithProjects,
                                ResourceWriter writer) throws SQLException, IOException {
 
 
@@ -263,24 +283,39 @@ public class ActivityTable extends ResourceMigrator {
         siteForm.setLabel(rs.getString("name"));
         siteForm.setParentId(ownerId);
 
-        FormField partnerField = new FormField(ResourceId.create("partner"))
+        FormField partnerField = new FormField(field(classId, PARTNER_FIELD))
                 .setLabel("Partner")
                 .setType(ReferenceType.single(CuidAdapter.partnerFormClass(databaseId)))
                 .setRequired(true);
         siteForm.addElement(partnerField);
 
-        FormField projectField = new FormField(ResourceId.create("project"))
+        if(databasesWithProjects.contains(databaseId)) {
+            FormField projectField = new FormField(field(classId, PROJECT_FIELD))
                 .setLabel("Project")
                 .setType(ReferenceType.single(CuidAdapter.projectFormClass(databaseId)));
-        siteForm.addElement(projectField);
+            siteForm.addElement(projectField);
+        }
 
-        FormField dateField = new FormField(CuidAdapter.field(classId, CuidAdapter.START_DATE_FIELD))
-                .setLabel("Date")
-                .setType(LocalDateIntervalType.INSTANCE)
-                .setRequired(true);
-        siteForm.addElement(dateField);
+//        FormField dateField = new FormField(DATE_FIELD)
+//                .setLabel("Date")
+//                .setType(LocalDateIntervalType.INSTANCE)
+//                .setRequired(true);
+//        siteForm.addElement(dateField);
 
-        FormField locationField = new FormField(CuidAdapter.locationField(activityId))
+        siteForm.addElement(
+            new FormField(field(classId, START_DATE_FIELD))
+                .setLabel("Start Date")
+                .setType(LocalDateType.INSTANCE)
+                .setRequired(true));
+
+        siteForm.addElement(
+            new FormField(field(classId, END_DATE_FIELD))
+                .setLabel("End Date")
+                .setType(LocalDateType.INSTANCE)
+                .setRequired(true));
+
+
+        FormField locationField = new FormField(field(classId, LOCATION_FIELD))
                 .setLabel(rs.getString("locationTypeName"))
                 .setType(ReferenceType.single(locationRange(rs)))
                 .setRequired(true);
@@ -291,7 +326,7 @@ public class ActivityTable extends ResourceMigrator {
             siteForm.getElements().addAll(indicators);
         }
 
-        FormField commentsField = new FormField(CuidAdapter.commentsField(activityId));
+        FormField commentsField = new FormField(field(classId, COMMENT_FIELD));
         commentsField.setType(NarrativeType.INSTANCE);
         commentsField.setLabel("Comments");
         siteForm.addElement(commentsField);

@@ -1,5 +1,7 @@
 package org.activityinfo.model.table;
 
+import com.google.common.base.Joiner;
+
 import javax.annotation.Nonnull;
 import java.util.Map;
 
@@ -31,11 +33,18 @@ public class TableData {
 
     /**
      *
-     * @param id the {@code id} of the {@code ColumnModel}
+     * @param columnModelId the {@code id} of the {@code ColumnModel}
      * @return the {@code ColumnView} generated from the given {@code ColumnModel}
      */
     public ColumnView getColumnView(String columnModelId) {
         return columnViews.get(columnModelId);
     }
 
+    @Override
+    public String toString() {
+        return "TableData{" +
+               "numRows=" + numRows +
+               ", columnViews=" + Joiner.on("\n").withKeyValueSeparator("=").join(columnViews) +
+               '}';
+    }
 }

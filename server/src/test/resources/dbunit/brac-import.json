@@ -1,17 +1,475 @@
 [
   {
-    "@id": "a0000000001",
-    "@owner": "d0000000001",
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c1",
+    "@owner": "_country",
+    "_countryf1": "Bangladesh",
+    "classId": "_country"
+  },
+  {
+    "@id": "E1",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Division",
+    "elements": [
+      {
+        "id": "E1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1f3",
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "E2",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "District",
+    "elements": [
+      {
+        "id": "E2f2",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_parent"
+        },
+        "label": "Division",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "E1"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "E2f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E2f3",
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "E3",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Upzilla",
+    "elements": [
+      {
+        "id": "E3f2",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_parent"
+        },
+        "label": "District",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": [
+              "E2"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "E3f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E3f3",
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "e1",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Bogra"
+  },
+  {
+    "@id": "e2",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Chittagong"
+  },
+  {
+    "@id": "e3",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Comilla"
+  },
+  {
+    "@id": "e4",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Gazipur"
+  },
+  {
+    "@id": "e5",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Gopalgonj"
+  },
+  {
+    "@id": "e6",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Kishoregonj"
+  },
+  {
+    "@id": "e7",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Kushtia"
+  },
+  {
+    "@id": "e8",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Mymensingh"
+  },
+  {
+    "@id": "e9",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Netrakona"
+  },
+  {
+    "@id": "e10",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Rajbari"
+  },
+  {
+    "@id": "e11",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Satkhira"
+  },
+  {
+    "@id": "e12",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f1": "Tangail"
+  },
+  {
+    "@id": "e13",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e1"
+    },
+    "classId": "E3",
+    "E3f1": "Sonatoal"
+  },
+  {
+    "@id": "e14",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e2"
+    },
+    "classId": "E3",
+    "E3f1": "Fatickchari"
+  },
+  {
+    "@id": "e15",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e3"
+    },
+    "classId": "E3",
+    "E3f1": "Burichong"
+  },
+  {
+    "@id": "e16",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e4"
+    },
+    "classId": "E3",
+    "E3f1": "Kaligonj"
+  },
+  {
+    "@id": "e17",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e5"
+    },
+    "classId": "E3",
+    "E3f1": "Tungipara"
+  },
+  {
+    "@id": "e18",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e6"
+    },
+    "classId": "E3",
+    "E3f1": "Bhairab"
+  },
+  {
+    "@id": "e19",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e7"
+    },
+    "classId": "E3",
+    "E3f1": "Kushtia Sadar"
+  },
+  {
+    "@id": "e20",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e8"
+    },
+    "classId": "E3",
+    "E3f1": "Bhaluka"
+  },
+  {
+    "@id": "e21",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e9"
+    },
+    "classId": "E3",
+    "E3f1": "Purbadhala"
+  },
+  {
+    "@id": "e22",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e10"
+    },
+    "classId": "E3",
+    "E3f1": "Baliakandi"
+  },
+  {
+    "@id": "e23",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e11"
+    },
+    "classId": "E3",
+    "E3f1": "Tala"
+  },
+  {
+    "@id": "e24",
+    "@owner": "E3",
+    "E3f2": {
+      "@type": "REFERENCE",
+      "value": "e12"
+    },
+    "classId": "E3",
+    "E3f1": "Modhupur"
+  },
+  {
+    "@id": "L2",
+    "@owner": "c1",
+    "classId": "_class",
+    "label": "Village",
+    "elements": [
+      {
+        "id": "L2f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L2f4",
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L2f6",
+        "label": "Administrative Unit",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "E2",
+              "E1",
+              "E3"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "L2f5",
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "U1",
+    "@owner": "_users",
+    "email": "raju@brac.net",
+    "name": "Raju",
+    "locale": "en",
+    "password": "$$hashed$$"
+  },
+  {
+    "@id": "d1",
+    "@owner": "U1",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "name": "QIS Database"
+  },
+  {
+    "@id": "P1",
+    "@owner": "d1",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P1f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "d1p1",
+    "@owner": "P1",
+    "classId": "P1",
+    "P1f1": "BRAC"
+  },
+  {
+    "@id": "a1",
+    "@owner": "d1",
+    "classId": "_class",
     "label": "Household Survey",
     "elements": [
       {
-        "id": "a00000000010000000007",
+        "id": "a1f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000001"
+              "P1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -20,50 +478,29 @@
         }
       },
       {
-        "id": "a00000000010000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000010000000012",
+        "id": "a1f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000010000000013",
+        "id": "a1f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000010000000011",
+        "id": "a1f11",
         "label": "Upzilla",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "E0000000003"
+              "E3"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -72,55 +509,51 @@
         }
       },
       {
-        "id": "i0000000001",
+        "id": "i1",
         "label": "NumAdultFemale",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "women"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "i0000000002",
+        "id": "i2",
         "label": "NumAdultMale",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "men"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "a00000000010000000014",
+        "id": "a1f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
   },
   {
-    "@id": "a0000000002",
-    "@owner": "d0000000001",
+    "@id": "a2",
+    "@owner": "d1",
+    "classId": "_class",
     "label": "Training",
     "elements": [
       {
-        "id": "a00000000020000000007",
+        "id": "a2f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000001"
+              "P1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -129,50 +562,29 @@
         }
       },
       {
-        "id": "a00000000020000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000020000000012",
+        "id": "a2f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000020000000013",
+        "id": "a2f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000020000000011",
+        "id": "a2f11",
         "label": "Village",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "L0000000002"
+              "L2"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -181,25 +593,21 @@
         }
       },
       {
-        "id": "i0000000003",
+        "id": "i3",
         "label": "NumberTrained",
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "individuals"
           },
           "typeClass": "QUANTITY"
         }
       },
       {
-        "id": "a00000000020000000014",
+        "id": "a2f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }

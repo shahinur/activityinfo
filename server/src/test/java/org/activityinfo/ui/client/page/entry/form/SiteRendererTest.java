@@ -19,7 +19,7 @@ public class SiteRendererTest {
 
     @Before
     public void setup() {
-        LocaleProxy.setLocale(Locale.ENGLISH);
+        LocaleProxy.initialize();
 
         siteRenderer = new SiteRenderer(new JreIndicatorValueFormatter());
 

@@ -26,19 +26,19 @@ import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.application.FolderClass;
+import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.ParentCriteria;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
@@ -50,6 +50,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
@@ -211,9 +212,9 @@ public class GetSchemaTest extends CommandTestCase2 {
     }
 
     @Test
-    public void newApiTest() {
+    public void newApiTest() throws IOException {
 
-        ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
+        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
 
         Promise<FormClass> userForm = locator.getFormClass(CuidAdapter.activityFormClass(1));
 
@@ -221,8 +222,9 @@ public class GetSchemaTest extends CommandTestCase2 {
     }
 
     @Test
-    public void folderTest() {
-        ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
+    public void folderTest() throws IOException {
+        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
+
         List<FormInstance> folders = assertResolves(locator.queryInstances(
                 new CriteriaIntersection(
                     ParentCriteria.isChildOf(ResourceId.create("home")),
@@ -236,8 +238,8 @@ public class GetSchemaTest extends CommandTestCase2 {
     }
 
     @Test
-    public void childFolderTest() {
-        ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
+    public void childFolderTest() throws IOException {
+        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
 
         InstanceQuery query = InstanceQuery
                 .select(ApplicationProperties.LABEL_PROPERTY,

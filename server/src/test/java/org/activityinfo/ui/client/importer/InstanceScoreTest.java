@@ -24,8 +24,12 @@ package org.activityinfo.ui.client.importer;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.core.client.InstanceQuery;
+import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
+import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
@@ -35,14 +39,12 @@ import org.activityinfo.core.shared.form.tree.FormTreePrettyPrinter;
 import org.activityinfo.core.shared.importing.model.ImportModel;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.strategy.*;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.ui.client.component.importDialog.Importer;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,18 +57,26 @@ import static org.activityinfo.model.legacy.CuidAdapter.locationFormClass;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-/**
- * @author yuriyz on 5/20/14.
- */
-@RunWith(InjectionSupport.class)
-@OnDataSet("/dbunit/nfi-import.db.xml")
 public class InstanceScoreTest extends AbstractImporterTest {
 
     private static final ResourceId ADMINISTRATIVE_UNIT_FIELD = field(locationFormClass(2), CuidAdapter.ADMIN_FIELD);
 
+    private ResourceLocator resourceLocator;
+    private AsyncFormTreeBuilder formTreeBuilder;
+
+
+    @Before
+    public void setUp() throws IOException {
+
+        LocaleProxy.initialize();
+
+        resourceLocator = new TestResourceLocator("/dbunit/nfi-import.json");
+        formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
+    }
+
     @Test
     public void adminEntityScoring() throws IOException {
-        setUser(3);
+        //setUser(3);
 
         FormTree formTree = assertResolves(formTreeBuilder.apply(ImportWithMultiClassRangeTest.SCHOOL_FORM_CLASS));
         FormTreePrettyPrinter.print(formTree);

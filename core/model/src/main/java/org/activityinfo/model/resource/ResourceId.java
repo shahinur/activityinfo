@@ -1,8 +1,6 @@
 package org.activityinfo.model.resource;
 
 
-import org.activityinfo.model.form.FieldId;
-
 import javax.annotation.Nonnull;
 import java.util.Date;
 
@@ -19,6 +17,7 @@ public final class ResourceId {
     private final String text;
 
     public static ResourceId create(@Nonnull String string) {
+        assert string != null;
         return new ResourceId(string);
     }
 
@@ -61,10 +60,6 @@ public final class ResourceId {
     @Override
     public String toString() {
         return text;
-    }
-
-    public ResourceId field(String name) {
-        return FieldId.fieldId(this, name);
     }
 
 }

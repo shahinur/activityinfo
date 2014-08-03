@@ -1,17 +1,251 @@
 [
   {
-    "@id": "a0000000001",
-    "@owner": "d0000000001",
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c383",
+    "@owner": "_country",
+    "_countryf1": "Mali",
+    "classId": "_country"
+  },
+  {
+    "@id": "E1383",
+    "@owner": "c383",
+    "classId": "_class",
+    "label": "Region",
+    "elements": [
+      {
+        "id": "E1383f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1383f3",
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "e1926",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Bamako"
+  },
+  {
+    "@id": "e1927",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Gao"
+  },
+  {
+    "@id": "e1928",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Kayes"
+  },
+  {
+    "@id": "e1929",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Kidal"
+  },
+  {
+    "@id": "e1930",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Koulikoro"
+  },
+  {
+    "@id": "e1931",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Mopti"
+  },
+  {
+    "@id": "e1932",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Segou"
+  },
+  {
+    "@id": "e1933",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Sikasso"
+  },
+  {
+    "@id": "e1934",
+    "@owner": "E1383",
+    "classId": "E1383",
+    "E1383f1": "Tombouctou"
+  },
+  {
+    "@id": "L1",
+    "@owner": "c383",
+    "classId": "_class",
+    "label": "Village",
+    "elements": [
+      {
+        "id": "L1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L1f4",
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L1f6",
+        "label": "Administrative Unit",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": [
+              "E1383"
+            ],
+            "classId": "_type:ref",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "L1f5",
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "g1",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Bamako",
+    "L1f6": {
+      "@type": "REFERENCE",
+      "value": "e1926"
+    }
+  },
+  {
+    "@id": "U1",
+    "@owner": "_users",
+    "email": "akbertram@gmail.com",
+    "name": "Alex",
+    "locale": "fr",
+    "password": "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+  },
+  {
+    "@id": "d1",
+    "@owner": "U1",
+    "location": {
+      "@type": "REFERENCE",
+      "value": "c383"
+    },
+    "name": "EHA"
+  },
+  {
+    "@id": "P1",
+    "@owner": "d1",
+    "classId": "_class",
+    "label": "Partner",
+    "elements": [
+      {
+        "id": "P1f1",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P1f10",
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "d1p1",
+    "@owner": "P1",
+    "classId": "P1",
+    "P1f1": "NRC"
+  },
+  {
+    "@id": "a1",
+    "@owner": "d1",
+    "classId": "_class",
     "label": "Water Trucking",
     "elements": [
       {
-        "id": "a00000000010000000007",
+        "id": "a1f7",
         "label": "Partner",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "P0000000001"
+              "P1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -20,50 +254,29 @@
         }
       },
       {
-        "id": "a00000000010000000008",
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": [
-              "R0000000001"
-            ],
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a00000000010000000012",
+        "id": "a1f12",
         "label": "Start Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000010000000013",
+        "id": "a1f13",
         "label": "End Date",
         "required": true,
         "type": {
-          "parameters": {
-            "classId": "_type:localDate"
-          },
           "typeClass": "LOCAL_DATE"
         }
       },
       {
-        "id": "a00000000010000000011",
+        "id": "a1f11",
         "label": "Village",
         "required": true,
         "type": {
           "parameters": {
             "range": [
-              "L0000000001"
+              "L1"
             ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
@@ -77,12 +290,11 @@
         "type": "section",
         "elements": [
           {
-            "id": "i0000000001",
+            "id": "i1",
             "label": "beneficiaries",
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "menages"
               },
               "typeClass": "QUANTITY"
@@ -91,16 +303,39 @@
         ]
       },
       {
-        "id": "a00000000010000000014",
+        "id": "a1f14",
         "label": "Comments",
         "required": false,
         "type": {
-          "parameters": {
-            "classId": "NARRATIVE"
-          },
           "typeClass": "NARRATIVE"
         }
       }
     ]
+  },
+  {
+    "@id": "s1",
+    "@owner": "a1",
+    "a1f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-02"
+    },
+    "classId": "a1",
+    "a1f7": {
+      "@type": "REFERENCE",
+      "value": "d1p1"
+    },
+    "a1f11": {
+      "@type": "REFERENCE",
+      "value": "g1"
+    },
+    "a1f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-01"
+    },
+    "i1": {
+      "@type": "QUANTITY",
+      "value": 1500.0,
+      "units": "menages"
+    }
   }
 ]

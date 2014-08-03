@@ -21,10 +21,12 @@ package org.activityinfo.core.shared.type.formatter;
  * #L%
  */
 
+import org.activityinfo.model.type.FieldValue;
+
 /**
  * @author yuriyz on 3/10/14.
  */
-public interface Formatter<T> {
+public interface Formatter<T extends FieldValue> {
     String format(T value);
 
     T parse(String valueAsString);

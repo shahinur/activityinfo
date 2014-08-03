@@ -21,6 +21,7 @@ package org.activityinfo.core.shared.form;
  * #L%
  */
 
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.junit.Assert;

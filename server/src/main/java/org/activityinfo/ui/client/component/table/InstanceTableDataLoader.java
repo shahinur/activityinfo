@@ -21,6 +21,7 @@ package org.activityinfo.ui.client.component.table;
  * #L%
  */
 
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.gwt.event.shared.EventHandler;
@@ -30,11 +31,18 @@ import com.google.gwt.view.client.ListDataProvider;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.QueryResult;
 import org.activityinfo.core.shared.Projection;
+import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.CellTable;
 import org.activityinfo.ui.client.widget.loading.LoadingState;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -141,7 +149,7 @@ public class InstanceTableDataLoader {
     }
 
 
-    private Promise<QueryResult<Projection>> query(int offset, int count) {
+    private Promise<QueryResult> query(final int offset, final int count) {
         table.getLoadingIndicator().onLoadingStateChanged(LoadingState.LOADING, null);
         InstanceQuery query = new InstanceQuery(Lists.newArrayList(fields), table.buildQueryCriteria(), offset, count);
         return table.getResourceLocator().queryProjection(query);
@@ -156,7 +164,7 @@ public class InstanceTableDataLoader {
     private void load(int offset, int count) {
         LOGGER.log(Level.FINE, "Loading instances... offset = " +
                 offset + ", count = " + count + ", fields = " + fields);
-        query(offset, count).then(new AsyncCallback<QueryResult<Projection>>() {
+        query(offset, count).then(new AsyncCallback<QueryResult>() {
             @Override
             public void onFailure(Throwable caught) {
                 LOGGER.log(Level.SEVERE, "Failed to load instances. fields = " + fields, caught);
@@ -168,7 +176,7 @@ public class InstanceTableDataLoader {
             }
 
             @Override
-            public void onSuccess(QueryResult<Projection> result) {
+            public void onSuccess(QueryResult result) {
                 tableDataProvider.getList().addAll(result.getProjections());
                 instanceTotalCount = result.getTotalCount();
                 table.getTable().getEventBus().fireEvent(new DataLoadEvent(instanceTotalCount, tableDataProvider.getList().size()));

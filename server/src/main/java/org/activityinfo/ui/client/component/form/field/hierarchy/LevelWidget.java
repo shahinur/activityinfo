@@ -6,7 +6,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.logical.shared.*;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -16,15 +17,12 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.core.shared.Projection;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.promise.Promise;
 
 import java.util.List;
-
-import static org.activityinfo.core.shared.application.ApplicationProperties.LABEL_PROPERTY;
 
 /**
  * A single level within the label
@@ -37,9 +35,9 @@ public class LevelWidget implements IsWidget, LevelView {
     private ResourceId parentId;
 
     private Level level;
-    private Supplier<Promise<List<Projection>>> choiceSupplier;
-    private List<Projection> choices;
-    private Projection selection;
+    private Supplier<Promise<List<Node>>> choiceSupplier;
+    private List<Node> choices;
+    private Node selection;
 
     private SimpleEventBus eventBus = new SimpleEventBus();
 
@@ -73,16 +71,16 @@ public class LevelWidget implements IsWidget, LevelView {
     }
 
     @Override
-    public void setSelection(Projection selection) {
+    public void setSelection(Node selection) {
         this.selection = selection;
         listBox.clear();
-        listBox.addItem(selection.getStringValue(LABEL_PROPERTY));
+        listBox.addItem(selection.getLabel());
         listBox.addItem(I18N.CONSTANTS.loading());
         listBox.setSelectedIndex(0);
     }
 
     @Override
-    public void setChoices(Supplier<Promise<List<Projection>>> choices) {
+    public void setChoices(Supplier<Promise<List<Node>>> choices) {
         choiceSupplier = choices;
     }
 
@@ -129,9 +127,9 @@ public class LevelWidget implements IsWidget, LevelView {
     private void maybeFireChange() {
         int selectedIndex = listBox.getSelectedIndex();
         if(selectedIndex != -1) {
-            Projection newSelection = choices.get(selectedIndex);
+            Node newSelection = choices.get(selectedIndex);
             if(this.selection == null ||
-                    !this.selection.getRootInstanceId().equals(newSelection.getRootInstanceId())) {
+                    !this.selection.getId().equals(newSelection.getId())) {
 
                 this.selection = newSelection;
                 SelectionEvent.fire(this, newSelection);
@@ -141,7 +139,7 @@ public class LevelWidget implements IsWidget, LevelView {
 
     private void populateListBox() {
 
-        choiceSupplier.get().then(new AsyncCallback<List<Projection>>() {
+        choiceSupplier.get().then(new AsyncCallback<List<Node>>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -149,13 +147,13 @@ public class LevelWidget implements IsWidget, LevelView {
             }
 
             @Override
-            public void onSuccess(List<Projection> result) {
+            public void onSuccess(List<Node> result) {
                 choices = result;
                 Log.info("Received " + result.size());
 
                 listBox.clear();
-                for(Projection projection : choices) {
-                    String label = projection.getStringValue(LABEL_PROPERTY);
+                for(Node choice : choices) {
+                    String label = choice.getLabel();
                     Log.info("Label = " + label);
                     listBox.addItem(label);
                 }
@@ -168,7 +166,7 @@ public class LevelWidget implements IsWidget, LevelView {
 
     private void applySelection() {
         for(int i=0;i!=choices.size();++i) {
-            if(choices.get(i).getRootInstanceId().equals(selection.getRootInstanceId())) {
+            if(choices.get(i).getId().equals(selection.getId())) {
                 listBox.setSelectedIndex(i);
                 break;
             }
@@ -184,9 +182,8 @@ public class LevelWidget implements IsWidget, LevelView {
     }
 
 
-
     @Override
-    public HandlerRegistration addSelectionHandler(SelectionHandler<Projection> handler) {
+    public HandlerRegistration addSelectionHandler(SelectionHandler<Node> handler) {
         return eventBus.addHandler(SelectionEvent.getType(), handler);
     }
 

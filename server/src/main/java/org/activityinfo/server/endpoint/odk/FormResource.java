@@ -11,6 +11,7 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.server.endpoint.odk.xform.*;
 import org.activityinfo.service.ResourceLocatorSync;
+import org.activityinfo.service.core.store.ResourceStore;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -27,10 +28,10 @@ import java.util.List;
 @Path("/activityForm")
 public class FormResource extends ODKResource {
 
-    private ResourceLocatorSync locator;
+    private ResourceStore locator;
 
     @Inject
-    public FormResource(ResourceLocatorSync locator) {
+    public FormResource(ResourceStore locator) {
         this.locator = locator;
     }
 
@@ -43,7 +44,7 @@ public class FormResource extends ODKResource {
                      getUser().getEmail() + " (" + getUser().getId() + ")");
 
         //TODO This is still not done and needs major refactoring, but we're getting there
-        Resource resource = locator.getResource(CuidAdapter.activityFormClass(id));
+        Resource resource = locator.get(CuidAdapter.activityFormClass(id));
         FormClass formClass = FormClass.fromResource(resource);
         List<FormField> formFields = formClass.getFields();
 

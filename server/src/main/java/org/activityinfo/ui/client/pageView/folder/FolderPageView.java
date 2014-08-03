@@ -14,12 +14,11 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.client.Resources;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.application.FolderClass;
+import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.core.shared.criteria.ParentCriteria;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.chrome.PageHeader;
@@ -30,8 +29,8 @@ import org.activityinfo.ui.client.pageView.InstanceViewModel;
 import javax.annotation.Nullable;
 import java.util.List;
 
-import static org.activityinfo.core.shared.application.ApplicationProperties.DESCRIPTION_PROPERTY;
-import static org.activityinfo.core.shared.application.ApplicationProperties.LABEL_PROPERTY;
+import static org.activityinfo.model.system.ApplicationProperties.DESCRIPTION_PROPERTY;
+import static org.activityinfo.model.system.ApplicationProperties.LABEL_PROPERTY;
 
 /**
  * View for Folder instances
@@ -40,8 +39,8 @@ public class FolderPageView implements InstancePageView {
 
 
     public static final String NON_BREAKING_SPACE = "\u00A0";
+    private final ResourceLocator resourceLocator;
     private FormInstance instance;
-    private Resources resources;
 
     interface FolderViewUiBinder extends UiBinder<HTMLPanel, FolderPageView> {
     }
@@ -66,7 +65,7 @@ public class FolderPageView implements InstancePageView {
     @UiField DivElement formListBody;
 
     public FolderPageView(ResourceLocator resourceLocator) {
-        this.resources = new Resources(resourceLocator);
+        this.resourceLocator = resourceLocator;
         rootElement = ourUiBinder.createAndBindUi(this);
         stylesheet.ensureInjected();
     }
@@ -76,7 +75,7 @@ public class FolderPageView implements InstancePageView {
         pageHeader.setPageTitle(instance.getString(FolderClass.LABEL_FIELD_ID));
         pageHeader.setIconStyle("glyphicon glyphicon-folder-open");
 
-        return resources.query(childrenQuery()).then(new Function<List<Projection>, Void>() {
+        return resourceLocator.query(childrenQuery()).then(new Function<List<Projection>, Void>() {
             @Nullable
             @Override
             public Void apply(@Nullable List<Projection> input) {

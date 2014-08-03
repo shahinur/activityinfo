@@ -3,10 +3,13 @@ package org.activityinfo.core.client;
 
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
-import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 
 import java.util.Collection;
@@ -25,6 +28,10 @@ public interface ResourceLocator {
 
     Promise<FormInstance> getFormInstance(ResourceId formId);
 
+    Promise<List<Resource>> get(Set<ResourceId> resourceIds);
+
+    Promise<TableData> queryTable(TableModel tableModel);
+
     /**
      * Persists a resource to the server, creating or updating as necessary.
      *
@@ -37,16 +44,18 @@ public interface ResourceLocator {
     Promise<Void> persist(List<? extends IsResource> resources);
 
     /**
-     * Retrieves the form instances that match the given criteria.
-     * @param criteria
+     * @deprecated Use {@link org.activityinfo.core.client.ResourceLocator#queryTable(org.activityinfo.model.table.TableModel)} instead
      */
+    @Deprecated
     Promise<List<FormInstance>> queryInstances(Criteria criteria);
 
-    Promise<QueryResult<Projection>> queryProjection(InstanceQuery query);
-
+    /**
+     * @deprecated Use {@link org.activityinfo.core.client.ResourceLocator#queryTable(org.activityinfo.model.table.TableModel)} instead
+     */
+    @Deprecated
     Promise<List<Projection>> query(InstanceQuery query);
 
     Promise<Void> remove(Collection<ResourceId> resources);
 
-    Promise<List<FormInstance>> queryInstances(Set<ResourceId> resourceIds);
+    Promise<QueryResult> queryProjection(InstanceQuery query);
 }

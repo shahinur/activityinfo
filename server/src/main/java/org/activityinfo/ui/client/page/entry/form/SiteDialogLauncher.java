@@ -23,7 +23,8 @@ package org.activityinfo.ui.client.page.entry.form;
  */
 
 import com.google.gwt.user.client.Window;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.DimensionType;
@@ -37,10 +38,12 @@ import org.activityinfo.ui.client.component.form.FormDialogCallback;
 public class SiteDialogLauncher {
 
     private final Dispatcher dispatcher;
+    private ResourceLocator resourceLocator;
 
-    public SiteDialogLauncher(Dispatcher dispatcher) {
+    public SiteDialogLauncher(Dispatcher dispatcher, ResourceLocator resourceLocator) {
         super();
         this.dispatcher = dispatcher;
+        this.resourceLocator = resourceLocator;
     }
 
     public void addSite(final Filter filter, final SiteDialogCallback callback) {
@@ -51,7 +54,7 @@ public class SiteDialogLauncher {
             ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(formClassId);
             FormInstance newInstance = new FormInstance(instanceId, formClassId);
 
-            FormDialog formDialog = new FormDialog(new ResourceLocatorAdaptor(dispatcher));
+            FormDialog formDialog = new FormDialog(resourceLocator);
             formDialog.show(newInstance, new FormDialogCallback() {
                 @Override
                 public void onPersisted(FormInstance instance) {
@@ -63,7 +66,7 @@ public class SiteDialogLauncher {
 
     public void editSite(final SiteDTO site, final SiteDialogCallback callback) {
 
-        FormDialog formDialog = new FormDialog(new ResourceLocatorAdaptor(dispatcher));
+        FormDialog formDialog = new FormDialog(resourceLocator);
         formDialog.show(site.getInstanceId(), new FormDialogCallback() {
             @Override
             public void onPersisted(FormInstance instance) {

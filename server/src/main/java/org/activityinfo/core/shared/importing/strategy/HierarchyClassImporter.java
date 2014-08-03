@@ -32,11 +32,12 @@ import org.activityinfo.core.shared.Pair;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.FormClassSet;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.model.legacy.CuidAdapter;
 
@@ -143,7 +144,7 @@ public class HierarchyClassImporter implements FieldImporter {
             }
         }
         if (!toSave.isEmpty()) {
-            instance.set(rootField.getFieldId(), Sets.newHashSet(toSave.values()));
+            instance.set(rootField.getFieldId(), new ReferenceValue(toSave.values()));
             return true;
         }
 
