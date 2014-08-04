@@ -124,6 +124,15 @@ public class FormInstance implements IsResource {
         return Collections.unmodifiableMap(valueMap);
     }
 
+    public Map<ResourceId, FieldValue> getFieldValueMap() {
+        Map<ResourceId, FieldValue> valueMap = Maps.newHashMap();
+        for(Object key : propertyBag.getProperties().keySet()) {
+            ResourceId fieldId = ResourceId.create((String)key);
+            valueMap.put(fieldId, get(fieldId));
+        }
+        return valueMap;
+    }
+
     public void removeAll(Set<ResourceId> fieldIds) {
         for (ResourceId fieldId : fieldIds) {
             propertyBag.remove(fieldId.asString());
