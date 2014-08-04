@@ -13,8 +13,8 @@
     <div class="contentpanel">
 
       <ul class="nav nav-tabs">
-        <li class="active"><a ui:field="tableTab"><strong>Table</strong></a></li>
-        <li><a ui:field="designTab"><strong>Design</strong></a></li>
+        <li class="active" ui:field="tableTabContainer"><a ui:field="tableTab"><strong>Table</strong></a></li>
+        <li ui:field="designTabContainer"><a ui:field="designTab"><strong>Design</strong></a></li>
       </ul>
       <div class="tab-content">
         <div id="popular" class="tab-pane active">
