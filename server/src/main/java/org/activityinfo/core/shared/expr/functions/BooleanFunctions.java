@@ -97,7 +97,8 @@ public class BooleanFunctions {
             }
             Object result = arguments.get(0).evalReal();
             for (int i = 1; i < size; i++) {
-                if (!result.equals(arguments.get(i).evalReal())) {
+                Object val = arguments.get(i).evalReal();
+                if (!result.equals(val)) {
                     return false;
                 }
             }
