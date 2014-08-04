@@ -20,13 +20,12 @@ public class FormField extends FormElement {
     private String label;
     private String description;
     private String expression;
-    private String skipExpression;
+    private String relevanceConditionExpression;
     private FieldType type;
     private boolean readOnly;
     private boolean visible = true;
     private Set<ResourceId> superProperties = Sets.newHashSet();
     private boolean required;
-    private String calculation;
 
     public FormField(ResourceId id) {
         checkNotNull(id);
@@ -47,12 +46,12 @@ public class FormField extends FormElement {
         return this;
     }
 
-    public String getSkipExpression() {
-        return skipExpression;
+    public String getRelevanceConditionExpression() {
+        return relevanceConditionExpression;
     }
 
-    public void setSkipExpression(String skipExpression) {
-        this.skipExpression = skipExpression;
+    public void setRelevanceConditionExpression(String relevanceConditionExpression) {
+        this.relevanceConditionExpression = relevanceConditionExpression;
     }
 
     /**
@@ -104,8 +103,8 @@ public class FormField extends FormElement {
         return !Strings.isNullOrEmpty(expression);
     }
 
-    public boolean hasSkipExpression() {
-        return !Strings.isNullOrEmpty(skipExpression);
+    public boolean hasRelevanceConditionExpression() {
+        return !Strings.isNullOrEmpty(relevanceConditionExpression);
     }
 
     public FormField setExpression(String expression) {
@@ -192,6 +191,7 @@ public class FormField extends FormElement {
         record.set("type", toRecord(type));
         record.set("required", required);
         record.set("expression", expression);
+        record.set("relevanceConditionExpression", relevanceConditionExpression);
 
         return record;
     }
@@ -214,6 +214,9 @@ public class FormField extends FormElement {
         if(record.has("expression")) {
             formField.setExpression(record.getString("expression"));
         }
+        if (record.has("relevanceConditionExpression")) {
+            formField.setRelevanceConditionExpression(record.getString("relevanceConditionExpression"));
+        }
         return formField;
     }
 
@@ -225,14 +228,6 @@ public class FormField extends FormElement {
         } else {
             return typeClass.createType();
         }
-    }
-
-    public void setCalculation(String calculation) {
-        this.calculation = calculation;
-    }
-
-    public String getCalculation() {
-        return calculation;
     }
 
 }
