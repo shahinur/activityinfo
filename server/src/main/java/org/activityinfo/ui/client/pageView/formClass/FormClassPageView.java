@@ -3,6 +3,7 @@ package org.activityinfo.ui.client.pageView.formClass;
 import com.google.common.collect.Maps;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.AnchorElement;
+import com.google.gwt.dom.client.LIElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -31,15 +32,22 @@ public class FormClassPageView implements InstancePageView {
 
     private static FormViewUiBinder ourUiBinder = GWT.create(FormViewUiBinder.class);
 
-    @UiField PageHeader pageHeader;
+    @UiField
+    PageHeader pageHeader;
 
     @UiField(provided = true)
     Widget tabWidget;
 
     DisplayWidget<FormInstance> tabView;
 
-    @UiField AnchorElement designTab;
-    @UiField AnchorElement tableTab;
+    @UiField
+    AnchorElement designTab;
+    @UiField
+    AnchorElement tableTab;
+    @UiField
+    LIElement designTabContainer;
+    @UiField
+    LIElement tableTabContainer;
 
     private Map<String, AnchorElement> tabs = Maps.newHashMap();
 
@@ -60,11 +68,24 @@ public class FormClassPageView implements InstancePageView {
         pageHeader.setPageTitle(view.getInstance().getString(FormClass.LABEL_FIELD_ID));
         pageHeader.setIconStyle("fa fa-edit");
 
-        for(String tab : tabs.keySet()) {
+        for (String tab : tabs.keySet()) {
             tabs.get(tab).setHref(InstancePlace.safeUri(view.getInstance().getId(), tab));
         }
 
+        setTabSelected(view);
+
         return tabView.show(view.getInstance());
+    }
+
+    private void setTabSelected(InstanceViewModel view) {
+        designTabContainer.removeClassName("active");
+        tableTabContainer.removeClassName("active");
+
+        if ("design".equals(view.getPath())) {
+            designTabContainer.addClassName("active");
+        } else {
+            tableTabContainer.addClassName("active");
+        }
     }
 
     @Override
