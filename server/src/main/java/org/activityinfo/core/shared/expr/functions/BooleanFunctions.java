@@ -25,6 +25,7 @@ import com.google.common.collect.Maps;
 import org.activityinfo.core.shared.expr.ExprFunction;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.constant.IsConstantExpr;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.number.Quantity;
 
 import java.util.List;
@@ -179,7 +180,7 @@ public class BooleanFunctions {
      * @return normalized (casted) right operand
      */
     private static Object cast(Object leftOperand, Object rightOperand, ExprNode rightOperandNode) {
-        if (rightOperandNode instanceof IsConstantExpr) {
+        if (rightOperandNode instanceof IsConstantExpr && leftOperand instanceof FieldValue) {
             IsConstantExpr constantExpr = (IsConstantExpr) rightOperandNode;
             rightOperand = constantExpr.getValue();
             if (leftOperand instanceof Quantity && rightOperand instanceof Quantity) {
