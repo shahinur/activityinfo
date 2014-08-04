@@ -43,4 +43,28 @@ public class GeoPoint implements FieldValue, IsRecord {
     public static GeoPoint fromRecord(Record record) {
         return new GeoPoint(record.getDouble("latitude"), record.getDouble("longitude"));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GeoPoint geoPoint = (GeoPoint) o;
+
+        if (Double.compare(geoPoint.latitude, latitude) != 0) return false;
+        if (Double.compare(geoPoint.longitude, longitude) != 0) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(latitude);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
