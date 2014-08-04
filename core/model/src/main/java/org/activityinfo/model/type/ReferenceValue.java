@@ -76,4 +76,20 @@ public class ReferenceValue implements FieldValue, IsRecord {
     public FieldTypeClass getTypeClass() {
         return ReferenceType.TYPE_CLASS;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ReferenceValue that = (ReferenceValue) o;
+
+        return !(resourceIds != null ? !resourceIds.equals(that.resourceIds) : that.resourceIds != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return resourceIds != null ? resourceIds.hashCode() : 0;
+    }
 }
