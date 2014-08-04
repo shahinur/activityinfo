@@ -12,16 +12,25 @@ import org.activityinfo.model.type.time.LocalDateType;
 
 public class OdkTypeAdapterFactory {
     public static OdkTypeAdapter fromFieldType(FieldType fieldType) {
-        if (fieldType instanceof BooleanType) return new BooleanTypeAdapterImpl();
-        if (fieldType instanceof EnumType) return new EnumTypeAdapterImpl((EnumType) fieldType);
-        if (fieldType instanceof GeoPointType) return new GeoPointTypeAdapterImpl();
-        if (fieldType instanceof LocalDateType) return new LocalDateTypeAdapterImpl();
-        if (fieldType instanceof NarrativeType) return new NarrativeTypeAdapterImpl();
-        if (fieldType instanceof QuantityType) return new QuantityTypeAdapterImpl((QuantityType) fieldType);
-        if (fieldType instanceof ReferenceType) return new ReferenceTypeAdapterImpl((ReferenceType) fieldType);
-        if (fieldType instanceof TextType) return new TextTypeAdapterImpl();
+        SelectOptions selectOptions = getSelectOptions(fieldType);
+
+        if (fieldType instanceof BooleanType) return new SelectAdapter("boolean", selectOptions);
+        if (fieldType instanceof EnumType) return new SelectAdapter("string", selectOptions);
+        if (fieldType instanceof GeoPointType) return new SimpleInputAdapter("geopoint");
+        if (fieldType instanceof LocalDateType) return new SimpleInputAdapter("date");
+        if (fieldType instanceof NarrativeType) return new SimpleInputAdapter("string");
+        if (fieldType instanceof QuantityType) return new QuantityTypeAdapter((QuantityType) fieldType);
+        if (fieldType instanceof ReferenceType) return new SelectAdapter("string", selectOptions);
+        if (fieldType instanceof TextType) return new SimpleInputAdapter("string");
 
         // If this happens, it means this class needs to be expanded to support the new FieldType class.
         throw new IllegalArgumentException("Unknown FieldType object passed to OdkTypeAdapterFactory.fromFieldType()!");
+    }
+
+    private static SelectOptions getSelectOptions(FieldType fieldType) {
+        if (fieldType instanceof BooleanType) return new BooleanTypeSelectOptions();
+        if (fieldType instanceof EnumType) return new EnumTypeSelectOptions((EnumType) fieldType);
+        if (fieldType instanceof ReferenceType) return new ReferenceTypeSelectOptions((ReferenceType) fieldType);
+        return null;
     }
 }
