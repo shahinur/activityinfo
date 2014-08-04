@@ -45,8 +45,8 @@ public class SkipPanelPresenter {
         this.fieldWidgetContainer = fieldWidgetContainer;
         this.rowDataBuilder = new RowDataBuilder(fieldWidgetContainer.getFormDesigner().getFormClass());
 
-        if (fieldWidgetContainer.getFormField().hasSkipExpression()) {
-            List<RowData> build = rowDataBuilder.build(fieldWidgetContainer.getFormField().getSkipExpression());
+        if (fieldWidgetContainer.getFormField().hasRelevanceConditionExpression()) {
+            List<RowData> build = rowDataBuilder.build(fieldWidgetContainer.getFormField().getRelevanceConditionExpression());
             for (RowData rowData : build) {
                 SkipRowPresenter skipRowPresenter = addRow(fieldWidgetContainer);
                 skipRowPresenter.updateWith(rowData);
@@ -89,7 +89,7 @@ public class SkipPanelPresenter {
     }
 
     public void updateFormField() {
-        fieldWidgetContainer.getFormField().setSkipExpression(buildSkipExpression());
+        fieldWidgetContainer.getFormField().setRelevanceConditionExpression(buildSkipExpression());
     }
 
     private String buildSkipExpression() {

@@ -78,7 +78,7 @@ public class FormResource extends ODKResource {
             bind.nodeset = "/data/" + formField.getId().asString();
             bind.type = odkTypeAdapter.getModelBindType();
             if (formField.isReadOnly()) bind.readonly = "true()";
-            bind.calculate = formField.getCalculation();
+            bind.calculate = formField.getExpression();
             if (formField.isRequired()) bind.required = "true()";
             html.head.model.bind.add(bind);
         }

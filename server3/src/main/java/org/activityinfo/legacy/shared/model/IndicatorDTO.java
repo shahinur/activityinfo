@@ -342,8 +342,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         FormField field = new FormField(CuidAdapter.indicatorField(getId()));
         field.setLabel(getName());
         field.setDescription(getDescription());
-        field.setCalculation(getExpression());
-        field.setSkipExpression(getSkipExpression());
+        field.setExpression(getExpression());
+        field.setRelevanceConditionExpression(getSkipExpression());
 
         if(getType() == TextType.TYPE_CLASS) {
             field.setType(TextType.INSTANCE);

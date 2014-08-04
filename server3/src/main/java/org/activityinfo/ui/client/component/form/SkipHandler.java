@@ -49,8 +49,8 @@ public class SkipHandler {
     }
 
     private void applySkipLogic(FormField field) {
-        if (field.hasSkipExpression()) {
-            ExprLexer lexer = new ExprLexer(field.getSkipExpression());
+        if (field.hasRelevanceConditionExpression()) {
+            ExprLexer lexer = new ExprLexer(field.getRelevanceConditionExpression());
             ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(
                     simpleFormPanel.getInstance(), simpleFormPanel.getFormClass()));
             ExprNode<Boolean> expr = parser.parse();
@@ -63,7 +63,7 @@ public class SkipHandler {
     public void formClassChanged() {
         fieldsWithSkipExpression = Lists.newArrayList();
         for (FormField formField : simpleFormPanel.getFormClass().getFields()) {
-            if (formField.hasSkipExpression()) {
+            if (formField.hasRelevanceConditionExpression()) {
                 fieldsWithSkipExpression.add(formField);
             }
         }
