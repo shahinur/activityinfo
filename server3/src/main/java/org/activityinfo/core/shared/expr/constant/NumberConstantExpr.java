@@ -1,6 +1,7 @@
 package org.activityinfo.core.shared.expr.constant;
 
 import org.activityinfo.core.shared.expr.ExprNode;
+import org.activityinfo.model.type.number.Quantity;
 
 public class NumberConstantExpr extends ExprNode<Double> implements IsConstantExpr  {
 
@@ -11,8 +12,8 @@ public class NumberConstantExpr extends ExprNode<Double> implements IsConstantEx
         this.value = value;
     }
 
-    public double getValue() {
-        return value;
+    public Quantity getValue() {
+        return new Quantity(value);
     }
 
     @Override
