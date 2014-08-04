@@ -5,10 +5,7 @@ import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.ParametrizedFieldType;
-import org.activityinfo.model.type.ParametrizedFieldTypeClass;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.component.ComponentReader;
 
 import java.util.ArrayList;
@@ -16,7 +13,7 @@ import java.util.List;
 
 public class EnumType implements ParametrizedFieldType {
 
-    public static final ParametrizedFieldTypeClass TYPE_CLASS = new ParametrizedFieldTypeClass() {
+    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
 
         @Override
         public String getId() {
@@ -50,7 +47,14 @@ public class EnumType implements ParametrizedFieldType {
         public FormClass getParameterFormClass() {
             return new FormClass(ResourceIdPrefixType.TYPE.id("enum"));
         }
+
+        @Override
+        public FieldValue deserialize(Record record) {
+            return EnumValue.fromRecord(record);
+        }
     };
+
+    public static final TypeClass TYPE_CLASS = new TypeClass();
 
     private final Cardinality cardinality;
     private final List<EnumValue> values;
@@ -88,7 +92,7 @@ public class EnumType implements ParametrizedFieldType {
 
         List<Record> enumValueRecords = Lists.newArrayList();
         for(EnumValue enumValue : getValues()) {
-            enumValueRecords.add(enumValue.asRecord());
+            enumValueRecords.add(enumValue.toRecord());
         }
 
         return new Record()
