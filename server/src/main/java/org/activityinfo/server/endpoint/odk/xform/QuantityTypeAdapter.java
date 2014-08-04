@@ -1,15 +1,20 @@
 package org.activityinfo.server.endpoint.odk.xform;
 
+import org.activityinfo.model.type.number.QuantityType;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-public class TextTypeAdapterImpl implements OdkTypeAdapter {
-    TextTypeAdapterImpl() {
+class QuantityTypeAdapter implements OdkTypeAdapter {
+    final private String units;
+
+    QuantityTypeAdapter(QuantityType quantityType) {
+        this.units = quantityType.getUnits();
     }
 
     @Override
     public String getModelBindType() {
-        return "string";
+        return "decimal";
     }
 
     @Override
@@ -17,7 +22,9 @@ public class TextTypeAdapterImpl implements OdkTypeAdapter {
         PresentationElement presentationElement = new PresentationElement();
 
         presentationElement.ref = ref;
-        presentationElement.label = label;
+        if (units == null) presentationElement.label = label;
+        else if (label == null) presentationElement.label = units;
+        else presentationElement.label = label + " [" + units + ']';
         presentationElement.hint = hint;
 
         QName qName = new QName("http://www.w3.org/2002/xforms", "input");

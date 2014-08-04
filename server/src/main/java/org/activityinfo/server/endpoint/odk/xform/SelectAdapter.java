@@ -1,27 +1,27 @@
 package org.activityinfo.server.endpoint.odk.xform;
 
-import com.google.common.collect.Lists;
+import org.activityinfo.model.type.Cardinality;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.List;
 
-public class BooleanTypeAdapterImpl implements OdkTypeAdapter {
+import static org.activityinfo.model.type.Cardinality.SINGLE;
+
+class SelectAdapter implements OdkTypeAdapter {
+    final private String modelBindType;
+    final private Cardinality cardinality;
     final private List<Item> item;
 
-    BooleanTypeAdapterImpl() {
-        Item no = new Item();
-        no.label = "no";
-        no.value = "false";
-        Item yes = new Item();
-        yes.label = "yes";
-        yes.value = "true";
-        item = Lists.newArrayList(yes, no);
+    SelectAdapter(String modelBindType, SelectOptions selectOptions) {
+        this.modelBindType = modelBindType;
+        this.cardinality = selectOptions.getCardinality();
+        this.item = selectOptions.getItem();
     }
 
     @Override
     public String getModelBindType() {
-        return "boolean";
+        return modelBindType;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class BooleanTypeAdapterImpl implements OdkTypeAdapter {
         presentationElement.item = item;
         presentationElement.hint = hint;
 
-        QName qName = new QName("http://www.w3.org/2002/xforms", "select1");
+        QName qName = new QName("http://www.w3.org/2002/xforms", SINGLE.equals(cardinality) ? "select1" : "select");
         return new JAXBElement<>(qName, PresentationElement.class, presentationElement);
     }
 }
