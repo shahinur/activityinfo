@@ -9,11 +9,6 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
-import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.endpoint.odk.xform.*;
 import org.activityinfo.service.ResourceLocatorSync;
 
@@ -73,7 +68,7 @@ public class FormResource extends ODKResource {
         bind.calculate = "concat('uuid:',uuid())";
         html.head.model.bind.add(bind);
         for (FormField formField : formFields) {
-            OdkTypeAdapter odkTypeAdapter = new OdkTypeAdapter(formField.getType());
+            OdkTypeAdapter odkTypeAdapter = OdkTypeAdapterFactory.fromFieldType(formField.getType());
             bind = new Bind();
             bind.nodeset = "/data/" + formField.getId().asString();
             bind.type = odkTypeAdapter.getModelBindType();
@@ -85,52 +80,15 @@ public class FormResource extends ODKResource {
         html.body = new Body();
         html.body.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
         for (FormField formField : formFields) {
-            OdkTypeAdapter odkTypeAdapter = new OdkTypeAdapter(formField.getType());
-            PresentationElement presentationElement;
-            presentationElement = new PresentationElement();
-            presentationElement.ref = "/data/" + formField.getId().asString();
-            String label = formField.getLabel();
-            if (odkTypeAdapter.isQuantity()) {
-                QuantityType quantityType = (QuantityType) formField.getType();
-                String units = quantityType.getUnits();
-                if (units != null) {
-                    if (label == null) label = units;
-                    else label += " [" + units + ']';
-                }
-            }
-            presentationElement.label = label;
-            if (odkTypeAdapter.isBoolean()) {
-                Item no = new Item();
-                no.label = "no";
-                no.value = "false";
-                Item yes = new Item();
-                yes.label = "yes";
-                yes.value = "true";
-                presentationElement.item = Lists.newArrayList(yes, no);
-            } else if (odkTypeAdapter.isEnum()) {
-                EnumType enumType = (EnumType) formField.getType();
-                presentationElement.item = Lists.newArrayListWithCapacity(enumType.getValues().size());
-                for (EnumValue enumValue : enumType.getValues()) {
-                    Item item = new Item();
-                    item.label = enumValue.getLabel();
-                    item.value = enumValue.getId().asString();
-                    presentationElement.item.add(item);
-                }
-                //FIXME Temporary hack to work around FormClass.fromResource() apparently being complete
-                if (presentationElement.item.size() < 1) continue;
-            } else if (odkTypeAdapter.isReference()) {
-                ReferenceType referenceType = (ReferenceType) formField.getType();
-                presentationElement.item = Lists.newArrayListWithCapacity(referenceType.getRange().size());
-                for (ResourceId resourceId : referenceType.getRange()) {
-                    Item item = new Item();
-                    item.label = "";    //TODO Set label to correct value
-                    item.value = resourceId.asString();
-                    presentationElement.item.add(item);
-                }
-            }
-            presentationElement.hint = formField.getDescription();
-            QName qName = new QName("http://www.w3.org/2002/xforms", odkTypeAdapter.getPresentationElement());
-            html.body.jaxbElement.add(new JAXBElement<>(qName, PresentationElement.class, presentationElement));
+            OdkTypeAdapter odkTypeAdapter = OdkTypeAdapterFactory.fromFieldType(formField.getType());
+            //FIXME Temporary hack to work around FormClass.fromResource() apparently being incomplete
+            JAXBElement<PresentationElement> presentationElement = odkTypeAdapter.createPresentationElement("/data/" +
+                    formField.getId().asString(), formField.getLabel(), formField.getDescription());
+            if (presentationElement.getValue().item != null && presentationElement.getValue().item.size() < 1) continue;
+            html.body.jaxbElement.add(presentationElement);
+            /* End of temporary hack
+            html.body.jaxbElement.add(odkTypeAdapter.createPresentationElement("/data/" + formField.getId().asString(),
+                    formField.getLabel(), formField.getDescription()));*/
         }
         return Response.ok(html).build();
     }
