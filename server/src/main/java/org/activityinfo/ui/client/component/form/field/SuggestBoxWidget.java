@@ -64,6 +64,10 @@ public class SuggestBoxWidget implements ReferenceFieldWidget {
         });
     }
 
+    public List<FormInstance> getRange() {
+        return range;
+    }
+
     @Override
     public void setReadOnly(boolean readOnly) {
         suggestBox.setEnabled(!readOnly);

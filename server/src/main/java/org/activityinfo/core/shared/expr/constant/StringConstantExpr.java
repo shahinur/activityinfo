@@ -22,6 +22,7 @@ package org.activityinfo.core.shared.expr.constant;
  */
 
 import org.activityinfo.core.shared.expr.ExprNode;
+import org.activityinfo.model.type.primitive.TextValue;
 
 /**
  * @author yuriyz on 7/28/14.
@@ -35,8 +36,8 @@ public class StringConstantExpr extends ExprNode<String> implements IsConstantEx
         this.value = value;
     }
 
-    public String getValue() {
-        return value;
+    public TextValue getValue() {
+        return TextValue.valueOf(value);
     }
 
     @Override

@@ -21,8 +21,11 @@ package org.activityinfo.core.shared.expr.constant;
  * #L%
  */
 
+import org.activityinfo.model.type.FieldValue;
+
 /**
  * @author yuriyz on 7/28/14.
  */
 public interface IsConstantExpr {
+    FieldValue getValue();
 }

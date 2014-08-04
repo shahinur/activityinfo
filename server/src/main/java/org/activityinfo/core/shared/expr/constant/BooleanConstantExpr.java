@@ -22,6 +22,7 @@ package org.activityinfo.core.shared.expr.constant;
  */
 
 import org.activityinfo.core.shared.expr.ExprNode;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 
 /**
@@ -40,8 +41,8 @@ public class BooleanConstantExpr extends ExprNode<Boolean> implements IsConstant
         this(value.asBoolean());
     }
 
-    public boolean getValue() {
-        return value;
+    public FieldValue getValue() {
+        return BooleanFieldValue.valueOf(value);
     }
 
     @Override
@@ -66,9 +67,8 @@ public class BooleanConstantExpr extends ExprNode<Boolean> implements IsConstant
 
         BooleanConstantExpr that = (BooleanConstantExpr) o;
 
-        if (value != that.value) return false;
+        return value == that.value;
 
-        return true;
     }
 
     @Override

@@ -43,10 +43,12 @@ import java.util.Set;
 public class ComboBoxFieldWidget implements ReferenceFieldWidget {
 
     private final ListBox dropBox;
+    private final List<FormInstance> range;
 
     public ComboBoxFieldWidget(final List<FormInstance> range, final ValueUpdater<ReferenceValue> valueUpdater) {
         dropBox = new ListBox(false);
         dropBox.addStyleName("form-control");
+        this.range = range;
 
         for (FormInstance instance : range) {
             dropBox.addItem(
@@ -59,6 +61,10 @@ public class ComboBoxFieldWidget implements ReferenceFieldWidget {
                 valueUpdater.update(updatedValue());
             }
         });
+    }
+
+    public List<FormInstance> getRange() {
+        return range;
     }
 
     @Override

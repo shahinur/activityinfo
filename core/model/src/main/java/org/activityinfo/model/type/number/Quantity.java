@@ -7,8 +7,14 @@ import org.activityinfo.model.type.FieldValue;
 
 public class Quantity implements FieldValue, IsRecord {
 
+    public static final String UNKNOWN = "unknown";
+
     private final double value;
-    private final String units;
+    private String units;
+
+    public Quantity(double value) {
+        this(value, UNKNOWN);
+    }
 
     public Quantity(double value, String units) {
         this.value = value;
@@ -21,6 +27,10 @@ public class Quantity implements FieldValue, IsRecord {
 
     public String getUnits() {
         return units;
+    }
+
+    public void setUnits(String units) {
+        this.units = units;
     }
 
     @Override

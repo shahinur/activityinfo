@@ -25,7 +25,6 @@ import com.google.common.collect.Sets;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,6 +39,7 @@ import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.RadioButton;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -50,11 +50,12 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
 
     private final FlowPanel panel;
     private final List<CheckBox> controls;
-    private SimpleEventBus eventBus;
+    private final List<FormInstance> range;
 
     public CheckBoxFieldWidget(ReferenceType type, List<FormInstance> range, final ValueUpdater valueUpdater) {
         panel = new FlowPanel();
         controls = new ArrayList<>();
+        this.range = range;
 
         ValueChangeHandler<Boolean> changeHandler = new ValueChangeHandler<Boolean>() {
             @Override
@@ -63,23 +64,28 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
             }
         };
 
+        String groupId = Long.toString(new Date().getTime());
         for (final FormInstance instance : range) {
-            CheckBox checkBox = createControl(instance, type.getCardinality());
+            CheckBox checkBox = createControl(groupId, instance, type.getCardinality());
             checkBox.addValueChangeHandler(changeHandler);
             panel.add(checkBox);
             controls.add(checkBox);
         }
     }
 
-    private CheckBox createControl(FormInstance instance, Cardinality cardinality) {
-        CheckBox checkBox;
-        String label = FormInstanceLabeler.getLabel(instance);
-        if(cardinality == Cardinality.SINGLE) {
-            checkBox = new RadioButton(instance.getId().asString(), label);
+    public List<FormInstance> getRange() {
+        return range;
+    }
+
+    private CheckBox createControl(String groupId, FormInstance instance, Cardinality cardinality) {
+        final CheckBox checkBox;
+        final String label = FormInstanceLabeler.getLabel(instance);
+        if (cardinality == Cardinality.SINGLE) {
+            checkBox = new RadioButton(groupId, label);
         } else {
             checkBox = new CheckBox(label);
-            checkBox.setFormValue(instance.getId().asString());
         }
+        checkBox.setFormValue(instance.getId().asString());
         return checkBox;
     }
 

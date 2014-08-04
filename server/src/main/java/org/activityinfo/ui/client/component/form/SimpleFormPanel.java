@@ -217,5 +217,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         return containers.get(fieldId);
     }
 
-
+    public Map<ResourceId, FieldContainer> getContainers() {
+        return containers;
+    }
 }

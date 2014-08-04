@@ -21,6 +21,7 @@ package org.activityinfo.core.shared.expr;
  * #L%
  */
 
+import com.google.api.client.util.Lists;
 import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
 import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
@@ -31,6 +32,7 @@ import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +77,7 @@ public class SkipExpressionTest {
 
     private void eval(String skipExpression, Boolean expectedValue, FormInstance instance) {
         ExprLexer lexer = new ExprLexer(skipExpression);
-        ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(instance, formClass));
+        ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(instance, formClass, Lists.<ReferenceFieldWidget>newArrayList()));
         ExprNode<Boolean> expr = parser.parse();
         Assert.assertEquals(skipExpression, expectedValue, expr.evalReal());
     }

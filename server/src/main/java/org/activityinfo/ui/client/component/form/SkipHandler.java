@@ -27,6 +27,7 @@ import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
 import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 
 import java.util.List;
 
@@ -37,6 +38,7 @@ public class SkipHandler {
 
     private final SimpleFormPanel simpleFormPanel;
     private List<FormField> fieldsWithSkipExpression = Lists.newArrayList();
+    private List<ReferenceFieldWidget> referenceFieldWidgets = null;
 
     public SkipHandler(SimpleFormPanel simpleFormPanel) {
         this.simpleFormPanel = simpleFormPanel;
@@ -48,11 +50,26 @@ public class SkipHandler {
         }
     }
 
+
+    private List<ReferenceFieldWidget> getReferenceFieldWidgets() {
+        if (referenceFieldWidgets != null) {
+            return referenceFieldWidgets;
+        }
+
+        referenceFieldWidgets = Lists.newArrayList();
+        for (FieldContainer container : simpleFormPanel.getContainers().values()) {
+            if (container.getFieldWidget() instanceof ReferenceFieldWidget) {
+                referenceFieldWidgets.add((ReferenceFieldWidget) container.getFieldWidget());
+            }
+        }
+        return referenceFieldWidgets;
+    }
+
     private void applySkipLogic(FormField field) {
         if (field.hasRelevanceConditionExpression()) {
             ExprLexer lexer = new ExprLexer(field.getRelevanceConditionExpression());
             ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(
-                    simpleFormPanel.getInstance(), simpleFormPanel.getFormClass()));
+                    simpleFormPanel.getInstance(), simpleFormPanel.getFormClass(), getReferenceFieldWidgets()));
             ExprNode<Boolean> expr = parser.parse();
 
             FieldContainer fieldContainer = simpleFormPanel.getFieldContainer(field.getId());
@@ -62,6 +79,8 @@ public class SkipHandler {
 
     public void formClassChanged() {
         fieldsWithSkipExpression = Lists.newArrayList();
+        referenceFieldWidgets = null;
+
         for (FormField formField : simpleFormPanel.getFormClass().getFields()) {
             if (formField.hasRelevanceConditionExpression()) {
                 fieldsWithSkipExpression.add(formField);
