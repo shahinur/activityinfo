@@ -48,7 +48,7 @@ public class SkipDialog {
         this.formField = fieldWidgetContainer.getFormField();
         this.skipPanelPresenter = new SkipPanelPresenter(fieldWidgetContainer);
         this.dialog = new ModalDialog(skipPanelPresenter.getView());
-        this.dialog.setDialogTitle(I18N.CONSTANTS.defineSkipLogic());
+        this.dialog.setDialogTitle(I18N.CONSTANTS.defineRelevanceLogic());
         this.dialog.getDialogDiv().getStyle().setWidth(DIALOG_WIDTH, Style.Unit.PX);
 //        this.dialog.getDialogDiv().getStyle().setHeight(DIALOG_HEIGHT, Style.Unit.PX);
         this.dialog.getPrimaryButton().addClickHandler(new ClickHandler() {
