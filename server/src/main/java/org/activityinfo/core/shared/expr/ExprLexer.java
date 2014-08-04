@@ -142,7 +142,7 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
     }
 
     private boolean isNumberPart(char c) {
-        return Character.isDigit(c);
+        return Character.isDigit(c) || c == '.';
     }
 
     private boolean isBooleanLiteral(char c) {

@@ -31,6 +31,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 import org.junit.Assert;
@@ -48,6 +49,7 @@ public class SkipExpressionTest {
     private static final ResourceId GENDER_FIELD_ID = ResourceId.generateId();
     private static final ResourceId PREGNANT_FIELD_ID = ResourceId.generateId();
     private static final ResourceId TEXT_FIELD_ID = ResourceId.create("test_text");
+    private static final ResourceId QUANTITY_FIELD_ID = ResourceId.create("test_quantity");
 
     FormClass formClass;
 
@@ -74,6 +76,17 @@ public class SkipExpressionTest {
         eval(String.format("{%s}==\"1\"", TEXT_FIELD_ID.asString()), true, instance);
         eval(String.format("{%s}!=\"1\"", TEXT_FIELD_ID.asString()), false, instance);
     }
+
+    @Test
+    public void quantity() {
+        FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
+        instance.set(QUANTITY_FIELD_ID, 3);
+
+        eval(String.format("{%s}==3", QUANTITY_FIELD_ID.asString()), true, instance);
+        eval(String.format("{%s}==3.0", QUANTITY_FIELD_ID.asString()), true, instance);
+        eval(String.format("{%s}!=3", QUANTITY_FIELD_ID.asString()), false, instance);
+    }
+
 
     private void eval(String skipExpression, Boolean expectedValue, FormInstance instance) {
         ExprLexer lexer = new ExprLexer(skipExpression);
@@ -112,10 +125,15 @@ public class SkipExpressionTest {
         textField.setLabel("Text");
         textField.setType(TextType.INSTANCE);
 
+        FormField quantityField = new FormField(QUANTITY_FIELD_ID);
+        quantityField.setLabel("Quantity");
+        quantityField.setType(QuantityType.TYPE_CLASS.createType());
+
         final FormClass formClass = new FormClass(CuidAdapter.activityFormClass(1));
         formClass.addElement(genderField);
         formClass.addElement(pregnantField);
         formClass.addElement(textField);
+        formClass.addElement(quantityField);
         return formClass;
     }
 }
