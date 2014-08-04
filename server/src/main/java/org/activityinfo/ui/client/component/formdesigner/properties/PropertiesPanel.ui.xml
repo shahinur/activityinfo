@@ -44,19 +44,19 @@
     </g:HTMLPanel>
     <g:HTMLPanel addStyleNames="form-group" ui:field="skipGroup">
       <label class="control-label col-xs-4">
-        <ui:text from='{i18n.skipLogic}'/>
+        <ui:text from='{i18n.relevance}'/>
       </label>
       <div class="col-xs-3">
-        <g:Label ui:field="skipState"/>
+        <g:Label ui:field="relevanceState"/>
       </div>
       <div class="col-xs-2">
-        <g:Button addStyleNames="btn btn-default btn-xs" ui:field="skipButton">
-          <ui:text from='{i18n.defineSkipLogic}'/>
+        <g:Button addStyleNames="btn btn-default btn-xs" ui:field="relevanceButton">
+          <ui:text from='{i18n.defineRelevanceLogic}'/>
         </g:Button>
       </div>
       <div class="col-xs-4"></div>
       <div class="col-xs-8">
-        <span class="hide help-block" ui:field="skipExpression"/>
+        <span class="hide help-block" ui:field="relevanceExpression"/>
       </div>
     </g:HTMLPanel>
   </g:HTMLPanel>

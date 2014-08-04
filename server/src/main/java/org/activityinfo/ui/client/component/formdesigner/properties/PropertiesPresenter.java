@@ -126,7 +126,7 @@ public class PropertiesPresenter {
         view.getRequired().setValue(formField.isRequired());
 
         setSkipState(formField);
-        skipButtonClickHandler = view.getSkipButton().addClickHandler(new ClickHandler() {
+        skipButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 SkipDialog dialog = new SkipDialog(fieldWidgetContainer, PropertiesPresenter.this);
@@ -179,13 +179,13 @@ public class PropertiesPresenter {
     }
 
     public void setSkipState(FormField formField) {
-        view.getSkipState().setText(formField.hasSkipExpression() ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
-        view.getSkipExpression().setInnerText(formField.getSkipExpression());
+        view.getRelevanceState().setText(formField.hasRelevanceConditionExpression() ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
+        view.getRelevanceExpression().setInnerText(formField.getRelevanceConditionExpression());
 
-        if (formField.hasSkipExpression()) {
-            view.getSkipExpression().removeClassName("hide");
-        } else if (!view.getSkipExpression().getClassName().contains("hide")) {
-            view.getSkipExpression().addClassName("hide");
+        if (formField.hasRelevanceConditionExpression()) {
+            view.getRelevanceExpression().removeClassName("hide");
+        } else if (!view.getRelevanceExpression().getClassName().contains("hide")) {
+            view.getRelevanceExpression().addClassName("hide");
         }
     }
 

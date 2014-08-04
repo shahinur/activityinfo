@@ -56,13 +56,13 @@ public class PropertiesPanel extends Composite {
     @UiField
     CheckBox readOnly;
     @UiField
-    Button skipButton;
+    Button relevanceButton;
     @UiField
-    Label skipState;
+    Label relevanceState;
     @UiField
     HTMLPanel skipGroup;
     @UiField
-    SpanElement skipExpression;
+    SpanElement relevanceExpression;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -96,19 +96,19 @@ public class PropertiesPanel extends Composite {
         return readOnly;
     }
 
-    public Button getSkipButton() {
-        return skipButton;
+    public Button getRelevanceButton() {
+        return relevanceButton;
     }
 
-    public Label getSkipState() {
-        return skipState;
+    public Label getRelevanceState() {
+        return relevanceState;
     }
 
     public HTMLPanel getSkipGroup() {
         return skipGroup;
     }
 
-    public SpanElement getSkipExpression() {
-        return skipExpression;
+    public SpanElement getRelevanceExpression() {
+        return relevanceExpression;
     }
 }
