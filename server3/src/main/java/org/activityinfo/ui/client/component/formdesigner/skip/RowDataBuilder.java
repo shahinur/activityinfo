@@ -70,8 +70,9 @@ public class RowDataBuilder {
         // handle Function call node
         if (node instanceof FunctionCallNode && ((FunctionCallNode) node).getArguments().size() == 2) {
             final FunctionCallNode functionCallNode = (FunctionCallNode) node;
-            final ExprNode arg1 = (ExprNode) functionCallNode.getArguments().get(0);
-            final ExprNode arg2 = (ExprNode) functionCallNode.getArguments().get(1);
+            ExprNode arg1 = unwrap((ExprNode) functionCallNode.getArguments().get(0));
+            ExprNode arg2 = unwrap((ExprNode) functionCallNode.getArguments().get(1));
+
 
             if (arg1 instanceof PlaceholderExpr) {
 
@@ -107,6 +108,26 @@ public class RowDataBuilder {
                         }
                     }
                 }
+            } else if (arg1 instanceof FunctionCallNode) {
+                // parse flat structure
+                for (Object exprNode : functionCallNode.getArguments()) {
+                    FunctionCallNode unwrappedNode = (FunctionCallNode) unwrap((ExprNode) exprNode);
+                    if (isFieldFunction(unwrappedNode.getFunction())) {
+                        ExprNode unwrappedArg1 = (ExprNode) unwrappedNode.getArguments().get(0);
+                        ExprNode unwrappedArg2 = (ExprNode) unwrappedNode.getArguments().get(1);
+
+                        final FormField field = formClass.getField(ResourceId.create(placeholder(unwrappedArg1)));
+
+                        final RowData row = getOrCreateRow(field);
+                        row.setFunction(unwrappedNode.getFunction());
+                        row.setJoinFunction(functionCallNode.getFunction());
+
+                        setValueInRow(row, unwrappedArg2, field, wrappedByGroup);
+                    } else {
+                        parse(unwrappedNode, unwrappedNode.getFunction());
+                    }
+                }
+                return;
             }
         }
         throw new UnsupportedOperationException();
@@ -127,6 +148,13 @@ public class RowDataBuilder {
         return row;
     }
 
+    private static ExprNode unwrap(ExprNode node) {
+        if (node instanceof GroupExpr) {
+            return ((GroupExpr) node).getExpr();
+        }
+        return node;
+    }
+
     /**
      * Returns whether value was set in row or not.
      *
@@ -144,7 +172,7 @@ public class RowDataBuilder {
             ResourceId newItem = ResourceId.create(placeholder(node));
 
             if (row.getValue() instanceof ReferenceValue) { // update existing value
-                ReferenceValue oldValue = (ReferenceValue)row.getValue();
+                ReferenceValue oldValue = (ReferenceValue) row.getValue();
                 Set<ResourceId> newValue = Sets.newHashSet(oldValue.getResourceIds());
                 newValue.add(newItem);
                 row.setValue(new ReferenceValue(newValue));
