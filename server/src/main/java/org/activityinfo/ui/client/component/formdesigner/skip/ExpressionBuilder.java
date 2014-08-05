@@ -72,40 +72,39 @@ public class ExpressionBuilder {
             if (size == 1) {
                 right = new PlaceholderExpr(idSet.get(0).asString());
             } else {
-                return new GroupExpr(new FunctionCallNode(row.getFunction(), left, buildNodeForSet(idSet, 0, row)));
+                return new GroupExpr(buildNodeForSet(left, idSet, row));
             }
         } else {
             throw new UnsupportedOperationException("Not supported value: " + value);
         }
 
+        ExprNode node = new FunctionCallNode(row.getFunction(), left, right);
+        if (rows.size() > 1) {
+            node = new GroupExpr(node);
+        }
+
         if ((index + 1) < rows.size()) {
             index++;
             RowData nextRow = rows.get(index);
-            right = new FunctionCallNode(nextRow.getJoinFunction(), right,  buildNode(new PlaceholderExpr(nextRow.getFormField().getId().asString()), index));
+
+            return new FunctionCallNode(nextRow.getJoinFunction(), node,  buildNode(null, index));
         }
-        return new FunctionCallNode(row.getFunction(), left, right);
+
+        return node;
     }
 
-    private ExprNode buildNodeForSet(List<ResourceId> values, int index, RowData row) {
-
-
+    private ExprNode buildNodeForSet(ExprNode left, List<ResourceId> values, RowData row) {
         ExprFunction internalFunction = BooleanFunctions.OR;
         if (row.getFunction() == BooleanFunctions.NOT_EQUAL) {
             internalFunction = BooleanFunctions.AND;
         }
 
-        ExprNode left = new PlaceholderExpr(values.get(index).asString());
-        ExprNode innerLeft = new PlaceholderExpr(row.getFormField().getId().asString());
-        ExprNode innerRight;
-
-        index++; // increase index before handling inner expression
-        if ((index + 1) == values.size()) {
-            innerRight = new PlaceholderExpr(values.get(index).asString());
-        } else {
-            innerRight = buildNodeForSet(values, index, row);
+        final List<ExprNode> arguments = Lists.newArrayList();
+        for (ResourceId value : values) {
+            arguments.add(new GroupExpr(new FunctionCallNode(row.getFunction(), left, new PlaceholderExpr(value.asString()))));
         }
-        ExprNode right = new FunctionCallNode(row.getFunction(), innerLeft, innerRight);
-        return new FunctionCallNode(internalFunction, left, right);
+
+        return new FunctionCallNode(internalFunction, arguments);
     }
 
 //    private void handleRow(RowData row, int index) {
