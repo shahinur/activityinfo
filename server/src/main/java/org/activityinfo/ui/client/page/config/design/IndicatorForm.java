@@ -128,6 +128,12 @@ class IndicatorForm extends AbstractDesignForm {
         this.add(calculateAutomatically);
 
         expressionField = new TextField<>();
+        expressionField.addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyUp(ComponentEvent event) {
+                expressionField.validate();
+            }
+        });
         expressionField.setFieldLabel(constants.calculation());
         expressionField.setToolTip(constants.calculatedIndicatorExplanation());
         expressionField.setValidator(new Validator() {
