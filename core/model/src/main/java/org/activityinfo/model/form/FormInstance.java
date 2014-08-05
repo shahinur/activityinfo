@@ -1,4 +1,4 @@
-package org.activityinfo.core.shared.form;
+package org.activityinfo.model.form;
 /*
  * #%L
  * ActivityInfo Server
@@ -23,12 +23,12 @@ package org.activityinfo.core.shared.form;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.geo.AiLatLng;
 import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
@@ -137,6 +137,11 @@ public class FormInstance implements IsResource {
         for (ResourceId fieldId : fieldIds) {
             propertyBag.remove(fieldId.asString());
         }
+    }
+
+    public FormInstance set(@NotNull ResourceId fieldId, double value) {
+        propertyBag.set(fieldId.asString(), value);
+        return this;
     }
 
     public void set(@NotNull ResourceId fieldId, Object fieldValue) {

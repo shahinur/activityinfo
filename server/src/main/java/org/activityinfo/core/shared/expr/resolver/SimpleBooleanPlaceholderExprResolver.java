@@ -24,7 +24,7 @@ package org.activityinfo.core.shared.expr.resolver;
 import com.google.common.collect.Maps;
 import org.activityinfo.core.shared.expr.PlaceholderExpr;
 import org.activityinfo.core.shared.expr.PlaceholderExprResolver;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;

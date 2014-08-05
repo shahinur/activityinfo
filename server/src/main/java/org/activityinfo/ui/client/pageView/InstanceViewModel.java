@@ -1,6 +1,6 @@
 package org.activityinfo.ui.client.pageView;
 
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 
 public class InstanceViewModel {
     private FormInstance instance;

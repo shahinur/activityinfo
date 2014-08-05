@@ -23,7 +23,7 @@ package org.activityinfo.core.shared.expr;
 
 import com.google.api.client.util.Lists;
 import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;

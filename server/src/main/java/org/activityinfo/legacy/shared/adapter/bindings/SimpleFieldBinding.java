@@ -1,7 +1,7 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.shared.model.EntityDTO;
 import org.activityinfo.model.resource.ResourceId;
 

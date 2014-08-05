@@ -1,4 +1,4 @@
-package org.activityinfo.core.shared.model;
+package org.activityinfo.model.type.geo;
 
 /*
  * #%L

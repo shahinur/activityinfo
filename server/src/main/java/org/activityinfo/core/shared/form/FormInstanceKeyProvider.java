@@ -22,6 +22,7 @@ package org.activityinfo.core.shared.form;
  */
 
 import com.google.gwt.view.client.ProvidesKey;
+import org.activityinfo.model.form.FormInstance;
 
 /**
  * @author yuriyz on 3/5/14.

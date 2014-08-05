@@ -25,7 +25,7 @@ import com.google.common.base.Function;
 import com.google.gwt.cell.client.ValueUpdater;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldType;
