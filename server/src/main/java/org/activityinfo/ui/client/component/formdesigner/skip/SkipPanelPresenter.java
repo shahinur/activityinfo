@@ -75,13 +75,19 @@ public class SkipPanelPresenter {
             public void onClick(ClickEvent event) {
                 view.getRootPanel().remove(skipRowPresenter.getView());
                 map.remove(skipRowPresenter.getView());
+                setFirstRowJoinFunctionVisible();
             }
         });
 
-        if (view.getRootPanel().getWidgetCount() == 1) { // disable join function for first row
-            skipRowPresenter.getView().getJoinFunction().setVisible(false);
-        }
+        setFirstRowJoinFunctionVisible();
         return skipRowPresenter;
+    }
+
+    private void setFirstRowJoinFunctionVisible() {
+        if (view.getRootPanel().getWidgetCount() > 0) { // disable join function for first row
+            SkipRow firstSkipRow = (SkipRow) view.getRootPanel().getWidget(0);
+            firstSkipRow.getJoinFunction().setVisible(false);
+        }
     }
 
     public SkipPanel getView() {

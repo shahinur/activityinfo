@@ -29,11 +29,7 @@ import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.primitive.TextValue;
 
 import java.util.List;
 import java.util.Set;
@@ -61,10 +57,8 @@ public class RowDataBuilder {
     }
 
     private void parse(ExprNode node, ExprFunction joinFunction) {
-        boolean wrappedByGroup = false;
         if (node instanceof GroupExpr) {
             node = ((GroupExpr) node).getExpr();
-            wrappedByGroup = true;
         }
 
         // handle Function call node
@@ -83,7 +77,7 @@ public class RowDataBuilder {
                     row.setFunction(functionCallNode.getFunction());
                     row.setJoinFunction(joinFunction);
 
-                    if (setValueInRow(row, arg2, field, wrappedByGroup)) {
+                    if (setValueInRow(row, arg2)) {
                         return;
                     } else if (arg2 instanceof FunctionCallNode) {
                         final FunctionCallNode arg2Node = (FunctionCallNode) arg2;
@@ -97,7 +91,7 @@ public class RowDataBuilder {
                             final ExprNode nestArg1 = (ExprNode) arg2Node.getArguments().get(0);
                             final ExprNode nestArg2 = (ExprNode) arg2Node.getArguments().get(1);
 
-                            setValueInRow(row, nestArg1, field, false);
+                            setValueInRow(row, nestArg1);
 
                             if (nestArg2 instanceof FunctionCallNode || nestArg2 instanceof GroupExpr) {
                                 parse(nestArg2, arg2Node.getFunction());
@@ -122,7 +116,7 @@ public class RowDataBuilder {
                         row.setFunction(unwrappedNode.getFunction());
                         row.setJoinFunction(functionCallNode.getFunction());
 
-                        setValueInRow(row, unwrappedArg2, field, wrappedByGroup);
+                        setValueInRow(row, unwrappedArg2);
                     } else {
                         parse(unwrappedNode, unwrappedNode.getFunction());
                     }
@@ -160,12 +154,11 @@ public class RowDataBuilder {
      *
      * @param row       row
      * @param node      node
-     * @param formField form field
      * @return Returns whether value was set in row or not
      */
-    private static boolean setValueInRow(RowData row, ExprNode node, FormField formField, boolean wrappedByGroup) {
+    private static boolean setValueInRow(RowData row, ExprNode node) {
         if (node instanceof IsConstantExpr) {
-            row.setValue(normalizeValue(node.evalReal(), formField.getType()));
+            row.setValue(((IsConstantExpr) node).getValue());
             return true;
 
         } else if (node instanceof PlaceholderExpr) {
@@ -192,14 +185,5 @@ public class RowDataBuilder {
     private static String placeholder(ExprNode node) {
         PlaceholderExpr placeholderExpr = (PlaceholderExpr) node;
         return placeholderExpr.getPlaceholder();
-    }
-
-    private static FieldValue normalizeValue(Object value, FieldType type) {
-        if (value != null) {
-            if (type instanceof TextType) {
-                return TextValue.valueOf(value.toString());
-            }
-        }
-        return null;
     }
 }

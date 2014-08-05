@@ -42,7 +42,7 @@ public class QuantityFieldWidget implements FormFieldWidget<Quantity> {
 
     @Override
     public Promise<Void> setValue(Quantity value) {
-        box.setValue(value.getValue());
+        box.setValue(value != null ? value.getValue() : null);
         return Promise.done();
     }
 
