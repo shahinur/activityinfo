@@ -22,6 +22,11 @@ public class FunctionCallNode extends ExprNode {
         this(function, Arrays.asList(arguments));
     }
 
+    @Nonnull
+    public List<ExprNode> getArguments() {
+        return arguments;
+    }
+
     @Override
     public double evalReal() {
         return function.applyReal(arguments);
