@@ -45,6 +45,9 @@ public class ExprParser {
             return new FunctionCallNode(function, expr, right);
 
         } else {
+            if (token.getType() == TokenType.PAREN_START && expr instanceof GroupExpr) {
+                throw new ExprSyntaxException("There are no operator after: " + expr.toString());
+            }
             return expr;
         }
     }

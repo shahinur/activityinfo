@@ -31,6 +31,7 @@ import com.google.gwt.core.client.GWT;
 import org.activityinfo.core.shared.expr.ExprLexer;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
+import org.activityinfo.core.shared.expr.ExprSyntaxException;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.i18n.shared.UiConstants;
@@ -144,6 +145,8 @@ class IndicatorForm extends AbstractDesignForm {
                     ExprParser parser = new ExprParser(lexer);
                     ExprNode expr = parser.parse();
                     return null;
+                } catch (ExprSyntaxException e) {
+                    return e.getMessage();
                 } catch (Exception e) {
                     e.printStackTrace();
                     // ignore : expression is invalid
