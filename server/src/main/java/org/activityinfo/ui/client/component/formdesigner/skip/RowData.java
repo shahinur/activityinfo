@@ -95,8 +95,8 @@ public class RowData {
 
         if (formField != null ? !formField.equals(rowData.formField) : rowData.formField != null) return false;
         if (function != null ? !function.equals(rowData.function) : rowData.function != null) return false;
-        if (joinFunction != null ? !joinFunction.equals(rowData.joinFunction) : rowData.joinFunction != null)
-            return false;
+//        if (joinFunction != null ? !joinFunction.equals(rowData.joinFunction) : rowData.joinFunction != null)
+//            return false;
         if (value != null ? !value.equals(rowData.value) : rowData.value != null) return false;
 
         return true;
@@ -105,7 +105,7 @@ public class RowData {
     @Override
     public int hashCode() {
         int result = formField != null ? formField.hashCode() : 0;
-        result = 31 * result + (joinFunction != null ? joinFunction.hashCode() : 0);
+//        result = 31 * result + (joinFunction != null ? joinFunction.hashCode() : 0);
         result = 31 * result + (function != null ? function.hashCode() : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
