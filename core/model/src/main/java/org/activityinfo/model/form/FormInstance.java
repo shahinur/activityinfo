@@ -151,7 +151,7 @@ public class FormInstance implements IsResource {
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, double value) {
-        propertyBag.set(fieldId.asString(), new Quantity(value));
+        propertyBag.set(fieldId.asString(), value);
         return this;
     }
 
@@ -192,6 +192,8 @@ public class FormInstance implements IsResource {
         } else if(value instanceof Record) {
             Record record = (Record)value;
             return TypeRegistry.get().deserializeFieldValue(record);
+        }else if(value instanceof Double) {
+            return new Quantity((Double) value);
         } else {
             throw new UnsupportedOperationException(fieldId.asString() + " = " + value);
         }
