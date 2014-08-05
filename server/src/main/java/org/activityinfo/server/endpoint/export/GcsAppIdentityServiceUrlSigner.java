@@ -21,6 +21,7 @@ public class GcsAppIdentityServiceUrlSigner  {
         final String signature = sign(unsigned);
 
         return new StringBuilder(BASE_URL)
+        .append("/")
         .append(path)
         .append("?GoogleAccessId=")
         .append(clientId())
@@ -41,7 +42,7 @@ public class GcsAppIdentityServiceUrlSigner  {
         final String contentType = "";
         final String contentMD5 = "";
         final String canonicalizedExtensionHeaders = "";
-        final String canonicalizedResource = path;
+        final String canonicalizedResource = "/" + path;
         return httpVerb + "\n" + contentMD5 + "\n" + contentType + "\n"
                         + expiration + "\n" + canonicalizedExtensionHeaders + canonicalizedResource;
     }
