@@ -6,9 +6,11 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.inject.util.Providers;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.endpoint.odk.xform.Html;
-import org.activityinfo.service.core.store.ResourceStore;
-import org.activityinfo.ui.client.service.TestResourceStore;
+import org.activityinfo.service.store.ResourceCursor;
+import org.activityinfo.service.store.ResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +32,17 @@ public class FormResourceTest {
 
     @Before
     public void setUp() throws IOException {
-        ResourceStore store = new TestResourceStore().load("/dbunit/sites-simple1.json");
+        ResourceStore store = new ResourceStore() {
+            @Override
+            public ResourceCursor openCursor(ResourceId formClassId) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public Resource get(ResourceId resourceId) {
+                throw new UnsupportedOperationException();
+            }
+        };
         resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")));
     }
 

@@ -12,7 +12,8 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.server.endpoint.odk.xform.*;
-import org.activityinfo.service.core.store.ResourceStore;
+import org.activityinfo.service.ResourceLocatorSync;
+import org.activityinfo.service.store.ResourceStore;
 
 import javax.inject.Provider;
 import javax.ws.rs.GET;

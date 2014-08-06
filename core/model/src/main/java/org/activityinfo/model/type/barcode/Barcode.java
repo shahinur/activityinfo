@@ -38,7 +38,7 @@ public class Barcode implements FieldValue, IsRecord {
 
     @Override
     public FieldTypeClass getTypeClass() {
-        return FieldTypeClass.BARCODE;
+        return BarcodeType.TYPE_CLASS;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Barcode implements FieldValue, IsRecord {
     }
 
     @Override
-    public Record asRecord() {
+    public Record toRecord() {
         return new Record()
                 .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
                 .set("value", value)
