@@ -63,6 +63,10 @@ public class PropertiesPanel extends Composite {
     HTMLPanel skipGroup;
     @UiField
     SpanElement relevanceExpression;
+    @UiField
+    CheckBox visible;
+    @UiField
+    HTMLPanel visibleGroup;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -110,5 +114,13 @@ public class PropertiesPanel extends Composite {
 
     public SpanElement getRelevanceExpression() {
         return relevanceExpression;
+    }
+
+    public CheckBox getVisible() {
+        return visible;
+    }
+
+    public HTMLPanel getVisibleGroup() {
+        return visibleGroup;
     }
 }

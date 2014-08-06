@@ -3487,4 +3487,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Defined")
     String defined();
+
+    @DefaultStringValue("Visible")
+    String visible();
 }

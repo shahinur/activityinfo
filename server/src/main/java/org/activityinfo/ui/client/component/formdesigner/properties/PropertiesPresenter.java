@@ -58,6 +58,7 @@ public class PropertiesPresenter {
     private HandlerRegistration descriptionKeyUpHandler;
     private HandlerRegistration requiredValueChangeHandler;
     private HandlerRegistration readonlyValueChangeHandler;
+    private HandlerRegistration visibleValueChangeHandler;
     private HandlerRegistration skipButtonClickHandler;
 
     public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
@@ -92,6 +93,7 @@ public class PropertiesPresenter {
 
         view.getRequiredGroup().setVisible(false);
         view.getReadOnlyGroup().setVisible(false);
+        view.getVisibleGroup().setVisible(false);
         view.getSkipGroup().setVisible(false);
 
         if (labelKeyUpHandler != null) {
@@ -109,6 +111,9 @@ public class PropertiesPresenter {
         if (skipButtonClickHandler != null) {
             skipButtonClickHandler.removeHandler();
         }
+        if (visibleValueChangeHandler != null) {
+            visibleValueChangeHandler.removeHandler();
+        }
     }
 
     private void show(final FieldWidgetContainer fieldWidgetContainer) {
@@ -119,11 +124,13 @@ public class PropertiesPresenter {
         view.setVisible(true);
         view.getRequiredGroup().setVisible(true);
         view.getReadOnlyGroup().setVisible(true);
+        view.getVisibleGroup().setVisible(true);
         view.getSkipGroup().setVisible(true);
 
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
         view.getDescription().setValue(Strings.nullToEmpty(formField.getDescription()));
         view.getRequired().setValue(formField.isRequired());
+        view.getVisible().setValue(formField.isVisible());
 
         setSkipState(formField);
         skipButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
@@ -159,6 +166,18 @@ public class PropertiesPresenter {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> event) {
                 formField.setReadOnly(view.getReadOnly().getValue());
+                fieldWidgetContainer.syncWithModel();
+            }
+        });
+        visibleValueChangeHandler = view.getVisible().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                formField.setVisible(view.getVisible().getValue());
+                if (!view.getVisible().getValue()) {
+                    // invisible formfield must not be required -> user is not able to set value for invisible field
+                    view.getRequired().setValue(false);
+                    formField.setRequired(false);
+                }
                 fieldWidgetContainer.syncWithModel();
             }
         });
