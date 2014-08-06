@@ -1,6 +1,7 @@
-package org.activityinfo.server.endpoint.odk.xform;
+package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
