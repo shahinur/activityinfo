@@ -6,7 +6,7 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import org.activityinfo.ui.client.service.TestResourceStore;
 import org.activityinfo.server.endpoint.odk.xform.Html;
-import org.activityinfo.service.core.store.ResourceStore;
+import org.activityinfo.service.store.ResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 
