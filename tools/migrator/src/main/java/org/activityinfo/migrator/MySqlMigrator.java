@@ -36,7 +36,7 @@ public class MySqlMigrator {
     public static void main(String[] args) throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
         try(Connection connection = DriverManager.getConnection(
-                "jdbc:mysql://" + args[0] + ":3306/activityinfo?zeroDateTimeBehavior=convertToNull", args[1], args.length < 2 ? args[2] : "")) {
+                "jdbc:mysql://" + args[0] + ":3306/activityinfo?zeroDateTimeBehavior=convertToNull", args[1], args.length < 3 ? "" : args[2])) {
 
             new MySqlMigrator().migrate(connection);
         }
