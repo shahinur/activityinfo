@@ -29,6 +29,7 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
@@ -61,7 +62,7 @@ public class SkipExpressionTest {
     @Test
     public void enumType() {
         FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
-        instance.set(GENDER_FIELD_ID, enumValue(GENDER_FIELD_ID, "Male"));
+        instance.set(GENDER_FIELD_ID, enumFieldValue(GENDER_FIELD_ID, "Male"));
 
         eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
         eval(String.format("{%s}!={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), false, instance);
@@ -105,6 +106,10 @@ public class SkipExpressionTest {
             }
         }
         throw new IllegalArgumentException("Unable to find enumValue with label: " + label);
+    }
+
+    private EnumFieldValue enumFieldValue(ResourceId formField, String label) {
+        return new EnumFieldValue(enumValue(formField, label).getId());
     }
 
 
