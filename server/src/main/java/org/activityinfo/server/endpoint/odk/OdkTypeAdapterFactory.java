@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.odk.xform;
+package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;

@@ -1,22 +1,15 @@
-package org.activityinfo.server.endpoint.odk.xform;
+package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
-import java.util.List;
 
-import static org.activityinfo.model.type.Cardinality.SINGLE;
-
-class SelectAdapter implements OdkTypeAdapter {
+class SimpleInputAdapter implements OdkTypeAdapter {
     final private String modelBindType;
-    final private Cardinality cardinality;
-    final private List<Item> item;
 
-    SelectAdapter(String modelBindType, SelectOptions selectOptions) {
+    SimpleInputAdapter(String modelBindType) {
         this.modelBindType = modelBindType;
-        this.cardinality = selectOptions.getCardinality();
-        this.item = selectOptions.getItem();
     }
 
     @Override
@@ -30,10 +23,9 @@ class SelectAdapter implements OdkTypeAdapter {
 
         presentationElement.ref = ref;
         presentationElement.label = label;
-        presentationElement.item = item;
         presentationElement.hint = hint;
 
-        QName qName = new QName("http://www.w3.org/2002/xforms", SINGLE.equals(cardinality) ? "select1" : "select");
+        QName qName = new QName("http://www.w3.org/2002/xforms", "input");
         return new JAXBElement<>(qName, PresentationElement.class, presentationElement);
     }
 }

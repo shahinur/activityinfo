@@ -1,7 +1,8 @@
-package org.activityinfo.server.endpoint.odk.xform;
+package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.server.endpoint.odk.xform.Item;
 
 import java.util.List;
 
