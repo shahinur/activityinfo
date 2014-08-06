@@ -49,7 +49,7 @@ import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.jaxrs.JaxRsModule;
 import org.activityinfo.server.util.locale.LocaleModule;
 import org.activityinfo.server.util.logging.LoggingModule;
-import org.activityinfo.service.core.ServiceModule;
+import org.activityinfo.service.ServiceModule;
 
 import javax.servlet.ServletContextEvent;
 import java.util.logging.Logger;

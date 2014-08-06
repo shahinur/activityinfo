@@ -7,8 +7,8 @@ import com.google.gson.JsonParser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
-import org.activityinfo.service.core.store.ResourceCursor;
-import org.activityinfo.service.core.store.ResourceStore;
+import org.activityinfo.service.store.ResourceCursor;
+import org.activityinfo.service.store.ResourceStore;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

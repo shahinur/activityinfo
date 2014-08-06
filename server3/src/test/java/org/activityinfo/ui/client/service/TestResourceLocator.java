@@ -21,7 +21,7 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableService;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.core.tables.TableServiceImpl;
+import org.activityinfo.service.tables.TableServiceImpl;
 
 import java.io.File;
 import java.io.FileWriter;
