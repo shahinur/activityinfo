@@ -38,7 +38,7 @@ public class CuidAdapter {
 
     public static final char ADMIN_LEVEL_DOMAIN = 'E';
 
-    public static final char ADMIN_ENTITY_DOMAIN = 'e';
+    public static final char ADMIN_ENTITY_DOMAIN = 'z';
 
     public static final char PROJECT_CLASS_DOMAIN = 'R';
 
