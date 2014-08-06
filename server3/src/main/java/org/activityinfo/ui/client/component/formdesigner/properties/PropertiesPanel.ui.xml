@@ -42,6 +42,24 @@
         </div>
       </g:HTMLPanel>
     </g:HTMLPanel>
+    <g:HTMLPanel addStyleNames="form-group">
+      <g:HTMLPanel ui:field="visibleGroup">
+        <label class="control-label col-xs-4">
+          <ui:text from='{i18n.visible}'/>
+        </label>
+        <div class="col-xs-2">
+          <a:CheckBox ui:field="visible"/>
+        </div>
+      </g:HTMLPanel>
+      <!--<g:HTMLPanel ui:field="readOnlyGroup">-->
+        <!--<label class="control-label col-xs-4">-->
+          <!--<ui:text from='{i18n.readonly}'/>-->
+        <!--</label>-->
+        <!--<div class="col-xs-2">-->
+          <!--<a:CheckBox ui:field="readOnly"/>-->
+        <!--</div>-->
+      <!--</g:HTMLPanel>-->
+    </g:HTMLPanel>
     <g:HTMLPanel addStyleNames="form-group" ui:field="skipGroup">
       <label class="control-label col-xs-4">
         <ui:text from='{i18n.relevance}'/>
