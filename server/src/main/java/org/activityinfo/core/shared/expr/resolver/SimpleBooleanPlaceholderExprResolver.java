@@ -32,6 +32,7 @@ import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
@@ -61,7 +62,7 @@ public class SimpleBooleanPlaceholderExprResolver implements PlaceholderExprReso
             if (type instanceof EnumType) {
                 EnumType enumType = (EnumType) type;
                 for (EnumValue value : enumType.getValues()) {
-                    valueMap.put(value.getId(), value);
+                    valueMap.put(value.getId(), new EnumFieldValue(value.getId()));
                 }
             } else if (type instanceof ReferenceType) {
                 for (ReferenceFieldWidget refWidget : referenceFieldWidgets) {
