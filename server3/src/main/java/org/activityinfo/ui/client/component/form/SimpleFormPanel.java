@@ -165,7 +165,10 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
                 panel.add(createHeader(depth, ((FormSection) element)));
                 addFormElements((FormElementContainer) element, depth + 1);
             } else if (element instanceof FormField) {
-                panel.add(containers.get(((FormField) element).getId()));
+                FormField formField = (FormField) element;
+                if (formField.isVisible()) {
+                    panel.add(containers.get(formField.getId()));
+                }
             }
         }
     }

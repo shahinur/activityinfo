@@ -18,6 +18,8 @@ public class AdminEntityTable extends SimpleTableMigrator {
         ResourceId id = resourceId(ADMIN_ENTITY_DOMAIN, rs.getInt("AdminEntityId"));
         ResourceId classId = resourceId(ADMIN_LEVEL_DOMAIN, rs.getInt("AdminLevelId"));
 
+//        System.out.println("AdminEntityId= " + rs.getInt("AdminEntityId") + ", id=" + id.asString() + ", classId=" + classId.asString());
+
         FormInstance instance = new FormInstance(id, classId)
             .set(field(classId, NAME_FIELD), rs.getString("name"))
             .set(field(classId, CODE_FIELD), rs.getString("code"));

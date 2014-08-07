@@ -24,16 +24,14 @@ package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
-public class ODKModule extends AbstractRestModule {
+public class OdkModule extends AbstractRestModule {
 
-    public ODKModule() {
+    public OdkModule() {
         super();
     }
 
     @Override
     protected void configureResources() {
-        bind(FormParser.class);
-
         // in separate classes for now because of the prefix-less urls..
         bindResource(FormResource.class);
         bindResource(FormListResource.class);
