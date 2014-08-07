@@ -31,7 +31,7 @@ public class QuantityType implements ParametrizedFieldType {
         }
 
         @Override
-        public FieldType createType() {
+        public QuantityType createType() {
             return new QuantityType()
                     .setUnits("households");
         }
@@ -76,13 +76,15 @@ public class QuantityType implements ParametrizedFieldType {
     }
 
     @Override
-    public FieldTypeClass getTypeClass() {
+    public ParametrizedFieldTypeClass getTypeClass() {
         return TYPE_CLASS;
     }
 
     @Override
     public Record getParameters() {
-        return new Record().set("units", units);
+        return new Record()
+                .set("units", units)
+                .set("classId", getTypeClass().getParameterFormClass().getId());
     }
 
     @Override
