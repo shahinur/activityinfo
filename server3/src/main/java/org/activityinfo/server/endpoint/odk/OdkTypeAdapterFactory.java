@@ -1,5 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
+import com.google.inject.Inject;
+import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
@@ -11,7 +13,14 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 public class OdkTypeAdapterFactory {
-    public static OdkTypeAdapter fromFieldType(FieldType fieldType) {
+    final private TableService table;
+
+    @Inject
+    public OdkTypeAdapterFactory(TableService table) {
+        this.table = table;
+    }
+
+    public OdkTypeAdapter fromFieldType(FieldType fieldType) {
         SelectOptions selectOptions = getSelectOptions(fieldType);
 
         if (fieldType instanceof BooleanType) return new SelectAdapter("boolean", selectOptions);
@@ -27,10 +36,10 @@ public class OdkTypeAdapterFactory {
         throw new IllegalArgumentException("Unknown FieldType object passed to OdkTypeAdapterFactory.fromFieldType()!");
     }
 
-    private static SelectOptions getSelectOptions(FieldType fieldType) {
+    private SelectOptions getSelectOptions(FieldType fieldType) {
         if (fieldType instanceof BooleanType) return new BooleanTypeSelectOptions();
         if (fieldType instanceof EnumType) return new EnumTypeSelectOptions((EnumType) fieldType);
-        if (fieldType instanceof ReferenceType) return new ReferenceTypeSelectOptions((ReferenceType) fieldType);
+        if (fieldType instanceof ReferenceType) return new ReferenceTypeSelectOptions((ReferenceType) fieldType, table);
         return null;
     }
 }

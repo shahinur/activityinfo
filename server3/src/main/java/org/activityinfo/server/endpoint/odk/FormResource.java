@@ -35,17 +35,20 @@ public class FormResource {
 
     private Provider<AuthenticatedUser> authProvider;
     private ResourceStore locator;
+    private OdkTypeAdapterFactory factory;
 
     @Inject
-    public FormResource(ResourceStore locator, OdkAuthProvider authProvider) {
+    public FormResource(ResourceStore locator, OdkAuthProvider authProvider, OdkTypeAdapterFactory factory) {
         this.locator = locator;
         this.authProvider = authProvider;
+        this.factory = factory;
     }
 
     @VisibleForTesting
-    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider) {
+    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider, OdkTypeAdapterFactory factory) {
         this.authProvider = authProvider;
         this.locator = locator;
+        this.factory = factory;
     }
 
     @GET @Produces(MediaType.TEXT_XML)
@@ -67,11 +70,12 @@ public class FormResource {
         html.head.model = new Model();
         html.head.model.instance = new Instance();
         html.head.model.instance.data = new Data();
+        html.head.model.instance.data.id = formClass.getId().asString();
         html.head.model.instance.data.meta = new Meta();
         html.head.model.instance.data.meta.instanceID = new InstanceId();
         html.head.model.instance.data.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
         for (FormField formField : formFields) {
-            QName qName = new QName("http://www.w3.org/2002/xforms", formField.getId().asString());
+            QName qName = new QName("http://www.w3.org/2002/xforms", "field_" + formField.getId().asString());
             html.head.model.instance.data.jaxbElement.add(new JAXBElement<>(qName, String.class, ""));
         }
         html.head.model.bind = Lists.newArrayListWithCapacity(formFields.size() + 1);
@@ -82,9 +86,9 @@ public class FormResource {
         bind.calculate = "concat('uuid:',uuid())";
         html.head.model.bind.add(bind);
         for (FormField formField : formFields) {
-            OdkTypeAdapter odkTypeAdapter = OdkTypeAdapterFactory.fromFieldType(formField.getType());
+            OdkTypeAdapter odkTypeAdapter = factory.fromFieldType(formField.getType());
             bind = new Bind();
-            bind.nodeset = "/data/" + formField.getId().asString();
+            bind.nodeset = "/data/field_" + formField.getId().asString();
             bind.type = odkTypeAdapter.getModelBindType();
             if (formField.isReadOnly()) bind.readonly = "true()";
             //TODO Fix this
@@ -95,15 +99,15 @@ public class FormResource {
         html.body = new Body();
         html.body.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
         for (FormField formField : formFields) {
-            OdkTypeAdapter odkTypeAdapter = OdkTypeAdapterFactory.fromFieldType(formField.getType());
+            OdkTypeAdapter odkTypeAdapter = factory.fromFieldType(formField.getType());
             //FIXME Temporary hack to work around FormClass.fromResource() apparently being incomplete
-            JAXBElement<PresentationElement> presentationElement = odkTypeAdapter.createPresentationElement("/data/" +
-                    formField.getId().asString(), formField.getLabel(), formField.getDescription());
+            JAXBElement<PresentationElement> presentationElement = odkTypeAdapter.createPresentationElement(
+                    "/data/field_" + formField.getId().asString(), formField.getLabel(), formField.getDescription());
             if (presentationElement.getValue().item != null && presentationElement.getValue().item.size() < 1) continue;
             html.body.jaxbElement.add(presentationElement);
             /* End of temporary hack
-            html.body.jaxbElement.add(odkTypeAdapter.createPresentationElement("/data/" + formField.getId().asString(),
-                    formField.getLabel(), formField.getDescription()));*/
+            html.body.jaxbElement.add(odkTypeAdapter.createPresentationElement("/data/field_" +
+                    formField.getId().asString(), formField.getLabel(), formField.getDescription()));*/
         }
         return Response.ok(html).build();
     }
