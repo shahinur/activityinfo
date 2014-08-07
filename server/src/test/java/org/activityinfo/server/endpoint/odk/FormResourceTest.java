@@ -7,7 +7,9 @@ import com.google.common.io.Resources;
 import com.google.inject.util.Providers;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceStore;
+import org.activityinfo.model.table.TableService;
 import org.activityinfo.server.endpoint.odk.xform.Html;
+import org.activityinfo.service.tables.TableServiceImpl;
 import org.activityinfo.ui.client.service.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +33,9 @@ public class FormResourceTest {
     @Before
     public void setUp() throws IOException {
         ResourceStore store = new TestResourceStore().load("/dbunit/sites-simple1.json");
-        resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")));
+        TableService table = new TableServiceImpl(store);
+        OdkTypeAdapterFactory factory = new OdkTypeAdapterFactory(table);
+        resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory);
     }
 
     @Test

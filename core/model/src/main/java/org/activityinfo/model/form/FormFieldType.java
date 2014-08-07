@@ -3,6 +3,7 @@ package org.activityinfo.model.form;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
@@ -42,6 +43,8 @@ public class FormFieldType {
                 return ReferenceType.TYPE_CLASS;
             case "BOOLEAN":
                 return BooleanType.TYPE_CLASS;
+            case "BARCODE":
+                return BarcodeType.TYPE_CLASS;
         }
         throw new IllegalArgumentException("name: " + name);
     }
@@ -53,7 +56,8 @@ public class FormFieldType {
                 FieldTypeClass.FREE_TEXT,
                 FieldTypeClass.LOCAL_DATE,
                 FieldTypeClass.BOOLEAN,
-                FieldTypeClass.GEOGRAPHIC_POINT};
+                FieldTypeClass.GEOGRAPHIC_POINT,
+                FieldTypeClass.BARCODE};
 
     }
 }
