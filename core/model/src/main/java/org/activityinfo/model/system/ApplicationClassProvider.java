@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.model.type.ParametrizedFieldTypeClass;
@@ -33,7 +32,7 @@ public class ApplicationClassProvider {
     }
 
     private FormClass createFormClassClass() {
-        FormField labelField = new FormField(FormClass.LABEL_FIELD_ID);
+        FormField labelField = new FormField(ResourceId.create(FormClass.LABEL_FIELD_ID));
 
         FormClass formClass = new FormClass(FormClass.CLASS_ID);
         formClass.addElement(labelField);

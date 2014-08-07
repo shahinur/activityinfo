@@ -4,8 +4,8 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceStore;
 import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.service.store.ResourceStore;
 
 import java.util.logging.Logger;
 

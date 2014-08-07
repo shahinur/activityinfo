@@ -23,10 +23,6 @@ package org.activityinfo.server.database;
  */
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
-import com.google.common.base.Charsets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.inject.Provider;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.IDatabaseConnection;
@@ -43,9 +39,7 @@ import org.junit.runners.model.Statement;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,41 +77,12 @@ public class LoadDataSet extends Statement {
         errors.clear();
         try {
             populate(data);
-            loadResources();
             next.evaluate();
         } catch (Throwable e) {
             errors.add(e);
         }
 
         MultipleFailureException.assertEmpty(errors);
-    }
-
-    private void loadResources() throws IOException, SQLException {
-        String jsonName = name.replace(".db.xml", ".json");
-        LOGGER.info("DBUnit: Loading resources from " + jsonName + " ");
-
-        JsonParser parser = new JsonParser();
-        JsonArray resourcesArray;
-        try(Reader reader = new InputStreamReader(target.getClass().getResourceAsStream(jsonName), Charsets.UTF_8)) {
-            resourcesArray = parser.parse(reader).getAsJsonArray();
-        }
-
-        if(resourcesArray.size() > 0) {
-
-            try(Connection connection = connectionProvider.get()) {
-                connection.setAutoCommit(false);
-                PreparedStatement statement = connection.prepareStatement(
-                        "REPLACE INTO resource (id, ownerId, json) VALUES (?, ?, ?)");
-                for(int i=0;i!=resourcesArray.size();++i) {
-                    JsonObject resource = resourcesArray.get(i).getAsJsonObject();
-                    statement.setString(1, resource.get("@id").getAsString());
-                    statement.setString(2, resource.get("@owner").getAsString());
-                    statement.setString(3, resource.toString());
-                    statement.executeUpdate();
-                }
-                connection.commit();
-            }
-        }
     }
 
     private IDataSet loadDataSet() throws IOException, DataSetException {

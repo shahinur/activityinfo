@@ -1,9 +1,9 @@
 package org.activityinfo.service;
 
+import org.activityinfo.model.resource.ResourceStore;
 import org.activityinfo.model.table.TableService;
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 import org.activityinfo.service.store.MySqlResourceStore;
-import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.tables.TableServiceImpl;
 
 public class ServiceModule extends AbstractRestModule {

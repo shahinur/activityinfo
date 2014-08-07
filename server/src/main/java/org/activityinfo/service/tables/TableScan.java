@@ -5,16 +5,17 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceStore;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.service.store.ResourceCursor;
-import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.tables.views.*;
 
 import javax.annotation.Nonnull;
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -122,10 +123,11 @@ public class TableScan {
 
         int rowCount = 0;
 
-        ResourceCursor cursor = store.openCursor(classId);
-        while(cursor.next()) {
+        Iterator<Resource> cursor = store.openCursor(classId);
+        while(cursor.hasNext()) {
+            Resource resource = cursor.next();
             for(int i=0;i!=builders.length;++i) {
-                builders[i].putResource(cursor.getResource());
+                builders[i].putResource(resource);
             }
             rowCount ++ ;
         }

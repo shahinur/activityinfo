@@ -1,10 +1,9 @@
 package org.activityinfo.service.store;
 
+import com.google.common.collect.UnmodifiableIterator;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.*;
 import org.hibernate.Session;
 
 import javax.inject.Provider;
@@ -32,32 +31,31 @@ public class MySqlResourceStore implements ResourceStore {
     }
 
     @Override
-    public ResourceCursor openCursor(ResourceId formClassId) {
+    public Iterator<Resource> openCursor(ResourceId formClassId) {
         final Iterator iterator = session.get()
                 .createSQLQuery("select json from resource where classId = ?")
                 .setString(0, formClassId.asString())
                 .setReadOnly(true)
                 .list().iterator();
 
-        return new ResourceCursor() {
-
-            private Resource current;
+        return new UnmodifiableIterator<Resource>() {
 
             @Override
-            public boolean next() {
-                if(iterator.hasNext()) {
-                    String json = (String)iterator.next();
-                    current = Resources.fromJson(json);
-                    return true;
-                } else {
-                    return false;
-                }
+            public boolean hasNext() {
+                return iterator.hasNext();
             }
 
             @Override
-            public Resource getResource() {
-                return current;
+            public Resource next() {
+                String json = (String) iterator.next();
+                return Resources.fromJson(json);
             }
         };
+    }
+
+    @Override
+    public ResourceTree queryTree(ResourceTreeRequest request) {
+        TreeBuilder builder = new TreeBuilder(session.get());
+        return builder.build(request.getRootId());
     }
 }
