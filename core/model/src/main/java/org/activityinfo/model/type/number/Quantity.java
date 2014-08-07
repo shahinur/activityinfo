@@ -53,13 +53,17 @@ public class Quantity implements FieldValue, IsRecord {
             return false;
         }
 
-        return true;
+        if (units == null) {
+            return quantity.units == null;
+        } else {
+            return units.equals(quantity.units);
+        }
     }
 
     @Override
     public int hashCode() {
         long temp = Double.doubleToLongBits(value);
-        return (int) (temp ^ (temp >>> 32));
+        return ((int) (temp ^ (temp >>> 32))) ^ units.hashCode();
     }
 
     public static FieldValue fromRecord(Record record) {
