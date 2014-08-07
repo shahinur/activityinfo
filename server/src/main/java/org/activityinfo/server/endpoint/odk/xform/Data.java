@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Data {
     @XmlAttribute
-    public static String id = "siteform";
+    public String id;
 
     @XmlElement
     public Meta meta;
