@@ -1,4 +1,6 @@
-package org.activityinfo.server.endpoint.odk.xform;
+package org.activityinfo.server.endpoint.odk;
+
+import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
 
 import javax.xml.bind.JAXBElement;
 

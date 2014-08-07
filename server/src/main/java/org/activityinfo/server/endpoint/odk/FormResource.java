@@ -1,7 +1,9 @@
 package org.activityinfo.server.endpoint.odk;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.IsFormField;
@@ -12,6 +14,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.server.endpoint.odk.xform.*;
 import org.activityinfo.service.store.ResourceStore;
 
+import javax.inject.Provider;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -23,24 +26,35 @@ import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/activityForm")
-public class FormResource extends ODKResource {
+public class FormResource {
 
+    private static final Logger LOGGER = Logger.getLogger(FormResource.class.getName());
+
+    private Provider<AuthenticatedUser> authProvider;
     private ResourceStore locator;
 
     @Inject
-    public FormResource(ResourceStore locator) {
+    public FormResource(ResourceStore locator, OdkAuthProvider authProvider) {
+        this.locator = locator;
+        this.authProvider = authProvider;
+    }
+
+    @VisibleForTesting
+    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider) {
+        this.authProvider = authProvider;
         this.locator = locator;
     }
 
     @GET @Produces(MediaType.TEXT_XML)
     public Response form(@QueryParam("id") int id) throws Exception {
-        if (enforceAuthorization()) {
-            return askAuthentication();
-        }
+
+        AuthenticatedUser user = authProvider.get();
+
         LOGGER.finer("ODK activity form " + id + " requested by " +
-                     getUser().getEmail() + " (" + getUser().getId() + ")");
+                     user.getEmail() + " (" + user.getId() + ")");
 
         //TODO This is still not done and needs major refactoring, but we're getting there
         Resource resource = locator.get(CuidAdapter.activityFormClass(id));

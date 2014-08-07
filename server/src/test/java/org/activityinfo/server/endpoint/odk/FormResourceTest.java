@@ -4,9 +4,11 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import org.activityinfo.ui.client.service.TestResourceStore;
+import com.google.inject.util.Providers;
+import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.server.endpoint.odk.xform.Html;
 import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.ui.client.service.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,7 +31,7 @@ public class FormResourceTest {
     @Before
     public void setUp() throws IOException {
         ResourceStore store = new TestResourceStore().load("/dbunit/sites-simple1.json");
-        resource = new FormResource(store);
+        resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")));
     }
 
     @Test
