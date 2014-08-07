@@ -58,4 +58,8 @@ public class MySqlResourceStore implements ResourceStore {
         TreeBuilder builder = new TreeBuilder(session.get());
         return builder.build(request.getRootId());
     }
+
+    @Override
+    public void createResource(ResourceId userId, Resource resource) {
+    }
 }
