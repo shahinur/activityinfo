@@ -16,6 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The smallest logical unit of data entry.
  */
 public class FormField extends FormElement {
+
     private final ResourceId id;
     private String label;
     private String description;
@@ -127,12 +128,13 @@ public class FormField extends FormElement {
     /**
      * @return true if this field is visible to the user
      */
-    boolean isVisible() {
+    public boolean isVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
+    public FormField setVisible(boolean visible) {
         this.visible = visible;
+        return this;
     }
 
     @Override
@@ -192,6 +194,7 @@ public class FormField extends FormElement {
         record.set("type", toRecord(type));
         record.set("required", required);
         record.set("expression", expression);
+        record.set("visible", visible);
         record.set("relevanceConditionExpression", relevanceConditionExpression);
 
         if(!superProperties.isEmpty()) {
@@ -214,6 +217,7 @@ public class FormField extends FormElement {
         FormField formField = new FormField(ResourceId.create(record.getString("id")))
             .setLabel(record.getString("label"))
             .setType(typeFromRecord(record.getRecord("type")))
+            .setVisible(record.getBoolean("visible", true))
             .setRequired(record.getBoolean("required", false));
 
         if(record.has("expression")) {
