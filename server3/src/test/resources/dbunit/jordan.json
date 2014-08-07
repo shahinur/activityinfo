@@ -12,6 +12,7 @@
     "elements": [
       {
         "id": "_countryf1",
+        "visible": true,
         "label": "Name",
         "required": true,
         "type": {
@@ -20,6 +21,7 @@
       },
       {
         "id": "_countryf3",
+        "visible": true,
         "label": "Code",
         "required": true,
         "type": {
@@ -39,10 +41,11 @@
     "@id": "E1360",
     "@owner": "c360",
     "classId": "_class",
-    "label": "Governorate",
+    "_class_label": "Governorate",
     "elements": [
       {
         "id": "E1360f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -55,6 +58,7 @@
       },
       {
         "id": "E1360f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -64,91 +68,91 @@
     ]
   },
   {
-    "@id": "e1701",
+    "@id": "z1701",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "8",
     "E1360f1": "Ajlun"
   },
   {
-    "@id": "e1702",
+    "@id": "z1702",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "2",
     "E1360f1": "Al Balqa"
   },
   {
-    "@id": "e1703",
+    "@id": "z1703",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "12",
     "E1360f1": "Aqaba"
   },
   {
-    "@id": "e1704",
+    "@id": "z1704",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "9",
     "E1360f1": "Karak"
   },
   {
-    "@id": "e1705",
+    "@id": "z1705",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "1",
     "E1360f1": "Amman"
   },
   {
-    "@id": "e1706",
+    "@id": "z1706",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "11",
     "E1360f1": "Tafileh"
   },
   {
-    "@id": "e1707",
+    "@id": "z1707",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "5",
     "E1360f1": "Irbid"
   },
   {
-    "@id": "e1708",
+    "@id": "z1708",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "7",
     "E1360f1": "Jarash"
   },
   {
-    "@id": "e1709",
+    "@id": "z1709",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "10",
     "E1360f1": "Ma'an"
   },
   {
-    "@id": "e1710",
+    "@id": "z1710",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "4",
     "E1360f1": "Madaba"
   },
   {
-    "@id": "e1711",
+    "@id": "z1711",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "6",
     "E1360f1": "Mafraq"
   },
   {
-    "@id": "e1712",
+    "@id": "z1712",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f3": "3",
     "E1360f1": "Zarqa"
   },
   {
-    "@id": "e65712",
+    "@id": "z65712",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f1": "Administrative unit not available"

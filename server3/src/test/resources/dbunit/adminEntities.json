@@ -12,6 +12,7 @@
     "elements": [
       {
         "id": "_countryf1",
+        "visible": true,
         "label": "Name",
         "required": true,
         "type": {
@@ -20,6 +21,7 @@
       },
       {
         "id": "_countryf3",
+        "visible": true,
         "label": "Code",
         "required": true,
         "type": {
@@ -38,10 +40,11 @@
     "@id": "E1",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Province",
+    "_class_label": "Province",
     "elements": [
       {
         "id": "E1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -54,6 +57,7 @@
       },
       {
         "id": "E1f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -66,10 +70,11 @@
     "@id": "E2",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Territoire",
+    "_class_label": "Territoire",
     "elements": [
       {
         "id": "E2f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -89,6 +94,7 @@
       },
       {
         "id": "E2f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -101,6 +107,7 @@
       },
       {
         "id": "E2f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -110,64 +117,64 @@
     ]
   },
   {
-    "@id": "e1",
+    "@id": "z1",
     "@owner": "E1",
     "classId": "E1",
     "E1f1": "Kinshasa",
     "E1f3": "10"
   },
   {
-    "@id": "e2",
+    "@id": "z2",
     "@owner": "E1",
     "classId": "E1",
     "E1f1": "Sud Kivu",
     "E1f3": "20"
   },
   {
-    "@id": "e3",
+    "@id": "z3",
     "@owner": "E1",
     "classId": "E1",
     "E1f1": "Nord Kivu",
     "E1f3": "30"
   },
   {
-    "@id": "e4",
+    "@id": "z4",
     "@owner": "E1",
     "classId": "E1",
     "E1f1": "Bandundu",
     "E1f3": "40"
   },
   {
-    "@id": "e11",
+    "@id": "z11",
     "@owner": "E2",
     "classId": "E2",
     "E2f3": "201",
     "E2f1": "Walungu",
     "E2f2": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {
-    "@id": "e12",
+    "@id": "z12",
     "@owner": "E2",
     "classId": "E2",
     "E2f3": "202",
     "E2f1": "Shabunda",
     "E2f2": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {
-    "@id": "e13",
+    "@id": "z13",
     "@owner": "E2",
     "classId": "E2",
     "E2f3": "203",
     "E2f1": "Kalehe",
     "E2f2": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {

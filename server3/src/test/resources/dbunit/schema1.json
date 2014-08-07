@@ -12,6 +12,7 @@
     "elements": [
       {
         "id": "_countryf1",
+        "visible": true,
         "label": "Name",
         "required": true,
         "type": {
@@ -20,6 +21,7 @@
       },
       {
         "id": "_countryf3",
+        "visible": true,
         "label": "Code",
         "required": true,
         "type": {
@@ -38,10 +40,11 @@
     "@id": "E1",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Province",
+    "_class_label": "Province",
     "elements": [
       {
         "id": "E1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -54,6 +57,7 @@
       },
       {
         "id": "E1f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -66,10 +70,11 @@
     "@id": "L1",
     "@owner": "c1",
     "classId": "_class",
-    "label": "localite",
+    "_class_label": "localite",
     "elements": [
       {
         "id": "L1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -82,6 +87,7 @@
       },
       {
         "id": "L1f4",
+        "visible": true,
         "label": "Alternate Name",
         "required": false,
         "type": {
@@ -90,6 +96,7 @@
       },
       {
         "id": "L1f6",
+        "visible": true,
         "label": "Administrative Unit",
         "required": false,
         "type": {
@@ -105,6 +112,7 @@
       },
       {
         "id": "L1f5",
+        "visible": true,
         "label": "Geographic Position",
         "required": false,
         "type": {
@@ -137,29 +145,32 @@
   {
     "@id": "d1",
     "@owner": "U1",
-    "location": {
+    "_classf11": {
       "@type": "REFERENCE",
       "value": "c1"
     },
-    "name": "PEAR"
+    "classId": "_folder",
+    "_folder_label": "PEAR"
   },
   {
     "@id": "d2",
     "@owner": "U1",
-    "location": {
+    "_classf11": {
       "@type": "REFERENCE",
       "value": "c1"
     },
-    "name": "RRM"
+    "classId": "_folder",
+    "_folder_label": "RRM"
   },
   {
     "@id": "P1",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Partner",
+    "_class_label": "Partner",
     "elements": [
       {
         "id": "P1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -172,6 +183,7 @@
       },
       {
         "id": "P1f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_description"
@@ -188,10 +200,11 @@
     "@id": "P2",
     "@owner": "d2",
     "classId": "_class",
-    "label": "Partner",
+    "_class_label": "Partner",
     "elements": [
       {
         "id": "P2f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -204,6 +217,7 @@
       },
       {
         "id": "P2f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_description"
@@ -226,10 +240,11 @@
     "@id": "a1",
     "@owner": "d1",
     "classId": "_class",
-    "label": "NFI",
+    "_class_label": "NFI",
     "elements": [
       {
         "id": "a1f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -245,6 +260,7 @@
       },
       {
         "id": "a1f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -253,6 +269,7 @@
       },
       {
         "id": "a1f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -261,6 +278,7 @@
       },
       {
         "id": "a1f11",
+        "visible": true,
         "label": "localite",
         "required": true,
         "type": {
@@ -281,6 +299,7 @@
         "elements": [
           {
             "id": "i2",
+            "visible": true,
             "label": "kits",
             "required": false,
             "type": {
@@ -294,6 +313,7 @@
       },
       {
         "id": "Q1",
+        "visible": true,
         "label": "Cause",
         "required": false,
         "type": {
@@ -301,10 +321,12 @@
             "values": [
               {
                 "id": "t2",
+                "@type": "enumerated",
                 "label": "Deplacement"
               },
               {
                 "id": "t1",
+                "@type": "enumerated",
                 "label": "Retour"
               }
             ],
@@ -321,6 +343,7 @@
         "elements": [
           {
             "id": "i1",
+            "visible": true,
             "label": "beneficiaries",
             "required": false,
             "type": {
@@ -334,6 +357,7 @@
       },
       {
         "id": "a1f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
@@ -346,10 +370,11 @@
     "@id": "a2",
     "@owner": "d1",
     "classId": "_class",
-    "label": "empty activity",
+    "_class_label": "empty activity",
     "elements": [
       {
         "id": "a2f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -365,6 +390,7 @@
       },
       {
         "id": "a2f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -373,6 +399,7 @@
       },
       {
         "id": "a2f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -381,6 +408,7 @@
       },
       {
         "id": "a2f11",
+        "visible": true,
         "label": "localite",
         "required": true,
         "type": {
@@ -396,6 +424,7 @@
       },
       {
         "id": "a2f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {

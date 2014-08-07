@@ -12,6 +12,7 @@
     "elements": [
       {
         "id": "_countryf1",
+        "visible": true,
         "label": "Name",
         "required": true,
         "type": {
@@ -20,6 +21,7 @@
       },
       {
         "id": "_countryf3",
+        "visible": true,
         "label": "Code",
         "required": true,
         "type": {
