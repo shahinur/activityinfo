@@ -1,5 +1,6 @@
 package org.activityinfo.ui.client.service;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.UnmodifiableIterator;
@@ -11,6 +12,7 @@ import org.activityinfo.model.system.FolderClass;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +31,7 @@ public class TestResourceStore implements ResourceStore {
     public TestResourceStore load(String resourceName) throws IOException {
         JsonParser parser = new JsonParser();
         JsonArray resourceArray;
-        try (InputStreamReader reader = new InputStreamReader(getClass().getResourceAsStream(resourceName))) {
+        try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(resourceName), Charsets.UTF_8)) {
             resourceArray = parser.parse(reader).getAsJsonArray();
         }
 
