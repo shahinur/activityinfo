@@ -12,6 +12,7 @@
     "elements": [
       {
         "id": "_countryf1",
+        "visible": true,
         "label": "Name",
         "required": true,
         "type": {
@@ -20,6 +21,7 @@
       },
       {
         "id": "_countryf3",
+        "visible": true,
         "label": "Code",
         "required": true,
         "type": {
@@ -38,10 +40,11 @@
     "@id": "E1",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Province",
+    "_class_label": "Province",
     "elements": [
       {
         "id": "E1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -54,6 +57,7 @@
       },
       {
         "id": "E1f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -66,10 +70,11 @@
     "@id": "E2",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Territoire",
+    "_class_label": "Territoire",
     "elements": [
       {
         "id": "E2f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -89,6 +94,7 @@
       },
       {
         "id": "E2f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -101,6 +107,7 @@
       },
       {
         "id": "E2f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -110,96 +117,97 @@
     ]
   },
   {
-    "@id": "e1",
+    "@id": "z1",
     "@owner": "E1",
     "classId": "E1",
     "E1f1": "Kinshasa",
     "E1f3": "10"
   },
   {
-    "@id": "e2",
+    "@id": "z2",
     "@owner": "E1",
     "classId": "E1",
     "E1f1": "Sud Kivu",
     "E1f3": "20"
   },
   {
-    "@id": "e3",
+    "@id": "z3",
     "@owner": "E1",
     "classId": "E1",
     "E1f1": "Nord Kivu",
     "E1f3": "30"
   },
   {
-    "@id": "e4",
+    "@id": "z4",
     "@owner": "E1",
     "classId": "E1",
     "E1f1": "Ituri",
     "E1f3": "40"
   },
   {
-    "@id": "e10",
+    "@id": "z10",
     "@owner": "E2",
     "classId": "E2",
     "E2f3": "203",
     "E2f1": "Bukavu",
     "E2f2": {
       "@type": "REFERENCE",
-      "value": "e4"
+      "value": "z4"
     }
   },
   {
-    "@id": "e11",
+    "@id": "z11",
     "@owner": "E2",
     "classId": "E2",
     "E2f3": "201",
     "E2f1": "Walungu",
     "E2f2": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {
-    "@id": "e12",
+    "@id": "z12",
     "@owner": "E2",
     "classId": "E2",
     "E2f3": "202",
     "E2f1": "Shabunda",
     "E2f2": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {
-    "@id": "e13",
+    "@id": "z13",
     "@owner": "E2",
     "classId": "E2",
     "E2f3": "203",
     "E2f1": "Kalehe",
     "E2f2": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {
-    "@id": "e21",
+    "@id": "z21",
     "@owner": "E2",
     "classId": "E2",
     "E2f3": "203",
     "E2f1": "Irumu",
     "E2f2": {
       "@type": "REFERENCE",
-      "value": "e4"
+      "value": "z4"
     }
   },
   {
     "@id": "L1",
     "@owner": "c1",
     "classId": "_class",
-    "label": "localite",
+    "_class_label": "localite",
     "elements": [
       {
         "id": "L1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -212,6 +220,7 @@
       },
       {
         "id": "L1f4",
+        "visible": true,
         "label": "Alternate Name",
         "required": false,
         "type": {
@@ -220,6 +229,7 @@
       },
       {
         "id": "L1f6",
+        "visible": true,
         "label": "Administrative Unit",
         "required": false,
         "type": {
@@ -236,6 +246,7 @@
       },
       {
         "id": "L1f5",
+        "visible": true,
         "label": "Geographic Position",
         "required": false,
         "type": {
@@ -248,10 +259,11 @@
     "@id": "L2",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Health Center",
+    "_class_label": "Health Center",
     "elements": [
       {
         "id": "L2f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -264,6 +276,7 @@
       },
       {
         "id": "L2f4",
+        "visible": true,
         "label": "Alternate Name",
         "required": false,
         "type": {
@@ -272,6 +285,7 @@
       },
       {
         "id": "L2f6",
+        "visible": true,
         "label": "Administrative Unit",
         "required": false,
         "type": {
@@ -288,6 +302,7 @@
       },
       {
         "id": "L2f5",
+        "visible": true,
         "label": "Geographic Position",
         "required": false,
         "type": {
@@ -308,7 +323,7 @@
     },
     "L1f6": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {
@@ -323,7 +338,7 @@
     },
     "L1f6": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {
@@ -333,7 +348,7 @@
     "L1f1": "Boga",
     "L1f6": {
       "@type": "REFERENCE",
-      "value": "e4"
+      "value": "z4"
     }
   },
   {
@@ -348,7 +363,7 @@
     },
     "L1f6": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     }
   },
   {
@@ -357,7 +372,7 @@
     "classId": "L2",
     "L2f6": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     },
     "L2f5": {
       "@type": "GEOGRAPHIC_POINT",
@@ -417,47 +432,52 @@
   {
     "@id": "d1",
     "@owner": "U1",
-    "location": {
+    "_classf11": {
       "@type": "REFERENCE",
       "value": "c1"
     },
-    "name": "PEAR"
+    "classId": "_folder",
+    "_folder_label": "PEAR"
   },
   {
     "@id": "d2",
     "@owner": "U1",
-    "location": {
+    "_classf11": {
       "@type": "REFERENCE",
       "value": "c1"
     },
-    "name": "PEAR Plus"
+    "classId": "_folder",
+    "_folder_label": "PEAR Plus"
   },
   {
     "@id": "d3",
     "@owner": "U1",
-    "location": {
+    "_classf11": {
       "@type": "REFERENCE",
       "value": "c1"
     },
-    "name": "Alpha"
+    "classId": "_folder",
+    "_folder_label": "Alpha"
   },
   {
     "@id": "d4",
     "@owner": "U4",
-    "location": {
+    "_classf11": {
       "@type": "REFERENCE",
       "value": "c1"
     },
-    "name": "Public"
+    "classId": "_folder",
+    "_folder_label": "Public"
   },
   {
     "@id": "P1",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Partner",
+    "_class_label": "Partner",
     "elements": [
       {
         "id": "P1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -470,6 +490,7 @@
       },
       {
         "id": "P1f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_description"
@@ -486,10 +507,11 @@
     "@id": "P2",
     "@owner": "d2",
     "classId": "_class",
-    "label": "Partner",
+    "_class_label": "Partner",
     "elements": [
       {
         "id": "P2f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -502,6 +524,7 @@
       },
       {
         "id": "P2f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_description"
@@ -518,10 +541,11 @@
     "@id": "P3",
     "@owner": "d3",
     "classId": "_class",
-    "label": "Partner",
+    "_class_label": "Partner",
     "elements": [
       {
         "id": "P3f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -534,6 +558,7 @@
       },
       {
         "id": "P3f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_description"
@@ -550,10 +575,11 @@
     "@id": "P4",
     "@owner": "d4",
     "classId": "_class",
-    "label": "Partner",
+    "_class_label": "Partner",
     "elements": [
       {
         "id": "P4f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -566,6 +592,7 @@
       },
       {
         "id": "P4f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_description"
@@ -606,10 +633,11 @@
     "@id": "R3",
     "@owner": "d3",
     "classId": "_class",
-    "label": "Projects",
+    "_class_label": "Projects",
     "elements": [
       {
         "id": "R3f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -622,6 +650,7 @@
       },
       {
         "id": "R3f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -645,10 +674,11 @@
     "@id": "R1",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Projects",
+    "_class_label": "Projects",
     "elements": [
       {
         "id": "R1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -661,6 +691,7 @@
       },
       {
         "id": "R1f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -701,10 +732,11 @@
     "@id": "a1",
     "@owner": "C1c4a0524b",
     "classId": "_class",
-    "label": "NFI",
+    "_class_label": "NFI",
     "elements": [
       {
         "id": "a1f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -720,6 +752,7 @@
       },
       {
         "id": "a1f8",
+        "visible": true,
         "label": "Project",
         "required": false,
         "type": {
@@ -735,6 +768,7 @@
       },
       {
         "id": "a1f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -743,6 +777,7 @@
       },
       {
         "id": "a1f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -751,6 +786,7 @@
       },
       {
         "id": "a1f11",
+        "visible": true,
         "label": "localite",
         "required": true,
         "type": {
@@ -771,6 +807,7 @@
         "elements": [
           {
             "id": "i2",
+            "visible": true,
             "label": "baches",
             "required": false,
             "type": {
@@ -782,6 +819,7 @@
           },
           {
             "id": "i103",
+            "visible": true,
             "label": "Nb. of distributions",
             "required": false,
             "type": {
@@ -793,6 +831,7 @@
           },
           {
             "id": "i675",
+            "visible": true,
             "label": "A kivu thing",
             "required": false,
             "type": {
@@ -806,6 +845,7 @@
       },
       {
         "id": "Q2",
+        "visible": true,
         "label": "contenu du kit",
         "required": false,
         "type": {
@@ -813,10 +853,12 @@
             "values": [
               {
                 "id": "t3",
+                "@type": "enumerated",
                 "label": "Casserole"
               },
               {
                 "id": "t4",
+                "@type": "enumerated",
                 "label": "Soap"
               }
             ],
@@ -828,6 +870,7 @@
       },
       {
         "id": "Q3",
+        "visible": true,
         "label": "Something about Kivu",
         "required": false,
         "type": {
@@ -845,6 +888,7 @@
         "elements": [
           {
             "id": "i1",
+            "visible": true,
             "label": "beneficiaries",
             "required": false,
             "type": {
@@ -858,6 +902,7 @@
       },
       {
         "id": "Q1",
+        "visible": true,
         "label": "cause",
         "required": false,
         "type": {
@@ -865,10 +910,12 @@
             "values": [
               {
                 "id": "t2",
+                "@type": "enumerated",
                 "label": "Deplacement"
               },
               {
                 "id": "t1",
+                "@type": "enumerated",
                 "label": "Catastrophe Naturelle"
               }
             ],
@@ -880,6 +927,7 @@
       },
       {
         "id": "i12451",
+        "visible": true,
         "label": "calculated",
         "required": false,
         "type": {
@@ -891,6 +939,7 @@
       },
       {
         "id": "a1f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
@@ -903,10 +952,11 @@
     "@id": "a2",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Distribution de Kits Scolaire",
+    "_class_label": "Distribution de Kits Scolaire",
     "elements": [
       {
         "id": "a2f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -922,6 +972,7 @@
       },
       {
         "id": "a2f8",
+        "visible": true,
         "label": "Project",
         "required": false,
         "type": {
@@ -937,6 +988,7 @@
       },
       {
         "id": "a2f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -945,6 +997,7 @@
       },
       {
         "id": "a2f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -953,6 +1006,7 @@
       },
       {
         "id": "a2f11",
+        "visible": true,
         "label": "localite",
         "required": true,
         "type": {
@@ -968,6 +1022,7 @@
       },
       {
         "id": "Q1",
+        "visible": true,
         "label": "cause",
         "required": false,
         "type": {
@@ -975,10 +1030,12 @@
             "values": [
               {
                 "id": "t2",
+                "@type": "enumerated",
                 "label": "Deplacement"
               },
               {
                 "id": "t1",
+                "@type": "enumerated",
                 "label": "Catastrophe Naturelle"
               }
             ],
@@ -990,6 +1047,7 @@
       },
       {
         "id": "a2f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
@@ -1002,10 +1060,11 @@
     "@id": "a3",
     "@owner": "d2",
     "classId": "_class",
-    "label": "Appui aux centres de santé",
+    "_class_label": "Appui aux centres de santé",
     "elements": [
       {
         "id": "a3f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -1021,6 +1080,7 @@
       },
       {
         "id": "a3f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -1029,6 +1089,7 @@
       },
       {
         "id": "a3f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -1037,6 +1098,7 @@
       },
       {
         "id": "a3f11",
+        "visible": true,
         "label": "localite",
         "required": true,
         "type": {
@@ -1057,6 +1119,7 @@
         "elements": [
           {
             "id": "i5",
+            "visible": true,
             "label": "Utilisaton rate",
             "required": false,
             "type": {
@@ -1070,6 +1133,7 @@
       },
       {
         "id": "a3f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
@@ -1082,10 +1146,11 @@
     "@id": "a4",
     "@owner": "d2",
     "classId": "_class",
-    "label": "Reunification of child soliders",
+    "_class_label": "Reunification of child soliders",
     "elements": [
       {
         "id": "a4f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -1101,6 +1166,7 @@
       },
       {
         "id": "a4f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -1109,6 +1175,7 @@
       },
       {
         "id": "a4f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -1117,6 +1184,7 @@
       },
       {
         "id": "a4f11",
+        "visible": true,
         "label": "Territorie",
         "required": true,
         "type": {
@@ -1132,6 +1200,7 @@
       },
       {
         "id": "i6",
+        "visible": true,
         "label": "Number of children",
         "required": false,
         "type": {
@@ -1143,6 +1212,7 @@
       },
       {
         "id": "a4f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
@@ -1155,10 +1225,11 @@
     "@id": "a5",
     "@owner": "d2",
     "classId": "_class",
-    "label": "Kivu water distribution",
+    "_class_label": "Kivu water distribution",
     "elements": [
       {
         "id": "a5f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -1174,6 +1245,7 @@
       },
       {
         "id": "a5f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -1182,6 +1254,7 @@
       },
       {
         "id": "a5f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -1190,6 +1263,7 @@
       },
       {
         "id": "a5f11",
+        "visible": true,
         "label": "Territorie",
         "required": true,
         "type": {
@@ -1205,6 +1279,7 @@
       },
       {
         "id": "a5f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
@@ -1217,10 +1292,11 @@
     "@id": "a41",
     "@owner": "d4",
     "classId": "_class",
-    "label": "Public Activity",
+    "_class_label": "Public Activity",
     "elements": [
       {
         "id": "a41f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -1236,6 +1312,7 @@
       },
       {
         "id": "a41f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -1244,6 +1321,7 @@
       },
       {
         "id": "a41f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -1252,6 +1330,7 @@
       },
       {
         "id": "a41f11",
+        "visible": true,
         "label": "Territorie",
         "required": true,
         "type": {
@@ -1267,6 +1346,7 @@
       },
       {
         "id": "a41f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
@@ -1441,7 +1521,7 @@
     "classId": "a4",
     "a4f11": {
       "@type": "REFERENCE",
-      "value": "e11"
+      "value": "z11"
     }
   },
   {
@@ -1454,7 +1534,7 @@
     "classId": "a4",
     "a4f11": {
       "@type": "REFERENCE",
-      "value": "e12"
+      "value": "z12"
     }
   },
   {

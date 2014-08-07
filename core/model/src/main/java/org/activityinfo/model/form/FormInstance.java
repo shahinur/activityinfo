@@ -94,9 +94,10 @@ public class FormInstance implements IsResource {
         return classId;
     }
 
-    public void setOwnerId(ResourceId ownerId) {
+    public FormInstance setOwnerId(ResourceId ownerId) {
         assert ownerId != null;
         this.ownerId = ownerId;
+        return this;
     }
 
     public ResourceId getOwnerId() {
