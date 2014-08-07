@@ -1,5 +1,6 @@
 package org.activityinfo.model.type;
 
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
@@ -57,6 +58,8 @@ public interface FieldTypeClass {
     public static final FieldTypeClass GEOGRAPHIC_POINT = GeoPointType.TYPE_CLASS;
 
     public static final FieldTypeClass BOOLEAN = BooleanType.TYPE_CLASS;
+
+    public static final FieldTypeClass BARCODE = BarcodeType.TYPE_CLASS;
 
     public static final ParametrizedFieldTypeClass REFERENCE = ReferenceType.TYPE_CLASS;
 
