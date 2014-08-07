@@ -67,6 +67,7 @@ public class FormResource {
         html.head.model = new Model();
         html.head.model.instance = new Instance();
         html.head.model.instance.data = new Data();
+        html.head.model.instance.data.id = formClass.getId().asString();
         html.head.model.instance.data.meta = new Meta();
         html.head.model.instance.data.meta.instanceID = new InstanceId();
         html.head.model.instance.data.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
