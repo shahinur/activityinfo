@@ -28,9 +28,13 @@ class MySqlResourceWriter implements ResourceWriter {
     }
 
     private void deleteAllResources(Connection connection) throws SQLException {
-        System.out.println("Truncating resource table...");
+        System.out.println("Dropping and recreating resource table...");
         Statement statement = connection.createStatement();
-        statement.executeUpdate("truncate resource");
+        statement.executeUpdate("drop table resource");
+        statement.executeUpdate("create table resource (id varchar(64) binary primary key, " +
+                                "ownerId varchar(64) binary not null," +
+                                "classId varchar(64) binary," +
+                                "json longtext)");
         statement.close();
         connection.commit();
         System.out.println("Resource table truncated.");

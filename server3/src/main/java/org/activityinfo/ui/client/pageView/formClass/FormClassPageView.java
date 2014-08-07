@@ -8,8 +8,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.chrome.PageHeader;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
@@ -65,7 +66,7 @@ public class FormClassPageView implements InstancePageView {
 
     public Promise<Void> show(InstanceViewModel view) {
 
-        pageHeader.setPageTitle(view.getInstance().getString(FormClass.LABEL_FIELD_ID));
+        pageHeader.setPageTitle(view.getInstance().getString(ResourceId.create(FormClass.LABEL_FIELD_ID)));
         pageHeader.setIconStyle("fa fa-edit");
 
         for (String tab : tabs.keySet()) {
