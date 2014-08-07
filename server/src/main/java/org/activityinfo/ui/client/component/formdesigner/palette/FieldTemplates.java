@@ -2,6 +2,7 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -40,6 +41,7 @@ public class FieldTemplates {
         items.add(new RadioButtonTemplate());
 
         items.add(new TypeClassTemplate(GeoPointType.TYPE_CLASS));
+        items.add(new TypeClassTemplate(BarcodeType.TYPE_CLASS));
 
         return items;
     }

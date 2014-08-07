@@ -31,6 +31,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -102,6 +103,8 @@ public class FormFieldWidgetFactory {
                 return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) type, valueUpdater);
             }
             return createReferenceWidget(field, valueUpdater);
+        } else if (type instanceof BarcodeType) {
+            return Promise.resolved(new BarcodeFieldWidget(valueUpdater));
         }
 
         Log.error("Unexpected field type " + type.getTypeClass());
