@@ -72,7 +72,7 @@ public class FormResource {
         html.head.model.instance.data.meta.instanceID = new InstanceId();
         html.head.model.instance.data.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
         for (FormField formField : formFields) {
-            QName qName = new QName("http://www.w3.org/2002/xforms", formField.getId().asString());
+            QName qName = new QName("http://www.w3.org/2002/xforms", "field_" + formField.getId().asString());
             html.head.model.instance.data.jaxbElement.add(new JAXBElement<>(qName, String.class, ""));
         }
         html.head.model.bind = Lists.newArrayListWithCapacity(formFields.size() + 1);
@@ -85,7 +85,7 @@ public class FormResource {
         for (FormField formField : formFields) {
             OdkTypeAdapter odkTypeAdapter = OdkTypeAdapterFactory.fromFieldType(formField.getType());
             bind = new Bind();
-            bind.nodeset = "/data/" + formField.getId().asString();
+            bind.nodeset = "/data/field_" + formField.getId().asString();
             bind.type = odkTypeAdapter.getModelBindType();
             if (formField.isReadOnly()) bind.readonly = "true()";
             //TODO Fix this
@@ -98,13 +98,13 @@ public class FormResource {
         for (FormField formField : formFields) {
             OdkTypeAdapter odkTypeAdapter = OdkTypeAdapterFactory.fromFieldType(formField.getType());
             //FIXME Temporary hack to work around FormClass.fromResource() apparently being incomplete
-            JAXBElement<PresentationElement> presentationElement = odkTypeAdapter.createPresentationElement("/data/" +
-                    formField.getId().asString(), formField.getLabel(), formField.getDescription());
+            JAXBElement<PresentationElement> presentationElement = odkTypeAdapter.createPresentationElement(
+                    "/data/field_" + formField.getId().asString(), formField.getLabel(), formField.getDescription());
             if (presentationElement.getValue().item != null && presentationElement.getValue().item.size() < 1) continue;
             html.body.jaxbElement.add(presentationElement);
             /* End of temporary hack
-            html.body.jaxbElement.add(odkTypeAdapter.createPresentationElement("/data/" + formField.getId().asString(),
-                    formField.getLabel(), formField.getDescription()));*/
+            html.body.jaxbElement.add(odkTypeAdapter.createPresentationElement("/data/field_" +
+                    formField.getId().asString(), formField.getLabel(), formField.getDescription()));*/
         }
         return Response.ok(html).build();
     }
