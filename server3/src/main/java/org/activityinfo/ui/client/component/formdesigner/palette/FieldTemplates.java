@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
@@ -42,6 +43,7 @@ public class FieldTemplates {
 
         items.add(new TypeClassTemplate(GeoPointType.TYPE_CLASS));
         items.add(new TypeClassTemplate(BarcodeType.TYPE_CLASS));
+        items.add(new TypeClassTemplate(ImageType.TYPE_CLASS));
 
         return items;
     }

@@ -23,16 +23,11 @@ package org.activityinfo.ui.client.component.form.field;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.ValueUpdater;
-import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.formTree.FieldPath;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.FieldType;
@@ -41,6 +36,7 @@ import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -102,6 +98,9 @@ public class FormFieldWidgetFactory {
 
         } else if (type instanceof BooleanType) {
             return Promise.resolved(new BooleanFieldWidget(valueUpdater));
+
+        }  else if (type instanceof ImageType) {
+            return Promise.resolved(new ImageUploadFieldWidget(valueUpdater));
 
         } else if (type instanceof ReferenceType) {
             if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
