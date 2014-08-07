@@ -162,6 +162,16 @@ public class PropertyBag<T extends PropertyBag> {
     }
 
     /**
+     * @return the value of this field as a {@code integer}
+     * @throws java.lang.ClassCastException if the value of the property is not a Number
+     * @throws java.lang.NullPointerException if there is no value for the property
+     */
+    public int getInt(String propertyName) {
+        Number value = (Number) getNonNullPropertyValue(propertyName);
+        return value.intValue();
+    }
+
+    /**
      * Sets the named property to the given {@code record}, or
      * removes the property if {@code record} is {@code null}.
      */
