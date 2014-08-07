@@ -13,7 +13,6 @@ import org.activityinfo.core.shared.importing.model.MapExistingAction;
 import org.activityinfo.core.shared.importing.source.SourceColumn;
 import org.activityinfo.core.shared.importing.strategy.FieldImportStrategies;
 import org.activityinfo.core.shared.importing.validation.ValidatedRowTable;
-import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
@@ -23,6 +22,7 @@ import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.importDialog.Importer;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
+import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -88,7 +88,6 @@ public class ImportSimpleTest extends AbstractImporterTest {
 
         assertResolves(importer.persist(importModel));
 
-        resourceLocator.dump();
 
         // AND... verify
         ResourceId adminFieldId = field(HOUSEHOLD_SURVEY_FORM_CLASS, LOCATION_FIELD);
