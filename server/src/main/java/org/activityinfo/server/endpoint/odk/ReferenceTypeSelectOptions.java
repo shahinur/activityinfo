@@ -1,10 +1,11 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.server.endpoint.odk.xform.Item;
+import org.activityinfo.service.lookup.ReferenceChoice;
+import org.activityinfo.service.lookup.ReferenceProvider;
 
 import java.util.List;
 
@@ -12,13 +13,14 @@ class ReferenceTypeSelectOptions implements SelectOptions {
     final private Cardinality cardinality;
     final private List<Item> item;
 
-    ReferenceTypeSelectOptions(ReferenceType referenceType) {
+    ReferenceTypeSelectOptions(ReferenceType referenceType, ReferenceProvider referenceProvider) {
         cardinality = referenceType.getCardinality();
-        item = Lists.newArrayListWithCapacity(referenceType.getRange().size());
-        for (ResourceId resourceId : referenceType.getRange()) {
+        item = Lists.newArrayList();
+
+        for (ReferenceChoice choice : referenceProvider.getChoices(referenceType.getRange())) {
             Item item = new Item();
-            item.label = "";    //TODO Set label to correct value
-            item.value = resourceId.asString();
+            item.label = choice.getLabel();
+            item.value = choice.getId().asString();
             this.item.add(item);
         }
     }

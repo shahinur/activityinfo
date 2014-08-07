@@ -4,11 +4,13 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.endpoint.odk.xform.Html;
+import org.activityinfo.service.lookup.ReferenceProvider;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.ResourceStore;
 import org.junit.Before;
@@ -43,7 +45,9 @@ public class FormResourceTest {
                 throw new UnsupportedOperationException();
             }
         };
-        resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")));
+        Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
+        OdkTypeAdapterFactory factory = new OdkTypeAdapterFactory(new ReferenceProvider());
+        resource = new FormResource(store, authProvider, factory);
     }
 
     @Test
