@@ -35,17 +35,20 @@ public class FormResource {
 
     private Provider<AuthenticatedUser> authProvider;
     private ResourceStore locator;
+    private OdkTypeAdapterFactory factory;
 
     @Inject
-    public FormResource(ResourceStore locator, OdkAuthProvider authProvider) {
+    public FormResource(ResourceStore locator, OdkAuthProvider authProvider, OdkTypeAdapterFactory factory) {
         this.locator = locator;
         this.authProvider = authProvider;
+        this.factory = factory;
     }
 
     @VisibleForTesting
-    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider) {
+    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider, OdkTypeAdapterFactory factory) {
         this.authProvider = authProvider;
         this.locator = locator;
+        this.factory = factory;
     }
 
     @GET @Produces(MediaType.TEXT_XML)
@@ -83,7 +86,7 @@ public class FormResource {
         bind.calculate = "concat('uuid:',uuid())";
         html.head.model.bind.add(bind);
         for (FormField formField : formFields) {
-            OdkTypeAdapter odkTypeAdapter = OdkTypeAdapterFactory.fromFieldType(formField.getType());
+            OdkTypeAdapter odkTypeAdapter = factory.fromFieldType(formField.getType());
             bind = new Bind();
             bind.nodeset = "/data/field_" + formField.getId().asString();
             bind.type = odkTypeAdapter.getModelBindType();
@@ -96,7 +99,7 @@ public class FormResource {
         html.body = new Body();
         html.body.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
         for (FormField formField : formFields) {
-            OdkTypeAdapter odkTypeAdapter = OdkTypeAdapterFactory.fromFieldType(formField.getType());
+            OdkTypeAdapter odkTypeAdapter = factory.fromFieldType(formField.getType());
             //FIXME Temporary hack to work around FormClass.fromResource() apparently being incomplete
             JAXBElement<PresentationElement> presentationElement = odkTypeAdapter.createPresentationElement(
                     "/data/field_" + formField.getId().asString(), formField.getLabel(), formField.getDescription());
