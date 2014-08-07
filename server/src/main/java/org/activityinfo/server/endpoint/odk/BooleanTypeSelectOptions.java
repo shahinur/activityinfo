@@ -12,10 +12,10 @@ class BooleanTypeSelectOptions implements SelectOptions {
     BooleanTypeSelectOptions() {
         Item no = new Item();
         no.label = "no";
-        no.value = "false";
+        no.value = "FALSE";
         Item yes = new Item();
         yes.label = "yes";
-        yes.value = "true";
+        yes.value = "TRUE";
         item = Lists.newArrayList(yes, no);
     }
 
