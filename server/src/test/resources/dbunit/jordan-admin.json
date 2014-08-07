@@ -12,6 +12,7 @@
     "elements": [
       {
         "id": "_countryf1",
+        "visible": true,
         "label": "Name",
         "required": true,
         "type": {
@@ -20,6 +21,7 @@
       },
       {
         "id": "_countryf3",
+        "visible": true,
         "label": "Code",
         "required": true,
         "type": {
@@ -39,10 +41,11 @@
     "@id": "E1360",
     "@owner": "c360",
     "classId": "_class",
-    "label": "Governorate",
+    "_class_label": "Governorate",
     "elements": [
       {
         "id": "E1360f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -62,6 +65,7 @@
       },
       {
         "id": "E1360f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -74,6 +78,7 @@
       },
       {
         "id": "E1360f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -86,10 +91,11 @@
     "@id": "E1520",
     "@owner": "c360",
     "classId": "_class",
-    "label": "Region",
+    "_class_label": "Region",
     "elements": [
       {
         "id": "E1520f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -102,6 +108,7 @@
       },
       {
         "id": "E1520f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -114,10 +121,11 @@
     "@id": "E1525",
     "@owner": "c360",
     "classId": "_class",
-    "label": "District",
+    "_class_label": "District",
     "elements": [
       {
         "id": "E1525f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -137,6 +145,7 @@
       },
       {
         "id": "E1525f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -149,6 +158,7 @@
       },
       {
         "id": "E1525f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -161,10 +171,11 @@
     "@id": "E1526",
     "@owner": "c360",
     "classId": "_class",
-    "label": "Subdistrict",
+    "_class_label": "Subdistrict",
     "elements": [
       {
         "id": "E1526f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -184,6 +195,7 @@
       },
       {
         "id": "E1526f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -196,6 +208,7 @@
       },
       {
         "id": "E1526f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -208,10 +221,11 @@
     "@id": "E1527",
     "@owner": "c360",
     "classId": "_class",
-    "label": "Refugee Camps",
+    "_class_label": "Refugee Camps",
     "elements": [
       {
         "id": "E1527f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -231,6 +245,7 @@
       },
       {
         "id": "E1527f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -243,6 +258,7 @@
       },
       {
         "id": "E1527f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -255,10 +271,11 @@
     "@id": "E1528",
     "@owner": "c360",
     "classId": "_class",
-    "label": "Camp Districts",
+    "_class_label": "Camp Districts",
     "elements": [
       {
         "id": "E1528f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -278,6 +295,7 @@
       },
       {
         "id": "E1528f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -290,6 +308,7 @@
       },
       {
         "id": "E1528f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -299,1751 +318,1752 @@
     ]
   },
   {
-    "@id": "e1701",
+    "@id": "z1701",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323215"
+      "value": "z323215"
     },
     "E1360f1": "Ajlun"
   },
   {
-    "@id": "e1702",
+    "@id": "z1702",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323216"
+      "value": "z323216"
     },
     "E1360f1": "Al Balqa"
   },
   {
-    "@id": "e1703",
+    "@id": "z1703",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323217"
+      "value": "z323217"
     },
     "E1360f1": "Aqaba"
   },
   {
-    "@id": "e1704",
+    "@id": "z1704",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323217"
+      "value": "z323217"
     },
     "E1360f1": "Karak"
   },
   {
-    "@id": "e1705",
+    "@id": "z1705",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323216"
+      "value": "z323216"
     },
     "E1360f1": "Amman"
   },
   {
-    "@id": "e1706",
+    "@id": "z1706",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323217"
+      "value": "z323217"
     },
     "E1360f1": "Tafileh"
   },
   {
-    "@id": "e1707",
+    "@id": "z1707",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323215"
+      "value": "z323215"
     },
     "E1360f1": "Irbid"
   },
   {
-    "@id": "e1708",
+    "@id": "z1708",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323215"
+      "value": "z323215"
     },
     "E1360f1": "Jarash"
   },
   {
-    "@id": "e1709",
+    "@id": "z1709",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323217"
+      "value": "z323217"
     },
     "E1360f1": "Ma'an"
   },
   {
-    "@id": "e1710",
+    "@id": "z1710",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323216"
+      "value": "z323216"
     },
     "E1360f1": "Madaba"
   },
   {
-    "@id": "e1711",
+    "@id": "z1711",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323215"
+      "value": "z323215"
     },
     "E1360f1": "Mafraq"
   },
   {
-    "@id": "e1712",
+    "@id": "z1712",
     "@owner": "E1360",
     "classId": "E1360",
     "E1360f2": {
       "@type": "REFERENCE",
-      "value": "e323216"
+      "value": "z323216"
     },
     "E1360f1": "Zarqa"
   },
   {
-    "@id": "e323215",
+    "@id": "z323215",
     "@owner": "E1520",
     "classId": "E1520",
     "E1520f1": "North"
   },
   {
-    "@id": "e323216",
+    "@id": "z323216",
     "@owner": "E1520",
     "classId": "E1520",
     "E1520f1": "Central"
   },
   {
-    "@id": "e323217",
+    "@id": "z323217",
     "@owner": "E1520",
     "classId": "E1520",
     "E1520f1": "South"
   },
   {
-    "@id": "e325550",
+    "@id": "z325550",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1702"
+      "value": "z1702"
     },
     "classId": "E1525",
     "E1525f1": "Ash Shuna Al Janoubyah"
   },
   {
-    "@id": "e325551",
+    "@id": "z325551",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1704"
+      "value": "z1704"
     },
     "classId": "E1525",
     "E1525f1": "Aghwar Janoobiyah"
   },
   {
-    "@id": "e325552",
+    "@id": "z325552",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "Bani Kinana"
   },
   {
-    "@id": "e325553",
+    "@id": "z325553",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1702"
+      "value": "z1702"
     },
     "classId": "E1525",
     "E1525f1": "Mahis Wa Al Fuhays"
   },
   {
-    "@id": "e325554",
+    "@id": "z325554",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1701"
+      "value": "z1701"
     },
     "classId": "E1525",
     "E1525f1": "Kufranja"
   },
   {
-    "@id": "e325555",
+    "@id": "z325555",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1709"
+      "value": "z1709"
     },
     "classId": "E1525",
     "E1525f1": "Al Petra"
   },
   {
-    "@id": "e325556",
+    "@id": "z325556",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1709"
+      "value": "z1709"
     },
     "classId": "E1525",
     "E1525f1": "Al Husayniyya"
   },
   {
-    "@id": "e325557",
+    "@id": "z325557",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Mwaqqar"
   },
   {
-    "@id": "e325558",
+    "@id": "z325558",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Al Jamiah"
   },
   {
-    "@id": "e325559",
+    "@id": "z325559",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1712"
+      "value": "z1712"
     },
     "classId": "E1525",
     "E1525f1": "Ar Rusayfa"
   },
   {
-    "@id": "e325560",
+    "@id": "z325560",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat Amman"
   },
   {
-    "@id": "e325561",
+    "@id": "z325561",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "Al Wastiyya"
   },
   {
-    "@id": "e325562",
+    "@id": "z325562",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1704"
+      "value": "z1704"
     },
     "classId": "E1525",
     "E1525f1": "Ayy"
   },
   {
-    "@id": "e325563",
+    "@id": "z325563",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "Al Mazar Ash Shamali"
   },
   {
-    "@id": "e325564",
+    "@id": "z325564",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1706"
+      "value": "z1706"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat At Tafilah"
   },
   {
-    "@id": "e325565",
+    "@id": "z325565",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1702"
+      "value": "z1702"
     },
     "classId": "E1525",
     "E1525f1": "Ayn Al Basha"
   },
   {
-    "@id": "e325566",
+    "@id": "z325566",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1702"
+      "value": "z1702"
     },
     "classId": "E1525",
     "E1525f1": "Deir Alla"
   },
   {
-    "@id": "e325567",
+    "@id": "z325567",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1702"
+      "value": "z1702"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat As Salt"
   },
   {
-    "@id": "e325568",
+    "@id": "z325568",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "Bani Obayd"
   },
   {
-    "@id": "e325569",
+    "@id": "z325569",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Al Jiza"
   },
   {
-    "@id": "e325570",
+    "@id": "z325570",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1712"
+      "value": "z1712"
     },
     "classId": "E1525",
     "E1525f1": "Zarqa Qasabah"
   },
   {
-    "@id": "e325571",
+    "@id": "z325571",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1706"
+      "value": "z1706"
     },
     "classId": "E1525",
     "E1525f1": "Busayrah"
   },
   {
-    "@id": "e325572",
+    "@id": "z325572",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Sahab"
   },
   {
-    "@id": "e325573",
+    "@id": "z325573",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1711"
+      "value": "z1711"
     },
     "classId": "E1525",
     "E1525f1": "Badiah Shamaliyah Gharbiyah"
   },
   {
-    "@id": "e325574",
+    "@id": "z325574",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat Irbid"
   },
   {
-    "@id": "e325575",
+    "@id": "z325575",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1703"
+      "value": "z1703"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat Al Aqabah"
   },
   {
-    "@id": "e325576",
+    "@id": "z325576",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "At Tayba"
   },
   {
-    "@id": "e325577",
+    "@id": "z325577",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1703"
+      "value": "z1703"
     },
     "classId": "E1525",
     "E1525f1": "Al Quwayra"
   },
   {
-    "@id": "e325578",
+    "@id": "z325578",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1706"
+      "value": "z1706"
     },
     "classId": "E1525",
     "E1525f1": "Al Hasa"
   },
   {
-    "@id": "e325579",
+    "@id": "z325579",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "Al Aghwar Al Shamalyah"
   },
   {
-    "@id": "e325580",
+    "@id": "z325580",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1709"
+      "value": "z1709"
     },
     "classId": "E1525",
     "E1525f1": "Ash Shobak"
   },
   {
-    "@id": "e325581",
+    "@id": "z325581",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1704"
+      "value": "z1704"
     },
     "classId": "E1525",
     "E1525f1": "Al Qasr"
   },
   {
-    "@id": "e325582",
+    "@id": "z325582",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1704"
+      "value": "z1704"
     },
     "classId": "E1525",
     "E1525f1": "Al Mazar Al janoubi"
   },
   {
-    "@id": "e325583",
+    "@id": "z325583",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1704"
+      "value": "z1704"
     },
     "classId": "E1525",
     "E1525f1": "Al Qatrana"
   },
   {
-    "@id": "e325584",
+    "@id": "z325584",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Marka"
   },
   {
-    "@id": "e325585",
+    "@id": "z325585",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "Al Koura"
   },
   {
-    "@id": "e325586",
+    "@id": "z325586",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Wadi As Sir"
   },
   {
-    "@id": "e325587",
+    "@id": "z325587",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Naur"
   },
   {
-    "@id": "e325588",
+    "@id": "z325588",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1711"
+      "value": "z1711"
     },
     "classId": "E1525",
     "E1525f1": "Al-ruwaished"
   },
   {
-    "@id": "e325589",
+    "@id": "z325589",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1705"
+      "value": "z1705"
     },
     "classId": "E1525",
     "E1525f1": "Al Quaysmh"
   },
   {
-    "@id": "e325590",
+    "@id": "z325590",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1704"
+      "value": "z1704"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat Al Karak"
   },
   {
-    "@id": "e325591",
+    "@id": "z325591",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     },
     "classId": "E1525",
     "E1525f1": "Ar Ramtha"
   },
   {
-    "@id": "e325592",
+    "@id": "z325592",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1709"
+      "value": "z1709"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat Ma'an"
   },
   {
-    "@id": "e325593",
+    "@id": "z325593",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1710"
+      "value": "z1710"
     },
     "classId": "E1525",
     "E1525f1": "Theeban"
   },
   {
-    "@id": "e325594",
+    "@id": "z325594",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1708"
+      "value": "z1708"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat Jarash"
   },
   {
-    "@id": "e325595",
+    "@id": "z325595",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1712"
+      "value": "z1712"
     },
     "classId": "E1525",
     "E1525f1": "Al-Hashimiya"
   },
   {
-    "@id": "e325596",
+    "@id": "z325596",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1710"
+      "value": "z1710"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat Madaba"
   },
   {
-    "@id": "e325597",
+    "@id": "z325597",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1704"
+      "value": "z1704"
     },
     "classId": "E1525",
     "E1525f1": "Fqou"
   },
   {
-    "@id": "e325598",
+    "@id": "z325598",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1701"
+      "value": "z1701"
     },
     "classId": "E1525",
     "E1525f1": "Qasabat  Ajloun"
   },
   {
-    "@id": "e325599",
+    "@id": "z325599",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1711"
+      "value": "z1711"
     },
     "classId": "E1525",
     "E1525f1": "Badiah Shamaliyah"
   },
   {
-    "@id": "e325600",
+    "@id": "z325600",
     "@owner": "E1525",
     "E1525f2": {
       "@type": "REFERENCE",
-      "value": "e1711"
+      "value": "z1711"
     },
     "classId": "E1525",
     "E1525f1": "Mafraq Qasabah"
   },
   {
-    "@id": "e325601",
+    "@id": "z325601",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325550"
+      "value": "z325550"
     },
     "E1526f1": "Dead Sea"
   },
   {
-    "@id": "e325602",
+    "@id": "z325602",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325588"
+      "value": "z325588"
     },
     "E1526f1": "Al-ruwaished"
   },
   {
-    "@id": "e325603",
+    "@id": "z325603",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325594"
+      "value": "z325594"
     },
     "E1526f1": "Al-Mastaba"
   },
   {
-    "@id": "e325604",
+    "@id": "z325604",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325592"
+      "value": "z325592"
     },
     "E1526f1": "Adhrah"
   },
   {
-    "@id": "e325605",
+    "@id": "z325605",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325599"
+      "value": "z325599"
     },
     "E1526f1": "Um Al qutaien"
   },
   {
-    "@id": "e325606",
+    "@id": "z325606",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325551"
+      "value": "z325551"
     },
     "E1526f1": "Ghawr Al Mazr'ha"
   },
   {
-    "@id": "e325607",
+    "@id": "z325607",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325551"
+      "value": "z325551"
     },
     "E1526f1": "Al Malahat"
   },
   {
-    "@id": "e325608",
+    "@id": "z325608",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325560"
+      "value": "z325560"
     },
     "E1526f1": "Amman"
   },
   {
-    "@id": "e325609",
+    "@id": "z325609",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325590"
+      "value": "z325590"
     },
     "E1526f1": "Al Karak"
   },
   {
-    "@id": "e325610",
+    "@id": "z325610",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325577"
+      "value": "z325577"
     },
     "E1526f1": "Al Daysah"
   },
   {
-    "@id": "e325611",
+    "@id": "z325611",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325592"
+      "value": "z325592"
     },
     "E1526f1": "Ma'an"
   },
   {
-    "@id": "e325612",
+    "@id": "z325612",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325592"
+      "value": "z325592"
     },
     "E1526f1": "Ail"
   },
   {
-    "@id": "e325613",
+    "@id": "z325613",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325550"
+      "value": "z325550"
     },
     "E1526f1": "Ash Shuna Al Janoubyah"
   },
   {
-    "@id": "e325614",
+    "@id": "z325614",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325566"
+      "value": "z325566"
     },
     "E1526f1": "Deir Alla"
   },
   {
-    "@id": "e325615",
+    "@id": "z325615",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325558"
+      "value": "z325558"
     },
     "E1526f1": "Al Jamiah"
   },
   {
-    "@id": "e325616",
+    "@id": "z325616",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325551"
+      "value": "z325551"
     },
     "E1526f1": "Ghawr Al Safi"
   },
   {
-    "@id": "e325617",
+    "@id": "z325617",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325600"
+      "value": "z325600"
     },
     "E1526f1": "Bal'ama"
   },
   {
-    "@id": "e325618",
+    "@id": "z325618",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325570"
+      "value": "z325570"
     },
     "E1526f1": "Al-Dhilail"
   },
   {
-    "@id": "e325619",
+    "@id": "z325619",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325582"
+      "value": "z325582"
     },
     "E1526f1": "Al Mazar"
   },
   {
-    "@id": "e325620",
+    "@id": "z325620",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325600"
+      "value": "z325600"
     },
     "E1526f1": "Erhab"
   },
   {
-    "@id": "e325621",
+    "@id": "z325621",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325582"
+      "value": "z325582"
     },
     "E1526f1": "Mo'ab"
   },
   {
-    "@id": "e325622",
+    "@id": "z325622",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325569"
+      "value": "z325569"
     },
     "E1526f1": "Al Jiza"
   },
   {
-    "@id": "e325623",
+    "@id": "z325623",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325587"
+      "value": "z325587"
     },
     "E1526f1": "Naur"
   },
   {
-    "@id": "e325624",
+    "@id": "z325624",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325579"
+      "value": "z325579"
     },
     "E1526f1": "Al Aghwar Al Shamalyah"
   },
   {
-    "@id": "e325625",
+    "@id": "z325625",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325563"
+      "value": "z325563"
     },
     "E1526f1": "Al Mazar Ash Shamali"
   },
   {
-    "@id": "e325626",
+    "@id": "z325626",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325594"
+      "value": "z325594"
     },
     "E1526f1": "Jarash"
   },
   {
-    "@id": "e325627",
+    "@id": "z325627",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325575"
+      "value": "z325575"
     },
     "E1526f1": "Wadi Araba"
   },
   {
-    "@id": "e325628",
+    "@id": "z325628",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325592"
+      "value": "z325592"
     },
     "E1526f1": "Al Jafr"
   },
   {
-    "@id": "e325629",
+    "@id": "z325629",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325584"
+      "value": "z325584"
     },
     "E1526f1": "Marka"
   },
   {
-    "@id": "e325630",
+    "@id": "z325630",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325569"
+      "value": "z325569"
     },
     "E1526f1": "Um Al-Rasas"
   },
   {
-    "@id": "e325631",
+    "@id": "z325631",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325589"
+      "value": "z325589"
     },
     "E1526f1": "Al Quaysmh"
   },
   {
-    "@id": "e325632",
+    "@id": "z325632",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325593"
+      "value": "z325593"
     },
     "E1526f1": "Al Areed"
   },
   {
-    "@id": "e325633",
+    "@id": "z325633",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325580"
+      "value": "z325580"
     },
     "E1526f1": "Ash Shobak"
   },
   {
-    "@id": "e325634",
+    "@id": "z325634",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325593"
+      "value": "z325593"
     },
     "E1526f1": "Mleah"
   },
   {
-    "@id": "e325635",
+    "@id": "z325635",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325598"
+      "value": "z325598"
     },
     "E1526f1": "Ajloun"
   },
   {
-    "@id": "e325636",
+    "@id": "z325636",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325568"
+      "value": "z325568"
     },
     "E1526f1": "Bani Obayd"
   },
   {
-    "@id": "e325637",
+    "@id": "z325637",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325573"
+      "value": "z325573"
     },
     "E1526f1": "Sama As Sarhan"
   },
   {
-    "@id": "e325638",
+    "@id": "z325638",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325573"
+      "value": "z325573"
     },
     "E1526f1": "Hosha"
   },
   {
-    "@id": "e325639",
+    "@id": "z325639",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325598"
+      "value": "z325598"
     },
     "E1526f1": "Sakhrah"
   },
   {
-    "@id": "e325640",
+    "@id": "z325640",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325596"
+      "value": "z325596"
     },
     "E1526f1": "Ma'een"
   },
   {
-    "@id": "e325641",
+    "@id": "z325641",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325599"
+      "value": "z325599"
     },
     "E1526f1": "Al Badyeh Al shamalyah (salihia)"
   },
   {
-    "@id": "e325642",
+    "@id": "z325642",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325600"
+      "value": "z325600"
     },
     "E1526f1": "Al Manshyah"
   },
   {
-    "@id": "e325643",
+    "@id": "z325643",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325593"
+      "value": "z325593"
     },
     "E1526f1": "Theeban"
   },
   {
-    "@id": "e325644",
+    "@id": "z325644",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325599"
+      "value": "z325599"
     },
     "E1526f1": "Sabha"
   },
   {
-    "@id": "e325645",
+    "@id": "z325645",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325586"
+      "value": "z325586"
     },
     "E1526f1": "Wadi As Sir"
   },
   {
-    "@id": "e325646",
+    "@id": "z325646",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325553"
+      "value": "z325553"
     },
     "E1526f1": "Mahis Wa Al Fuhays"
   },
   {
-    "@id": "e325647",
+    "@id": "z325647",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325574"
+      "value": "z325574"
     },
     "E1526f1": "Qasabat Irbid"
   },
   {
-    "@id": "e325648",
+    "@id": "z325648",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325567"
+      "value": "z325567"
     },
     "E1526f1": "Al Arda"
   },
   {
-    "@id": "e325649",
+    "@id": "z325649",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325565"
+      "value": "z325565"
     },
     "E1526f1": "Ayn Al Basha"
   },
   {
-    "@id": "e325650",
+    "@id": "z325650",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325557"
+      "value": "z325557"
     },
     "E1526f1": "Mwaqqar"
   },
   {
-    "@id": "e325651",
+    "@id": "z325651",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325597"
+      "value": "z325597"
     },
     "E1526f1": "Fqou"
   },
   {
-    "@id": "e325652",
+    "@id": "z325652",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325587"
+      "value": "z325587"
     },
     "E1526f1": "Um Al-Basatin"
   },
   {
-    "@id": "e325653",
+    "@id": "z325653",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325583"
+      "value": "z325583"
     },
     "E1526f1": "Al Qatrana"
   },
   {
-    "@id": "e325654",
+    "@id": "z325654",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325575"
+      "value": "z325575"
     },
     "E1526f1": "Al Aqabah"
   },
   {
-    "@id": "e325655",
+    "@id": "z325655",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325577"
+      "value": "z325577"
     },
     "E1526f1": "Al Quwayra"
   },
   {
-    "@id": "e325656",
+    "@id": "z325656",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325570"
+      "value": "z325570"
     },
     "E1526f1": "Az Zarqa"
   },
   {
-    "@id": "e325657",
+    "@id": "z325657",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325554"
+      "value": "z325554"
     },
     "E1526f1": "Kufranja"
   },
   {
-    "@id": "e325658",
+    "@id": "z325658",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325595"
+      "value": "z325595"
     },
     "E1526f1": "Al-Hashimiya"
   },
   {
-    "@id": "e325659",
+    "@id": "z325659",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325576"
+      "value": "z325576"
     },
     "E1526f1": "At Tayba"
   },
   {
-    "@id": "e325660",
+    "@id": "z325660",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325571"
+      "value": "z325571"
     },
     "E1526f1": "Busayrah"
   },
   {
-    "@id": "e325661",
+    "@id": "z325661",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325561"
+      "value": "z325561"
     },
     "E1526f1": "Al Wastiyya"
   },
   {
-    "@id": "e325662",
+    "@id": "z325662",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325573"
+      "value": "z325573"
     },
     "E1526f1": "Al Khaldyah"
   },
   {
-    "@id": "e325663",
+    "@id": "z325663",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325599"
+      "value": "z325599"
     },
     "E1526f1": "Dair Al-Kahf"
   },
   {
-    "@id": "e325664",
+    "@id": "z325664",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325557"
+      "value": "z325557"
     },
     "E1526f1": "Rujm Al shami"
   },
   {
-    "@id": "e325665",
+    "@id": "z325665",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325598"
+      "value": "z325598"
     },
     "E1526f1": "Arjan"
   },
   {
-    "@id": "e325666",
+    "@id": "z325666",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325596"
+      "value": "z325596"
     },
     "E1526f1": "Madaba"
   },
   {
-    "@id": "e325667",
+    "@id": "z325667",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325564"
+      "value": "z325564"
     },
     "E1526f1": "At Tafilah"
   },
   {
-    "@id": "e325668",
+    "@id": "z325668",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325567"
+      "value": "z325567"
     },
     "E1526f1": "Ira Wa Yarqa"
   },
   {
-    "@id": "e325669",
+    "@id": "z325669",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325567"
+      "value": "z325567"
     },
     "E1526f1": "Alan Wa Zay"
   },
   {
-    "@id": "e325670",
+    "@id": "z325670",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325591"
+      "value": "z325591"
     },
     "E1526f1": "Ar Ramtha"
   },
   {
-    "@id": "e325671",
+    "@id": "z325671",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325556"
+      "value": "z325556"
     },
     "E1526f1": "Al Husayniyya"
   },
   {
-    "@id": "e325672",
+    "@id": "z325672",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325592"
+      "value": "z325592"
     },
     "E1526f1": "Al Muraygha"
   },
   {
-    "@id": "e325673",
+    "@id": "z325673",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325594"
+      "value": "z325594"
     },
     "E1526f1": "Burma"
   },
   {
-    "@id": "e325674",
+    "@id": "z325674",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325578"
+      "value": "z325578"
     },
     "E1526f1": "Al Hasa"
   },
   {
-    "@id": "e325675",
+    "@id": "z325675",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325587"
+      "value": "z325587"
     },
     "E1526f1": "Husban"
   },
   {
-    "@id": "e325676",
+    "@id": "z325676",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325585"
+      "value": "z325585"
     },
     "E1526f1": "Al Koura"
   },
   {
-    "@id": "e325677",
+    "@id": "z325677",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325573"
+      "value": "z325573"
     },
     "E1526f1": "Al Badyeh shamalyah Al gharbyah"
   },
   {
-    "@id": "e325678",
+    "@id": "z325678",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325581"
+      "value": "z325581"
     },
     "E1526f1": "Al Mawjib"
   },
   {
-    "@id": "e325679",
+    "@id": "z325679",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325567"
+      "value": "z325567"
     },
     "E1526f1": "As Salt"
   },
   {
-    "@id": "e325680",
+    "@id": "z325680",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325562"
+      "value": "z325562"
     },
     "E1526f1": "Ayy"
   },
   {
-    "@id": "e325681",
+    "@id": "z325681",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325555"
+      "value": "z325555"
     },
     "E1526f1": "Al Petra"
   },
   {
-    "@id": "e325682",
+    "@id": "z325682",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325600"
+      "value": "z325600"
     },
     "E1526f1": "Al Mafraq"
   },
   {
-    "@id": "e325683",
+    "@id": "z325683",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325596"
+      "value": "z325596"
     },
     "E1526f1": "Al Faisaleyah"
   },
   {
-    "@id": "e325684",
+    "@id": "z325684",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325552"
+      "value": "z325552"
     },
     "E1526f1": "Bani Kinana"
   },
   {
-    "@id": "e325685",
+    "@id": "z325685",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325572"
+      "value": "z325572"
     },
     "E1526f1": "Sahab"
   },
   {
-    "@id": "e325686",
+    "@id": "z325686",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325596"
+      "value": "z325596"
     },
     "E1526f1": "Jrainah"
   },
   {
-    "@id": "e325687",
+    "@id": "z325687",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325570"
+      "value": "z325570"
     },
     "E1526f1": "Beerain"
   },
   {
-    "@id": "e325688",
+    "@id": "z325688",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325599"
+      "value": "z325599"
     },
     "E1526f1": "Um Al-Jimal"
   },
   {
-    "@id": "e325689",
+    "@id": "z325689",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325581"
+      "value": "z325581"
     },
     "E1526f1": "Al Qasr"
   },
   {
-    "@id": "e325690",
+    "@id": "z325690",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325559"
+      "value": "z325559"
     },
     "E1526f1": "Ar Rusayfa"
   },
   {
-    "@id": "e325691",
+    "@id": "z325691",
     "@owner": "E1526",
     "classId": "E1526",
     "E1526f2": {
       "@type": "REFERENCE",
-      "value": "e325570"
+      "value": "z325570"
     },
     "E1526f1": "Al Azraq"
   },
   {
-    "@id": "e325692",
+    "@id": "z325692",
     "@owner": "E1527",
     "classId": "E1527",
     "E1527f1": "Emirati Jordanian Camp (EJC)",
     "E1527f2": {
       "@type": "REFERENCE",
-      "value": "e1712"
+      "value": "z1712"
     }
   },
   {
-    "@id": "e325693",
+    "@id": "z325693",
     "@owner": "E1527",
     "classId": "E1527",
     "E1527f1": "Zaatari Camp",
     "E1527f2": {
       "@type": "REFERENCE",
-      "value": "e1711"
+      "value": "z1711"
     }
   },
   {
-    "@id": "e325694",
+    "@id": "z325694",
     "@owner": "E1527",
     "classId": "E1527",
     "E1527f1": "Cyber City Camp",
     "E1527f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     }
   },
   {
-    "@id": "e325695",
+    "@id": "z325695",
     "@owner": "E1527",
     "classId": "E1527",
     "E1527f1": "King Abdullah Park Camp",
     "E1527f2": {
       "@type": "REFERENCE",
-      "value": "e1707"
+      "value": "z1707"
     }
   },
   {
-    "@id": "e325696",
+    "@id": "z325696",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 12"
   },
   {
-    "@id": "e325697",
+    "@id": "z325697",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 2"
   },
   {
-    "@id": "e325698",
+    "@id": "z325698",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 1"
   },
   {
-    "@id": "e325699",
+    "@id": "z325699",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 11"
   },
   {
-    "@id": "e325700",
+    "@id": "z325700",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 4"
   },
   {
-    "@id": "e325701",
+    "@id": "z325701",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 3"
   },
   {
-    "@id": "e325702",
+    "@id": "z325702",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 10"
   },
   {
-    "@id": "e325703",
+    "@id": "z325703",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 5"
   },
   {
-    "@id": "e325704",
+    "@id": "z325704",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 9"
   },
   {
-    "@id": "e325705",
+    "@id": "z325705",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 6"
   },
   {
-    "@id": "e325706",
+    "@id": "z325706",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 8"
   },
   {
-    "@id": "e325707",
+    "@id": "z325707",
     "@owner": "E1528",
     "classId": "E1528",
     "E1528f2": {
       "@type": "REFERENCE",
-      "value": "e325693"
+      "value": "z325693"
     },
     "E1528f1": "District 7"
   },
   {
-    "@id": "e329177",
+    "@id": "z329177",
     "@owner": "E1527",
     "classId": "E1527",
     "E1527f1": "Azraq",
     "E1527f2": {
       "@type": "REFERENCE",
-      "value": "e1712"
+      "value": "z1712"
     }
   },
   {
-    "@id": "e329178",
+    "@id": "z329178",
     "@owner": "E1527",
     "classId": "E1527",
     "E1527f1": "Emirati Jordan Camp",
     "E1527f2": {
       "@type": "REFERENCE",
-      "value": "e329178"
+      "value": "z329178"
     }
   },
   {
     "@id": "L50505",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Camp or host community",
+    "_class_label": "Camp or host community",
     "elements": [
       {
         "id": "L50505f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -2056,6 +2076,7 @@
       },
       {
         "id": "L50505f4",
+        "visible": true,
         "label": "Alternate Name",
         "required": false,
         "type": {
@@ -2064,6 +2085,7 @@
       },
       {
         "id": "L50505f6",
+        "visible": true,
         "label": "Administrative Unit",
         "required": false,
         "type": {
@@ -2084,6 +2106,7 @@
       },
       {
         "id": "L50505f5",
+        "visible": true,
         "label": "Geographic Position",
         "required": false,
         "type": {
@@ -2103,20 +2126,22 @@
   {
     "@id": "d1",
     "@owner": "U1",
-    "location": {
+    "_classf11": {
       "@type": "REFERENCE",
       "value": "c360"
     },
-    "name": "Geodb"
+    "classId": "_folder",
+    "_folder_label": "Geodb"
   },
   {
     "@id": "P1",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Partner",
+    "_class_label": "Partner",
     "elements": [
       {
         "id": "P1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -2129,6 +2154,7 @@
       },
       {
         "id": "P1f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_description"

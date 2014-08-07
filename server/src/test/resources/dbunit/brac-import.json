@@ -12,6 +12,7 @@
     "elements": [
       {
         "id": "_countryf1",
+        "visible": true,
         "label": "Name",
         "required": true,
         "type": {
@@ -20,6 +21,7 @@
       },
       {
         "id": "_countryf3",
+        "visible": true,
         "label": "Code",
         "required": true,
         "type": {
@@ -38,10 +40,11 @@
     "@id": "E1",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Division",
+    "_class_label": "Division",
     "elements": [
       {
         "id": "E1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -54,6 +57,7 @@
       },
       {
         "id": "E1f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -66,10 +70,11 @@
     "@id": "E2",
     "@owner": "c1",
     "classId": "_class",
-    "label": "District",
+    "_class_label": "District",
     "elements": [
       {
         "id": "E2f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -89,6 +94,7 @@
       },
       {
         "id": "E2f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -101,6 +107,7 @@
       },
       {
         "id": "E2f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -113,10 +120,11 @@
     "@id": "E3",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Upzilla",
+    "_class_label": "Upzilla",
     "elements": [
       {
         "id": "E3f2",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_parent"
@@ -136,6 +144,7 @@
       },
       {
         "id": "E3f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -148,6 +157,7 @@
       },
       {
         "id": "E3f3",
+        "visible": true,
         "label": "Code",
         "required": false,
         "type": {
@@ -157,193 +167,193 @@
     ]
   },
   {
-    "@id": "e1",
+    "@id": "z1",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Bogra"
   },
   {
-    "@id": "e2",
+    "@id": "z2",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Chittagong"
   },
   {
-    "@id": "e3",
+    "@id": "z3",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Comilla"
   },
   {
-    "@id": "e4",
+    "@id": "z4",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Gazipur"
   },
   {
-    "@id": "e5",
+    "@id": "z5",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Gopalgonj"
   },
   {
-    "@id": "e6",
+    "@id": "z6",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Kishoregonj"
   },
   {
-    "@id": "e7",
+    "@id": "z7",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Kushtia"
   },
   {
-    "@id": "e8",
+    "@id": "z8",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Mymensingh"
   },
   {
-    "@id": "e9",
+    "@id": "z9",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Netrakona"
   },
   {
-    "@id": "e10",
+    "@id": "z10",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Rajbari"
   },
   {
-    "@id": "e11",
+    "@id": "z11",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Satkhira"
   },
   {
-    "@id": "e12",
+    "@id": "z12",
     "@owner": "E2",
     "classId": "E2",
     "E2f1": "Tangail"
   },
   {
-    "@id": "e13",
+    "@id": "z13",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e1"
+      "value": "z1"
     },
     "classId": "E3",
     "E3f1": "Sonatoal"
   },
   {
-    "@id": "e14",
+    "@id": "z14",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e2"
+      "value": "z2"
     },
     "classId": "E3",
     "E3f1": "Fatickchari"
   },
   {
-    "@id": "e15",
+    "@id": "z15",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e3"
+      "value": "z3"
     },
     "classId": "E3",
     "E3f1": "Burichong"
   },
   {
-    "@id": "e16",
+    "@id": "z16",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e4"
+      "value": "z4"
     },
     "classId": "E3",
     "E3f1": "Kaligonj"
   },
   {
-    "@id": "e17",
+    "@id": "z17",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e5"
+      "value": "z5"
     },
     "classId": "E3",
     "E3f1": "Tungipara"
   },
   {
-    "@id": "e18",
+    "@id": "z18",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e6"
+      "value": "z6"
     },
     "classId": "E3",
     "E3f1": "Bhairab"
   },
   {
-    "@id": "e19",
+    "@id": "z19",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e7"
+      "value": "z7"
     },
     "classId": "E3",
     "E3f1": "Kushtia Sadar"
   },
   {
-    "@id": "e20",
+    "@id": "z20",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e8"
+      "value": "z8"
     },
     "classId": "E3",
     "E3f1": "Bhaluka"
   },
   {
-    "@id": "e21",
+    "@id": "z21",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e9"
+      "value": "z9"
     },
     "classId": "E3",
     "E3f1": "Purbadhala"
   },
   {
-    "@id": "e22",
+    "@id": "z22",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e10"
+      "value": "z10"
     },
     "classId": "E3",
     "E3f1": "Baliakandi"
   },
   {
-    "@id": "e23",
+    "@id": "z23",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e11"
+      "value": "z11"
     },
     "classId": "E3",
     "E3f1": "Tala"
   },
   {
-    "@id": "e24",
+    "@id": "z24",
     "@owner": "E3",
     "E3f2": {
       "@type": "REFERENCE",
-      "value": "e12"
+      "value": "z12"
     },
     "classId": "E3",
     "E3f1": "Modhupur"
@@ -352,10 +362,11 @@
     "@id": "L2",
     "@owner": "c1",
     "classId": "_class",
-    "label": "Village",
+    "_class_label": "Village",
     "elements": [
       {
         "id": "L2f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -368,6 +379,7 @@
       },
       {
         "id": "L2f4",
+        "visible": true,
         "label": "Alternate Name",
         "required": false,
         "type": {
@@ -376,6 +388,7 @@
       },
       {
         "id": "L2f6",
+        "visible": true,
         "label": "Administrative Unit",
         "required": false,
         "type": {
@@ -393,6 +406,7 @@
       },
       {
         "id": "L2f5",
+        "visible": true,
         "label": "Geographic Position",
         "required": false,
         "type": {
@@ -412,20 +426,22 @@
   {
     "@id": "d1",
     "@owner": "U1",
-    "location": {
+    "_classf11": {
       "@type": "REFERENCE",
       "value": "c1"
     },
-    "name": "QIS Database"
+    "classId": "_folder",
+    "_folder_label": "QIS Database"
   },
   {
     "@id": "P1",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Partner",
+    "_class_label": "Partner",
     "elements": [
       {
         "id": "P1f1",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "label"
@@ -438,6 +454,7 @@
       },
       {
         "id": "P1f10",
+        "visible": true,
         "superProperties": {
           "@type": "REFERENCE",
           "value": "_description"
@@ -460,10 +477,11 @@
     "@id": "a1",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Household Survey",
+    "_class_label": "Household Survey",
     "elements": [
       {
         "id": "a1f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -479,6 +497,7 @@
       },
       {
         "id": "a1f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -487,6 +506,7 @@
       },
       {
         "id": "a1f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -495,6 +515,7 @@
       },
       {
         "id": "a1f11",
+        "visible": true,
         "label": "Upzilla",
         "required": true,
         "type": {
@@ -510,6 +531,7 @@
       },
       {
         "id": "i1",
+        "visible": true,
         "label": "NumAdultFemale",
         "required": false,
         "type": {
@@ -521,6 +543,7 @@
       },
       {
         "id": "i2",
+        "visible": true,
         "label": "NumAdultMale",
         "required": false,
         "type": {
@@ -532,6 +555,7 @@
       },
       {
         "id": "a1f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
@@ -544,10 +568,11 @@
     "@id": "a2",
     "@owner": "d1",
     "classId": "_class",
-    "label": "Training",
+    "_class_label": "Training",
     "elements": [
       {
         "id": "a2f7",
+        "visible": true,
         "label": "Partner",
         "required": true,
         "type": {
@@ -563,6 +588,7 @@
       },
       {
         "id": "a2f12",
+        "visible": true,
         "label": "Start Date",
         "required": true,
         "type": {
@@ -571,6 +597,7 @@
       },
       {
         "id": "a2f13",
+        "visible": true,
         "label": "End Date",
         "required": true,
         "type": {
@@ -579,6 +606,7 @@
       },
       {
         "id": "a2f11",
+        "visible": true,
         "label": "Village",
         "required": true,
         "type": {
@@ -594,6 +622,7 @@
       },
       {
         "id": "i3",
+        "visible": true,
         "label": "NumberTrained",
         "required": false,
         "type": {
@@ -605,6 +634,7 @@
       },
       {
         "id": "a2f14",
+        "visible": true,
         "label": "Comments",
         "required": false,
         "type": {
