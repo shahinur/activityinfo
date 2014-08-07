@@ -19,4 +19,9 @@ public interface ResourceStore {
      * Fetches an outline of Resources, returning only their id and label.
      */
     ResourceTree queryTree(ResourceTreeRequest request);
+
+    /**
+     * Creates a new resource inside the store.
+     */
+    void createResource(ResourceId userId, Resource resource);
 }
