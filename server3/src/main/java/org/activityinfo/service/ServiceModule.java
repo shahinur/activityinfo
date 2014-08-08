@@ -2,6 +2,8 @@ package org.activityinfo.service;
 
 import org.activityinfo.model.table.TableService;
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
+import org.activityinfo.service.blob.BlobDownloadServlet;
+import org.activityinfo.service.blob.ThumbnailDownloadServlet;
 import org.activityinfo.service.tables.TableServiceImpl;
 
 public class ServiceModule extends AbstractRestModule {
@@ -10,5 +12,8 @@ public class ServiceModule extends AbstractRestModule {
     protected void configureResources() {
         bindResource(ServiceResources.class);
         bind(TableService.class).to(TableServiceImpl.class);
+
+        serve("/service/blobdownload").with(BlobDownloadServlet.class);
+        serve("/service/thumbnail").with(ThumbnailDownloadServlet.class);
     }
 }

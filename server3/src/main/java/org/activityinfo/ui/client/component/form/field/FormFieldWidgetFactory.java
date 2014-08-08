@@ -27,6 +27,7 @@ import com.google.gwt.cell.client.ValueUpdater;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -72,7 +73,7 @@ public class FormFieldWidgetFactory {
         this.resourceLocator = resourceLocator;
     }
 
-    public Promise<? extends FormFieldWidget> createWidget(FormField field, ValueUpdater valueUpdater) {
+    public Promise<? extends FormFieldWidget> createWidget(ResourceId formClassId, FormField field, ValueUpdater valueUpdater) {
         FieldType type = field.getType();
 
         if (type instanceof QuantityType) {
@@ -100,7 +101,7 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new BooleanFieldWidget(valueUpdater));
 
         }  else if (type instanceof ImageType) {
-            return Promise.resolved(new ImageUploadFieldWidget(valueUpdater));
+            return Promise.resolved(new ImageUploadFieldWidget(formClassId, field, valueUpdater));
 
         } else if (type instanceof ReferenceType) {
             if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
