@@ -46,7 +46,7 @@ public class BarcodeType implements ParametrizedFieldType {
 
         @Override
         public FormClass getParameterFormClass() {
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("barcode"));
+            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id(TYPE_ID));
             formClass.addElement(new FormField(ResourceId.create("units"))
                     .setType(FREE_TEXT.createType())
                     .setLabel("Units")
