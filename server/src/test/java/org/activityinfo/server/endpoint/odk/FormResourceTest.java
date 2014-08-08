@@ -46,7 +46,7 @@ public class FormResourceTest {
             }
         };
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
-        OdkTypeAdapterFactory factory = new OdkTypeAdapterFactory(new ReferenceProvider());
+        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(new ReferenceProvider());
         resource = new FormResource(store, authProvider, factory);
     }
 
