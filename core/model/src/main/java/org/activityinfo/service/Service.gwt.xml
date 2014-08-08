@@ -24,19 +24,7 @@
 
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
-  <inherits name="com.bedatadriven.rebar.Time"/>
-  <inherits name="org.activityinfo.Promises"/>
-  <inherits name="com.google.gwt.json.JSON"/>
+  <inherits name='org.activityinfo.model.Model'/>
 
-  <source path="shared"/>
-  <source path="form"/>
-  <source path="formTree"/>
-  <source path="resource"/>
-  <source path="client"/>
-  <source path="type"/>
-  <source path="table"/>
-  <source path="type"/>
-  <source path="system"/>
-  <source path="legacy"/>
-
+  <source path="store"/>
 </module>
