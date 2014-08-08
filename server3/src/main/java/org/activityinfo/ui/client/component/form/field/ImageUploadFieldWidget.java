@@ -21,7 +21,7 @@ package org.activityinfo.ui.client.component.form.field;
  * #L%
  */
 
-import com.google.api.client.repackaged.com.google.common.base.Strings;
+import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
