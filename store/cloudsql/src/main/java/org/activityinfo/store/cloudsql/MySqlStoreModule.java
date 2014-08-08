@@ -8,7 +8,6 @@ import org.activityinfo.service.store.ResourceStore;
 public class MySqlStoreModule extends ServletModule {
     @Override
     protected void configureServlets() {
-        bind(ResourceStore.class).to(MySqlResourceStore.class);
         bind(ConnectionProvider.class);
         filter("/*").through(ConnectionCleanupFilter.class);
     }
