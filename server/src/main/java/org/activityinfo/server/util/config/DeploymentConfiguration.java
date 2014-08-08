@@ -33,6 +33,8 @@ import java.util.Properties;
  */
 public class DeploymentConfiguration {
 
+    public static final String BLOBSERVICE_GCS_BUCKET_NAME = "blobservice.gcs.bucket.name";
+
     private final Properties properties;
 
     public DeploymentConfiguration(Properties properties) {
@@ -59,5 +61,9 @@ public class DeploymentConfiguration {
 
     public boolean hasProperty(String key) {
         return !Strings.isNullOrEmpty(getProperty(key));
+    }
+
+    public String getBlobServiceBucketName() {
+        return getProperty(DeploymentConfiguration.BLOBSERVICE_GCS_BUCKET_NAME);
     }
 }

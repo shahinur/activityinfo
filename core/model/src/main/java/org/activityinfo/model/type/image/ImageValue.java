@@ -33,7 +33,7 @@ public class ImageValue implements FieldValue, IsRecord {
 
     private final String mimeType;
     private final String filename;
-    private final String token;
+    private final String blobId;
 
     private int height;
     private int width;
@@ -43,10 +43,10 @@ public class ImageValue implements FieldValue, IsRecord {
         return ImageType.TYPE_CLASS;
     }
 
-    public ImageValue(String mimeType, String filename, String token) {
+    public ImageValue(String mimeType, String filename, String blobId) {
         this.mimeType = mimeType;
         this.filename = filename;
-        this.token = token;
+        this.blobId = blobId;
     }
 
     public String getMimeType() {
@@ -57,8 +57,8 @@ public class ImageValue implements FieldValue, IsRecord {
         return filename;
     }
 
-    public String getToken() {
-        return token;
+    public String getBlobId() {
+        return blobId;
     }
 
     public int getHeight() {
@@ -87,11 +87,11 @@ public class ImageValue implements FieldValue, IsRecord {
                 .set("width", width)
                 .set("height", height)
                 .set("filename", filename)
-                .set("token", token);
+                .set("blobId", blobId);
     }
 
     public static FieldValue fromRecord(Record record) {
-        return new ImageValue(record.getString("mimeType"), record.getString("filename"), record.getString("token"))
+        return new ImageValue(record.getString("mimeType"), record.getString("filename"), record.getString("blobId"))
                 .setHeight(record.getInt("height"))
                 .setWidth(record.getInt("width"));
     }

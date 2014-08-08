@@ -22,22 +22,20 @@ package org.activityinfo.model.type.image;
  */
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.RecordFieldTypeClass;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
-import org.activityinfo.model.type.number.QuantityType;
 
 /**
  * @author yuriyz on 8/6/14.
  */
-public class ImageType implements ParametrizedFieldType {
+public class ImageType implements FieldType {
 
-    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
+    public static class TypeClass implements RecordFieldTypeClass {
 
         private TypeClass() {
         }
@@ -58,45 +56,6 @@ public class ImageType implements ParametrizedFieldType {
         }
 
         @Override
-        public ImageType deserializeType(Record typeParameters) {
-            return new ImageType();
-        }
-
-        @Override
-        public FormClass getParameterFormClass() {
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("image"));
-            formClass.addElement(new FormField(ResourceId.create("mimeType"))
-                    .setType(FREE_TEXT.createType())
-                    .setLabel("Mime type")
-                    .setDescription("Mime type of image (e.g. image/gif, image/jpeg, image/png)")
-                    .setRequired(true)
-            );
-            formClass.addElement(new FormField(ResourceId.create("filename"))
-                    .setType(FREE_TEXT.createType())
-                    .setLabel("File name")
-                    .setDescription("Name of image file")
-                    .setRequired(false)
-            );
-            formClass.addElement(new FormField(ResourceId.create("token"))
-                    .setType(FREE_TEXT.createType())
-                    .setLabel("Token")
-                    .setDescription("Token which is used to retrieve the image file.")
-                    .setVisible(false)
-            );
-            formClass.addElement(new FormField(ResourceId.create("width"))
-                    .setType(QuantityType.TYPE_CLASS.createType().setUnits("pixels"))
-                    .setLabel("Width")
-                    .setDescription("Width of image")
-            );
-            formClass.addElement(new FormField(ResourceId.create("height"))
-                    .setType(QuantityType.TYPE_CLASS.createType().setUnits("pixels"))
-                    .setLabel("Height")
-                    .setDescription("Height of image")
-            );
-            return formClass;
-        }
-
-        @Override
         public FieldValue deserialize(Record record) {
             return ImageValue.fromRecord(record);
         }
@@ -108,14 +67,8 @@ public class ImageType implements ParametrizedFieldType {
     }
 
     @Override
-    public ParametrizedFieldTypeClass getTypeClass() {
+    public FieldTypeClass getTypeClass() {
         return TYPE_CLASS;
-    }
-
-    @Override
-    public Record getParameters() {
-        return new Record().
-                set("classId", getTypeClass().getParameterFormClass().getId());
     }
 
     @Override
