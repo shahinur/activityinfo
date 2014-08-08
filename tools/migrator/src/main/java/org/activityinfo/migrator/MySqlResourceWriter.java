@@ -1,14 +1,17 @@
 package org.activityinfo.migrator;
 
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.system.FolderClass;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 class MySqlResourceWriter implements ResourceWriter {
+
+    private long version = 1;
 
     private final Connection connection;
     private int count;
@@ -19,25 +22,11 @@ class MySqlResourceWriter implements ResourceWriter {
 
         connection.setAutoCommit(false);
 
-        deleteAllResources(connection);
-
         this.statement = connection.prepareStatement(
-                "insert INTO resource (id, ownerId, classId, json) VALUES (?, ?, ?, ?)");
+                "insert INTO resource (id, version, sub_tree_version, owner_id, class_id, label, content) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)");
 
         count = 0;
-    }
-
-    private void deleteAllResources(Connection connection) throws SQLException {
-        System.out.println("Dropping and recreating resource table...");
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("drop table resource");
-        statement.executeUpdate("create table resource (id varchar(64) binary primary key, " +
-                                "ownerId varchar(64) binary not null," +
-                                "classId varchar(64) binary," +
-                                "json longtext)");
-        statement.close();
-        connection.commit();
-        System.out.println("Resource table truncated.");
     }
 
 
@@ -49,9 +38,12 @@ class MySqlResourceWriter implements ResourceWriter {
         try {
 
             statement.setString(1, resource.getId().asString());
-            statement.setString(2, resource.getOwnerId().asString());
-            statement.setString(3, resource.isString("classId"));
-            statement.setString(4, Resources.toJson(resource));
+            statement.setLong(2, version);
+            statement.setLong(3, version);
+            statement.setString(4, resource.getOwnerId().asString());
+            statement.setString(5, resource.isString("classId"));
+            statement.setString(6, getLabel(resource));
+            statement.setString(7, Resources.toJson(resource));
             statement.addBatch();
             count ++ ;
 
@@ -64,6 +56,16 @@ class MySqlResourceWriter implements ResourceWriter {
         } catch(SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getLabel(Resource resource) {
+        String classId = resource.isString("classId");
+        if(FormClass.CLASS_ID.asString().equals(classId)) {
+            return resource.getString(FormClass.LABEL_FIELD_ID);
+        } else if(FolderClass.CLASS_ID.asString().equals(classId)) {
+            return resource.isString(FolderClass.LABEL_FIELD_ID.asString());
+        }
+        return null;
     }
 
     public void close() throws SQLException {
