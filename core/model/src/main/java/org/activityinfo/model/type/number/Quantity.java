@@ -63,7 +63,7 @@ public class Quantity implements FieldValue, IsRecord {
     @Override
     public int hashCode() {
         long temp = Double.doubleToLongBits(value);
-        return ((int) (temp ^ (temp >>> 32))) ^ units.hashCode();
+        return ((int) (temp ^ (temp >>> 32))) ^ (units != null ? units.hashCode() : 0);
     }
 
     public static FieldValue fromRecord(Record record) {
