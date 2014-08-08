@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>activityinfo-parent</artifactId>
+    <groupId>org.activityinfo</groupId>
+    <version>2.8.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>activityinfo-barcode-scanner</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <version>${gwtVersion}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-promises</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+
+    <plugins>
+      <plugin>
+        <groupId>com.samaxes.maven</groupId>
+        <artifactId>minify-maven-plugin</artifactId>
+        <version>1.7.3</version>
+        <executions>
+          <execution>
+            <id>minify-worker</id>
+            <configuration>
+              <charset>UTF-8</charset>
+              <webappSourceDir>${basedir}/src/main/js</webappSourceDir>
+              <webappTargetDir>${project.build.outputDirectory}/org/activityinfo/ui/widget/barcode/client</webappTargetDir>
+              <jsSourceDir>/</jsSourceDir>
+              <jsTargetDir>/</jsTargetDir>
+
+              <closureLanguage>ECMASCRIPT6</closureLanguage>
+              <jsFiles>
+                <jsFile>DecoderWorker-61cc317.js</jsFile>
+              </jsFiles>
+
+              <jsFinalFile>worker.js</jsFinalFile>
+              <jsEngine>YUI</jsEngine>
+            </configuration>
+            <goals>
+              <goal>minify</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <version>${gwtVersion}</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
