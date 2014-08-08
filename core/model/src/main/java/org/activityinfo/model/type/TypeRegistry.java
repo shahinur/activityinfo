@@ -2,6 +2,7 @@ package org.activityinfo.model.type;
 
 import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -38,6 +39,7 @@ public class TypeRegistry {
         register(LocalDateIntervalType.TYPE_CLASS);
         register(GeoPointType.TYPE_CLASS);
         register(BooleanType.TYPE_CLASS);
+        register(BarcodeType.TYPE_CLASS);
     }
 
     private void register(FieldTypeClass typeClass) {
