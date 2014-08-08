@@ -73,7 +73,7 @@ public class SkipRowPresenter {
             }
         };
 
-        widgetFactory.createWidget(getSelectedFormField(), valueUpdater).then(new AsyncCallback<FormFieldWidget>() {
+        widgetFactory.createWidget(ResourceId.generateId(), getSelectedFormField(), valueUpdater).then(new AsyncCallback<FormFieldWidget>() {
             @Override
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
