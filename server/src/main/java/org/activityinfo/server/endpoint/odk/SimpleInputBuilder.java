@@ -5,10 +5,10 @@ import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-class SimpleInputAdapter implements OdkTypeAdapter {
+class SimpleInputBuilder implements OdkFormFieldBuilder {
     final private String modelBindType;
 
-    SimpleInputAdapter(String modelBindType) {
+    SimpleInputBuilder(String modelBindType) {
         this.modelBindType = modelBindType;
     }
 
