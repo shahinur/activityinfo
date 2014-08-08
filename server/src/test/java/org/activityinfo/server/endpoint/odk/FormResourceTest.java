@@ -34,7 +34,7 @@ public class FormResourceTest {
     public void setUp() throws IOException {
         ResourceStore store = new TestResourceStore().load("/dbunit/sites-simple1.json");
         TableService table = new TableServiceImpl(store);
-        OdkTypeAdapterFactory factory = new OdkTypeAdapterFactory(table);
+        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(table);
         resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory);
     }
 

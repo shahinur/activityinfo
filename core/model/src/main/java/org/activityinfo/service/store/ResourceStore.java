@@ -30,7 +30,7 @@ public interface ResourceStore {
 
 
     /**
-     * Updates
+     * Updates an existing resource
      */
     UpdateResult updateResource(ResourceId userId, Resource resource);
 }

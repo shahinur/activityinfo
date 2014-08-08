@@ -10,12 +10,12 @@ import java.util.List;
 
 import static org.activityinfo.model.type.Cardinality.SINGLE;
 
-class SelectAdapter implements OdkTypeAdapter {
+class SelectBuilder implements OdkFormFieldBuilder {
     final private String modelBindType;
     final private Cardinality cardinality;
     final private List<Item> item;
 
-    SelectAdapter(String modelBindType, SelectOptions selectOptions) {
+    SelectBuilder(String modelBindType, SelectOptions selectOptions) {
         this.modelBindType = modelBindType;
         this.cardinality = selectOptions.getCardinality();
         this.item = selectOptions.getItem();

@@ -21,16 +21,22 @@ package org.activityinfo.ui.client.component.form.field;
  * #L%
  */
 
+import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.ImageElement;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.activityinfo.core.shared.util.MimeTypeUtil;
+import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.promise.Promise;
@@ -46,37 +52,114 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
     private static OurUiBinder ourUiBinder = GWT.create(OurUiBinder.class);
 
     private final FormPanel formPanel;
+    private final FormField formField;
+    private final ResourceId formClassId;
+    private ImageValue value = null;
 
     @UiField
     FileUpload fileUpload;
     @UiField
-    Button uploadButton;
+    HTMLPanel imageContainer;
+    @UiField
+    ImageElement loadingImage;
+    @UiField
+    Button downloadButton;
+    @UiField
+    HTMLPanel downloadButtonContainer;
 
-    public ImageUploadFieldWidget(final ValueUpdater valueUpdater) {
+    public ImageUploadFieldWidget(ResourceId formClassId, FormField formField, final ValueUpdater valueUpdater) {
+        this.formClassId = formClassId;
+        this.formField = formField;
 
         formPanel = ourUiBinder.createAndBindUi(this);
-        formPanel.setAction(createActionPath());
-        formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+
+        fileUpload.addChangeHandler(new ChangeHandler() {
             @Override
-            public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
-                String results = event.getResults();
-                // todo handle results
+            public void onChange(ChangeEvent event) {
+                requestUploadUrl();
             }
         });
-
-        uploadButton.addClickHandler(new ClickHandler() {
+        downloadButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                formPanel.submit();
+                download();
             }
         });
     }
 
-    private String createActionPath() {
-        String blobId = "a";//UUID.uuid();
-        String classId = "classId"; // todo
-        String fieldId = "fieldId";
+    private String createUploadUrl() {
+        String blobId = ResourceId.generateId().asString();
+        String classId = formClassId.asString();
+        String fieldId = formField.getId().asString();
+        String fileName = fileName();
+        String mimeType = MimeTypeUtil.mimeTypeFromFileExtension(fileExtension(fileName));
+        this.value = new ImageValue(mimeType, fileName, blobId);
         return "/service/blob/" + classId + "/" + fieldId + "/" + blobId;
+    }
+
+    public static String fileExtension(String filename) {
+        int i = filename.lastIndexOf(".");
+        if (i != -1) {
+            return filename.substring(i + 1);
+        }
+        return filename;
+    }
+
+    private String fileName() {
+        final String filename = fileUpload.getFilename();
+        if (Strings.isNullOrEmpty(filename)) {
+            return "unknown";
+        }
+
+        int i = filename.lastIndexOf("/");
+        if (i == -1) {
+            i = filename.lastIndexOf("\\");
+        }
+        if (i != -1 && (i + 1) < filename.length()) {
+            return filename.substring(i + 1);
+        }
+        return filename;
+    }
+
+    private void requestUploadUrl() {
+        try {
+            RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, URL.encode(createUploadUrl()));
+            requestBuilder.sendRequest(null, new RequestCallback() {
+                @Override
+                public void onResponseReceived(Request request, Response response) {
+                    String uploadUrl = response.getText();
+                    upload(uploadUrl);
+                }
+
+                @Override
+                public void onError(Request request, Throwable exception) {
+                    Log.error("Failed to send request", exception);
+                }
+            });
+        } catch (RequestException e) {
+            Log.error("Failed to send request", e);
+        }
+    }
+
+    private void upload(String uploadUrl) {
+        imageContainer.setVisible(true);
+        downloadButtonContainer.setVisible(false);
+
+        formPanel.setAction(uploadUrl);
+        formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+            @Override
+            public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
+                String results = event.getResults(); // what about fail results?
+
+                imageContainer.setVisible(false);
+                downloadButtonContainer.setVisible(true);
+            }
+        });
+        formPanel.submit();
+    }
+
+    private void download() {
+        // todo
     }
 
     @Override
