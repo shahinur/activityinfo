@@ -28,7 +28,6 @@
   <inherits name="org.activityinfo.Promises"/>
   <inherits name="com.google.gwt.json.JSON"/>
 
-  <!-- Include generated sources -->
   <source path="shared"/>
   <source path="form"/>
   <source path="formTree"/>

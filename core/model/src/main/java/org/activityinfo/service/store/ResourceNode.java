@@ -1,9 +1,12 @@
-package org.activityinfo.model.resource;
+package org.activityinfo.service.store;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.activityinfo.model.resource.ResourceId;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -19,8 +22,15 @@ public class ResourceNode {
 
     private ResourceId id;
     private ResourceId classId;
+    private ResourceId ownerId;
     private String label;
+    private long version;
+    private long subTreeVersion;
     private final List<ResourceNode> children = Lists.newArrayList();
+
+    public ResourceNode(ResourceId id) {
+        this.id = id;
+    }
 
     public ResourceNode(ResourceId id, ResourceId classId) {
         this.id = id;
@@ -49,6 +59,14 @@ public class ResourceNode {
 
     public void setId(ResourceId id) {
         this.id = id;
+    }
+
+    public ResourceId getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(ResourceId ownerId) {
+        this.ownerId = ownerId;
     }
 
     /**
@@ -80,12 +98,38 @@ public class ResourceNode {
         return children;
     }
 
+    /**
+     *
+     * @return this Resource's current version number
+     */
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    /**
+     *
+     * @return the most recent version number of this Resource or any of it's descendants.
+     */
+    public long getSubTreeVersion() {
+        return subTreeVersion;
+    }
+
+    public void setSubTreeVersion(long subTreeVersion) {
+        this.subTreeVersion = subTreeVersion;
+    }
+
     public JsonObject toJson() {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id", id.asString());
-        if(classId != null) {
-            jsonObject.addProperty("classId", classId.asString());
-        }
+        jsonObject.addProperty("label", label);
+        jsonObject.addProperty("version", version);
+        jsonObject.addProperty("subTreeVersion", subTreeVersion);
+        jsonObject.addProperty("classId", classId.asString());
+
         if(!children.isEmpty()) {
             JsonArray childArray = new JsonArray();
             for (ResourceNode child : children) {
@@ -95,4 +139,24 @@ public class ResourceNode {
         }
         return jsonObject;
     }
+
+    public static ResourceNode fromJson(JsonObject jsonObject) {
+        ResourceId id = ResourceId.create(jsonObject.get("id").getAsString());
+        ResourceId classId = ResourceId.create(jsonObject.get("classId").getAsString());
+        ResourceNode node = new ResourceNode(id, classId);
+        node.setLabel(jsonObject.get("label").getAsString());
+        node.setVersion(jsonObject.get("version").getAsLong());
+        node.setSubTreeVersion(jsonObject.get("subTreeVersion").getAsLong());
+
+        if(jsonObject.has("children")) {
+            JsonArray childArray = jsonObject.get("children").getAsJsonArray();
+            for(int i=0;i!=childArray.size();++i) {
+                node.children.add(ResourceNode.fromJson(childArray.get(i).getAsJsonObject()));
+            }
+        }
+
+        return node;
+    }
+
+
 }

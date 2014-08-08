@@ -6,7 +6,7 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.inject.util.Providers;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.ResourceStore;
+import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.model.table.TableService;
 import org.activityinfo.server.endpoint.odk.xform.Html;
 import org.activityinfo.service.tables.TableServiceImpl;

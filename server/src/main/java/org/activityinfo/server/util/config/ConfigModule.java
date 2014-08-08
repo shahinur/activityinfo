@@ -29,6 +29,7 @@ import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.util.logging.Trace;
+import org.activityinfo.service.DeploymentConfiguration;
 
 import javax.servlet.ServletContext;
 import java.io.File;
@@ -41,7 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Guice module that provides the {@link DeploymentConfiguration} used across
+ * Guice module that provides the {@link org.activityinfo.service.DeploymentConfiguration} used across
  * the server side.
  */
 public class ConfigModule extends ServletModule {
