@@ -20,17 +20,17 @@ public class OdkTypeAdapterFactory {
         this.table = table;
     }
 
-    public OdkTypeAdapter fromFieldType(FieldType fieldType) {
+    public OdkFormFieldBuilder fromFieldType(FieldType fieldType) {
         SelectOptions selectOptions = getSelectOptions(fieldType);
 
-        if (fieldType instanceof BooleanType) return new SelectAdapter("boolean", selectOptions);
-        if (fieldType instanceof EnumType) return new SelectAdapter("string", selectOptions);
-        if (fieldType instanceof GeoPointType) return new SimpleInputAdapter("geopoint");
-        if (fieldType instanceof LocalDateType) return new SimpleInputAdapter("date");
-        if (fieldType instanceof NarrativeType) return new SimpleInputAdapter("string");
-        if (fieldType instanceof QuantityType) return new QuantityTypeAdapter((QuantityType) fieldType);
-        if (fieldType instanceof ReferenceType) return new SelectAdapter("string", selectOptions);
-        if (fieldType instanceof TextType) return new SimpleInputAdapter("string");
+        if (fieldType instanceof BooleanType) return new SelectBuilder("boolean", selectOptions);
+        if (fieldType instanceof EnumType) return new SelectBuilder("string", selectOptions);
+        if (fieldType instanceof GeoPointType) return new SimpleInputBuilder("geopoint");
+        if (fieldType instanceof LocalDateType) return new SimpleInputBuilder("date");
+        if (fieldType instanceof NarrativeType) return new SimpleInputBuilder("string");
+        if (fieldType instanceof QuantityType) return new QuantityFieldBuilder((QuantityType) fieldType);
+        if (fieldType instanceof ReferenceType) return new SelectBuilder("string", selectOptions);
+        if (fieldType instanceof TextType) return new SimpleInputBuilder("string");
 
         // If this happens, it means this class needs to be expanded to support the new FieldType class.
         throw new IllegalArgumentException("Unknown FieldType object passed to OdkTypeAdapterFactory.fromFieldType()!");
