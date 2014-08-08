@@ -6,7 +6,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceStore;
+import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.model.table.*;
 import org.activityinfo.service.tree.FormTreeService;
 

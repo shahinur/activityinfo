@@ -1,4 +1,4 @@
-package org.activityinfo.server.util.config;
+package org.activityinfo.service;
 
 /*
  * #%L
