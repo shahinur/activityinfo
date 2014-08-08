@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.barcode.BarcodeValue;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.ButtonWithIcon;
@@ -24,7 +25,7 @@ import org.activityinfo.ui.widget.barcode.client.BarcodeScanner;
 import org.activityinfo.ui.widget.barcode.client.ScanOutcome;
 import org.activityinfo.ui.widget.barcode.client.ScanResult;
 
-public class BarcodeFieldWidget implements FormFieldWidget<TextValue> {
+public class BarcodeFieldWidget implements FormFieldWidget<BarcodeValue> {
 
 
     interface BarcodeFieldWidgetUiBinder extends UiBinder<HTMLPanel, BarcodeFieldWidget> {
@@ -32,9 +33,7 @@ public class BarcodeFieldWidget implements FormFieldWidget<TextValue> {
 
     private static BarcodeFieldWidgetUiBinder ourUiBinder = GWT.create(BarcodeFieldWidgetUiBinder.class);
 
-
     private static final String PLACEHOLDER_TEXT = "ABCDEF0123456";
-
 
     private final HTMLPanel panel;
 
@@ -71,8 +70,8 @@ public class BarcodeFieldWidget implements FormFieldWidget<TextValue> {
     }
 
     @Override
-    public Promise<Void> setValue(TextValue value) {
-        textBox.setValue(value.toString());
+    public Promise<Void> setValue(BarcodeValue value) {
+        textBox.setValue(value.getCode());
         return Promise.done();
     }
 
@@ -101,7 +100,7 @@ public class BarcodeFieldWidget implements FormFieldWidget<TextValue> {
             public void onSuccess(ScanResult scanResult) {
                 scanButton.setEnabled(true);
                 if(scanResult.getOutcome() == ScanOutcome.SUCCEEDED) {
-                    textBox.setValue(scanResult.getMessage());
+                    textBox.setValue(scanResult.getMessage(), true);
                     statusLabel.setText(null);
                 } else if(scanResult.getOutcome() == ScanOutcome.FAILED) {
                     statusLabel.setText("Couldn't decode the bar code.");
