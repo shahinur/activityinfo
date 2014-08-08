@@ -68,6 +68,11 @@ public class TestResourceStore implements ResourceStore {
         return new ResourceTree(root);
     }
 
+    @Override
+    public void createResource(ResourceId userId, Resource resource) {
+        put(resource);
+    }
+
     private ResourceNode createNode(ResourceTreeRequest request, Resource resource) {
         ResourceId classId = getClassId(resource);
         ResourceNode node = new ResourceNode(resource.getId(), classId);

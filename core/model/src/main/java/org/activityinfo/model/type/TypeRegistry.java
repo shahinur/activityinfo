@@ -5,6 +5,7 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -40,6 +41,7 @@ public class TypeRegistry {
         register(GeoPointType.TYPE_CLASS);
         register(BooleanType.TYPE_CLASS);
         register(BarcodeType.TYPE_CLASS);
+        register(ImageType.TYPE_CLASS);
     }
 
     private void register(FieldTypeClass typeClass) {
