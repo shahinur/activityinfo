@@ -1,26 +1,25 @@
 package org.activityinfo.model.type.barcode;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.TypeRegistry;
 import org.activityinfo.model.type.component.ComponentReader;
 import org.activityinfo.model.type.component.NullComponentReader;
-import org.activityinfo.model.type.number.Quantity;
 
 /**
  * A value types that describes a real-valued barcode and its units.
  */
-public class BarcodeType implements ParametrizedFieldType {
+public class BarcodeType implements FieldType {
 
 
-    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
+    public static final FieldTypeClass TYPE_CLASS = new FieldTypeClass() {
+
         public static final String TYPE_ID = "BARCODE";
 
-        private TypeClass() {}
 
         @Override
         public String getId() {
@@ -34,47 +33,13 @@ public class BarcodeType implements ParametrizedFieldType {
 
         @Override
         public FieldType createType() {
-            return new BarcodeType()
-                    .setUnits("households");
-        }
-
-        @Override
-        public BarcodeType deserializeType(Record typeParameters) {
-            return new BarcodeType()
-                    .setUnits(typeParameters.getString("units"));
-        }
-
-        @Override
-        public FormClass getParameterFormClass() {
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id(TYPE_ID));
-            formClass.addElement(new FormField(ResourceId.create("units"))
-                    .setType(FREE_TEXT.createType())
-                    .setLabel("Units")
-                    .setDescription("Describes the unit of measurement. For example: 'school', 'households', 'individuals'," +
-                                    " 'info', etc."));
-            return formClass;
-        }
-
-        @Override
-        public FieldValue deserialize(Record record) {
-            return Quantity.fromRecord(record);
+            return INSTANCE;
         }
     };
 
-    public static final TypeClass TYPE_CLASS = new TypeClass();
+    public static final BarcodeType INSTANCE = new BarcodeType();
 
-    private String units;
-
-    public BarcodeType() {
-    }
-
-    public String getUnits() {
-        return units;
-    }
-
-    public BarcodeType setUnits(String units) {
-        this.units = units;
-        return this;
+    private BarcodeType() {
     }
 
     @Override
@@ -83,13 +48,20 @@ public class BarcodeType implements ParametrizedFieldType {
     }
 
     @Override
-    public Record getParameters() {
-        return new Record().set("units", units);
-    }
-
-    @Override
-    public ComponentReader<String> getStringReader(String fieldName, String componentId) {
-        throw new UnsupportedOperationException();
+    public ComponentReader<String> getStringReader(final String fieldName, String componentId) {
+        return new ComponentReader<String>() {
+            @Override
+            public String read(Resource resource) {
+                Record record = resource.isRecord(fieldName);
+                if(record != null) {
+                    FieldValue value = TypeRegistry.get().deserializeFieldValue(record);
+                    if(value instanceof BarcodeValue) {
+                        return ((BarcodeValue) value).getCode();
+                    }
+                }
+                return null;
+            }
+        };
     }
 
     @Override

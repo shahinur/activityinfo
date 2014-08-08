@@ -7,11 +7,12 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.barcode.BarcodeValue;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.TextBox;
 
-public class BarcodeFieldWidget implements FormFieldWidget<TextValue> {
+public class BarcodeFieldWidget implements FormFieldWidget<BarcodeValue> {
 
     private final TextBox box;
 
@@ -22,6 +23,7 @@ public class BarcodeFieldWidget implements FormFieldWidget<TextValue> {
             public void onValueChange(ValueChangeEvent<String> event) {
                 valueUpdater.update(TextValue.valueOf(event.getValue()));
             }
+
         });
         this.box.addKeyUpHandler(new KeyUpHandler() {
             @Override
@@ -41,8 +43,8 @@ public class BarcodeFieldWidget implements FormFieldWidget<TextValue> {
     }
 
     @Override
-    public Promise<Void> setValue(TextValue value) {
-        box.setValue(value.toString());
+    public Promise<Void> setValue(BarcodeValue value) {
+        box.setValue(value.getCode());
         return Promise.done();
     }
 

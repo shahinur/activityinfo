@@ -22,6 +22,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.promise.Promise;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class EnumFieldWidget implements FormFieldWidget<ReferenceValue> {
+public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
 
 
     public interface Templates extends SafeHtmlTemplates {
@@ -185,17 +186,17 @@ public class EnumFieldWidget implements FormFieldWidget<ReferenceValue> {
     }
 
     @Override
-    public Promise<Void> setValue(ReferenceValue value) {
+    public Promise<Void> setValue(EnumFieldValue value) {
         for (CheckBox entry : controls) {
             ResourceId resourceId = ResourceId.create(entry.getFormValue());
-            entry.setValue(value.getResourceIds().contains(resourceId));
+            entry.setValue(value.getValueIds().contains(resourceId));
         }
         return Promise.done();
     }
 
     @Override
     public void clearValue() {
-        setValue(ReferenceValue.EMPTY);
+        setValue(EnumFieldValue.EMPTY);
     }
 
     @Override
