@@ -5,6 +5,7 @@ import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -23,6 +24,7 @@ public class OdkFormFieldBuilderFactory {
     public OdkFormFieldBuilder fromFieldType(FieldType fieldType) {
         SelectOptions selectOptions = getSelectOptions(fieldType);
 
+        if (fieldType instanceof BarcodeType) return new SimpleInputBuilder("barcode");
         if (fieldType instanceof BooleanType) return new SelectBuilder("boolean", selectOptions);
         if (fieldType instanceof EnumType) return new SelectBuilder("string", selectOptions);
         if (fieldType instanceof GeoPointType) return new SimpleInputBuilder("geopoint");
