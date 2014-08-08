@@ -21,12 +21,8 @@ package org.activityinfo.core.shared.util;
  * #L%
  */
 
-import com.google.api.client.util.Maps;
-import sun.net.www.content.audio.aiff;
-import sun.net.www.content.audio.wav;
-import sun.net.www.content.image.gif;
-import sun.net.www.content.image.jpeg;
-import sun.net.www.content.text.plain;
+
+import com.google.common.collect.Maps;
 
 import java.util.Map;
 
