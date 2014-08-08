@@ -21,6 +21,12 @@
       <version>${project.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-barcode-scanner</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!-- GWT deps (from central repo) -->
     <dependency>
       <groupId>com.google.gwt</groupId>
