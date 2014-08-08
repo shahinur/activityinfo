@@ -6,10 +6,10 @@ import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
-class QuantityTypeAdapter implements OdkTypeAdapter {
+class QuantityFieldBuilder implements OdkFormFieldBuilder {
     final private String units;
 
-    QuantityTypeAdapter(QuantityType quantityType) {
+    QuantityFieldBuilder(QuantityType quantityType) {
         this.units = quantityType.getUnits();
     }
 
