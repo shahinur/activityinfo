@@ -12,11 +12,11 @@ import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
-public class OdkTypeAdapterFactory {
+public class OdkFormFieldBuilderFactory {
     final private TableService table;
 
     @Inject
-    public OdkTypeAdapterFactory(TableService table) {
+    public OdkFormFieldBuilderFactory(TableService table) {
         this.table = table;
     }
 
@@ -33,7 +33,7 @@ public class OdkTypeAdapterFactory {
         if (fieldType instanceof TextType) return new SimpleInputBuilder("string");
 
         // If this happens, it means this class needs to be expanded to support the new FieldType class.
-        throw new IllegalArgumentException("Unknown FieldType object passed to OdkTypeAdapterFactory.fromFieldType()!");
+        throw new IllegalArgumentException("Unknown FieldType passed to OdkFormFieldBuilderFactory.fromFieldType()");
     }
 
     private SelectOptions getSelectOptions(FieldType fieldType) {
