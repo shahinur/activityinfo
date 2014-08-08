@@ -35,17 +35,17 @@ public class FormResource {
 
     private Provider<AuthenticatedUser> authProvider;
     private ResourceStore locator;
-    private OdkTypeAdapterFactory factory;
+    private OdkFormFieldBuilderFactory factory;
 
     @Inject
-    public FormResource(ResourceStore locator, OdkAuthProvider authProvider, OdkTypeAdapterFactory factory) {
+    public FormResource(ResourceStore locator, OdkAuthProvider authProvider, OdkFormFieldBuilderFactory factory) {
         this.locator = locator;
         this.authProvider = authProvider;
         this.factory = factory;
     }
 
     @VisibleForTesting
-    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider, OdkTypeAdapterFactory factory) {
+    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider, OdkFormFieldBuilderFactory factory) {
         this.authProvider = authProvider;
         this.locator = locator;
         this.factory = factory;
