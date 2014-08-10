@@ -25,7 +25,7 @@ public class GetResourceHandler implements CommandHandlerAsync<GetResource, Reso
 
         // TODO(alex) enforce permissions
 
-        SqlQuery.select("id", "json").from("resource").where("id").in(command.getIds())
+        SqlQuery.select("id", "content").from("resource").where("id").in(command.getIds())
         .execute(context.getTransaction(), new SqlResultCallback() {
             @Override
             public void onSuccess(SqlTransaction tx, SqlResultSet results) {
@@ -34,7 +34,7 @@ public class GetResourceHandler implements CommandHandlerAsync<GetResource, Reso
                 for(SqlResultSetRow row : results.getRows()) {
                     String id = row.getString("id");
                     expectedIds.remove(id);
-                    encodedResults.add(row.getString("json"));
+                    encodedResults.add(row.getString("content"));
                 }
                 if(!expectedIds.isEmpty()) {
                     callback.onFailure(new RuntimeException("Could not find resources: " + expectedIds));
