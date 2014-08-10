@@ -2,6 +2,7 @@ package org.activityinfo.store.cloudsql;
 
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import javax.servlet.*;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.io.IOException;
 /**
  * Ensures that any open connections are closed when the request completes.
  */
+@Singleton
 public class ConnectionCleanupFilter implements javax.servlet.Filter {
 
     private final ConnectionProvider connectionProvider;
