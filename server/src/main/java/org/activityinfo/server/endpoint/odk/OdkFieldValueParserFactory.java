@@ -5,6 +5,7 @@ import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -21,6 +22,7 @@ public class OdkFieldValueParserFactory {
     }
 
     public OdkFieldValueParser fromFieldType(FieldType fieldType) {
+        if (fieldType instanceof BarcodeType) return new BarcodeFieldValueParser();
         if (fieldType instanceof BooleanType) return new BooleanFieldValueParser();
         if (fieldType instanceof EnumType) return new EnumFieldValueParser((EnumType) fieldType);
         if (fieldType instanceof GeoPointType) return new GeoPointFieldValueParser();
