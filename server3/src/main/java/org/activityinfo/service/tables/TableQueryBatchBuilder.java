@@ -6,9 +6,15 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.activityinfo.core.shared.expr.ExprLexer;
+import org.activityinfo.core.shared.expr.ExprParser;
+import org.activityinfo.core.shared.expr.PlaceholderExpr;
+import org.activityinfo.core.shared.expr.PlaceholderExprResolver;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.CalculatedFieldType;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
@@ -128,7 +134,18 @@ public class TableQueryBatchBuilder {
     }
 
     private Supplier<ColumnView> getDataColumn(ColumnType columnType, FormTree.Node node) {
-        return getTable(node.getDefiningFormClass().getId()).fetchColumn(node, columnType);
+
+        if(node.getType() instanceof CalculatedFieldType) {
+            return fetchCalculatedColumn(node);
+
+        } else {
+            TableScan table = getTable(node.getDefiningFormClass().getId());
+            return table.fetchColumn(node, columnType);
+        }
+    }
+
+    private Supplier<ColumnView> fetchCalculatedColumn(FormTree.Node node) {
+        throw new UnsupportedOperationException("todo");
     }
 
     private TableScan getTable(ResourceId classId) {

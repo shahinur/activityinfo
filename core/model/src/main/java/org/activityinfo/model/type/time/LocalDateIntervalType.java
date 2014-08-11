@@ -1,9 +1,7 @@
 package org.activityinfo.model.type.time;
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.component.ComponentReader;
 
 /**
  * Value type that represents a continuous interval between two {@link org.activityinfo.model.type.time.LocalDate}s,
@@ -38,15 +36,5 @@ public class LocalDateIntervalType implements FieldType {
         return TYPE_CLASS;
     }
 
-
-    @Override
-    public ComponentReader<String> getStringReader(String fieldName, String componentId) {
-        return null;
-    }
-
-    @Override
-    public ComponentReader<LocalDate> getDateReader(String fieldName, String componentId) {
-        return null;
-    }
 
 }

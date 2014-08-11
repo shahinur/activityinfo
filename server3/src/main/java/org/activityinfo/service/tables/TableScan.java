@@ -7,18 +7,15 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
-import org.activityinfo.model.type.FieldType;
+import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.tables.views.*;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.Map;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Constructs a set of ColumnViews with a single pass over a set of FormInstances
@@ -45,12 +42,17 @@ public class TableScan {
         String columnKey = columnKey(node, columnType);
 
         // create the column builder if it doesn't exist
-        ColumnViewBuilder builder = columnMap.get(columnKey);
-        if(builder == null) {
-            builder = createBuilder(node, columnType);
-            columnMap.put(columnKey, builder);
+        if(columnMap.containsKey(columnKey)) {
+            return columnMap.get(columnKey);
+        } else {
+            Optional<ColumnViewBuilder> builder = ViewBuilders.createBuilder(node.getField(), columnType);
+            if(builder.isPresent()) {
+                columnMap.put(columnKey, builder.get());
+                return builder.get();
+            } else {
+                return fetchEmptyColumn(columnType);
+            }
         }
-        return builder;
     }
 
 
@@ -99,20 +101,6 @@ public class TableScan {
         return node.getField().getId().asString() + "_" + columnType.name();
     }
 
-    private ColumnViewBuilder createBuilder(FormTree.Node node, ColumnType columnType) {
-        switch(columnType) {
-            case STRING:
-                return new StringColumnBuilder(checkNotNull(
-                        node.getType().getStringReader(
-                                node.getField().getId().asString(), FieldType.DEFAULT_COMPONENT)));
-
-            case DATE:
-                return new DateColumnBuilder(checkNotNull(
-                        node.getType().getDateReader(node.getField().getId().asString(), FieldType.DEFAULT_COMPONENT)));
-
-        }
-        throw new UnsupportedOperationException("todo");
-    }
 
     /**
      * Executes the tables scan
