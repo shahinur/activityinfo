@@ -1,13 +1,10 @@
 package org.activityinfo.model.type.time;
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.RecordFieldTypeClass;
-import org.activityinfo.model.type.component.ComponentReader;
 
 /**
  * Value type that represents a date in the ISO-8601 calendar.
@@ -57,35 +54,6 @@ public class LocalDateType implements FieldType {
     @Override
     public FieldTypeClass getTypeClass() {
         return TYPE_CLASS;
-    }
-
-    @Override
-    public ComponentReader<String> getStringReader(final String fieldName, String componentId) {
-        return new ComponentReader<String>() {
-            @Override
-            public String read(Resource resource) {
-                Record record = resource.isRecord(fieldName);
-                if(record == null) {
-                    return null;
-                } else {
-                    return record.getString("value");
-                }
-            }
-        };
-    }
-
-    @Override
-    public ComponentReader<LocalDate> getDateReader(final String name, String componentId) {
-        return new ComponentReader<LocalDate>() {
-            @Override
-            public LocalDate read(Resource resource) {
-                Record record = resource.isRecord(name);
-                if(record == null) {
-                    return null;
-                }
-                return LocalDate.parse(record.getString("value"));
-            }
-        };
     }
 
     @Override
