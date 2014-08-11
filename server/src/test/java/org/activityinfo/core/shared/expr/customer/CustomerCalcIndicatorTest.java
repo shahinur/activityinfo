@@ -47,6 +47,8 @@ import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityFormClass;
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.field;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -57,6 +59,7 @@ import static org.junit.Assert.assertThat;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
+    public static final double EPSILON = 0.000000000000001;
     FormClass formClass;
 
     @Test
@@ -83,11 +86,44 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
         SiteDTO siteDTO = loadResult.getData().get(0);
 
-        Assert.assertEquals(indicatorValue(siteDTO, "WATER_EXP"), 12, 0); // WATER_EXP = EXP * (WATER_ALLOC / 100)
-        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL"), 6, 0); // INITIAL = WATER_EXP * (PCT_INITIAL / 100)
-        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_HARD"), 2.4, 0.000000000000001); // INITIAL_HARD = WATER_EXP * (PCT_INITIAL_HARD / 100)
-        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_SOFT"), 3.6, 0.000000000000001); // INITIAL_SOFT = WATER_EXP * (PCT_INITIAL_HARD / 100)
-        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_TOTAL"), 12, 0.000000000000001); // INITIAL_TOTAL = INITIAL + INITIAL_HARD + INITIAL_SOFT
+        assertThat(indicatorValue(siteDTO, "WATER_EXP"), closeTo(12, 0)); // WATER_EXP = EXP * (WATER_ALLOC / 100)
+        assertThat(indicatorValue(siteDTO, "INITIAL"), closeTo(6, 0)); // INITIAL = WATER_EXP * (PCT_INITIAL / 100)
+        assertThat(indicatorValue(siteDTO, "INITIAL_HARD"), closeTo(2.4, 0.001)); // INITIAL_HARD = WATER_EXP * (PCT_INITIAL_HARD / 100)
+        assertThat(indicatorValue(siteDTO, "INITIAL_SOFT"), closeTo(3.6, 0.001)); // INITIAL_SOFT = WATER_EXP * (PCT_INITIAL_HARD / 100)
+        assertThat(indicatorValue(siteDTO, "INITIAL_TOTAL"), closeTo(12d, 0.001)); // INITIAL_TOTAL = INITIAL + INITIAL_HARD + INITIAL_SOFT
+    }
+
+
+
+    @Test
+    public void calculationsWithMissingValues() {
+        formClass = createFormClass();
+        int activityId = CuidAdapter.getLegacyIdFromCuid(formClass.getId());
+
+        SiteDTO newSite = newSite(activityId);
+
+        newSite.setIndicatorValue(fieldId("EXP"), 3);
+        newSite.setIndicatorValue(fieldId("WATER_ALLOC"), 400);
+        newSite.setIndicatorValue(fieldId("PCT_INITIAL"), 50);
+      //  newSite.setIndicatorValue(fieldId("PCT_INITIAL_HARD"), 0);
+        newSite.setIndicatorValue(fieldId("PCT_INITIAL_SOFT"), 30);
+
+        CreateResult createSiteResult = execute(new CreateSite(newSite));
+
+        // let the client know the command has succeeded
+        newSite.setId(createSiteResult.getNewId());
+
+        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite
+                .getId()));
+        Assert.assertEquals(1, loadResult.getData().size());
+
+        SiteDTO siteDTO = loadResult.getData().get(0);
+
+        assertThat(indicatorValue(siteDTO, "WATER_EXP"), closeTo(12, 0)); // WATER_EXP = EXP * (WATER_ALLOC / 100)
+        assertThat(indicatorValue(siteDTO, "INITIAL"), closeTo(6, 0)); // INITIAL = WATER_EXP * (PCT_INITIAL / 100)
+        assertThat(indicatorValue(siteDTO, "INITIAL_HARD"), equalTo(0d)); // INITIAL_HARD = WATER_EXP * (PCT_INITIAL_HARD / 100)
+        assertThat(indicatorValue(siteDTO, "INITIAL_SOFT"), closeTo(3.6, 0.001)); // INITIAL_SOFT = WATER_EXP * (PCT_INITIAL_HARD / 100)
+        assertThat(indicatorValue(siteDTO, "INITIAL_TOTAL"), closeTo(9.6, 0.001)); // INITIAL_TOTAL = INITIAL + INITIAL_HARD + INITIAL_SOFT
     }
 
 

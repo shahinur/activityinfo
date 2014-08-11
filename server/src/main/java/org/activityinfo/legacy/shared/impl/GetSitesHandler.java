@@ -669,7 +669,11 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                                             for (final SqlResultSetRow row : results.getRows()) {
                                                 String placeholderString = placeholder.getPlaceholder();
                                                 if (placeholderString.equals(row.getString("nameInExpression"))) {
-                                                    double value = site.getIndicatorDoubleValue(row.getInt("IndicatorId"));
+                                                    Double value = site.getIndicatorDoubleValue(row.getInt("IndicatorId"));
+                                                    if(value == null) {
+                                                        value = 0.0;  // temporary workaround until we can set default values for
+                                                                      // for indicators.
+                                                    }
                                                     placeholderExpr.setValue(value);
                                                     return;
                                                 }
