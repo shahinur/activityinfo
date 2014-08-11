@@ -1,11 +1,5 @@
 package org.activityinfo.service;
 
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
-import com.google.appengine.api.blobstore.UploadOptions;
-import com.google.appengine.tools.cloudstorage.GcsService;
-import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
-import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
@@ -14,7 +8,7 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableService;
-import org.activityinfo.server.DeploymentEnvironment;
+import org.activityinfo.service.gcs.GcsUploadService;
 import org.activityinfo.service.tables.TableDataJsonWriter;
 
 import javax.ws.rs.*;
@@ -25,20 +19,15 @@ import java.io.StringWriter;
 @Path("/service")
 public class ServiceResources {
 
-    public static final String GOOGLE_STORAGE_PREFIX = "/gs/";
-
     private final JsonParser jsonParser = new JsonParser();
 
-    private final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    private final GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
-
     private final TableService tableService;
-    private final DeploymentConfiguration config;
+    private final GcsUploadService gcsUploadService;
 
     @Inject
-    public ServiceResources(TableService tableService, DeploymentConfiguration config) {
+    public ServiceResources(TableService tableService, GcsUploadService gcsUploadService) {
         this.tableService = tableService;
-        this.config = config;
+        this.gcsUploadService = gcsUploadService;
     }
 
     @POST
@@ -65,15 +54,7 @@ public class ServiceResources {
     public Response createUploadUrl(@PathParam("formClassId") String formClassId,
                     @PathParam("fieldId") String fieldId,
                     @PathParam("blobId") String blobId) throws IOException {
-
-        if (DeploymentEnvironment.isAppEngineDevelopment()) {
-            // in case of direct REST call we need to authenticate request (probably via http header)
-        }
-
-        UploadOptions uploadOptions = UploadOptions.Builder.
-                withGoogleStorageBucketName(config.getBlobServiceBucketName()); // force upload to GCS
-        String uploadUrl = blobstoreService.createUploadUrl("/", uploadOptions); // no success handler
-
+        String uploadUrl = gcsUploadService.createUploadUrl(formClassId, fieldId, blobId);
         return Response.status(Response.Status.OK).entity(uploadUrl).build();
     }
 
