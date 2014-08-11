@@ -6,6 +6,7 @@ import com.sun.jersey.multipart.FormDataParam;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.ResourceStore;
@@ -31,11 +32,14 @@ import static javax.ws.rs.core.Response.Status.CREATED;
 public class FormSubmissionResource {
     final private OdkFieldValueParserFactory factory;
     final private ResourceStore locator;
+    private AuthenticationTokenService authenticationTokenService;
 
     @Inject
-    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator) {
+    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator,
+                                  AuthenticationTokenService authenticationTokenService) {
         this.factory = factory;
         this.locator = locator;
+        this.authenticationTokenService = authenticationTokenService;
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
@@ -59,10 +63,13 @@ public class FormSubmissionResource {
             Node dataNode = node.getParentNode().getParentNode();
 
             if (dataNode.hasAttributes() && dataNode.getAttributes().getLength() == 1) {
-                String id = OdkHelper.extractText(dataNode.getAttributes().item(0));
+                String tokenString = OdkHelper.extractText(dataNode.getAttributes().item(0));
 
-                if (id != null && id.length() > 0) {
-                    Resource resource = locator.get(ResourceId.create(id));
+                if (tokenString != null && tokenString.length() > 0) {
+                    AuthenticationToken authenticationToken = new AuthenticationToken(tokenString);
+                    int userId = authenticationTokenService.getUserId(authenticationToken);
+                    int formClassId = authenticationTokenService.getFormClassId(authenticationToken);
+                    Resource resource = locator.get(CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
                     FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
 
@@ -75,8 +82,7 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    //TODO Determine owner
-                    locator.createResource(null, formInstance.asResource());
+                    locator.createResource(CuidAdapter.userId(userId), formInstance.asResource());
                     return Response.status(CREATED).build();
                 }
             }

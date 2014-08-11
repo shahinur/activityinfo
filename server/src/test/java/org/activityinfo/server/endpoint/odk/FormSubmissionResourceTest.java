@@ -38,7 +38,8 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
         store = new TestResourceStore().load("/dbunit/formSubmissionResourceTest.json");
         TableService table = new TableServiceImpl(store);
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory(table);
-        resource = new FormSubmissionResource(factory, store);
+        AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
+        resource = new FormSubmissionResource(factory, store, authenticationTokenService);
     }
 
     @Test
