@@ -1,5 +1,6 @@
 package org.activityinfo.store.cloudsql;
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.service.DeploymentConfiguration;
@@ -21,8 +22,13 @@ public class ConnectionProvider implements Provider<Connection> {
 
     private static final String DRIVER_PROPERTY = "hibernate.connection.driver_class";
     private static final String CONNECTION_URL_PROPERTY = "hibernate.connection.url";
+    private static final String CONNECTION_USERNAME = "hibernate.connection.username";
+    private static final String CONNECTION_PASSWORD = "hibernate.connection.password";
+
 
     private final String connectionUrl;
+    private final String username;
+    private final String password;
     private final String driverClassName;
 
     /**
@@ -35,10 +41,14 @@ public class ConnectionProvider implements Provider<Connection> {
 
     @Inject
     public ConnectionProvider(DeploymentConfiguration configuration) {
-        this.connectionUrl = configuration.getProperty(CONNECTION_URL_PROPERTY);
+        connectionUrl = configuration.getProperty(CONNECTION_URL_PROPERTY);
+        username = configuration.getProperty(CONNECTION_USERNAME);
+        password = Strings.emptyToNull(configuration.getProperty(CONNECTION_PASSWORD));
         driverClassName = configuration.getProperty(DRIVER_PROPERTY);
 
         LOGGER.info("connectionUrl: " + connectionUrl);
+        LOGGER.info("username: " + (username == null ? "Not provided" : username));
+        LOGGER.info("password: " + (password == null ? "NO" : "YES"));
         LOGGER.info("driverClassName: " + driverClassName);
     }
 
@@ -60,7 +70,11 @@ public class ConnectionProvider implements Provider<Connection> {
 
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection(connectionUrl);
+            if(Strings.isNullOrEmpty(username)) {
+                connection = DriverManager.getConnection(connectionUrl);
+            } else {
+                connection = DriverManager.getConnection(connectionUrl, username, password);
+            }
             connection.setAutoCommit(false);
             return connection;
         } catch (SQLException e) {
