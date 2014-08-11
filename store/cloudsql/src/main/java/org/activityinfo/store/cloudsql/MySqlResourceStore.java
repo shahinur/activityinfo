@@ -58,7 +58,7 @@ public class MySqlResourceStore implements ResourceStore {
         ResultSet resultSet;
         try {
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT version, content FROM resource WHERE classId = ? order by sequence");
+                    "SELECT version, content FROM resource WHERE class_id = ? order by sequence");
             statement.setString(1, formClassId.asString());
             statement.setFetchDirection(ResultSet.FETCH_FORWARD);
             resultSet = statement.executeQuery();
