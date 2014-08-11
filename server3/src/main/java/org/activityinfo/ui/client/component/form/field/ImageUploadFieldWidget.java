@@ -142,7 +142,7 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                         formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
                     }
 
-                    formPanel.add(formFieldsContainer);
+                    formPanel.setWidget(formFieldsContainer);
                     formPanel.setAction(uploadCredentials.getUrl());
                     formPanel.setMethod(uploadCredentials.getMethod());
                     upload();
