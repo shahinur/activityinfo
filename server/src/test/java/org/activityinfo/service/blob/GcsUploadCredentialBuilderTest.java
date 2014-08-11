@@ -1,7 +1,7 @@
 package org.activityinfo.service.blob;
 
 import org.activityinfo.server.util.blob.DevAppIdentityService;
-import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;
 

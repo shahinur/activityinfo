@@ -27,6 +27,7 @@ import com.google.common.base.Strings;
 import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.type.CalculatedFieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.TypeRegistry;
@@ -206,6 +207,12 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         set("type", type.getId());
     }
 
+    public void setTypeId(String typeId) { set("type", typeId); }
+
+    private String getTypeId() {
+        return get("typeId");
+    }
+
     public void setMandatory(boolean mandatory) {
         set("mandatory", mandatory);
     }
@@ -340,12 +347,17 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         FormField field = new FormField(CuidAdapter.indicatorField(getId()));
         field.setLabel(getName());
         field.setDescription(getDescription());
-        field.setNameInExpression(getNameInExpression());
-        field.setCalculateAutomatically(getCalculatedAutomatically());
-        field.setExpression(getExpression());
         field.setRelevanceConditionExpression(getSkipExpression());
 
-        if(getType() == TextType.TYPE_CLASS) {
+        String code = getNameInExpression();
+        if(!Strings.isNullOrEmpty(code)) {
+            field.setCode(code);
+        }
+
+        if (isCalculated()) {
+            field.setType(new CalculatedFieldType(getExpression()));
+
+        } else if (getType() == TextType.TYPE_CLASS) {
             field.setType(TextType.INSTANCE);
 
         } else if(getType() == NarrativeType.TYPE_CLASS) {
@@ -360,6 +372,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         }
         return field;
     }
+
 
     public void setSortOrder(int sortOrder) {
         set("sortOrder", sortOrder);

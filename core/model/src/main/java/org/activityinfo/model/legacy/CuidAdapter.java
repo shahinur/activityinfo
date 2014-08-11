@@ -46,6 +46,8 @@ public class CuidAdapter {
 
     public static final char ACTIVITY_CATEGORY_DOMAIN = 'C';
 
+    public static final char USER_DOMAIN = 'U';
+
     public static final int NAME_FIELD = 1;
     public static final int ADMIN_PARENT_FIELD = 2;
     public static final int CODE_FIELD = 3;

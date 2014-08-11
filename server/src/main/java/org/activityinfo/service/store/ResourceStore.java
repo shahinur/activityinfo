@@ -16,4 +16,6 @@ public interface ResourceStore {
      * Fetches the latest version of the resource from the store.
      */
     Resource get(ResourceId resourceId);
+
+    void createResource(ResourceId resourceId, Resource resource);
 }

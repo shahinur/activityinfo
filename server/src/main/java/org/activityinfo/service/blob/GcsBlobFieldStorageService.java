@@ -4,7 +4,7 @@ import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.inject.Inject;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.service.gcs.GcsAppIdentityServiceUrlSigner;
 
 import java.net.URI;

@@ -11,6 +11,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.endpoint.odk.xform.Bind;
 import org.activityinfo.server.endpoint.odk.xform.Body;
 import org.activityinfo.server.endpoint.odk.xform.Data;
@@ -43,12 +44,12 @@ public class FormResource {
     private static final Logger LOGGER = Logger.getLogger(FormResource.class.getName());
 
     private Provider<AuthenticatedUser> authProvider;
-    private ResourceStore locator;
+    private ResourceLocatorSync locator;
     private OdkFormFieldBuilderFactory factory;
     private AuthenticationTokenService authenticationTokenService;
 
     @Inject
-    public FormResource(ResourceStore locator, OdkAuthProvider authProvider, OdkFormFieldBuilderFactory factory,
+    public FormResource(ResourceLocatorSync locator, OdkAuthProvider authProvider, OdkFormFieldBuilderFactory factory,
                         AuthenticationTokenService authenticationTokenService) {
         this.locator = locator;
         this.authProvider = authProvider;
@@ -57,7 +58,7 @@ public class FormResource {
     }
 
     @VisibleForTesting
-    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider, OdkFormFieldBuilderFactory factory,
+    FormResource(ResourceLocatorSync locator, Provider<AuthenticatedUser> authProvider, OdkFormFieldBuilderFactory factory,
                  AuthenticationTokenService authenticationTokenService) {
         this.authProvider = authProvider;
         this.locator = locator;

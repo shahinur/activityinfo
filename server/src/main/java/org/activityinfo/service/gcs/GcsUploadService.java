@@ -33,7 +33,7 @@ import com.google.appengine.api.blobstore.UploadOptions;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.server.util.config.DeploymentConfiguration;
 
 import java.io.IOException;
 import java.util.List;

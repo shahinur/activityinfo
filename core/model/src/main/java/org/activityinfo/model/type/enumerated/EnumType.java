@@ -1,19 +1,19 @@
 package org.activityinfo.model.type.enumerated;
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
-import org.activityinfo.model.type.component.ComponentReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EnumType implements ParametrizedFieldType {
 
-    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
+    public interface EnumTypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass { }
+
+    public static final EnumTypeClass TYPE_CLASS = new EnumTypeClass() {
 
         @Override
         public String getId() {
@@ -50,11 +50,9 @@ public class EnumType implements ParametrizedFieldType {
 
         @Override
         public FieldValue deserialize(Record record) {
-            return EnumValue.fromRecord(record);
+            return EnumFieldValue.fromRecord(record);
         }
     };
-
-    public static final TypeClass TYPE_CLASS = new TypeClass();
 
     private final Cardinality cardinality;
     private final List<EnumValue> values;
@@ -104,16 +102,6 @@ public class EnumType implements ParametrizedFieldType {
     @Override
     public boolean isValid() {
         return values.size() > 0;
-    }
-
-    @Override
-    public ComponentReader<String> getStringReader(String fieldName, String componentId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
-        throw new UnsupportedOperationException();
     }
 
 }

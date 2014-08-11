@@ -4,15 +4,17 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import com.google.inject.Provider;
 import com.google.inject.util.Providers;
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
-import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.model.table.TableService;
+import org.activityinfo.server.command.CommandTestCase2;
+import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.endpoint.odk.xform.Html;
-import org.activityinfo.service.tables.TableServiceImpl;
-import org.activityinfo.ui.client.service.TestResourceStore;
+import org.activityinfo.service.lookup.ReferenceProvider;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
@@ -25,8 +27,8 @@ import java.nio.file.Paths;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-
-public class FormResourceTest {
+@RunWith(InjectionSupport.class)
+public class FormResourceTest extends CommandTestCase2 {
 
     private FormResource resource;
 
