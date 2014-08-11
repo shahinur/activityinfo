@@ -7,7 +7,7 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceStore;
+import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;

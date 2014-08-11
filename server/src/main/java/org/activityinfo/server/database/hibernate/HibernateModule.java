@@ -35,7 +35,7 @@ import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.database.hibernate.dao.FixGeometryTask;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
-import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.service.DeploymentConfiguration;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Environment;
@@ -104,7 +104,7 @@ public class HibernateModule extends ServletModule {
     }
 
     protected static class EntityManagerFactoryProvider implements Provider<EntityManagerFactory> {
-        private org.activityinfo.server.util.config.DeploymentConfiguration deploymentConfig;
+        private DeploymentConfiguration deploymentConfig;
 
         @Inject
         public EntityManagerFactoryProvider(DeploymentConfiguration deploymentConfig) {

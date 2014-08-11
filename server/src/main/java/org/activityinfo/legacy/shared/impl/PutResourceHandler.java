@@ -18,7 +18,7 @@ public class PutResourceHandler implements CommandHandlerAsync<PutResource, Void
 
         Resource resource = Resources.fromJson(command.getJson());
 
-        String sql = "REPLACE INTO resource (id, ownerId, json) VALUES (?, ?, ?)";
+        String sql = "REPLACE INTO resource (id, ownerId, content) VALUES (?, ?, ?)";
         Object[] parameters = new Object[] {
                 resource.getId().asString(),
                 resource.getOwnerId().asString(),

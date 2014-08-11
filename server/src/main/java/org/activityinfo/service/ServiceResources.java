@@ -15,7 +15,6 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableService;
 import org.activityinfo.server.DeploymentEnvironment;
-import org.activityinfo.server.util.config.DeploymentConfiguration;
 import org.activityinfo.service.tables.TableDataJsonWriter;
 
 import javax.ws.rs.*;

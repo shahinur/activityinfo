@@ -4,13 +4,13 @@ import com.google.common.io.ByteStreams;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceStore;
 import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.server.command.CommandTestCase2;
+import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.tables.TableServiceImpl;
 import org.activityinfo.ui.client.service.TestResourceStore;
 import org.apache.geronimo.mail.util.StringBufferOutputStream;
@@ -26,9 +26,7 @@ import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
 public class FormSubmissionResourceTest extends CommandTestCase2 {
