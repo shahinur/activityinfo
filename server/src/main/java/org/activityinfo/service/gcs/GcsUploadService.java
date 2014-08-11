@@ -21,10 +21,15 @@ package org.activityinfo.service.gcs;
  * #L%
  */
 
-import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpResponse;
+import com.google.api.client.googleapis.MethodOverride;
+import com.google.api.client.googleapis.media.MediaHttpUploader;
+import com.google.api.client.http.*;
+import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.blobstore.UploadOptions;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -39,15 +44,19 @@ import java.util.List;
 @Singleton
 public class GcsUploadService {
 
+    public static final String HOST = "https://www.googleapis.com";
+
     public static final String GOOGLE_STORAGE_PREFIX = "/gs/";
     public static final List<String> OAUTH_SCOPES =
             ImmutableList.of("https://www.googleapis.com/auth/devstorage.read_write");
 
     private final AppIdentityService appIdentityService = AppIdentityServiceFactory.getAppIdentityService();
-//    private final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    private final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 //    private final GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
 
     private final DeploymentConfiguration config;
+    private final HttpTransport transport = new ApacheHttpTransport();
+    private final HttpRequestFactory httpRequestFactory = transport.createRequestFactory();
 
     @Inject
     public GcsUploadService(DeploymentConfiguration config) {
@@ -59,10 +68,11 @@ public class GcsUploadService {
     }
 
     private String createUploadUrlViaRestApi(String formClassId, String fieldId, String blobId) throws IOException {
-        String accessToken = appIdentityService.getAccessToken(OAUTH_SCOPES).getAccessToken();
+        String bucketName = config.getBlobServiceBucketName();
+        GenericUrl initiationRequestUrl = new GenericUrl(HOST + "/upload/storage/v1/b/" + bucketName + "/o");
+        String mimeType = "image/png"; // todo pass from client
 
-        GenericUrl initiationRequestUrl = null; // todo
-        HttpResponse initialResponse = executeUploadInitiation(initiationRequestUrl);
+        HttpResponse initialResponse = executeUploadInitiation(initiationRequestUrl, mimeType);
         return initialResponse.getHeaders().getLocation();
     }
 
@@ -71,25 +81,42 @@ public class GcsUploadService {
      *
      * @param initiationRequestUrl The request URL where the initiation request will be sent
      */
-    private HttpResponse executeUploadInitiation(GenericUrl initiationRequestUrl) throws IOException {
-
+    private HttpResponse executeUploadInitiation(GenericUrl initiationRequestUrl, final String mediaType) throws IOException {
         initiationRequestUrl.put("uploadType", "resumable");
-//        HttpContent content = metadata == null ? new EmptyContent() : metadata;
-//        HttpRequest request =
-//                requestFactory.buildRequest(initiationRequestMethod, initiationRequestUrl, content);
-//        initiationHeaders.set(MediaHttpUploader.CONTENT_TYPE_HEADER, mediaContent.getType());
-//        if (isMediaLengthKnown()) {
-//            initiationHeaders.set(MediaHttpUploader.CONTENT_LENGTH_HEADER, getMediaContentLength());
-//        }
-//        request.getHeaders().putAll(initiationHeaders);
-        HttpResponse response = null;//executeCurrentRequest(request);
+
+        String accessToken = appIdentityService.getAccessToken(OAUTH_SCOPES).getAccessToken();
+        HttpContent content = new EmptyContent() {
+            @Override
+            public String getType() {
+                return mediaType;
+            }
+        };
+
+        HttpHeaders initiationHeaders = new HttpHeaders();
+        HttpRequest request = httpRequestFactory.buildRequest("POST", initiationRequestUrl, content);
+        initiationHeaders.set(MediaHttpUploader.CONTENT_TYPE_HEADER, mediaType);
+        initiationHeaders.set("Authorization", "Bearer " + accessToken);
+
+        request.getHeaders().putAll(initiationHeaders);
+        HttpResponse response = executeCurrentRequest(request);
 
         return response;
     }
 
-//    private String createUploadUrlViaBlobstoreApi() {
-//            UploadOptions uploadOptions = UploadOptions.Builder.
-//                withGoogleStorageBucketName(config.getBlobServiceBucketName()); // force upload to GCS
-//        return blobstoreService.createUploadUrl("/", uploadOptions); // no success handler
-//    }
+    private HttpResponse executeCurrentRequest(HttpRequest request) throws IOException {
+        // enable GZip encoding if necessary
+        // method override for non-POST verbs
+        new MethodOverride().intercept(request);
+        // don't throw an exception so we can let a custom Google exception be thrown
+        request.setThrowExceptionOnExecuteError(false);
+        // execute the request
+        HttpResponse response = request.execute();
+        return response;
+    }
+
+    private String createUploadUrlViaBlobstoreApi() {
+            UploadOptions uploadOptions = UploadOptions.Builder.
+                withGoogleStorageBucketName(config.getBlobServiceBucketName()); // force upload to GCS
+        return blobstoreService.createUploadUrl("/", uploadOptions); // no success handler
+    }
 }
