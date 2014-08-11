@@ -2,8 +2,9 @@ package org.activityinfo.model.type;
 
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.type.primitive.HasStringValue;
 
-public class NarrativeValue implements FieldValue, IsRecord {
+public class NarrativeValue implements FieldValue, IsRecord, HasStringValue {
 
     private String text;
 
@@ -20,11 +21,17 @@ public class NarrativeValue implements FieldValue, IsRecord {
         return NarrativeType.TYPE_CLASS;
     }
 
+
     @Override
     public Record asRecord() {
         return new Record()
                 .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
                 .set("text", text);
+    }
+
+    @Override
+    public String asString() {
+        return text;
     }
 
     public static FieldValue fromRecord(Record record) {
@@ -47,4 +54,5 @@ public class NarrativeValue implements FieldValue, IsRecord {
     public int hashCode() {
         return text != null ? text.hashCode() : 0;
     }
+
 }
