@@ -34,6 +34,7 @@ import java.util.Properties;
 public class DeploymentConfiguration {
 
     public static final String BLOBSERVICE_GCS_BUCKET_NAME = "blobservice.gcs.bucket.name";
+    public static final String SERVICE_ACCOUNT_EMAIL = "service.account.email";
 
     private final Properties properties;
 
@@ -64,6 +65,10 @@ public class DeploymentConfiguration {
     }
 
     public String getBlobServiceBucketName() {
-        return getProperty(DeploymentConfiguration.BLOBSERVICE_GCS_BUCKET_NAME);
+        return getProperty(BLOBSERVICE_GCS_BUCKET_NAME);
+    }
+
+    public String getServiceAccountEmail() {
+        return getProperty(SERVICE_ACCOUNT_EMAIL);
     }
 }
