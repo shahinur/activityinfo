@@ -84,6 +84,7 @@ public class LocationUpdateBuilder implements UpdateBuilder {
                                  .appendColumn("X")
                                  .appendColumn("Y")
                                  .appendColumn("LocationTypeId")
+                                 .appendColumn("workflowStatusId")
                                  .from(Tables.LOCATION)
                                  .where("locationTypeId")
                                  .equalTo(typeId)
