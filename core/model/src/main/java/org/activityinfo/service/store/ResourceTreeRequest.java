@@ -1,7 +1,8 @@
-package org.activityinfo.model.resource;
+package org.activityinfo.service.store;
 
 import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.FolderClass;
 
 import java.util.Set;

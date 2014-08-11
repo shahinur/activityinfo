@@ -1,4 +1,7 @@
-package org.activityinfo.model.resource;
+package org.activityinfo.service.store;
+
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.Iterator;
 
@@ -7,7 +10,7 @@ public interface ResourceStore {
     /**
      * Opens a cursor over a list of instances belong to a FormClass
      */
-    Iterator<Resource> openCursor(ResourceId formClassId);
+    ResourceCursor openCursor(ResourceId formClassId);
 
     /**
      * Fetches the latest version of the resource from the store.
@@ -23,5 +26,11 @@ public interface ResourceStore {
     /**
      * Creates a new resource inside the store.
      */
-    void createResource(ResourceId userId, Resource resource);
+    UpdateResult createResource(ResourceId userId, Resource resource);
+
+
+    /**
+     * Updates an existing resource
+     */
+    UpdateResult updateResource(ResourceId userId, Resource resource);
 }

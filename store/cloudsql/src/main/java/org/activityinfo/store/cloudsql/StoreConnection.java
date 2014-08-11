@@ -1,0 +1,104 @@
+package org.activityinfo.store.cloudsql;
+
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+
+import javax.inject.Provider;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ * Simplified version of {@link java.sql.Connection} and
+ * {@link com.google.appengine.api.memcache.MemcacheService} with a few convenience methods.
+ */
+public class StoreConnection implements AutoCloseable {
+
+    private static final Logger LOGGER = Logger.getLogger(StoreConnection.class.getName());
+
+    private final Provider<Connection> connectionProvider;
+
+    private Connection connection;
+
+    StoreConnection(Provider<Connection> connectionProvider) {
+        this.connectionProvider = connectionProvider;
+    }
+
+
+    private Connection getConnection() throws SQLException {
+        if(connection == null) {
+            connection = connectionProvider.get();
+            Preconditions.checkState(!connection.getAutoCommit(), "auto commit must be disabled");
+
+        }
+        return connection;
+    }
+
+    /**
+     * Executes the given SQL statement and returns the number of affected rows.
+     */
+    public int executeUpdate(String sql) throws SQLException {
+        try(Statement statement = getConnection().createStatement()) {
+            return statement.executeUpdate(sql);
+        }
+    }
+
+    public Optional<Integer> queryInteger(String sql) throws SQLException {
+        try(Statement statement = getConnection().createStatement()) {
+            try(ResultSet rs = statement.executeQuery(sql)) {
+                if(!rs.next()) {
+                    return Optional.absent();
+                } else {
+                    return Optional.of(rs.getInt(1));
+                }
+            }
+        }
+    }
+
+    public Optional<Long> queryLong(String sql) throws SQLException {
+        try(Statement statement = getConnection().createStatement()) {
+            try(ResultSet rs = statement.executeQuery(sql)) {
+                if(!rs.next()) {
+                    return Optional.absent();
+                } else {
+                    return Optional.of(rs.getLong(1));
+                }
+            }
+        }
+    }
+
+
+    public PreparedStatement prepareStatement(String statement) throws SQLException {
+        return getConnection().prepareStatement(statement);
+    }
+
+    public Statement createStatement() throws SQLException {
+        return getConnection().createStatement();
+    }
+
+    public void commit() throws SQLException {
+        if(connection != null) {
+            connection.commit();
+        }
+    }
+
+    /**
+     * Closes a {@link java.sql.Connection}, with control over whether an {@code SQLException} may be thrown.
+     * This is primarily useful in a finally block, where a thrown exception needs to be logged but
+     * not propagated (otherwise the original exception will be lost).
+     *
+     * <p>If {@code swallowException} is true then we never throw {@code SQLException} but merely log
+     * it.
+     */
+    public void close(boolean swallowException) {
+        Connections.close(connection, swallowException);
+    }
+
+
+    @Override
+    public void close() throws SQLException {
+        if(connection != null) {
+            connection.close();
+        }
+    }
+}
