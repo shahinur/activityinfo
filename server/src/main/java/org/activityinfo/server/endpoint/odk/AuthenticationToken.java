@@ -1,7 +1,5 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.server.database.hibernate.entity.Authentication;
-
 import javax.xml.bind.DatatypeConverter;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -35,7 +33,7 @@ public final class AuthenticationToken {
 
     @Override
     public boolean equals(Object object) {
-        if (object instanceof Authentication) {
+        if (object instanceof AuthenticationToken) {
             AuthenticationToken other = (AuthenticationToken) object;
             return Arrays.equals(token, other.token);
         } else return false;
