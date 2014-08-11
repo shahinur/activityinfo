@@ -27,4 +27,6 @@
   <inherits name='org.activityinfo.model.Model'/>
 
   <source path="store"/>
+  <source path="blob"/>
+
 </module>
