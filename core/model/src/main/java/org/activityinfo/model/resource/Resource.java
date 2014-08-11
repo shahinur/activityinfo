@@ -26,6 +26,7 @@ public final class Resource extends PropertyBag<Resource> {
 
     private ResourceId id;
     private ResourceId owner;
+    private long version;
 
 
     Resource() {
@@ -104,6 +105,14 @@ public final class Resource extends PropertyBag<Resource> {
         }
         this.owner = owningResourceId;
         return this;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 
     @Override

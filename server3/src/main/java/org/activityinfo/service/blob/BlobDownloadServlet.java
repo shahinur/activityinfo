@@ -26,8 +26,8 @@ import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.activityinfo.model.resource.ResourceStore;
-import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.service.store.ResourceStore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

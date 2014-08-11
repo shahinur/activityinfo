@@ -9,6 +9,7 @@ import com.google.gson.JsonParser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.service.store.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,10 +18,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class TestResourceStore implements ResourceStore {
+@SuppressWarnings("GwtClientClassFromNonInheritedModule") public class TestResourceStore implements ResourceStore {
 
     private final Map<ResourceId, Resource> resourceMap = Maps.newHashMap();
 
+    private int currentVersion = 1;
 
     /**
      * Loads a set of resources from a json resource on the classpath
@@ -37,13 +39,14 @@ public class TestResourceStore implements ResourceStore {
 
         for(int i=0;i!=resourceArray.size();++i) {
             Resource resource = Resources.fromJson(resourceArray.get(i).getAsJsonObject());
+            resource.setVersion(currentVersion++);
             resourceMap.put(resource.getId(), resource);
         }
         return this;
     }
 
     @Override
-    public Iterator<Resource> openCursor(ResourceId formClassId) {
+    public ResourceCursor openCursor(ResourceId formClassId) {
         List<Resource> resources = Lists.newArrayList();
         for(Resource resource : resourceMap.values()) {
             if(formClassId.asString().equals(resource.isString("classId"))) {
@@ -69,8 +72,16 @@ public class TestResourceStore implements ResourceStore {
     }
 
     @Override
-    public void createResource(ResourceId userId, Resource resource) {
-        put(resource);
+    public UpdateResult createResource(ResourceId userId, Resource resource) {
+        return updateResource(userId, resource);
+    }
+
+    @Override
+    public UpdateResult updateResource(ResourceId userId, Resource resource) {
+        int version = currentVersion++;
+        resource.setVersion(version);
+        put(resource.copy());
+        return new UpdateResult(CommitStatus.COMMITTED, version);
     }
 
     private ResourceNode createNode(ResourceTreeRequest request, Resource resource) {
@@ -118,7 +129,7 @@ public class TestResourceStore implements ResourceStore {
         resourceMap.remove(id);
     }
 
-    private class Cursor extends UnmodifiableIterator<Resource> {
+    private class Cursor implements ResourceCursor {
 
         private Iterator<Resource> iterator;
 
@@ -134,6 +145,16 @@ public class TestResourceStore implements ResourceStore {
         @Override
         public Resource next() {
             return iterator.next().copy();
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void close() throws Exception {
+
         }
     }
 
