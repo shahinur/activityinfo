@@ -9,14 +9,13 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableService;
+import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.GcsBlobFieldStorageService;
+import org.activityinfo.service.blob.UploadCredentials;
 import org.activityinfo.service.tables.TableDataJsonWriter;
 
 import javax.inject.Provider;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -59,13 +58,13 @@ public class ServiceResources {
         return writer.toString();
     }
 
-//    @POST
-//    @Path("blob/{blobId}")
-//    @Produces("application/json")
-//    public UploadCredentials createUploadUrl(@PathParam("blobId") String blobId) throws IOException {
-//
-//        return blobFieldStorageService.getUploadCredentials(authProvider.get().getUserResourceId(),
-//                new BlobId(blobId));
-//    }
+    @POST
+    @Path("blob/{blobId}")
+    @Produces("application/json")
+    public UploadCredentials getUploadCredentials(@PathParam("blobId") String blobId) throws IOException {
+
+        return blobFieldStorageService.getUploadCredentials(authProvider.get().getUserResourceId(),
+                new BlobId(blobId));
+    }
 
 }
