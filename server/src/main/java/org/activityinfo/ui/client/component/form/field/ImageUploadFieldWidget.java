@@ -36,10 +36,15 @@ import com.google.gwt.user.client.ui.*;
 import org.activityinfo.core.shared.util.MimeTypeUtil;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.blob.UploadCredentials;
+
+import java.util.Map;
 
 /**
  * @author yuriyz on 8/7/14.
@@ -127,8 +132,16 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
             requestBuilder.sendRequest(null, new RequestCallback() {
                 @Override
                 public void onResponseReceived(Request request, Response response) {
-                    String uploadUrl = response.getText();
-                    upload(uploadUrl);
+                    String json = response.getText();
+                    Resource resource = Resources.fromJson(json);
+                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
+                    Map<String,String> formFields = uploadCredentials.getFormFields();
+                    for (Map.Entry<String, String> field: formFields.entrySet()) {
+                        formPanel.add(new Hidden(field.getKey(), field.getValue()));
+                    }
+                    formPanel.setAction(uploadCredentials.getUrl());
+                    formPanel.setMethod(uploadCredentials.getMethod());
+                    upload();
                 }
 
                 @Override
@@ -141,15 +154,15 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
         }
     }
 
-    private void upload(String uploadUrl) {
+    private void upload() {
         imageContainer.setVisible(true);
         downloadButtonContainer.setVisible(false);
 
-        formPanel.setAction(uploadUrl);
         formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
             @Override
             public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
-                String results = event.getResults(); // what about fail results?
+                String responseString = event.getResults(); // what about fail results?
+
 
                 imageContainer.setVisible(false);
                 downloadButtonContainer.setVisible(true);
