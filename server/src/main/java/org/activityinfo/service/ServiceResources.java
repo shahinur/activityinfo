@@ -1,16 +1,12 @@
 package org.activityinfo.service;
 
-import com.google.appengine.api.blobstore.BlobstoreService;
-import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
-import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.blob.GcsBlobFieldStorageService;
 
-import javax.ws.rs.POST;
+import javax.inject.Provider;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Response;
-import java.io.IOException;
 
 @Path("/service")
 public class ServiceResources {
@@ -19,22 +15,23 @@ public class ServiceResources {
 
     private final JsonParser jsonParser = new JsonParser();
 
-    private final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    private final DeploymentConfiguration config;
+    private final GcsBlobFieldStorageService blobFieldStorageService;
+    private final Provider<AuthenticatedUser> authProvider;
+
 
     @Inject
-    public ServiceResources(DeploymentConfiguration config) {
-        this.config = config;
+    public ServiceResources(GcsBlobFieldStorageService blobFieldStorageService,
+                            Provider<AuthenticatedUser> authProvider) {
+        this.blobFieldStorageService = blobFieldStorageService;
+        this.authProvider = authProvider;
     }
 
-
-
-    @POST
-    @Path("blob/{formClassId}/{fieldId}/{blobId}")
-    public Response createUploadUrl(@PathParam("formClassId") String formClassId,
-                                    @PathParam("fieldId") String fieldId,
-                                    @PathParam("blobId") String blobId) throws IOException {
-        return Response.status(Response.Status.SERVICE_UNAVAILABLE).build();
-    }
-
+//    @POST
+//    @Path("blob/{blobId}")
+//    @Produces("application/json")
+//    public UploadCredentials createUploadUrl(@PathParam("blobId") String blobId) throws IOException {
+//
+//        return blobFieldStorageService.getUploadCredentials(authProvider.get().getUserResourceId(),
+//                new BlobId(blobId));
+//    }
 }
