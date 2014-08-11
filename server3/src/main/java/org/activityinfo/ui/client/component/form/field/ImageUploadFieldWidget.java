@@ -135,10 +135,14 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                     String json = response.getText();
                     Resource resource = Resources.fromJson(json);
                     UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
+
+                    VerticalPanel formFieldsContainer = new VerticalPanel();
                     Map<String,String> formFields = uploadCredentials.getFormFields();
                     for (Map.Entry<String, String> field: formFields.entrySet()) {
-                        formPanel.add(new Hidden(field.getKey(), field.getValue()));
+                        formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
                     }
+
+                    formPanel.add(formFieldsContainer);
                     formPanel.setAction(uploadCredentials.getUrl());
                     formPanel.setMethod(uploadCredentials.getMethod());
                     upload();
