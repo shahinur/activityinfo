@@ -1,6 +1,5 @@
 package org.activityinfo.service;
 
-import com.google.api.client.googleapis.extensions.appengine.auth.oauth2.AppIdentityCredential;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
@@ -10,15 +9,14 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableService;
-import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.GcsBlobFieldStorageService;
-import org.activityinfo.service.blob.GcsUploadCredentialBuilder;
-import org.activityinfo.service.blob.UploadCredentials;
 import org.activityinfo.service.tables.TableDataJsonWriter;
 
 import javax.inject.Provider;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import java.io.IOException;
 import java.io.StringWriter;
 
