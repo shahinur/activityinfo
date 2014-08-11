@@ -24,6 +24,8 @@ package org.activityinfo.legacy.shared.auth;
 
 import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.user.client.rpc.IsSerializable;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * Encapsulates user identity and their authorization to access the server.
@@ -104,6 +106,10 @@ public class AuthenticatedUser implements IsSerializable {
                 ANONYMOUS_ID,
                 AnonymousUser.USER_EMAIL,
                 currentLocale.getLocaleName());
+    }
+
+    public ResourceId getUserResourceId() {
+        return CuidAdapter.cuid(CuidAdapter.USER_DOMAIN, userId);
     }
 
     public boolean isAnonymous() {

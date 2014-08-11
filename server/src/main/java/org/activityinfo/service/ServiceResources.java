@@ -3,31 +3,40 @@ package org.activityinfo.service;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.inject.Inject;
+import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableService;
-import org.activityinfo.service.gcs.GcsUploadService;
+import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.GcsBlobFieldStorageService;
+import org.activityinfo.service.blob.UploadCredentials;
 import org.activityinfo.service.tables.TableDataJsonWriter;
 
+import javax.inject.Provider;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.StringWriter;
 
 @Path("/service")
 public class ServiceResources {
 
+    public static final String GOOGLE_STORAGE_PREFIX = "/gs/";
+
     private final JsonParser jsonParser = new JsonParser();
 
     private final TableService tableService;
-    private final GcsUploadService gcsUploadService;
+    private final GcsBlobFieldStorageService blobFieldStorageService;
+    private final Provider<AuthenticatedUser> authProvider;
 
     @Inject
-    public ServiceResources(TableService tableService, GcsUploadService gcsUploadService) {
+    public ServiceResources(TableService tableService,
+                            GcsBlobFieldStorageService blobFieldStorageService,
+                            Provider<AuthenticatedUser> authProvider) {
         this.tableService = tableService;
-        this.gcsUploadService = gcsUploadService;
+        this.blobFieldStorageService = blobFieldStorageService;
+        this.authProvider = authProvider;
     }
 
     @POST
@@ -50,12 +59,12 @@ public class ServiceResources {
     }
 
     @POST
-    @Path("blob/{formClassId}/{fieldId}/{blobId}")
-    public Response createUploadUrl(@PathParam("formClassId") String formClassId,
-                    @PathParam("fieldId") String fieldId,
-                    @PathParam("blobId") String blobId) throws IOException {
-        String uploadUrl = gcsUploadService.createUploadUrl(formClassId, fieldId, blobId);
-        return Response.status(Response.Status.OK).entity(uploadUrl).build();
+    @Path("blob/{blobId}")
+    @Produces("application/json")
+    public UploadCredentials getUploadCredentials(@PathParam("blobId") String blobId) throws IOException {
+
+        return blobFieldStorageService.getUploadCredentials(authProvider.get().getUserResourceId(),
+                new BlobId(blobId));
     }
 
 }
