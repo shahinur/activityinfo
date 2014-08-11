@@ -35,7 +35,8 @@ public class FormResourceTest {
         ResourceStore store = new TestResourceStore().load("/dbunit/sites-simple1.json");
         TableService table = new TableServiceImpl(store);
         OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(table);
-        resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory);
+        resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory,
+                new TestAuthenticationTokenService());
     }
 
     @Test
