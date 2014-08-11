@@ -4,15 +4,15 @@ import com.google.common.io.ByteStreams;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.command.ResourceLocatorSync;
-import org.activityinfo.service.lookup.ReferenceProvider;
 import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.service.tables.TableServiceImpl;
+import org.activityinfo.ui.client.service.TestResourceStore;
 import org.apache.geronimo.mail.util.StringBufferOutputStream;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +31,13 @@ import static org.junit.Assert.*;
 @RunWith(InjectionSupport.class)
 public class FormSubmissionResourceTest extends CommandTestCase2 {
     private FormSubmissionResource resource;
+    private ResourceStore store;
 
     @Before
     public void setUp() throws IOException {
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory(new ReferenceProvider());
         ResourceLocatorSync resourceLocatorSync = new ResourceLocatorSync(getDispatcherSync());
+        AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
         resource = new FormSubmissionResource(factory, resourceLocatorSync);
     }
 

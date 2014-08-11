@@ -11,9 +11,8 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.server.command.ResourceLocatorSync;
-import org.activityinfo.server.endpoint.odk.xform.*;
 import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.server.endpoint.odk.xform.*;
 
 import javax.inject.Provider;
 import javax.ws.rs.GET;
@@ -35,21 +34,26 @@ public class FormResource {
     private static final Logger LOGGER = Logger.getLogger(FormResource.class.getName());
 
     private Provider<AuthenticatedUser> authProvider;
-    private ResourceLocatorSync locator;
+    private ResourceStore locator;
     private OdkFormFieldBuilderFactory factory;
+    private AuthenticationTokenService authenticationTokenService;
 
     @Inject
-    public FormResource(ResourceLocatorSync locator, OdkAuthProvider authProvider, OdkFormFieldBuilderFactory factory) {
+    public FormResource(ResourceStore locator, OdkAuthProvider authProvider, OdkFormFieldBuilderFactory factory,
+                        AuthenticationTokenService authenticationTokenService) {
         this.locator = locator;
         this.authProvider = authProvider;
         this.factory = factory;
+        this.authenticationTokenService = authenticationTokenService;
     }
 
     @VisibleForTesting
-    FormResource(ResourceLocatorSync locator, Provider<AuthenticatedUser> authProvider, OdkFormFieldBuilderFactory factory) {
+    FormResource(ResourceStore locator, Provider<AuthenticatedUser> authProvider, OdkFormFieldBuilderFactory factory,
+                 AuthenticationTokenService authenticationTokenService) {
         this.authProvider = authProvider;
         this.locator = locator;
         this.factory = factory;
+        this.authenticationTokenService = authenticationTokenService;
     }
 
     @GET @Produces(MediaType.TEXT_XML)
@@ -61,6 +65,7 @@ public class FormResource {
                      user.getEmail() + " (" + user.getId() + ")");
 
         //TODO This is still not done and needs major refactoring, but we're getting there
+        AuthenticationToken authenticationToken = authenticationTokenService.getAuthenticationToken(user.getId(), id);
         Resource resource = locator.get(CuidAdapter.activityFormClass(id));
         FormClass formClass = FormClass.fromResource(resource);
         List<FormField> formFields = formClass.getFields();
@@ -71,7 +76,7 @@ public class FormResource {
         html.head.model = new Model();
         html.head.model.instance = new Instance();
         html.head.model.instance.data = new Data();
-        html.head.model.instance.data.id = formClass.getId().asString();
+        html.head.model.instance.data.id = authenticationToken.getToken();
         html.head.model.instance.data.meta = new Meta();
         html.head.model.instance.data.meta.instanceID = new InstanceId();
         html.head.model.instance.data.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());

@@ -4,17 +4,13 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.command.ResourceLocatorSync;
-import org.activityinfo.server.endpoint.odk.xform.Html;
-import org.activityinfo.service.lookup.ReferenceProvider;
-import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.model.table.TableService;
+import org.activityinfo.server.endpoint.odk.xform.Html;
+import org.activityinfo.service.tables.TableServiceImpl;
+import org.activityinfo.ui.client.service.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,13 +21,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Iterator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 
-public class FormResourceTest extends CommandTestCase2 {
+public class FormResourceTest {
 
     private FormResource resource;
 
@@ -40,7 +35,7 @@ public class FormResourceTest extends CommandTestCase2 {
         ResourceLocatorSync resourceLocator = new ResourceLocatorSync(getDispatcherSync());
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
         OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(new ReferenceProvider());
-        resource = new FormResource(resourceLocator, authProvider, factory);
+        resource = new FormResource(resourceLocator, authProvider, factory, new TestAuthenticationTokenService() );
     }
 
     @Test

@@ -204,6 +204,10 @@ public class CuidAdapter {
         return cuid(ATTRIBUTE_GROUP_DOMAIN, attributeGroupId);
     }
 
+    public static ResourceId userId(int userId) {
+        return cuid(USER_DOMAIN, userId);
+    }
+
     public static ResourceId attributeId(int attributeId) {
         return cuid(ATTRIBUTE_DOMAIN, attributeId);
     }

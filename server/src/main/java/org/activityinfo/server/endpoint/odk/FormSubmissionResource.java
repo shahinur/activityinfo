@@ -8,7 +8,6 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,12 +30,15 @@ import static javax.ws.rs.core.Response.Status.CREATED;
 @Path("/submission")
 public class FormSubmissionResource {
     final private OdkFieldValueParserFactory factory;
-    final private ResourceLocatorSync locator;
+    final private ResourceStore locator;
+    private AuthenticationTokenService authenticationTokenService;
 
     @Inject
-    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceLocatorSync locator) {
+    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator,
+                                  AuthenticationTokenService authenticationTokenService) {
         this.factory = factory;
         this.locator = locator;
+        this.authenticationTokenService = authenticationTokenService;
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
@@ -60,10 +62,13 @@ public class FormSubmissionResource {
             Node dataNode = node.getParentNode().getParentNode();
 
             if (dataNode.hasAttributes() && dataNode.getAttributes().getLength() == 1) {
-                String id = OdkHelper.extractText(dataNode.getAttributes().item(0));
+                String tokenString = OdkHelper.extractText(dataNode.getAttributes().item(0));
 
-                if (id != null && id.length() > 0) {
-                    Resource resource = locator.get(ResourceId.create(id));
+                if (tokenString != null && tokenString.length() > 0) {
+                    AuthenticationToken authenticationToken = new AuthenticationToken(tokenString);
+                    int userId = authenticationTokenService.getUserId(authenticationToken);
+                    int formClassId = authenticationTokenService.getFormClassId(authenticationToken);
+                    Resource resource = locator.get(CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
                     FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
 
@@ -76,10 +81,8 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    locator.persist(formInstance);
-//                    locator.createResource(null, formInstance.asResource());
-//                    return Response.status(CREATED).build();
-                    throw new UnsupportedOperationException();
+                    locator.createResource(CuidAdapter.userId(userId), formInstance.asResource());
+                    return Response.status(CREATED).build();
                 }
             }
         }
