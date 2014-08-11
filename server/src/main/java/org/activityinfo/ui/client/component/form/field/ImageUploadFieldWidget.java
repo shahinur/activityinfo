@@ -94,12 +94,12 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
 
     private String createUploadUrl() {
         String blobId = ResourceId.generateId().asString();
-        String classId = formClassId.asString();
-        String fieldId = formField.getId().asString();
+//        String classId = formClassId.asString();
+//        String fieldId = formField.getId().asString();
         String fileName = fileName();
         String mimeType = MimeTypeUtil.mimeTypeFromFileExtension(fileExtension(fileName));
         this.value = new ImageValue(mimeType, fileName, blobId);
-        return "/service/blob/" + classId + "/" + fieldId + "/" + blobId;
+        return "/service/blob/" + blobId;
     }
 
     public static String fileExtension(String filename) {
@@ -162,7 +162,6 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
             @Override
             public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
                 String responseString = event.getResults(); // what about fail results?
-
 
                 imageContainer.setVisible(false);
                 downloadButtonContainer.setVisible(true);
