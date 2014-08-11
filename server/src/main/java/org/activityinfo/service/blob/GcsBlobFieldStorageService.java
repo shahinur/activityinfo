@@ -2,6 +2,7 @@ package org.activityinfo.service.blob;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
+import com.google.inject.Inject;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.gcs.GcsAppIdentityServiceUrlSigner;
@@ -13,6 +14,7 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
     private final String bucketName;
     private AppIdentityService appIdentityService = AppIdentityServiceFactory.getAppIdentityService();
 
+    @Inject
     public GcsBlobFieldStorageService(DeploymentConfiguration config) {
         this.bucketName = config.getBlobServiceBucketName();
     }
