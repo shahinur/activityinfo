@@ -56,9 +56,14 @@ public class ConnectionProvider implements Provider<Connection> {
     public Connection get() {
 
         Connection connection = connectionForRequest.get();
-        if(connection == null) {
-            connection = openConnection();
-            connectionForRequest.set(connection);
+
+        try {
+            if(connection == null || connection.isClosed()) {
+                connection = openConnection();
+                connectionForRequest.set(connection);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         return connection;
