@@ -1,5 +1,6 @@
 package org.activityinfo.server.endpoint.odk;
 
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.sun.jersey.multipart.FormDataParam;
@@ -19,6 +20,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
@@ -43,11 +45,19 @@ public class FormSubmissionResource {
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
-    public Response submit(@FormDataParam("xml_submission_file") String xml) throws Exception {
+    public Response submit(@FormDataParam("xml_submission_file") String xml) {
         //TODO Not everything is fully tested yet and especially authorization is still missing
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(xml.getBytes(Charsets.UTF_8));
-        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Document document = documentBuilder.parse(byteArrayInputStream);
+        DocumentBuilder documentBuilder;
+        Document document;
+
+        try {
+            documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            document = documentBuilder.parse(byteArrayInputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         document.normalizeDocument();
 
         NodeList nodeList = document.getElementsByTagName("instanceID");
@@ -66,9 +76,21 @@ public class FormSubmissionResource {
                 String tokenString = OdkHelper.extractText(dataNode.getAttributes().item(0));
 
                 if (tokenString != null && tokenString.length() > 0) {
+                    int userId;
+                    int formClassId;
                     AuthenticationToken authenticationToken = new AuthenticationToken(tokenString);
-                    int userId = authenticationTokenService.getUserId(authenticationToken);
-                    int formClassId = authenticationTokenService.getFormClassId(authenticationToken);
+
+                    try {
+                        userId = authenticationTokenService.getUserId(authenticationToken);
+                        formClassId = authenticationTokenService.getFormClassId(authenticationToken);
+                    } catch (EntityNotFoundException entityNotFoundException) {
+                        throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                    } catch (RuntimeException runtimeException) {
+                        throw runtimeException;
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
                     Resource resource = locator.get(CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
                     FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
