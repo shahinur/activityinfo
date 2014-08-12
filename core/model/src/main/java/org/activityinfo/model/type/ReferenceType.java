@@ -1,15 +1,11 @@
 package org.activityinfo.model.type;
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.component.ComponentReader;
-import org.activityinfo.model.type.component.NullComponentReader;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -131,28 +127,6 @@ public class ReferenceType implements ParametrizedFieldType {
             ids.add(id.asString());
         }
         return ids;
-    }
-
-    @Override
-    public ComponentReader<String> getStringReader(final String fieldName, String componentId) {
-        return new ComponentReader<String>() {
-            @Override
-            public String read(Resource resource) {
-                Record fieldValue = resource.isRecord(fieldName);
-                if(fieldValue != null) {
-                    String typeId = fieldValue.getString(FieldValue.TYPE_CLASS_FIELD_NAME);
-                    if(typeId.equals(TYPE_CLASS.getId())) {
-                        return fieldValue.isString("value");
-                    }
-                }
-                return null;
-            }
-        };
-    }
-
-    @Override
-    public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
-       return new NullComponentReader<>();
     }
 
 
