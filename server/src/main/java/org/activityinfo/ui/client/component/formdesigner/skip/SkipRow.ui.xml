@@ -19,10 +19,10 @@
       </div>
       <g:HTMLPanel addStyleNames="col-xs-3" ui:field="valueContainer"/>
       <div class="col-xs-1" style="padding-left: 0px">
-        <g:Button addStyleNames="btn btn-defaul btn-xs pull-rigth" ui:field="addButton">
+        <g:Button addStyleNames="btn btn-default btn-xs pull-right" ui:field="addButton">
           <span class="{icons.add}"/>
         </g:Button>
-        <g:Button addStyleNames="btn btn-defaul btn-xs pull-rigth" ui:field="removeButton">
+        <g:Button addStyleNames="btn btn-default btn-xs pull-right" ui:field="removeButton">
           <span class="{icons.remove}"/>
         </g:Button>
       </div>
