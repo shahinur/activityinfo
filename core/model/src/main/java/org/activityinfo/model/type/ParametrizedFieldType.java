@@ -14,4 +14,9 @@ public interface ParametrizedFieldType extends FieldType {
      */
     Record getParameters();
 
+    /**
+     *
+     * @return true if this is a valid type, false if its parameters make it invalid
+     */
+    boolean isValid();
 }
