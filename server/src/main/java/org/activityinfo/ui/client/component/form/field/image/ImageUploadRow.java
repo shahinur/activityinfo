@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.form.field;
+package org.activityinfo.ui.client.component.form.field.image;
 /*
  * #%L
  * ActivityInfo Server
