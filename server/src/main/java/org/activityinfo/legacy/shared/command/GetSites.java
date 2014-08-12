@@ -43,6 +43,12 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
     private Set<Integer> fetchIndicators;
     private boolean fetchAdminEntities = true;
 
+    private boolean fetchPartner = true;
+    private boolean fetchLocation = true;
+    private boolean fetchLinks = true;
+    private boolean fetchComments = true;
+    private boolean fetchDates = true;
+
     public GetSites() {
     }
 
@@ -78,6 +84,14 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
         cmd.filter().addRestriction(DimensionType.Site, siteId);
 
         return cmd;
+    }
+
+    public boolean isFetchLinks() {
+        return fetchLinks;
+    }
+
+    public void setFetchLinks(boolean fetchLinks) {
+        this.fetchLinks = fetchLinks;
     }
 
     public static GetSites byActivity(int activityId) {
@@ -136,6 +150,38 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
             super.setOffset(offset);
             seekToSiteId = null;
         }
+    }
+
+    public boolean isFetchPartner() {
+        return fetchPartner;
+    }
+
+    public void setFetchPartner(boolean fetchPartner) {
+        this.fetchPartner = fetchPartner;
+    }
+
+    public boolean isFetchLocation() {
+        return fetchLocation;
+    }
+
+    public void setFetchLocation(boolean fetchLocation) {
+        this.fetchLocation = fetchLocation;
+    }
+
+    public boolean isFetchDates() {
+        return fetchDates;
+    }
+
+    public void setFetchDates(boolean fetchDates) {
+        this.fetchDates = fetchDates;
+    }
+
+    public boolean isFetchComments() {
+        return fetchComments;
+    }
+
+    public void setFetchComments(boolean fetchComments) {
+        this.fetchComments = fetchComments;
     }
 
     public Integer getSeekToSiteId() {

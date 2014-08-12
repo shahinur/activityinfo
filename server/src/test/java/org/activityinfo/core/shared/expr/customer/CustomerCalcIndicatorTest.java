@@ -33,40 +33,44 @@ import org.activityinfo.legacy.shared.command.result.Bucket;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.reports.content.DimensionCategory;
+import org.activityinfo.legacy.shared.reports.model.AttributeGroupDimension;
 import org.activityinfo.legacy.shared.reports.model.DateDimension;
 import org.activityinfo.legacy.shared.reports.model.DateUnit;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.LocationDTOs;
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.server.database.hibernate.entity.AttributeGroup;
 import org.activityinfo.server.endpoint.export.SiteExporter;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityFormClass;
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.field;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -75,6 +79,15 @@ import static org.junit.Assert.assertThat;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/schema1.db.xml")
 public class CustomerCalcIndicatorTest extends CommandTestCase2 {
+
+    @BeforeClass
+    public static void setup() {
+        Logger.getLogger("org.activityinfo").setLevel(Level.ALL);
+        Logger.getLogger("org.hibernate.SQL").setLevel(Level.ALL);
+
+        Logger.getLogger("com.bedatadriven.rebar").setLevel(Level.ALL);
+    }
+
 
     public static final Dimension INDICATOR_DIMENSION = new Dimension(DimensionType.Indicator);
 
@@ -157,6 +170,9 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
         int year[] = new int[] { 2011, 2012, 2013};
 
+        AttributeGroupDTO group = getAttributeGroup(activityId);
+
+
         List<Command> batch = Lists.newArrayList();
         for(int i=0;i!=50;++i) {
 
@@ -170,6 +186,11 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
             newSite.setIndicatorValue(fieldId("PCT_INITIAL"), 50);
             newSite.setIndicatorValue(fieldId("PCT_INITIAL_HARD"), 20);
             newSite.setIndicatorValue(fieldId("PCT_INITIAL_SOFT"), 30);
+            if(i % 2 == 0) {
+                newSite.setAttributeValue(group.getAttributes().get(0).getId(), true);
+            } else {
+                newSite.setAttributeValue(group.getAttributes().get(1).getId(), true);
+            }
 
             batch.add(new CreateSite(newSite));
 
@@ -192,8 +213,7 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
         // Get a full sum
         fullPivot(activityId);
         pivotByYear(activityId);
-
-
+        pivotByAttributeGroup(activityId);
     }
 
     private PivotSites fullPivot(int activityId) {
@@ -231,6 +251,35 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 //        assertThat(buckets, hasItem(total("Value of Initial Cost – Cap Soft", 14550)));
 //        assertThat(buckets, hasItem(total("Total Value of Initial Cost", 48500)));
         return pivot;
+    }
+
+
+    private PivotSites pivotByAttributeGroup(int activityId) {
+
+        AttributeGroupDTO group = getAttributeGroup(activityId);
+
+        PivotSites pivot = new PivotSites();
+        pivot.setDimensions(INDICATOR_DIMENSION, new AttributeGroupDimension(group.getId()));
+        pivot.setFilter(Filter.filter().onActivity(activityId));
+
+        List<Bucket> buckets = execute(pivot).getBuckets();
+        System.out.println(Joiner.on("\n").join(buckets));
+
+        //
+        //        assertThat(buckets, hasItem(yearTotal("Expenditure", 225000)));
+        //        assertThat(buckets, hasItem(total("Expenditure on water programme", 48500)));
+        //        assertThat(buckets, hasItem(total("Value of Initial Cost - Not specified", 24250)));
+        //        assertThat(buckets, hasItem(total("Value of Initial Cost - Cap Hard", 9700)));
+        //        assertThat(buckets, hasItem(total("Value of Initial Cost – Cap Soft", 14550)));
+        //        assertThat(buckets, hasItem(total("Total Value of Initial Cost", 48500)));
+        return pivot;
+    }
+
+    private AttributeGroupDTO getAttributeGroup(int activityId) {
+        SchemaDTO schema = execute(new GetSchema());
+        ActivityDTO activity = schema.getActivityById(activityId);
+
+        return activity.getAttributeGroups().get(0);
     }
 
     private Matcher<Bucket> total(final String label, final double sum) {
@@ -303,8 +352,11 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
         newSite.setLocationId(location.getId());
         newSite.setPartner(new PartnerDTO(1, "Foobar"));
         newSite.setReportingPeriodId(keyGenerator.generateInt());
+        newSite.setDate1((new GregorianCalendar(2014, 1, 1)).getTime());
+        newSite.setDate2((new GregorianCalendar(2014, 1, 1)).getTime());
         return newSite;
     }
+
 
     private FormClass createFormClass() {
         SchemaDTO schema = execute(new GetSchema());
@@ -321,6 +373,13 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
         ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(classId));
+
+        FormField typeField = new FormField(ResourceId.generateId());
+        typeField.setType(new EnumType(Cardinality.SINGLE,
+                Arrays.asList(new EnumValue(ResourceId.generateId(), "Budgeted"),
+                        new EnumValue(ResourceId.generateId(), "Spent"))));
+        typeField.setLabel("Typology");
+        formClass.addElement(typeField);
 
         FormField expField = new FormField(ResourceId.generateId());
         expField.setType(new QuantityType().setUnits("currency"));

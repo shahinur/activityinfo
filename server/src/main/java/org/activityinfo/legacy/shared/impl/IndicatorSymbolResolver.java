@@ -13,6 +13,7 @@ import org.activityinfo.legacy.shared.model.SiteDTO;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 class IndicatorSymbolResolver implements PlaceholderExprResolver {
 
@@ -21,6 +22,8 @@ class IndicatorSymbolResolver implements PlaceholderExprResolver {
 
     private Map<String, Supplier<Double>> symbolMap = Maps.newHashMap();
     private List<Runnable> calculatedValueUpdaters = Lists.newArrayList();
+
+    private static final Logger LOGGER = Logger.getLogger(IndicatorSymbolResolver.class.getName());
 
     public IndicatorSymbolResolver(int activityId, SqlResultSet results) {
         this.activityId = activityId;
@@ -98,26 +101,38 @@ class IndicatorSymbolResolver implements PlaceholderExprResolver {
 
     private class CalculatedValue implements Supplier<Double> {
 
-        private final String expression;
+        private ExprNode expr;
         private boolean calculating = false;
+        private boolean invalid = false;
 
         private CalculatedValue(String expression) {
-            this.expression = expression;
+            try {
+                ExprParser parser = new ExprParser(new ExprLexer(expression), IndicatorSymbolResolver.this);
+                expr = parser.parse();
+
+            } catch (Exception e) {
+                Log.error(e.getMessage());
+                invalid = true;
+            }
         }
 
         @Override
         public Double get() {
+            if(invalid) {
+                return null;
+            }
 
             if(calculating) {
-                throw new RuntimeException("Circular reference to " + expression);
+                invalid = true;
+                LOGGER.warning("Circular reference : " + expr);
+                return null;
             }
-            calculating = true;
             try {
-                ExprParser parser = new ExprParser(new ExprLexer(expression), IndicatorSymbolResolver.this);
-                ExprNode exprNode = parser.parse();
-                return exprNode.evalReal();
-            } catch (Exception e) {
-                Log.error(e.getMessage(), e);
+                calculating = true;
+                return expr.evalReal();
+            } catch(Exception e) {
+                LOGGER.severe("Expression calculating " + expr);
+                invalid = true;
                 return null;
             } finally {
                 calculating = false;

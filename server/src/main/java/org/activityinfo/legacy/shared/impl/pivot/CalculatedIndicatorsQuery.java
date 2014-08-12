@@ -80,6 +80,11 @@ public class CalculatedIndicatorsQuery implements WorkItem {
 
         } else if(filter.isRestricted(DimensionType.Database)) {
             query.where("a.databaseId").in(filter.getRestrictions(DimensionType.Database));
+
+        } else {
+            // too broad
+            callback.onSuccess(null);
+            return;
         }
 
         // enforce visibility rules
@@ -91,7 +96,7 @@ public class CalculatedIndicatorsQuery implements WorkItem {
             @Override
             public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 
-                if(results.getRows().isEmpty()) {
+                if (results.getRows().isEmpty()) {
                     callback.onSuccess(null);
 
                 } else {
@@ -109,8 +114,11 @@ public class CalculatedIndicatorsQuery implements WorkItem {
                         indicatorMap.put(indicatorId, new EntityCategory(indicatorId, row.getString("indicatorName")));
                     }
 
-
-                    querySites();
+                    if (queryContext.getCommand().isPivotedBy(DimensionType.AttributeGroup)) {
+                        queryAttributeGroups();
+                    } else {
+                        querySites();
+                    }
                 }
             }
         });
@@ -133,14 +141,17 @@ public class CalculatedIndicatorsQuery implements WorkItem {
                 .appendColumn("a.name")
                 .from(Tables.ATTRIBUTE, "a")
                 .leftJoin(Tables.ATTRIBUTE_GROUP, "g").on("a.attributeGroupId=g.attributeGroupId")
-                .where("attributeGroupId").in(groupIds)
+                .where("a.attributeGroupId").in(groupIds)
                 .execute(queryContext.getExecutionContext().getTransaction(), new SqlResultCallback() {
                     @Override
                     public void onSuccess(SqlTransaction tx, SqlResultSet results) {
                         for (SqlResultSetRow row : results.getRows()) {
                             int groupId = row.getInt("groupId");
-
+                            int attributeId = row.getInt("attributeId");
+                            String attributeName = row.getString("name");
+                            attributes.put(groupId, new EntityCategory(attributeId, attributeName));
                         }
+                        querySites();
                     }
                 });
     }
@@ -149,7 +160,7 @@ public class CalculatedIndicatorsQuery implements WorkItem {
         int userId = queryContext.getExecutionContext().getUser().getId();
 
         return new StringBuilder()
-
+        .append("(")
         // databases we own
         .append("db.OwnerUserId = ").append(userId).append(" ")
 
@@ -169,6 +180,7 @@ public class CalculatedIndicatorsQuery implements WorkItem {
 
         .append(" OR ")
         .append(" (a.published > 0)")
+        .append(")")
         .toString();
 
 
@@ -178,8 +190,15 @@ public class CalculatedIndicatorsQuery implements WorkItem {
 
         GetSites sitesQuery = new GetSites(composeSiteFilter());
         sitesQuery.setFetchAdminEntities( query.isPivotedBy(DimensionType.AdminLevel) );
-        sitesQuery.setFetchAttributes( query.isPivotedBy(DimensionType.AttributeGroup ));
+        sitesQuery.setFetchAttributes(query.isPivotedBy(DimensionType.AttributeGroup));
         sitesQuery.setFetchAllIndicators(true);
+        sitesQuery.setFetchLocation(query.isPivotedBy(DimensionType.Location));
+        sitesQuery.setFetchPartner(query.isPivotedBy(DimensionType.Partner));
+        sitesQuery.setFetchComments(false);
+        sitesQuery.setFetchDates(query.isPivotedBy(DimensionType.Date));
+        sitesQuery.setFetchLinks(false);
+
+        sitesQuery.setLimit(-1);
 
 
         for(Dimension dim : query.getDimensions()) {
@@ -204,8 +223,7 @@ public class CalculatedIndicatorsQuery implements WorkItem {
 
     private Filter composeSiteFilter() {
         Filter siteFilter = new Filter();
-        siteFilter.addRestriction(DimensionType.Database, query.getFilter().getRestrictions(DimensionType.Database));
-        siteFilter.addRestriction(DimensionType.Activity, query.getFilter().getRestrictions(DimensionType.Activity));
+        siteFilter.addRestriction(DimensionType.Activity, activityIds);
 
         for(DimensionType type : query.getFilter().getRestrictedDimensions()) {
             if(type != DimensionType.Activity && type != DimensionType.Database && type != DimensionType.Indicator) {
@@ -219,18 +237,26 @@ public class CalculatedIndicatorsQuery implements WorkItem {
     private DimAccessor createAccessor(Dimension dim) {
         if(dim.getType() == DimensionType.Activity) {
             return new ActivityAccessor(dim, activityMap);
+
         } else if(dim.getType() == DimensionType.Database) {
             return new ActivityAccessor(dim, activityToDatabaseMap);
+
         } else if(dim.getType() == DimensionType.AdminLevel) {
             return new AdminAccessor((AdminDimension) dim);
+
         } else if(dim.getType() == DimensionType.Date) {
             DateDimension dateDim = (DateDimension) dim;
             return new DateAccessor(dateDim);
+
         } else if(dim.getType() == DimensionType.AttributeGroup) {
             AttributeGroupDimension groupDim = (AttributeGroupDimension) dim;
-            throw new UnsupportedOperationException("todo");
+            return new AttributeAccessor(groupDim, attributes.get(groupDim.getAttributeGroupId()));
+
         } else if(dim.getType() == DimensionType.Location) {
             return new LocationAccessor(dim);
+
+        } else if(dim.getType() == DimensionType.Partner) {
+            return new PartnerAccessor(dim);
         }
         throw new UnsupportedOperationException("dim: " + dim);
     }
