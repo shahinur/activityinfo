@@ -62,6 +62,10 @@ public class FormEvalContext implements EvalContext {
         this.formInstance = resource;
     }
 
+    public void setInstance(FormInstance instance) {
+        setInstance(instance.asResource());
+    }
+
     public ResourceId getId() {
         return formInstance.getId();
     }
@@ -69,6 +73,10 @@ public class FormEvalContext implements EvalContext {
     public FieldValue getFieldValue(String fieldName) {
         assert formInstance != null;
         return fieldMap.get(fieldName).getValue(formInstance, this);
+    }
+
+    public FieldValue getFieldValue(ResourceId fieldId) {
+        return getFieldValue(fieldId.asString());
     }
 
     private ValueSource createValueSource(FormField field) {
@@ -101,6 +109,4 @@ public class FormEvalContext implements EvalContext {
         }
         return valueSource;
     }
-
-
 }
