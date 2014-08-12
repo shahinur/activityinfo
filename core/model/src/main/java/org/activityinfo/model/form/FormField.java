@@ -51,6 +51,11 @@ public class FormField extends FormElement {
         this.code = code;
     }
 
+
+    public boolean hasCode() {
+        return code != null;
+    }
+
     /**
      *
      * @return true if {@code} is a valid code, starting with a letter and
@@ -196,6 +201,7 @@ public class FormField extends FormElement {
 
         Record record = new Record();
         record.set("id", id.asString());
+        record.set("code", code);
         record.set("label", label);
         record.set("type", toRecord(type));
         record.set("required", required);

@@ -28,9 +28,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
-import org.activityinfo.core.shared.expr.ExprFunction;
-import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
-import org.activityinfo.core.shared.expr.functions.FieldTypeToFunctionRegistry;
+import org.activityinfo.core.shared.expr.functions.AndFunction;
+import org.activityinfo.core.shared.expr.functions.ExprFunction;
+import org.activityinfo.core.shared.expr.functions.OrFunction;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
@@ -119,15 +120,17 @@ public class SkipRowPresenter {
     private void initFunction() {
         view.getFunction().clear();
 
-        List<ExprFunction> functions = FieldTypeToFunctionRegistry.get().getFunctions(getSelectedFormField().getType().getTypeClass());
+        List<ExprFunction> functions = Lists.newArrayList();
+        //FieldTypeToFunctionRegistry.get().getFunctions(getSelectedFormField().getType().getTypeClass());
         for (ExprFunction function : functions) {
             view.getFunction().addItem(function.getLabel(), function.getId());
         }
+        throw new UnsupportedOperationException("todo");
     }
 
     private void initJoinFunction() {
-        view.getJoinFunction().addItem(BooleanFunctions.AND.getLabel(), BooleanFunctions.AND.getId());
-        view.getJoinFunction().addItem(BooleanFunctions.OR.getLabel(), BooleanFunctions.OR.getId());
+        view.getJoinFunction().addItem(I18N.CONSTANTS.and(), AndFunction.NAME);
+        view.getJoinFunction().addItem(I18N.CONSTANTS.or(), OrFunction.NAME);
         view.getJoinFunction().setSelectedIndex(0);
     }
 

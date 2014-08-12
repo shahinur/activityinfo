@@ -2,11 +2,10 @@ package org.activityinfo.service.tables.views;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.Resource;
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.columns.DiscreteStringColumnView;
-import org.activityinfo.model.type.FieldValues;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -36,9 +35,9 @@ public class EnumColumnBuilder implements ColumnViewBuilder {
     }
 
     @Override
-    public void putResource(Resource resource) {
-        EnumFieldValue fieldValue = FieldValues.readFieldValueIfType(resource, fieldName, EnumType.TYPE_CLASS);
-        if(fieldValue.getValueIds().size() == 1) {
+    public void accept(FormEvalContext instance) {
+        EnumFieldValue fieldValue = (EnumFieldValue) instance.getFieldValue(fieldName);
+        if(fieldValue != null && fieldValue.getValueIds().size() == 1) {
             Integer index = labelIndexMap.get(fieldValue.getValueId());
             if(index == null) {
                 values.add(-1);

@@ -1,39 +1,59 @@
 package org.activityinfo.core.shared.expr;
 
+import com.google.common.collect.Lists;
+import org.activityinfo.core.shared.expr.eval.EvalContext;
+import org.activityinfo.core.shared.expr.functions.ExprFunction;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
+
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
-public class FunctionCallNode<T, K> extends ExprNode<T> {
+public class FunctionCallNode extends ExprNode {
 
     @Nonnull
-    private ExprFunction<T, K> function;
+    private ExprFunction function;
 
     @Nonnull
-    private List<ExprNode<K>> arguments;
+    private List<ExprNode> arguments;
 
-    public FunctionCallNode(ExprFunction<T, K> function, List<ExprNode<K>> arguments) {
+    public FunctionCallNode(ExprFunction function, List<ExprNode> arguments) {
         super();
         this.function = function;
         this.arguments = arguments;
     }
 
-    public FunctionCallNode(ExprFunction<T, K> function, ExprNode<K>... arguments) {
+    public FunctionCallNode(ExprFunction function, ExprNode... arguments) {
         this(function, Arrays.asList(arguments));
     }
 
     @Override
-    public T evalReal() {
-        return function.applyReal(arguments);
+    public FieldValue evaluate(EvalContext context) {
+        List<FieldValue> evaluatedArguments = Lists.newArrayList();
+        for(ExprNode expr : arguments) {
+            evaluatedArguments.add(expr.evaluate(context));
+        }
+        return function.apply(evaluatedArguments);
+    }
+
+    @Override
+    public FieldType resolveType(EvalContext context) {
+        List<FieldType> argumentTypes = Lists.newArrayList();
+        for(ExprNode expr : arguments) {
+            argumentTypes.add(expr.resolveType(context));
+        }
+        return function.getResultType(argumentTypes);
     }
 
     @Nonnull
-    public ExprFunction<T, K> getFunction() {
+    public ExprFunction getFunction() {
         return function;
     }
 
     @Nonnull
-    public List<ExprNode<K>> getArguments() {
+    public List<ExprNode> getArguments() {
         return arguments;
     }
 
@@ -51,10 +71,8 @@ public class FunctionCallNode<T, K> extends ExprNode<T> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result
-                + ((arguments == null) ? 0 : arguments.hashCode());
-        result = prime * result
-                + ((function == null) ? 0 : function.hashCode());
+        result = prime * result + (arguments.hashCode());
+        result = prime * result + (function.hashCode());
         return result;
     }
 

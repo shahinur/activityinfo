@@ -2,25 +2,20 @@ package org.activityinfo.service.tables.views;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Resource;
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.columns.ConstantColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
 import org.activityinfo.model.table.columns.StringArrayColumnView;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.TypeRegistry;
-import org.activityinfo.model.type.component.ComponentReader;
-import org.activityinfo.model.type.primitive.HasStringValue;
-import org.activityinfo.service.tables.reader.StringFieldReader;
+import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.service.tables.stats.StringStatistics;
 
 import java.util.List;
 
 public class StringColumnBuilder implements ColumnViewBuilder {
 
-    private final StringFieldReader reader;
     private List<String> values = Lists.newArrayList();
 
     // Keep track of some statistics to
@@ -28,13 +23,16 @@ public class StringColumnBuilder implements ColumnViewBuilder {
 
     private Optional<ColumnView> result = Optional.absent();
 
-    public StringColumnBuilder(StringFieldReader reader) {
-        this.reader = reader;
+    private String fieldName;
+
+    public StringColumnBuilder(ResourceId fieldId) {
+        this.fieldName = fieldId.asString();
     }
 
     @Override
-    public void putResource(Resource resource) {
-        String string = reader.readString(resource);
+    public void accept(FormEvalContext instance) {
+        TextValue fieldValue = (TextValue) instance.getFieldValue(fieldName);
+        String string = fieldValue == null ? null : fieldValue.asString();
         stats.update(string);
         values.add(string);
     }

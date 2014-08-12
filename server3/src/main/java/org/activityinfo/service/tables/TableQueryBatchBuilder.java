@@ -6,15 +6,9 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.shared.expr.ExprLexer;
-import org.activityinfo.core.shared.expr.ExprParser;
-import org.activityinfo.core.shared.expr.PlaceholderExpr;
-import org.activityinfo.core.shared.expr.PlaceholderExprResolver;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.CalculatedFieldType;
-import org.activityinfo.model.type.FieldType;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
@@ -91,8 +85,8 @@ public class TableQueryBatchBuilder {
      * Adds a query to the batch for an empty column. It may still be required to hit the data store
      * to find the number of rows.
      */
-    public Supplier<ColumnView> addEmptyColumn(ColumnType type, ResourceId formClassId) {
-        return getTable(formClassId).fetchEmptyColumn(type);
+    public Supplier<ColumnView> addEmptyColumn(ColumnType type, FormClass formClass) {
+        return getTable(formClass).fetchEmptyColumn(type);
     }
 
     /**
@@ -119,8 +113,8 @@ public class TableQueryBatchBuilder {
     }
 
     private JoinLink addJoinLink(FormTree.Node leftField, FormClass rightForm) {
-        TableScan leftTable = getTable(leftField.getDefiningFormClass().getId());
-        TableScan rightTable = getTable(rightForm.getId());
+        TableScan leftTable = getTable(leftField);
+        TableScan rightTable = getTable(rightForm);
 
         Supplier<ForeignKeyColumn> foreignKey = leftTable.fetchForeignKey(leftField.getFieldId().asString());
         Supplier<PrimaryKeyMap> primaryKey = rightTable.fetchPrimaryKey();
@@ -129,30 +123,25 @@ public class TableQueryBatchBuilder {
     }
 
 
-    public Supplier<ColumnView> getIdColumn(ResourceId classId) {
+    public Supplier<ColumnView> getIdColumn(FormClass classId) {
         return getTable(classId).fetchPrimaryKeyColumn();
     }
 
     private Supplier<ColumnView> getDataColumn(ColumnType columnType, FormTree.Node node) {
-
-        if(node.getType() instanceof CalculatedFieldType) {
-            return fetchCalculatedColumn(node);
-
-        } else {
-            TableScan table = getTable(node.getDefiningFormClass().getId());
-            return table.fetchColumn(node, columnType);
-        }
+        return getTable(node).fetchColumn(node, columnType);
     }
 
-    private Supplier<ColumnView> fetchCalculatedColumn(FormTree.Node node) {
-        throw new UnsupportedOperationException("todo");
+
+
+    private TableScan getTable(FormTree.Node node) {
+        return getTable(node.getDefiningFormClass());
     }
 
-    private TableScan getTable(ResourceId classId) {
-        TableScan tableScan = tableMap.get(classId);
+    private TableScan getTable(FormClass formClass) {
+        TableScan tableScan = tableMap.get(formClass.getId());
         if(tableScan == null) {
-            tableScan = new TableScan(store, classId);
-            tableMap.put(classId, tableScan);
+            tableScan = new TableScan(store, formClass);
+            tableMap.put(formClass.getId(), tableScan);
         }
         return tableScan;
     }
