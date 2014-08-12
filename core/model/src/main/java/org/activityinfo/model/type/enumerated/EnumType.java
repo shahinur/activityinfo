@@ -102,6 +102,11 @@ public class EnumType implements ParametrizedFieldType {
     }
 
     @Override
+    public boolean isValid() {
+        return values.size() > 0;
+    }
+
+    @Override
     public ComponentReader<String> getStringReader(String fieldName, String componentId) {
         throw new UnsupportedOperationException();
     }

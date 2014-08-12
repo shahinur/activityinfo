@@ -88,6 +88,11 @@ public class QuantityType implements ParametrizedFieldType {
     }
 
     @Override
+    public boolean isValid() {
+        return true;
+    }
+
+    @Override
     public ComponentReader<String> getStringReader(String fieldName, String componentId) {
         throw new UnsupportedOperationException();
     }
