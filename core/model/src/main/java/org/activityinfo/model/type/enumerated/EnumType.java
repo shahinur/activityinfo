@@ -39,7 +39,7 @@ public class EnumType implements ParametrizedFieldType {
         }
 
         @Override
-        public FieldType createType() {
+        public EnumType createType() {
             return new EnumType();
         }
 
