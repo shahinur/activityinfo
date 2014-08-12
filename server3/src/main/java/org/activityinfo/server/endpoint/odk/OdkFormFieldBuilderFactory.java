@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -22,6 +23,11 @@ public class OdkFormFieldBuilderFactory {
     }
 
     public OdkFormFieldBuilder fromFieldType(FieldType fieldType) {
+        if (fieldType instanceof ParametrizedFieldType) {
+            ParametrizedFieldType parametrizedFieldType = (ParametrizedFieldType) fieldType;
+            if (!parametrizedFieldType.isValid()) return null;
+        }
+
         SelectOptions selectOptions = getSelectOptions(fieldType);
 
         if (fieldType instanceof BarcodeType) return new SimpleInputBuilder("barcode");

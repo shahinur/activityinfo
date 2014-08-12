@@ -116,6 +116,11 @@ public class ReferenceType implements ParametrizedFieldType {
                 .set("cardinality", cardinality);
     }
 
+    @Override
+    public boolean isValid() {
+        return true;
+    }
+
     private List<String> toArray(Set<ResourceId> range) {
         List<String> ids = Lists.newArrayList();
         for(ResourceId id : range) {

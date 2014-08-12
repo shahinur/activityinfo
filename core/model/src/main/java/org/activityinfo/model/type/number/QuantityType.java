@@ -85,6 +85,11 @@ public class QuantityType implements ParametrizedFieldType {
     }
 
     @Override
+    public boolean isValid() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "QuantityType";
     }
