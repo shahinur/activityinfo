@@ -99,4 +99,8 @@ public class EnumType implements ParametrizedFieldType {
                 .set("values", enumValueRecords);
     }
 
+    @Override
+    public boolean isValid() {
+        return values.size() > 0;
+    }
 }
