@@ -20,7 +20,6 @@ import org.activityinfo.server.endpoint.odk.xform.Instance;
 import org.activityinfo.server.endpoint.odk.xform.InstanceId;
 import org.activityinfo.server.endpoint.odk.xform.Meta;
 import org.activityinfo.server.endpoint.odk.xform.Model;
-import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
 import org.activityinfo.service.store.ResourceStore;
 
 import javax.inject.Provider;
@@ -73,7 +72,7 @@ public class FormResource {
         LOGGER.finer("ODK activity form " + id + " requested by " +
                      user.getEmail() + " (" + user.getId() + ")");
 
-        //TODO This is still not done and needs major refactoring, but we're getting there
+        //TODO Authorization is the main thing that's still missing, plus refactoring and more testing
         AuthenticationToken authenticationToken = authenticationTokenService.getAuthenticationToken(user.getId(), id);
         Resource resource = locator.get(CuidAdapter.activityFormClass(id));
         FormClass formClass = FormClass.fromResource(resource);
@@ -90,6 +89,8 @@ public class FormResource {
         html.head.model.instance.data.meta.instanceID = new InstanceId();
         html.head.model.instance.data.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
         for (FormField formField : formFields) {
+            OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
+            if (odkFormFieldBuilder == null) continue;
             QName qName = new QName("http://www.w3.org/2002/xforms", "field_" + formField.getId().asString());
             html.head.model.instance.data.jaxbElement.add(new JAXBElement<>(qName, String.class, ""));
         }
@@ -102,6 +103,7 @@ public class FormResource {
         html.head.model.bind.add(bind);
         for (FormField formField : formFields) {
             OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
+            if (odkFormFieldBuilder == null) continue;
             bind = new Bind();
             bind.nodeset = "/data/field_" + formField.getId().asString();
             bind.type = odkFormFieldBuilder.getModelBindType();
@@ -115,14 +117,9 @@ public class FormResource {
         html.body.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
         for (FormField formField : formFields) {
             OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
-            //FIXME Temporary hack to work around FormClass.fromResource() apparently being incomplete
-            JAXBElement<PresentationElement> presentationElement = odkFormFieldBuilder.createPresentationElement(
-                    "/data/field_" + formField.getId().asString(), formField.getLabel(), formField.getDescription());
-            if (presentationElement.getValue().item != null && presentationElement.getValue().item.size() < 1) continue;
-            html.body.jaxbElement.add(presentationElement);
-            /* End of temporary hack
+            if (odkFormFieldBuilder == null) continue;
             html.body.jaxbElement.add(odkFormFieldBuilder.createPresentationElement("/data/field_" +
-                    formField.getId().asString(), formField.getLabel(), formField.getDescription()));*/
+                    formField.getId().asString(), formField.getLabel(), formField.getDescription()));
         }
         return Response.ok(html).build();
     }
