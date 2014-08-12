@@ -20,6 +20,7 @@ import org.activityinfo.server.endpoint.odk.xform.Instance;
 import org.activityinfo.server.endpoint.odk.xform.InstanceId;
 import org.activityinfo.server.endpoint.odk.xform.Meta;
 import org.activityinfo.server.endpoint.odk.xform.Model;
+import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 
 import javax.inject.Provider;
@@ -27,6 +28,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
@@ -65,7 +67,7 @@ public class FormResource {
     }
 
     @GET @Produces(MediaType.TEXT_XML)
-    public Response form(@QueryParam("id") int id) throws Exception {
+    public Response form(@QueryParam("id") int id) {
 
         AuthenticatedUser user = authProvider.get();
 
@@ -74,7 +76,14 @@ public class FormResource {
 
         //TODO Authorization is the main thing that's still missing, plus refactoring and more testing
         AuthenticationToken authenticationToken = authenticationTokenService.getAuthenticationToken(user.getId(), id);
-        Resource resource = locator.get(CuidAdapter.activityFormClass(id));
+        Resource resource;
+
+        try {
+            resource = locator.get(CuidAdapter.activityFormClass(id));
+        } catch (ResourceNotFound resourceNotFound) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
         FormClass formClass = FormClass.fromResource(resource);
         List<FormField> formFields = formClass.getFields();
 
