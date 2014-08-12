@@ -4,7 +4,6 @@ import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.common.collect.Maps;
 import com.google.common.io.BaseEncoding;
-import org.activityinfo.server.DeploymentEnvironment;
 
 import java.util.Map;
 
@@ -13,10 +12,7 @@ import java.util.Map;
  */
 public class GcsUploadCredentialBuilder {
 
-    public static final String PRODUCTION_ENDPOINT = "https://storage.googleapis.com";
-    public static final String DEVELOPMENT_ENDPOINT = "http://localhost:8888/_ah/api";
-    public static final String END_POINT = DeploymentEnvironment.isAppEngineDevelopment() ?
-            DEVELOPMENT_ENDPOINT : PRODUCTION_ENDPOINT;
+    public static final String END_POINT = "https://storage.googleapis.com";
 
     public static final int BYTES_IN_MEGA_BYTE = 1024 * 1024;
 
