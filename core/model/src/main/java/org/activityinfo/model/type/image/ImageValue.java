@@ -21,78 +21,54 @@ package org.activityinfo.model.type.image;
  * #L%
  */
 
+import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
+
+import java.util.List;
 
 /**
  * @author yuriyz on 8/6/14.
  */
 public class ImageValue implements FieldValue, IsRecord {
 
-    private final String mimeType;
-    private final String filename;
-    private final String blobId;
-
-    private int height;
-    private int width;
+    private List<ImageRowValue> values = Lists.newArrayList();
 
     @Override
     public FieldTypeClass getTypeClass() {
         return ImageType.TYPE_CLASS;
     }
 
-    public ImageValue(String mimeType, String filename, String blobId) {
-        this.mimeType = mimeType;
-        this.filename = filename;
-        this.blobId = blobId;
+    public ImageValue() {
     }
 
-    public String getMimeType() {
-        return mimeType;
+    public List<ImageRowValue> getValues() {
+        return values;
     }
 
-    public String getFilename() {
-        return filename;
-    }
-
-    public String getBlobId() {
-        return blobId;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public ImageValue setHeight(int height) {
-        this.height = height;
-        return this;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public ImageValue setWidth(int width) {
-        this.width = width;
-        return this;
+    public List<Record> getValuesAsRecords() {
+        final List<Record> result = Lists.newArrayList();
+        for (ImageRowValue value : values) {
+            result.add(value.asRecord());
+        }
+        return result;
     }
 
     @Override
     public Record asRecord() {
         return new Record()
                 .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
-                .set("mimeType", mimeType)
-                .set("width", width)
-                .set("height", height)
-                .set("filename", filename)
-                .set("blobId", blobId);
+                .set("values", getValuesAsRecords());
     }
 
     public static FieldValue fromRecord(Record record) {
-        return new ImageValue(record.getString("mimeType"), record.getString("filename"), record.getString("blobId"))
-                .setHeight(record.getInt("height"))
-                .setWidth(record.getInt("width"));
+        ImageValue value = new ImageValue();
+        List<Record> recordList = record.getRecordList("values");
+        for (Record r : recordList) {
+            value.getValues().add(ImageRowValue.fromRecord(r));
+        }
+        return value;
     }
 }

@@ -188,7 +188,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     @Override
     public Promise<Void> setValue(EnumFieldValue value) {
         for (CheckBox entry : controls) {
-            ResourceId resourceId = ResourceId.create(entry.getFormValue());
+            ResourceId resourceId = ResourceId.create(entry.getFormValue().toUpperCase()); // upper case, enum name equals is case sensitive
             entry.setValue(value.getValueIds().contains(resourceId));
         }
         return Promise.done();

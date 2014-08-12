@@ -27,6 +27,7 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 
@@ -76,7 +77,6 @@ public class ImageType implements ParametrizedFieldType, FieldType {
                     .setType(cardinalityType)
                     .setLabel("Cardinality")
                     .setDescription("Determines whether users can add a single image, or multiple images")
-                    .setRequired(true)
             );
             return formClass;
         }
@@ -103,7 +103,7 @@ public class ImageType implements ParametrizedFieldType, FieldType {
     public Record getParameters() {
         return new Record()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
-                .set("cardinality", cardinality);
+                .set("cardinality", new EnumFieldValue(ResourceId.create(cardinality.name())).asRecord());
     }
 
     @Override

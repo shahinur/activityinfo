@@ -7,23 +7,6 @@
   <ui:with field="style" type="org.activityinfo.ui.client.widget.loading.LoadingStylesheet"/>
   <ui:with field="bundle" type="org.activityinfo.ui.client.widget.loading.LoadingClientBundle"/>
 
-  <g:FormPanel encoding="multipart/form-data" method="post">
-    <g:HTMLPanel addStyleNames="form-group">
-      <div class="col-xs-10">
-        <g:FileUpload ui:field="fileUpload" name="file"/>
-      </div>
-      <g:HTMLPanel addStyleNames="col-xs-2">
-        <g:HTMLPanel ui:field="imageContainer" visible="false">
-          <img class="{style.indicator} {style.loading}" src="{bundle.loadingIcon.getSafeUri}" alt="Loading..."
-               ui:field="loadingImage"/>
-        </g:HTMLPanel>
-        <g:HTMLPanel ui:field="downloadButtonContainer" visible="false">
-          <g:Button addStyleNames="btn btn-default btn-xs" ui:field="downloadButton">
-            <span class='{icons.arrowDown}'></span>
-          </g:Button>
-        </g:HTMLPanel>
-      </g:HTMLPanel>
-      <g:VerticalPanel ui:field="formFieldsContainer"/>
-    </g:HTMLPanel>
-  </g:FormPanel>
+  <g:HTMLPanel>
+  </g:HTMLPanel>
 </ui:UiBinder>

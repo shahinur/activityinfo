@@ -21,170 +21,100 @@ package org.activityinfo.ui.client.component.form.field;
  * #L%
  */
 
-import com.google.common.base.Strings;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.ImageElement;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
-import org.activityinfo.core.shared.util.MimeTypeUtil;
-import org.activityinfo.legacy.shared.Log;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.blob.UploadCredentials;
-
-import java.util.Map;
 
 /**
  * @author yuriyz on 8/7/14.
  */
 public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
 
-    interface OurUiBinder extends UiBinder<FormPanel, ImageUploadFieldWidget> {
+    interface OurUiBinder extends UiBinder<HTMLPanel, ImageUploadFieldWidget> {
     }
 
     private static OurUiBinder ourUiBinder = GWT.create(OurUiBinder.class);
 
-    private final FormPanel formPanel;
+    private final HTMLPanel rootPanel;
     private final FormField formField;
-    private final ResourceId formClassId;
-    private ImageValue value = null;
+    private ImageValue value = new ImageValue();
 
-    @UiField
-    FileUpload fileUpload;
-    @UiField
-    HTMLPanel imageContainer;
-    @UiField
-    ImageElement loadingImage;
-    @UiField
-    Button downloadButton;
-    @UiField
-    HTMLPanel downloadButtonContainer;
-    @UiField
-    VerticalPanel formFieldsContainer;
-
-    public ImageUploadFieldWidget(ResourceId formClassId, FormField formField, final ValueUpdater valueUpdater) {
-        this.formClassId = formClassId;
+    public ImageUploadFieldWidget(FormField formField, final ValueUpdater valueUpdater) {
         this.formField = formField;
 
-        formPanel = ourUiBinder.createAndBindUi(this);
+        rootPanel = ourUiBinder.createAndBindUi(this);
 
-        fileUpload.addChangeHandler(new ChangeHandler() {
+        addNewRow(new ImageRowValue());
+    }
+
+    private void addNewRow(final ImageRowValue rowValue) {
+        final ImageUploadRow imageUploadRow = new ImageUploadRow(rowValue);
+        imageUploadRow.addButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onChange(ChangeEvent event) {
-                requestUploadUrl();
+            public void onClick(ClickEvent clickEvent) {
+                addNewRow(new ImageRowValue());
             }
         });
-        downloadButton.addClickHandler(new ClickHandler() {
+
+        imageUploadRow.removeButton.addClickHandler(new ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
-                download();
+            public void onClick(ClickEvent clickEvent) {
+                setButtonsState();
+                value.getValues().remove(imageUploadRow.getValue());
+                rootPanel.remove(imageUploadRow);
             }
         });
+
+        value.getValues().add(rowValue);
+        rootPanel.add(imageUploadRow);
+
+        setButtonsState();
     }
 
-    private String createUploadUrl() {
-        String blobId = ResourceId.generateId().asString();
-//        String classId = formClassId.asString();
-//        String fieldId = formField.getId().asString();
-        String fileName = fileName();
-        String mimeType = MimeTypeUtil.mimeTypeFromFileExtension(fileExtension(fileName));
-        this.value = new ImageValue(mimeType, fileName, blobId);
-        return "/service/blob/" + blobId;
-    }
+    private void setButtonsState() {
+        if (rootPanel.getWidgetCount() > 0 && rootPanel.getWidget(0) instanceof ImageUploadRow) {
+            // disable button if it's first row, otherwise user may be trapped in widget without any rows
 
-    public static String fileExtension(String filename) {
-        int i = filename.lastIndexOf(".");
-        if (i != -1) {
-            return filename.substring(i + 1);
+            ImageUploadRow firstUploadRow = (ImageUploadRow) rootPanel.getWidget(0);
+            firstUploadRow.removeButton.setEnabled(false);
         }
-        return filename;
-    }
-
-    private String fileName() {
-        final String filename = fileUpload.getFilename();
-        if (Strings.isNullOrEmpty(filename)) {
-            return "unknown";
-        }
-
-        int i = filename.lastIndexOf("/");
-        if (i == -1) {
-            i = filename.lastIndexOf("\\");
-        }
-        if (i != -1 && (i + 1) < filename.length()) {
-            return filename.substring(i + 1);
-        }
-        return filename;
-    }
-
-    private void requestUploadUrl() {
-        try {
-            RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, URL.encode(createUploadUrl()));
-            requestBuilder.sendRequest(null, new RequestCallback() {
-                @Override
-                public void onResponseReceived(Request request, Response response) {
-                    String json = response.getText();
-                    Resource resource = Resources.fromJson(json);
-                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
-
-                    Map<String,String> formFields = uploadCredentials.getFormFields();
-                    for (Map.Entry<String, String> field: formFields.entrySet()) {
-                        formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
-                    }
-
-                    formPanel.setAction(uploadCredentials.getUrl());
-                    formPanel.setMethod(uploadCredentials.getMethod());
-                    upload();
-                }
-
-                @Override
-                public void onError(Request request, Throwable exception) {
-                    Log.error("Failed to send request", exception);
-                }
-            });
-        } catch (RequestException e) {
-            Log.error("Failed to send request", e);
-        }
-    }
-
-    private void upload() {
-        imageContainer.setVisible(true);
-        downloadButtonContainer.setVisible(false);
-
-        formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-            @Override
-            public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
-                String responseString = event.getResults(); // what about fail results?
-
-                imageContainer.setVisible(false);
-                downloadButtonContainer.setVisible(true);
-            }
-        });
-        formPanel.submit();
-    }
-
-    private void download() {
-        // todo
     }
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        fileUpload.setEnabled(!readOnly);
+        for (int i = 0; i < rootPanel.getWidgetCount(); i++) {
+            IsWidget widget = rootPanel.getWidget(i);
+            if (widget instanceof ImageUploadRow) {
+                ImageUploadRow row = (ImageUploadRow) widget;
+                row.setReadOnly(readOnly);
+            }
+        }
     }
 
     @Override
     public Promise<Void> setValue(ImageValue value) {
+        if (value == null) {
+            clearValue();
+            return Promise.done();
+        }
+
+        this.value = value;
+        rootPanel.clear();
+
+        for (ImageRowValue rowValue : value.getValues()) {
+            addNewRow(rowValue);
+        }
+
         return Promise.done();
     }
 
@@ -195,11 +125,12 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
 
     @Override
     public void clearValue() {
-
+        value = new ImageValue();
+        rootPanel.clear();
     }
 
     @Override
     public Widget asWidget() {
-        return formPanel;
+        return rootPanel;
     }
 }
