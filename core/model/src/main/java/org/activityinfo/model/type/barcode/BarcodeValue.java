@@ -5,8 +5,9 @@ import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.primitive.HasStringValue;
 
-public class BarcodeValue implements FieldValue, IsRecord {
+public class BarcodeValue implements FieldValue, IsRecord, HasStringValue {
 
     private final String code;
 
@@ -27,6 +28,11 @@ public class BarcodeValue implements FieldValue, IsRecord {
     }
 
     @Override
+    public String asString() {
+        return code;
+    }
+
+    @Override
     public FieldTypeClass getTypeClass() {
         return BarcodeType.TYPE_CLASS;
     }
@@ -41,4 +47,5 @@ public class BarcodeValue implements FieldValue, IsRecord {
     public static BarcodeValue fromRecord(Record record) {
         return new BarcodeValue(record.getString("code"));
     }
+
 }
