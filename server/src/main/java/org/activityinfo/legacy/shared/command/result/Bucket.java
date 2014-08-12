@@ -102,6 +102,11 @@ public class Bucket implements Serializable {
         this.aggregationMethod = aggregationMethod;
     }
 
+    public void appendValue(double x) {
+        sum += x;
+        count ++;
+    }
+
     public double doubleValue() {
         switch (aggregationMethod) {
             case IndicatorDTO.AGGREGATE_AVG:

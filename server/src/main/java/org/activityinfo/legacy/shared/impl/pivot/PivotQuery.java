@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class PivotQuery {
+public class PivotQuery implements WorkItem {
     private final Filter filter;
     private final Set<Dimension> dimensions;
 
@@ -415,15 +415,14 @@ public class PivotQuery {
                 .append("  AND p.PartnerId = Site.PartnerId ").append(") ")
 
                 // or sites of which one or more activities are published
-                .append("OR (")
+                .append("OR Site.ActivityId IN (")
                 .append(" SELECT ")
-                .append("  COUNT(*) ")
+                .append("  pa.ActivityId ")
                 .append(" FROM ")
                 .append("  activity pa ")
                 .append(" WHERE ")
                 .append("  pa.published > 0 ")
-                .append("  AND pa.ActivityId = Site.ActivityId ")
-                .append(") > 0")
+                .append(")")
 
                 .append(")");
 

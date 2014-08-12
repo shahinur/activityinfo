@@ -35,7 +35,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.security.SecureRandom;
 
-public class gBlobServiceStorageProvider implements StorageProvider {
+public class BlobServiceStorageProvider implements StorageProvider {
 
     private final SecureRandom random = new SecureRandom();
     private final BlobService blobService;

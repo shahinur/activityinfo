@@ -22,13 +22,20 @@ package org.activityinfo.core.shared.expr.customer;
  */
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.result.Bucket;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.legacy.shared.reports.content.DimensionCategory;
+import org.activityinfo.legacy.shared.reports.model.DateDimension;
+import org.activityinfo.legacy.shared.reports.model.DateUnit;
+import org.activityinfo.legacy.shared.reports.model.Dimension;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
@@ -36,19 +43,29 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.LocationDTOs;
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.server.endpoint.export.SiteExporter;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityFormClass;
 import static org.activityinfo.legacy.shared.adapter.CuidAdapter.field;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
@@ -59,8 +76,13 @@ import static org.junit.Assert.assertThat;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
+    public static final Dimension INDICATOR_DIMENSION = new Dimension(DimensionType.Indicator);
+
+    public static final Dimension YEAR_DIMENSION = new DateDimension(DateUnit.YEAR);
+
     public static final double EPSILON = 0.000000000000001;
     FormClass formClass;
+    private KeyGenerator keyGenerator = new KeyGenerator();
 
     @Test
     public void calculations() {
@@ -94,7 +116,6 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
     }
 
 
-
     @Test
     public void calculationsWithMissingValues() {
         formClass = createFormClass();
@@ -126,6 +147,133 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
         assertThat(indicatorValue(siteDTO, "INITIAL_TOTAL"), closeTo(9.6, 0.001)); // INITIAL_TOTAL = INITIAL + INITIAL_HARD + INITIAL_SOFT
     }
 
+    @Test
+    public void pivot() throws IOException {
+        formClass = createFormClass();
+        int activityId = CuidAdapter.getLegacyIdFromCuid(formClass.getId());
+
+
+        double alloc[] = new double[] { 20, 10, 50, 20, 10 };
+
+        int year[] = new int[] { 2011, 2012, 2013};
+
+        List<Command> batch = Lists.newArrayList();
+        for(int i=0;i!=50;++i) {
+
+            SiteDTO newSite = newSite(activityId);
+
+            newSite.setDate1((new GregorianCalendar(year[i % year.length], 1, 1)).getTime());
+            newSite.setDate2((new GregorianCalendar(year[i % year.length], 1, 1)).getTime());
+
+            newSite.setIndicatorValue(fieldId("EXP"), (i % 10) * 1000);
+            newSite.setIndicatorValue(fieldId("WATER_ALLOC"), alloc[i % alloc.length]);
+            newSite.setIndicatorValue(fieldId("PCT_INITIAL"), 50);
+            newSite.setIndicatorValue(fieldId("PCT_INITIAL_HARD"), 20);
+            newSite.setIndicatorValue(fieldId("PCT_INITIAL_SOFT"), 30);
+
+            batch.add(new CreateSite(newSite));
+
+        }
+        execute(new BatchCommand(batch));
+
+
+        // Export to excel
+        SchemaDTO schema = execute(new GetSchema());
+        ActivityDTO activity = schema.getActivityById(activityId);
+
+        SiteExporter exporter = new SiteExporter(getDispatcherSync());
+        exporter.export(activity, Filter.filter().onActivity(activityId));
+
+        exporter.done();
+        try(FileOutputStream fos = new FileOutputStream(Paths.get("target", "calcs.xls").toFile())) {
+            exporter.getBook().write(fos);
+        }
+
+        // Get a full sum
+        fullPivot(activityId);
+        pivotByYear(activityId);
+
+
+    }
+
+    private PivotSites fullPivot(int activityId) {
+        PivotSites pivot = new PivotSites();
+        pivot.setDimensions(new Dimension(DimensionType.Indicator));
+        pivot.setFilter(Filter.filter().onActivity(activityId));
+
+        List<Bucket> buckets = execute(pivot).getBuckets();
+        System.out.println(Joiner.on("\n").join(buckets));
+
+
+        assertThat(buckets, hasItem(total("Expenditure", 225000)));
+        assertThat(buckets, hasItem(total("Expenditure on water programme", 48500)));
+        assertThat(buckets, hasItem(total("Value of Initial Cost - Not specified", 24250)));
+        assertThat(buckets, hasItem(total("Value of Initial Cost - Cap Hard", 9700)));
+        assertThat(buckets, hasItem(total("Value of Initial Cost – Cap Soft", 14550)));
+        assertThat(buckets, hasItem(total("Total Value of Initial Cost", 48500)));
+        return pivot;
+    }
+
+
+    private PivotSites pivotByYear(int activityId) {
+        PivotSites pivot = new PivotSites();
+        pivot.setDimensions(INDICATOR_DIMENSION, YEAR_DIMENSION);
+        pivot.setFilter(Filter.filter().onActivity(activityId));
+
+        List<Bucket> buckets = execute(pivot).getBuckets();
+        System.out.println(Joiner.on("\n").join(buckets));
+
+//
+//        assertThat(buckets, hasItem(yearTotal("Expenditure", 225000)));
+//        assertThat(buckets, hasItem(total("Expenditure on water programme", 48500)));
+//        assertThat(buckets, hasItem(total("Value of Initial Cost - Not specified", 24250)));
+//        assertThat(buckets, hasItem(total("Value of Initial Cost - Cap Hard", 9700)));
+//        assertThat(buckets, hasItem(total("Value of Initial Cost – Cap Soft", 14550)));
+//        assertThat(buckets, hasItem(total("Total Value of Initial Cost", 48500)));
+        return pivot;
+    }
+
+    private Matcher<Bucket> total(final String label, final double sum) {
+        return new TypeSafeMatcher<Bucket>() {
+            @Override
+            protected boolean matchesSafely(Bucket item) {
+                DimensionCategory category = item.getCategory(INDICATOR_DIMENSION);
+                if(category == null) {
+                    return false;
+                }
+                return category.getLabel().equals(label) && item.getSum() == sum;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Bucket with indicator label ").appendValue(label).appendText(" and sum ")
+                        .appendValue(sum);
+            }
+        };
+    }
+
+    private Matcher<Bucket> yearTotal(final String label, int year, final double sum) {
+        return new TypeSafeMatcher<Bucket>() {
+            @Override
+            protected boolean matchesSafely(Bucket item) {
+
+                DimensionCategory category = item.getCategory(INDICATOR_DIMENSION);
+                if(category == null) {
+                    return false;
+                }
+                return category.getLabel().equals(label) && item.getSum() == sum;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Bucket with indicator label ").appendValue(label).appendText(" and sum ")
+                        .appendValue(sum);
+            }
+        };
+    }
+
+
+
 
     private Double indicatorValue(SiteDTO siteDTO, String nameInExpression) {
         int indicatorId = CuidAdapter.getLegacyIdFromCuid(field(nameInExpression).getId());
@@ -150,13 +298,11 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
         execute(new CreateLocation(location));
 
         SiteDTO newSite = new SiteDTO();
-        newSite.setId(new KeyGenerator().generateInt());
+        newSite.setId(keyGenerator.generateInt());
         newSite.setActivityId(activityId);
         newSite.setLocationId(location.getId());
         newSite.setPartner(new PartnerDTO(1, "Foobar"));
-        newSite.setReportingPeriodId(1);
-        newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
-        newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
+        newSite.setReportingPeriodId(keyGenerator.generateInt());
         return newSite;
     }
 
