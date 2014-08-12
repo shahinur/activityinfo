@@ -23,6 +23,7 @@
           </g:Button>
         </g:HTMLPanel>
       </g:HTMLPanel>
+      <g:VerticalPanel ui:field="formFieldsContainer"/>
     </g:HTMLPanel>
   </g:FormPanel>
 </ui:UiBinder>
