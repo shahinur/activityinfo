@@ -25,7 +25,6 @@ public class FieldPathSelector implements FieldSelector {
         private ResourceId fieldId;
 
 
-
         /**
          * Step which matches a specific formClass and fieldId
          */

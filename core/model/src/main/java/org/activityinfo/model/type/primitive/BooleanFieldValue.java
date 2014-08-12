@@ -16,7 +16,7 @@ public enum BooleanFieldValue implements FieldValue {
         return this == TRUE;
     }
 
-    public static FieldValue valueOf(boolean value) {
+    public static BooleanFieldValue valueOf(boolean value) {
         return value ? TRUE : FALSE;
     }
 }

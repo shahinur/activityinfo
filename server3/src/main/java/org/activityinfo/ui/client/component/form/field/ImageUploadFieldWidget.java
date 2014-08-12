@@ -71,6 +71,8 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
     Button downloadButton;
     @UiField
     HTMLPanel downloadButtonContainer;
+    @UiField
+    VerticalPanel formFieldsContainer;
 
     public ImageUploadFieldWidget(ResourceId formClassId, FormField formField, final ValueUpdater valueUpdater) {
         this.formClassId = formClassId;
@@ -136,13 +138,11 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                     Resource resource = Resources.fromJson(json);
                     UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
 
-                    VerticalPanel formFieldsContainer = new VerticalPanel();
                     Map<String,String> formFields = uploadCredentials.getFormFields();
                     for (Map.Entry<String, String> field: formFields.entrySet()) {
                         formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
                     }
 
-                    formPanel.add(formFieldsContainer);
                     formPanel.setAction(uploadCredentials.getUrl());
                     formPanel.setMethod(uploadCredentials.getMethod());
                     upload();
