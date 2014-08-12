@@ -45,6 +45,7 @@ import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
+import org.activityinfo.ui.client.component.form.field.image.ImageUploadFieldWidget;
 
 /**
  * @author yuriyz on 1/28/14.
@@ -101,7 +102,7 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new BooleanFieldWidget(valueUpdater));
 
         }  else if (type instanceof ImageType) {
-            return Promise.resolved(new ImageUploadFieldWidget(field, valueUpdater));
+            return Promise.resolved(new ImageUploadFieldWidget(valueUpdater));
 
         } else if (type instanceof ReferenceType) {
             if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
