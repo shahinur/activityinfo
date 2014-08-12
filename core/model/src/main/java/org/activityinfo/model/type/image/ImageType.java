@@ -21,18 +21,21 @@ package org.activityinfo.model.type.image;
  * #L%
  */
 
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.RecordFieldTypeClass;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceIdPrefixType;
+import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 
 /**
  * @author yuriyz on 8/6/14.
  */
-public class ImageType implements FieldType {
+public class ImageType implements ParametrizedFieldType, FieldType {
 
-    public static class TypeClass implements RecordFieldTypeClass {
+    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
 
         private TypeClass() {
         }
@@ -49,23 +52,58 @@ public class ImageType implements FieldType {
 
         @Override
         public FieldType createType() {
-            return new ImageType();
+            return new ImageType(Cardinality.SINGLE);
         }
 
         @Override
         public FieldValue deserialize(Record record) {
             return ImageValue.fromRecord(record);
         }
+
+        @Override
+        public ImageType deserializeType(Record typeParameters) {
+            return new ImageType(Cardinality.valueOf(typeParameters.getString("cardinality")));
+        }
+
+        @Override
+        public FormClass getParameterFormClass() {
+            EnumType cardinalityType = (EnumType) EnumType.TYPE_CLASS.createType();
+            cardinalityType.getValues().add(new EnumValue(ResourceId.create("single"), "Single"));
+            cardinalityType.getValues().add(new EnumValue(ResourceId.create("multiple"), "Multiple"));
+
+            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("image"));
+            formClass.addElement(new FormField(ResourceId.create("cardinality"))
+                    .setType(cardinalityType)
+                    .setLabel("Cardinality")
+                    .setDescription("Determines whether users can add a single image, or multiple images")
+                    .setRequired(true)
+            );
+            return formClass;
+        }
     }
 
     public static final TypeClass TYPE_CLASS = new TypeClass();
 
-    public ImageType() {
+    private Cardinality cardinality;
+
+    public ImageType(Cardinality cardinality) {
+        this.cardinality = cardinality;
     }
 
     @Override
-    public FieldTypeClass getTypeClass() {
+    public ParametrizedFieldTypeClass getTypeClass() {
         return TYPE_CLASS;
+    }
+
+    public Cardinality getCardinality() {
+        return cardinality;
+    }
+
+    @Override
+    public Record getParameters() {
+        return new Record()
+                .set("classId", getTypeClass().getParameterFormClass().getId())
+                .set("cardinality", cardinality);
     }
 
     @Override
