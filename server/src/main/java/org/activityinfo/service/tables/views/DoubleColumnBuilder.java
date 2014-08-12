@@ -1,27 +1,34 @@
 package org.activityinfo.service.tables.views;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.Resource;
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.columns.DoubleArrayColumnView;
-import org.activityinfo.service.tables.reader.DoubleFieldReader;
+import org.activityinfo.model.type.number.Quantity;
 
 import java.util.List;
 
 public class DoubleColumnBuilder implements ColumnViewBuilder {
 
-    private final DoubleFieldReader reader;
+    private final String fieldName;
     private final List<Double> values = Lists.newArrayList();
 
     private DoubleArrayColumnView result = null;
 
-    public DoubleColumnBuilder(DoubleFieldReader reader) {
-        this.reader = reader;
+    public DoubleColumnBuilder(ResourceId fieldId) {
+        this.fieldName = fieldId.asString();
     }
 
     @Override
-    public void putResource(Resource resource) {
-        double value = reader.readDouble(resource);
+    public void accept(FormEvalContext resource) {
+        Quantity quantity = (Quantity) resource.getFieldValue(fieldName);
+        double value;
+        if(quantity == null) {
+            value = Double.NaN;
+        } else {
+            value = quantity.getValue();
+        }
         values.add(value);
     }
 

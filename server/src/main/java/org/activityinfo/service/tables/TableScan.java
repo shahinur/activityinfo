@@ -4,12 +4,15 @@ import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.tables.views.*;
 
@@ -31,9 +34,12 @@ public class TableScan {
 
     private Optional<Integer> rowCount = Optional.absent();
 
-    public TableScan(ResourceStore resourceStore, ResourceId classId) {
+    private FormEvalContext formEvalContext;
+
+    public TableScan(ResourceStore resourceStore, FormClass formClass) {
         this.store = resourceStore;
-        this.classId = classId;
+        this.classId = formClass.getId();
+        this.formEvalContext = new FormEvalContext(formClass);
     }
 
     public Supplier<ColumnView> fetchColumn(FormTree.Node node, @Nonnull ColumnType columnType) {
@@ -45,7 +51,8 @@ public class TableScan {
         if(columnMap.containsKey(columnKey)) {
             return columnMap.get(columnKey);
         } else {
-            Optional<ColumnViewBuilder> builder = ViewBuilders.createBuilder(node.getField(), columnType);
+            FieldType fieldType = formEvalContext.resolveFieldType(node.getFieldId());
+            Optional<ColumnViewBuilder> builder = ViewBuilders.createBuilder(node.getFieldId(), fieldType, columnType);
             if(builder.isPresent()) {
                 columnMap.put(columnKey, builder.get());
                 return builder.get();
@@ -107,15 +114,16 @@ public class TableScan {
      */
     public void execute() {
 
-        ResourceSink[] builders = builderArray();
+        FormSink[] builders = builderArray();
 
         int rowCount = 0;
 
         Iterator<Resource> cursor = store.openCursor(classId);
         while(cursor.hasNext()) {
-            Resource resource = cursor.next();
+            formEvalContext.setInstance(cursor.next());
+
             for(int i=0;i!=builders.length;++i) {
-                builders[i].putResource(resource);
+                builders[i].accept(formEvalContext);
             }
             rowCount ++ ;
         }
@@ -129,12 +137,12 @@ public class TableScan {
         this.rowCount = Optional.of(rowCount);
     }
 
-    private ResourceSink[] builderArray() {
-        Iterable<ResourceSink> sinks = Iterables.<ResourceSink>concat(
+    private FormSink[] builderArray() {
+        Iterable<FormSink> sinks = Iterables.<FormSink>concat(
                 primaryKeyMapBuilder.asSet(),
                 columnMap.values(),
                 foreignKeyMap.values());
 
-        return Iterables.toArray(sinks, ResourceSink.class);
+        return Iterables.toArray(sinks, FormSink.class);
     }
 }

@@ -3,12 +3,13 @@ package org.activityinfo.service.tables.views;
 import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.ReferenceValue;
 
 
-public class ForeignKeyBuilder implements ResourceSink, Supplier<ForeignKeyColumn> {
+public class ForeignKeyBuilder implements FormSink, Supplier<ForeignKeyColumn> {
 
     private final String fieldName;
     private int rowIndex = 0;
@@ -18,10 +19,12 @@ public class ForeignKeyBuilder implements ResourceSink, Supplier<ForeignKeyColum
         this.fieldName = fieldName;
     }
 
-    public void putResource(Resource resource) {
-        ReferenceValue referenceValue = ReferenceValue.fromRecord(resource.getRecord(fieldName));
-        for(ResourceId id : referenceValue.getResourceIds()) {
-            keys.put(rowIndex, id);
+    public void accept(FormEvalContext resource) {
+        ReferenceValue referenceValue = (ReferenceValue) resource.getFieldValue(fieldName);
+        if(referenceValue != null) {
+            for (ResourceId id : referenceValue.getResourceIds()) {
+                keys.put(rowIndex, id);
+            }
         }
         rowIndex++;
     }

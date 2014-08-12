@@ -21,7 +21,7 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
-import org.activityinfo.core.shared.expr.ExprFunction;
+import org.activityinfo.core.shared.expr.functions.ExprFunction;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
@@ -35,14 +35,14 @@ import java.util.Set;
 public class RowData {
 
     private FormField formField;
-    private ExprFunction<Boolean, ?> joinFunction = RowDataBuilder.DEFAULT_JOIN_FUNCTION;
-    private ExprFunction<Boolean, ?> function;
+    private ExprFunction joinFunction = RowDataBuilder.DEFAULT_JOIN_FUNCTION;
+    private ExprFunction function;
     private FieldValue value;
 
     public RowData() {
     }
 
-    public RowData(FormField formField, ExprFunction<Boolean, ?> joinFunction, ExprFunction<Boolean, ?> function,
+    public RowData(FormField formField, ExprFunction joinFunction, ExprFunction function,
                    FieldValue value) {
         this.formField = formField;
         this.joinFunction = joinFunction;
@@ -58,19 +58,19 @@ public class RowData {
         this.formField = formField;
     }
 
-    public ExprFunction<Boolean, ?> getJoinFunction() {
+    public ExprFunction getJoinFunction() {
         return joinFunction;
     }
 
-    public void setJoinFunction(ExprFunction<Boolean, ?> joinFunction) {
+    public void setJoinFunction(ExprFunction joinFunction) {
         this.joinFunction = joinFunction;
     }
 
-    public ExprFunction<Boolean, ?> getFunction() {
+    public ExprFunction getFunction() {
         return function;
     }
 
-    public void setFunction(ExprFunction<Boolean, ?> function) {
+    public void setFunction(ExprFunction function) {
         this.function = function;
     }
 

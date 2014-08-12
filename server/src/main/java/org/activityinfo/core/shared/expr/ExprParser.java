@@ -4,37 +4,28 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.expr.constant.BooleanConstantExpr;
-import org.activityinfo.core.shared.expr.constant.NumberConstantExpr;
-import org.activityinfo.core.shared.expr.constant.StringConstantExpr;
-import org.activityinfo.core.shared.expr.functions.ArithmeticFunctions;
-import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
+import org.activityinfo.core.shared.expr.functions.ExprFunction;
+import org.activityinfo.core.shared.expr.functions.ExprFunctions;
 
 import java.util.Iterator;
 import java.util.Set;
 
 public class ExprParser {
 
-    private static final Set<String> INFIX_OPERATORS = Sets.newHashSet("+", "-", "*", "/");
+    private static final Set<String> INFIX_OPERATORS = Sets.newHashSet("+", "-", "*", "/", "&&", "||", "==", "!=" );
+
+    private static final Set<String> PREFIX_OPERATORS = Sets.newHashSet("!" );
 
     private PeekingIterator<Token> lexer;
-    private PlaceholderExprResolver placeholderExprResolver;
 
     public ExprParser(Iterator<Token> tokens) {
-        this(tokens, null);
-    }
-
-    public ExprParser(Iterator<Token> tokens, PlaceholderExprResolver placeholderExprResolver) {
         this.lexer = Iterators.peekingIterator(Iterators.filter(tokens, new Predicate<Token>() {
 
             @Override
             public boolean apply(Token token) {
-                return token.getType() != TokenType.WHITESPACE &&
-                        token.getType() != TokenType.STRING_START &&
-                        token.getType() != TokenType.STRING_START;
+                return token.getType() != TokenType.WHITESPACE && token.getType() != TokenType.STRING_START;
             }
         }));
-        this.placeholderExprResolver = placeholderExprResolver;
     }
 
     public ExprNode parse() {
@@ -45,13 +36,7 @@ public class ExprParser {
         Token token = lexer.peek();
         if (isInfixOperator(token)) {
             lexer.next();
-            ExprFunction function = ArithmeticFunctions.getBinaryInfix(token.getString());
-            ExprNode right = parse();
-
-            return new FunctionCallNode(function, expr, right);
-        } else if (token.getType() == TokenType.BOOLEAN_OPERATOR) {
-            lexer.next();
-            ExprFunction function = BooleanFunctions.getBooleanFunction(token.getString());
+            ExprFunction function = ExprFunctions.get(token.getString());
             ExprNode right = parse();
 
             return new FunctionCallNode(function, expr, right);
@@ -60,13 +45,9 @@ public class ExprParser {
             return expr;
         }
     }
-//	
-//	throw new ExprSyntaxException(String.format("Expected +, -, /, or *, but found '%s' at %d",
-//			token.getString(), token.getTokenStart()));
-
 
     private boolean isInfixOperator(Token token) {
-        return token.getType().isSymbol() &&
+        return token.getType() == TokenType.OPERATOR &&
                 INFIX_OPERATORS.contains(token.getString());
     }
 
@@ -79,23 +60,29 @@ public class ExprParser {
             return parsePlaceholder();
 
         } else if (token.getType() == TokenType.NUMBER) {
-            return new NumberConstantExpr(Double.parseDouble(token.getString()));
+            return new ConstantExpr(Double.parseDouble(token.getString()));
 
         } else if (token.getType() == TokenType.BOOLEAN_LITERAL) {
-            return new BooleanConstantExpr(Boolean.parseBoolean(token.getString()));
+            return new ConstantExpr(Boolean.parseBoolean(token.getString()));
 
-        } else if (token.getType() == TokenType.BOOLEAN_OPERATOR) {
-            // unary NOT operation (right now it's the only case when we start with node fucntion)
-            ExprFunction function = BooleanFunctions.getBooleanFunction(token.getString());
+        } else if (prefixOperator(token)) {
+            ExprFunction function = ExprFunctions.get(token.getString());
             ExprNode right = parse();
             return new FunctionCallNode(function, right);
 
-        } else if (token.getType() == TokenType.STRING_LITERAL || token.getType() == TokenType.SYMBOL) {
-            return new StringConstantExpr(token.getString());
+        } else if (token.getType() == TokenType.STRING_LITERAL) {
+            return new ConstantExpr(token.getString());
+
+        } else if (token.getType() == TokenType.SYMBOL) {
+            return new SymbolExpr(token.getString());
 
         } else {
             throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");
         }
+    }
+
+    private boolean prefixOperator(Token token) {
+        return token.getType() == TokenType.OPERATOR && PREFIX_OPERATORS.contains(token.getString());
     }
 
     private ExprNode parseGroup() {
@@ -107,7 +94,7 @@ public class ExprParser {
     private ExprNode parsePlaceholder() {
         Token token = lexer.next();
         expectNext(TokenType.BRACE_END, "'}'");
-        return new PlaceholderExpr(token.getString(), placeholderExprResolver);
+        return new SymbolExpr(token.getString());
     }
 
     /**
@@ -122,4 +109,8 @@ public class ExprParser {
         return token;
     }
 
+    public static ExprNode parse(String expression) {
+        ExprParser parser = new ExprParser(new ExprLexer(expression));
+        return parser.parse();
+    }
 }

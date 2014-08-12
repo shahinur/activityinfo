@@ -1,5 +1,6 @@
 package org.activityinfo.service.tables;
 
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
@@ -10,13 +11,18 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.CalculatedFieldType;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.ui.client.service.TestResourceStore;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 
 public class TableServiceCalcTest {
@@ -155,6 +161,8 @@ public class TableServiceCalcTest {
     public void persistence() {
         FormClass reform = FormClass.fromResource(store.get(formClass.getId()));
         assertHasFieldWithLabel(reform, "Expenditure");
+        assertThat(reform.getFields(), Matchers.<FormField>hasItem(hasProperty("code", equalTo("EXP"))));
+
         assertHasFieldWithLabel(reform, "Allocation watter programme");
         assertHasFieldWithLabel(reform, "Initial Cost - Not specified");
         assertHasFieldWithLabel(reform, "Initial Cost - Cap Hard");
@@ -170,6 +178,20 @@ public class TableServiceCalcTest {
         assertHasFieldWithLabel(reform, "Value of Initial Cost - Cap Hard");
         assertHasFieldWithLabel(reform, "Value of Initial Cost – Cap Soft");
         assertHasFieldWithLabel(reform, "Total Value of Initial Cost");
+    }
+
+    @Test
+    public void formContextTest() {
+
+        FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
+        instance.set(fieldId("EXP"), new Quantity(3, "currency"));
+        instance.set(fieldId("WATER_ALLOC"), 400);
+        instance.set(fieldId("PCT_INITIAL"), 50);
+        instance.set(fieldId("PCT_INITIAL_HARD"), 20);
+        instance.set(fieldId("PCT_INITIAL_SOFT"), 30);
+
+        FormEvalContext context = new FormEvalContext(formClass, instance.asResource());
+        assertThat(context.resolveSymbol("WATER_EXP"), equalTo((FieldValue) new Quantity(12.0)));
     }
     
     @Test
@@ -200,18 +222,11 @@ public class TableServiceCalcTest {
         assertThat(data.getColumnView("EXP").getDouble(row), equalTo(3.0));
         assertThat(data.getColumnView("WATER_EXP").getDouble(row), equalTo(12.0));
         assertThat(data.getColumnView("INITIAL").getDouble(row), equalTo(6.0));
-        assertThat(data.getColumnView("INITIAL_HARD").getDouble(row), equalTo(2.4));
-        assertThat(data.getColumnView("INITIAL_SOFT").getDouble(row), equalTo(3.6));
+        assertThat(data.getColumnView("INITIAL_HARD").getDouble(row), closeTo(2.4, 0.00001));
+        assertThat(data.getColumnView("INITIAL_SOFT").getDouble(row), closeTo(3.6, 0.00001));
         assertThat(data.getColumnView("INITIAL_TOTAL").getDouble(row), equalTo(12.0));
 
         assertThat(data.getColumnView("WATER_EXP").getDouble(row), equalTo(12.0));
-//
-//
-//        Assert.assertEquals(indicatorValue(siteDTO, "WATER_EXP"), 12, 0); // WATER_EXP = EXP * (WATER_ALLOC / 100)
-//        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL"), 6, 0); // INITIAL = WATER_EXP * (PCT_INITIAL / 100)
-//        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_HARD"), 2.4, 0.000000000000001); // INITIAL_HARD = WATER_EXP * (PCT_INITIAL_HARD / 100)
-//        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_SOFT"), 3.6, 0.000000000000001); // INITIAL_SOFT = WATER_EXP * (PCT_INITIAL_HARD / 100)
-//        Assert.assertEquals(indicatorValue(siteDTO, "INITIAL_TOTAL"), 12, 0.000000000000001); // INITIAL_TOTAL = INITIAL + INITIAL_HARD + INITIAL_SOFT
     }
 
 

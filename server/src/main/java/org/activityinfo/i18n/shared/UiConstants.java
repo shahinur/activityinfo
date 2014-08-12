@@ -3485,4 +3485,12 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Visible")
     String visible();
+
+    @DefaultStringValue("And")
+    String and();
+
+
+    @DefaultStringValue("Or")
+    String or();
+
 }
