@@ -1,6 +1,7 @@
 package org.activityinfo.service.tables.views;
 
 import com.google.common.collect.Lists;
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.columns.StringArrayColumnView;
@@ -13,8 +14,8 @@ public class IdColumnBuilder implements ColumnViewBuilder {
 
 
     @Override
-    public void putResource(Resource resource) {
-        ids.add(resource.getId().asString());
+    public void accept(FormEvalContext instance) {
+        ids.add(instance.getId().asString());
     }
 
     @Override

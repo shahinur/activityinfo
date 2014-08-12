@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.ResourceStore;
@@ -29,6 +30,7 @@ public class TableServiceImpl implements TableService {
 
         ResourceId classId = table.getRowSources().get(0).getRootFormClass();
         FormTree tree = formTreeService.queryTree(classId);
+        FormClass formClass = tree.getRootFormClasses().get(classId);
 
         // We want to make at most one pass over every rowset we need to scan,
         // so first queue up all necessary work before executing
@@ -42,12 +44,12 @@ public class TableServiceImpl implements TableService {
                 FieldSource source = (FieldSource) column.getSource();
                 List<FormTree.Node> sourceNodes = source.select(tree);
                 if(sourceNodes.isEmpty()) {
-                    columnViews.put(column.getId(), batch.addEmptyColumn(column.getType(), classId));
+                    columnViews.put(column.getId(), batch.addEmptyColumn(column.getType(), formClass));
                 } else {
                     columnViews.put(column.getId(), batch.addColumn(column.getType(), sourceNodes));
                 }
             } else if(column.getSource() instanceof ResourceIdSource) {
-                columnViews.put(column.getId(), batch.getIdColumn(classId));
+                columnViews.put(column.getId(), batch.getIdColumn(formClass));
             } else {
                 throw new UnsupportedOperationException("Field source " + column.getSource());
             }

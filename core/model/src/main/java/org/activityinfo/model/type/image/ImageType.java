@@ -21,14 +21,11 @@ package org.activityinfo.model.type.image;
  * #L%
  */
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.RecordFieldTypeClass;
-import org.activityinfo.model.type.component.ComponentReader;
-import org.activityinfo.model.type.component.NullComponentReader;
 
 /**
  * @author yuriyz on 8/6/14.
@@ -69,16 +66,6 @@ public class ImageType implements FieldType {
     @Override
     public FieldTypeClass getTypeClass() {
         return TYPE_CLASS;
-    }
-
-    @Override
-    public ComponentReader<String> getStringReader(String fieldName, String componentId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
-        return new NullComponentReader<>();
     }
 
     @Override

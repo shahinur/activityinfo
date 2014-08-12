@@ -24,8 +24,7 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.activityinfo.core.shared.expr.*;
-import org.activityinfo.core.shared.expr.constant.IsConstantExpr;
-import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
+import org.activityinfo.core.shared.expr.functions.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
@@ -39,7 +38,7 @@ import java.util.Set;
  */
 public class RowDataBuilder {
 
-    public static final ExprFunction<Boolean, Boolean> DEFAULT_JOIN_FUNCTION = BooleanFunctions.AND;
+    public static final ExprFunction DEFAULT_JOIN_FUNCTION = BooleanFunctions.AND;
 
     private List<RowData> rows = Lists.newArrayList(); // keep list, order is important!
     private FormClass formClass;
@@ -68,7 +67,7 @@ public class RowDataBuilder {
             ExprNode arg2 = unwrap((ExprNode) functionCallNode.getArguments().get(1));
 
 
-            if (arg1 instanceof PlaceholderExpr) {
+            if (arg1 instanceof SymbolExpr) {
 
                 if (isFieldFunction(functionCallNode.getFunction())) {
                     final FormField field = formClass.getField(ResourceId.create(placeholder(arg1)));
@@ -157,11 +156,11 @@ public class RowDataBuilder {
      * @return Returns whether value was set in row or not
      */
     private static boolean setValueInRow(RowData row, ExprNode node) {
-        if (node instanceof IsConstantExpr) {
-            row.setValue(((IsConstantExpr) node).getValue());
+        if (node instanceof ConstantExpr) {
+            row.setValue(((ConstantExpr) node).getValue());
             return true;
 
-        } else if (node instanceof PlaceholderExpr) {
+        } else if (node instanceof SymbolExpr) {
             ResourceId newItem = ResourceId.create(placeholder(node));
 
             if (row.getValue() instanceof ReferenceValue) { // update existing value
@@ -183,7 +182,7 @@ public class RowDataBuilder {
     }
 
     private static String placeholder(ExprNode node) {
-        PlaceholderExpr placeholderExpr = (PlaceholderExpr) node;
-        return placeholderExpr.getPlaceholder();
+        SymbolExpr symbolExpr = (SymbolExpr) node;
+        return symbolExpr.getName();
     }
 }

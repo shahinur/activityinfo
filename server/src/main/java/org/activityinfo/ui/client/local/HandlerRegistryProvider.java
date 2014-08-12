@@ -34,7 +34,6 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
 
     @Inject
     public HandlerRegistryProvider(GetSchemaHandler schemaHandler,
-                                   GetSitesHandler sitesHandler,
                                    GetAdminEntitiesHandler adminHandler,
                                    GetPartnersDimensionHandler partnersDimensionHandler,
                                    GetAttributeGroupsDimensionHandler attributeGroupsDimensionHandler,
@@ -50,7 +49,6 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
 
         registry = new HandlerRegistry();
         registry.registerHandler(GetSchema.class, schemaHandler);
-        registry.registerHandler(GetSites.class, sitesHandler);
         registry.registerHandler(GetAdminEntities.class, adminHandler);
         registry.registerHandler(GetPartnersDimension.class, partnersDimensionHandler);
         registry.registerHandler(GetAttributeGroupsDimension.class, attributeGroupsDimensionHandler);

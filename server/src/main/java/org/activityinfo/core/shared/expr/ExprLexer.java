@@ -16,7 +16,7 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
     private int currentTokenStart = 0;
     private boolean startedStringLiteral = false;
 
-    private static final String VALID_OPERATORS = "+-/*";
+    private static final String OPERATOR_CHARS = "+-/*&|=!";
 
     public ExprLexer(String string) {
         this.string = string;
@@ -97,13 +97,10 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
             return readNumber();
 
         } else if (isOperator(c)) {
-            return finishToken(TokenType.OPERATOR);
+            return readOperator(c);
 
         } else if (isBooleanLiteral(c)) {
             return readBooleanLiteral(c);
-
-        } else if (isBooleanOperator(c)) {
-            return readBooleanOperator(c);
 
         } else if (isSymbolStart(c)) {
             return readSymbol(TokenType.SYMBOL);
@@ -113,24 +110,17 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         }
     }
 
+
+
     private boolean isOperator(char c) {
-        return VALID_OPERATORS.indexOf(c) != -1;
+        return OPERATOR_CHARS.indexOf(c) != -1;
     }
 
-    private boolean isBooleanOperator(char c) {
-        if (c == '!') {
-            return true;
-        } else if (c == '&') {
-            // if next char is also & then its && operator
-            return string.charAt(currentCharIndex) == '&';
-        } else if (c == '|') {
-            // if next char is also | then its || operator
-            return string.charAt(currentCharIndex) == '|';
-        } else if (c == '=') {
-            // if next char is also = then its == operator
-            return string.charAt(currentCharIndex) == '=';
+    private Token readOperator(char c) {
+        while (!isEndOfInput() && isOperator(peekChar())) {
+            consumeChar();
         }
-        return false;
+        return finishToken(TokenType.OPERATOR);
     }
 
     private boolean isSymbolStart(char c) {
@@ -205,19 +195,19 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
             if (string.charAt(currentCharIndex) == '=') { // check whether it's NOT (!) or NOT_EQUAL operator (!=)
                 currentCharIndex++;
             }
-            return finishToken(TokenType.BOOLEAN_OPERATOR);
+            return finishToken(TokenType.OPERATOR);
         } else if (c == '&') {
             // if next char is also & then its && operator
             currentCharIndex++;
-            return finishToken(TokenType.BOOLEAN_OPERATOR);
+            return finishToken(TokenType.OPERATOR);
         } else if (c == '|') {
             currentCharIndex++;
             // if next char is also | then its || operator
-            return finishToken(TokenType.BOOLEAN_OPERATOR);
+            return finishToken(TokenType.OPERATOR);
         } else if (c == '=') {
             currentCharIndex++;
             // if next char is also = then its == operator
-            return finishToken(TokenType.BOOLEAN_OPERATOR);
+            return finishToken(TokenType.OPERATOR);
         }
         throw new RuntimeException("Invalid boolean operator.");
     }
