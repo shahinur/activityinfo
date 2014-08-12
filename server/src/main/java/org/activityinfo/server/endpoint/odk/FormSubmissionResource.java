@@ -44,7 +44,7 @@ public class FormSubmissionResource {
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
     public Response submit(@FormDataParam("xml_submission_file") String xml) throws Exception {
-        //TODO Not everything is fully tested yet and especially Cardinality.MULTIPLE will definitely not work correctly
+        //TODO Not everything is fully tested yet and especially authorization is still missing
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(xml.getBytes(Charsets.UTF_8));
         DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document document = documentBuilder.parse(byteArrayInputStream);
