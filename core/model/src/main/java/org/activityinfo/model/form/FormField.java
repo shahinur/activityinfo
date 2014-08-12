@@ -62,7 +62,7 @@ public class FormField extends FormElement {
      * containing only letters, numbers, and the underscore symbol
      */
     public static boolean isValidCode(String code) {
-        return code != null && code.matches("^[A-Za-z][A-Za-z0-9_]+");
+        return code != null && code.matches("^[A-Za-z][A-Za-z0-9_]*");
     }
 
     @NotNull
