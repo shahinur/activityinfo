@@ -6,76 +6,64 @@ public enum TokenType {
     /**
      * "("
      */
-    PAREN_START(false),
+    PAREN_START,
 
     /**
      * ")"
      */
-    PAREN_END(false),
+    PAREN_END,
 
     /**
      * "{"
      */
-    BRACE_START(false),
+    BRACE_START,
 
     /**
      * "}"
      */
-    BRACE_END(false),
+    BRACE_END,
 
     /**
      * """
      */
-    STRING_START(false),
+    STRING_START,
 
     /**
      * """
      */
-    STRING_END(false),
+    STRING_END,
 
     /**
-     * Operator : +, /, -
+     * Operator : +, /, -, &&, || etc
      */
-    OPERATOR(true),
+    OPERATOR,
 
-    /**
-     * Boolean operator : &&, ||, !
-     */
-    BOOLEAN_OPERATOR(false),
 
     /**
      * A named value
      */
-    SYMBOL(true),
+    SYMBOL,
 
-    FUNCTION(true),
+    FUNCTION,
 
     /**
      * Numeric Literal: 1, 3 ...
      */
-    NUMBER(false),
+    NUMBER,
 
     /**
      * Boolean literal : true, false
      */
-    BOOLEAN_LITERAL(false),
+    BOOLEAN_LITERAL,
 
-    STRING_LITERAL(false),
+    STRING_LITERAL,
 
     /**
      * Whitespace
      */
-    WHITESPACE(false),
+    WHITESPACE,
 
-    EOF(false);
+    EOF
 
-    private final boolean isSymbol;
 
-    TokenType(boolean isSymbol) {
-        this.isSymbol = isSymbol;
-    }
-
-    public boolean isSymbol() {
-        return isSymbol;
-    }
 }

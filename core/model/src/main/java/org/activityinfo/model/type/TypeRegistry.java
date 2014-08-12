@@ -36,6 +36,8 @@ public class TypeRegistry {
         register(TextType.TYPE_CLASS);
         register(QuantityType.TYPE_CLASS);
         register(NarrativeType.TYPE_CLASS);
+        register(CalculatedFieldType.TYPE_CLASS);
+        register(ExprFieldType.TYPE_CLASS);
         register(LocalDateType.TYPE_CLASS);
         register(LocalDateIntervalType.TYPE_CLASS);
         register(GeoPointType.TYPE_CLASS);

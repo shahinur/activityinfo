@@ -152,8 +152,7 @@ public class FormInstance implements IsResource {
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, double value) {
-        propertyBag.set(fieldId.asString(), value);
-        return this;
+        return set(fieldId, new Quantity(value));
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, boolean value) {

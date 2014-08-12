@@ -85,8 +85,8 @@ public class TableQueryBatchBuilder {
      * Adds a query to the batch for an empty column. It may still be required to hit the data store
      * to find the number of rows.
      */
-    public Supplier<ColumnView> addEmptyColumn(ColumnType type, ResourceId formClassId) {
-        return getTable(formClassId).fetchEmptyColumn(type);
+    public Supplier<ColumnView> addEmptyColumn(ColumnType type, FormClass formClass) {
+        return getTable(formClass).fetchEmptyColumn(type);
     }
 
     /**
@@ -113,8 +113,8 @@ public class TableQueryBatchBuilder {
     }
 
     private JoinLink addJoinLink(FormTree.Node leftField, FormClass rightForm) {
-        TableScan leftTable = getTable(leftField.getDefiningFormClass().getId());
-        TableScan rightTable = getTable(rightForm.getId());
+        TableScan leftTable = getTable(leftField);
+        TableScan rightTable = getTable(rightForm);
 
         Supplier<ForeignKeyColumn> foreignKey = leftTable.fetchForeignKey(leftField.getFieldId().asString());
         Supplier<PrimaryKeyMap> primaryKey = rightTable.fetchPrimaryKey();
@@ -123,19 +123,25 @@ public class TableQueryBatchBuilder {
     }
 
 
-    public Supplier<ColumnView> getIdColumn(ResourceId classId) {
+    public Supplier<ColumnView> getIdColumn(FormClass classId) {
         return getTable(classId).fetchPrimaryKeyColumn();
     }
 
     private Supplier<ColumnView> getDataColumn(ColumnType columnType, FormTree.Node node) {
-        return getTable(node.getDefiningFormClass().getId()).fetchColumn(node, columnType);
+        return getTable(node).fetchColumn(node, columnType);
     }
 
-    private TableScan getTable(ResourceId classId) {
-        TableScan tableScan = tableMap.get(classId);
+
+
+    private TableScan getTable(FormTree.Node node) {
+        return getTable(node.getDefiningFormClass());
+    }
+
+    private TableScan getTable(FormClass formClass) {
+        TableScan tableScan = tableMap.get(formClass.getId());
         if(tableScan == null) {
-            tableScan = new TableScan(store, classId);
-            tableMap.put(classId, tableScan);
+            tableScan = new TableScan(store, formClass);
+            tableMap.put(formClass.getId(), tableScan);
         }
         return tableScan;
     }

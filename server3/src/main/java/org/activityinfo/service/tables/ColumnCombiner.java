@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.ColumnType;
+import org.activityinfo.model.table.columns.DoubleArrayColumnView;
 import org.activityinfo.model.table.columns.StringArrayColumnView;
 
 import java.util.List;
@@ -37,6 +38,8 @@ class ColumnCombiner implements Supplier<ColumnView> {
     private ColumnView combine() {
         if(type == ColumnType.STRING) {
             return combineString();
+        } else if(type == ColumnType.NUMBER) {
+            return combineDouble();
         }
         throw new UnsupportedOperationException();
     }
@@ -62,6 +65,29 @@ class ColumnCombiner implements Supplier<ColumnView> {
         }
 
         return new StringArrayColumnView(values);
+    }
+
+    private ColumnView combineDouble() {
+        ColumnView[] cols = new ColumnView[sources.size()];
+        for(int j=0;j<cols.length;++j) {
+            cols[j] = sources.get(j).get();
+        }
+        int numRows = cols[0].numRows();
+        int numCols = cols.length;
+
+        double[] values = new double[numRows];
+
+        for(int i=0;i!=numRows;++i) {
+            values[i] = Double.NaN;
+            for(int j=0;j!=numCols;++j) {
+                double value = cols[j].getDouble(j);
+                if(!Double.isNaN(value)) {
+                    values[i] = value;
+                    break;
+                }
+            }
+        }
+        return new DoubleArrayColumnView(values);
     }
 
 

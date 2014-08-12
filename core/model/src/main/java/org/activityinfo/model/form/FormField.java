@@ -18,9 +18,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class FormField extends FormElement {
 
     private final ResourceId id;
+    private String code;
     private String label;
     private String description;
-    private String expression;
     private String relevanceConditionExpression;
     private FieldType type;
     private boolean readOnly;
@@ -35,6 +35,34 @@ public class FormField extends FormElement {
 
     public ResourceId getId() {
         return id;
+    }
+
+    /**
+     * @return user-assigned code for this field that can be
+     * used in expressions.
+     */
+    public String getCode() {
+        return code;
+    }
+
+
+    public void setCode(String code) {
+        assert isValidCode(code) : "Invalid code: [" + code + "]";
+        this.code = code;
+    }
+
+
+    public boolean hasCode() {
+        return code != null;
+    }
+
+    /**
+     *
+     * @return true if {@code} is a valid code, starting with a letter and
+     * containing only letters, numbers, and the underscore symbol
+     */
+    public static boolean isValidCode(String code) {
+        return code != null && code.matches("^[A-Za-z][A-Za-z0-9_]*");
     }
 
     @NotNull
@@ -93,25 +121,8 @@ public class FormField extends FormElement {
         return this;
     }
 
-    /**
-     * @return the expression used to calculate this field's value if it is
-     * not provided by the user
-     */
-    public String getExpression() {
-        return expression;
-    }
-
-    public boolean isCalculated() {
-        return !Strings.isNullOrEmpty(expression);
-    }
-
     public boolean hasRelevanceConditionExpression() {
         return !Strings.isNullOrEmpty(relevanceConditionExpression);
-    }
-
-    public FormField setExpression(String expression) {
-        this.expression = expression;
-        return this;
     }
 
     /**
@@ -190,10 +201,10 @@ public class FormField extends FormElement {
 
         Record record = new Record();
         record.set("id", id.asString());
+        record.set("code", code);
         record.set("label", label);
         record.set("type", toRecord(type));
         record.set("required", required);
-        record.set("expression", expression);
         record.set("visible", visible);
         record.set("relevanceConditionExpression", relevanceConditionExpression);
 
@@ -220,15 +231,15 @@ public class FormField extends FormElement {
             .setVisible(record.getBoolean("visible", true))
             .setRequired(record.getBoolean("required", false));
 
-        if(record.has("expression")) {
-            formField.setExpression(record.getString("expression"));
-        }
         if (record.has("relevanceConditionExpression")) {
             formField.setRelevanceConditionExpression(record.getString("relevanceConditionExpression"));
         }
         if(record.has("superProperties")) {
             ReferenceValue superProperties = ReferenceValue.fromRecord(record.getRecord("superProperties"));
             formField.setSuperProperties(superProperties.getResourceIds());
+        }
+        if(record.has("code")) {
+            formField.setCode(record.getString("code"));
         }
 
         return formField;
