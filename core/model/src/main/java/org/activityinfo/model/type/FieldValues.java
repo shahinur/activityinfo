@@ -4,6 +4,8 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.BooleanFieldValue;
+import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.primitive.TextValue;
 
@@ -25,5 +27,20 @@ public class FieldValues {
             }
         }
         return null;
+    }
+
+    public static FieldValue readFieldValueIfType(Resource instance, String fieldName, FieldTypeClass typeClass) {
+        if(typeClass == TextType.TYPE_CLASS) {
+            return TextValue.valueOf(instance.isString(fieldName));
+
+        } else if(typeClass == BooleanType.TYPE_CLASS) {
+            return BooleanFieldValue.valueOf(instance.isBoolean(fieldName));
+
+        } else if(typeClass instanceof RecordFieldTypeClass) {
+            return readFieldValueIfType(instance, fieldName, (RecordFieldTypeClass)typeClass);
+
+        } else {
+            throw new UnsupportedOperationException(typeClass.getId());
+        }
     }
 }

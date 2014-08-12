@@ -34,7 +34,7 @@ import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
 import org.activityinfo.core.shared.expr.ExprSyntaxException;
 import org.activityinfo.core.shared.expr.FunctionCallNode;
-import org.activityinfo.core.shared.expr.PlaceholderExpr;
+import org.activityinfo.core.shared.expr.SymbolExpr;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -206,12 +206,12 @@ class IndicatorForm extends AbstractDesignForm {
 
             // expr node is created, expression is parsable
             // try to check variable names
-            List<PlaceholderExpr> placeholderExprList = Lists.newArrayList();
+            List<SymbolExpr> placeholderExprList = Lists.newArrayList();
             gatherPlaceholderExprs(expr, placeholderExprList);
             List<String> existingIndicatorCodes = existingIndicatorCodes();
-            for (PlaceholderExpr placeholderExpr : placeholderExprList) {
-                if (!existingIndicatorCodes.contains(placeholderExpr.getPlaceholder())) {
-                    return I18N.MESSAGES.doesNotExist(placeholderExpr.getPlaceholder());
+            for (SymbolExpr placeholderExpr : placeholderExprList) {
+                if (!existingIndicatorCodes.contains(placeholderExpr.getName())) {
+                    return I18N.MESSAGES.doesNotExist(placeholderExpr.getName());
                 }
             }
             return null;
@@ -224,9 +224,9 @@ class IndicatorForm extends AbstractDesignForm {
         return constants.calculationExpressionIsInvalid();
     }
 
-    private void gatherPlaceholderExprs(ExprNode node, List<PlaceholderExpr> placeholderExprList) {
-        if (node instanceof PlaceholderExpr) {
-            placeholderExprList.add((PlaceholderExpr) node);
+    private void gatherPlaceholderExprs(ExprNode node, List<SymbolExpr> placeholderExprList) {
+        if (node instanceof SymbolExpr) {
+            placeholderExprList.add((SymbolExpr) node);
         } else if (node instanceof FunctionCallNode) {
             FunctionCallNode functionCallNode = (FunctionCallNode) node;
             List<ExprNode> arguments = functionCallNode.getArguments();

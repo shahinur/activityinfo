@@ -2,6 +2,7 @@ package org.activityinfo.model.resource;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.type.FieldValue;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -43,6 +44,19 @@ public class PropertyBag<T extends PropertyBag> {
      */
     public boolean getBoolean(String propertyName) {
         return (Boolean) getNonNullPropertyValue(propertyName);
+    }
+
+
+    public Boolean isBoolean(String propertyName) {
+        Object value = properties.get(propertyName);
+
+        if(value == Boolean.TRUE) {
+            return true;
+        } else if(value == Boolean.FALSE) {
+            return false;
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -87,7 +87,7 @@ class IndicatorSymbolResolver implements PlaceholderExprResolver {
 
 
     @Override
-    public void resolve(PlaceholderExpr placeholderExpr) {
+    public void resolve(SymbolExpr placeholderExpr) {
         String symbol = placeholderExpr.getPlaceholderObj().getPlaceholder();
         Supplier<Double> value = symbolMap.get(symbol);
 
@@ -107,7 +107,7 @@ class IndicatorSymbolResolver implements PlaceholderExprResolver {
 
         private CalculatedValue(String expression) {
             try {
-                ExprParser parser = new ExprParser(new ExprLexer(expression), IndicatorSymbolResolver.this);
+                ExprParser parser = new ExprParser(new ExprLexer(expression));
                 expr = parser.parse();
 
             } catch (Exception e) {

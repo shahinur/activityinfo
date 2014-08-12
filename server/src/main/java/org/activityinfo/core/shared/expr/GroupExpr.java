@@ -1,13 +1,18 @@
 package org.activityinfo.core.shared.expr;
 
+import org.activityinfo.core.shared.expr.eval.EvalContext;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
+
 /**
  * An expression group ()
  */
-public class GroupExpr<T> extends ExprNode<T> {
+public class GroupExpr extends ExprNode {
 
-    private ExprNode<T> expr;
+    private ExprNode expr;
 
-    public GroupExpr(ExprNode<T> expr) {
+    public GroupExpr(ExprNode expr) {
         super();
         this.expr = expr;
     }
@@ -22,11 +27,16 @@ public class GroupExpr<T> extends ExprNode<T> {
     }
 
     @Override
-    public T evalReal() {
-        return expr.evalReal();
+    public FieldValue evaluate(EvalContext context) {
+        return expr.evaluate(context);
     }
 
-    public ExprNode<T> getExpr() {
+    @Override
+    public FieldType resolveType(EvalContext context) {
+        return expr.resolveType(context);
+    }
+
+    public ExprNode getExpr() {
         return expr;
     }
 

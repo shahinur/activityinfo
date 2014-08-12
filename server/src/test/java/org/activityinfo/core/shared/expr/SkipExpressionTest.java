@@ -21,11 +21,12 @@ package org.activityinfo.core.shared.expr;
  * #L%
  */
 
-import com.google.api.client.util.Lists;
-import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
-import org.activityinfo.model.form.FormInstance;
+import com.google.common.collect.Lists;
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
+import org.activityinfo.core.shared.expr.functions.Casting;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
@@ -90,11 +91,12 @@ public class SkipExpressionTest {
     }
 
 
-    private void eval(String skipExpression, Boolean expectedValue, FormInstance instance) {
+    private void eval(String skipExpression, boolean expectedValue, FormInstance instance) {
         ExprLexer lexer = new ExprLexer(skipExpression);
-        ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(instance, formClass, Lists.<ReferenceFieldWidget>newArrayList()));
-        ExprNode<Boolean> expr = parser.parse();
-        Assert.assertEquals(skipExpression, expectedValue, expr.evalReal());
+        ExprParser parser = new ExprParser(lexer);
+        ExprNode expr = parser.parse();
+        Assert.assertEquals(skipExpression, expectedValue,
+                Casting.toBoolean(expr.evaluate(new FormEvalContext(formClass, instance))));
     }
 
     private EnumValue enumValue(ResourceId formField, String label) {

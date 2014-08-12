@@ -25,7 +25,6 @@ import com.google.common.collect.Lists;
 import org.activityinfo.core.shared.expr.ExprLexer;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
-import org.activityinfo.core.shared.expr.resolver.SimpleBooleanPlaceholderExprResolver;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 
@@ -68,12 +67,11 @@ public class SkipHandler {
     private void applySkipLogic(FormField field) {
         if (field.hasRelevanceConditionExpression()) {
             ExprLexer lexer = new ExprLexer(field.getRelevanceConditionExpression());
-            ExprParser parser = new ExprParser(lexer, new SimpleBooleanPlaceholderExprResolver(
-                    simpleFormPanel.getInstance(), simpleFormPanel.getFormClass(), getReferenceFieldWidgets()));
-            ExprNode<Boolean> expr = parser.parse();
+            ExprParser parser = new ExprParser(lexer);
+            ExprNode expr = parser.parse();
 
             FieldContainer fieldContainer = simpleFormPanel.getFieldContainer(field.getId());
-            fieldContainer.getFieldWidget().setReadOnly(expr.evalReal());
+            fieldContainer.getFieldWidget().setReadOnly(expr.evaluateAsBoolean(null));
         }
     }
 
