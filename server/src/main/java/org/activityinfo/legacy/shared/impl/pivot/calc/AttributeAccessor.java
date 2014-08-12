@@ -1,6 +1,7 @@
 package org.activityinfo.legacy.shared.impl.pivot.calc;
 
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.legacy.shared.reports.content.AttributeCategory;
 import org.activityinfo.legacy.shared.reports.content.DimensionCategory;
 import org.activityinfo.legacy.shared.reports.content.EntityCategory;
 import org.activityinfo.legacy.shared.reports.model.AttributeGroupDimension;
@@ -27,7 +28,7 @@ public class AttributeAccessor implements DimAccessor {
     public DimensionCategory getCategory(SiteDTO siteDTO) {
         for(EntityCategory attribute : attributes) {
             if(siteDTO.getAttributeValue(attribute.getId())) {
-                return attribute;
+                return new AttributeCategory(attribute.getLabel(), attribute.getSortOrder());
             }
         }
         return null;

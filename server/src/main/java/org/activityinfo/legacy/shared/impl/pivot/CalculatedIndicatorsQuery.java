@@ -45,7 +45,6 @@ public class CalculatedIndicatorsQuery implements WorkItem {
     private Map<Integer, EntityCategory> indicatorMap = Maps.newHashMap();
 
     private Multimap<Integer, EntityCategory> attributes = HashMultimap.create();
-    private Multimap<Integer, String> groupNames = HashMultimap.create();
 
     private List<DimAccessor> dimAccessors = Lists.newArrayList();
 
@@ -183,7 +182,6 @@ public class CalculatedIndicatorsQuery implements WorkItem {
         .append(")")
         .toString();
 
-
     }
 
     private void querySites() {
@@ -279,8 +277,6 @@ public class CalculatedIndicatorsQuery implements WorkItem {
             // Now loop over each value
             for(EntityCategory indicator : indicatorMap.values()) {
                 Double value = site.getIndicatorDoubleValue(indicator.getId());
-
-                System.out.println("Site " + i + " " + indicator.getLabel() + " => " + value);
 
                 if(value != null) {
                     BucketKey key = new BucketKey(indicator, siteDims);
