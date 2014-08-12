@@ -26,7 +26,9 @@ import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(InjectionSupport.class)
 public class FormSubmissionResourceTest extends CommandTestCase2 {
@@ -43,7 +45,7 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
     }
 
     @Test
-    public void parse() throws Exception {
+    public void parse() throws IOException {
         try (InputStream inputStream = FormSubmissionResourceTest.class.getResourceAsStream("form.xml")) {
             StringBuffer stringBuffer = new StringBuffer();
 
