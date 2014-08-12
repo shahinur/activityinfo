@@ -107,6 +107,11 @@ public class ImageType implements ParametrizedFieldType, FieldType {
     }
 
     @Override
+    public boolean isValid() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "ImageType";
     }
