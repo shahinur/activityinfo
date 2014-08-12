@@ -69,4 +69,9 @@ public class CalculatedFieldType implements ParametrizedFieldType {
     public Record getParameters() {
         return new Record().set("expression", expression);
     }
+
+    @Override
+    public boolean isValid() {
+        return true;
+    }
 }
