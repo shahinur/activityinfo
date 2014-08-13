@@ -94,7 +94,7 @@ public class SkipExpressionTest {
         ExprParser parser = new ExprParser(lexer);
         ExprNode expr = parser.parse();
         Assert.assertEquals(skipExpression, expectedValue,
-                Casting.toBoolean(expr.evaluate(new FormEvalContext(formClass, instance, null))));
+                Casting.toBoolean(expr.evaluate(new FormEvalContext(formClass, instance))));
     }
 
     private EnumValue enumValue(ResourceId formField, String label) {

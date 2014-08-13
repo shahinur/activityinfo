@@ -39,7 +39,7 @@ public class TableScan {
     public TableScan(ResourceStore resourceStore, FormClass formClass) {
         this.store = resourceStore;
         this.classId = formClass.getId();
-        this.formEvalContext = new FormEvalContext(formClass, null);
+        this.formEvalContext = new FormEvalContext(formClass);
     }
 
     public Supplier<ColumnView> fetchColumn(FormTree.Node node, @Nonnull ColumnType columnType) {

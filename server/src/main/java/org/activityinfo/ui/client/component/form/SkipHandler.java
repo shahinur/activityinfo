@@ -21,17 +21,14 @@ package org.activityinfo.ui.client.component.form;
  * #L%
  */
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.activityinfo.core.shared.expr.ExprLexer;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
 import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -71,19 +68,11 @@ public class SkipHandler {
     private void applySkipLogic(final FormField field) {
         if (field.hasRelevanceConditionExpression()) {
 
-            final FormEvalContext formEvalContext = new FormEvalContext(simpleFormPanel.getFormClass(), simpleFormPanel.getInstance(), simpleFormPanel.getLocator());
-            Promise.waitAll(formEvalContext.putInContextReferenceTypes()).then(new Function<Void, Object>() {
-                @Nullable
-                @Override
-                public Object apply(@Nullable Void input) {
-                    ExprLexer lexer = new ExprLexer(field.getRelevanceConditionExpression());
-                    ExprParser parser = new ExprParser(lexer);
-                    ExprNode expr = parser.parse();
-                    FieldContainer fieldContainer = simpleFormPanel.getFieldContainer(field.getId());
-                    fieldContainer.getFieldWidget().setReadOnly(expr.evaluateAsBoolean(formEvalContext));
-                    return null;
-                }
-            });
+            ExprLexer lexer = new ExprLexer(field.getRelevanceConditionExpression());
+            ExprParser parser = new ExprParser(lexer);
+            ExprNode expr = parser.parse();
+            FieldContainer fieldContainer = simpleFormPanel.getFieldContainer(field.getId());
+            fieldContainer.getFieldWidget().setReadOnly(expr.evaluateAsBoolean(new FormEvalContext(simpleFormPanel.getFormClass(), simpleFormPanel.getInstance())));
         }
     }
 

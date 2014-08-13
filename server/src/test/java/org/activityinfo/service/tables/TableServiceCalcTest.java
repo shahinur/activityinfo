@@ -189,7 +189,7 @@ public class TableServiceCalcTest {
         instance.set(fieldId("PCT_INITIAL_HARD"), 20);
         instance.set(fieldId("PCT_INITIAL_SOFT"), 30);
 
-        FormEvalContext context = new FormEvalContext(formClass, instance.asResource(), null);
+        FormEvalContext context = new FormEvalContext(formClass, instance.asResource());
         assertThat(context.resolveSymbol("WATER_EXP"), equalTo((FieldValue) new Quantity(12.0)));
     }
     
