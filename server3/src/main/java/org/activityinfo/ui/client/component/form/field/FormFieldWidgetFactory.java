@@ -45,6 +45,7 @@ import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
+import org.activityinfo.ui.client.component.form.field.image.ImageUploadFieldWidget;
 
 /**
  * @author yuriyz on 1/28/14.
