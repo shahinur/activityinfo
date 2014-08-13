@@ -1,25 +1,16 @@
 package org.activityinfo.core.shared.expr.eval;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
-import org.activityinfo.promise.Promise;
 
-import java.util.List;
 import java.util.Map;
 
 public class FormEvalContext implements EvalContext {
@@ -32,15 +23,10 @@ public class FormEvalContext implements EvalContext {
 
     private final Map<String, ValueSource> fieldMap = Maps.newHashMap();
 
-    private final FormClass formClass;
-    private final ResourceLocator resourceLocator;
 
     private Resource formInstance;
 
-    public FormEvalContext(FormClass formClass, ResourceLocator resourceLocator) {
-        this.formClass = formClass;
-        this.resourceLocator = resourceLocator;
-
+    public FormEvalContext(FormClass formClass) {
         for (FormField field : formClass.getFields()) {
             ValueSource source = createValueSource(field);
             if (field.hasCode()) {
@@ -57,52 +43,20 @@ public class FormEvalContext implements EvalContext {
                 for (EnumValue item : ((EnumType) field.getType()).getValues()) {
                     symbolMap.put(item.getId().asString(), new ConstantValue(new EnumFieldValue(item.getId())));
                 }
-            } else if (field.getType() instanceof ReferenceType && resourceLocator != null) {
-                queryReferences((ReferenceType) field.getType());
+            } else if (field.getType() instanceof ReferenceType) {
+                //queryReferences((ReferenceType) field.getType());
             }
         }
     }
 
-    public List<Promise<Void>> putInContextReferenceTypes() {
-        if (resourceLocator == null) {
-            throw new NullPointerException("Resource locator is null.");
-        }
 
-        List<Promise<Void>> promises = Lists.newArrayList();
-        for (FormField field : formClass.getFields()) {
-            if (field.getType() instanceof ReferenceType) {
-                promises.add(queryReferences((ReferenceType) field.getType()));
-            }
-        }
-        return promises;
-    }
-
-    private Promise<Void> queryReferences(ReferenceType referenceType) {
-        TableModel tableModel = new TableModel(Iterables.getOnlyElement(referenceType.getRange()));
-        tableModel.addResourceId("id");
-//        tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
-
-        return resourceLocator.queryTable(tableModel).then(new Function<TableData, Void>() {
-            @Override
-            public Void apply(TableData table) {
-                ColumnView idView = table.getColumnView("id");
-                //ColumnView labelView = table.getColumnView("label");
-                for (int i = 0; i < idView.numRows(); i++) {
-                    String idString = idView.getString(i);
-                    symbolMap.put(idString, new ConstantValue(new ReferenceValue(ResourceId.create(idString))));
-                }
-                return null;
-            }
-        });
-    }
-
-    public FormEvalContext(FormClass formClass, Resource resource, ResourceLocator resourceLocator) {
-        this(formClass, resourceLocator);
+    public FormEvalContext(FormClass formClass, Resource resource) {
+        this(formClass);
         setInstance(resource);
     }
 
-    public FormEvalContext(FormClass formClass, FormInstance instance, ResourceLocator resourceLocator) {
-        this(formClass, resourceLocator);
+    public FormEvalContext(FormClass formClass, FormInstance instance) {
+        this(formClass);
         setInstance(instance.asResource());
     }
 
@@ -153,7 +107,9 @@ public class FormEvalContext implements EvalContext {
     private ValueSource lookupSymbol(String symbolName) {
         ValueSource valueSource = symbolMap.get(symbolName);
         if (valueSource == null) {
-            throw new RuntimeException("Unknown symbol '" + symbolName + "'");
+            // todo : we must fix it, here as temporary solution if symbol name can't be resolved we consider it as ReferenceValue
+            return new ConstantValue(new ReferenceValue(ResourceId.create(symbolName)));
+//            throw new RuntimeException("Unknown symbol '" + symbolName + "'");
         }
         return valueSource;
     }
