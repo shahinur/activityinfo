@@ -10,6 +10,10 @@ public class EqualFunction extends ComparisonOperator {
         super("==");
     }
 
+    public String getLabel() {
+        return "Equal";
+    }
+
     @Override
     protected boolean apply(FieldValue a, FieldValue b) {
         return a.equals(b);

@@ -6,9 +6,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.CalculatedFieldType;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -25,12 +23,13 @@ public class FormEvalContext implements EvalContext {
 
     private final Map<String, ValueSource> fieldMap = Maps.newHashMap();
 
+
     private Resource formInstance;
 
     public FormEvalContext(FormClass formClass) {
-        for(FormField field : formClass.getFields()) {
+        for (FormField field : formClass.getFields()) {
             ValueSource source = createValueSource(field);
-            if(field.hasCode()) {
+            if (field.hasCode()) {
                 symbolMap.put(field.getCode(), source);
             }
             symbolMap.put(field.getId().asString(), source);
@@ -39,14 +38,15 @@ public class FormEvalContext implements EvalContext {
 
         // TODO: cleanup hack: enum values need to be treated as constants, not symbols!
 
-        for(FormField field : formClass.getFields()) {
-            if(field.getType() instanceof EnumType) {
-                for(EnumValue item : ((EnumType) field.getType()).getValues()) {
-                    symbolMap.put(item.getId().asString(), new ConstantValue( new EnumFieldValue(item.getId())) );
+        for (FormField field : formClass.getFields()) {
+            if (field.getType() instanceof EnumType) {
+                for (EnumValue item : ((EnumType) field.getType()).getValues()) {
+                    symbolMap.put(item.getId().asString(), new ConstantValue(new EnumFieldValue(item.getId())));
                 }
             }
         }
     }
+
 
     public FormEvalContext(FormClass formClass, Resource resource) {
         this(formClass);
@@ -81,7 +81,7 @@ public class FormEvalContext implements EvalContext {
 
     private ValueSource createValueSource(FormField field) {
 
-        if(field.getType() instanceof CalculatedFieldType) {
+        if (field.getType() instanceof CalculatedFieldType) {
             return new CalculatedField(field);
         } else {
             return new StaticField(field);
@@ -104,8 +104,10 @@ public class FormEvalContext implements EvalContext {
 
     private ValueSource lookupSymbol(String symbolName) {
         ValueSource valueSource = symbolMap.get(symbolName);
-        if(valueSource == null) {
-            throw new RuntimeException("Unknown symbol '" + symbolName + "'");
+        if (valueSource == null) {
+            // todo : we must fix it, here as temporary solution if symbol name can't be resolved we consider it as ReferenceValue
+            return new ConstantValue(new ReferenceValue(ResourceId.create(symbolName)));
+//            throw new RuntimeException("Unknown symbol '" + symbolName + "'");
         }
         return valueSource;
     }
