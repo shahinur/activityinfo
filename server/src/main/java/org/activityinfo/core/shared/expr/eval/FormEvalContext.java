@@ -10,14 +10,10 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.model.type.CalculatedFieldType;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -84,15 +80,16 @@ public class FormEvalContext implements EvalContext {
     private Promise<Void> queryReferences(ReferenceType referenceType) {
         TableModel tableModel = new TableModel(Iterables.getOnlyElement(referenceType.getRange()));
         tableModel.addResourceId("id");
-        tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
+//        tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
 
         return resourceLocator.queryTable(tableModel).then(new Function<TableData, Void>() {
             @Override
             public Void apply(TableData table) {
                 ColumnView idView = table.getColumnView("id");
-                ColumnView labelView = table.getColumnView("label");
+                //ColumnView labelView = table.getColumnView("label");
                 for (int i = 0; i < idView.numRows(); i++) {
                     String idString = idView.getString(i);
+                    symbolMap.put(idString, new ConstantValue(new ReferenceValue(ResourceId.create(idString))));
                 }
                 return null;
             }
