@@ -144,31 +144,6 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         for (ActivityDTO activity : db.getActivities()) {
             ActivityDTO activityNode = new ActivityDTO(activity);
             treeStore.add(activityNode, false);
-
-            AttributeGroupFolder attributeFolder = new AttributeGroupFolder(messages.attributes());
-            treeStore.add(activityNode, attributeFolder, false);
-
-            for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-                if (group != null) {
-                    AttributeGroupDTO groupNode = new AttributeGroupDTO(group);
-                    treeStore.add(attributeFolder, groupNode, false);
-
-                    for (AttributeDTO attribute : group.getAttributes()) {
-                        AttributeDTO attributeNode = new AttributeDTO(attribute);
-                        treeStore.add(groupNode, attributeNode, false);
-                    }
-                }
-            }
-
-            IndicatorFolder indicatorFolder = new IndicatorFolder(messages.indicators());
-            treeStore.add(activityNode, indicatorFolder, false);
-
-            for (IndicatorGroup group : activity.groupIndicators()) {
-                for (IndicatorDTO indicator : group.getIndicators()) {
-                    IndicatorDTO indicatorNode = new IndicatorDTO(indicator);
-                    treeStore.add(indicatorFolder, indicatorNode, false);
-                }
-            }
         }
 
         for(LocationTypeDTO locationType : db.getCountry().getLocationTypes()) {
