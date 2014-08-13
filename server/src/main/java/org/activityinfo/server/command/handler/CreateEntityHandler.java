@@ -61,16 +61,8 @@ public class CreateEntityHandler extends BaseEntityHandler implements CommandHan
         } else if ("Activity".equals(cmd.getEntityName())) {
             ActivityPolicy policy = injector.getInstance(ActivityPolicy.class);
             return new CreateResult((Integer) policy.create(user, propertyMap));
-        } else if ("AttributeGroup".equals(cmd.getEntityName())) {
-            return createAttributeGroup(cmd, properties);
-        } else if ("Attribute".equals(cmd.getEntityName())) {
-            return createAttribute(cmd, properties);
-        } else if ("Indicator".equals(cmd.getEntityName())) {
-            return createIndicator(user, cmd, properties);
-        } else if ("LocationType".equals(cmd.getEntityName())) {
-            LocationTypePolicy policy = injector.getInstance(LocationTypePolicy.class);
-            return new CreateResult(policy.create(user, propertyMap));
         } else {
+
             throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
     }
