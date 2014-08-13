@@ -2,6 +2,7 @@ package org.activityinfo.service.tables.views;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.google.gwt.user.client.ui.HasText;
 import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
@@ -9,6 +10,8 @@ import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.columns.ConstantColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
 import org.activityinfo.model.table.columns.StringArrayColumnView;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.primitive.HasStringValue;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.service.tables.stats.StringStatistics;
 
@@ -31,8 +34,11 @@ public class StringColumnBuilder implements ColumnViewBuilder {
 
     @Override
     public void accept(FormEvalContext instance) {
-        TextValue fieldValue = (TextValue) instance.getFieldValue(fieldName);
-        String string = fieldValue == null ? null : fieldValue.asString();
+        FieldValue fieldValue = instance.getFieldValue(fieldName);
+        String string = null;
+        if(fieldValue instanceof HasStringValue) {
+            string = ((HasStringValue) fieldValue).asString();
+        }
         stats.update(string);
         values.add(string);
     }
