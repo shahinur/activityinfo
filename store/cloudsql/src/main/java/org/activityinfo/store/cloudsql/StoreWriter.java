@@ -45,4 +45,8 @@ public class StoreWriter implements AutoCloseable {
     public ResourceUpdate create(Resource resource) {
         return new ResourceUpdate(connection, cache).create(resource);
     }
+
+    public ResourceUpdate update(Resource resource) {
+        return new ResourceUpdate(connection, cache).update(resource);
+    }
 }

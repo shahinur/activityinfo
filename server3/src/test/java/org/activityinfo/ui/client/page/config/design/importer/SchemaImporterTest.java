@@ -2,7 +2,6 @@ package org.activityinfo.ui.client.page.config.design.importer;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
-import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -10,18 +9,15 @@ import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
 import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -31,28 +27,6 @@ import static org.junit.Assert.assertThat;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class SchemaImporterTest extends CommandTestCase2 {
-
-
-    @Test
-    public void syria() throws IOException {
-
-        UserDatabaseDTO syria = doImport("schema_1064.csv");
-
-        ActivityDTO cash = syria.getActivities().get(0);
-
-        for(AttributeGroupDTO group : cash.getAttributeGroups()) {
-            System.out.println(group.getName());
-        }
-
-        assertThat(cash.getName(), equalTo("1.Provision of urgent cash assistance"));
-        assertThat(cash.getAttributeGroups().size(), equalTo(3));
-
-
-        SchemaCsvWriter writer = new SchemaCsvWriter();
-        writer.write(syria);
-
-        Files.write(writer.toString(), new File("target/syria.csv"), Charsets.UTF_8);
-    }
 
     @Test
     public void southSudan() throws IOException {

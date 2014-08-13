@@ -233,35 +233,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         newLocationType.setItemId("LocationType");
         menu.add(newLocationType);
 
-        final MenuItem newAttributeGroup = newMenuItem("AttributeGroup",
-                I18N.CONSTANTS.newAttributeGroup(),
-                IconImageBundle.ICONS.attribute(),
-                listener);
-        menu.add(newAttributeGroup);
 
-        final MenuItem newAttribute = newMenuItem("Attribute",
-                I18N.CONSTANTS.newAttribute(),
-                IconImageBundle.ICONS.attribute(),
-                listener);
-        menu.add(newAttribute);
-
-        final MenuItem newIndicator = new MenuItem(I18N.CONSTANTS.newIndicator(),
-                IconImageBundle.ICONS.indicator(),
-                listener);
-        newIndicator.setItemId("Indicator");
-        menu.add(newIndicator);
-
-        menu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-
-                ModelData sel = getSelection();
-
-                newAttributeGroup.setEnabled(sel != null);
-                newAttribute.setEnabled(sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO);
-                newIndicator.setEnabled(sel != null);
-            }
-        });
     }
 
     private MenuItem newMenuItem(String itemId,
@@ -324,7 +296,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
     protected AbstractDesignForm createForm(ModelData sel) {
         if (sel instanceof ActivityDTO) {
-            return new ActivityForm(service, db);
+            return new ActivityForm();
         } else if (sel instanceof AttributeGroupDTO) {
             return new AttributeGroupForm();
         } else if (sel instanceof AttributeDTO) {
