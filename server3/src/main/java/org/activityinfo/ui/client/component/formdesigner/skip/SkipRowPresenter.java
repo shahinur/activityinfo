@@ -28,9 +28,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
-import org.activityinfo.core.shared.expr.functions.AndFunction;
-import org.activityinfo.core.shared.expr.functions.ExprFunction;
-import org.activityinfo.core.shared.expr.functions.OrFunction;
+import org.activityinfo.core.shared.expr.functions.*;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
@@ -46,12 +44,18 @@ import java.util.List;
  */
 public class SkipRowPresenter {
 
+    private static final List<ComparisonOperator> COMPARISON_OPERATORS = Lists.newArrayList(
+            EqualFunction.INSTANCE, NotEqualFunction.INSTANCE
+    );
+
     private final FieldWidgetContainer fieldWidgetContainer;
     private final SkipRow view = new SkipRow();
     private final FormFieldWidgetFactory widgetFactory;
+
     private FormFieldWidget valueWidget = null;
     private FieldValue value;
     private RowData rowData;
+
 
     public SkipRowPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
@@ -120,12 +124,9 @@ public class SkipRowPresenter {
     private void initFunction() {
         view.getFunction().clear();
 
-        List<ExprFunction> functions = Lists.newArrayList();
-        //FieldTypeToFunctionRegistry.get().getFunctions(getSelectedFormField().getType().getTypeClass());
-        for (ExprFunction function : functions) {
+        for (ComparisonOperator function : COMPARISON_OPERATORS) {
             view.getFunction().addItem(function.getLabel(), function.getId());
         }
-        throw new UnsupportedOperationException("todo");
     }
 
     private void initJoinFunction() {
