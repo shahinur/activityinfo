@@ -102,7 +102,7 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new BooleanFieldWidget(valueUpdater));
 
         }  else if (type instanceof ImageType) {
-            return Promise.resolved(new ImageUploadFieldWidget(valueUpdater));
+            return Promise.resolved(new ImageUploadFieldWidget(field, valueUpdater));
 
         } else if (type instanceof ReferenceType) {
             if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
