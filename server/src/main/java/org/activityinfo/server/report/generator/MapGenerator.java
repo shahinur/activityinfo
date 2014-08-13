@@ -134,10 +134,6 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         TiledMap map = new TiledMap(width, height, center, zoom);
         content.setBaseMap(baseMap);
         content.setZoomLevel(zoom);
-        if (baseMap == null) {
-            baseMap = TileBaseMap.createNullMap(element.getBaseMapId());
-            LOGGER.log(Level.SEVERE, "Could not find base map id=" + element.getBaseMapId());
-        }
 
         // Generate the actual content
         for (LayerGenerator layerGtor : layerGenerators) {
