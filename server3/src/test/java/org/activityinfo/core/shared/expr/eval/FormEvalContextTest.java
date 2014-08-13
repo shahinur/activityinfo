@@ -27,7 +27,7 @@ public class FormEvalContextTest {
         formClass.addElement(a);
         formClass.addElement(b);
 
-        FormEvalContext context = new FormEvalContext(formClass, null);
+        FormEvalContext context = new FormEvalContext(formClass);
         context.setInstance(new FormInstance(ResourceId.generateId(), formClass.getId()));
 
         context.getFieldValue(a.getId());
