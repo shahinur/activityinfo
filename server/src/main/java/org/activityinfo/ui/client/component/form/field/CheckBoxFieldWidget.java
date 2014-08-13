@@ -25,6 +25,7 @@ import com.google.common.collect.Sets;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -39,7 +40,6 @@ import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.RadioButton;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -73,9 +73,6 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
         }
     }
 
-    public List<FormInstance> getRange() {
-        return range;
-    }
 
     private CheckBox createControl(String groupId, FormInstance instance, Cardinality cardinality) {
         final CheckBox checkBox;
