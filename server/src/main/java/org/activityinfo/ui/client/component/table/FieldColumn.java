@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class FieldColumn extends Column<Projection, String> {
 
+    public static final String NON_BREAKING_SPACE = "\u00A0";
     private FormTree.Node node;
     private List<FieldPath> fieldPaths;
     private String header;
@@ -53,7 +54,7 @@ public class FieldColumn extends Column<Projection, String> {
             return valueRenderer.asString(valueAsObject);
         }
 
-        return "";
+        return NON_BREAKING_SPACE;
     }
 
     public void addFieldPath(FieldPath path) {

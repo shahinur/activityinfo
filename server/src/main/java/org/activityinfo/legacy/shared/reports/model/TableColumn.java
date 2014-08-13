@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * @author Alex Bertram
  */
-public class TableColumn extends TreeNode<TableColumn> {
+public class taTableColumn extends TreeNode<TableColumn> {
 
     public enum SortOrder {
         Ascending,
