@@ -173,7 +173,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         }
     }
 
-    private void onFieldUpdated(FormField field, FieldValue newValue) {
+    public void onFieldUpdated(FormField field, FieldValue newValue) {
         if (!Objects.equals(workingInstance.get(field.getId()), newValue)) {
             workingInstance.set(field.getId(), newValue);
             validate(field);

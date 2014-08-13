@@ -163,22 +163,7 @@ public class FormInstance implements IsResource {
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, FieldValue fieldValue) {
-        Preconditions.checkNotNull(fieldId);
-        if (fieldValue == null) {
-            propertyBag.remove(fieldId.asString());
-
-        } else if (fieldValue instanceof TextValue) {
-            propertyBag.set(fieldId.asString(), ((TextValue) fieldValue).toString());
-
-        } else if (fieldValue instanceof BooleanFieldValue) {
-            propertyBag.set(fieldId.asString(), fieldValue == BooleanFieldValue.TRUE);
-
-        } else if(fieldValue instanceof IsRecord) {
-            propertyBag.set(fieldId.asString(), ((IsRecord) fieldValue).asRecord());
-
-        } else {
-            throw new UnsupportedOperationException(fieldId + " = " + fieldValue);
-        }
+        propertyBag.set(fieldId, fieldValue);
         return this;
     }
 
