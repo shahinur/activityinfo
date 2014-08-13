@@ -10,4 +10,5 @@ libpeerconnection.log
 *~
 *.swp
 velocity.log
-target
+atlassian-ide-plugin.xml
+build.log
