@@ -25,6 +25,7 @@ import com.google.common.collect.Lists;
 import org.activityinfo.core.shared.expr.ExprLexer;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
+import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 
@@ -71,7 +72,7 @@ public class SkipHandler {
             ExprNode expr = parser.parse();
 
             FieldContainer fieldContainer = simpleFormPanel.getFieldContainer(field.getId());
-            fieldContainer.getFieldWidget().setReadOnly(expr.evaluateAsBoolean(null));
+            fieldContainer.getFieldWidget().setReadOnly(expr.evaluateAsBoolean(new FormEvalContext(simpleFormPanel.getFormClass(), simpleFormPanel.getInstance())));
         }
     }
 

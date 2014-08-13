@@ -1,7 +1,6 @@
 package org.activityinfo.core.shared.expr.functions;
 
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.BooleanType;
@@ -22,7 +21,7 @@ public abstract class ComparisonOperator extends ExprFunction {
     }
 
     @Override
-    public final String getLabel() {
+    public String getLabel() {
         return name;
     }
 
