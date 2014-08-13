@@ -1,12 +1,12 @@
 package org.activityinfo.server.util;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

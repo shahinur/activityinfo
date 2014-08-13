@@ -22,9 +22,8 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -34,7 +33,7 @@ import java.util.Set;
 /**
  * @author Alex Bertram
  */
-@Entity @JsonAutoDetect(JsonMethod.NONE)
+@Entity @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class Location implements java.io.Serializable {
 
     private int id;
