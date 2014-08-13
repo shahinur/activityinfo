@@ -102,6 +102,20 @@ public class MySqlResourceStore implements ResourceStore {
 
     @Override
     public UpdateResult updateResource(ResourceId userId, Resource resource) {
-        return null;
+        try(StoreConnection connection = open()) {
+            try(StoreWriter writer = new StoreWriter(connection, cache)) {
+
+                return writer
+                        .update(resource)
+                        .byUser(userId)
+                        .execute();
+
+            } catch (GlobalLockTimeoutException e) {
+                throw new UnsupportedOperationException();
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
