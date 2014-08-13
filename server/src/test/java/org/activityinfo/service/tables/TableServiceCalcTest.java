@@ -20,7 +20,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
@@ -190,7 +189,7 @@ public class TableServiceCalcTest {
         instance.set(fieldId("PCT_INITIAL_HARD"), 20);
         instance.set(fieldId("PCT_INITIAL_SOFT"), 30);
 
-        FormEvalContext context = new FormEvalContext(formClass, instance.asResource());
+        FormEvalContext context = new FormEvalContext(formClass, instance.asResource(), null);
         assertThat(context.resolveSymbol("WATER_EXP"), equalTo((FieldValue) new Quantity(12.0)));
     }
     
