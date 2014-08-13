@@ -38,8 +38,9 @@ public class FormResourceTest extends CommandTestCase2 {
     public void setUp() throws IOException {
         ResourceLocatorSync resourceLocator = new ResourceLocatorSync(getDispatcherSync());
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
-        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(new ReferenceProvider());
-        resource = new FormResource(resourceLocator, authProvider, factory, new TestAuthenticationTokenService() );
+        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(table);
+        resource = new FormResource(resourceLocator, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory,
+                new TestAuthenticationTokenService());
     }
 
     @Test
