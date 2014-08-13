@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import org.activityinfo.core.shared.expr.eval.EvalContext;
 import org.activityinfo.core.shared.expr.functions.ExprFunction;
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
 import javax.annotation.Nonnull;
