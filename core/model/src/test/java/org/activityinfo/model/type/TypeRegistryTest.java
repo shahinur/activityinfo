@@ -1,4 +1,4 @@
-package org.activityinfo.server.endpoint.jsonrpc;
+package org.activityinfo.model.type;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,39 +21,21 @@ package org.activityinfo.server.endpoint.jsonrpc;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.command.Command;
-
-import java.io.Serializable;
+import org.junit.Test;
 
 /**
- * @author yuriyz on 7/2/14.
+ * @author yuriyz on 8/13/14.
  */
-public class CommandRequest implements Serializable {
+public class TypeRegistryTest {
 
-    private Command command;
-    private String type;
-
-    public CommandRequest() {
-    }
-
-    public CommandRequest(Command command) {
-        this.command = command;
-        this.type = command.getClass().getSimpleName();
-    }
-
-    public Command getCommand() {
-        return command;
-    }
-
-    public void setCommand(Command command) {
-        this.command = command;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    @Test
+    public void serializationDeserialization() {
+        for (FieldTypeClass typeClass : TypeRegistry.get().getTypeClasses()) {
+            if (typeClass instanceof ParametrizedFieldTypeClass) {
+                ParametrizedFieldTypeClass parametrizedFieldTypeClass = (ParametrizedFieldTypeClass) typeClass;
+                ParametrizedFieldType parametrizedFieldType = (ParametrizedFieldType) parametrizedFieldTypeClass.createType();
+                parametrizedFieldTypeClass.deserializeType(parametrizedFieldType.getParameters());
+            }
+        }
     }
 }

@@ -22,16 +22,15 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity @JsonAutoDetect(JsonMethod.NONE) @NamedQuery(name = "queryAllCountriesAlphabetically",
+@Entity @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE) @NamedQuery(name = "queryAllCountriesAlphabetically",
         query = "select c from Country c order by c.name")
 public class Country implements Serializable {
 

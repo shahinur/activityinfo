@@ -39,6 +39,7 @@ import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.RadioButton;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -62,18 +63,19 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
             }
         };
 
+        String groupId = Long.toString(new Date().getTime());
         for (int i=0;i!=table.getNumRows(); ++i) {
-            CheckBox checkBox = createControl(table.getId(i), table.getLabel(i), type.getCardinality());
+            CheckBox checkBox = createControl(groupId, table.getId(i), table.getLabel(i), type.getCardinality());
             checkBox.addValueChangeHandler(changeHandler);
             panel.add(checkBox);
             controls.add(checkBox);
         }
     }
 
-    private CheckBox createControl(ResourceId id, String label, Cardinality cardinality) {
+    private CheckBox createControl(String groupId, ResourceId id, String label, Cardinality cardinality) {
         CheckBox checkBox;
         if(cardinality == Cardinality.SINGLE) {
-            checkBox = new RadioButton(id.asString(), label);
+            checkBox = new RadioButton(groupId, label);
         } else {
             checkBox = new CheckBox(label);
         }

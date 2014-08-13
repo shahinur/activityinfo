@@ -6,7 +6,6 @@ import org.activityinfo.legacy.shared.command.result.ResourceResult;
 import org.activityinfo.model.resource.ResourceId;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 /**
  * Fetches a resource by Id;
