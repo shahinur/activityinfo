@@ -39,6 +39,12 @@ public class ResourceUpdate {
         return this;
     }
 
+
+    public ResourceUpdate update(Resource resource) {
+        this.resource = resource;
+        return this;
+    }
+
     public ResourceUpdate byUser(ResourceId userId) {
         this.userId = userId;
         return this;

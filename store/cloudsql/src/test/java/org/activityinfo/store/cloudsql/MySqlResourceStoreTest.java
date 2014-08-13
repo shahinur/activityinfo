@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertThat;
 
@@ -72,6 +73,14 @@ public class MySqlResourceStoreTest {
         assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
         assertThat(tree.getRootNode().getSubTreeVersion(), equalTo(formCreationResult.getNewVersion()));
 
+
+        // Update the FormClass
+        formClass.setLabel("New Label");
+        assertCommitted(environment.getStore().updateResource(environment.getUserId(), formClass.asResource()));
+
+        Resource reloadedForm = environment.getStore().get(formClass.getId());
+        assertThat(reloadedForm.getVersion(), greaterThan(tree.getRootNode().getVersion()));
+        assertThat(reloadedForm.getString(FormClass.LABEL_FIELD_ID), Matchers.equalTo("New Label"));
 
         environment.assertThatAllConnectionsHaveBeenClosed();
 

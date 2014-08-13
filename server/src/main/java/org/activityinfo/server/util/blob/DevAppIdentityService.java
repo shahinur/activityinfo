@@ -50,17 +50,20 @@ public class DevAppIdentityService implements AppIdentityService {
                            "service.account.p12.key.password=notasecret");
 
         } else {
+            try {
+                File keyFile = new File(keyPath);
+                if (!keyFile.exists()) {
+                    throw new IOException("Keystore not found at " + keyFile.getAbsolutePath());
+                }
 
-            File keyFile = new File(keyPath);
-            if(!keyFile.exists()) {
-                throw new IOException("Keystore not found at " + keyFile.getAbsolutePath());
+                KeyStore keystore = KeyStore.getInstance("PKCS12");
+                try (FileInputStream in = new FileInputStream(keyFile)) {
+                    keystore.load(in, password.toCharArray());
+                }
+                privateKey = (PrivateKey) keystore.getKey("privatekey", password.toCharArray());
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Failed to load key store for development testing of images");
             }
-
-            KeyStore keystore = KeyStore.getInstance("PKCS12");
-            try(FileInputStream in = new FileInputStream(keyFile)) {
-                keystore.load(in, password.toCharArray());
-            }
-            privateKey = (PrivateKey)keystore.getKey("privatekey", password.toCharArray());
         }
     }
 
