@@ -16,9 +16,11 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
 
@@ -40,7 +42,7 @@ public class FormResourceTest {
     }
 
     @Test
-    public void getBlankForm() throws Exception {
+    public void getBlankForm() throws JAXBException, URISyntaxException, IOException, InterruptedException {
         Response form = this.resource.form(1);
         File file = new File(targetDir(), "form.xml");
         JAXBContext context = JAXBContext.newInstance(Html.class);
@@ -60,7 +62,7 @@ public class FormResourceTest {
         return targetDir;
     }
 
-    public void validate(File file) throws Exception {
+    public void validate(File file) throws URISyntaxException, IOException, InterruptedException {
 
 
         URL validatorJar = Resources.getResource(FormResourceTest.class, "odk-validate-1.4.3.jar");

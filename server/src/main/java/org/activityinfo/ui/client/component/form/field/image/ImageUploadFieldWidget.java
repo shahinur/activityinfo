@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.form.field;
+package org.activityinfo.ui.client.component.form.field.image;
 /*
  * #%L
  * ActivityInfo Server
@@ -23,6 +23,7 @@ package org.activityinfo.ui.client.component.form.field;
 
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -34,6 +35,7 @@ import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 
 /**
  * @author yuriyz on 8/7/14.
@@ -51,7 +53,6 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
 
     public ImageUploadFieldWidget(FormField formField, final ValueUpdater valueUpdater) {
         this.formField = formField;
-
         rootPanel = ourUiBinder.createAndBindUi(this);
 
         addNewRow(new ImageRowValue());
@@ -82,12 +83,17 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
     }
 
     private void setButtonsState() {
-        if (rootPanel.getWidgetCount() > 0 && rootPanel.getWidget(0) instanceof ImageUploadRow) {
-            // disable button if it's first row, otherwise user may be trapped in widget without any rows
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                if (rootPanel.getWidgetCount() > 0 && rootPanel.getWidget(0) instanceof ImageUploadRow) {
+                    // disable button if it's first row, otherwise user may be trapped in widget without any rows
 
-            ImageUploadRow firstUploadRow = (ImageUploadRow) rootPanel.getWidget(0);
-            firstUploadRow.removeButton.setEnabled(false);
-        }
+                    ImageUploadRow firstUploadRow = (ImageUploadRow) rootPanel.getWidget(0);
+                    firstUploadRow.removeButton.setEnabled(false);
+                }
+            }
+        });
     }
 
     @Override
