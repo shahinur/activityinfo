@@ -30,6 +30,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
@@ -47,10 +48,11 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
     private static OurUiBinder ourUiBinder = GWT.create(OurUiBinder.class);
 
     private final HTMLPanel rootPanel;
+    private final FormField formField;
     private ImageValue value = new ImageValue();
 
-    public ImageUploadFieldWidget(final ValueUpdater valueUpdater) {
-
+    public ImageUploadFieldWidget(FormField formField, final ValueUpdater valueUpdater) {
+        this.formField = formField;
         rootPanel = ourUiBinder.createAndBindUi(this);
 
         addNewRow(new ImageRowValue());

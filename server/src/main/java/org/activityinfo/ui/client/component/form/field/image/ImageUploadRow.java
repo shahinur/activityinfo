@@ -61,8 +61,6 @@ public class ImageUploadRow extends Composite {
     @UiField
     ImageElement loadingImage;
     @UiField
-    HTMLPanel downloadButtonContainer;
-    @UiField
     Button downloadButton;
     @UiField
     Button removeButton;
@@ -166,7 +164,7 @@ public class ImageUploadRow extends Composite {
 
     private void upload() {
         imageContainer.setVisible(true);
-        downloadButtonContainer.setVisible(false);
+        downloadButton.setVisible(false);
 
         formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
             @Override
@@ -174,7 +172,7 @@ public class ImageUploadRow extends Composite {
                 String responseString = event.getResults(); // what about fail results?
 
                 imageContainer.setVisible(false);
-                downloadButtonContainer.setVisible(true);
+                downloadButton.setVisible(true);
             }
         });
         formPanel.submit();
