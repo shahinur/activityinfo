@@ -43,8 +43,6 @@ public class FormEvalContext implements EvalContext {
                 for (EnumValue item : ((EnumType) field.getType()).getValues()) {
                     symbolMap.put(item.getId().asString(), new ConstantValue(new EnumFieldValue(item.getId())));
                 }
-            } else if (field.getType() instanceof ReferenceType) {
-                //queryReferences((ReferenceType) field.getType());
             }
         }
     }
