@@ -97,7 +97,7 @@ public class FormSubmissionResource {
 
                     for (FormField formField : formClass.getFields()) {
                         OdkFieldValueParser odkFieldValueParser = factory.fromFieldType(formField.getType());
-                        Node element = document.getElementsByTagName("field_" + formField.getId().asString()).item(0);
+                        Node element = document.getElementsByTagName(OdkHelper.toRelativeFieldName(formField.getId().asString())).item(0);
 
                         if (element instanceof Element) {
                             formInstance.set(formField.getId(), odkFieldValueParser.parse((Element) element));
