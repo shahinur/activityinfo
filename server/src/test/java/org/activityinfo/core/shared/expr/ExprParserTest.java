@@ -78,7 +78,6 @@ public class ExprParserTest {
     @Test
     public void parseComparisons() {
         expect("A==B", new FunctionCallNode(EqualFunction.INSTANCE,
-                new SymbolExpr("A"),
                 new SymbolExpr("B")));
     }
     
