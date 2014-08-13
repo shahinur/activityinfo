@@ -33,6 +33,10 @@ import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static org.activityinfo.server.endpoint.odk.OdkHelper.convertRelevanceConditionExpression;
+import static org.activityinfo.server.endpoint.odk.OdkHelper.toAbsoluteFieldName;
+import static org.activityinfo.server.endpoint.odk.OdkHelper.toRelativeFieldName;
+
 @Path("/activityForm")
 public class FormResource {
 
@@ -95,7 +99,7 @@ public class FormResource {
         for (FormField formField : formFields) {
             OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
             if (odkFormFieldBuilder == null) continue;
-            QName qName = new QName("http://www.w3.org/2002/xforms", "field_" + formField.getId().asString());
+            QName qName = new QName("http://www.w3.org/2002/xforms", toRelativeFieldName(formField.getId().asString()));
             html.head.model.instance.data.jaxbElement.add(new JAXBElement<>(qName, String.class, ""));
         }
         html.head.model.bind = Lists.newArrayListWithCapacity(formFields.size() + 1);
@@ -109,11 +113,12 @@ public class FormResource {
             OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
             if (odkFormFieldBuilder == null) continue;
             bind = new Bind();
-            bind.nodeset = "/data/field_" + formField.getId().asString();
+            bind.nodeset = toAbsoluteFieldName(formField.getId().asString());
             bind.type = odkFormFieldBuilder.getModelBindType();
             if (formField.isReadOnly()) bind.readonly = "true()";
             //TODO Fix this
             //bind.calculate = formField.getExpression();
+            bind.relevant = convertRelevanceConditionExpression(formField.getRelevanceConditionExpression());
             if (formField.isRequired()) bind.required = "true()";
             html.head.model.bind.add(bind);
         }
@@ -122,8 +127,8 @@ public class FormResource {
         for (FormField formField : formFields) {
             OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
             if (odkFormFieldBuilder == null) continue;
-            html.body.jaxbElement.add(odkFormFieldBuilder.createPresentationElement("/data/field_" +
-                    formField.getId().asString(), formField.getLabel(), formField.getDescription()));
+            html.body.jaxbElement.add(odkFormFieldBuilder.createPresentationElement(toAbsoluteFieldName(
+                    formField.getId().asString()), formField.getLabel(), formField.getDescription()));
         }
         return Response.ok(html).build();
     }

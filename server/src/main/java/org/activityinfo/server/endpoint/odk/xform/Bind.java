@@ -19,6 +19,9 @@ public class Bind {
     public String required;
 
     @XmlAttribute
+    public String relevant;
+
+    @XmlAttribute
     public String constraint;
 
     @XmlAttribute(namespace = "http://openrosa.org/javarosa")
