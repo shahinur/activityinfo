@@ -8,8 +8,6 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.CalculatedFieldType;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class FormEvalContextTest {
 
     @Test(expected = CircularReferenceException.class)
@@ -29,7 +27,7 @@ public class FormEvalContextTest {
         formClass.addElement(a);
         formClass.addElement(b);
 
-        FormEvalContext context = new FormEvalContext(formClass);
+        FormEvalContext context = new FormEvalContext(formClass, null);
         context.setInstance(new FormInstance(ResourceId.generateId(), formClass.getId()));
 
         context.getFieldValue(a.getId());

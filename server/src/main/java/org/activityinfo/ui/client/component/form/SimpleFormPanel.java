@@ -220,6 +220,10 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         return containers.get(fieldId);
     }
 
+    public ResourceLocator getLocator() {
+        return locator;
+    }
+
     public Map<ResourceId, FieldContainer> getContainers() {
         return containers;
     }
