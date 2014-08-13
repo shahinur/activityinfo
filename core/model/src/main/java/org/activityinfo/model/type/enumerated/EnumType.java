@@ -49,7 +49,7 @@ public class EnumType implements ParametrizedFieldType {
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public EnumFieldValue deserialize(Record record) {
             return EnumFieldValue.fromRecord(record);
         }
     };
