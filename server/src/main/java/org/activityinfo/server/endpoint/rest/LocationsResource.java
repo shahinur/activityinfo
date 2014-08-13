@@ -1,17 +1,17 @@
 package org.activityinfo.server.endpoint.rest;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.sun.jersey.api.core.InjectParam;
-import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.legacy.shared.command.GetLocations;
 import org.activityinfo.legacy.shared.command.result.LocationResult;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.Location;
 import org.activityinfo.server.database.hibernate.entity.LocationType;
 import org.activityinfo.server.endpoint.rest.model.NewLocation;
-import org.codehaus.jackson.JsonGenerator;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.*;

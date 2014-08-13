@@ -1,11 +1,6 @@
 package org.activityinfo.geoadmin.model;
 
-import java.util.List;
 import java.util.Map;
-
-import org.codehaus.jackson.map.annotate.JsonView;
-
-import com.google.common.collect.Lists;
 
 public class Location {
 

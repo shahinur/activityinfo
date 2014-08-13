@@ -22,11 +22,10 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.vividsolutions.jts.geom.Geometry;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonView;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -36,7 +35,7 @@ import java.util.Set;
 /**
  * @author Alex Bertram
  */
-@Entity @Table(name = "AdminEntity") @JsonAutoDetect(JsonMethod.NONE)
+@Entity @Table(name = "AdminEntity") @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class AdminEntity implements java.io.Serializable {
 
     private int id;

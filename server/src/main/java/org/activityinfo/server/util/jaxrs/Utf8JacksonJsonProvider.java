@@ -1,11 +1,13 @@
 package org.activityinfo.server.util.jaxrs;
 
-import com.bedatadriven.geojson.GeoJsonModule;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
+import com.bedatadriven.geojson.jackson2.GeoJsonModule;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.google.inject.Inject;
 
+import javax.inject.Singleton;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -20,10 +22,12 @@ import java.lang.reflect.Type;
  * to ensure that the Content-Type header always includes the
  * charset=UTF-8 fragment
  */
+@Singleton
 public class Utf8JacksonJsonProvider extends JacksonJsonProvider {
 
-    public Utf8JacksonJsonProvider() {
-        super(createObjectMapper());
+    @Inject
+    public Utf8JacksonJsonProvider(ObjectMapper objectMapper) {
+        super(objectMapper);
     }
 
     @Override
@@ -43,8 +47,8 @@ public class Utf8JacksonJsonProvider extends JacksonJsonProvider {
 
     private static ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
-        mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.registerModule(new GeoJsonModule());
         return mapper;
     }
