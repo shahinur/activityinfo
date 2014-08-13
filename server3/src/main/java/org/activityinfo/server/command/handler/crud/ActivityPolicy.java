@@ -25,6 +25,9 @@ package org.activityinfo.server.command.handler.crud;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.command.handler.PermissionOracle;
 import org.activityinfo.server.database.hibernate.dao.ActivityDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
@@ -32,6 +35,9 @@ import org.activityinfo.server.database.hibernate.entity.Activity;
 import org.activityinfo.server.database.hibernate.entity.LocationType;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
+import org.activityinfo.service.store.CommitStatus;
+import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.service.store.UpdateResult;
 
 import javax.persistence.EntityManager;
 import java.util.Date;
@@ -41,12 +47,17 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
     private final EntityManager em;
     private final ActivityDAO activityDAO;
     private final UserDatabaseDAO databaseDAO;
+    private final ResourceStore resourceStore;
 
     @Inject
-    public ActivityPolicy(EntityManager em, ActivityDAO activityDAO, UserDatabaseDAO databaseDAO) {
+    public ActivityPolicy(EntityManager em,
+                          ActivityDAO activityDAO,
+                          UserDatabaseDAO databaseDAO,
+                          ResourceStore resourceStore) {
         this.em = em;
         this.activityDAO = activityDAO;
         this.databaseDAO = databaseDAO;
+        this.resourceStore = resourceStore;
     }
 
     @Override
@@ -59,11 +70,22 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
         Activity activity = new Activity();
         activity.setDatabase(database);
         activity.setSortOrder(calculateNextSortOrderIndex(database.getId()));
-        activity.setLocationType(getLocationType(properties));
+
+        // NO LONGER USED: but needed for db
+        activity.setLocationType(em.find(LocationType.class, 20301));
 
         applyProperties(activity, properties);
 
         activityDAO.persist(activity);
+
+        FormClass formClass = new FormClass(CuidAdapter.activityFormClass(activity.getId()));
+        formClass.setLabel(activity.getName());
+        formClass.setOwnerId(CuidAdapter.databaseId(activity.getDatabase().getId()));
+
+        UpdateResult result = resourceStore.createResource(CuidAdapter.userId(user.getId()), formClass.asResource());
+        if(result.getCommitStatus() != CommitStatus.COMMITTED) {
+            throw new RuntimeException("Failed to commit");
+        }
 
         return activity.getId();
     }
@@ -98,29 +120,10 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
             activity.setName((String) changes.get("name"));
         }
 
-        if (changes.containsKey("locationTypeId")) {
-            LocationType location = em.find(LocationType.class, changes.get("locationTypeId"));
-            if (location != null) {
-                activity.setLocationType(location);
-            }
-        }
 
         if (changes.containsKey("locationType")) {
             activity.setLocationType(em.getReference(LocationType.class,
                     ((LocationTypeDTO) changes.get("locationType")).getId()));
-        }
-
-        if (changes.containsKey("category")) {
-            String category = Strings.nullToEmpty((String) changes.get("category")).trim();
-            activity.setCategory(Strings.emptyToNull(category));
-        }
-
-        if (changes.containsKey("mapIcon")) {
-            activity.setMapIcon((String) changes.get("mapIcon"));
-        }
-
-        if (changes.containsKey("reportingFrequency")) {
-            activity.setReportingFrequency((Integer) changes.get("reportingFrequency"));
         }
 
         if (changes.containsKey("published")) {
