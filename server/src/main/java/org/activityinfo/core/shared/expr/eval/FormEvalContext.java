@@ -1,8 +1,8 @@
 package org.activityinfo.core.shared.expr.eval;
 
-import com.google.api.client.util.Lists;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
