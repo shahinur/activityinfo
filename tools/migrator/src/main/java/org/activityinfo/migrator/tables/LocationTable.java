@@ -6,10 +6,7 @@ import com.google.common.collect.Sets;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.geo.GeoPoint;
 
@@ -53,7 +50,7 @@ public class LocationTable extends ResourceMigrator {
                     if(locationId != currentLocationId) {
                         if(location != null) {
                             location.set(field(location.getClassId(), ADMIN_FIELD), normalize(parentMap, adminUnits));
-                            writer.write(location.asResource());
+                            writer.writeResource(location.asResource());
                         }
                         currentLocationId = locationId;
                         location = newLocationFormInstance(rs);
@@ -67,7 +64,7 @@ public class LocationTable extends ResourceMigrator {
                 }
                 if(location != null) {
                     location.set(field(location.getClassId(), ADMIN_FIELD), normalize(parentMap, adminUnits));
-                    writer.write(location.asResource());
+                    writer.writeResource(location.asResource());
                 }
             }
         }

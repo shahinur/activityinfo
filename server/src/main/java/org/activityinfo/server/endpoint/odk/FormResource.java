@@ -3,7 +3,7 @@ package org.activityinfo.server.endpoint.odk;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -79,7 +79,7 @@ public class FormResource {
         Resource resource;
 
         try {
-            resource = locator.get(CuidAdapter.activityFormClass(id));
+            resource = locator.get(user, CuidAdapter.activityFormClass(id));
         } catch (ResourceNotFound resourceNotFound) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }

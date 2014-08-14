@@ -1,9 +1,11 @@
 package org.activityinfo.migrator;
 
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonArray;
 import com.google.gson.internal.Streams;
 import com.google.gson.stream.JsonWriter;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 
 import java.io.File;
@@ -20,8 +22,28 @@ public class JsonTestUnitWriter implements ResourceWriter {
     }
 
     @Override
-    public void write(Resource resource) throws IOException {
+    public void beginResources() throws Exception {
+
+    }
+
+    @Override
+    public void writeResource(Resource resource) throws IOException {
         array.add(Resources.toJsonObject(resource));
+    }
+
+    @Override
+    public void endResources() throws Exception {
+
+    }
+
+    @Override
+    public void writeUserIndex(Multimap<ResourceId, ResourceId> resources) throws Exception {
+
+    }
+
+    @Override
+    public void close()  {
+
     }
 
     public void finish() throws IOException {

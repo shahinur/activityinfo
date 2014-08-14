@@ -1,7 +1,7 @@
 package org.activityinfo.server.entity.auth;
 
 import com.google.inject.Inject;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.server.command.handler.PermissionOracle;
 import org.activityinfo.server.database.hibernate.entity.Site;
 

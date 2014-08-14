@@ -25,8 +25,8 @@ public class FormClass implements IsResource, FormElementContainer {
     /**
      * Instances of FormClass have one FormField: a label, which has its own
      * FormField id. It is defined at the application level to be a subproperty of
-     * {@code _label}
-     */
+                                     * {@code _label}
+                                     */
     public static final String LABEL_FIELD_ID = "_class_label";
 
 

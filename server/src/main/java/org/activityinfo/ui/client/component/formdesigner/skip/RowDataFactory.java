@@ -21,7 +21,7 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
-import org.activityinfo.core.shared.expr.functions.ExprFunctions;
+import org.activityinfo.model.expr.functions.ExprFunctions;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;

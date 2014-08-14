@@ -1,5 +1,7 @@
 package org.activityinfo.model.resource;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
@@ -316,6 +318,11 @@ public class PropertyBag<T extends PropertyBag> {
         } else if(value instanceof ResourceId) {
             properties.put(propertyName, ((ResourceId) value).asString());
 
+        } else if(value instanceof Map) {
+            Record record = new Record();
+            record.setProperties((Map<String, Object>) value);
+            properties.put(propertyName, record);
+
         } else {
             assert validPropertyValue(value) : "Invalid " + propertyName + " = " + value +
                                                " (" + value.getClass().getName() + ")";
@@ -356,8 +363,16 @@ public class PropertyBag<T extends PropertyBag> {
         properties.putAll(propertyBag.properties);
     }
 
+    @JsonGetter
     public Map<String, Object> getProperties() {
         return properties;
+    }
+
+    @JsonSetter
+    protected void setProperties(Map<String, Object> properties) {
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            set(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override

@@ -30,7 +30,7 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.remote.cache.CacheManager;
 import org.activityinfo.legacy.client.remote.cache.CacheResult;
 import org.activityinfo.legacy.client.remote.cache.CachingDispatcher;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.RemoteCommandServiceAsync;

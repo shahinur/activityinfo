@@ -1,7 +1,7 @@
 package org.activityinfo.service.tables;
 
-import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -9,9 +9,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.model.table.TableService;
-import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.ui.client.service.TestResourceStore;
@@ -29,12 +28,12 @@ public class TableServiceCalcTest {
     private FormClass formClass;
 
     private TestResourceStore store;
-    private TableService tableService;
+    private TableBuilder tableService;
 
     @Before
     public void setUp() throws Exception {
         store = new TestResourceStore().load("/dbunit/sites-simple1.json");
-        tableService = new TableServiceImpl(store);
+        tableService = new TableBuilder(store);
 
         formClass = new FormClass(ResourceId.generateId());
         formClass.setLabel("Calculation Test");
@@ -194,7 +193,7 @@ public class TableServiceCalcTest {
     }
     
     @Test
-    public void calculations() {
+    public void calculations() throws Exception {
 
         FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
         instance.set(fieldId("EXP"), new Quantity(3, "currency"));

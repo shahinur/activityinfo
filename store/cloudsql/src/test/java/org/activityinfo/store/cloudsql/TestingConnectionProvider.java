@@ -81,6 +81,8 @@ public class TestingConnectionProvider implements Provider<Connection> {
         }
     }
 
+
+
     public void assertThatAllConnectionsHaveBeenClosed() throws SQLException {
         int openCount = 0;
         for(Connection connection : leasedConnections) {

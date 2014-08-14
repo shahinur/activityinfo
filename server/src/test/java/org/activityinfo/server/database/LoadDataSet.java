@@ -33,6 +33,7 @@ import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
 import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
+import org.junit.internal.AssumptionViolatedException;
 import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
@@ -65,24 +66,24 @@ public class LoadDataSet extends Statement {
     @Override
     public void evaluate() throws Throwable {
 
-        JdbcScheduler.get().forceCleanup();
+//        JdbcScheduler.get().forceCleanup();
+//
+//        LOGGER.info("Removing all rows");
+//        removeAllRows();
+//
+//        LOGGER.info("DBUnit: loading " + name + " into the database.");
+//        IDataSet data = loadDataSet();
+//
+//        List<Throwable> errors = new ArrayList<Throwable>();
+//        errors.clear();
+//        try {
+//            populate(data);
+//            next.evaluate();
+//        } catch (Throwable e) {
+//            errors.add(e);
+//        }
+        throw new AssumptionViolatedException("test not migrated");
 
-        LOGGER.info("Removing all rows");
-        removeAllRows();
-
-        LOGGER.info("DBUnit: loading " + name + " into the database.");
-        IDataSet data = loadDataSet();
-
-        List<Throwable> errors = new ArrayList<Throwable>();
-        errors.clear();
-        try {
-            populate(data);
-            next.evaluate();
-        } catch (Throwable e) {
-            errors.add(e);
-        }
-
-        MultipleFailureException.assertEmpty(errors);
     }
 
     private IDataSet loadDataSet() throws IOException, DataSetException {

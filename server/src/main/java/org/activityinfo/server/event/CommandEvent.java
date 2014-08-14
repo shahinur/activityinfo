@@ -23,7 +23,7 @@ package org.activityinfo.server.event;
  */
 
 import com.extjs.gxt.ui.client.data.RpcMap;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.SiteCommand;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
