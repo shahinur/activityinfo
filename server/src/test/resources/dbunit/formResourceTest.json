@@ -8,7 +8,7 @@
             {
                 "id": "0",
                 "label": "Gender",
-                "required": false,
+                "required": true,
                 "type": {
                     "parameters": {
                         "cardinality": "SINGLE",
@@ -57,11 +57,14 @@
                 "visible": true
             },
             {
-                "id": "test_text",
-                "label": "Text",
+                "id": "test_image",
+                "label": "Image",
                 "required": false,
                 "type": {
-                    "typeClass": "FREE_TEXT"
+                    "parameters": {
+                        "cardinality": "SINGLE"
+                    },
+                    "typeClass": "IMAGE"
                 },
                 "visible": true
             },
