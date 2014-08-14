@@ -34,7 +34,7 @@ import org.activityinfo.model.type.enumerated.EnumValue;
 /**
  * @author yuriyz on 8/6/14.
  */
-public class ImageType implements ParametrizedFieldType, FieldType {
+public class ImageType implements ParametrizedFieldType {
 
     public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
 
@@ -63,8 +63,8 @@ public class ImageType implements ParametrizedFieldType, FieldType {
 
         @Override
         public ImageType deserializeType(Record typeParameters) {
-            EnumFieldValue enumFieldValue = (EnumFieldValue) EnumType.TYPE_CLASS.deserialize(typeParameters.getRecord("cardinality"));
-            return new ImageType(Cardinality.valueOf(enumFieldValue.getValueId().asString()));
+            Cardinality cardinality = Cardinality.valueOf(typeParameters.getString("cardinality"));
+            return new ImageType(cardinality);
         }
 
         @Override
