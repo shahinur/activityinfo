@@ -5,7 +5,7 @@ import org.activityinfo.core.shared.expr.ExprParser;
 import org.activityinfo.core.shared.expr.diagnostic.CircularReferenceException;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.type.CalculatedFieldType;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
 

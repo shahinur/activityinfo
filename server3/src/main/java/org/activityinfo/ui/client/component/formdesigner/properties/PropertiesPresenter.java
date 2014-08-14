@@ -34,8 +34,11 @@ import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
 import org.activityinfo.ui.client.component.form.SimpleFormPanel;
 import org.activityinfo.ui.client.component.form.VerticalFieldContainer;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
@@ -183,9 +186,19 @@ public class PropertiesPresenter {
         });
 
         ResourceLocator locator = fieldWidgetContainer.getFormDesigner().getResourceLocator();
-        currentDesignWidget = new SimpleFormPanel(locator,
-                new VerticalFieldContainer.Factory(),
-                new FormFieldWidgetFactory(locator), false);
+        currentDesignWidget = new SimpleFormPanel(locator, new VerticalFieldContainer.Factory(),
+                new FormFieldWidgetFactory(locator), false) {
+            @Override
+            public void onFieldUpdated(FormField field, FieldValue newValue) {
+                super.onFieldUpdated(field, newValue);
+                ParametrizedFieldType parametrizedFieldType = (ParametrizedFieldType) formField.getType();
+                Record param = parametrizedFieldType.getParameters();
+                param.set(field.getId(), newValue);
+                ParametrizedFieldTypeClass typeClass = (ParametrizedFieldTypeClass) parametrizedFieldType.getTypeClass();
+                formField.setType(typeClass.deserializeType(param));
+                fieldWidgetContainer.syncWithModel();
+            }
+        };
         if(formField.getType() instanceof ParametrizedFieldType) {
             ParametrizedFieldType parametrizedType = (ParametrizedFieldType) formField.getType();
             currentDesignWidget.asWidget().setVisible(true);

@@ -103,8 +103,6 @@ public class GetSchemaTest extends CommandTestCase2 {
         assertTrue("CountryId is not null",
                 schema.getCountries().get(0).getAdminLevels().get(0).getCountryId() != 0);
 
-        assertThat("deleted attribute is not present",
-                schema.getActivityById(1).getAttributeGroups().size(), equalTo(3));
     }
 
     @Test
@@ -164,47 +162,12 @@ public class GetSchemaTest extends CommandTestCase2 {
     @Test
     public void newApiTest() throws IOException {
 
-        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
+        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.json");
 
         Promise<FormClass> userForm = locator.getFormClass(CuidAdapter.activityFormClass(1));
 
         assertThat(userForm, resolvesTo(CoreMatchers.<FormClass>notNullValue()));
     }
 
-    @Test
-    public void folderTest() throws IOException {
-        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
 
-        List<FormInstance> folders = assertResolves(locator.queryInstances(
-                new CriteriaIntersection(
-                    ParentCriteria.isChildOf(ResourceId.create("home")),
-                    new ClassCriteria(FolderClass.CLASS_ID))));
-
-        for(FormInstance folder : folders) {
-            System.out.println(folder.getId() + " " + folder.getString(FolderClass.LABEL_FIELD_ID));
-        }
-
-        assertThat(folders.size(), equalTo(3));
-    }
-
-    @Test
-    public void childFolderTest() throws IOException {
-        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
-
-        InstanceQuery query = InstanceQuery
-                .select(ApplicationProperties.LABEL_PROPERTY,
-                        ApplicationProperties.DESCRIPTION_PROPERTY,
-                        ApplicationProperties.CLASS_PROPERTY)
-                .where(ParentCriteria.isChildOf(CuidAdapter.cuid(CuidAdapter.DATABASE_DOMAIN, 1)))
-                .build();
-
-        List<Projection> children = assertResolves(locator.query(query));
-
-        System.out.println("Results: ");
-        for(Projection child : children) {
-            System.out.println(child.getStringValue(ApplicationProperties.LABEL_PROPERTY));
-        }
-
-        assertThat(children.size(), equalTo(2));
-    }
 }
