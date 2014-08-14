@@ -27,20 +27,18 @@ import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
 import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 
 import java.util.List;
 
 /**
  * @author yuriyz on 7/30/14.
  */
-public class SkipHandler {
+public class RelevanceHandler {
 
     private final SimpleFormPanel simpleFormPanel;
     private List<FormField> fieldsWithSkipExpression = Lists.newArrayList();
-    private List<ReferenceFieldWidget> referenceFieldWidgets = null;
 
-    public SkipHandler(SimpleFormPanel simpleFormPanel) {
+    public RelevanceHandler(SimpleFormPanel simpleFormPanel) {
         this.simpleFormPanel = simpleFormPanel;
     }
 
@@ -50,21 +48,6 @@ public class SkipHandler {
         }
     }
 
-
-    private List<ReferenceFieldWidget> getReferenceFieldWidgets() {
-        if (referenceFieldWidgets != null) {
-            return referenceFieldWidgets;
-        }
-
-        referenceFieldWidgets = Lists.newArrayList();
-        for (FieldContainer container : simpleFormPanel.getContainers().values()) {
-            if (container.getFieldWidget() instanceof ReferenceFieldWidget) {
-                referenceFieldWidgets.add((ReferenceFieldWidget) container.getFieldWidget());
-            }
-        }
-        return referenceFieldWidgets;
-    }
-
     private void applySkipLogic(final FormField field) {
         if (field.hasRelevanceConditionExpression()) {
 
@@ -72,13 +55,12 @@ public class SkipHandler {
             ExprParser parser = new ExprParser(lexer);
             ExprNode expr = parser.parse();
             FieldContainer fieldContainer = simpleFormPanel.getFieldContainer(field.getId());
-            fieldContainer.getFieldWidget().setReadOnly(expr.evaluateAsBoolean(new FormEvalContext(simpleFormPanel.getFormClass(), simpleFormPanel.getInstance())));
+            fieldContainer.getFieldWidget().setReadOnly(!expr.evaluateAsBoolean(new FormEvalContext(simpleFormPanel.getFormClass(), simpleFormPanel.getInstance())));
         }
     }
 
     public void formClassChanged() {
         fieldsWithSkipExpression = Lists.newArrayList();
-        referenceFieldWidgets = null;
 
         for (FormField formField : simpleFormPanel.getFormClass().getFields()) {
             if (formField.hasRelevanceConditionExpression()) {

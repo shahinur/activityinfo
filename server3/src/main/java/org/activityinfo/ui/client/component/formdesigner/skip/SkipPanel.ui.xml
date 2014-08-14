@@ -7,7 +7,10 @@
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
 
   <g:ScrollPanel>
-    <g:HTMLPanel ui:field="rootPanel"/>
+    <g:HTMLPanel>
+      <ui:text from='{i18n.relevanceWelcomeText}'/>
+      <g:HTMLPanel ui:field="rootPanel"/>
+    </g:HTMLPanel>
   </g:ScrollPanel>
 
 </ui:UiBinder>
