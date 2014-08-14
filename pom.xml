@@ -99,14 +99,14 @@
   <modules>
     <module>core/model</module>
     <module>core/promises</module>
+    <module>core/services</module>
+    <module>store/cloudsql</module>
+    <module>store/testing</module>
     <module>server</module>
     <module>tools/migrator</module>
     <module>ui/test-harness</module>
     <module>ui/barcode-scanner</module>
-    <module>store/cloudsql</module>
-    <module>store/testing</module>
-    <module>ui/virtual-dom</module>
-    <module>core/services</module>
+
   </modules>
 
   <dependencies>
