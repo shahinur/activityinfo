@@ -61,9 +61,9 @@
         <configuration>
           <apiSources>
             <apiSource>
-              <locations>com.foo.bar.apis;com.foo.bar.apis.internal.Resource</locations>
-              <apiVersion>v1</apiVersion>
-              <basePath>http://www.example.com</basePath>
+              <locations>org.activityinfo.service</locations>
+              <apiVersion>v3</apiVersion>
+              <basePath>https://www.activityinfo.org</basePath>
               <outputTemplate>
                 https://raw.github.com/kongchen/api-doc-template/master/v2.0/markdown.mustache
               </outputTemplate>
@@ -86,7 +86,20 @@
           </execution>
         </executions>
       </plugin>
-
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <version>${gwtVersion}</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
 
   </build>
