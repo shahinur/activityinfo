@@ -43,7 +43,6 @@
   <inherits name="org.activityinfo.model.Model"/>
   <inherits name="org.activityinfo.legacy.Legacy"/>
   <inherits name="org.activityinfo.ui.widget.barcode.Barcode"/>
-  <inherits name="org.activityinfo.service.Service"/>
 
   <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
 
