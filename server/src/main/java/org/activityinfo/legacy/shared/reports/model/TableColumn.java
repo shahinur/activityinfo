@@ -46,7 +46,7 @@ public class TableColumn extends TreeNode<TableColumn> {
     private String property;
     private Integer propertyQualifyingId;
     private SortOrder order;
-    private List<TableColumn> children = new ArrayList<TableColumn>(0);
+    private List<TableColumn> children = new ArrayList<>(0);
 
     public TableColumn() {
     }

@@ -23,16 +23,15 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ import java.util.List;
  * {@link org.activityinfo.model.type.enumerated.EnumType}
  */
 @Deprecated
-@JsonAutoDetect(JsonMethod.NONE)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public final class AttributeGroupDTO extends BaseModelData implements EntityDTO, IsFormField {
     private static final long serialVersionUID = 7927425202152761370L;
     public static final String PROPERTY_PREFIX = "AG";

@@ -22,6 +22,7 @@ package org.activityinfo.server.endpoint.rest;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import org.activityinfo.legacy.shared.command.GetCountries;
@@ -30,11 +31,8 @@ import org.activityinfo.legacy.shared.model.CountryDTO;
 import org.activityinfo.legacy.shared.model.DTOViews;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.server.command.DispatcherSync;
-import org.activityinfo.server.database.hibernate.entity.AdminEntity;
-import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.database.hibernate.entity.Country;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.*;
@@ -60,10 +58,6 @@ public class RootResource {
         this.config = config;
     }
 
-    @Path("/adminEntity/{id}")
-    public AdminEntityResource getAdminEntity(@PathParam("id") int id) {
-        return new AdminEntityResource(entityManager.get().find(AdminEntity.class, id));
-    }
 
     @GET @Path("/countries") @JsonView(DTOViews.List.class) @Produces(MediaType.APPLICATION_JSON)
     public List<CountryDTO> getCountries() {
@@ -101,35 +95,18 @@ public class RootResource {
     }
 
     @GET @Path("/database/{id}/schema") @JsonView(DTOViews.Schema.class) @Produces(MediaType.APPLICATION_JSON)
-    public UserDatabaseDTO getDatabaseSchema(@PathParam("id") int id) {
-        UserDatabaseDTO db = dispatcher.execute(new GetSchema()).getDatabaseById(id);
-        if (db == null) {
-            throw new WebApplicationException(Status.NOT_FOUND);
-        }
-        return db;
+    public Response getDatabaseSchema(@PathParam("id") int id) {
+        return ServiceUnavailable.serviceUnavailable();
     }
 
     @GET @Path("/database/{id}/schema.csv")
     public Response getDatabaseSchemaCsv(@PathParam("id") int id) {
-        UserDatabaseDTO db = getDatabaseSchema(id);
-        SchemaCsvWriter writer = new SchemaCsvWriter();
-        writer.write(db);
-
-        return Response.ok()
-                       .type("text/css")
-                       .header("Content-Disposition", "attachment; filename=schema_" + id + ".csv")
-                       .entity(writer.toString())
-                       .build();
-    }
-
-    @Path("/adminLevel/{id}")
-    public AdminLevelResource getAdminLevel(@PathParam("id") int id) {
-        return new AdminLevelResource(entityManager, entityManager.get().find(AdminLevel.class, id));
+        return ServiceUnavailable.serviceUnavailable();
     }
 
     @Path("/sites")
     public SitesResources getSites() {
-        return new SitesResources(dispatcher);
+        return new SitesResources();
     }
 
     @Path("/tile")

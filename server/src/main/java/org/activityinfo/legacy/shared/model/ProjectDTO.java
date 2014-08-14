@@ -23,11 +23,10 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.activityinfo.legacy.shared.model.LockedPeriodDTO.HasLockedPeriod;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -36,7 +35,7 @@ import java.util.Set;
  * @deprecated TO be replaced with {@link org.activityinfo.model.resource.Resource}
  */
 @Deprecated
-@JsonAutoDetect(JsonMethod.NONE)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public final class ProjectDTO extends BaseModelData implements EntityDTO, HasLockedPeriod {
 
     private Set<LockedPeriodDTO> lockedPeriods = new HashSet<LockedPeriodDTO>(0);
