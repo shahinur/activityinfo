@@ -21,6 +21,7 @@ package org.activityinfo.model.type;
  * #L%
  */
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -28,6 +29,10 @@ import org.junit.Test;
  */
 public class TypeRegistryTest {
 
+    /**
+     * Check whether serialization/deserialization works for all parametrized types. If there is error in deserialization
+     * code it may lead to form designer/form dialog failure. (User will see "Oh no, some bug occured...")
+     */
     @Test
     public void serializationDeserialization() {
         for (FieldTypeClass typeClass : TypeRegistry.get().getTypeClasses()) {
@@ -35,6 +40,10 @@ public class TypeRegistryTest {
                 ParametrizedFieldTypeClass parametrizedFieldTypeClass = (ParametrizedFieldTypeClass) typeClass;
                 ParametrizedFieldType parametrizedFieldType = (ParametrizedFieldType) parametrizedFieldTypeClass.createType();
                 parametrizedFieldTypeClass.deserializeType(parametrizedFieldType.getParameters());
+
+                // it's important to have "classId" specified for all parametrized types. Otherwise SimpleFormPanel will fail to load FormClass
+                String classId = parametrizedFieldType.getParameters().getString("classId");
+                Assert.assertNotNull(classId);
             }
         }
     }

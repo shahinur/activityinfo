@@ -68,7 +68,9 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record().set("expression", expression);
+        return new Record()
+                .set("expression", expression)
+                .set("classId", getTypeClass().getId());
     }
 
     @Override
