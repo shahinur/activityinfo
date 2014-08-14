@@ -36,7 +36,7 @@ public class ProjectionAdapter {
         TableModel tableModel = new TableModel();
         tableModel.getRowSources().add(new RowSource(classId));
         tableModel.addColumn("_id").selectId();
-        tableModel.addColumn("_classId").select().fieldPath(ResourceId.create("classId"));
+        tableModel.addColumn("_classId").select().fieldPath(ResourceId.valueOf("classId"));
 
         for(FieldPath path : query.getFieldPaths()) {
             tableModel.addColumn(path.toString()).select().fieldPath(path.getPath());
@@ -65,7 +65,7 @@ public class ProjectionAdapter {
 
         for(int row=0;row!=table.getNumRows();++row) {
             Projection projection = new Projection(
-                    ResourceId.create(id.getString(row)),
+                    ResourceId.valueOf(id.getString(row)),
                     classId);
 
             for(int col=0;col!=columnViews.size();++col) {

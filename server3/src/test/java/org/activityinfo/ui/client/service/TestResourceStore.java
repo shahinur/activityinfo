@@ -3,7 +3,6 @@ package org.activityinfo.ui.client.service;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.UnmodifiableIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import org.activityinfo.model.form.FormClass;
@@ -111,7 +110,7 @@ import java.util.Map;
 
     private ResourceId getClassId(Resource resource) {
         if(resource.has("classId")) {
-            return ResourceId.create(resource.getString("classId"));
+            return ResourceId.valueOf(resource.getString("classId"));
         } else {
             return null;
         }

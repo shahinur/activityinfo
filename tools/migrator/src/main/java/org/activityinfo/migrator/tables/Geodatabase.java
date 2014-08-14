@@ -17,7 +17,7 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class Geodatabase extends ResourceMigrator {
 
-    public static final ResourceId COUNTRY_FORM_CLASS_ID = ResourceId.create("_country");
+    public static final ResourceId COUNTRY_FORM_CLASS_ID = ResourceId.valueOf("_country");
 
     @Override
     public void getResources(Connection connection, ResourceWriter writer) throws Exception {
@@ -29,7 +29,7 @@ public class Geodatabase extends ResourceMigrator {
         Resource resource = Resources.createResource();
         resource.setId(GEODB_ID);
         resource.set("classId", "_folder");
-        resource.setOwnerId(ResourceId.create("_root"));
+        resource.setOwnerId(ResourceId.valueOf("_root"));
         resource.set(FolderClass.LABEL_FIELD_ID.asString(), "Geodatabase");
         writer.write(resource);
     }

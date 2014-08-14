@@ -107,7 +107,7 @@ public class FormEvalContext implements EvalContext {
         ValueSource valueSource = symbolMap.get(symbolName);
         if (valueSource == null) {
             // todo : we must fix it, here as temporary solution if symbol name can't be resolved we consider it as ReferenceValue
-            return new ConstantValue(new ReferenceValue(ResourceId.create(symbolName)));
+            return new ConstantValue(new ReferenceValue(ResourceId.valueOf(symbolName)));
 //            throw new RuntimeException("Unknown symbol '" + symbolName + "'");
         }
         return valueSource;

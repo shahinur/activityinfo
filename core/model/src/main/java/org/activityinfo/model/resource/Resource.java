@@ -65,7 +65,7 @@ public final class Resource extends PropertyBag<Resource> {
         if(id == null) {
             throw new NullPointerException("id");
         }
-        this.id = ResourceId.create(id);
+        this.id = ResourceId.valueOf(id);
         return this;
     }
 
@@ -95,7 +95,7 @@ public final class Resource extends PropertyBag<Resource> {
         if(owningResourceId == null) {
             throw new NullPointerException("owner");
         }
-        this.owner = ResourceId.create(owningResourceId);
+        this.owner = ResourceId.valueOf(owningResourceId);
         return this;
     }
 

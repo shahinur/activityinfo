@@ -138,9 +138,9 @@ public class ResourceTreeBuilder {
     }
 
     private ResourceNode createNodeAndAddToMap(ResultSet resultSet) throws SQLException {
-        ResourceNode node = new ResourceNode(ResourceId.create(resultSet.getString(1)));
-        node.setClassId(ResourceId.create(resultSet.getString(2)));
-        node.setOwnerId(ResourceId.create(resultSet.getString(3)));
+        ResourceNode node = new ResourceNode(ResourceId.valueOf(resultSet.getString(1)));
+        node.setClassId(ResourceId.valueOf(resultSet.getString(2)));
+        node.setOwnerId(ResourceId.valueOf(resultSet.getString(3)));
         node.setLabel(resultSet.getString(4));
         node.setVersion(resultSet.getLong(5));
         node.setSubTreeVersion(resultSet.getLong(6));

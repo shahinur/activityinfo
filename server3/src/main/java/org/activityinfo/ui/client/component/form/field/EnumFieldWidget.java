@@ -152,7 +152,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
         while(Strings.isNullOrEmpty(container.getAttribute("data-id"))) {
             container = container.getParentElement();
         }
-        return ResourceId.create(container.getAttribute("data-id"));
+        return ResourceId.valueOf(container.getAttribute("data-id"));
 
     }
 
@@ -179,7 +179,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
         final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
-                value.add(ResourceId.create(control.getFormValue()));
+                value.add(ResourceId.valueOf(control.getFormValue()));
             }
         }
         return new ReferenceValue(value);
@@ -188,7 +188,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     @Override
     public Promise<Void> setValue(EnumFieldValue value) {
         for (CheckBox entry : controls) {
-            ResourceId resourceId = ResourceId.create(entry.getFormValue().toUpperCase()); // upper case, enum name equals is case sensitive
+            ResourceId resourceId = ResourceId.valueOf(entry.getFormValue().toUpperCase()); // upper case, enum name equals is case sensitive
             entry.setValue(value.getValueIds().contains(resourceId));
         }
         return Promise.done();
