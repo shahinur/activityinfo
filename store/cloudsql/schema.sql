@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS global_version;
 DROP TABLE IF EXISTS resource;
 DROP TABLE IF EXISTS resource_version;
 DROP TABLE IF EXISTS pending_commits;
+DROP TABLE IF EXISTS user_root_index;
 
 
 -- Holds the current version of the database
