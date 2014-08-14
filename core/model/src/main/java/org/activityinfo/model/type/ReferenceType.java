@@ -97,7 +97,7 @@ public class ReferenceType implements ParametrizedFieldType {
     private void setRange(List<String> range) {
         Set<ResourceId> formClassIds = Sets.newHashSet();
         for(String id : range) {
-            formClassIds.add(ResourceId.create(id));
+            formClassIds.add(ResourceId.valueOf(id));
         }
         setRange(formClassIds);
     }

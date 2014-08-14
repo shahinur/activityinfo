@@ -225,7 +225,7 @@ public class GetSchemaTest extends CommandTestCase2 {
         ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
         List<FormInstance> folders = assertResolves(locator.queryInstances(
                 new CriteriaIntersection(
-                    ParentCriteria.isChildOf(ResourceId.create("home")),
+                    ParentCriteria.isChildOf(ResourceId.valueOf("home")),
                     new ClassCriteria(FolderClass.CLASS_ID))));
 
         for(FormInstance folder : folders) {

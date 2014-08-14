@@ -70,11 +70,11 @@ public class ImageType implements ParametrizedFieldType {
         @Override
         public FormClass getParameterFormClass() {
             EnumType cardinalityType = (EnumType) EnumType.TYPE_CLASS.createType();
-            cardinalityType.getValues().add(new EnumValue(ResourceId.create("single"), "Single"));
-            cardinalityType.getValues().add(new EnumValue(ResourceId.create("multiple"), "Multiple"));
+            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("single"), "Single"));
+            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("multiple"), "Multiple"));
 
             FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("image"));
-            formClass.addElement(new FormField(ResourceId.create("cardinality"))
+            formClass.addElement(new FormField(ResourceId.valueOf("cardinality"))
                     .setType(cardinalityType)
                     .setLabel("Cardinality")
                     .setDescription("Determines whether users can add a single image, or multiple images")
@@ -104,7 +104,7 @@ public class ImageType implements ParametrizedFieldType {
     public Record getParameters() {
         return new Record()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
-                .set("cardinality", new EnumFieldValue(ResourceId.create(cardinality.name())).asRecord());
+                .set("cardinality", new EnumFieldValue(ResourceId.valueOf(cardinality.name())).asRecord());
     }
 
     @Override

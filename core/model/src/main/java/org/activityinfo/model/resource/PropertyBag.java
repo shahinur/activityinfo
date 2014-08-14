@@ -158,7 +158,7 @@ public class PropertyBag<T extends PropertyBag> {
         if(value == null) {
             throw new NullPointerException(propertyName);
         }
-        return ResourceId.create(value);
+        return ResourceId.valueOf(value);
     }
 
     public ResourceId isResourceId(String propertyName) {

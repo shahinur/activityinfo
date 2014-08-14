@@ -21,7 +21,6 @@ package org.activityinfo.core.shared.expr;
  * #L%
  */
 
-import com.google.common.collect.Lists;
 import org.activityinfo.core.shared.expr.eval.FormEvalContext;
 import org.activityinfo.core.shared.expr.functions.Casting;
 import org.activityinfo.model.form.FormClass;
@@ -35,7 +34,6 @@ import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,8 +48,8 @@ public class SkipExpressionTest {
 
     private static final ResourceId GENDER_FIELD_ID = ResourceId.generateId();
     private static final ResourceId PREGNANT_FIELD_ID = ResourceId.generateId();
-    private static final ResourceId TEXT_FIELD_ID = ResourceId.create("test_text");
-    private static final ResourceId QUANTITY_FIELD_ID = ResourceId.create("test_quantity");
+    private static final ResourceId TEXT_FIELD_ID = ResourceId.valueOf("test_text");
+    private static final ResourceId QUANTITY_FIELD_ID = ResourceId.valueOf("test_quantity");
 
     FormClass formClass;
 

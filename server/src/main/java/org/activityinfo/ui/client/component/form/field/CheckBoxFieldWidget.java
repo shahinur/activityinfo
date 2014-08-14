@@ -25,7 +25,6 @@ import com.google.common.collect.Sets;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -97,7 +96,7 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
         final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
-                value.add(ResourceId.create(control.getFormValue()));
+                value.add(ResourceId.valueOf(control.getFormValue()));
             }
         }
         return new ReferenceValue(value);
@@ -107,7 +106,7 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
     public Promise<Void> setValue(ReferenceValue value) {
         Set<ResourceId> ids = value.getResourceIds();
         for (CheckBox entry : controls) {
-            ResourceId resourceId = ResourceId.create(entry.getFormValue());
+            ResourceId resourceId = ResourceId.valueOf(entry.getFormValue());
             entry.setValue(ids.contains(resourceId));
         }
         return Promise.done();

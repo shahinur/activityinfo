@@ -66,12 +66,12 @@ public class EnumFieldValue implements FieldValue, IsRecord {
     public static EnumFieldValue fromRecord(Record record) {
         String id = record.isString("value");
         if(id != null) {
-            return new EnumFieldValue(ResourceId.create(id));
+            return new EnumFieldValue(ResourceId.valueOf(id));
         }
         List<String> strings = record.getStringList("value");
         Set<ResourceId> ids = Sets.newHashSet();
         for(String string : strings) {
-            ids.add(ResourceId.create(string));
+            ids.add(ResourceId.valueOf(string));
         }
         return new EnumFieldValue(ids);
     }

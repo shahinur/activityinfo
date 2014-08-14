@@ -116,7 +116,7 @@ public class FormDesigner {
         for(int i=0;i!=panel.getWidgetCount();++i) {
             Widget widget = panel.getWidget(i);
             String fieldId = widget.getElement().getAttribute(FieldWidgetContainer.DATA_FIELD_ID);
-            elements.add(fieldMap.get(ResourceId.create(fieldId)));
+            elements.add(fieldMap.get(ResourceId.valueOf(fieldId)));
         }
 
         formClass.getElements().clear();

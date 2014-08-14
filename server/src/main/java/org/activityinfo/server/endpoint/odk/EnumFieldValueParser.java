@@ -39,13 +39,13 @@ class EnumFieldValueParser implements OdkFieldValueParser {
 
                 for (String item : selected) {
                     if (item.length() < 1) continue;
-                    resourceIds.add(ResourceId.create(text));
+                    resourceIds.add(ResourceId.valueOf(text));
                 }
 
                 return new EnumFieldValue(resourceIds);
 
             case SINGLE:
-                return values.get(ResourceId.create(text));
+                return values.get(ResourceId.valueOf(text));
         }
     }
 }

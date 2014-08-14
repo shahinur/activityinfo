@@ -133,7 +133,7 @@ public class SkipRowPresenter {
 
     public FormField getSelectedFormField() {
         String formFieldId = view.getFormfield().getValue(view.getFormfield().getSelectedIndex());
-        return fieldWidgetContainer.getFormDesigner().getFormClass().getField(ResourceId.create(formFieldId));
+        return fieldWidgetContainer.getFormDesigner().getFormClass().getField(ResourceId.valueOf(formFieldId));
     }
 
     // depends on selected field type

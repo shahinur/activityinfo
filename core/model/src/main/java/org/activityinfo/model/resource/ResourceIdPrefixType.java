@@ -40,6 +40,6 @@ public enum ResourceIdPrefixType {
     }
 
     public ResourceId id(String suffix) {
-        return ResourceId.create(type + SEPARATOR + suffix);
+        return ResourceId.valueOf(type + SEPARATOR + suffix);
     }
 }

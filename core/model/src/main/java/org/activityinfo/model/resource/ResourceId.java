@@ -18,13 +18,13 @@ public final class ResourceId {
 
     private final String text;
 
-    public static ResourceId create(@Nonnull String string) {
+    public static ResourceId valueOf(@Nonnull String string) {
         return new ResourceId(string);
     }
 
     public static ResourceId generateId() {
-        return create("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
-               Long.toString(COUNTER++, Character.MAX_RADIX));
+        return valueOf("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
+                Long.toString(COUNTER++, Character.MAX_RADIX));
     }
 
 
