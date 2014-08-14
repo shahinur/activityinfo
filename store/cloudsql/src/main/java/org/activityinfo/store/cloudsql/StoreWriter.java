@@ -42,11 +42,8 @@ public class StoreWriter implements AutoCloseable {
         Preconditions.checkState(releaseStatusCode.get() == 1, "Failed to release lock");
     }
 
-    public ResourceUpdate create(Resource resource) {
-        return new ResourceUpdate(connection, cache).create(resource);
+    public ResourceUpdate put(Resource resource) {
+        return new ResourceUpdate(connection, cache).put(resource);
     }
 
-    public ResourceUpdate update(Resource resource) {
-        return new ResourceUpdate(connection, cache).update(resource);
-    }
 }

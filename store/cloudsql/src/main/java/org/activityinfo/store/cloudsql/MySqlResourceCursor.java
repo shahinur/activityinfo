@@ -9,13 +9,11 @@ import java.sql.SQLException;
 
 public class MySqlResourceCursor implements ResourceCursor {
 
-    private final StoreConnection connection;
     private final ResultSet resultSet;
 
     private Resource next;
 
-    MySqlResourceCursor(StoreConnection connection, ResultSet resultSet) throws SQLException {
-        this.connection = connection;
+    MySqlResourceCursor(ResultSet resultSet) throws SQLException {
         this.resultSet = resultSet;
         fetchNext();
     }
@@ -52,13 +50,6 @@ public class MySqlResourceCursor implements ResourceCursor {
 
     @Override
     public void close() throws Exception {
-        try {
-            resultSet.close();
-
-        } catch(Exception e) {
-            connection.close(true);
-            throw e;
-        }
-        connection.close();
+        resultSet.close();
     }
 }

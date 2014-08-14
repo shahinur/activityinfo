@@ -50,6 +50,7 @@ public class DevAppIdentityService implements AppIdentityService {
                            "service.account.p12.key.password=notasecret");
 
         } else {
+
             try {
                 File keyFile = new File(keyPath);
                 if (!keyFile.exists()) {
@@ -61,8 +62,8 @@ public class DevAppIdentityService implements AppIdentityService {
                     keystore.load(in, password.toCharArray());
                 }
                 privateKey = (PrivateKey) keystore.getKey("privatekey", password.toCharArray());
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Failed to load key store for development testing of images");
+            } catch(Exception e) {
+                LOGGER.log(Level.SEVERE, "Failed to load private key: " + e.getMessage(), e);
             }
         }
     }

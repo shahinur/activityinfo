@@ -49,7 +49,6 @@ public class InjectDependencies extends Statement {
         List<Throwable> errors = new ArrayList<Throwable>();
         errors.clear();
         try {
-            System.out.println("=============++> Entering Test Scope");
 
             scope.enter();
             injector.injectMembers(test);
@@ -58,7 +57,6 @@ public class InjectDependencies extends Statement {
             errors.add(e);
         } finally {
             try {
-                System.out.println("=============++> Exiting Test Scope");
                 scope.exit();
 
             } catch (Throwable e) {

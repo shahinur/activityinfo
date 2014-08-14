@@ -19,12 +19,12 @@ public final class ResourceId {
     private final String text;
 
     /**
-     * Creates a {@code ResourceId} with the given string value.
+     * Creates a new ResourceId from its string representation
+     *
+     * <p>Note: This method must be named {@code valueOf} in order to be
+     * used as a Jersey {@code @PathParam}
      */
     public static ResourceId valueOf(@Nonnull String string) {
-        // Note: this method must be named valueOf in order for it to
-        // be used by as @PathParam in JAX-RS methods
-        assert string != null;
         return new ResourceId(string);
     }
 
@@ -38,6 +38,7 @@ public final class ResourceId {
         this.text = text;
     }
 
+    @JsonValue
     public String asString() {
         return this.text;
     }

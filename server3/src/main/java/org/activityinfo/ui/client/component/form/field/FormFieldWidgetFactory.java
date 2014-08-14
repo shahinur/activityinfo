@@ -26,6 +26,7 @@ import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.ValueUpdater;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
@@ -113,9 +114,6 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new ImageUploadFieldWidget(field, valueUpdater));
 
         } else if (type instanceof ReferenceType) {
-            if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
-                return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) type, valueUpdater);
-            }
             return createReferenceWidget(field, valueUpdater);
         } else if (type instanceof BarcodeType) {
             return Promise.resolved(new BarcodeFieldWidget(valueUpdater));
@@ -126,6 +124,10 @@ public class FormFieldWidgetFactory {
     }
 
     private Promise<? extends FormFieldWidget> createReferenceWidget(FormField field, ValueUpdater updater) {
+        ReferenceType type = (ReferenceType) field.getType();
+        if( type.getRange().size() == 1 && type.getRange().contains(FormClass.CLASS_ID) ) {
+            return Promise.resolved(new FormClassSelectorWidget());
+        }
         if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
             return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) field.getType(), updater);
         } else {
@@ -133,7 +135,7 @@ public class FormFieldWidgetFactory {
         }
     }
 
-    private Promise createSimpleListWidget(final ReferenceType type, final ValueUpdater valueUpdater) {
+    private Promise<? extends FormFieldWidget> createSimpleListWidget(final ReferenceType type, final ValueUpdater valueUpdater) {
 
         TableModel tableModel = new TableModel(Iterables.getOnlyElement(type.getRange()));
         tableModel.addResourceId("id");

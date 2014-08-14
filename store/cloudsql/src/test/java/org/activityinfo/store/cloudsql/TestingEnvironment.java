@@ -4,6 +4,7 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -19,7 +20,7 @@ public class TestingEnvironment extends TestWatcher {
 
 
     private MySqlResourceStore store;
-    private ResourceId userId;
+    private AuthenticatedUser user;
     private TestingConnectionProvider connectionProvider;
 
     @Override
@@ -37,8 +38,7 @@ public class TestingEnvironment extends TestWatcher {
         store = new MySqlResourceStore(connectionProvider,
                 MemcacheServiceFactory.getMemcacheService());
 
-        userId = ResourceId.generateId();
-
+        user = new AuthenticatedUser("XYZ", 1, "test@test.org");
     }
 
     @Override
@@ -54,8 +54,8 @@ public class TestingEnvironment extends TestWatcher {
         this.store = store;
     }
 
-    public ResourceId getUserId() {
-        return userId;
+    public AuthenticatedUser getUser() {
+        return user;
     }
 
     public void assertThatAllConnectionsHaveBeenClosed() throws SQLException {

@@ -5,11 +5,9 @@ import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.inject.util.Providers;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
-import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.model.table.TableService;
 import org.activityinfo.server.endpoint.odk.xform.Html;
-import org.activityinfo.service.tables.TableServiceImpl;
+import org.activityinfo.service.auth.AuthenticatedUser;
+import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.ui.client.service.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,8 +33,8 @@ public class FormResourceTest {
     @Before
     public void setUp() throws IOException {
         ResourceStore store = new TestResourceStore().load("/dbunit/formResourceTest.json");
-        TableService table = new TableServiceImpl(store);
-        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(table);
+        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(
+                new InstanceTableProvider(store, Providers.of(AuthenticatedUser.getAnonymous())));
         resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory,
                 new TestAuthenticationTokenService());
     }

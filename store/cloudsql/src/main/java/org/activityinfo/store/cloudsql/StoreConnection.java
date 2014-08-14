@@ -12,7 +12,7 @@ import java.sql.Statement;
 import java.util.logging.Logger;
 
 /**
- * Simplified version of {@link java.sql.Connection} and
+ * Simplified wrapper of {@link java.sql.Connection} and
  * {@link com.google.appengine.api.memcache.MemcacheService} with a few convenience methods.
  */
 public class StoreConnection implements AutoCloseable {

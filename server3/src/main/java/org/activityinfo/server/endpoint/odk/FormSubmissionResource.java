@@ -10,6 +10,7 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -79,10 +80,11 @@ public class FormSubmissionResource {
                     int userId;
                     int formClassId;
                     AuthenticationToken authenticationToken = new AuthenticationToken(tokenString);
-
+                    AuthenticatedUser user;
                     try {
                         userId = authenticationTokenService.getUserId(authenticationToken);
                         formClassId = authenticationTokenService.getFormClassId(authenticationToken);
+                        user = new AuthenticatedUser("XYZ", userId, "@");
                     } catch (EntityNotFoundException entityNotFoundException) {
                         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
                     } catch (RuntimeException runtimeException) {
@@ -91,7 +93,7 @@ public class FormSubmissionResource {
                         throw new RuntimeException(e);
                     }
 
-                    Resource resource = locator.get(CuidAdapter.activityFormClass(formClassId));
+                    Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
                     FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
 
@@ -104,7 +106,7 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    locator.createResource(CuidAdapter.userId(userId), formInstance.asResource());
+                    locator.put(user, formInstance.asResource());
                     return Response.status(CREATED).build();
                 }
             }

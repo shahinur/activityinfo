@@ -66,7 +66,7 @@ public class ConnectionProvider implements Provider<Connection> {
             throw new RuntimeException(e);
         }
 
-        return connection;
+        return new LeasedConnection(connection);
     }
 
     private Connection openConnection() {

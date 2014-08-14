@@ -30,7 +30,7 @@ import com.bedatadriven.rebar.sql.shared.adapter.SyncTransactionAdapter;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.MutatingCommand;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
