@@ -6,12 +6,12 @@ import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.service.store.*;
 import org.activityinfo.service.tables.TableBuilder;
 

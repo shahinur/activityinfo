@@ -2,13 +2,11 @@ package org.activityinfo.service.store;
 
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.core.spi.component.ComponentContext;
-import com.sun.jersey.core.spi.component.ComponentProvider;
-import com.sun.jersey.core.spi.component.ioc.IoCComponentProvider;
 import com.sun.jersey.spi.inject.Injectable;
 import com.sun.jersey.spi.inject.PerRequestTypeInjectableProvider;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.auth.AuthenticatedUser;
 
 import javax.ws.rs.ext.Provider;
 

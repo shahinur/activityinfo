@@ -2,13 +2,10 @@ package org.activityinfo.service.store;
 
 import com.google.common.base.Preconditions;
 import com.sun.jersey.api.core.InjectParam;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.auth.AuthenticatedUser;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

@@ -1,9 +1,8 @@
-package org.activityinfo.service.store;
+package org.activityinfo.model.resource;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
 

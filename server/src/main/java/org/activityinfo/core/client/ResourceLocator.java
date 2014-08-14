@@ -8,10 +8,10 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceTree;
 
 import java.util.Collection;
 import java.util.List;

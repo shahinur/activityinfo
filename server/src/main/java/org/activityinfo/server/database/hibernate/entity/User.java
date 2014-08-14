@@ -23,7 +23,7 @@ package org.activityinfo.server.database.hibernate.entity;
  */
 
 import com.google.common.base.Strings;
-import org.activityinfo.service.auth.AuthenticatedUser;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.mindrot.bcrypt.BCrypt;
 
 import javax.persistence.*;
