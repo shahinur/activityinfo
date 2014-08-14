@@ -1,4 +1,7 @@
-package org.activityinfo.model.type;
+package org.activityinfo.model.type.expr;
+
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
 
 /**
  * Value type that represents an expression
