@@ -55,7 +55,7 @@ public class SkipDialog {
             @Override
             public void onClick(ClickEvent event) {
                 skipPanelPresenter.updateFormField();
-                propertiesPresenter.setSkipState(formField);
+                propertiesPresenter.setRelevanceState(formField, false);
                 dialog.hide();
             }
         });

@@ -31,7 +31,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
@@ -62,7 +61,9 @@ public class PropertiesPresenter {
     private HandlerRegistration requiredValueChangeHandler;
     private HandlerRegistration readonlyValueChangeHandler;
     private HandlerRegistration visibleValueChangeHandler;
-    private HandlerRegistration skipButtonClickHandler;
+    private HandlerRegistration relevanceButtonClickHandler;
+    private HandlerRegistration relevanceEnabledValueHandler;
+    private HandlerRegistration relevanceEnabledIfValueHandler;
 
     public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
         this.view = view;
@@ -111,11 +112,17 @@ public class PropertiesPresenter {
         if (readonlyValueChangeHandler != null) {
             readonlyValueChangeHandler.removeHandler();
         }
-        if (skipButtonClickHandler != null) {
-            skipButtonClickHandler.removeHandler();
+        if (relevanceButtonClickHandler != null) {
+            relevanceButtonClickHandler.removeHandler();
         }
         if (visibleValueChangeHandler != null) {
             visibleValueChangeHandler.removeHandler();
+        }
+        if (relevanceEnabledValueHandler != null) {
+            relevanceEnabledValueHandler.removeHandler();
+        }
+        if (relevanceEnabledIfValueHandler != null) {
+            relevanceEnabledIfValueHandler.removeHandler();
         }
     }
 
@@ -135,8 +142,8 @@ public class PropertiesPresenter {
         view.getRequired().setValue(formField.isRequired());
         view.getVisible().setValue(formField.isVisible());
 
-        setSkipState(formField);
-        skipButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
+        setRelevanceState(formField, true);
+        relevanceButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 SkipDialog dialog = new SkipDialog(fieldWidgetContainer, PropertiesPresenter.this);
@@ -184,6 +191,19 @@ public class PropertiesPresenter {
                 fieldWidgetContainer.syncWithModel();
             }
         });
+        relevanceEnabledValueHandler = view.getRelevanceEnabled().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
+                formField.setRelevanceConditionExpression(null);
+                setRelevanceState(formField, false);
+            }
+        });
+        relevanceEnabledIfValueHandler = view.getRelevanceEnabledIf().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
+                setRelevanceState(formField, false);
+            }
+        });
 
         ResourceLocator locator = fieldWidgetContainer.getFormDesigner().getResourceLocator();
         currentDesignWidget = new SimpleFormPanel(locator, new VerticalFieldContainer.Factory(),
@@ -199,7 +219,7 @@ public class PropertiesPresenter {
                 fieldWidgetContainer.syncWithModel();
             }
         };
-        if(formField.getType() instanceof ParametrizedFieldType) {
+        if (formField.getType() instanceof ParametrizedFieldType) {
             ParametrizedFieldType parametrizedType = (ParametrizedFieldType) formField.getType();
             currentDesignWidget.asWidget().setVisible(true);
             currentDesignWidget.show(Resources.createResource(parametrizedType.getParameters()));
@@ -210,15 +230,23 @@ public class PropertiesPresenter {
         view.getPanel().add(currentDesignWidget);
     }
 
-    public void setSkipState(FormField formField) {
-        view.getRelevanceState().setText(formField.hasRelevanceConditionExpression() ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
-        view.getRelevanceExpression().setInnerText(formField.getRelevanceConditionExpression());
-
-        if (formField.hasRelevanceConditionExpression()) {
-            view.getRelevanceExpression().removeClassName("hide");
-        } else if (!view.getRelevanceExpression().getClassName().contains("hide")) {
-            view.getRelevanceExpression().addClassName("hide");
+    public void setRelevanceState(FormField formField, boolean setRadioButtonsState) {
+        if (setRadioButtonsState) {
+            if (formField.hasRelevanceConditionExpression()) {
+                view.getRelevanceEnabledIf().setValue(true);
+            } else {
+                view.getRelevanceEnabled().setValue(true);
+            }
         }
+        view.getRelevanceButton().setEnabled(view.getRelevanceEnabledIf().getValue());
+
+//        view.getRelevanceState().setText(formField.hasRelevanceConditionExpression() ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
+//        view.getRelevanceExpression().setInnerText(formField.getRelevanceConditionExpression());
+//        if (formField.hasRelevanceConditionExpression()) {
+//            view.getRelevanceExpression().removeClassName("hide");
+//        } else if (!view.getRelevanceExpression().getClassName().contains("hide")) {
+//            view.getRelevanceExpression().addClassName("hide");
+//        }
     }
 
     public void show(final HeaderPresenter headerPresenter) {
