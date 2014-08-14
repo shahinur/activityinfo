@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import static org.activityinfo.server.endpoint.odk.OdkHelper.convertRelevanceConditionExpression;
@@ -85,6 +86,7 @@ public class FormResource {
 
         FormClass formClass = FormClass.fromResource(resource);
         List<FormField> formFields = formClass.getFields();
+        Set<String> fieldsSet = OdkHelper.extractFieldsSet(formFields);
 
         Html html = new Html();
         html.head = new Head();
@@ -118,7 +120,7 @@ public class FormResource {
             if (formField.isReadOnly()) bind.readonly = "true()";
             //TODO Fix this
             //bind.calculate = formField.getExpression();
-            bind.relevant = convertRelevanceConditionExpression(formField.getRelevanceConditionExpression());
+            bind.relevant = convertRelevanceConditionExpression(formField.getRelevanceConditionExpression(), fieldsSet);
             if (formField.isRequired()) bind.required = "true()";
             html.head.model.bind.add(bind);
         }
