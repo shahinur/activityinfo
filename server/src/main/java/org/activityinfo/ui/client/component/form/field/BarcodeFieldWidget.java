@@ -15,8 +15,6 @@ public class BarcodeFieldWidget implements FormFieldWidget<BarcodeValue> {
 
     private final TextBox box;
 
-    interface BarcodeFieldWidgetUiBinder extends UiBinder<HTMLPanel, BarcodeFieldWidget> {
-    }
     private static final String PLACEHOLDER_TEXT = "ABCDEF0123456";
 
     public BarcodeFieldWidget(final ValueUpdater<BarcodeValue> valueUpdater) {

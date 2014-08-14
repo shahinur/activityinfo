@@ -3,7 +3,7 @@ package org.activityinfo.server.util.blob;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.PublicCertificate;
 import com.google.common.base.Strings;
-import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.service.DeploymentConfiguration;
 
 import java.io.File;
 import java.io.FileInputStream;

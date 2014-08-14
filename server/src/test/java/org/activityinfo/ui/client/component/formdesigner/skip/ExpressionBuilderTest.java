@@ -22,7 +22,7 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  */
 
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
+import org.activityinfo.model.expr.functions.BooleanFunctions;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;

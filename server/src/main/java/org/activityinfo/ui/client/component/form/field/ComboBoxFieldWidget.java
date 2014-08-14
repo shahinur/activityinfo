@@ -63,10 +63,6 @@ public class ComboBoxFieldWidget implements ReferenceFieldWidget {
         });
     }
 
-    public List<FormInstance> getRange() {
-        return range;
-    }
-
     @Override
     public void setReadOnly(boolean readOnly) {
         dropBox.setEnabled(!readOnly);

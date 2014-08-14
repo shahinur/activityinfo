@@ -6,5 +6,4 @@ import org.activityinfo.model.type.ReferenceValue;
 import java.util.List;
 
 public interface ReferenceFieldWidget extends FormFieldWidget<ReferenceValue> {
-    List<FormInstance> getRange();
 }

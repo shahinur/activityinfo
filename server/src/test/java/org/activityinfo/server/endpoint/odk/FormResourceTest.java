@@ -7,7 +7,7 @@ import com.google.common.io.Resources;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.endpoint.odk.xform.Html;
@@ -38,7 +38,7 @@ public class FormResourceTest extends CommandTestCase2 {
     public void setUp() throws IOException {
         ResourceLocatorSync resourceLocator = new ResourceLocatorSync(getDispatcherSync());
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
-        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(table);
+        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(new ReferenceProvider());
         resource = new FormResource(resourceLocator, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory,
                 new TestAuthenticationTokenService());
     }

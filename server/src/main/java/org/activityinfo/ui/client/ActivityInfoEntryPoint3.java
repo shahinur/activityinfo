@@ -19,7 +19,7 @@ import org.activityinfo.legacy.client.remote.cache.CacheManager;
 import org.activityinfo.legacy.client.remote.cache.CachingDispatcher;
 import org.activityinfo.legacy.client.remote.cache.SchemaCache;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.RemoteCommandService;
 import org.activityinfo.legacy.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.ui.client.chrome.LeftPanel;

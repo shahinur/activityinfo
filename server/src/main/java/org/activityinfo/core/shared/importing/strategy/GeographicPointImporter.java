@@ -9,6 +9,7 @@ import org.activityinfo.model.type.geo.AiLatLng;
 import org.activityinfo.core.shared.type.converter.CoordinateAxis;
 import org.activityinfo.core.shared.type.converter.CoordinateFormatException;
 import org.activityinfo.core.shared.type.converter.CoordinateParser;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.promise.Promise;
 
 import java.util.Arrays;
@@ -91,7 +92,7 @@ public class GeographicPointImporter implements FieldImporter {
         if (isLatOk && isLonOk) {
             double latitude = parseCoordinate(row, 0);
             double longitude = parseCoordinate(row, 1);
-            instance.set(fieldId, new AiLatLng(latitude, longitude));
+            instance.set(fieldId, new GeoPoint(latitude, longitude));
             return true;
         }
         return false;

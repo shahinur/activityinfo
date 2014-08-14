@@ -3477,6 +3477,9 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Relevance")
     String relevance();
 
+    @DefaultStringValue("Form Category")
+    String formCategory();
+
     @DefaultStringValue("Define IF")
     String defineRelevanceLogic();
 
@@ -3486,20 +3489,22 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Visible")
     String visible();
 
-    @DefaultStringValue("And")
+    @DefaultStringValue("and")
     String and();
 
-
-    @DefaultStringValue("Or")
+    @DefaultStringValue("or ")
     String or();
 
-    @DefaultStringValue("Always applicable")
-    String relevanceEnabled();
+    @DefaultStringValue("Search for location to add...")
+    String searchForLocationToAdd();
 
-    @DefaultStringValue("Applicable IF (to define)")
-    String relevanceEnabledIf();
+    @DefaultStringValue("Sorry, your permissions have changed and you are no longer authorized to perform this action.")
+    @Key("permissionChangedError")
+    String permissionChangedError();
 
-    @DefaultStringValue("This form field will only applicable based on the answer of another form field. " +
-            "Please define the relevance or applicability of the form field.")
-    String relevanceWelcomeText();
+    @DefaultStringValue("Open Form Designer")
+    String openFormDesigner();
+
+    @DefaultStringValue("Open Table")
+    String openTable();
 }

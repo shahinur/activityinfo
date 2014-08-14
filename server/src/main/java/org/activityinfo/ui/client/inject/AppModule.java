@@ -37,7 +37,7 @@ import org.activityinfo.legacy.client.remote.cache.CachingDispatcher;
 import org.activityinfo.legacy.client.state.GxtStateProvider;
 import org.activityinfo.legacy.client.state.StateProvider;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.LoggingEventBus;

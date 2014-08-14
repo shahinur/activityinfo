@@ -3,7 +3,7 @@ package org.activityinfo.server.endpoint.odk;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -19,7 +19,6 @@ import org.activityinfo.server.endpoint.odk.xform.InstanceId;
 import org.activityinfo.server.endpoint.odk.xform.Meta;
 import org.activityinfo.server.endpoint.odk.xform.Model;
 import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.service.store.ResourceStore;
 
 import javax.inject.Provider;
 import javax.ws.rs.*;

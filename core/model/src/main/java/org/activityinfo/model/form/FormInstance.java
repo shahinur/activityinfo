@@ -28,6 +28,8 @@ import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.geo.AiLatLng;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
@@ -36,6 +38,7 @@ import org.activityinfo.model.type.time.LocalDate;
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -167,6 +170,16 @@ public class FormInstance implements IsResource {
         return this;
     }
 
+    public FormInstance set(@NotNull ResourceId fieldId, AiLatLng latLng) {
+        propertyBag.set(fieldId, new GeoPoint(latLng.getLat(), latLng.getLng()));
+        return this;
+    }
+
+
+    public void set(@NotNull ResourceId fieldId, Set<ResourceId> references) {
+        set(fieldId, new ReferenceValue(references));
+    }
+
     public FieldValue get(ResourceId fieldId) {
         Object value = propertyBag.get(fieldId.asString());
         if(value == null) {
@@ -183,6 +196,29 @@ public class FormInstance implements IsResource {
             return new Quantity((Double) value);
         } else {
             throw new UnsupportedOperationException(fieldId.asString() + " = " + value);
+        }
+    }
+
+
+    public void set(ResourceId fieldId, Object value) {
+        if(value instanceof Date) {
+            set(fieldId, new LocalDate((Date)value));
+        } else if(value instanceof com.bedatadriven.rebar.time.calendar.LocalDate) {
+            com.bedatadriven.rebar.time.calendar.LocalDate rebarDate = (com.bedatadriven.rebar.time.calendar.LocalDate) value;
+            set(fieldId, new LocalDate(rebarDate.getYear(), rebarDate.getMonthOfYear(), rebarDate.getDayOfMonth()));
+        } else if(value instanceof String) {
+            set(fieldId, (String)value);
+        } else if(value instanceof Number) {
+            set(fieldId, ((Number)value).doubleValue());
+        } else if(value instanceof AiLatLng) {
+            AiLatLng latLng = (AiLatLng) value;
+            set(fieldId, new GeoPoint(latLng.getLat(), latLng.getLng()));
+        } else if(value instanceof Boolean) {
+            set(fieldId, value == Boolean.TRUE);
+        } else if(value instanceof FieldValue) {
+            set(fieldId, (FieldValue)value);
+        } else {
+            throw new UnsupportedOperationException(value.getClass().getName());
         }
     }
 

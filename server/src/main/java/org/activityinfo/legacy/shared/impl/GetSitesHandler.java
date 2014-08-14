@@ -760,16 +760,17 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             @Override
             public void onSuccess(SqlTransaction tx, final SqlResultSet results) {
                 Log.trace("Received results for join indicators");
-                for(int activityId : activityIds) {
-                    IndicatorSymbolResolver symbolResolver = new IndicatorSymbolResolver(activityId, results);
-                    for (SiteDTO site : siteMap.values()) {
-                        if (site.getActivityId() == symbolResolver.getActivityId()) {
-                            symbolResolver.setSite(site);
-                            symbolResolver.populateCalculatedIndicators();
-                        }
-                    }
-                }
-
+// TODO: replace with partialevaluator
+//                for(int activityId : activityIds) {
+//                    IndicatorSymbolResolver symbolResolver = new IndicatorSymbolResolver(activityId, results);
+//                    for (SiteDTO site : siteMap.values()) {
+//                        if (site.getActivityId() == symbolResolver.getActivityId()) {
+//                            symbolResolver.setSite(site);
+//                            symbolResolver.populateCalculatedIndicators();
+//                        }
+//                    }
+//                }
+//
                 complete.onSuccess(null);
             }
         });
