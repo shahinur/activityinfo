@@ -44,7 +44,7 @@ public class MySqlResourceStoreTest {
         UpdateResult divACreationResult = environment.getStore()
                 .put(environment.getUser(), divA.getId(), divA.asResource());
 
-        assertThat(divACreationResult, hasProperty("commitStatus", equalTo(CommitStatus.COMMITTED)));
+        assertThat(divACreationResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
         Resource resource = environment.getStore().get(environment.getUser(), divA.getId());
         assertThat(resource.getString(FolderClass.LABEL_FIELD_ID.asString()), equalTo("Division A"));

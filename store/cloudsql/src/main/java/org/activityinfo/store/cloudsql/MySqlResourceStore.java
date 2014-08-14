@@ -99,7 +99,7 @@ public class MySqlResourceStore implements ResourceStore {
 
     @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
-        return put(user, resource);
+        return put(user, resource.getId(), resource);
     }
 
     @Override
