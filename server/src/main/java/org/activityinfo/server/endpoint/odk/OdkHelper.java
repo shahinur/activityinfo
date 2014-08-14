@@ -1,5 +1,6 @@
 package org.activityinfo.server.endpoint.odk;
 
+import com.google.common.collect.Sets;
 import org.activityinfo.core.shared.expr.ConstantExpr;
 import org.activityinfo.core.shared.expr.ExprNode;
 import org.activityinfo.core.shared.expr.ExprParser;
@@ -7,12 +8,14 @@ import org.activityinfo.core.shared.expr.FunctionCallNode;
 import org.activityinfo.core.shared.expr.GroupExpr;
 import org.activityinfo.core.shared.expr.SymbolExpr;
 import org.activityinfo.core.shared.expr.functions.ExprFunction;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.List;
+import java.util.Set;
 
 class OdkHelper {
     static String toAbsoluteFieldName(String name) {
@@ -38,12 +41,22 @@ class OdkHelper {
         return null;
     }
 
-    static String convertRelevanceConditionExpression(String input) {
-        if (input == null) return null;
-        else return convertExprNodeToStringBuilder(ExprParser.parse(input)).toString();
+    static Set<String> extractFieldsSet(List<FormField> formFields) {
+        Set<String> fieldsSet = Sets.newHashSetWithExpectedSize(formFields.size());
+
+        for (FormField formField : formFields) {
+            fieldsSet.add(formField.getId().asString());
+        }
+
+        return fieldsSet;
     }
 
-    private static StringBuilder convertExprNodeToStringBuilder(ExprNode exprNode) {
+    static String convertRelevanceConditionExpression(String input, Set<String> fieldsSet) {
+        if (input == null) return null;
+        else return convertExprNodeToStringBuilder(ExprParser.parse(input), fieldsSet).toString();
+    }
+
+    private static StringBuilder convertExprNodeToStringBuilder(ExprNode exprNode, Set<String> fieldsSet) {
         if (exprNode instanceof ConstantExpr) {
             ConstantExpr constantExpr = (ConstantExpr) exprNode;
             FieldValue value = constantExpr.getValue();
@@ -58,7 +71,7 @@ class OdkHelper {
 
             //TODO Make sure all operators are supported, not just binary ones (this also goes for asExpression())
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(convertExprNodeToStringBuilder(arguments.get(0)));
+            stringBuilder.append(convertExprNodeToStringBuilder(arguments.get(0), fieldsSet));
             stringBuilder.append(" ");
 
             switch (function.getId()) {
@@ -76,7 +89,7 @@ class OdkHelper {
             }
 
             stringBuilder.append(" ");
-            stringBuilder.append(convertExprNodeToStringBuilder(arguments.get(1)));
+            stringBuilder.append(convertExprNodeToStringBuilder(arguments.get(1), fieldsSet));
 
             return stringBuilder;
         } else if (exprNode instanceof GroupExpr) {
@@ -84,14 +97,22 @@ class OdkHelper {
             ExprNode expr = groupExpr.getExpr();
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("(");
-            stringBuilder.append(convertExprNodeToStringBuilder(expr));
+            stringBuilder.append(convertExprNodeToStringBuilder(expr, fieldsSet));
             stringBuilder.append(")");
             return stringBuilder;
         } else if (exprNode instanceof SymbolExpr) {
             SymbolExpr symbolExpr = (SymbolExpr) exprNode;
             String name = symbolExpr.getName();
             StringBuilder stringBuilder = new StringBuilder();
-            addAbsoluteFieldName(stringBuilder, name);
+
+            if (fieldsSet.contains(name)) {
+                addAbsoluteFieldName(stringBuilder, name);
+            } else {
+                stringBuilder.append("'");
+                stringBuilder.append(name);
+                stringBuilder.append("'");
+            }
+
             return stringBuilder;
         } else throw new UnsupportedOperationException();
     }
