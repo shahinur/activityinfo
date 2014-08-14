@@ -17,7 +17,6 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.barcode.BarcodeValue;
-import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.ButtonWithIcon;
 import org.activityinfo.ui.client.widget.TextBox;
@@ -41,14 +40,14 @@ public class BarcodeFieldWidget implements FormFieldWidget<BarcodeValue> {
     @UiField ButtonWithIcon scanButton;
     @UiField InlineLabel statusLabel;
 
-    public BarcodeFieldWidget(final ValueUpdater<TextValue> valueUpdater) {
+    public BarcodeFieldWidget(final ValueUpdater<BarcodeValue> valueUpdater) {
         panel = ourUiBinder.createAndBindUi(this);
 
         this.textBox.getElement().setAttribute("placeholder", PLACEHOLDER_TEXT);
         this.textBox.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
-                valueUpdater.update(TextValue.valueOf(event.getValue()));
+                valueUpdater.update(BarcodeValue.valueOf(event.getValue()));
             }
 
         });
@@ -60,8 +59,8 @@ public class BarcodeFieldWidget implements FormFieldWidget<BarcodeValue> {
         });
     }
 
-    private TextValue getValue() {
-        return TextValue.valueOf(BarcodeFieldWidget.this.textBox.getValue());
+    private BarcodeValue getValue() {
+        return BarcodeValue.valueOf(BarcodeFieldWidget.this.textBox.getValue());
     }
 
     @Override
