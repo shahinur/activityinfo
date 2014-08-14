@@ -1,6 +1,8 @@
 package org.activityinfo.model.resource;
 
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import javax.annotation.Nonnull;
 import java.util.Date;
 
