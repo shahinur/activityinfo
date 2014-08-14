@@ -2,10 +2,7 @@ package org.activityinfo.core.shared.expr.eval;
 
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.FieldValues;
+import org.activityinfo.model.type.*;
 
 public class StaticField implements ValueSource {
 
@@ -17,10 +14,16 @@ public class StaticField implements ValueSource {
 
     @Override
     public FieldValue getValue(Resource instance, EvalContext context) {
-        return FieldValues.readFieldValueIfType(
+        FieldValue fieldValue = FieldValues.readFieldValueIfType(
                 instance,
                 field.getId().asString(),
                 field.getType().getTypeClass());
+        if (fieldValue != null) {
+            return fieldValue;
+        } else {
+            // we don't want to get NPE in ComparisonOperator
+            return NullFieldValue.INSTANCE;
+        }
     }
 
     @Override

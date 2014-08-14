@@ -3477,7 +3477,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Relevance")
     String relevance();
 
-    @DefaultStringValue("Define relevance")
+    @DefaultStringValue("Define IF")
     String defineRelevanceLogic();
 
     @DefaultStringValue("Defined")
@@ -3486,11 +3486,20 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Visible")
     String visible();
 
-    @DefaultStringValue("and")
+    @DefaultStringValue("And")
     String and();
 
-    @DefaultStringValue("or ")
+
+    @DefaultStringValue("Or")
     String or();
 
+    @DefaultStringValue("Always applicable")
+    String relevanceEnabled();
 
+    @DefaultStringValue("Applicable IF (to define)")
+    String relevanceEnabledIf();
+
+    @DefaultStringValue("This form field will only applicable based on the answer of another form field. " +
+            "Please define the relevance or applicability of the form field.")
+    String relevanceWelcomeText();
 }

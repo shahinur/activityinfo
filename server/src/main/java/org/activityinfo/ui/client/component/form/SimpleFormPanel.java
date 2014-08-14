@@ -52,7 +52,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private FormClass formClass;
     private ResourceLocator locator;
-    private SkipHandler skipHandler;
+    private RelevanceHandler relevanceHandler;
 
     public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
                            FormFieldWidgetFactory widgetFactory) {
@@ -67,7 +67,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         this.containerFactory = containerFactory;
         this.widgetFactory = widgetFactory;
         this.withScroll = withScroll;
-        this.skipHandler = new SkipHandler(this);
+        this.relevanceHandler = new RelevanceHandler(this);
 
         panel = new FlowPanel();
         panel.setStyleName(FormPanelStyles.INSTANCE.formPanel());
@@ -102,7 +102,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private Promise<Void> buildForm(final FormClass formClass) {
         this.formClass = formClass;
-        this.skipHandler.formClassChanged();
+        this.relevanceHandler.formClassChanged();
 
         try {
             return createWidgets().then(new Function<Void, Void>() {
@@ -156,7 +156,14 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
             container.setValid();
         }
 
-        return Promise.waitAll(tasks);
+        return Promise.waitAll(tasks).then(new Function<Void, Void>() {
+            @Nullable
+            @Override
+            public Void apply(@Nullable Void input) {
+                relevanceHandler.onValueChange(); // invoke relevance handler once values are set
+                return null;
+            }
+        });
     }
 
     private void addFormElements(FormElementContainer container, int depth) {
@@ -177,7 +184,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         if (!Objects.equals(workingInstance.get(field.getId()), newValue)) {
             workingInstance.set(field.getId(), newValue);
             validate(field);
-            skipHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
+            relevanceHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
         }
     }
 

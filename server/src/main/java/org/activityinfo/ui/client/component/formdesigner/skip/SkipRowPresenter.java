@@ -24,6 +24,7 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -64,11 +65,20 @@ public class SkipRowPresenter {
 
         initFormFieldBox();
         initFunction();
-        initValueWidget();
+        initValueWidgetLater();
         initJoinFunction();
     }
 
     // depends on selected field type
+    private void initValueWidgetLater() {
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                initValueWidget();
+            }
+        });
+    }
+
     private void initValueWidget() {
         view.getValueContainer().clear();
 
@@ -88,6 +98,7 @@ public class SkipRowPresenter {
             @Override
             public void onSuccess(FormFieldWidget widget) {
                 valueWidget = widget;
+                view.getValueContainer().clear();
                 view.getValueContainer().add(widget);
 
                 if (rowData != null) {
@@ -97,6 +108,7 @@ public class SkipRowPresenter {
             }
         });
     }
+
 
     private void initFormFieldBox() {
         view.getFormfield().clear();
@@ -114,7 +126,7 @@ public class SkipRowPresenter {
             @Override
             public void onChange(ChangeEvent event) {
                 initFunction();
-                initValueWidget();
+                initValueWidgetLater();
             }
         });
     }
@@ -152,7 +164,7 @@ public class SkipRowPresenter {
         setSelectedValue(view.getJoinFunction(), rowData.getJoinFunction().getId());
         setSelectedValue(view.getFunction(), rowData.getFunction().getId());
         setSelectedValue(view.getFormfield(), rowData.getFormField().getId().asString());
-        initValueWidget();
+        initValueWidgetLater();
     }
 
     private static void setSelectedValue(ListBox listBox, String value) {
