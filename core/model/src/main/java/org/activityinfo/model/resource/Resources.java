@@ -68,10 +68,10 @@ public class Resources {
             String name = property.getKey();
             switch (name) {
                 case "@id":
-                    resource.setId(ResourceId.create(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    resource.setId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
                     break;
                 case "@owner":
-                    resource.setOwnerId(ResourceId.create(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    resource.setOwnerId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
                     break;
                 default:
                     // normal value

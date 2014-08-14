@@ -66,7 +66,7 @@ public class FormClassPageView implements InstancePageView {
 
     public Promise<Void> show(InstanceViewModel view) {
 
-        pageHeader.setPageTitle(view.getInstance().getString(ResourceId.create(FormClass.LABEL_FIELD_ID)));
+        pageHeader.setPageTitle(view.getInstance().getString(ResourceId.valueOf(FormClass.LABEL_FIELD_ID)));
         pageHeader.setIconStyle("fa fa-edit");
 
         for (String tab : tabs.keySet()) {

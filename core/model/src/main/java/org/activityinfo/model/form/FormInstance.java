@@ -110,7 +110,7 @@ public class FormInstance implements IsResource {
         Map<ResourceId, Object> valueMap = Maps.newHashMap();
         for(Object key : propertyBag.getProperties().keySet()) {
             String fieldName = (String)key;
-            ResourceId fieldId = ResourceId.create(fieldName);
+            ResourceId fieldId = ResourceId.valueOf(fieldName);
             Object value = propertyBag.get(fieldName);
 
             if(value instanceof String) {
@@ -128,7 +128,7 @@ public class FormInstance implements IsResource {
     public Map<ResourceId, FieldValue> getFieldValueMap() {
         Map<ResourceId, FieldValue> valueMap = Maps.newHashMap();
         for(Object key : propertyBag.getProperties().keySet()) {
-            ResourceId fieldId = ResourceId.create((String)key);
+            ResourceId fieldId = ResourceId.valueOf((String) key);
             valueMap.put(fieldId, get(fieldId));
         }
         return valueMap;

@@ -21,7 +21,7 @@ public class InstanceLabelTable {
     }
 
     public ResourceId getId(int rowIndex) {
-        return ResourceId.create(idColumn.getString(rowIndex));
+        return ResourceId.valueOf(idColumn.getString(rowIndex));
     }
 
     public String getLabel(int rowIndex) {

@@ -11,21 +11,26 @@ import java.util.Date;
  */
 public final class ResourceId {
 
-    public static final ResourceId ROOT_ID = ResourceId.create("_root");
+    public static final ResourceId ROOT_ID = ResourceId.valueOf("_root");
 
     public static final int RADIX = 10;
     public static long COUNTER = 1;
 
     private final String text;
 
-    public static ResourceId create(@Nonnull String string) {
+    /**
+     * Creates a {@code ResourceId} with the given string value.
+     */
+    public static ResourceId valueOf(@Nonnull String string) {
+        // Note: this method must be named valueOf in order for it to
+        // be used by as @PathParam in JAX-RS methods
         assert string != null;
         return new ResourceId(string);
     }
 
     public static ResourceId generateId() {
-        return create("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
-               Long.toString(COUNTER++, Character.MAX_RADIX));
+        return valueOf("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
+                       Long.toString(COUNTER++, Character.MAX_RADIX));
     }
 
 

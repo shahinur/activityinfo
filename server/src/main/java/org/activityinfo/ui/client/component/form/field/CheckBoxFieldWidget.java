@@ -94,7 +94,7 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
         final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
-                value.add(ResourceId.create(control.getFormValue()));
+                value.add(ResourceId.valueOf(control.getFormValue()));
             }
         }
         return new ReferenceValue(value);
@@ -104,7 +104,7 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
     public Promise<Void> setValue(ReferenceValue value) {
         Set<ResourceId> ids = value.getResourceIds();
         for (CheckBox entry : controls) {
-            ResourceId resourceId = ResourceId.create(entry.getFormValue());
+            ResourceId resourceId = ResourceId.valueOf(entry.getFormValue());
             entry.setValue(ids.contains(resourceId));
         }
         return Promise.done();

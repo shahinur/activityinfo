@@ -10,7 +10,6 @@ import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.TypeRegistry;
 
@@ -42,7 +41,7 @@ class Projector {
     }
 
     private Projection project(Resource resource, List<FieldPath> fieldPaths) {
-        Projection projection = new Projection(resource.getId(), ResourceId.create(resource.getString("classId")));
+        Projection projection = new Projection(resource.getId(), ResourceId.valueOf(resource.getString("classId")));
         for(FieldPath fieldPath : fieldPaths) {
             projection.setValue(fieldPath, getValue(resource, fieldPath));
         }

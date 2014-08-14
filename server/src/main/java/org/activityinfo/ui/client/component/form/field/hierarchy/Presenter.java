@@ -162,7 +162,7 @@ class Presenter {
                         ColumnView label = table.getColumnView("label");
                         ColumnView parent = table.getColumnView("parentId");
                         for(int i=0;i!=table.getNumRows();++i) {
-                            ResourceId nodeId = ResourceId.create(id.getString(i));
+                            ResourceId nodeId = ResourceId.valueOf(id.getString(i));
                             String nodeLabel = label.getString(i);
 
                             if(level.isRoot()) {

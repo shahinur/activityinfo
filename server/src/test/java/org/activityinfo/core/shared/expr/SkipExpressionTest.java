@@ -48,8 +48,8 @@ public class SkipExpressionTest {
 
     private static final ResourceId GENDER_FIELD_ID = ResourceId.generateId();
     private static final ResourceId PREGNANT_FIELD_ID = ResourceId.generateId();
-    private static final ResourceId TEXT_FIELD_ID = ResourceId.create("test_text");
-    private static final ResourceId QUANTITY_FIELD_ID = ResourceId.create("test_quantity");
+    private static final ResourceId TEXT_FIELD_ID = ResourceId.valueOf("test_text");
+    private static final ResourceId QUANTITY_FIELD_ID = ResourceId.valueOf("test_quantity");
 
     FormClass formClass;
 
