@@ -1,6 +1,7 @@
 package org.activityinfo.ui.client.component.formdesigner.palette;
 
 import com.google.common.collect.Lists;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.geo.GeoPointType;
@@ -44,6 +45,7 @@ public class FieldTemplates {
         items.add(new TypeClassTemplate(GeoPointType.TYPE_CLASS));
         items.add(new TypeClassTemplate(BarcodeType.TYPE_CLASS));
         items.add(new TypeClassTemplate(ImageType.TYPE_CLASS));
+        items.add(new TypeClassTemplate(CalculatedFieldType.TYPE_CLASS));
 
         return items;
     }
