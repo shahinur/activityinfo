@@ -1,7 +1,9 @@
-package org.activityinfo.model.type;
+package org.activityinfo.model.type.expr;
 
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
 
 /**
  * A FieldValue containing a symbolic expression such as "A + B"
@@ -28,5 +30,9 @@ public class ExprValue implements FieldValue, IsRecord {
         return new Record()
                 .set(FieldValue.TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
                 .set("value", expression);
+    }
+
+    public static ExprValue valueOf(String value) {
+        return new ExprValue(value);
     }
 }

@@ -33,6 +33,8 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
@@ -89,6 +91,12 @@ public class FormFieldWidgetFactory {
 
         } else if (type instanceof TextType) {
             return Promise.resolved(new TextFieldWidget(valueUpdater));
+
+        } else if (type instanceof ExprFieldType) {
+            return Promise.resolved(new ExprFieldWidget(valueUpdater));
+
+        } else if (type instanceof CalculatedFieldType) {
+            return Promise.resolved(new CalculatedFieldWidget(valueUpdater));
 
         } else if (type instanceof LocalDateType) {
             return Promise.resolved(new DateFieldWidget(valueUpdater));

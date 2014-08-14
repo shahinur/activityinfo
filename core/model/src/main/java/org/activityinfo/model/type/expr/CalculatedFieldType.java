@@ -1,10 +1,11 @@
-package org.activityinfo.model.type;
+package org.activityinfo.model.type.expr;
 
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
+import org.activityinfo.model.type.*;
 
 /**
  * A Value Type that represents a value calculated from a symbolic expression,

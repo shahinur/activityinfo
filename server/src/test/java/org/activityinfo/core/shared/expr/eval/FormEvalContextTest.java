@@ -5,7 +5,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.CalculatedFieldType;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.junit.Test;
 
 public class FormEvalContextTest {

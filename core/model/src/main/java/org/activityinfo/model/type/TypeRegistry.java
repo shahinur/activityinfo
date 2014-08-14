@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
