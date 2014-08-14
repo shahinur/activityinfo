@@ -1,5 +1,6 @@
 package org.activityinfo.model.type.barcode;
 
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.*;
 
 /**
@@ -8,7 +9,7 @@ import org.activityinfo.model.type.*;
 public class BarcodeType implements FieldType {
 
 
-    public static final FieldTypeClass TYPE_CLASS = new FieldTypeClass() {
+    public static final FieldTypeClass TYPE_CLASS = new RecordFieldTypeClass() {
 
         public static final String TYPE_ID = "BARCODE";
 
@@ -25,6 +26,11 @@ public class BarcodeType implements FieldType {
         @Override
         public FieldType createType() {
             return INSTANCE;
+        }
+
+        @Override
+        public FieldValue deserialize(Record record) {
+            return BarcodeValue.fromRecord(record);
         }
     };
 

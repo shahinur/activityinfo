@@ -19,7 +19,6 @@ public class ConstantColumnView implements ColumnView {
         this.numRows = numRows;
     }
 
-
     @Override
     public ColumnType getType() {
         return type;
