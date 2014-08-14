@@ -7,7 +7,7 @@ import com.google.common.io.Resources;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.service.auth.AuthenticatedUser;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.endpoint.odk.xform.Html;

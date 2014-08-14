@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.sun.jersey.multipart.FormDataParam;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
@@ -11,7 +12,6 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.command.ResourceLocatorSync;
-import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -80,10 +80,11 @@ public class FormSubmissionResource {
                     int userId;
                     int formClassId;
                     AuthenticationToken authenticationToken = new AuthenticationToken(tokenString);
-
+                    AuthenticatedUser user;
                     try {
                         userId = authenticationTokenService.getUserId(authenticationToken);
                         formClassId = authenticationTokenService.getFormClassId(authenticationToken);
+                        user = new AuthenticatedUser("XYZ", userId, "@");
                     } catch (EntityNotFoundException entityNotFoundException) {
                         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
                     } catch (RuntimeException runtimeException) {
@@ -92,7 +93,7 @@ public class FormSubmissionResource {
                         throw new RuntimeException(e);
                     }
 
-                    Resource resource = locator.get(CuidAdapter.activityFormClass(formClassId));
+                    Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
                     FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
 

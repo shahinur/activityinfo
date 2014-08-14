@@ -32,7 +32,7 @@ import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.activityinfo.service.auth.AuthenticatedUser;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.report.output.StorageProvider;
 

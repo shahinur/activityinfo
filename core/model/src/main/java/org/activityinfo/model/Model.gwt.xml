@@ -28,7 +28,7 @@
   <inherits name="org.activityinfo.Promises"/>
   <inherits name="com.google.gwt.json.JSON"/>
 
-  <!-- Include generated sources -->
+  <source path="auth"/>
   <source path="shared"/>
   <source path="form"/>
   <source path="formTree"/>
@@ -37,6 +37,7 @@
   <source path="type"/>
   <source path="table"/>
   <source path="type"/>
+  <source path="system"/>
   <source path="legacy"/>
 
 </module>

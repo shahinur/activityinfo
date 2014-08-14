@@ -30,9 +30,9 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.remote.RemoteDispatcher;
 import org.activityinfo.legacy.client.state.GxtStateProvider;
 import org.activityinfo.legacy.client.state.StateProvider;
-import org.activityinfo.service.auth.AnonymousUser;
-import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.RemoteCommandServiceAsync;
+import org.activityinfo.model.auth.AnonymousUser;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.LoggingEventBus;
 

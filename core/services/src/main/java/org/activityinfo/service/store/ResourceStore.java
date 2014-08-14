@@ -1,5 +1,6 @@
 package org.activityinfo.service.store;
 
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 
@@ -18,4 +19,8 @@ public interface ResourceStore {
     Resource get(ResourceId resourceId);
 
     void createResource(ResourceId resourceId, Resource resource);
+
+    Resource get(AuthenticatedUser user, ResourceId resourceId);
+
+    void put(AuthenticatedUser user, Resource resource);
 }

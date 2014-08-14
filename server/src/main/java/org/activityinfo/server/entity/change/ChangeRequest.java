@@ -1,6 +1,6 @@
 package org.activityinfo.server.entity.change;
 
-import org.activityinfo.service.auth.AuthenticatedUser;
+import org.activityinfo.model.auth.AuthenticatedUser;
 
 import java.util.Set;
 

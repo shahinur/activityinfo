@@ -6,6 +6,7 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.remote.AbstractDispatcher;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -28,6 +29,10 @@ public class ResourceLocatorSync {
     }
 
     public void persist(FormInstance formInstance) {
+        throw new UnsupportedOperationException();
+    }
+
+    public Resource get(AuthenticatedUser user, ResourceId resourceId) {
         throw new UnsupportedOperationException();
     }
 
