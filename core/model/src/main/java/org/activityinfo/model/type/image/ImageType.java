@@ -63,8 +63,8 @@ public class ImageType implements ParametrizedFieldType {
 
         @Override
         public ImageType deserializeType(Record typeParameters) {
-            Cardinality cardinality = Cardinality.valueOf(typeParameters.getString("cardinality"));
-            return new ImageType(cardinality);
+            EnumFieldValue enumFieldValue = (EnumFieldValue) EnumType.TYPE_CLASS.deserialize(typeParameters.getRecord("cardinality"));
+            return new ImageType(Cardinality.valueOf(enumFieldValue.getValueId().asString()));
         }
 
         @Override
