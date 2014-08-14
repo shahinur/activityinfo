@@ -1,6 +1,8 @@
 package org.activityinfo.model.resource;
 
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.base.Joiner;
 
 /**
@@ -44,6 +46,7 @@ public final class Resource extends PropertyBag<Resource> {
      * Returns the Resource's globally-unique ID.
      *
      */
+    @JsonGetter
     public ResourceId getId() {
         return id;
     }
@@ -69,6 +72,7 @@ public final class Resource extends PropertyBag<Resource> {
         return this;
     }
 
+    @JsonSetter
     public Resource setId(ResourceId id) {
         if(id == null) {
             throw new NullPointerException("id");
@@ -81,6 +85,7 @@ public final class Resource extends PropertyBag<Resource> {
      * Returns the id of the {@code Resource} which owns this {@code Resource}
      *
      */
+    @JsonGetter
     public ResourceId getOwnerId() {
         return owner;
     }
@@ -99,6 +104,7 @@ public final class Resource extends PropertyBag<Resource> {
         return this;
     }
 
+    @JsonSetter
     public Resource setOwnerId(ResourceId owningResourceId) {
         if(owningResourceId == null) {
             throw new NullPointerException("owner");
