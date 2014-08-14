@@ -2,11 +2,9 @@ package org.activityinfo.service.store;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.activityinfo.model.resource.ResourceId;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -38,9 +36,9 @@ public class ResourceNode {
     }
 
     public ResourceNode(JsonObject jsonObject) {
-        this.id = ResourceId.create(jsonObject.get("id").getAsString());
+        this.id = ResourceId.valueOf(jsonObject.get("id").getAsString());
         if(jsonObject.has("classId")) {
-            this.classId = ResourceId.create(jsonObject.get("classId").getAsString());
+            this.classId = ResourceId.valueOf(jsonObject.get("classId").getAsString());
         }
         if(jsonObject.has("children")) {
             JsonArray childArray = jsonObject.get("children").getAsJsonArray();
@@ -141,8 +139,8 @@ public class ResourceNode {
     }
 
     public static ResourceNode fromJson(JsonObject jsonObject) {
-        ResourceId id = ResourceId.create(jsonObject.get("id").getAsString());
-        ResourceId classId = ResourceId.create(jsonObject.get("classId").getAsString());
+        ResourceId id = ResourceId.valueOf(jsonObject.get("id").getAsString());
+        ResourceId classId = ResourceId.valueOf(jsonObject.get("classId").getAsString());
         ResourceNode node = new ResourceNode(id, classId);
         node.setLabel(jsonObject.get("label").getAsString());
         node.setVersion(jsonObject.get("version").getAsLong());

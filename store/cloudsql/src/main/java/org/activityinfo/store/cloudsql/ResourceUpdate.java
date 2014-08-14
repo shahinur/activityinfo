@@ -163,7 +163,7 @@ public class ResourceUpdate {
                         // owners can get deleted
                         break;
                     }
-                    ownerId = ResourceId.create(rs.getString(1));
+                    ownerId = ResourceId.valueOf(rs.getString(1));
                 }
             }
 
@@ -173,7 +173,7 @@ public class ResourceUpdate {
 
     private String getLabel(Resource resource) {
         if(resource.has("classId")) {
-            ResourceId classId = ResourceId.create(resource.getString("classId"));
+            ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
             if(classId.equals(FormClass.CLASS_ID)) {
                 return resource.getString(FormClass.LABEL_FIELD_ID);
             } else if(classId.equals(FolderClass.CLASS_ID)) {

@@ -37,7 +37,7 @@ public class CalculatedFieldType implements ParametrizedFieldType {
         @Override
         public FormClass getParameterFormClass() {
 
-            FormField exprField = new FormField(ResourceId.create("expression"));
+            FormField exprField = new FormField(ResourceId.valueOf("expression"));
             exprField.setLabel("Expression");
             exprField.setType(ExprFieldType.INSTANCE);
 
