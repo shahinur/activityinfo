@@ -6,13 +6,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.auth.AuthenticatedUser;
-import org.activityinfo.service.store.*;
+import org.activityinfo.service.store.ResourceNotFound;
+import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.service.store.ResourceTreeRequest;
+import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
 
 import javax.inject.Provider;
@@ -21,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import static org.activityinfo.store.cloudsql.QueryBuilder.*;
+import static org.activityinfo.store.cloudsql.QueryBuilder.where;
 
 @Singleton
 public class MySqlResourceStore implements ResourceStore {

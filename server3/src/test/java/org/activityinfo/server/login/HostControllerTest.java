@@ -23,7 +23,7 @@ package org.activityinfo.server.login;
  */
 
 import com.sun.jersey.api.view.Viewable;
-import org.activityinfo.service.auth.AuthenticatedUser;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.login.model.HostPageModel;
 import org.activityinfo.server.login.model.RootPageModel;

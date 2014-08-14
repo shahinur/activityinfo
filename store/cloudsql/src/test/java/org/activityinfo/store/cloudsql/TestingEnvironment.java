@@ -3,14 +3,10 @@ package org.activityinfo.store.cloudsql;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.auth.AuthenticatedUser;
-import org.junit.rules.TestRule;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 public class TestingEnvironment extends TestWatcher {

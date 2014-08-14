@@ -1,10 +1,10 @@
 package org.activityinfo.ui.client.service;
 
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableServiceAsync;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.service.store.ResourceStore;
 
 public class TestTableServiceAsync implements TableServiceAsync {

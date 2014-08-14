@@ -31,7 +31,7 @@ import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import org.activityinfo.service.auth.AuthenticatedUser;
+import org.activityinfo.model.auth.AuthenticatedUser;
 
 public class LocalModule extends AbstractGinModule {
 

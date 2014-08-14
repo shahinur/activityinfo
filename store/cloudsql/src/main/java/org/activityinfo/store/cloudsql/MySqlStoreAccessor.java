@@ -1,10 +1,10 @@
 package org.activityinfo.store.cloudsql;
 
 import com.google.common.collect.Sets;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
-import org.activityinfo.service.auth.AuthenticatedUser;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreAccessor;
 
