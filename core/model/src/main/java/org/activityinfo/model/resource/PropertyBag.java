@@ -1,10 +1,14 @@
 package org.activityinfo.model.resource;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.primitive.BooleanFieldValue;
+import org.activityinfo.model.type.primitive.TextValue;
 
 import javax.annotation.Nonnull;
+import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -197,6 +201,28 @@ public class PropertyBag<T extends PropertyBag> {
         }
         return (T)this;
     }
+
+
+    public PropertyBag<T> set(@NotNull ResourceId fieldId, FieldValue fieldValue) {
+        Preconditions.checkNotNull(fieldId);
+        if (fieldValue == null) {
+            remove(fieldId.asString());
+
+        } else if (fieldValue instanceof TextValue) {
+            set(fieldId.asString(), ((TextValue) fieldValue).toString());
+
+        } else if (fieldValue instanceof BooleanFieldValue) {
+            set(fieldId.asString(), fieldValue == BooleanFieldValue.TRUE);
+
+        } else if(fieldValue instanceof IsRecord) {
+            set(fieldId.asString(), ((IsRecord) fieldValue).asRecord());
+
+        } else {
+            throw new UnsupportedOperationException(fieldId + " = " + fieldValue);
+        }
+        return this;
+    }
+
 
 
     public void remove(String fieldName) {

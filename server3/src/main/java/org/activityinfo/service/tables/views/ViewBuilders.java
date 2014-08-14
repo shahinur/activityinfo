@@ -4,6 +4,8 @@ import com.google.common.base.Optional;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -29,7 +31,9 @@ public class ViewBuilders {
 
     private static ColumnViewBuilder createStringBuilder(ResourceId fieldId, FieldType fieldType) {
 
-        if (fieldType instanceof TextType) {
+        if (fieldType instanceof TextType ||
+            fieldType instanceof BarcodeType ||
+            fieldType instanceof NarrativeType) {
             return new StringColumnBuilder(fieldId);
 
         } else if (fieldType instanceof EnumType) {

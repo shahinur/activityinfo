@@ -17,11 +17,9 @@
           <img class="{style.indicator} {style.loading}" src="{bundle.loadingIcon.getSafeUri}" alt="Loading..."
                ui:field="loadingImage"/>
         </g:HTMLPanel>
-        <g:HTMLPanel ui:field="downloadButtonContainer" visible="false">
-          <g:Button addStyleNames="btn btn-default btn-xs" ui:field="downloadButton">
-            <span class='{icons.arrowDown}'/>
-          </g:Button>
-        </g:HTMLPanel>
+        <g:Button addStyleNames="btn btn-default btn-xs" ui:field="downloadButton" visible="false">
+          <span class='{icons.arrowDown}'/>
+        </g:Button>
         <g:Button addStyleNames="btn btn-default btn-xs pull-right" ui:field="addButton">
           <span class="{icons.add}"/>
         </g:Button>

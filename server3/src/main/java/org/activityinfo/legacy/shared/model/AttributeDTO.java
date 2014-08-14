@@ -23,10 +23,9 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 /**
  * One-to-One DTO for the {@link org.activityinfo.legacy.shared.model.AttributeDTO}
@@ -35,7 +34,7 @@ import org.codehaus.jackson.map.annotate.JsonView;
  * @deprecated Will be replaced with {@link org.activityinfo.model.type.enumerated.EnumValue}
  */
 @Deprecated
-@JsonAutoDetect(JsonMethod.NONE)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public final class AttributeDTO extends BaseModelData implements EntityDTO {
 
     public static final String PROPERTY_PREFIX = "ATTRIB";

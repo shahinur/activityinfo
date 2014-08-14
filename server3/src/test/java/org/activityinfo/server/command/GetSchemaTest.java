@@ -26,26 +26,27 @@ import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.ui.client.service.TestResourceLocator;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.ParentCriteria;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.promise.Promise;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.AdminLevelDTO;
+import org.activityinfo.legacy.shared.model.LockedPeriodSet;
+import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
+import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -102,8 +103,6 @@ public class GetSchemaTest extends CommandTestCase2 {
         assertTrue("CountryId is not null",
                 schema.getCountries().get(0).getAdminLevels().get(0).getCountryId() != 0);
 
-        assertThat("deleted attribute is not present",
-                schema.getActivityById(1).getAttributeGroups().size(), equalTo(3));
     }
 
     @Test
@@ -159,102 +158,16 @@ public class GetSchemaTest extends CommandTestCase2 {
         assertTrue("STEFAN does not have access to RRM", schema.getDatabaseById(2) == null);
     }
 
-    @Test
-    public void testIndicators() throws CommandException {
-
-        setUser(1); // Alex
-
-        SchemaDTO schema = execute(new GetSchema());
-
-        assertTrue("no indicators case", schema.getActivityById(2).getIndicators().size() == 0);
-
-        ActivityDTO nfi = schema.getActivityById(1);
-
-        assertThat("indicators are present", nfi.getIndicators().size(),
-                equalTo(5));
-
-        IndicatorDTO test = nfi.getIndicatorById(2);
-        assertThat(test, Matchers.hasProperty("name", equalTo("baches")));
-        assertThat(test, Matchers.hasProperty("aggregation", equalTo(IndicatorDTO.AGGREGATE_SUM)));
-        assertThat(test, Matchers.hasProperty("category", equalTo("outputs")));
-        assertThat(test, Matchers.hasProperty("listHeader", equalTo("header")));
-        assertThat(test, Matchers.hasProperty("description", equalTo("desc")));
-    }
-
-    @Test
-    public void testAttributes() throws CommandException {
-
-        setUser(1); // Alex
-
-        SchemaDTO schema = execute(new GetSchema());
-
-        assertTrue("no attributes case", schema.getActivityById(3).getAttributeGroups().size() == 0);
-
-        ActivityDTO nfi = schema.getActivityById(1);
-        AttributeDTO[] attributes = nfi.getAttributeGroupById(1)
-                .getAttributes().toArray(new AttributeDTO[0]);
-
-        assertTrue("attributes are present", attributes.length == 2);
-
-        AttributeDTO test = nfi.getAttributeById(1);
-
-        assertEquals("property:name", "Catastrophe Naturelle", test.getName());
-    }
-
-    @Test
-    public void toCSV() {
-        SchemaDTO schema = execute(new GetSchema());
-
-        SchemaCsvWriter writer = new SchemaCsvWriter();
-        writer.write(schema.getDatabaseById(1));
-
-        System.out.println(writer.toString());
-    }
 
     @Test
     public void newApiTest() throws IOException {
 
-        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
+        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.json");
 
         Promise<FormClass> userForm = locator.getFormClass(CuidAdapter.activityFormClass(1));
 
         assertThat(userForm, resolvesTo(CoreMatchers.<FormClass>notNullValue()));
     }
 
-    @Test
-    public void folderTest() throws IOException {
-        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
 
-        List<FormInstance> folders = assertResolves(locator.queryInstances(
-                new CriteriaIntersection(
-                    ParentCriteria.isChildOf(ResourceId.create("home")),
-                    new ClassCriteria(FolderClass.CLASS_ID))));
-
-        for(FormInstance folder : folders) {
-            System.out.println(folder.getId() + " " + folder.getString(FolderClass.LABEL_FIELD_ID));
-        }
-
-        assertThat(folders.size(), equalTo(3));
-    }
-
-    @Test
-    public void childFolderTest() throws IOException {
-        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.db.xml");
-
-        InstanceQuery query = InstanceQuery
-                .select(ApplicationProperties.LABEL_PROPERTY,
-                        ApplicationProperties.DESCRIPTION_PROPERTY,
-                        ApplicationProperties.CLASS_PROPERTY)
-                .where(ParentCriteria.isChildOf(CuidAdapter.cuid(CuidAdapter.DATABASE_DOMAIN, 1)))
-                .build();
-
-        List<Projection> children = assertResolves(locator.query(query));
-
-        System.out.println("Results: ");
-        for(Projection child : children) {
-            System.out.println(child.getStringValue(ApplicationProperties.LABEL_PROPERTY));
-        }
-
-        assertThat(children.size(), equalTo(2));
-    }
 }
