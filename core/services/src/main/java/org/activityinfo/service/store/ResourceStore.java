@@ -1,15 +1,15 @@
 package org.activityinfo.service.store;
 
 import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.auth.AuthenticatedUser;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 

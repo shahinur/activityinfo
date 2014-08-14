@@ -1,4 +1,4 @@
-package org.activityinfo.service.store;
+package org.activityinfo.model.resource;
 
 /**
  * Partial view of a set of {@code Resource}s, organized into a

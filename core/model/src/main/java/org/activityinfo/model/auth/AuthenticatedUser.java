@@ -1,4 +1,4 @@
-package org.activityinfo.service.auth;
+package org.activityinfo.model.auth;
 
 /*
  * #%L

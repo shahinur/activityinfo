@@ -3,9 +3,9 @@ package org.activityinfo.store.cloudsql;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.ResourceNode;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.service.store.ResourceTree;
 import org.activityinfo.service.store.ResourceTreeRequest;
 
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * Constructs a {@link org.activityinfo.service.store.ResourceTree} in response to
+ * Constructs a {@link org.activityinfo.model.resource.ResourceTree} in response to
  * a {@link org.activityinfo.service.store.ResourceTreeRequest}.
  */
 public class ResourceTreeBuilder {
