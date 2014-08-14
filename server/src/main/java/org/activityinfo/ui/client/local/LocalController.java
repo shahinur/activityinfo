@@ -24,14 +24,11 @@ package org.activityinfo.ui.client.local;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.client.Dispatcher;
@@ -42,16 +39,13 @@ import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.ui.client.AppEvents;
 import org.activityinfo.ui.client.EventBus;
-import org.activityinfo.ui.client.inject.ClientSideAuthProvider;
 import org.activityinfo.ui.client.local.LocalStateChangeEvent.State;
 import org.activityinfo.ui.client.local.capability.LocalCapabilityProfile;
-import org.activityinfo.ui.client.local.capability.PermissionRefusedException;
-import org.activityinfo.ui.client.local.sync.*;
+import org.activityinfo.ui.client.local.sync.SyncErrorEvent;
+import org.activityinfo.ui.client.local.sync.SyncErrorType;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 /**
  * This class keeps as much of the offline functionality behind a runAsync
@@ -68,28 +62,21 @@ public class LocalController extends AbstractDispatcher {
     }
 
     private final EventBus eventBus;
-    private final Provider<Synchronizer> synchronizerProvider;
     private UiConstants uiConstants;
     private final Dispatcher remoteDispatcher;
     private final LocalCapabilityProfile capabilityProfile;
-    private final Provider<SyncHistoryTable> historyTable;
 
     private Strategy activeStrategy;
     private Date lastSynced = null;
 
     @Inject
     public LocalController(EventBus eventBus,
-                           @Remote Dispatcher remoteDispatcher,
-                           Provider<Synchronizer> gateway,
-                           LocalCapabilityProfile capabilityProfile,
-                           UiConstants uiConstants,
-                           Provider<SyncHistoryTable> historyTable) {
+                           @Remote Dispatcher remoteDispatcher, LocalCapabilityProfile capabilityProfile,
+                           UiConstants uiConstants) {
         this.eventBus = eventBus;
         this.remoteDispatcher = remoteDispatcher;
-        this.synchronizerProvider = gateway;
         this.capabilityProfile = capabilityProfile;
         this.uiConstants = uiConstants;
-        this.historyTable = historyTable;
 
         Log.trace("OfflineManager: starting");
 
