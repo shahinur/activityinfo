@@ -1,16 +1,18 @@
 package org.activityinfo.store.cloudsql;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.store.CommitStatus;
-import org.activityinfo.service.store.ResourceTree;
 import org.activityinfo.service.store.ResourceTreeRequest;
 import org.activityinfo.service.store.UpdateResult;
 import org.hamcrest.Matchers;
@@ -19,11 +21,12 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class MySqlResourceStoreTest {
@@ -38,12 +41,12 @@ public class MySqlResourceStoreTest {
 
         FormInstance divA = createDivAFolder();
 
-        UpdateResult divACreationResult = environment.getStore().createResource(
-                environment.getUserId(), divA.asResource());
+        UpdateResult divACreationResult = environment.getStore()
+                .put(environment.getUser(), divA.getId(), divA.asResource());
 
-        assertThat(divACreationResult, hasProperty("commitStatus", equalTo(CommitStatus.COMMITTED)));
+        assertThat(divACreationResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
-        Resource resource = environment.getStore().get(divA.getId());
+        Resource resource = environment.getStore().get(environment.getUser(), divA.getId());
         assertThat(resource.getString(FolderClass.LABEL_FIELD_ID.asString()), equalTo("Division A"));
         assertThat(resource.getVersion(), equalTo(divACreationResult.getNewVersion()));
 
@@ -51,7 +54,9 @@ public class MySqlResourceStoreTest {
         Stopwatch stopwatch = Stopwatch.createStarted();
         int requestCount = 10000;
         for(int i=0;i!= requestCount;++i) {
-            ResourceTree tree = environment.getStore().queryTree(new ResourceTreeRequest(divA.getId()));
+            ResourceTree tree = environment.getStore().queryTree(
+                    environment.getUser(),
+                    new ResourceTreeRequest(divA.getId()));
             assertThat(tree.getRootNode().getId(), equalTo(divA.getId()));
             assertThat(tree.getRootNode().getLabel(), equalTo("Division A"));
             assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
@@ -62,27 +67,47 @@ public class MySqlResourceStoreTest {
         // Create form class
 
         FormClass formClass = createWidgetsFormClass(divA.getId());
-        UpdateResult formCreationResult = environment.getStore().createResource(
-                environment.getUserId(), formClass.asResource());
+        UpdateResult formCreationResult = environment.getStore().put(
+                environment.getUser(), formClass.asResource());
 
-        assertThat(formCreationResult.getCommitStatus(), Matchers.equalTo(CommitStatus.COMMITTED));
+        assertThat(formCreationResult.getStatus(), Matchers.equalTo(CommitStatus.COMMITTED));
 
         // Verify that the subtree version gets updated
 
-        ResourceTree tree = environment.getStore().queryTree(new ResourceTreeRequest(divA.getId()));
+        ResourceTree tree = environment.getStore().queryTree(
+                environment.getUser(),
+                new ResourceTreeRequest(divA.getId()));
         assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
         assertThat(tree.getRootNode().getSubTreeVersion(), equalTo(formCreationResult.getNewVersion()));
 
 
-        // Update the FormClass
-        formClass.setLabel("New Label");
-        assertCommitted(environment.getStore().updateResource(environment.getUserId(), formClass.asResource()));
+        // try to fetch two resources at a time
+        Set<Resource> resultSet = environment.getStore().get(
+                environment.getUser(),
+                Sets.newHashSet(divA.getId(), formClass.getId()));
+        assertThat(resultSet, containsInAnyOrder(
+                hasProperty("id", equalTo(divA.getId())),
+                hasProperty("id", equalTo(formClass.getId()))));
 
-        Resource reloadedForm = environment.getStore().get(formClass.getId());
-        assertThat(reloadedForm.getVersion(), greaterThan(tree.getRootNode().getVersion()));
-        assertThat(reloadedForm.getString(FormClass.LABEL_FIELD_ID), Matchers.equalTo("New Label"));
 
         environment.assertThatAllConnectionsHaveBeenClosed();
+    }
+
+    @Test
+    public void getRootResources() {
+
+        FormInstance folder1 = createFolder("Folder 1");
+        FormInstance folder2 = createFolder("Folder 2");
+
+        assertCommitted(environment.getStore().put(environment.getUser(),  folder1.asResource()));
+        assertCommitted(environment.getStore().put(environment.getUser(), folder2.asResource()));
+
+        List<ResourceNode> roots = environment.getStore().getUserRootResources(environment.getUser());
+
+        assertThat(roots, hasSize(2));
+        assertThat(roots, containsInAnyOrder(
+                hasProperty("label", equalTo("Folder 1")),
+                hasProperty("label", equalTo("Folder 2"))));
 
     }
 
@@ -104,14 +129,18 @@ public class MySqlResourceStoreTest {
     }
 
     private FormInstance createDivAFolder() {
+        return createFolder("Division A");
+    }
+
+    private FormInstance createFolder(String label) {
         FormInstance divA = new FormInstance(ResourceId.generateId(), FolderClass.CLASS_ID);
         divA.setOwnerId(ResourceId.ROOT_ID);
-        divA.set(FolderClass.LABEL_FIELD_ID, "Division A");
+        divA.set(FolderClass.LABEL_FIELD_ID, label);
         return divA;
     }
 
     private void assertCommitted(UpdateResult resource) {
-        assertThat(resource.getCommitStatus(), Matchers.equalTo(CommitStatus.COMMITTED));
+        assertThat(resource.getStatus(), Matchers.equalTo(CommitStatus.COMMITTED));
     }
 
 }

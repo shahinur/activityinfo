@@ -2,27 +2,26 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonParser;
+import com.google.gwt.http.client.*;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.QueryResult;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.core.shared.criteria.Criteria;
+import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.result.ResourceResult;
 import org.activityinfo.legacy.shared.model.GetResource;
-import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.model.PutResource;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.IsResource;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.*;
+import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableServiceAsync;
 import org.activityinfo.promise.Promise;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +31,6 @@ import java.util.Set;
  */
 public class ResourceLocatorAdaptor implements ResourceLocator {
 
-
     private final ApplicationClassProvider systemClassProvider = new ApplicationClassProvider();
 
     private final Dispatcher dispatcher;
@@ -40,6 +38,8 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     private final TableServiceAsync tableService;
 
     private final ProjectionAdapter projectionAdapter;
+
+    private final JsonParser jsonParser = new JsonParser();
 
     public ResourceLocatorAdaptor(Dispatcher dispatcher, TableServiceAsync tableService) {
         this.dispatcher = dispatcher;
@@ -105,6 +105,42 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     @Override
     public Promise<QueryResult> queryProjection(InstanceQuery query) {
         return projectionAdapter.query(query);
+    }
+
+    @Override
+    public Promise<ResourceTree> getTree(final ResourceId rootId) {
+
+        final Promise<ResourceTree> result = new Promise<>();
+
+        RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/service/store/tree/" + rootId.asString());
+        request.setHeader("Accept", "application/json");
+        request.setCallback(new RequestCallback() {
+            @Override
+            public void onResponseReceived(Request request, Response response) {
+                ResourceNode rootNode;
+                try {
+                    String json = response.getText();
+                    rootNode = ResourceNode.fromJson(jsonParser.parse(json).getAsJsonObject());
+                } catch(Exception e) {
+                    result.onFailure(e);
+                    return;
+                }
+
+                result.onSuccess(new ResourceTree(rootNode));
+            }
+
+            @Override
+            public void onError(Request request, Throwable throwable) {
+                result.onFailure(throwable);
+            }
+        });
+        try {
+            request.send();
+        } catch (RequestException e) {
+            result.onFailure(e);
+        }
+
+        return result;
     }
 
     @Override

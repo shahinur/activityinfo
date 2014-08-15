@@ -3,12 +3,14 @@ package org.activityinfo.service.tables;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonWriter;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.columns.ConstantColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
 import org.activityinfo.model.table.columns.StringArrayColumnView;
+import org.activityinfo.service.writer.TableDataJsonWriter;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -33,8 +35,9 @@ public class TableDataJsonWriterTest {
         TableData tableData = new TableData(3, columns);
 
         StringWriter stringWriter = new StringWriter();
-        TableDataJsonWriter writer = new TableDataJsonWriter(stringWriter);
-        writer.write(tableData);
+        JsonWriter jsonWriter = new JsonWriter(stringWriter);
+        TableDataJsonWriter writer = new TableDataJsonWriter();
+        writer.write(jsonWriter, tableData);
         System.out.println(stringWriter.toString());
 
         String expectedJson = "{\"rows\":3,\"columns\":{\"b\":{\"type\":\"STRING\",\"storage\":\"constant\"," +
@@ -46,6 +49,5 @@ public class TableDataJsonWriterTest {
         JsonElement actual = jsonParser.parse(stringWriter.toString());
 
         assertThat(actual, equalTo(expected));
-
     }
 }

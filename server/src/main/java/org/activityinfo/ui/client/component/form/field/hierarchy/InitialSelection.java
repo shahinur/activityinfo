@@ -4,10 +4,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
 
 import java.util.List;
@@ -51,7 +49,7 @@ class InitialSelection {
     private Set<ResourceId> populateSelection(List<Resource> resources) {
         Set<ResourceId> parents = Sets.newHashSet();
         for(Resource resource : resources) {
-            Level level = hierarchy.getLevel(ResourceId.create(resource.getString("classId")));
+            Level level = hierarchy.getLevel(ResourceId.valueOf(resource.getString("classId")));
             if(level != null) {
                 Node node = level.createNode(resource);
                 selection.put(level.getClassId(), node);

@@ -20,6 +20,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-services</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <version>3.0</version>
@@ -69,8 +75,52 @@
       <version>5.1.30</version>
       <scope>provided</scope>
     </dependency>
-
-
   </dependencies>
 
+  <build>
+    <plugins>
+
+
+    </plugins>
+
+  </build>
+
+  <profiles>
+    <profile>
+      <id>reset-test-db</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <phase>generate-test-resources</phase>
+                <configuration>
+                  <driver>com.mysql.jdbc.Driver</driver>
+                  <url>${testDatabaseUrl}</url>
+                  <username>${testDatabaseUsername}</username>
+                  <password>${testDatabasePassword}</password>
+                  <srcFiles>
+                    <srcFile>${basedir}/schema.sql</srcFile>
+                  </srcFiles>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>5.1.30</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

@@ -23,6 +23,7 @@ package org.activityinfo.server.database;
  */
 
 import com.google.inject.Provider;
+import org.junit.internal.AssumptionViolatedException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -85,12 +86,6 @@ public class TestConnectionProvider implements Provider<Connection> {
 
     @Override
     public Connection get() {
-        try {
-            LOGGER.info("Opening test database at " + URL);
-            Class.forName("com.mysql.jdbc.Driver");
-            return DriverManager.getConnection(URL, USERNAME, PASSWORD);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        throw new AssumptionViolatedException("Not migrated");
     }
 }

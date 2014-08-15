@@ -23,8 +23,8 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.expr.*;
-import org.activityinfo.core.shared.expr.functions.*;
+import org.activityinfo.model.expr.*;
+import org.activityinfo.model.expr.functions.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
@@ -70,7 +70,7 @@ public class RowDataBuilder {
             if (arg1 instanceof SymbolExpr) {
 
                 if (isFieldFunction(functionCallNode.getFunction())) {
-                    final FormField field = formClass.getField(ResourceId.create(placeholder(arg1)));
+                    final FormField field = formClass.getField(ResourceId.valueOf(placeholder(arg1)));
 
                     final RowData row = getOrCreateRow(field);
                     row.setFunction(functionCallNode.getFunction());
@@ -109,7 +109,7 @@ public class RowDataBuilder {
                         ExprNode unwrappedArg1 = (ExprNode) unwrappedNode.getArguments().get(0);
                         ExprNode unwrappedArg2 = (ExprNode) unwrappedNode.getArguments().get(1);
 
-                        final FormField field = formClass.getField(ResourceId.create(placeholder(unwrappedArg1)));
+                        final FormField field = formClass.getField(ResourceId.valueOf(placeholder(unwrappedArg1)));
 
                         final RowData row = getOrCreateRow(field);
                         row.setFunction(unwrappedNode.getFunction());
@@ -161,7 +161,7 @@ public class RowDataBuilder {
             return true;
 
         } else if (node instanceof SymbolExpr) {
-            ResourceId newItem = ResourceId.create(placeholder(node));
+            ResourceId newItem = ResourceId.valueOf(placeholder(node));
 
             if (row.getValue() instanceof ReferenceValue) { // update existing value
                 ReferenceValue oldValue = (ReferenceValue) row.getValue();

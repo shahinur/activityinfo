@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS global_version;
 DROP TABLE IF EXISTS resource;
 DROP TABLE IF EXISTS resource_version;
 DROP TABLE IF EXISTS pending_commits;
+DROP TABLE IF EXISTS user_root_index;
 
 
 -- Holds the current version of the database
@@ -46,3 +47,12 @@ CREATE TABLE pending_commits (
   user_id VARCHAR(64) NOT NULL,
   submit_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   content LONGTEXT);
+
+
+-- Holds a list, for each user, of "root" resources that have been shared with the user
+-- In this case, a "root" resource is a resource that they have access to, but not to its parent
+CREATE TABLE user_root_index (
+  user_id VARCHAR(64) NOT NULL,
+  resource_id VARCHAR(64) NOT NULL,
+  PRIMARY KEY (user_id, resource_id)
+);

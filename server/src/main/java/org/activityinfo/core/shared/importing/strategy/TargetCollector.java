@@ -107,7 +107,7 @@ public class TargetCollector {
 
             sourceColumns.add(entry.getValue());
 
-            ResourceId fieldId = ResourceId.create(entry.getKey().asString());
+            ResourceId fieldId = ResourceId.valueOf(entry.getKey().asString());
             for (FieldPath path : getFieldPathMap().get(fieldId)) {
                 referenceValues.put(path, columnIndex);
             }

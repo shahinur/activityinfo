@@ -31,7 +31,7 @@ public class PutResourceHandler implements CommandHandler<PutResource> {
     @Override
     public CommandResult execute(PutResource cmd, User user) throws CommandException {
         Resource resource = Resources.fromJson(cmd.getJson());
-        UpdateResult updateResult = store.updateResource(CuidAdapter.userId(user.getId()), resource);
+        UpdateResult updateResult = store.put(user.asAuthenticatedUser(), resource);
 
         return new VoidResult();
     }

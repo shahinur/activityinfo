@@ -11,17 +11,13 @@ import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.legacy.shared.adapter.ProjectionAdapter;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.resource.IsResource;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.model.table.TableService;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.tables.TableServiceImpl;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -33,7 +29,6 @@ import java.util.Set;
 public class TestResourceLocator implements ResourceLocator {
 
     private TestResourceStore store;
-    private TableService tableService;
     private ProjectionAdapter projectionAdapter;
 
     /**
@@ -44,8 +39,7 @@ public class TestResourceLocator implements ResourceLocator {
      */
     public TestResourceLocator(String resourceName) throws IOException {
         store = new TestResourceStore().load(resourceName);
-        tableService = new SerializationTestingTableService(new TableServiceImpl(store));
-        projectionAdapter = new ProjectionAdapter(new TestTableServiceAsync(tableService));
+        projectionAdapter = new ProjectionAdapter(new TestTableServiceAsync(store));
     }
 
 
@@ -70,7 +64,7 @@ public class TestResourceLocator implements ResourceLocator {
 
     @Override
     public Promise<TableData> queryTable(TableModel tableModel) {
-        TableData tableData = tableService.buildTable(tableModel);
+        TableData tableData = store.queryTable(AuthenticatedUser.getAnonymous(), tableModel);
         return Promise.resolved(tableData);
     }
 
@@ -126,6 +120,10 @@ public class TestResourceLocator implements ResourceLocator {
         return projectionAdapter.query(query);
     }
 
+    @Override
+    public Promise<ResourceTree> getTree(ResourceId rootId) {
+        return Promise.rejected(new UnsupportedOperationException());
+    }
 
 
     public void dump() throws IOException {

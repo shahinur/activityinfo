@@ -22,12 +22,10 @@ package org.activityinfo.server.command.handler.crud;
  * #L%
  */
 
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.command.handler.PermissionOracle;
 import org.activityinfo.server.database.hibernate.dao.ActivityDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
@@ -82,8 +80,8 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
         formClass.setLabel(activity.getName());
         formClass.setOwnerId(CuidAdapter.databaseId(activity.getDatabase().getId()));
 
-        UpdateResult result = resourceStore.createResource(CuidAdapter.userId(user.getId()), formClass.asResource());
-        if(result.getCommitStatus() != CommitStatus.COMMITTED) {
+        UpdateResult result = resourceStore.put(user.asAuthenticatedUser(), formClass.asResource());
+        if(result.getStatus() != CommitStatus.COMMITTED) {
             throw new RuntimeException("Failed to commit");
         }
 

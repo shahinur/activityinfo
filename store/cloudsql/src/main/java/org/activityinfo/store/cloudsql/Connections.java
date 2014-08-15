@@ -12,7 +12,6 @@ public class Connections {
     public static final Logger LOGGER = Logger.getLogger(Connections.class.getName());
 
 
-
     public static void rollbackQuietly(Connection connection) {
         try {
             connection.rollback();

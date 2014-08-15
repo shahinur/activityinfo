@@ -23,44 +23,27 @@ package org.activityinfo.ui.client.local;
  */
 
 import com.bedatadriven.rebar.sql.client.SqlDatabase;
-import com.bedatadriven.rebar.sql.client.SqlDatabaseFactory;
 import com.bedatadriven.rebar.sql.client.SqlException;
 import com.bedatadriven.rebar.sql.client.SqlTransactionCallback;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.bedatadriven.rebar.sql.client.query.SqliteDialect;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import org.activityinfo.legacy.shared.Log;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
-import org.activityinfo.ui.client.local.command.HandlerRegistry;
-import org.activityinfo.ui.client.local.sync.Synchronizer;
-import org.activityinfo.ui.client.local.sync.SynchronizerImpl;
+import org.activityinfo.model.auth.AuthenticatedUser;
 
 public class LocalModule extends AbstractGinModule {
 
     @Override
     protected void configure() {
 
-        bind(Synchronizer.class).to(SynchronizerImpl.class);
-        bind(HandlerRegistry.class).toProvider(HandlerRegistryProvider.class);
-        bind(SqlDialect.class).to(SqliteDialect.class);
     }
 
     @Provides @Singleton
     protected SqlDatabase provideSqlDatabase(AuthenticatedUser auth) {
-        try {
-            SqlDatabaseFactory factory = GWT.create(SqlDatabaseFactory.class);
-            return factory.open("user" + auth.getUserId());
-        } catch (Exception e) {
-            // ensure that an exception does not derail the whole app startup
-            // we SHOULD not be injecting the database into eagerly created
-            // singletons but it can happen...
-            Log.error("Error opening database", e);
-            return new NullDatabase();
-        }
+
+        return new NullDatabase();
     }
 
     private static class NullDatabase extends SqlDatabase {

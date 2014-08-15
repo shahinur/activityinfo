@@ -34,10 +34,10 @@ public class FormInstanceTest {
 
     @Test
     public void test() {
-        FormInstance instance = new FormInstance(ResourceId.create("id"), ResourceId.create("classId"));
-        instance.set(ResourceId.create("text"), "text");
-        instance.set(ResourceId.create("quantity"), 1);
-        instance.set(ResourceId.create("boolean"), true);
+        FormInstance instance = new FormInstance(ResourceId.valueOf("id"), ResourceId.valueOf("classId"));
+        instance.set(ResourceId.valueOf("text"), "text");
+        instance.set(ResourceId.valueOf("quantity"), 1);
+        instance.set(ResourceId.valueOf("boolean"), true);
 
         Resource resource = instance.asResource();
 
@@ -45,9 +45,9 @@ public class FormInstanceTest {
 
         Assert.assertEquals(fromResource.getId(), instance.getId());
         Assert.assertEquals(fromResource.getClassId(), instance.getClassId());
-        assertValue(fromResource, instance, ResourceId.create("text"));
-        assertValue(fromResource, instance, ResourceId.create("quantity"));
-        assertValue(fromResource, instance, ResourceId.create("boolean"));
+        assertValue(fromResource, instance, ResourceId.valueOf("text"));
+        assertValue(fromResource, instance, ResourceId.valueOf("quantity"));
+        assertValue(fromResource, instance, ResourceId.valueOf("boolean"));
     }
 
     public void assertValue(FormInstance fromResource, FormInstance instance, ResourceId valueId) {

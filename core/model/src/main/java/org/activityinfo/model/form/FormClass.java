@@ -20,13 +20,13 @@ public class FormClass implements IsResource, FormElementContainer {
     /**
      * Because FormClasses are themselves FormInstances, they have a class id of their own
      */
-    public static final ResourceId CLASS_ID = ResourceId.create("_class");
+    public static final ResourceId CLASS_ID = ResourceId.valueOf("_class");
 
     /**
      * Instances of FormClass have one FormField: a label, which has its own
      * FormField id. It is defined at the application level to be a subproperty of
-     * {@code _label}
-     */
+                                     * {@code _label}
+                                     */
     public static final String LABEL_FIELD_ID = "_class_label";
 
 
@@ -194,7 +194,7 @@ public class FormClass implements IsResource, FormElementContainer {
         List<FormElement> elements = Lists.newArrayList();
         for(Record elementRecord : elementArray) {
             if("section".equals(elementRecord.isString("type"))) {
-                FormSection section = new FormSection(ResourceId.create(elementRecord.getString("id")));
+                FormSection section = new FormSection(ResourceId.valueOf(elementRecord.getString("id")));
                 section.setLabel(elementRecord.getString("label"));
                 section.getElements().addAll(fromRecords(elementRecord.getRecordList("elements")));
                 elements.add(section);

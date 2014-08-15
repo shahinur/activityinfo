@@ -257,7 +257,7 @@ public class ResourceLocatorAdaptorTest {
 
         FormInstance geodbFolder = PromiseMatchers.assertResolves(resourceLocator.getFormInstance(GEODB_ID));
 
-        FormInstance countryForm = PromiseMatchers.assertResolves(resourceLocator.getFormInstance(ResourceId.create(
+        FormInstance countryForm = PromiseMatchers.assertResolves(resourceLocator.getFormInstance(ResourceId.valueOf(
                 "_country")));
         assertThat(countryForm.getOwnerId(), equalTo(geodbFolder.getId()));
 
