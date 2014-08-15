@@ -1,12 +1,13 @@
 package org.activityinfo.store.cloudsql;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.memcache.MemcacheService;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,7 +20,7 @@ public class StoreCache {
 
     private final MemcacheService memcacheService;
 
-    private final JsonParser jsonParser = new JsonParser();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public StoreCache(MemcacheService memcacheService) {
         this.memcacheService = memcacheService;
@@ -34,8 +35,8 @@ public class StoreCache {
      */
     private interface Marshaller<T> {
 
-        Object marshall(T value);
-        T unmarshall(Object value);
+        Object marshall(T value) throws JsonProcessingException;
+        T unmarshall(Object value) throws IOException;
     }
 
     private Marshaller NULL_MARSHALLER = new Marshaller() {
@@ -54,14 +55,13 @@ public class StoreCache {
     private Marshaller<ResourceNode> RESOURCE_NODE = new Marshaller<ResourceNode>() {
 
         @Override
-        public Object marshall(ResourceNode value) {
-            return value.toJson().toString();
+        public Object marshall(ResourceNode value) throws JsonProcessingException {
+            return objectMapper.writeValueAsString(value);
         }
 
         @Override
-        public ResourceNode unmarshall(Object value) {
-            JsonObject jsonObject = jsonParser.parse((String)value).getAsJsonObject();
-            return ResourceNode.fromJson(jsonObject);
+        public ResourceNode unmarshall(Object value) throws IOException {
+            return objectMapper.readValue((String) value, ResourceNode.class);
         }
     };
 

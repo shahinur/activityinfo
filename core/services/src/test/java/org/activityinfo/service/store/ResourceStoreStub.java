@@ -3,12 +3,15 @@ package org.activityinfo.service.store;
 import com.google.common.base.Preconditions;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.*;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -66,7 +69,23 @@ public class ResourceStoreStub implements ResourceStore {
 
     @Override
     public ResourceTree queryTree(@InjectParam AuthenticatedUser user, ResourceTreeRequest request) {
-        throw new UnsupportedOperationException();
+
+        ResourceNode parentFolder = new ResourceNode(ResourceId.generateId(), FolderClass.CLASS_ID);
+        parentFolder.setLabel("Parent Folder");
+        parentFolder.setOwnerId(ResourceId.ROOT_ID);
+
+        ResourceNode child1 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
+        child1.setOwnerId(parentFolder.getOwnerId());
+        child1.setLabel("Child 1");
+
+        ResourceNode child2 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
+        child2.setOwnerId(parentFolder.getOwnerId());
+        child2.setLabel("Child 2");
+
+        parentFolder.getChildren().add(child1);
+        parentFolder.getChildren().add(child2);
+
+        return new ResourceTree(parentFolder);
     }
 
     @Override
@@ -97,6 +116,23 @@ public class ResourceStoreStub implements ResourceStore {
 
     @Override
     public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
-        throw new UnsupportedOperationException();
+
+        ResourceNode folder1 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
+        folder1.setOwnerId(ResourceId.ROOT_ID);
+        folder1.setVersion(41);
+        folder1.setLabel("Child 1");
+
+        ResourceNode folder2 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
+        folder2.setOwnerId(ResourceId.ROOT_ID);
+        folder2.setVersion(42);
+        folder2.setLabel("Child 2");
+
+        ResourceNode folder3 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
+        folder3.setVersion(43);
+        folder3.setOwnerId(ResourceId.ROOT_ID);
+        folder3.setLabel("Child 3");
+
+
+        return Arrays.asList(folder1, folder2, folder3);
     }
 }

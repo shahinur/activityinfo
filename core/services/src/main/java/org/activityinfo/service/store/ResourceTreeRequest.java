@@ -1,5 +1,7 @@
 package org.activityinfo.service.store;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
@@ -21,7 +23,8 @@ public class ResourceTreeRequest {
      * Creates a request for a {@code ResourceTree}, starting at the {@code Resource}
      * identified by {@code rootResourceId}
      */
-    public ResourceTreeRequest(ResourceId rootResourceId) {
+    @JsonCreator
+    public ResourceTreeRequest(@JsonProperty("rootId") ResourceId rootResourceId) {
         this.rootId = rootResourceId;
     }
 
