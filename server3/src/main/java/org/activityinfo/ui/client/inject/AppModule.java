@@ -47,7 +47,9 @@ import org.activityinfo.ui.client.page.PageStateSerializer;
 import org.activityinfo.ui.client.page.app.AppFrameSet;
 import org.activityinfo.ui.client.page.common.GalleryPage;
 import org.activityinfo.ui.client.page.common.GalleryView;
-import org.activityinfo.ui.client.service.table.RemoteJsonTableService;
+import org.activityinfo.ui.store.remote.client.RemoteStoreService;
+import org.activityinfo.ui.store.remote.client.RemoteStoreServiceImpl;
+import org.activityinfo.ui.store.remote.client.RestEndpoint;
 
 public class AppModule extends AbstractGinModule {
 
@@ -73,7 +75,7 @@ public class AppModule extends AbstractGinModule {
 
     @Provides @Singleton
     public ResourceLocator provideResourceLocator(Dispatcher dispatcher) {
-        RemoteJsonTableService tableService = new RemoteJsonTableService();
-        return new ResourceLocatorAdaptor(dispatcher, tableService);
+        RemoteStoreService service = new RemoteStoreServiceImpl(new RestEndpoint("/service/store"));
+        return new ResourceLocatorAdaptor(dispatcher, service);
     }
 }

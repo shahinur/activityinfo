@@ -77,6 +77,7 @@ public interface ResourceStore {
      * given user
      */
     @GET
+    @Path("query/roots")
     @Produces("application/json")
     List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user);
 }

@@ -4,7 +4,7 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.ui.client.service.TestResourceStore;
+import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 

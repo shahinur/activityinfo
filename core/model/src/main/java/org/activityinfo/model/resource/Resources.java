@@ -15,7 +15,7 @@ public class Resources {
      * All registered users are resources owned by this
      * resource.
      */
-    public static final String USER_DATABASE_ID = "_users";
+    public static final ResourceId USER_DATABASE_ID = ResourceId.valueOf("_users");
 
 
     public static final String ROOT_RESOURCE_ID = "_root";

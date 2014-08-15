@@ -26,8 +26,9 @@ import org.activityinfo.ui.client.chrome.LeftPanel;
 import org.activityinfo.ui.client.chrome.MainPanel;
 import org.activityinfo.ui.client.inject.ClientSideAuthProvider;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
-import org.activityinfo.ui.client.service.table.RemoteJsonTableService;
 import org.activityinfo.ui.client.style.BaseStylesheet3;
+import org.activityinfo.ui.store.remote.client.RemoteStoreServiceImpl;
+import org.activityinfo.ui.store.remote.client.RestEndpoint;
 
 /**
  * Entry Point for AI Version 3
@@ -101,6 +102,7 @@ public class ActivityInfoEntryPoint3 implements EntryPoint {
                         new RemoteDispatcher(eventBus, auth, remoteService),
                         Scheduler.get()));
 
-        return new ResourceLocatorAdaptor(dispatcher, new RemoteJsonTableService());
+        return new ResourceLocatorAdaptor(dispatcher, new RemoteStoreServiceImpl(
+                new RestEndpoint("/service/store")));
     }
 }

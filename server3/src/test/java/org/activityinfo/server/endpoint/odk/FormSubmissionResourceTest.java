@@ -1,17 +1,14 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.base.Charsets;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
-import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.ui.client.service.TestResourceStore;
+import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
