@@ -30,6 +30,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.ui.client.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.style.ModalStylesheet;
 import org.activityinfo.ui.client.widget.LoadingPanel;
@@ -61,7 +62,7 @@ public class FormDialog {
         formPanel = new SimpleFormPanel(
                 resourceLocator,
                 new VerticalFieldContainer.Factory(),
-                new FormFieldWidgetFactory(resourceLocator));
+                new FormFieldWidgetFactory(resourceLocator, FieldWidgetMode.NORMAL));
 
 
         loadingPanel = new LoadingPanel<>(new PageLoadingPanel());
