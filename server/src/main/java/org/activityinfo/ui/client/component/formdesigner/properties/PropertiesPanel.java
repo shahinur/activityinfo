@@ -58,7 +58,7 @@ public class PropertiesPanel extends Composite {
     @UiField
     Button relevanceButton;
     @UiField
-    HTMLPanel skipGroup;
+    HTMLPanel relevanceGroup;
     @UiField
     SpanElement relevanceExpression;
     @UiField
@@ -69,6 +69,10 @@ public class PropertiesPanel extends Composite {
     RadioButton relevanceEnabled;
     @UiField
     RadioButton relevanceEnabledIf;
+    @UiField
+    TextBox code;
+    @UiField
+    HTMLPanel codeGroup;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -106,8 +110,8 @@ public class PropertiesPanel extends Composite {
         return relevanceButton;
     }
 
-    public HTMLPanel getSkipGroup() {
-        return skipGroup;
+    public HTMLPanel getRelevanceGroup() {
+        return relevanceGroup;
     }
 
     public SpanElement getRelevanceExpression() {
@@ -128,5 +132,13 @@ public class PropertiesPanel extends Composite {
 
     public RadioButton getRelevanceEnabledIf() {
         return relevanceEnabledIf;
+    }
+
+    public TextBox getCode() {
+        return code;
+    }
+
+    public HTMLPanel getCodeGroup() {
+        return codeGroup;
     }
 }

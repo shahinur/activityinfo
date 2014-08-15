@@ -3444,7 +3444,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Calculation expression is invalid")
     String calculationExpressionIsInvalid();
 
-    @DefaultStringValue("An (optional) short code for this indicator. This code can be used to refer to the indicatorin calculated expressions.")
+    @DefaultStringValue("An (optional) short code for this form field. This code can be used to refer to the field in calculated expressions.")
     String nameInExpressionTooltip();
 
     @DefaultStringValue("Calculate automatically")
