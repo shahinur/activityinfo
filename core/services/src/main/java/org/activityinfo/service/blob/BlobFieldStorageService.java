@@ -1,7 +1,10 @@
 package org.activityinfo.service.blob;
 
+import com.google.common.io.ByteSource;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 
+import java.io.IOException;
 import java.net.URI;
 
 /**
@@ -26,4 +29,12 @@ public interface BlobFieldStorageService {
      */
     URI getBlobUrl(BlobId blobId);
 
+    /**
+     * Uploads a blob with the specified id to GCS
+     * @param authenticatedUser
+     * @param blobId
+     * @param byteSource
+     * @throws IOException
+     */
+    void put(AuthenticatedUser authenticatedUser, BlobId blobId, ByteSource byteSource) throws IOException;
 }
