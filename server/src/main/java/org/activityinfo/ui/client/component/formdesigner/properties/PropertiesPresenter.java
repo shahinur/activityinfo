@@ -58,6 +58,7 @@ public class PropertiesPresenter {
     private SimpleFormPanel currentDesignWidget = null;
     private HandlerRegistration labelKeyUpHandler;
     private HandlerRegistration descriptionKeyUpHandler;
+    private HandlerRegistration codeKeyUpHandler;
     private HandlerRegistration requiredValueChangeHandler;
     private HandlerRegistration readonlyValueChangeHandler;
     private HandlerRegistration visibleValueChangeHandler;
@@ -98,13 +99,17 @@ public class PropertiesPresenter {
         view.getRequiredGroup().setVisible(false);
         view.getReadOnlyGroup().setVisible(false);
         view.getVisibleGroup().setVisible(false);
-        view.getSkipGroup().setVisible(false);
+        view.getRelevanceGroup().setVisible(false);
+        view.getCodeGroup().setVisible(false);
 
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
         }
         if (descriptionKeyUpHandler != null) {
             descriptionKeyUpHandler.removeHandler();
+        }
+        if (codeKeyUpHandler != null) {
+            codeKeyUpHandler.removeHandler();
         }
         if (requiredValueChangeHandler != null) {
             requiredValueChangeHandler.removeHandler();
@@ -135,12 +140,14 @@ public class PropertiesPresenter {
         view.getRequiredGroup().setVisible(true);
         view.getReadOnlyGroup().setVisible(true);
         view.getVisibleGroup().setVisible(true);
-        view.getSkipGroup().setVisible(true);
+        view.getRelevanceGroup().setVisible(true);
+        view.getCodeGroup().setVisible(true);
 
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
         view.getDescription().setValue(Strings.nullToEmpty(formField.getDescription()));
         view.getRequired().setValue(formField.isRequired());
         view.getVisible().setValue(formField.isVisible());
+        view.getCode().setValue(Strings.isNullOrEmpty(formField.getCode()) ? formField.getId().asString() : formField.getCode());
 
         setRelevanceState(formField, true);
         relevanceButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
@@ -162,6 +169,13 @@ public class PropertiesPresenter {
             @Override
             public void onKeyUp(KeyUpEvent event) {
                 formField.setDescription(view.getDescription().getValue());
+                fieldWidgetContainer.syncWithModel();
+            }
+        });
+        codeKeyUpHandler = view.getCode().addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent keyUpEvent) {
+                formField.setCode(view.getCode().getValue());
                 fieldWidgetContainer.syncWithModel();
             }
         });
