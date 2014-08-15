@@ -45,12 +45,4 @@ public class Utf8JacksonJsonProvider extends JacksonJsonProvider {
 
     }
 
-    private static ObjectMapper createObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.registerModule(new GeoJsonModule());
-        return mapper;
-    }
-
 }
