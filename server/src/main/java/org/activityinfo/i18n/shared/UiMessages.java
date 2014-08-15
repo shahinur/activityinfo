@@ -347,4 +347,7 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("Oh no! Your import is missing required column(s): {0}")
     String missingColumns(String missingColumns);
+
+    @DefaultMessage("{0} code does not exist.")
+    String doesNotExist(String placeholder);
 }

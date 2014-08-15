@@ -24,11 +24,15 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.expr.*;
-import org.activityinfo.model.expr.functions.*;
+import org.activityinfo.model.expr.functions.BooleanFunctions;
+import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumType;
 
 import java.util.List;
 import java.util.Set;
@@ -63,8 +67,8 @@ public class RowDataBuilder {
         // handle Function call node
         if (node instanceof FunctionCallNode && ((FunctionCallNode) node).getArguments().size() == 2) {
             final FunctionCallNode functionCallNode = (FunctionCallNode) node;
-            ExprNode arg1 = unwrap((ExprNode) functionCallNode.getArguments().get(0));
-            ExprNode arg2 = unwrap((ExprNode) functionCallNode.getArguments().get(1));
+            ExprNode arg1 = unwrap(functionCallNode.getArguments().get(0));
+            ExprNode arg2 = unwrap(functionCallNode.getArguments().get(1));
 
 
             if (arg1 instanceof SymbolExpr) {
@@ -87,8 +91,8 @@ public class RowDataBuilder {
                         } else {
                             // not field function -> means &&, || (but not ==, !=)
 
-                            final ExprNode nestArg1 = (ExprNode) arg2Node.getArguments().get(0);
-                            final ExprNode nestArg2 = (ExprNode) arg2Node.getArguments().get(1);
+                            final ExprNode nestArg1 = arg2Node.getArguments().get(0);
+                            final ExprNode nestArg2 = arg2Node.getArguments().get(1);
 
                             setValueInRow(row, nestArg1);
 
@@ -106,8 +110,8 @@ public class RowDataBuilder {
                 for (Object exprNode : functionCallNode.getArguments()) {
                     FunctionCallNode unwrappedNode = (FunctionCallNode) unwrap((ExprNode) exprNode);
                     if (isFieldFunction(unwrappedNode.getFunction())) {
-                        ExprNode unwrappedArg1 = (ExprNode) unwrappedNode.getArguments().get(0);
-                        ExprNode unwrappedArg2 = (ExprNode) unwrappedNode.getArguments().get(1);
+                        ExprNode unwrappedArg1 = unwrappedNode.getArguments().get(0);
+                        ExprNode unwrappedArg2 = unwrappedNode.getArguments().get(1);
 
                         final FormField field = formClass.getField(ResourceId.valueOf(placeholder(unwrappedArg1)));
 
@@ -151,8 +155,8 @@ public class RowDataBuilder {
     /**
      * Returns whether value was set in row or not.
      *
-     * @param row       row
-     * @param node      node
+     * @param row  row
+     * @param node node
      * @return Returns whether value was set in row or not
      */
     private static boolean setValueInRow(RowData row, ExprNode node) {
@@ -169,7 +173,13 @@ public class RowDataBuilder {
                 newValue.add(newItem);
                 row.setValue(new ReferenceValue(newValue));
             } else { // create value
-                row.setValue(new ReferenceValue(newItem));
+                if (row.getFormField().getType() instanceof EnumType) {
+                    row.setValue(new EnumFieldValue(newItem));
+                } else if (row.getFormField().getType() instanceof ReferenceType) {
+                    row.setValue(new ReferenceValue(newItem));
+                } else {
+                    throw new UnsupportedOperationException(row.getFormField().getType() + " is not supported.");
+                }
             }
             return true;
         }

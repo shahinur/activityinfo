@@ -166,7 +166,7 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
                 buildWidgetContainers(formDesigner, formSection, depth + 1, promises);
             } else if (element instanceof FormField) {
                 final FormField formField = (FormField) element;
-                Promise<Void> promise = formDesigner.getFormFieldWidgetFactory().createWidget(formDesigner.getFormClass().getId(), formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
+                Promise<Void> promise = formDesigner.getFormFieldWidgetFactory().createWidget(formDesigner.getFormClass(), formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
                     @Nullable
                     @Override
                     public Void apply(@Nullable FormFieldWidget input) {
