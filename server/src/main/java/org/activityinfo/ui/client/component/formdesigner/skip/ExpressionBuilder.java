@@ -23,10 +23,12 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.model.expr.*;
-import org.activityinfo.model.expr.functions.*;
+import org.activityinfo.model.expr.functions.BooleanFunctions;
+import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
@@ -65,6 +67,14 @@ public class ExpressionBuilder {
             right = new ConstantExpr(value);
         } else if (value instanceof ReferenceValue) {
             List<ResourceId> idSet = Lists.newArrayList(((ReferenceValue)value).getResourceIds());
+            int size = idSet.size();
+            if (size == 1) {
+                right = new SymbolExpr(idSet.get(0).asString());
+            } else {
+                return new GroupExpr(buildNodeForSet(left, idSet, row));
+            }
+        } else if (value instanceof EnumFieldValue) {
+            List<ResourceId> idSet = Lists.newArrayList(((EnumFieldValue)value).getValueIds());
             int size = idSet.size();
             if (size == 1) {
                 right = new SymbolExpr(idSet.get(0).asString());
