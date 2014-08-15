@@ -34,11 +34,27 @@
       <version>${project.version}</version>
     </dependency>
 
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-remote-store</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+
     <dependency>
       <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-cloudsql-store</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-testing-store</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
 
     <!-- GWT deps (from central repo) -->
     <dependency>

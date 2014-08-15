@@ -18,6 +18,7 @@ import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.store.test.TestResourceStore;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -39,7 +40,7 @@ public class TestResourceLocator implements ResourceLocator {
      */
     public TestResourceLocator(String resourceName) throws IOException {
         store = new TestResourceStore().load(resourceName);
-        projectionAdapter = new ProjectionAdapter(new TestTableServiceAsync(store));
+        projectionAdapter = new ProjectionAdapter(new TestRemoteStoreService(store));
     }
 
 

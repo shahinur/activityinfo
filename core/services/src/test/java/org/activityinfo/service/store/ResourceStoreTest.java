@@ -1,7 +1,7 @@
 package org.activityinfo.service.store;
 
-import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.test.framework.AppDescriptor;
 import com.sun.jersey.test.framework.JerseyTest;
@@ -10,15 +10,19 @@ import com.sun.jersey.test.framework.spi.container.TestContainerException;
 import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
 import com.sun.jersey.test.framework.spi.container.inmemory.InMemoryTestContainerFactory;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.service.jaxrs.EntityTags;
-import org.activityinfo.service.jaxrs.UpdateResultWriter;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 /**
  * Tests the Jersey setup, not the actual service itself
@@ -36,11 +40,7 @@ public class ResourceStoreTest extends JerseyTest {
 
     @Override
     protected AppDescriptor configure() {
-        return new LowLevelAppDescriptor.Builder(
-                AuthProviderStub.class,
-                JacksonJsonProvider.class,
-                UpdateResultWriter.class,
-                ResourceStoreStub.class).build();
+        return new LowLevelAppDescriptor.Builder(new TestResourceConfig()).build();
     }
 
     private WebResource getStoreService() {
@@ -64,8 +64,6 @@ public class ResourceStoreTest extends JerseyTest {
         assertThat(resource, equalTo(expected));
     }
 
-
-
     @Test
     public void create() {
         Resource newResource = ResourceStoreStub.getNewResourceThatWillCommit();
@@ -79,5 +77,33 @@ public class ResourceStoreTest extends JerseyTest {
         assertThat(response.getEntityTag(), equalTo(EntityTags.ofResource(
                 newResource.getId(),
                 ResourceStoreStub.NEW_VERSION)));
+    }
+
+    @Test
+    public void queryTree() {
+
+        ResourceTreeRequest request = new ResourceTreeRequest(ResourceId.ROOT_ID);
+
+        ResourceTree tree = getStoreService()
+                .path("query")
+                .path("tree")
+                .accept(MediaType.APPLICATION_JSON)
+                .entity(request, MediaType.APPLICATION_JSON_TYPE)
+                .post(ResourceTree.class);
+
+        assertThat(tree.getRootNode().getChildren(), hasSize(2));
+    }
+
+    @Test
+    public void getUserRoots() {
+
+        List<ResourceNode> roots = getStoreService()
+                .path("query")
+                .path("roots")
+                .get(new GenericType<List<ResourceNode>>() { });
+
+
+        assertThat(roots, hasSize(3));
+
     }
 }

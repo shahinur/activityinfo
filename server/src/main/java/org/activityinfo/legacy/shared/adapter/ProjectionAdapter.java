@@ -7,8 +7,12 @@ import org.activityinfo.core.client.QueryResult;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.table.*;
+import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.model.table.RowSource;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.ui.store.remote.client.RemoteStoreService;
 
 import java.util.List;
 
@@ -17,9 +21,9 @@ import java.util.List;
  */
 public class ProjectionAdapter {
 
-    private final TableServiceAsync tableService;
+    private final RemoteStoreService tableService;
 
-    public ProjectionAdapter(TableServiceAsync tableService) {
+    public ProjectionAdapter(RemoteStoreService tableService) {
         this.tableService = tableService;
     }
 
@@ -42,7 +46,7 @@ public class ProjectionAdapter {
             tableModel.addColumn(path.toString()).select().fieldPath(path.getPath());
         }
 
-        return tableService.query(tableModel).then(new Function<TableData, QueryResult>() {
+        return tableService.queryTable(tableModel).then(new Function<TableData, QueryResult>() {
             @Override
             public QueryResult apply(TableData table) {
                 return tableToProjectionList(classId, table, query);

@@ -13,7 +13,7 @@ import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.ui.client.service.TestResourceStore;
+import org.activityinfo.store.test.TestResourceStore;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;

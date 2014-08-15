@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>activityinfo-parent</artifactId>
+    <groupId>org.activityinfo</groupId>
+    <version>3.0.0-SNAPSHOT</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>activityinfo-remote-store</artifactId>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-model</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-services</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-testing-store</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <version>${gwtVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>gson-gwt</groupId>
+      <artifactId>gson-gwt</artifactId>
+      <version>1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>${gwtVersion}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.nmorel.gwtjackson</groupId>
+      <artifactId>gwt-jackson</artifactId>
+      <version>0.6.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <excludes>
+            <exclude>**/client/*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ant-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <tasks>
+                <property name="test_classpath" refid="maven.test.classpath" />
+                <java classname="junit.textui.TestRunner" fork="true" failonerror="true" maxmemory="1024m">
+                  <sysproperty key="gwt.args" value="
+                      -war target/test-out
+                      -gen target/test-gen
+                      -prod
+                      -style pretty
+                      -codeServerPort 50101
+                      -logdir target/test-logs
+                      -logLevel INFO"/>
+
+                  <arg value="org.activityinfo.ui.store.remote.client.RemoteStoreTest" />
+                  <classpath>
+                    <pathelement path="${basedir}/src/main/java" />
+                    <pathelement path="${basedir}/src/test/java" />
+                    <pathelement path="${test_classpath}" />
+                  </classpath>
+                </java>
+              </tasks>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+  </build>
+
+
+</project>

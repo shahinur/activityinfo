@@ -8,7 +8,7 @@ import com.google.inject.util.Providers;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.endpoint.odk.xform.Html;
 import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.ui.client.service.TestResourceStore;
+import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
 
