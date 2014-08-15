@@ -199,10 +199,24 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     @Override
     public Promise<Void> setValue(EnumFieldValue value) {
         for (CheckBox entry : controls) {
-            ResourceId resourceId = ResourceId.valueOf(entry.getFormValue().toUpperCase()); // upper case, enum name equals is case sensitive
-            entry.setValue(value.getValueIds().contains(resourceId));
+            entry.setValue(containsIgnoreCase(value.getValueIds(), entry.getFormValue()));
         }
         return Promise.done();
+    }
+
+    /**
+     * Check with ignoreCase, trick is that values from html form elemns sometimes are lowercased
+     * @param resourceIds
+     *
+     * @return
+     */
+    private boolean containsIgnoreCase(Set<ResourceId> resourceIds, String resourceId) {
+        for (ResourceId resource : resourceIds) {
+            if (resource.asString().equalsIgnoreCase(resourceId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
