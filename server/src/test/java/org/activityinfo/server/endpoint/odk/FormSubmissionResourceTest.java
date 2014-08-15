@@ -1,10 +1,8 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.google.common.io.ByteStreams;
+import com.google.common.base.Charsets;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.number.Quantity;
@@ -24,6 +22,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 
+import static com.google.common.io.Resources.asCharSource;
+import static com.google.common.io.Resources.getResource;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
 import static org.junit.Assert.assertEquals;
@@ -45,22 +45,13 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
 
     @Test
     public void parse() throws IOException {
-        try (InputStream inputStream = FormSubmissionResourceTest.class.getResourceAsStream("form.xml")) {
-            StringBuffer stringBuffer = new StringBuffer();
 
-            try (StringBufferOutputStream stringBufferOutputStream = new StringBufferOutputStream(stringBuffer)) {
-                ByteStreams.copy(inputStream, stringBufferOutputStream);
-            }
+        String xml = asCharSource(getResource(FormSubmissionResourceTest.class, "form.xml"), Charsets.UTF_8).read();
 
-            Response response = resource.submit(stringBuffer.toString());
-            assertEquals(CREATED, fromStatusCode(response.getStatus()));
-        }
+        Response response = resource.submit(xml, null);
+        assertEquals(CREATED, fromStatusCode(response.getStatus()));
 
-        Iterator<Resource> iterator = openCursor(CuidAdapter.activityFormClass(1081));
-        assertTrue(iterator.hasNext());
-
-        Map<String, Object> map = iterator.next().getProperties();
-        assertFalse(iterator.hasNext());
+        Map<String, Object> map = getLastUpdated();
 
         assertEquals(7, map.size());
         assertEquals("a1081", map.get("classId"));
@@ -72,7 +63,7 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
         assertEquals(new NarrativeValue("Awesome.").asRecord(), map.get("a1081f14"));
     }
 
-    private Iterator<Resource> openCursor(ResourceId resourceId) {
+    private Map<String, Object> getLastUpdated() {
         throw new UnsupportedOperationException();
     }
 }

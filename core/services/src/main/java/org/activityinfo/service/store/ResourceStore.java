@@ -23,4 +23,6 @@ public interface ResourceStore {
     Resource get(AuthenticatedUser user, ResourceId resourceId);
 
     void put(AuthenticatedUser user, Resource resource);
+
+
 }
