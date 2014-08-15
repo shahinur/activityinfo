@@ -28,17 +28,16 @@ import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.model.type.expr.CalculatedFieldType;
-import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -77,7 +76,11 @@ public class FormFieldWidgetFactory {
         this.resourceLocator = resourceLocator;
     }
 
-    public Promise<? extends FormFieldWidget> createWidget(ResourceId formClassId, FormField field, ValueUpdater valueUpdater) {
+    public Promise<? extends FormFieldWidget> createWidget(FormClass formClass, FormField field, ValueUpdater valueUpdater) {
+        return createWidget(formClass, field, valueUpdater, null);
+    }
+
+    public Promise<? extends FormFieldWidget> createWidget(FormClass formClass, FormField field, ValueUpdater valueUpdater, FormClass validationFormClass) {
         FieldType type = field.getType();
 
         if (type instanceof QuantityType) {
@@ -90,7 +93,7 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new TextFieldWidget(valueUpdater));
 
         } else if (type instanceof ExprFieldType) {
-            return Promise.resolved(new ExprFieldWidget(valueUpdater));
+            return Promise.resolved(new ExprFieldWidget(validationFormClass, valueUpdater));
 
         } else if (type instanceof CalculatedFieldType) {
             return Promise.resolved(new CalculatedFieldWidget(valueUpdater));
