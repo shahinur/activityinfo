@@ -44,6 +44,7 @@ public class TypeRegistryTest {
                 // it's important to have "classId" specified for all parametrized types. Otherwise SimpleFormPanel will fail to load FormClass
                 String classId = parametrizedFieldType.getParameters().getString("classId");
                 Assert.assertNotNull(classId);
+                Assert.assertTrue(classId.startsWith("_"));
             }
         }
     }
