@@ -1,9 +1,6 @@
 package org.activityinfo.server.util.jaxrs;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
 import org.activityinfo.model.json.ObjectMapperFactory;
 
@@ -21,13 +18,5 @@ public class JaxRsModule extends ServletModule {
         bind(FreemarkerViewProcessor.class);
         bind(Utf8JacksonJsonProvider.class).in(Singleton.class);
         bind(ObjectMapper.class).toInstance(ObjectMapperFactory.get());
-    }
-
-    @Provides
-    public ObjectMapper getObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper;
     }
 }
