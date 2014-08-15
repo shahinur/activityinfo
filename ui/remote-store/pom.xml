@@ -108,7 +108,7 @@
                       -logLevel INFO"/>
 
                   <arg value="org.activityinfo.ui.store.remote.client.RemoteStoreTest" />
-                    <classpath>
+                  <classpath>
                     <pathelement path="${basedir}/src/main/java" />
                     <pathelement path="${basedir}/src/test/java" />
                     <pathelement path="${test_classpath}" />
