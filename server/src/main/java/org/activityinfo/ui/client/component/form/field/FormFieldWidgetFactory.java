@@ -70,10 +70,12 @@ public class FormFieldWidgetFactory {
     public static final int SMALL_BALANCE_NUMBER = 10;
     public static final int MEDIUM_BALANCE_NUMBER = 20;
 
-    private ResourceLocator resourceLocator;
+    private final ResourceLocator resourceLocator;
+    private final FieldWidgetMode fieldWidgetMode;
 
-    public FormFieldWidgetFactory(ResourceLocator resourceLocator) {
+    public FormFieldWidgetFactory(ResourceLocator resourceLocator, FieldWidgetMode fieldWidgetMode) {
         this.resourceLocator = resourceLocator;
+        this.fieldWidgetMode = fieldWidgetMode;
     }
 
     public Promise<? extends FormFieldWidget> createWidget(FormClass formClass, FormField field, ValueUpdater valueUpdater) {
@@ -108,7 +110,7 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new GeographicPointWidget(valueUpdater));
 
         } else if (type instanceof EnumType) {
-            return Promise.resolved(new EnumFieldWidget((EnumType) field.getType(), valueUpdater));
+            return Promise.resolved(new EnumFieldWidget((EnumType) field.getType(), valueUpdater, fieldWidgetMode));
 
         } else if (type instanceof BooleanType) {
             return Promise.resolved(new BooleanFieldWidget(valueUpdater));
