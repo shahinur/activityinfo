@@ -1,16 +1,11 @@
 package org.activityinfo.migrator.tables;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.number.Quantity;
@@ -39,7 +34,8 @@ public class SiteTable extends ResourceMigrator {
                      "LEFT JOIN userdatabase db ON (A.databaseid=db.DatabaseId) " +
                      "WHERE S.dateDeleted is null and " +
                         " A.dateDeleted is null and " +
-                        " db.dateDeleted is null";
+                        " db.dateDeleted is null and" +
+                        " date1 is not null and date2 is not null";
 
 
         Map<Integer, FormInstance> sites = Maps.newHashMap();
@@ -81,7 +77,7 @@ public class SiteTable extends ResourceMigrator {
         populateBoundAdminLevels(connection, sites);
 
         for(FormInstance site : sites.values()) {
-            writer.write(site.asResource());
+            writer.writeResource(site.asResource());
         }
 
     }

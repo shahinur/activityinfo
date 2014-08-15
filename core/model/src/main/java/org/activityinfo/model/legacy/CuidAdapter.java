@@ -66,7 +66,7 @@ public class CuidAdapter {
     public static final int BLOCK_SIZE = 10;
     public static final String CLASS_FIELD = "_class";
 
-    public static final ResourceId GEODB_ID = ResourceId.create("_geodb");
+    public static final ResourceId GEODB_ID = ResourceId.valueOf("_geodb");
 
 
     /**
@@ -95,7 +95,7 @@ public class CuidAdapter {
     }
 
     public static final ResourceId cuid(char domain, int id) {
-        return ResourceId.create(domain + Integer.toString(id));
+        return ResourceId.valueOf(domain + Integer.toString(id));
     }
 
     public static final ResourceId resourceId(char domain, int id) {
@@ -117,8 +117,8 @@ public class CuidAdapter {
     }
 
     public static ResourceId partnerInstanceId(int databaseId, int partnerId) {
-        return ResourceId.create(String.valueOf(DATABASE_DOMAIN) + databaseId +
-                                 String.valueOf(PARTNER_DOMAIN) + partnerId);
+        return ResourceId.valueOf(String.valueOf(DATABASE_DOMAIN) + databaseId +
+                                  String.valueOf(PARTNER_DOMAIN) + partnerId);
     }
 
     /**
@@ -157,7 +157,7 @@ public class CuidAdapter {
      * @return
      */
     public static ResourceId field(ResourceId classId, int fieldIndex) {
-        return ResourceId.create(classId.asString() + "f" + fieldIndex);
+        return ResourceId.valueOf(classId.asString() + "f" + fieldIndex);
     }
 
     /**
@@ -193,8 +193,8 @@ public class CuidAdapter {
     }
 
     public static ResourceId activityCategoryFolderId(int dbId, String category) {
-        return ResourceId.create(ACTIVITY_CATEGORY_DOMAIN + Integer.toHexString(dbId) + "c" +
-                                 Integer.toHexString(Math.abs(category.hashCode())));
+        return ResourceId.valueOf(ACTIVITY_CATEGORY_DOMAIN + Integer.toHexString(dbId) + "c" +
+                                  Integer.toHexString(Math.abs(category.hashCode())));
     }
 
     public static ResourceId userId(int userId) {
@@ -226,7 +226,7 @@ public class CuidAdapter {
      * Activity {@code FormClass}
      */
     public static ResourceId activityFormSection(int id, String name) {
-        return ResourceId.create(ACTIVITY_DOMAIN + block(id) + block(name.hashCode()));
+        return ResourceId.valueOf(ACTIVITY_DOMAIN + block(id) + block(name.hashCode()));
     }
 
     private static String block(int id) {

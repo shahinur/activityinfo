@@ -3,9 +3,9 @@ package org.activityinfo.store.cloudsql;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.ResourceNode;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.service.store.ResourceTree;
 import org.activityinfo.service.store.ResourceTreeRequest;
 
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * Constructs a {@link org.activityinfo.service.store.ResourceTree} in response to
+ * Constructs a {@link org.activityinfo.model.resource.ResourceTree} in response to
  * a {@link org.activityinfo.service.store.ResourceTreeRequest}.
  */
 public class ResourceTreeBuilder {
@@ -57,18 +57,35 @@ public class ResourceTreeBuilder {
 
 
     private ResourceNode fetchRootNode(ResourceId rootId) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(
-                "select id, class_id, owner_id, label, version, sub_tree_version from resource where id = ?");
-        statement.setString(1, rootId.asString());
-        ResultSet resultSet = statement.executeQuery();
 
-        if(!resultSet.next()) {
-            throw new ResourceNotFound(rootId);
+        if(rootId.equals(ResourceId.ROOT_ID)) {
+            return fetchGlobalRoot(rootId);
+
+        } else {
+            String query =
+                    "select id, class_id, owner_id, label, version, sub_tree_version " +
+                    "from resource where id = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, rootId.asString());
+                ResultSet resultSet = statement.executeQuery();
+
+                if (!resultSet.next()) {
+                    throw new ResourceNotFound(rootId);
+                }
+
+                return createNodeAndAddToMap(resultSet);
+            }
         }
-
-        return createNodeAndAddToMap(resultSet);
     }
 
+    private ResourceNode fetchGlobalRoot(ResourceId rootId) throws SQLException {
+        long version = fetchGlobalVersion();
+        ResourceNode globalRoot = new ResourceNode(ResourceId.ROOT_ID);
+        globalRoot.setVersion(version);
+        globalRoot.setSubTreeVersion(version);
+        return globalRoot;
+    }
 
     public long getSubTreeVersion(ResourceId id) throws SQLException {
 
@@ -77,6 +94,9 @@ public class ResourceTreeBuilder {
 
         if(cachedVersion != null) {
             return cachedVersion;
+
+        } else if(id.equals(ResourceId.ROOT_ID)) {
+            return fetchGlobalVersion();
 
         } else {
             // Otherwise fetch from database
@@ -97,6 +117,18 @@ public class ResourceTreeBuilder {
         }
     }
 
+    private long fetchGlobalVersion() throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(
+                "select current_version from global_version")) {
+
+            ResultSet resultSet = statement.executeQuery();
+            if (!resultSet.next()) {
+                throw new IllegalStateException("global version is missing");
+            }
+            return resultSet.getInt(1);
+        }
+    }
+
 
     @Nullable
     private ResourceNode getCachedSubTree(ResourceId rootId) throws SQLException {
@@ -110,17 +142,15 @@ public class ResourceTreeBuilder {
 
 
     private Set<ResourceId> fetchChildren(Set<ResourceId> parents) throws SQLException {
-
-        String sql = ChildQueryBuilder
-                .ownedBy(parents)
-                .ofClass(request.getFormClassIds())
-                .sql();
+        StringBuilder sql = new StringBuilder();
+        sql.append("SELECT id, class_id, owner_id, label, version, sub_tree_version FROM resource WHERE ");
+        sql.append(QueryBuilder.where().ownedBy(parents).ofClass(request.getFormClassIds()));
 
         Set<ResourceId> toFetch = Sets.newHashSet();
 
         try(Statement statement = connection.createStatement()) {
 
-            try(ResultSet resultSet = statement.executeQuery(sql)) {
+            try(ResultSet resultSet = statement.executeQuery(sql.toString())) {
                 while(resultSet.next()) {
 
                     ResourceNode child = createNodeAndAddToMap(resultSet);
@@ -138,9 +168,9 @@ public class ResourceTreeBuilder {
     }
 
     private ResourceNode createNodeAndAddToMap(ResultSet resultSet) throws SQLException {
-        ResourceNode node = new ResourceNode(ResourceId.create(resultSet.getString(1)));
-        node.setClassId(ResourceId.create(resultSet.getString(2)));
-        node.setOwnerId(ResourceId.create(resultSet.getString(3)));
+        ResourceNode node = new ResourceNode(ResourceId.valueOf(resultSet.getString(1)));
+        node.setClassId(ResourceId.valueOf(resultSet.getString(2)));
+        node.setOwnerId(ResourceId.valueOf(resultSet.getString(3)));
         node.setLabel(resultSet.getString(4));
         node.setVersion(resultSet.getLong(5));
         node.setSubTreeVersion(resultSet.getLong(6));

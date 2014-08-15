@@ -17,7 +17,7 @@ public abstract class SimpleTableMigrator extends ResourceMigrator {
         try(Statement stmt = connection.createStatement()) {
             try(ResultSet rs = stmt.executeQuery(sql)) {
                 while(rs.next()) {
-                    writer.write(toResource(rs));
+                    writer.writeResource(toResource(rs));
                 }
             }
         }

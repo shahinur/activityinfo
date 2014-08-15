@@ -1,9 +1,9 @@
 package org.activityinfo.store.cloudsql;
 
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.servlet.*;
 import java.io.IOException;
 

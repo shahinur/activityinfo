@@ -1,9 +1,7 @@
 package org.activityinfo.model.table;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
@@ -127,9 +125,9 @@ public class FieldPathSelector implements FieldSelector {
             String formClassId = stepRecord.isString("formClass");
             String fieldId = stepRecord.getString("fieldId");
             if(formClassId != null) {
-                selector.steps.add(new Step(ResourceId.create(formClassId), ResourceId.create(fieldId)));
+                selector.steps.add(new Step(ResourceId.valueOf(formClassId), ResourceId.valueOf(fieldId)));
             } else {
-                selector.steps.add(new Step(ResourceId.create(fieldId)));
+                selector.steps.add(new Step(ResourceId.valueOf(fieldId)));
             }
         }
         return selector;
