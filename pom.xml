@@ -16,7 +16,8 @@
     <gwtVersion>2.6.1</gwtVersion>
     <rebarVersion>2.4.1</rebarVersion>
     <gae.version>1.9.6</gae.version>
-    <jersey.version>1.17</jersey.version>
+    <jersey.version>1.18.1</jersey.version>
+    <jackson.version>2.4.1</jackson.version>
     <appengine.export.version>0.1.1</appengine.export.version>
     <netbeans.hint.license>gpl3</netbeans.hint.license>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -98,12 +99,14 @@
   <modules>
     <module>core/model</module>
     <module>core/promises</module>
+    <module>core/services</module>
+    <module>store/cloudsql</module>
+    <module>store/testing</module>
     <module>server</module>
     <module>tools/migrator</module>
     <module>ui/test-harness</module>
     <module>ui/barcode-scanner</module>
-    <module>store/cloudsql</module>
-    <module>store/testing</module>
+
   </modules>
 
   <dependencies>
@@ -155,6 +158,16 @@
         <artifactId>gson</artifactId>
         <version>2.2.4</version>
       </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.jaxrs</groupId>
+        <artifactId>jackson-jaxrs-json-provider</artifactId>
+        <version>2.2.3</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>1.3</version>
+      </dependency>
 
     </dependencies>
 
@@ -172,6 +185,28 @@
     </plugins>
     <pluginManagement>
       <plugins>
+        <!-- configure the Java Compiler Plugin -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+
+            <source>1.7</source>
+            <target>1.7</target>
+
+            <!-- Avoid duplicate class errors for GWT jars that include both source and class files -->
+            <compilerArgs>
+              <arg>-implicit:none</arg>
+            </compilerArgs>
+            <encoding>UTF-8</encoding>
+            <excludes>
+              <!-- Exclude emulation gwt sources -->
+              <exclude>**/emul/**/*.java</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>license-maven-plugin</artifactId>

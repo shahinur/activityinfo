@@ -1,7 +1,5 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.google.inject.Inject;
-import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
@@ -15,12 +13,7 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 public class OdkFieldValueParserFactory {
-    final private TableService table;
 
-    @Inject
-    public OdkFieldValueParserFactory(TableService table) {
-        this.table = table;
-    }
 
     public OdkFieldValueParser fromFieldType(FieldType fieldType) {
         if (fieldType instanceof BarcodeType) return new BarcodeFieldValueParser();

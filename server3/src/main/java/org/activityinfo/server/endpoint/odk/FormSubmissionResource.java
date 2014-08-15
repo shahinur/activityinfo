@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.sun.jersey.multipart.FormDataParam;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
@@ -16,11 +17,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
@@ -79,10 +76,11 @@ public class FormSubmissionResource {
                     int userId;
                     int formClassId;
                     AuthenticationToken authenticationToken = new AuthenticationToken(tokenString);
-
+                    AuthenticatedUser user;
                     try {
                         userId = authenticationTokenService.getUserId(authenticationToken);
                         formClassId = authenticationTokenService.getFormClassId(authenticationToken);
+                        user = new AuthenticatedUser("XYZ", userId, "@");
                     } catch (EntityNotFoundException entityNotFoundException) {
                         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
                     } catch (RuntimeException runtimeException) {
@@ -91,7 +89,7 @@ public class FormSubmissionResource {
                         throw new RuntimeException(e);
                     }
 
-                    Resource resource = locator.get(CuidAdapter.activityFormClass(formClassId));
+                    Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
                     FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
 
@@ -104,7 +102,7 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    locator.createResource(CuidAdapter.userId(userId), formInstance.asResource());
+                    locator.put(user, formInstance.asResource());
                     return Response.status(CREATED).build();
                 }
             }

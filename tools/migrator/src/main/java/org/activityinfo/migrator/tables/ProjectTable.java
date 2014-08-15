@@ -37,7 +37,7 @@ public class ProjectTable extends ResourceMigrator {
                 while(rs.next()) {
                     int databaseId = rs.getInt("DatabaseId");
                     if(!databases.contains(databaseId)) {
-                        writer.write(projectForm(databaseId));
+                        writer.writeResource(projectForm(databaseId));
                         databases.add(databaseId);
                     }
 
@@ -48,7 +48,7 @@ public class ProjectTable extends ResourceMigrator {
                     instance.set(field(classId, NAME_FIELD), rs.getString("name"));
                     instance.set(field(classId, FULL_NAME_FIELD), rs.getString("description"));
 
-                    writer.write(instance.asResource());
+                    writer.writeResource(instance.asResource());
                 }
             }
         }

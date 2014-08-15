@@ -3,13 +3,17 @@ package org.activityinfo.ui.client.service;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.UnmodifiableIterator;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.*;
+import org.activityinfo.service.tables.TableBuilder;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,12 +21,18 @@ import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-@SuppressWarnings("GwtClientClassFromNonInheritedModule") public class TestResourceStore implements ResourceStore {
+@SuppressWarnings("GwtClientClassFromNonInheritedModule")
+public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     private final Map<ResourceId, Resource> resourceMap = Maps.newHashMap();
 
+    private AuthenticatedUser currentUser = new AuthenticatedUser();
+
     private int currentVersion = 1;
+
+    private Resource lastUpdated;
 
     /**
      * Loads a set of resources from a json resource on the classpath
@@ -56,7 +66,6 @@ import java.util.Map;
         return new Cursor(resources.iterator());
     }
 
-    @Override
     public Resource get(ResourceId resourceId) {
         Resource resource = resourceMap.get(resourceId);
         if(resource == null) {
@@ -66,22 +75,53 @@ import java.util.Map;
     }
 
     @Override
-    public ResourceTree queryTree(ResourceTreeRequest request) {
+    public Resource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+        return get(resourceId);
+    }
+
+    @Override
+    public Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ResourceTree queryTree(AuthenticatedUser user, ResourceTreeRequest request) {
         ResourceNode root = createNode(request, get(request.getRootId()));
         return new ResourceTree(root);
     }
 
     @Override
-    public UpdateResult createResource(ResourceId userId, Resource resource) {
-        return updateResource(userId, resource);
+    public UpdateResult put(AuthenticatedUser user, ResourceId id, Resource resource) {
+        int version = currentVersion++;
+        resource.setVersion(version);
+        lastUpdated = resource.copy();
+        put(lastUpdated);
+        return UpdateResult.committed(id, version);
     }
 
     @Override
-    public UpdateResult updateResource(ResourceId userId, Resource resource) {
-        int version = currentVersion++;
-        resource.setVersion(version);
-        put(resource.copy());
-        return new UpdateResult(CommitStatus.COMMITTED, version);
+    public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
+        TableBuilder builder = new TableBuilder(this);
+        try {
+            return builder.buildTable(tableModel);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public UpdateResult put(AuthenticatedUser user, Resource resource) {
+        return put(currentUser, resource.getId(), resource);
+    }
+
+    @Override
+    public void close() {
+
     }
 
     private ResourceNode createNode(ResourceTreeRequest request, Resource resource) {
@@ -95,7 +135,6 @@ import java.util.Map;
                 node.getChildren().add(createNode(request, child));
             }
         }
-
         return node;
     }
 
@@ -111,7 +150,7 @@ import java.util.Map;
 
     private ResourceId getClassId(Resource resource) {
         if(resource.has("classId")) {
-            return ResourceId.create(resource.getString("classId"));
+            return ResourceId.valueOf(resource.getString("classId"));
         } else {
             return null;
         }
@@ -127,6 +166,10 @@ import java.util.Map;
 
     public void remove(ResourceId id) {
         resourceMap.remove(id);
+    }
+
+    public Resource getLastUpdated() {
+        return lastUpdated.copy();
     }
 
     private class Cursor implements ResourceCursor {

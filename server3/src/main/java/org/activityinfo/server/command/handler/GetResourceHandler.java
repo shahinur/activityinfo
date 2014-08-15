@@ -41,7 +41,7 @@ public class GetResourceHandler implements CommandHandler<GetResource> {
     public CommandResult execute(GetResource command, User user) throws CommandException {
         ArrayList<String> encodedResults = Lists.newArrayList();
         for(String id : command.getIds()) {
-            encodedResults.add(Resources.toJson(store.get(ResourceId.create(id))));
+            encodedResults.add(Resources.toJson(store.get(user.asAuthenticatedUser(), ResourceId.valueOf(id))));
         }
         return new ResourceResult(encodedResults);
     }

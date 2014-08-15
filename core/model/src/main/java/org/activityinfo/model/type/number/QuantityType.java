@@ -42,7 +42,7 @@ public class QuantityType implements ParametrizedFieldType {
         @Override
         public FormClass getParameterFormClass() {
             FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("quantity"));
-            formClass.addElement(new FormField(ResourceId.create("units"))
+            formClass.addElement(new FormField(ResourceId.valueOf("units"))
                     .setType(FREE_TEXT.createType())
                     .setLabel("Units")
                     .setDescription("Describes the unit of measurement. For example: 'households', 'individuals'," +

@@ -4,7 +4,7 @@ import com.google.appengine.api.memcache.MemcacheService;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.ResourceNode;
+import org.activityinfo.model.resource.ResourceNode;
 
 import javax.annotation.Nullable;
 import java.util.logging.Level;

@@ -22,7 +22,7 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  */
 
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
+import org.activityinfo.model.expr.functions.BooleanFunctions;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -44,14 +44,14 @@ import java.util.List;
  */
 public class ExpressionBuilderTest {
 
-    private static final ResourceId GENDER_FIELD_ID = ResourceId.create("test_f1");
-    private static final ResourceId PREGNANT_FIELD_ID = ResourceId.create("test_f2");
-    private static final ResourceId TEXT_FIELD_ID = ResourceId.create("test_text");
+    private static final ResourceId GENDER_FIELD_ID = ResourceId.valueOf("test_f1");
+    private static final ResourceId PREGNANT_FIELD_ID = ResourceId.valueOf("test_f2");
+    private static final ResourceId TEXT_FIELD_ID = ResourceId.valueOf("test_text");
 
-    private static final EnumValue MALE = new EnumValue(ResourceId.create("test_ev1"), "Male");
-    private static final EnumValue FEMALE = new EnumValue(ResourceId.create("test_ev2"), "Female");
-    private static final EnumValue PREGNANT_YES = new EnumValue(ResourceId.create("test_ev3"), "Yes");
-    private static final EnumValue PREGNANT_NO = new EnumValue(ResourceId.create("test_ev4"), "No");
+    private static final EnumValue MALE = new EnumValue(ResourceId.valueOf("test_ev1"), "Male");
+    private static final EnumValue FEMALE = new EnumValue(ResourceId.valueOf("test_ev2"), "Female");
+    private static final EnumValue PREGNANT_YES = new EnumValue(ResourceId.valueOf("test_ev3"), "Yes");
+    private static final EnumValue PREGNANT_NO = new EnumValue(ResourceId.valueOf("test_ev4"), "No");
 
     FormClass formClass;
 

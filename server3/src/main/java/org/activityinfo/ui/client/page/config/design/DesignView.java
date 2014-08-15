@@ -280,12 +280,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
         if (sel instanceof ActivityDTO) {
             return ActivityForm.class;
-        } else if (sel instanceof AttributeGroupDTO) {
-            return AttributeGroupForm.class;
-        } else if (sel instanceof IndicatorDTO) {
-            return IndicatorForm.class;
-        } else if (sel instanceof AttributeDTO) {
-            return AttributeForm.class;
+
         } else if (sel instanceof LocationTypeDTO) {
             return LocationTypeForm.class;
         }
@@ -297,12 +292,6 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
     protected AbstractDesignForm createForm(ModelData sel) {
         if (sel instanceof ActivityDTO) {
             return new ActivityForm();
-        } else if (sel instanceof AttributeGroupDTO) {
-            return new AttributeGroupForm();
-        } else if (sel instanceof AttributeDTO) {
-            return new AttributeForm();
-        } else if (sel instanceof IndicatorDTO) {
-            return new IndicatorForm();
         } else if (sel instanceof LocationTypeDTO) {
             return new LocationTypeForm();
         }

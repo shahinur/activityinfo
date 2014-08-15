@@ -25,12 +25,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <version>${gwtVersion}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
@@ -43,7 +37,17 @@
       <artifactId>rebar-time</artifactId>
       <version>${rebarVersion}</version>
     </dependency>
-
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -70,50 +74,6 @@
         </executions>
       </plugin>
 
-      <!-- Use the maven antrun plugin to launch junit manually as
-           surefire will not run GWT tests correctly and
-           the gwt-maven-plugin doesn't allow us to pass the parameters
-           we need in and the maven-exec-plugin won't let us add the sources
-            to the classpath-->
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>ant-test</id>
-            <phase>test</phase>
-            <configuration>
-              <tasks>
-                <property name="test_classpath" refid="maven.test.classpath" />
-                <java classname="junit.textui.TestRunner" fork="true" maxmemory="1024m">
-                  <sysproperty key="gwt.args" value="
-                        -war target/test-out
-                        -gen target/test-gen
-                        -style PRETTY
-                        -port 40100
-                        -optimize 9
-                        -codeServerPort 50101
-                        -nodevMode
-                        -logdir target/test-logs
-                        -runStyle HtmlUnit:FF17
-                        -logLevel INFO" />
-                  <arg value="org.activityinfo.model.client.GwtTestInstance" />
-                  <classpath>
-                    <pathelement path="${basedir}/src/main/java" />
-                    <pathelement path="${basedir}/src/test/java" />
-                    <pathelement path="${test_classpath}" />
-                  </classpath>
-
-                </java>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 </project>

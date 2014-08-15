@@ -2,12 +2,10 @@ package org.activityinfo.migrator.tables;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.type.ReferenceType;
@@ -18,7 +16,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
 
@@ -69,7 +66,7 @@ public class LocationTypeTable extends ResourceMigrator {
                             .setRequired(false)
                             .setType(GeoPointType.INSTANCE);
 
-                    writer.write(formClass.asResource());
+                    writer.writeResource(formClass.asResource());
                 }
             }
         }

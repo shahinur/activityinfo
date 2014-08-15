@@ -6,7 +6,6 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.UpdateResult;
 
 import java.sql.PreparedStatement;
@@ -34,13 +33,8 @@ public class ResourceUpdate {
         this.cache = cache;
     }
 
-    public ResourceUpdate create(Resource resource) {
-        this.resource = resource;
-        return this;
-    }
 
-
-    public ResourceUpdate update(Resource resource) {
+    public ResourceUpdate put(Resource resource) {
         this.resource = resource;
         return this;
     }
@@ -64,10 +58,15 @@ public class ResourceUpdate {
         // update the sub_tree_version of all parents
         updateOwnerSubTreeVersions();
 
+        // if this is a root resource, add it to the user's index
+        if(resource.getOwnerId().equals(ResourceId.ROOT_ID)) {
+            indexUserRoot();
+        }
+
         // commit the transaction
         connection.commit();
 
-        return new UpdateResult(CommitStatus.COMMITTED, newVersion);
+        return UpdateResult.committed(resource.getId(), newVersion);
     }
 
     /**
@@ -134,6 +133,17 @@ public class ResourceUpdate {
         }
     }
 
+    private void indexUserRoot() throws SQLException {
+
+        try(PreparedStatement stmt = connection.prepareStatement(
+                "REPLACE INTO user_root_index (user_id, resource_id) VALUES (?, ?)")) {
+
+            stmt.setString(1, userId.asString());
+            stmt.setString(2, resource.getId().asString());
+            stmt.executeUpdate();
+        }
+    }
+
     private void updateOwnerSubTreeVersions() throws SQLException {
 
         try(PreparedStatement ownerUpdate = connection.prepareStatement(
@@ -163,7 +173,7 @@ public class ResourceUpdate {
                         // owners can get deleted
                         break;
                     }
-                    ownerId = ResourceId.create(rs.getString(1));
+                    ownerId = ResourceId.valueOf(rs.getString(1));
                 }
             }
 
@@ -173,7 +183,7 @@ public class ResourceUpdate {
 
     private String getLabel(Resource resource) {
         if(resource.has("classId")) {
-            ResourceId classId = ResourceId.create(resource.getString("classId"));
+            ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
             if(classId.equals(FormClass.CLASS_ID)) {
                 return resource.getString(FormClass.LABEL_FIELD_ID);
             } else if(classId.equals(FolderClass.CLASS_ID)) {
@@ -182,5 +192,4 @@ public class ResourceUpdate {
         }
         return null;
     }
-
 }

@@ -289,11 +289,6 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                             treeStore.add(parent, newEntity, false);
                         }
 
-                        if (newEntity instanceof ActivityDTO) {
-                            treeStore.add(newEntity, new AttributeGroupFolder(messages.attributes()), false);
-                            treeStore.add(newEntity, new IndicatorFolder(messages.indicators()), false);
-                        }
-
                         tether.hide();
 
                         eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);

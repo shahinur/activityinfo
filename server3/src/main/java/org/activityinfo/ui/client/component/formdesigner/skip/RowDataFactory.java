@@ -21,7 +21,7 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
-import org.activityinfo.core.shared.expr.functions.ExprFunctions;
+import org.activityinfo.model.expr.functions.ExprFunctions;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
@@ -35,7 +35,8 @@ public class RowDataFactory {
     }
 
     public static RowData create(SkipRow skipRow, FieldValue value, FormClass formClass) {
-        final ResourceId fieldId = ResourceId.create(skipRow.getFormfield().getValue(skipRow.getFormfield().getSelectedIndex()));
+        final ResourceId fieldId = ResourceId.valueOf(skipRow.getFormfield()
+                .getValue(skipRow.getFormfield().getSelectedIndex()));
 
         final RowData rowData = new RowData();
         rowData.setFormField(formClass.getField(fieldId));

@@ -3,8 +3,8 @@ package org.activityinfo.server.endpoint.odk;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.sun.jersey.api.view.Viewable;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.DispatcherSync;
 
 import javax.inject.Provider;

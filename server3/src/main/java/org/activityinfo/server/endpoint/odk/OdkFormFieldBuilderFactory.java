@@ -1,7 +1,6 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.inject.Inject;
-import org.activityinfo.model.table.TableService;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ParametrizedFieldType;
@@ -16,11 +15,11 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 public class OdkFormFieldBuilderFactory {
-    final private TableService table;
+    final private InstanceTableProvider tableProvider;
 
     @Inject
-    public OdkFormFieldBuilderFactory(TableService table) {
-        this.table = table;
+    public OdkFormFieldBuilderFactory(InstanceTableProvider tableProvider) {
+        this.tableProvider = tableProvider;
     }
 
     public OdkFormFieldBuilder fromFieldType(FieldType fieldType) {
@@ -49,7 +48,7 @@ public class OdkFormFieldBuilderFactory {
     private SelectOptions getSelectOptions(FieldType fieldType) {
         if (fieldType instanceof BooleanType) return new BooleanTypeSelectOptions();
         if (fieldType instanceof EnumType) return new EnumTypeSelectOptions((EnumType) fieldType);
-        if (fieldType instanceof ReferenceType) return new ReferenceTypeSelectOptions((ReferenceType) fieldType, table);
+        if (fieldType instanceof ReferenceType) return new ReferenceTypeSelectOptions(tableProvider, (ReferenceType) fieldType);
         return null;
     }
 }

@@ -22,10 +22,10 @@ package org.activityinfo.ui.client.component.form;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.expr.ExprLexer;
-import org.activityinfo.core.shared.expr.ExprNode;
-import org.activityinfo.core.shared.expr.ExprParser;
-import org.activityinfo.core.shared.expr.eval.FormEvalContext;
+import org.activityinfo.model.expr.ExprLexer;
+import org.activityinfo.model.expr.ExprNode;
+import org.activityinfo.model.expr.ExprParser;
+import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.form.FormField;
 
 import java.util.List;

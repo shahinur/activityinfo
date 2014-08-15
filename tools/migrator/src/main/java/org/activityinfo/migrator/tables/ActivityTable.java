@@ -42,7 +42,7 @@ public class ActivityTable extends ResourceMigrator {
     public static final int MONTHLY = 1;
 
     @Override
-    public void getResources(Connection connection, ResourceWriter writer) throws SQLException, IOException {
+    public void getResources(Connection connection, ResourceWriter writer) throws Exception {
 
         String sql =
                 "SELECT " +
@@ -81,7 +81,7 @@ public class ActivityTable extends ResourceMigrator {
                         ResourceId categoryId = CuidAdapter.activityCategoryFolderId(databaseId, category);
                         ownerId = categoryId;
                         if(!categories.contains(categoryId)) {
-                            writer.write(categoryResource(databaseResourceId, categoryId, category));
+                            writer.writeResource(categoryResource(databaseResourceId, categoryId, category));
                             categories.add(categoryId);
                         }
                     }
@@ -271,7 +271,7 @@ public class ActivityTable extends ResourceMigrator {
                                ResultSet rs,
                                List<FormElement> indicators,
                                Set<Integer> databasesWithProjects,
-                               ResourceWriter writer) throws SQLException, IOException {
+                               ResourceWriter writer) throws Exception {
 
 
         int activityId = rs.getInt("activityId");
@@ -330,7 +330,7 @@ public class ActivityTable extends ResourceMigrator {
         commentsField.setLabel("Comments");
         siteForm.addElement(commentsField);
 
-        writer.write(siteForm.asResource());
+        writer.writeResource(siteForm.asResource());
     }
 
     private ResourceId locationRange(ResultSet rs) throws SQLException {
