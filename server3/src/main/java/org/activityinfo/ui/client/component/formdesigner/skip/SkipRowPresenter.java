@@ -36,6 +36,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageType;
+import org.activityinfo.ui.client.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
@@ -59,10 +60,9 @@ public class SkipRowPresenter {
     private FieldValue value;
     private RowData rowData;
 
-
     public SkipRowPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
-        this.widgetFactory = new FormFieldWidgetFactory(fieldWidgetContainer.getFormDesigner().getResourceLocator());
+        this.widgetFactory = new FormFieldWidgetFactory(fieldWidgetContainer.getFormDesigner().getResourceLocator(), FieldWidgetMode.NORMAL);
 
         initFormFieldBox();
         initFunction();
