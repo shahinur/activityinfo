@@ -39,7 +39,7 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
             FormField exprField = new FormField(ResourceId.valueOf("expression"));
             exprField.setLabel("Expression");
-            exprField.setDescription("Set expression if you would like to calculate field value dynamically (otherwise leave blank). Example: [A]+[B]+([C]/[D])");
+            exprField.setDescription("Set expression if you would like to calculate field value dynamically (otherwise leave blank). Example: {A}+{B}+({C}/{D})");
             exprField.setType(ExprFieldType.INSTANCE);
 
             FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id(getId()));
@@ -60,6 +60,10 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
     public String getExpression() {
         return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
     }
 
     @Override

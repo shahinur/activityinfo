@@ -38,6 +38,8 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.model.type.ParametrizedFieldTypeClass;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.ui.client.component.form.SimpleFormPanel;
 import org.activityinfo.ui.client.component.form.VerticalFieldContainer;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
@@ -229,13 +231,20 @@ public class PropertiesPresenter {
                 Record param = parametrizedFieldType.getParameters();
                 param.set(field.getId(), newValue);
                 ParametrizedFieldTypeClass typeClass = (ParametrizedFieldTypeClass) parametrizedFieldType.getTypeClass();
-                formField.setType(typeClass.deserializeType(param));
+                if (formField.getType() instanceof CalculatedFieldType && newValue instanceof ExprValue) {
+                    // for calculated fields we updated expression directly because it is handled via ExprFieldType
+                    ExprValue exprValue = (ExprValue) newValue;
+                    ((CalculatedFieldType)formField.getType()).setExpression(exprValue.getExpression());
+                } else {
+                    formField.setType(typeClass.deserializeType(param));
+                }
                 fieldWidgetContainer.syncWithModel();
             }
         };
         if (formField.getType() instanceof ParametrizedFieldType) {
             ParametrizedFieldType parametrizedType = (ParametrizedFieldType) formField.getType();
             currentDesignWidget.asWidget().setVisible(true);
+            currentDesignWidget.setValidationFormClass(fieldWidgetContainer.getFormDesigner().getFormClass());
             currentDesignWidget.show(Resources.createResource(parametrizedType.getParameters()));
 
         } else {

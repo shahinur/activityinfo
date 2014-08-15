@@ -54,6 +54,12 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     private ResourceLocator locator;
     private RelevanceHandler relevanceHandler;
 
+    // validation form class is used to refer to "top-level" form class.
+    // For example "Properties panel" renders current type-formClass but in order to validate expression we need
+    // reference to formClass that is currently editing on FormDesigner.
+    // it can be null.
+    private FormClass validationFormClass = null;
+
     public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
                            FormFieldWidgetFactory widgetFactory) {
         this(locator, containerFactory, widgetFactory, true);
@@ -123,12 +129,12 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         return Promise.forEach(formClass.getFields(), new Function<FormField, Promise<Void>>() {
             @Override
             public Promise<Void> apply(final FormField field) {
-                return widgetFactory.createWidget(formClass.getId(), field, new ValueUpdater<FieldValue>() {
+                return widgetFactory.createWidget(formClass, field, new ValueUpdater<FieldValue>() {
                     @Override
                     public void update(FieldValue value) {
                         onFieldUpdated(field, value);
                     }
-                }).then(new Function<FormFieldWidget, Void>() {
+                }, validationFormClass).then(new Function<FormFieldWidget, Void>() {
                     @Override
                     public Void apply(@Nullable FormFieldWidget widget) {
                         containers.put(field.getId(), containerFactory.createContainer(field, widget));
@@ -233,5 +239,13 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     public Map<ResourceId, FieldContainer> getContainers() {
         return containers;
+    }
+
+    public void setValidationFormClass(FormClass validationFormClass) {
+        this.validationFormClass = validationFormClass;
+    }
+
+    public FormClass getValidationFormClass() {
+        return validationFormClass;
     }
 }

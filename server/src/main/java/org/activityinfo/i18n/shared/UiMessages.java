@@ -344,13 +344,4 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("Oh no! Your import is missing required column(s): {0}")
     String missingColumns(String missingColumns);
-
-    @DefaultMessage("{0} code does not exist.")
-    String doesNotExist(String placeholder);
-
-    @DefaultMessage("Please provide valid comma separated text. Column count does not match in row number {0}.")
-    String pleaseProvideCommaSeparatedText(int rowNumber);
-
-    @DefaultMessage("Exceeds maximum length of {0} characters.")
-    String exceedsMaximumLength(int maxLength);
 }
