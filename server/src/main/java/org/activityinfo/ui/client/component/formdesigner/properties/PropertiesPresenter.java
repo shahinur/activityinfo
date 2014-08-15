@@ -42,6 +42,7 @@ import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.ui.client.component.form.SimpleFormPanel;
 import org.activityinfo.ui.client.component.form.VerticalFieldContainer;
+import org.activityinfo.ui.client.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
@@ -223,7 +224,7 @@ public class PropertiesPresenter {
 
         ResourceLocator locator = fieldWidgetContainer.getFormDesigner().getResourceLocator();
         currentDesignWidget = new SimpleFormPanel(locator, new VerticalFieldContainer.Factory(),
-                new FormFieldWidgetFactory(locator), false) {
+                new FormFieldWidgetFactory(locator, FieldWidgetMode.NORMAL), false) {
             @Override
             public void onFieldUpdated(FormField field, FieldValue newValue) {
                 super.onFieldUpdated(field, newValue);
