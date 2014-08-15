@@ -37,7 +37,7 @@ public class FormSubmissionResourceTest {
 
         String xml = asCharSource(getResource(FormSubmissionResourceTest.class, "form.xml"), Charsets.UTF_8).read();
 
-        Response response = resource.submit(xml);
+        Response response = resource.submit(xml, null);
         assertEquals(CREATED, fromStatusCode(response.getStatus()));
 
         Map<String, Object> map = store.getLastUpdated().getProperties();
