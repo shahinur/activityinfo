@@ -27,20 +27,17 @@
       <version>${project.version}</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-barcode-scanner</artifactId>
       <version>${project.version}</version>
     </dependency>
 
-
     <dependency>
       <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-remote-store</artifactId>
       <version>${project.version}</version>
     </dependency>
-
 
     <dependency>
       <groupId>org.activityinfo</groupId>
