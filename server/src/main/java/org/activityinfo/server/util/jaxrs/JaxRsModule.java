@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.inject.Provides;
 import com.google.inject.servlet.ServletModule;
+import org.activityinfo.model.json.ObjectMapperFactory;
 
 import javax.inject.Singleton;
 
@@ -19,6 +20,7 @@ public class JaxRsModule extends ServletModule {
     protected void configureServlets() {
         bind(FreemarkerViewProcessor.class);
         bind(Utf8JacksonJsonProvider.class).in(Singleton.class);
+        bind(ObjectMapper.class).toInstance(ObjectMapperFactory.get());
     }
 
     @Provides
