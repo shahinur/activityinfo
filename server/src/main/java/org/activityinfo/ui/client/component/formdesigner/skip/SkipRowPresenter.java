@@ -31,10 +31,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
 import org.activityinfo.model.expr.functions.*;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageType;
+import org.activityinfo.ui.client.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
@@ -58,10 +60,9 @@ public class SkipRowPresenter {
     private FieldValue value;
     private RowData rowData;
 
-
     public SkipRowPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
-        this.widgetFactory = new FormFieldWidgetFactory(fieldWidgetContainer.getFormDesigner().getResourceLocator());
+        this.widgetFactory = new FormFieldWidgetFactory(fieldWidgetContainer.getFormDesigner().getResourceLocator(), FieldWidgetMode.NORMAL);
 
         initFormFieldBox();
         initFunction();
@@ -89,7 +90,7 @@ public class SkipRowPresenter {
             }
         };
 
-        widgetFactory.createWidget(ResourceId.generateId(), getSelectedFormField(), valueUpdater).then(new AsyncCallback<FormFieldWidget>() {
+        widgetFactory.createWidget(new FormClass(ResourceId.generateId()), getSelectedFormField(), valueUpdater).then(new AsyncCallback<FormFieldWidget>() {
             @Override
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
