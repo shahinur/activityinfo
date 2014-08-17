@@ -28,17 +28,16 @@ import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.model.type.expr.CalculatedFieldType;
-import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -71,13 +70,19 @@ public class FormFieldWidgetFactory {
     public static final int SMALL_BALANCE_NUMBER = 10;
     public static final int MEDIUM_BALANCE_NUMBER = 20;
 
-    private ResourceLocator resourceLocator;
+    private final ResourceLocator resourceLocator;
+    private final FieldWidgetMode fieldWidgetMode;
 
-    public FormFieldWidgetFactory(ResourceLocator resourceLocator) {
+    public FormFieldWidgetFactory(ResourceLocator resourceLocator, FieldWidgetMode fieldWidgetMode) {
         this.resourceLocator = resourceLocator;
+        this.fieldWidgetMode = fieldWidgetMode;
     }
 
-    public Promise<? extends FormFieldWidget> createWidget(ResourceId formClassId, FormField field, ValueUpdater valueUpdater) {
+    public Promise<? extends FormFieldWidget> createWidget(FormClass formClass, FormField field, ValueUpdater valueUpdater) {
+        return createWidget(formClass, field, valueUpdater, null);
+    }
+
+    public Promise<? extends FormFieldWidget> createWidget(FormClass formClass, FormField field, ValueUpdater valueUpdater, FormClass validationFormClass) {
         FieldType type = field.getType();
 
         if (type instanceof QuantityType) {
@@ -90,7 +95,7 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new TextFieldWidget(valueUpdater));
 
         } else if (type instanceof ExprFieldType) {
-            return Promise.resolved(new ExprFieldWidget(valueUpdater));
+            return Promise.resolved(new ExprFieldWidget(validationFormClass, valueUpdater));
 
         } else if (type instanceof CalculatedFieldType) {
             return Promise.resolved(new CalculatedFieldWidget(valueUpdater));
@@ -105,7 +110,7 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new GeographicPointWidget(valueUpdater));
 
         } else if (type instanceof EnumType) {
-            return Promise.resolved(new EnumFieldWidget((EnumType) field.getType(), valueUpdater));
+            return Promise.resolved(new EnumFieldWidget((EnumType) field.getType(), valueUpdater, fieldWidgetMode));
 
         } else if (type instanceof BooleanType) {
             return Promise.resolved(new BooleanFieldWidget(valueUpdater));
