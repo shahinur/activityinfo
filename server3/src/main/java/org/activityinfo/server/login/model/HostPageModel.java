@@ -25,6 +25,8 @@ package org.activityinfo.server.login.model;
 
 public class HostPageModel extends PageModel {
     private String appUrl;
+    private boolean appCacheEnabled;
+    private boolean newUI;
 
     public HostPageModel(String appUrl) {
         this.appUrl = appUrl;
@@ -34,4 +36,19 @@ public class HostPageModel extends PageModel {
         return appUrl;
     }
 
+    public boolean isAppCacheEnabled() {
+        return appCacheEnabled;
+    }
+
+    public void setAppCacheEnabled(boolean appCacheEnabled) {
+        this.appCacheEnabled = appCacheEnabled;
+    }
+
+    public boolean isNewUI() {
+        return newUI;
+    }
+
+    public void setNewUI(boolean newUI) {
+        this.newUI = newUI;
+    }
 }
