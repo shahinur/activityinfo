@@ -1,7 +1,6 @@
-package org.activityinfo.ui.client.component.form.field;
+package org.activityinfo.model.table;
 
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.table.ColumnView;
 
 /**
  * A table containing an column of resource ids, and a label column for a set of
