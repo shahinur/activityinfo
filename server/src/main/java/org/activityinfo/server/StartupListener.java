@@ -50,6 +50,7 @@ import org.activityinfo.server.util.jaxrs.JaxRsModule;
 import org.activityinfo.server.util.locale.LocaleModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.service.ServiceModule;
+import org.activityinfo.service.blob.GcsBlobFieldStorageServiceModule;
 
 import javax.servlet.ServletContextEvent;
 import java.util.logging.Logger;
@@ -96,7 +97,8 @@ public class StartupListener extends GuiceServletContextListener {
                 new JaxRsModule(),
                 new RestApiModule(),
                 new OdkModule(),
-                new ServiceModule());
+                new ServiceModule(),
+                new GcsBlobFieldStorageServiceModule());
     }
 
 }

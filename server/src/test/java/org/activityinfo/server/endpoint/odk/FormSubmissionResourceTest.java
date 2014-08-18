@@ -8,6 +8,8 @@ import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.blob.GcsBlobFieldStorageService;
+import org.activityinfo.service.blob.BlobFieldStorageService;
+import org.activityinfo.service.blob.TestBlobFieldStorageService;
 import org.junit.Before;
 import org.junit.Test;
 
