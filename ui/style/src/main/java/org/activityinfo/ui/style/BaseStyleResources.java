@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteSource;
 import com.google.common.io.Resources;
+import com.google.gwt.core.shared.GwtIncompatible;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * Stylesheet and collection of resources forming the base stylesheet
  */
+@GwtIncompatible
 public class BaseStyleResources {
 
     private String stylesheetStrongName;

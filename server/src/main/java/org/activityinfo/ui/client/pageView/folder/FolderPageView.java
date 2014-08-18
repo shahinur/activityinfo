@@ -12,14 +12,12 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Projection;
-import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.core.shared.criteria.ParentCriteria;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.chrome.PageHeader;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
@@ -28,9 +26,6 @@ import org.activityinfo.ui.client.pageView.InstanceViewModel;
 
 import javax.annotation.Nullable;
 import java.util.List;
-
-import static org.activityinfo.model.system.ApplicationProperties.DESCRIPTION_PROPERTY;
-import static org.activityinfo.model.system.ApplicationProperties.LABEL_PROPERTY;
 
 /**
  * View for Folder instances
@@ -75,50 +70,42 @@ public class FolderPageView implements InstancePageView {
         pageHeader.setPageTitle(instance.getString(FolderClass.LABEL_FIELD_ID));
         pageHeader.setIconStyle("glyphicon glyphicon-folder-open");
 
-        return resourceLocator.query(childrenQuery()).then(new Function<List<Projection>, Void>() {
+        return resourceLocator.getTree(view.getInstance().getId()).then(new Function<ResourceTree, Void>() {
             @Nullable
             @Override
-            public Void apply(@Nullable List<Projection> input) {
-                renderFolders(input);
-                renderForms(input);
+            public Void apply(@Nullable ResourceTree tree) {
+                renderFolders(tree.getRootNode().getChildren());
+                renderForms(tree.getRootNode().getChildren());
                 return null;
             }
         });
     }
 
-    private void renderFolders(List<Projection> projections) {
+    private void renderFolders(List<ResourceNode> projections) {
         SafeHtmlBuilder html = new SafeHtmlBuilder();
-        for(Projection projection : projections) {
-            if(projection.getRootClassId().equals(FolderClass.CLASS_ID)) {
+        for(ResourceNode projection : projections) {
+            if(projection.getClassId().equals(FolderClass.CLASS_ID)) {
                 html.append(templates.folder(
-                        InstancePlace.safeUri(projection.getRootInstanceId()).asString(),
-                        projection.getStringValue(LABEL_PROPERTY)));
+                        InstancePlace.safeUri(projection.getClassId()).asString(),
+                        projection.getLabel()));
             }
         }
         folderList.setInnerSafeHtml(html.toSafeHtml());
     }
 
-    private void renderForms(List<Projection> projections) {
+    private void renderForms(List<ResourceNode> projections) {
 
         FormItemRenderer renderer = GWT.create(FormItemRenderer.class);
 
         SafeHtmlBuilder html = new SafeHtmlBuilder();
-        for(Projection projection : projections) {
-            if(projection.getRootClassId().equals(FormClass.CLASS_ID)) {
-                renderer.render(html, projection.getStringValue(LABEL_PROPERTY),
-                        Objects.firstNonNull(projection.getStringValue(DESCRIPTION_PROPERTY), NON_BREAKING_SPACE),
-                        InstancePlace.safeUri(projection.getRootInstanceId()).asString());
+        for(ResourceNode projection : projections) {
+            if(projection.getClassId().equals(FormClass.CLASS_ID)) {
+                renderer.render(html, projection.getLabel(),
+                        Objects.firstNonNull( null /*projection.getStringValue(DESCRIPTION_PROPERTY) */, NON_BREAKING_SPACE),
+                        InstancePlace.safeUri(projection.getId()).asString());
             }
         }
         formListBody.setInnerSafeHtml(html.toSafeHtml());
-    }
-
-    private InstanceQuery childrenQuery() {
-        return InstanceQuery
-            .select(
-                    ApplicationProperties.LABEL_PROPERTY,
-                    ApplicationProperties.DESCRIPTION_PROPERTY)
-            .where(ParentCriteria.isChildOf(instance.getId())).build();
     }
 
 

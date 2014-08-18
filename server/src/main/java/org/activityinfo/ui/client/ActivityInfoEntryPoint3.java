@@ -3,7 +3,6 @@ package org.activityinfo.ui.client;
 import com.google.common.base.Strings;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -12,11 +11,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.client.remote.MergingDispatcher;
-import org.activityinfo.legacy.client.remote.RemoteDispatcher;
 import org.activityinfo.legacy.client.remote.cache.CacheManager;
-import org.activityinfo.legacy.client.remote.cache.CachingDispatcher;
 import org.activityinfo.legacy.client.remote.cache.SchemaCache;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.RemoteCommandService;
@@ -54,6 +49,8 @@ public class ActivityInfoEntryPoint3 implements EntryPoint {
         RootPanel root = RootPanel.get("root");
         root.add(leftPanel);
         root.add(mainPanel);
+
+        Document.get().getElementById("preloader").addClassName("fade");
 
         startNavigation(mainPanel);
     }
@@ -97,12 +94,7 @@ public class ActivityInfoEntryPoint3 implements EntryPoint {
 
         AuthenticatedUser auth = new ClientSideAuthProvider().get();
 
-        Dispatcher dispatcher = new CachingDispatcher(cacheManager,
-                new MergingDispatcher(
-                        new RemoteDispatcher(eventBus, auth, remoteService),
-                        Scheduler.get()));
-
-        return new ResourceLocatorAdaptor(dispatcher, new RemoteStoreServiceImpl(
+        return new ResourceLocatorAdaptor(new RemoteStoreServiceImpl(
                 new RestEndpoint("/service/store")));
     }
 }
