@@ -6,8 +6,8 @@ import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
-import org.activityinfo.service.DeploymentConfiguration;
-import org.activityinfo.service.blob.GcsBlobFieldStorageService;
+import org.activityinfo.service.blob.BlobFieldStorageService;
+import org.activityinfo.service.blob.TestBlobFieldStorageService;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,6 @@ import org.junit.Test;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Properties;
 
 import static com.google.common.io.Resources.asCharSource;
 import static com.google.common.io.Resources.getResource;
@@ -32,9 +31,8 @@ public class FormSubmissionResourceTest {
         store = new TestResourceStore().load("/dbunit/formSubmissionResourceTest.json");
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
-        DeploymentConfiguration deploymentConfiguration = new DeploymentConfiguration(new Properties());
-        GcsBlobFieldStorageService gcsBlobFieldStorageService = new GcsBlobFieldStorageService(deploymentConfiguration);
-        resource = new FormSubmissionResource(factory, store, authenticationTokenService, gcsBlobFieldStorageService);
+        BlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
+        resource = new FormSubmissionResource(factory, store, authenticationTokenService, blobFieldStorageService);
     }
 
     @Test
