@@ -100,6 +100,7 @@
     <module>core/promises</module>
     <module>geoadmin</module>
     <module>server</module>
+    <module>i18n</module>
   </modules>
 
   <dependencies>

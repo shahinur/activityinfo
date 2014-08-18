@@ -22,23 +22,20 @@ package org.activityinfo.ui.client.component.form.field;
  */
 
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.ValueUpdater;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.TableModel;
-import org.activityinfo.model.type.expr.CalculatedFieldType;
-import org.activityinfo.model.type.expr.ExprFieldType;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -49,6 +46,8 @@ import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
 import org.activityinfo.ui.client.component.form.field.image.ImageUploadFieldWidget;
+
+import java.util.List;
 
 /**
  * @author yuriyz on 1/28/14.
@@ -131,9 +130,6 @@ public class FormFieldWidgetFactory {
 
     private Promise<? extends FormFieldWidget> createReferenceWidget(FormField field, ValueUpdater updater) {
         ReferenceType type = (ReferenceType) field.getType();
-        if( type.getRange().size() == 1 && type.getRange().contains(FormClass.CLASS_ID) ) {
-            return Promise.resolved(new FormClassSelectorWidget());
-        }
         if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
             return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) field.getType(), updater);
         } else {

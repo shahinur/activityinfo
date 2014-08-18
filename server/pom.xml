@@ -70,12 +70,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.teklabs.gwt-i18n-server</groupId>
-      <artifactId>gwt-i18n-server</artifactId>
-      <version>0.7-bedatadriven2</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.xerial</groupId>
       <artifactId>sqlite-jdbc</artifactId>
       <version>3.6.17</version>
@@ -94,6 +88,13 @@
       <artifactId>bcrypt</artifactId>
       <version>0.3</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-i18n</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
 
     <dependency>
       <groupId>gson-gwt</groupId>
@@ -513,13 +514,13 @@
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <packagingExcludes>ActivityInfo/compile-report,*.log,**/*.symbolMap</packagingExcludes>
-            <webResources>
-              <resource>
-                <directory>${basedir}/src/main/deploy</directory>
-                <filtering>true</filtering>
-              </resource>
-            </webResources>
-          </configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/src/main/deploy</directory>
+              <filtering>true</filtering>
+            </resource>
+          </webResources>
+        </configuration>
       </plugin>
 
       <!-- configure the GWT-Maven plugin -->
