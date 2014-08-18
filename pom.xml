@@ -105,7 +105,6 @@
     <module>server</module>
     <module>tools/migrator</module>
     <module>ui/remote-store</module>
-    <module>ui/test-harness</module>
     <module>ui/barcode-scanner</module>
   </modules>
 
