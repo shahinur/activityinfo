@@ -5,7 +5,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Node;
 import org.activityinfo.ui.vdom.client.patch.Patch;
-import org.activityinfo.ui.vdom.shared.diff.DiffBuilder;
+import org.activityinfo.ui.vdom.shared.diff.Diff;
 import org.activityinfo.ui.vdom.shared.diff.VDiff;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
@@ -48,7 +48,7 @@ public class VDomTestEntryPoint implements EntryPoint {
             public boolean execute() {
                 count++;
                 VTree newTree = render(count);
-                VDiff diff = DiffBuilder.diff(tree, newTree);
+                VDiff diff = Diff.diff(tree, newTree);
 
                 Patch patch = new Patch();
                 patch.patch(rootNode, diff);

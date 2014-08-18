@@ -33,7 +33,6 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.PivotSites;
 import org.activityinfo.legacy.shared.command.PivotSites.PivotResult;
 import org.activityinfo.legacy.shared.command.result.Bucket;
-import org.activityinfo.legacy.shared.impl.newpivot.PivotIndicatorHandler;
 import org.activityinfo.legacy.shared.impl.pivot.*;
 
 import java.util.List;
@@ -75,14 +74,6 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
         }
 
         final PivotQueryContext queryContext = new PivotQueryContext(command, context, dialect);
-
-        // in memory calculation for indicators : move away from sql because it brings
-        // quite complex queries for calculated indicators
-        if (false && command.getValueType() == PivotSites.ValueType.INDICATOR && command.getFilter().hasRestrictions() && !command.getFilter().getRestrictions(DimensionType.Indicator).isEmpty()) {
-            PivotIndicatorHandler handler = new PivotIndicatorHandler(queryContext, callback);
-            handler.execute();
-            return;
-        }
 
         final List<PivotQuery> queries = Lists.newArrayList();
 

@@ -51,7 +51,6 @@ import org.activityinfo.ui.client.page.PageState;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.ui.client.page.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.ui.client.page.common.grid.TreeGridView;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
@@ -73,7 +72,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     public static final PageId PAGE_ID = new PageId("design");
 
     @ImplementedBy(DesignView.class)
-    public interface View extends TreeGridView<DesignPresenter, ModelData> {
+    public interface View extends org.activityinfo.ui.client.page.common.grid.GridView<DesignPresenter,ModelData> {
         public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store);
 
         public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback);
