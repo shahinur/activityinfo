@@ -29,7 +29,6 @@ import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.FieldType;

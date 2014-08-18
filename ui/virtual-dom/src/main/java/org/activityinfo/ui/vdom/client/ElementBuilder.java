@@ -17,8 +17,7 @@ public class ElementBuilder {
     private boolean warn = true;
 
     public Node createElement(VTree vTree) {
-        // Force thunks to a concrete form
-        vTree = vTree.force();
+        vTree = Thunks.handleThunk(vTree).a;
 
         if (vTree instanceof VWidget) {
             return ((VWidget) vTree).init();
@@ -44,17 +43,13 @@ public class ElementBuilder {
         }
 
         PropMap props = vnode.properties;
-        if(props != null) {
-            Properties.applyProperties((Element) node, props, null);
-        }
+        Properties.applyProperties((Element)node, props, null);
 
         VTree[] children = vnode.children;
-        if(children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                Node childNode = createElement(children[i]);
-                if (childNode != null) {
-                    node.appendChild(childNode);
-                }
+        for(int i=0;i<children.length;++i) {
+            Node childNode = createElement(children[i]);
+            if(childNode != null) {
+                node.appendChild(childNode);
             }
         }
 

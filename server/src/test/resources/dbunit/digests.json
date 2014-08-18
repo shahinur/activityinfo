@@ -3,13 +3,12 @@
     "@id": "_geodb",
     "@owner": "_root",
     "classId": "_folder",
-    "_folder_label": "Geodatabase"
+    "label": "Geodatabase"
   },
   {
     "@id": "_country",
     "@owner": "_geodb",
     "classId": "_class",
-    "_class_label": "Country",
     "elements": [
       {
         "id": "_countryf1",
@@ -389,10 +388,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
+            "range": [
+              "P1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -406,10 +404,9 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "R1"
-            },
+            "range": [
+              "R1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -441,10 +438,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
+            "range": [
+              "L1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -475,10 +471,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
+            "range": [
+              "P1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -492,10 +487,9 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "R1"
-            },
+            "range": [
+              "R1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -527,10 +521,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
+            "range": [
+              "L1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },

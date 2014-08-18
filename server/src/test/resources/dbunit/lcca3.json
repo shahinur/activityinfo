@@ -3,13 +3,12 @@
     "@id": "_geodb",
     "@owner": "_root",
     "classId": "_folder",
-    "_folder_label": "Geodatabase"
+    "label": "Geodatabase"
   },
   {
     "@id": "_country",
     "@owner": "_geodb",
     "classId": "_class",
-    "_class_label": "Country",
     "elements": [
       {
         "id": "_countryf1",
@@ -257,10 +256,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1350"
-            },
+            "range": [
+              "P1350"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -292,10 +290,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L50598"
-            },
+            "range": [
+              "L50598"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -630,7 +627,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "Block number"
           },
           "typeClass": "QUANTITY"
@@ -678,7 +674,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "Comm. number"
           },
           "typeClass": "QUANTITY"
@@ -691,7 +686,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "minutes"
           },
           "typeClass": "QUANTITY"
@@ -704,7 +698,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "people"
           },
           "typeClass": "QUANTITY"
@@ -717,7 +710,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
@@ -730,7 +722,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
@@ -743,7 +734,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
@@ -756,7 +746,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
@@ -769,7 +758,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
@@ -782,7 +770,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
@@ -795,7 +782,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "peaces"
           },
           "typeClass": "QUANTITY"
@@ -808,7 +794,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "liters"
           },
           "typeClass": "QUANTITY"
@@ -821,7 +806,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
@@ -834,7 +818,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
@@ -847,7 +830,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"
@@ -860,7 +842,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "pieces"
           },
           "typeClass": "QUANTITY"

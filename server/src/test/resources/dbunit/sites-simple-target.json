@@ -3,13 +3,12 @@
     "@id": "_geodb",
     "@owner": "_root",
     "classId": "_folder",
-    "_folder_label": "Geodatabase"
+    "label": "Geodatabase"
   },
   {
     "@id": "_country",
     "@owner": "_geodb",
     "classId": "_class",
-    "_class_label": "Country",
     "elements": [
       {
         "id": "_countryf1",
@@ -84,10 +83,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E1"
-            },
+            "range": [
+              "E1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -236,13 +234,10 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": [
-                "E2",
-                "E1"
-              ]
-            },
+            "range": [
+              "E2",
+              "E1"
+            ],
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -295,13 +290,10 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": [
-                "E2",
-                "E1"
-              ]
-            },
+            "range": [
+              "E2",
+              "E1"
+            ],
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -735,10 +727,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
+            "range": [
+              "P1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -752,10 +743,9 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "R1"
-            },
+            "range": [
+              "R1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -787,10 +777,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
+            "range": [
+              "L1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -809,7 +798,6 @@
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "menages"
               },
               "typeClass": "QUANTITY"
@@ -822,7 +810,6 @@
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "distributions"
               },
               "typeClass": "QUANTITY"
@@ -835,7 +822,6 @@
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "distributions"
               },
               "typeClass": "QUANTITY"
@@ -893,7 +879,6 @@
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "menages"
               },
               "typeClass": "QUANTITY"
@@ -950,10 +935,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
+            "range": [
+              "P1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -967,10 +951,9 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "R1"
-            },
+            "range": [
+              "R1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1002,10 +985,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
+            "range": [
+              "L1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1061,10 +1043,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P2"
-            },
+            "range": [
+              "P2"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1096,10 +1077,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
+            "range": [
+              "L1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1118,7 +1098,6 @@
             "required": false,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "nc/hab/month"
               },
               "typeClass": "QUANTITY"
@@ -1150,10 +1129,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P2"
-            },
+            "range": [
+              "P2"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1185,10 +1163,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E2"
-            },
+            "range": [
+              "E2"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1202,7 +1179,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "children"
           },
           "typeClass": "QUANTITY"
@@ -1232,10 +1208,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P2"
-            },
+            "range": [
+              "P2"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1267,10 +1242,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E2"
-            },
+            "range": [
+              "E2"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1301,10 +1275,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P4"
-            },
+            "range": [
+              "P4"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1336,10 +1309,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E2"
-            },
+            "range": [
+              "E2"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },

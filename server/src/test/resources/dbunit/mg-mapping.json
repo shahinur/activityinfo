@@ -3,13 +3,12 @@
     "@id": "_geodb",
     "@owner": "_root",
     "classId": "_folder",
-    "_folder_label": "Geodatabase"
+    "label": "Geodatabase"
   },
   {
     "@id": "_country",
     "@owner": "_geodb",
     "classId": "_class",
-    "_class_label": "Country",
     "elements": [
       {
         "id": "_countryf1",
@@ -85,10 +84,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E1379"
-            },
+            "range": [
+              "E1379"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -136,10 +134,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E1508"
-            },
+            "range": [
+              "E1508"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -187,10 +184,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E1511"
-            },
+            "range": [
+              "E1511"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1253,10 +1249,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1026"
-            },
+            "range": [
+              "P1026"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1288,10 +1283,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E1512"
-            },
+            "range": [
+              "E1512"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -1310,7 +1304,6 @@
             "required": true,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "nombre"
               },
               "typeClass": "QUANTITY"
@@ -1323,7 +1316,6 @@
             "required": true,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "nombre"
               },
               "typeClass": "QUANTITY"
@@ -1336,7 +1328,6 @@
             "required": true,
             "type": {
               "parameters": {
-                "classId": "_type:quantity",
                 "units": "nombre"
               },
               "typeClass": "QUANTITY"
@@ -1351,7 +1342,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "nombre"
           },
           "typeClass": "QUANTITY"
@@ -1364,7 +1354,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "nombre"
           },
           "typeClass": "QUANTITY"
@@ -1377,7 +1366,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "nombre"
           },
           "typeClass": "QUANTITY"
@@ -1390,7 +1378,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "nombre"
           },
           "typeClass": "QUANTITY"

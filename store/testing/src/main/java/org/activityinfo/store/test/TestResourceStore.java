@@ -43,8 +43,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     public TestResourceStore load(String resourceName) throws IOException {
         JsonParser parser = new JsonParser();
         JsonArray resourceArray;
-        try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(resourceName),
-                Charsets.UTF_8)) {
+        try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(resourceName), Charsets.UTF_8)) {
             resourceArray = parser.parse(reader).getAsJsonArray();
         }
 
@@ -102,25 +101,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     @Override
     public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
-        List<ResourceNode> nodes = Lists.newArrayList();
-        for(Resource resource : all()) {
-            if(resource.getOwnerId().asString().startsWith("U")) {
-                nodes.add(newNode(resource));
-            }
-        }
-        return nodes;
-    }
-
-    private ResourceNode newNode(Resource resource) {
-        ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
-        ResourceNode node = new ResourceNode(resource.getId(), classId);
-
-        if(classId.equals(FormClass.CLASS_ID)) {
-            node.setLabel(resource.isString(FormClass.LABEL_FIELD_ID));
-        } else if(classId.equals(FolderClass.CLASS_ID)) {
-            node.setLabel(resource.isString(FolderClass.LABEL_FIELD_ID.asString()));
-        }
-        return node;
+        throw new UnsupportedOperationException();
     }
 
     @Override
