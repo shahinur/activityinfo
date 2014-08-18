@@ -4,10 +4,10 @@ import com.google.inject.Inject;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.ui.client.component.form.field.InstanceLabelTable;
 
 import javax.inject.Provider;
 

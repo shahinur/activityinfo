@@ -44,6 +44,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-i18n</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>

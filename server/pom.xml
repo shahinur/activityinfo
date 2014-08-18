@@ -80,11 +80,6 @@
       <version>${gae.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.teklabs.gwt-i18n-server</groupId>
-      <artifactId>gwt-i18n-server</artifactId>
-      <version>0.7-bedatadriven2</version>
-    </dependency>
 
     <dependency>
       <groupId>org.xerial</groupId>
@@ -104,6 +99,12 @@
       <groupId>org.mindrot.bcrypt</groupId>
       <artifactId>bcrypt</artifactId>
       <version>0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-i18n</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
