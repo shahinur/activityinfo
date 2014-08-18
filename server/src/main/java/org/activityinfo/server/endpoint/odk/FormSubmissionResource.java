@@ -17,8 +17,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
+import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.service.blob.GcsBlobFieldStorageService;
 import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -50,16 +50,16 @@ public class FormSubmissionResource {
     final private OdkFieldValueParserFactory factory;
     final private ResourceStore locator;
     final private AuthenticationTokenService authenticationTokenService;
-    final private GcsBlobFieldStorageService gcsBlobFieldStorageService;
+    final private BlobFieldStorageService blobFieldStorageService;
 
     @Inject
     public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator,
                                   AuthenticationTokenService authenticationTokenService,
-                                  GcsBlobFieldStorageService gcsBlobFieldStorageService) {
+                                  BlobFieldStorageService blobFieldStorageService) {
         this.factory = factory;
         this.locator = locator;
         this.authenticationTokenService = authenticationTokenService;
-        this.gcsBlobFieldStorageService = gcsBlobFieldStorageService;
+        this.blobFieldStorageService = blobFieldStorageService;
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
@@ -131,7 +131,7 @@ public class FormSubmissionResource {
                             imageRowValue.setMimeType(formDataBodyPart.getMediaType().toString());
                             ByteSource byteSource = ByteSource.wrap(formDataBodyPart.getValueAs(byte[].class));
                             try {
-                                gcsBlobFieldStorageService.put(user, new BlobId(imageRowValue.getBlobId()), byteSource);
+                                blobFieldStorageService.put(user, new BlobId(imageRowValue.getBlobId()), byteSource);
                             } catch (IOException ioException) {
                                 LOGGER.log(Level.SEVERE, "Could not write image to GCS", ioException);
                                 return Response.status(SERVICE_UNAVAILABLE).build();
