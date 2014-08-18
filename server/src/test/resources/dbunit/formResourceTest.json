@@ -62,7 +62,11 @@
                 "required": false,
                 "type": {
                     "parameters": {
-                        "cardinality": "SINGLE"
+                        "cardinality": {
+                            "@type": "enumerated",
+                            "value": "SINGLE"
+                        },
+                        "classId": "_type:image"
                     },
                     "typeClass": "IMAGE"
                 },
