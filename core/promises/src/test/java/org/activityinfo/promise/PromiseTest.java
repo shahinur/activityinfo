@@ -1,7 +1,6 @@
 package org.activityinfo.promise;
 
 import com.google.common.base.Function;
-import org.activityinfo.promise.Promise;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
