@@ -43,6 +43,7 @@ public class HostControllerTest extends ControllerTestCase {
 
     private static final String CHROME_USER_AGENT = "Mozilla/6.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/3.0.195.27 Safari/532.0";
     private static final String VALID_TOKEN = "XYZ123";
+    public static final boolean NO_REDIRECT = false;
 
     private HostController resource;
     private ServerSideAuthProvider authProvider;
@@ -68,8 +69,7 @@ public class HostControllerTest extends ControllerTestCase {
         replay(req);
 
         Response response = resource.getHostPage(
-                RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req,
-                false, "oldui");
+                RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, NO_REDIRECT);
 
         assertThat(response.getEntity(), instanceOf(Viewable.class));
         assertThat(((Viewable) response.getEntity()).getModel(),
@@ -88,8 +88,7 @@ public class HostControllerTest extends ControllerTestCase {
         replay(req);
 
         Response response = resource.getHostPage(
-                RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req,
-                false, "oldui");
+                RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, NO_REDIRECT);
 
         assertThat(response.getEntity(), instanceOf(Viewable.class));
         assertThat(((Viewable) response.getEntity()).getModel(),

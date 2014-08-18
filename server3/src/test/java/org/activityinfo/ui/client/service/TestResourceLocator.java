@@ -126,6 +126,10 @@ public class TestResourceLocator implements ResourceLocator {
         return Promise.rejected(new UnsupportedOperationException());
     }
 
+    @Override
+    public Promise<List<ResourceNode>> getRoots() {
+        return Promise.rejected(new UnsupportedOperationException());
+    }
 
     public void dump() throws IOException {
 
