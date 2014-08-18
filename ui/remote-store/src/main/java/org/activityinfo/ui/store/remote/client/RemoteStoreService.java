@@ -7,6 +7,7 @@ import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.store.UpdateResult;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ public interface RemoteStoreService {
      */
     Promise<Resource> get(ResourceId resourceId);
 
+    /**
+     * Creates or updates a Response
+     */
+    Promise<UpdateResult> put(Resource resource);
 
     /**
      * Retrieves the root resources that are owned or have been shared by the user

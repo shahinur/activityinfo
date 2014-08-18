@@ -4,7 +4,11 @@ body {
   font-family: @font-family;
   line-height: 21px;
   color: @main-text-color;
-//  overflow: hidden;
+  overflow: hidden;
+}
+
+body.page-loaded {
+  overflow: visible;
 }
 
 body.notfound, body.signin {
@@ -37,6 +41,8 @@ strong {
   height: 100%;
   background-color: @sub-bg-color;
   z-index: 10000;
+  .opacity(1.0);
+  .transition(opacity 400ms ease-out 350ms);
 }
 
 #status {
@@ -47,6 +53,12 @@ strong {
   top: 50%;
   margin: -15px 0 0 -15px;
   font-size: 32px;
+  .transition(opacity 400ms ease-out);
 }
 
-
+.page-loaded {
+  #preloader,
+  #status {
+    .opacity(0.0);
+  }
+}

@@ -2,9 +2,17 @@ package org.activityinfo.ui.vdom.shared.tree;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VNode extends VTree {
+
+    /**
+     * Singleton instance for an empty child list.
+     *
+     */
+    public static final VTree[] NO_CHILDREN = new VTree[0];
+
 
     public final Tag tag;
     public final PropMap properties;
@@ -46,12 +54,12 @@ public class VNode extends VTree {
                  @Nullable String namespace) {
 
         this.tag = tag;
-        this.properties = properties;
-        this.children = children;
+        this.properties = properties == null ? PropMap.EMPTY : properties;
+        this.children = children == null ? NO_CHILDREN : children;
         this.key = key;
         this.namespace = namespace;
 
-        int count = (children == null) ? 0 : children.length;
+        int count = this.children.length;
         int descendants = 0;
         boolean hasWidgets = false;
 

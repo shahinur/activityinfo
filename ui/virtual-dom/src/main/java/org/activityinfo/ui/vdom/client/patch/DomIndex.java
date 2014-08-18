@@ -38,17 +38,15 @@ public class DomIndex {
                 map.put(rootIndex, rootNode);
             }
             VTree[] vChildren = tree.children();
-            if (vChildren != null) {
-                //NodeList<Node> childNodes = rootNode.getChildNodes();
-                for (int i = 0; i < vChildren.length; i++) {
-                    rootIndex += 1;
-                    int nextIndex = rootIndex + childCount(vChildren, i);
-                    // skip recursion down the tree if there are no nodes down here
-                    if (indexInRange(indices, rootIndex, nextIndex)) {
-                        recurse(rootNode.getChild(i), vChildren[i], indices, rootIndex);
-                    }
-                    rootIndex = nextIndex;
+            //NodeList<Node> childNodes = rootNode.getChildNodes();
+            for (int i = 0; i < vChildren.length; i++) {
+                rootIndex += 1;
+                int nextIndex = rootIndex + childCount(vChildren, i);
+                // skip recursion down the tree if there are no nodes down here
+                if (indexInRange(indices, rootIndex, nextIndex)) {
+                    recurse(rootNode.getChild(i), vChildren[i], indices, rootIndex);
                 }
+                rootIndex = nextIndex;
             }
         }
     }

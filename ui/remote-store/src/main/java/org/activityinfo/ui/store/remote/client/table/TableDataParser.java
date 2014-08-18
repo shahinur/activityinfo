@@ -2,6 +2,7 @@ package org.activityinfo.ui.store.remote.client.table;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -11,16 +12,14 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.columns.ConstantColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 
-public class TableDataParser implements Function<String, TableData> {
+public class TableDataParser implements Function<Response, TableData> {
 
 
-    @Nullable
     @Override
-    public TableData apply(@Nullable String input) {
-        JSONObject tableData = JSONParser.parseLenient(input).isObject();
+    public TableData apply(Response input) {
+        JSONObject tableData = JSONParser.parseLenient(input.getStatusText()).isObject();
 
         int rowCount = (int)tableData.get("rows").isNumber().doubleValue();
         JSONObject columns = tableData.get("columns").isObject();

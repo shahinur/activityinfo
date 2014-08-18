@@ -3,6 +3,7 @@ package org.activityinfo.ui.vdom.client.patch;
 import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Text;
 import com.google.gwt.user.client.Element;
+import org.activityinfo.ui.vdom.client.ElementBuilder;
 import org.activityinfo.ui.vdom.client.Properties;
 import org.activityinfo.ui.vdom.shared.Truthyness;
 import org.activityinfo.ui.vdom.shared.diff.VDiff;
@@ -14,18 +15,19 @@ import java.util.Map;
 
 public class Patch {
 
+    public ElementBuilder elementBuilder = new ElementBuilder();
 
     public Node patch(Node rootNode, VDiff patches) {
         return patchRecursive(rootNode, patches);
     }
 
     public Node patchRecursive(Node rootNode, VDiff patches) {
-        int[] indices = patches.indexArray();
+        int[] indices = patches.patchedIndexArray();
         if(indices.length == 0) {
             return rootNode;
         }
 
-        Map<Integer, Node> index = DomIndex.domIndex(rootNode, patches.a, indices);
+        Map<Integer, Node> index = DomIndex.domIndex(rootNode, patches.original, indices);
 
         for(int i = 0; i < indices.length; ++i) {
             int nodeIndex = indices[i];
@@ -77,8 +79,7 @@ public class Patch {
                 return domNode;
 
             case THUNK:
-                throw new UnsupportedOperationException();
-              //  return replaceRoot(domNode, patch(domNode, (VDiff) patch));
+                return replaceRoot(domNode, patch(domNode, (VDiff) patch));
 
             default:
                 return domNode;
@@ -105,7 +106,7 @@ public class Patch {
     }
 
     private Node render(VTree vNode) {
-        throw new UnsupportedOperationException("todo");
+        return elementBuilder.createElement(vNode);
     }
 
     private Node stringPatch(Node domNode, VTree leftVNode, VText vText) {
@@ -198,12 +199,12 @@ public class Patch {
 //        }
     }
 
-    public void replaceRoot(Node oldRoot, Node newRoot) {
-//        if (oldRoot && newRoot && oldRoot !== newRoot && oldRoot.parentNode) {
-//            console.log(oldRoot)
-//            oldRoot.parentNode.replaceChild(newRoot, oldRoot)
-//        }
-//        return newRoot;
-        throw new UnsupportedOperationException();
+    public Node replaceRoot(Node oldRoot, Node newRoot) {
+        if ( (oldRoot != null) && (newRoot != null) &&
+             (oldRoot != newRoot) && (oldRoot.getParentNode() != null)) {
+
+            oldRoot.getParentNode().replaceChild(newRoot, oldRoot);
+        }
+        return newRoot;
     }
 }

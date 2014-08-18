@@ -28,8 +28,30 @@ public abstract class VTree {
     public boolean descendantHooks() { throw new UnsupportedOperationException(); }
 
     public VTree[] children() {
-        return null;
+        return VNode.NO_CHILDREN;
+    }
+
+    public VTree childAt(int index) {
+        return children()[index];
     }
 
     public abstract void accept(VTreeVisitor visitor);
+
+    /**
+     * Forces a Thunk to a concrete value if this VTree is a Thunk, or
+     * this VTree itself is a concrete value.
+     * @param previous the previously render thunk if available.
+     */
+    public VTree force(VTree previous) {
+        return this;
+    }
+
+    /**
+     * Forces a Thunk to a concrete value if this VTree is a Thunk, or
+     * this VTree itself is a concrete value.
+     */
+    public VTree force() {
+        return this;
+    }
+
 }
