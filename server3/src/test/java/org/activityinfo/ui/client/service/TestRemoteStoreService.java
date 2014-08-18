@@ -10,7 +10,6 @@ import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.ResourceTreeRequest;
-import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.store.remote.client.RemoteStoreService;
 
 import java.util.List;
@@ -35,11 +34,6 @@ public class TestRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<Resource> get(ResourceId resourceId) {
         return Promise.resolved(store.get(AuthenticatedUser.getAnonymous(), resourceId));
-    }
-
-    @Override
-    public Promise<UpdateResult> put(Resource resource) {
-        return Promise.resolved(store.put(AuthenticatedUser.getAnonymous(), resource));
     }
 
     @Override

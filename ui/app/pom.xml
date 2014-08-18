@@ -32,48 +32,10 @@
     </dependency>
 
     <dependency>
-      <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-remote-store</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-testing-store</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-i18n</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <version>${gwtVersion}</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <goals>
-              <goal>resources</goal>
-            </goals>
-            <phase>generate-resources</phase>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
-
-  </build>
 
 </project>

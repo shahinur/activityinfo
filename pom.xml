@@ -111,7 +111,6 @@
     <module>ui/style</module>
     <module>ui/style-tools</module>
     <module>ui/virtual-dom</module>
-    <module>i18n</module>
   </modules>
 
   <dependencies>

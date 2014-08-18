@@ -61,6 +61,4 @@ public interface ResourceLocator {
     Promise<QueryResult> queryProjection(InstanceQuery query);
 
     Promise<ResourceTree> getTree(ResourceId rootId);
-
-    Promise<List<org.activityinfo.model.resource.ResourceNode>> getRoots();
 }

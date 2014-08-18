@@ -4,10 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activityinfo.model.resource.Resource;
 
-/**
- * Provides an {@link com.fasterxml.jackson.databind.ObjectMapper} instance configured with
- * the necessary custom serializers/deserializes for ActivityInfo's model objects.
- */
 public class ObjectMapperFactory {
 
     public static ObjectMapper get() {

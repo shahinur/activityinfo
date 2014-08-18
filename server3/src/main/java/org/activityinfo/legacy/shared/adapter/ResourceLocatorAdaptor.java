@@ -7,16 +7,22 @@ import org.activityinfo.core.client.QueryResult;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
+import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.command.result.ResourceResult;
+import org.activityinfo.legacy.shared.model.GetResource;
+import org.activityinfo.legacy.shared.model.PutResource;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.store.remote.client.RemoteStoreService;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -28,12 +34,14 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
 
     private final ApplicationClassProvider systemClassProvider = new ApplicationClassProvider();
 
+    private final Dispatcher dispatcher;
 
     private final RemoteStoreService store;
 
     private final ProjectionAdapter projectionAdapter;
 
-    public ResourceLocatorAdaptor(RemoteStoreService tableService) {
+    public ResourceLocatorAdaptor(Dispatcher dispatcher, RemoteStoreService tableService) {
+        this.dispatcher = dispatcher;
         this.store = tableService;
         this.projectionAdapter = new ProjectionAdapter(tableService);
     }
@@ -43,33 +51,26 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
         if(classId.asString().startsWith("_")) {
             return Promise.resolved(systemClassProvider.get(classId));
         } else {
-            return store.get(classId).then(new Function<Resource, FormClass>() {
-                @Nullable
-                @Override
-                public FormClass apply(@Nullable Resource input) {
-                    return FormClass.fromResource(input);
-                }
-            });
+            return dispatcher.execute(new GetResource(classId)).then(new FormClassDeserializer());
         }
     }
 
     @Override
     public Promise<FormInstance> getFormInstance(ResourceId instanceId) {
-        return store.get(instanceId).then(new Function<Resource, FormInstance>() {
-            @Nullable
+        return dispatcher.execute(new GetResource(instanceId)).then(new Function<ResourceResult, FormInstance>() {
             @Override
-            public FormInstance apply(@Nullable Resource input) {
-                return FormInstance.fromResource(input);
+            public FormInstance apply(ResourceResult input) {
+                return FormInstance.fromResource(input.parseResource());
             }
         });
     }
 
     @Override
     public Promise<List<Resource>> get(Set<ResourceId> resourceIds) {
-        return Promise.map(resourceIds, new Function<ResourceId, Promise<Resource>>() {
+        return dispatcher.execute(new GetResource(resourceIds)).then(new Function<ResourceResult, List<Resource>>() {
             @Override
-            public Promise<Resource> apply(ResourceId input) {
-                return store.get(input);
+            public List<Resource> apply(ResourceResult input) {
+                return input.parseResources();
             }
         });
     }
@@ -80,13 +81,8 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     }
 
     @Override
-    public Promise<List<ResourceNode>> getRoots() {
-        return store.queryRoots();
-    }
-
-    @Override
     public Promise<Void> persist(IsResource resource) {
-        return store.put(resource.asResource()).thenDiscardResult();
+        return dispatcher.execute(new PutResource(resource)).thenDiscardResult();
     }
 
     @Override

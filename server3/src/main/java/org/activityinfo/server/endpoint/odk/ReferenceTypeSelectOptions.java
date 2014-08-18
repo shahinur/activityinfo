@@ -1,10 +1,10 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.server.endpoint.odk.xform.Item;
+import org.activityinfo.ui.client.component.form.field.InstanceLabelTable;
 
 import java.util.List;
 

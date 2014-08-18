@@ -22,20 +22,28 @@ package org.activityinfo.server;
  * #L%
  */
 
-import com.google.common.collect.Lists;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Module;
 import com.google.inject.servlet.GuiceServletContextListener;
+import org.activityinfo.server.attachment.AttachmentModule;
 import org.activityinfo.server.authentication.AuthenticationModule;
 import org.activityinfo.server.branding.BrandingModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
+import org.activityinfo.server.digest.DigestModule;
+import org.activityinfo.server.endpoint.content.ContentModule;
+import org.activityinfo.server.endpoint.export.ExportModule;
+import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
+import org.activityinfo.server.endpoint.kml.KmlModule;
 import org.activityinfo.server.endpoint.odk.OdkModule;
 import org.activityinfo.server.endpoint.rest.RestApiModule;
+import org.activityinfo.server.event.EventModule;
+import org.activityinfo.server.geo.GeometryModule;
 import org.activityinfo.server.login.LoginModule;
 import org.activityinfo.server.mail.MailModule;
+import org.activityinfo.server.report.ReportModule;
 import org.activityinfo.server.util.TemplateModule;
+import org.activityinfo.server.util.blob.BlobServiceModule;
 import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.jaxrs.JaxRsModule;
 import org.activityinfo.server.util.locale.LocaleModule;
@@ -44,8 +52,6 @@ import org.activityinfo.service.ServiceModule;
 import org.activityinfo.store.cloudsql.MySqlStoreModule;
 
 import javax.servlet.ServletContextEvent;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -66,25 +72,31 @@ public class StartupListener extends GuiceServletContextListener {
     @Override
     protected Injector getInjector() {
 
-        List<Module> modules = Lists.newArrayList();
-        modules.addAll(Arrays.asList(
-                new HibernateModule(),
+        return Guice.createInjector(new HibernateModule(),
                 new ConfigModule(),
                 new LoggingModule(),
                 new TemplateModule(),
                 new MailModule(),
                 new ServerDatabaseModule(),
+                new ContentModule(),
+                new GeometryModule(),
                 new AuthenticationModule(),
+                new AttachmentModule(),
+                new ReportModule(),
+                new EventModule(),
+                new DigestModule(),
                 new LoginModule(),
-                new LocaleModule(),
+                new GwtRpcModule(),
+                new ExportModule(),
+                new KmlModule(),
                 new BrandingModule(),
+                new BlobServiceModule(),
+                new LocaleModule(),
                 new JaxRsModule(),
                 new RestApiModule(),
                 new OdkModule(),
                 new MySqlStoreModule(),
-                new ServiceModule()));
-
-        return Guice.createInjector(modules);
+                new ServiceModule());
     }
 
 }

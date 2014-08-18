@@ -3,13 +3,12 @@
     "@id": "_geodb",
     "@owner": "_root",
     "classId": "_folder",
-    "_folder_label": "Geodatabase"
+    "label": "Geodatabase"
   },
   {
     "@id": "_country",
     "@owner": "_geodb",
     "classId": "_class",
-    "_class_label": "Country",
     "elements": [
       {
         "id": "_countryf1",
@@ -84,10 +83,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E1"
-            },
+            "range": [
+              "E1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -135,10 +133,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E2"
-            },
+            "range": [
+              "E2"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -396,14 +393,11 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": [
-                "E2",
-                "E1",
-                "E3"
-              ]
-            },
+            "range": [
+              "E2",
+              "E1",
+              "E3"
+            ],
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -492,10 +486,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
+            "range": [
+              "P1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -527,10 +520,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E3"
-            },
+            "range": [
+              "E3"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -544,7 +536,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "women"
           },
           "typeClass": "QUANTITY"
@@ -557,7 +548,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "men"
           },
           "typeClass": "QUANTITY"
@@ -587,10 +577,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
+            "range": [
+              "P1"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -622,10 +611,9 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L2"
-            },
+            "range": [
+              "L2"
+            ],
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -639,7 +627,6 @@
         "required": false,
         "type": {
           "parameters": {
-            "classId": "_type:quantity",
             "units": "individuals"
           },
           "typeClass": "QUANTITY"

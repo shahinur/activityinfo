@@ -33,8 +33,6 @@ public class HtmlWriter {
 
     private boolean formatted = false;
 
-    public void writeDocTypeDeclaration() {}
-
     protected void writeTag(HtmlTag tag, boolean closed) {
         if (tag != null) {
             if (formatted) {
