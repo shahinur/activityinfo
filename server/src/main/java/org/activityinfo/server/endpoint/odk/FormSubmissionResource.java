@@ -17,7 +17,9 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
-import org.activityinfo.server.command.ResourceLocatorSync;
+import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.GcsBlobFieldStorageService;
+import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -33,25 +35,31 @@ import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 
 @Path("/submission")
 public class FormSubmissionResource {
     private static final Logger LOGGER = Logger.getLogger(FormSubmissionResource.class.getName());
 
     final private OdkFieldValueParserFactory factory;
-    final private ResourceLocatorSync locator;
-    private AuthenticationTokenService authenticationTokenService;
+    final private ResourceStore locator;
+    final private AuthenticationTokenService authenticationTokenService;
+    final private GcsBlobFieldStorageService gcsBlobFieldStorageService;
 
     @Inject
-    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceLocatorSync locator,
-                                  AuthenticationTokenService authenticationTokenService) {
+    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator,
+                                  AuthenticationTokenService authenticationTokenService,
+                                  GcsBlobFieldStorageService gcsBlobFieldStorageService) {
         this.factory = factory;
         this.locator = locator;
         this.authenticationTokenService = authenticationTokenService;
+        this.gcsBlobFieldStorageService = gcsBlobFieldStorageService;
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
@@ -122,18 +130,16 @@ public class FormSubmissionResource {
                             FormDataBodyPart formDataBodyPart = formDataMultiPart.getField(imageRowValue.getFilename());
                             imageRowValue.setMimeType(formDataBodyPart.getMediaType().toString());
                             ByteSource byteSource = ByteSource.wrap(formDataBodyPart.getValueAs(byte[].class));
-                            /* TODO Find a way to configure the BlobFieldStorageService correctly
                             try {
                                 gcsBlobFieldStorageService.put(user, new BlobId(imageRowValue.getBlobId()), byteSource);
                             } catch (IOException ioException) {
                                 LOGGER.log(Level.SEVERE, "Could not write image to GCS", ioException);
                                 return Response.status(SERVICE_UNAVAILABLE).build();
                             }
-                            End of non-functional code segment */
                         }
                     }
 
-                    locator.persist(formInstance);
+                    locator.put(user, formInstance.asResource());
                     return Response.status(CREATED).build();
                 }
             }

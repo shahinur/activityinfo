@@ -17,6 +17,11 @@ import org.activityinfo.service.lookup.ReferenceProvider;
 public class OdkFieldValueParserFactory {
     final private ReferenceProvider table;
 
+    public OdkFieldValueParserFactory() {
+        // stub
+        this(new ReferenceProvider());
+    }
+
     @Inject
     public OdkFieldValueParserFactory(ReferenceProvider table) {
         this.table = table;

@@ -1,46 +1,39 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.base.Charsets;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
-import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.command.ResourceLocatorSync;
-import org.activityinfo.service.lookup.ReferenceProvider;
-import org.activityinfo.service.store.ResourceStore;
-import org.apache.geronimo.mail.util.StringBufferOutputStream;
+import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.service.blob.GcsBlobFieldStorageService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import static com.google.common.io.Resources.asCharSource;
 import static com.google.common.io.Resources.getResource;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-@RunWith(InjectionSupport.class)
-public class FormSubmissionResourceTest extends CommandTestCase2 {
+public class FormSubmissionResourceTest {
     private FormSubmissionResource resource;
-    private ResourceStore store;
+    private TestResourceStore store;
 
     @Before
     public void setUp() throws IOException {
-        OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory(new ReferenceProvider());
-        ResourceLocatorSync resourceLocatorSync = new ResourceLocatorSync(getDispatcherSync());
+        store = new TestResourceStore().load("/dbunit/formSubmissionResourceTest.json");
+        OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
-        resource = new FormSubmissionResource(factory, resourceLocatorSync, authenticationTokenService);
+        DeploymentConfiguration deploymentConfiguration = new DeploymentConfiguration(new Properties());
+        GcsBlobFieldStorageService gcsBlobFieldStorageService = new GcsBlobFieldStorageService(deploymentConfiguration);
+        resource = new FormSubmissionResource(factory, store, authenticationTokenService, gcsBlobFieldStorageService);
     }
 
     @Test
@@ -51,7 +44,7 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
         Response response = resource.submit(xml, null);
         assertEquals(CREATED, fromStatusCode(response.getStatus()));
 
-        Map<String, Object> map = getLastUpdated();
+        Map<String, Object> map = store.getLastUpdated().getProperties();
 
         assertEquals(7, map.size());
         assertEquals("a1081", map.get("classId"));
@@ -62,9 +55,4 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
         assertEquals(new Quantity(42.0, "%").asRecord(), map.get("i5346"));
         assertEquals(new NarrativeValue("Awesome.").asRecord(), map.get("a1081f14"));
     }
-
-    private Map<String, Object> getLastUpdated() {
-        throw new UnsupportedOperationException();
-    }
 }
-
