@@ -3,12 +3,13 @@
     "@id": "_geodb",
     "@owner": "_root",
     "classId": "_folder",
-    "label": "Geodatabase"
+    "_folder_label": "Geodatabase"
   },
   {
     "@id": "_country",
     "@owner": "_geodb",
     "classId": "_class",
+    "_class_label": "Country",
     "elements": [
       {
         "id": "_countryf1",
@@ -54,9 +55,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E1520"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1520"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -134,9 +136,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E1360"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1360"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -184,9 +187,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E1525"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1525"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -234,9 +238,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E1360"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1360"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -284,9 +289,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E1527"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1527"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -2100,14 +2106,17 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": [
-              "E1520",
-              "E1360",
-              "E1525",
-              "E1526",
-              "E1527",
-              "E1528"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": [
+                "E1520",
+                "E1360",
+                "E1525",
+                "E1526",
+                "E1527",
+                "E1528"
+              ]
+            },
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -2160,14 +2169,17 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": [
-              "E1520",
-              "E1360",
-              "E1525",
-              "E1526",
-              "E1527",
-              "E1528"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": [
+                "E1520",
+                "E1360",
+                "E1525",
+                "E1526",
+                "E1527",
+                "E1528"
+              ]
+            },
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -2220,14 +2232,17 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": [
-              "E1520",
-              "E1360",
-              "E1525",
-              "E1526",
-              "E1527",
-              "E1528"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": [
+                "E1520",
+                "E1360",
+                "E1525",
+                "E1526",
+                "E1527",
+                "E1528"
+              ]
+            },
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -2280,14 +2295,17 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": [
-              "E1520",
-              "E1360",
-              "E1525",
-              "E1526",
-              "E1527",
-              "E1528"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": [
+                "E1520",
+                "E1360",
+                "E1525",
+                "E1526",
+                "E1527",
+                "E1528"
+              ]
+            },
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -2340,14 +2358,17 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": [
-              "E1520",
-              "E1360",
-              "E1525",
-              "E1526",
-              "E1527",
-              "E1528"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": [
+                "E1520",
+                "E1360",
+                "E1525",
+                "E1526",
+                "E1527",
+                "E1528"
+              ]
+            },
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -2400,14 +2421,17 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": [
-              "E1520",
-              "E1360",
-              "E1525",
-              "E1526",
-              "E1527",
-              "E1528"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": [
+                "E1520",
+                "E1360",
+                "E1525",
+                "E1526",
+                "E1527",
+                "E1528"
+              ]
+            },
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
