@@ -15,10 +15,6 @@ public class HtmlRenderer implements VTreeVisitor {
         html = new StringBuilder();
     }
 
-    public void writeDocTypeDeclaration() {
-        html.append("<!DOCTYPE html>\n");
-    }
-
     public void visitNode(VNode node) {
         String tagName = node.tag.name().toLowerCase();
         html.append("<").append(tagName);
@@ -34,7 +30,7 @@ public class HtmlRenderer implements VTreeVisitor {
         } else {
 
             appendChildren(node.children);
-            html.append("</").append(tagName).append(">");
+            html.append("</").append(tagName).append("/>");
         }
     }
 
@@ -68,15 +64,12 @@ public class HtmlRenderer implements VTreeVisitor {
     }
 
     private void appendProperty(String attributeName, String value) {
-        //assert value != null : attributeName;
-        if(value != null) {
-            html.append(" ")
-                    .append(attributeName)
-                    .append("=")
-                    .append(QUOTE)
-                    .append(SafeHtmlUtils.htmlEscape(value))
-                    .append(QUOTE);
-        }
+        html.append(" ")
+            .append(attributeName)
+                .append("=")
+                .append(QUOTE)
+                .append(SafeHtmlUtils.htmlEscape(value))
+                .append(QUOTE);
     }
 
     private void appendStyleProperty(PropMap styleMap) {
@@ -99,7 +92,7 @@ public class HtmlRenderer implements VTreeVisitor {
 
     @Override
     public void visitThunk(VThunk vThunk) {
-        vThunk.force().accept(this);
+        vThunk.render(null).accept(this);
     }
 
     @Override

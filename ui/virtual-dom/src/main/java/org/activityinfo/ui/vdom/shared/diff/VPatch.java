@@ -2,11 +2,9 @@ package org.activityinfo.ui.vdom.shared.diff;
 
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VText;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 public class VPatch {
 
@@ -70,64 +68,5 @@ public class VPatch {
         assert b != null;
 
         return new VPatch(Type.INSERT, null, b);
-    }
-
-    @Override
-    public String toString() {
-        switch (type) {
-            case NONE:
-                return "{NONE}";
-            case VTEXT:
-                return "{REPLACE " + toString(patch) + "}";
-            case VNODE:
-                return "{REPLACE " + toString(patch) + "}";
-            case WIDGET:
-                return "{REPLACE " + toString(patch) + "}";
-            case PROPS:
-                return "{PROPS " + patch + "}";
-            case ORDER:
-                return "{NONE}";
-            case INSERT:
-                return "{INSERT " + toString(patch) + "}";
-            case REMOVE:
-                return "{REMOVE " + toString(patch) + "}";
-            case THUNK:
-                break;
-        }
-        return "[" + type.name() + " on " + vNode + ", patch = " + patch + "]";
-    }
-
-    private String toString(Object patch) {
-        if(patch instanceof VNode) {
-            VNode node = (VNode) patch;
-            return "<" +  node.tag + ">";
-        } else if(patch instanceof VText) {
-            return "\"" + patch + "\"";
-        } else {
-            return "" + patch;
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        VPatch other = (VPatch) o;
-        return type == other.type &&
-               Objects.equals(vNode, other.vNode) &&
-               Objects.equals(patch, other.patch);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = type.hashCode();
-        result = 31 * result + (vNode != null ? vNode.hashCode() : 0);
-        result = 31 * result + (patch != null ? patch.hashCode() : 0);
-        return result;
     }
 }

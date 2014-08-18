@@ -1,25 +1,32 @@
 package org.activityinfo.ui.store.remote.client;
 
-import com.google.common.base.Function;
-import com.google.gwt.http.client.Response;
+import com.github.nmorel.gwtjackson.client.ObjectMapper;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.ui.store.remote.client.serde.ObjectMappers;
 import org.activityinfo.ui.store.remote.client.table.TableDataParser;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class RemoteStoreServiceImpl implements RemoteStoreService {
 
-    private static final Logger LOGGER = Logger.getLogger(RemoteStoreServiceImpl.class.getName());
+    public static interface ResourceMapper extends ObjectMapper<Resource> {}
+
+    public static interface NodeListMapper extends ObjectMapper<List<ResourceNode>> {}
+
+    public static interface ResourceTreeMapper extends ObjectMapper<ResourceTree> {
+
+        public static final ResourceTreeMapper INSTANCE = GWT.create(ResourceTreeMapper.class);
+    }
+
+    public static final ResourceMapper RESOURCE_MAPPER = GWT.create(ResourceMapper.class);
+
+    public static final NodeListMapper NODE_LIST_MAPPER = GWT.create(NodeListMapper.class);
+
 
     private RestEndpoint store;
 
@@ -29,35 +36,20 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
 
     @Override
     public Promise<Resource> get(ResourceId resourceId) {
-        return store.resolve("resource").resolve(resourceId.asString()).get(ObjectMappers.RESOURCE);
+        return store.resolve("resource").resolve(resourceId.asString()).get(RESOURCE_MAPPER);
     }
 
     @Override
     public Promise<List<ResourceNode>> queryRoots() {
-        return store.resolve("query").resolve("roots").get(ObjectMappers.NODE_LIST);
+        return store.resolve("query").resolve("roots").get(NODE_LIST_MAPPER);
     }
 
     @Override
     public Promise<TableData> queryTable(TableModel tableModel) {
         return store.resolve("query").resolve("table")
-                .postJson(Resources.toJson(tableModel.asRecord()))
+                .post(Resources.toJson(tableModel.asRecord()))
                 .then(new TableDataParser());
     }
-
-    public Promise<UpdateResult> put(final Resource resource) {
-        return store
-                .resolve("resource")
-                .resolve(resource.getId().asString())
-                .putJson(Resources.toJson(resource))
-                .then(new Function<Response, UpdateResult>() {
-                    @Nullable
-                    @Override
-                    public UpdateResult apply(@Nullable Response input) {
-                        return ObjectMappers.UPDATE_RESULT.read(input.getText());
-                    }
-                });
-    }
-
 
     @Override
     public Promise<ResourceTree> queryTree(ResourceId rootId) {
@@ -65,13 +57,8 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
         JSONObject request = new JSONObject();
         request.put("rootId", new JSONString(rootId.asString()));
 
-        return store.resolve("query").resolve("tree").postJson(request.toString())
-                .then(new Function<Response, ResourceTree>() {
-                    @Override
-                    public ResourceTree apply(Response input) {
-                        LOGGER.log(Level.INFO, "tree: " + input.getText());
-                        return ObjectMappers.RESOURCE_TREE.read(input.getText());
-                    }
-                });
+        return store.resolve("query").resolve("tree")
+                .post(request.toString(), ResourceTreeMapper.INSTANCE);
+
     }
 }

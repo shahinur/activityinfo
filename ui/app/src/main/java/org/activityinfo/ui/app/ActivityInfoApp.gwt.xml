@@ -26,16 +26,15 @@
   <inherits name='com.google.gwt.user.User'/>
 
   <!-- Inherit additional dependencies  -->
+  <inherits name='com.google.gwt.inject.Inject'/>
   <inherits name="com.google.gwt.i18n.I18N"/>
 
-  <inherits name="org.activityinfo.ui.vdom.VDom"/>
-  <inherits name="org.activityinfo.ui.Style"/>
-  <inherits name="org.activityinfo.ui.store.remote.RemoteStore"/>
+  <set-property name="gwt.logging.popupHandler" value="DISABLED"/>
 
 
   <!-- Include generated sources -->
   <source path='client'/>
 
-  <entry-point class="org.activityinfo.ui.app.client.AppEntryPoint"/>
+  <entry-point class="org.activityinfo.ui.client.AppEntryPoint"/>
 
 </module>
