@@ -1,24 +1,24 @@
 package org.activityinfo.ui.store.remote.client.table;
 
-import com.google.gwt.core.client.JsArrayString;
+import com.google.gwt.core.client.JavaScriptObject;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
 import java.util.Date;
 
-public class JsStringColumnArrayView implements ColumnView {
+public class JsDoubleArrayColumnView implements ColumnView {
 
-    private final int numRows;
-    private final JsArrayString array;
+    private int numRows;
+    private JavaScriptObject array;
 
-    public JsStringColumnArrayView(int numRows, JsArrayString array) {
+    public JsDoubleArrayColumnView(int numRows, JavaScriptObject array) {
         this.numRows = numRows;
         this.array = array;
     }
 
     @Override
     public ColumnType getType() {
-        return ColumnType.STRING;
+        return ColumnType.NUMBER;
     }
 
     @Override
@@ -28,17 +28,21 @@ public class JsStringColumnArrayView implements ColumnView {
 
     @Override
     public Object get(int row) {
-        return array.get(row);
+        return getDouble(row);
     }
 
     @Override
     public double getDouble(int row) {
-        return Double.NaN;
+        return getDouble(array, row);
     }
+
+    private native double getDouble(JavaScriptObject array, int row) /*-{
+      return array[row] || Double.NaN;
+    }-*/;
 
     @Override
     public String getString(int row) {
-        return array.get(row);
+        return null;
     }
 
     @Override

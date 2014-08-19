@@ -1,18 +1,26 @@
 package org.activityinfo.service.store;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.model.table.ColumnModel;
+import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.model.table.columns.ConstantColumnView;
+import org.activityinfo.model.table.columns.DoubleArrayColumnView;
+import org.activityinfo.model.table.columns.EmptyColumnView;
+import org.activityinfo.model.table.columns.StringArrayColumnView;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -57,8 +65,7 @@ public class ResourceStoreStub implements ResourceStore {
         resource.set("falseValue", false);
         resource.set("recordProperty", new Record()
                 .set("recordId", "record1")
-                .set("subRecord", new Record()
-                    .set("subSubString", "downUnder")));
+                .set("subRecord", new Record().set("subSubString", "downUnder")));
         return resource;
     }
 
@@ -90,7 +97,31 @@ public class ResourceStoreStub implements ResourceStore {
 
     @Override
     public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
-        throw new UnsupportedOperationException();
+
+        Preconditions.checkArgument(tableModel.getRowSources().size() == 1);
+        Preconditions.checkArgument(tableModel.getRowSources().get(0).getRootFormClass().equals(MY_RESOURCE_ID));
+
+        int numRows = 3;
+
+        Map<String, ColumnView> columns = Maps.newHashMap();
+        for(ColumnModel model : tableModel.getColumns()) {
+            columns.put(model.getId(), createView(model, numRows));
+        }
+
+        return new TableData(numRows, columns);
+    }
+
+    private ColumnView createView(ColumnModel model, int numRows) {
+        switch(model.getId()) {
+            case "c1":
+                return new ConstantColumnView(numRows, "foo");
+            case "c2":
+                return new StringArrayColumnView(new String[] { "a", "b", "c" });
+            case "c3":
+                return new DoubleArrayColumnView(new double[] { 91, Double.NaN, 92});
+            default:
+                return new EmptyColumnView(numRows, model.getType());
+        }
     }
 
     @Override

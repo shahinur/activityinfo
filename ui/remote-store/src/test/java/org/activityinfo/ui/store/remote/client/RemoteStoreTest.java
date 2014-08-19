@@ -6,6 +6,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
 import java.util.List;
 
@@ -70,5 +73,36 @@ public class RemoteStoreTest extends GWTTestCase {
             }
         });
         delayTestFinish(5000);
+    }
+    
+    public void testQueryTable() {
+        
+        String jsonResponse =
+          ("{'rows':3," +
+             "'columns':" +
+                  "{'c1':{'type':'STRING','storage':'constant','value':'foo'}," +
+                   "'c2':{'type':'STRING','storage':'array','values':['a','b','c']}," +
+                   "'c3':{'type':'NUMBER','storage':'array','values':[91.0,'NaN',92.0]}}}")
+                .replace('\'', '"');
+
+
+        TableData tableData = new JsTableDataBuilder().apply(jsonResponse);
+        assertEquals(3, tableData.getNumRows());
+        assertTrue(tableData.getColumns().containsKey("c1"));
+        assertTrue(tableData.getColumns().containsKey("c2"));
+        assertTrue(tableData.getColumns().containsKey("c3"));
+
+        assertEquals("foo", tableData.getColumnView("c1").getString(2));
+
+        ColumnView c2 = tableData.getColumnView("c2");
+        assertEquals("a", c2.getString(0));
+        assertEquals("b", c2.getString(1));
+        assertEquals("c", c2.getString(2));
+
+        // 91, Double.NaN, 92
+        ColumnView c3 = tableData.getColumnView("c3");
+        assertEquals(91.0, c3.getDouble(0));
+        assertTrue(Double.isNaN(c3.getDouble(1)));
+        assertEquals(92.0, c3.getDouble(2));
     }
 }

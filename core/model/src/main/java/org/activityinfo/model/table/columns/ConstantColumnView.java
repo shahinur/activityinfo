@@ -12,7 +12,14 @@ public class ConstantColumnView implements ColumnView {
     private final String stringValue;
     private final int numRows;
 
-    public ConstantColumnView(String value, int numRows) {
+    public ConstantColumnView(int numRows, double doubleValue) {
+        this.type = ColumnType.STRING;
+        this.doubleValue = doubleValue;
+        this.stringValue = null;
+        this.numRows = numRows;
+    }
+
+    public ConstantColumnView(int numRows, String value) {
         this.type = ColumnType.STRING;
         this.doubleValue = Double.NaN;
         this.stringValue = value;
