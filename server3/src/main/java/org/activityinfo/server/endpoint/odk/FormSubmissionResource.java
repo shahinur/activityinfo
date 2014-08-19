@@ -135,13 +135,17 @@ public class FormSubmissionResource {
                             if (imageRowValue.getFilename() == null) continue;
                             try {
                                 ByteSource byteSource = null;
+                                String mimeType = null, contentDisposition = null;  // Initialized just for the compiler
 
                                 for (int i = 0; i < mimeMultipart.getCount(); i++) {
                                     BodyPart bodyPart = mimeMultipart.getBodyPart(i);
                                     if (imageRowValue.getFilename().equals(bodyPart.getFileName())) {
                                         byte[] image = ByteStreams.toByteArray(bodyPart.getInputStream());
-                                        imageRowValue.setMimeType(bodyPart.getContentType());
+                                        contentDisposition = bodyPart.getDisposition();
+                                        mimeType = bodyPart.getContentType();
                                         byteSource = ByteSource.wrap(image);
+                                        imageRowValue.setMimeType(mimeType);
+                                        break;
                                     }
                                 }
 
@@ -150,7 +154,8 @@ public class FormSubmissionResource {
                                     return Response.status(BAD_REQUEST).build();
                                 }
 
-                                blobFieldStorageService.put(user, new BlobId(imageRowValue.getBlobId()), byteSource);
+                                blobFieldStorageService.put(user, contentDisposition, mimeType,
+                                        new BlobId(imageRowValue.getBlobId()), byteSource);
                             } catch (MessagingException messagingException) {
                                 LOGGER.log(Level.SEVERE, "Unable to parse input", messagingException);
                                 return Response.status(BAD_REQUEST).build();
