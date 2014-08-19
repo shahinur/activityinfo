@@ -11,6 +11,7 @@ import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.google.common.io.ByteSource;
 import com.google.inject.Inject;
+import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.DeploymentEnvironment;
@@ -18,6 +19,10 @@ import org.activityinfo.server.util.blob.DevAppIdentityService;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.gcs.GcsAppIdentityServiceUrlSigner;
 
+import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -70,5 +75,16 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         try (OutputStream outputStream = Channels.newOutputStream(channel)) {
             byteSource.copyTo(outputStream);
         }
+    }
+
+    @Override
+    public Response getThumbnail(@InjectParam AuthenticatedUser user,
+                                 @PathParam("resourceId") ResourceId resourceId,
+                                 @PathParam("fieldName") String fieldName,
+                                 @PathParam("blobId") BlobId blobId,
+                                 @QueryParam("width") int width,
+                                 @QueryParam("height") int height) {
+
+        throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
     }
 }

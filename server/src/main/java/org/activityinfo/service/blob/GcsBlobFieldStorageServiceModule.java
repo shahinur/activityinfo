@@ -1,12 +1,11 @@
 package org.activityinfo.service.blob;
 
-import com.google.inject.Provides;
-import com.google.inject.servlet.ServletModule;
-import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.server.endpoint.rest.RestApiModule;
 
-public class GcsBlobFieldStorageServiceModule extends ServletModule {
-    @Provides
-    public BlobFieldStorageService provideBlobFieldStorageService(DeploymentConfiguration config) {
-        return new GcsBlobFieldStorageService(config);
+public class GcsBlobFieldStorageServiceModule extends RestApiModule {
+
+    @Override
+    protected void configureResources() {
+        bindResource(GcsBlobFieldStorageService.class);
     }
 }
