@@ -18,6 +18,7 @@ public class TestBlobFieldStorageService implements BlobFieldStorageService {
     }
 
     @Override
-    public void put(AuthenticatedUser authenticatedUser, BlobId blobId, ByteSource byteSource) {
+    public void put(AuthenticatedUser authenticatedUser, String contentDisposition, String mimeType, BlobId blobId,
+                    ByteSource byteSource) {
     }
 }

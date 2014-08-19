@@ -3,6 +3,7 @@ package org.activityinfo.service.blob;
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
+import com.google.appengine.tools.cloudstorage.GcsFileOptions.Builder;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
 import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
@@ -54,10 +55,18 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
     }
 
     @Override
-    public void put(AuthenticatedUser authenticatedUser, BlobId blobId, ByteSource byteSource) throws IOException {
+    public void put(AuthenticatedUser authenticatedUser, String contentDisposition, String mimeType, BlobId blobId,
+                    ByteSource byteSource) throws IOException {
         GcsFilename gcsFilename = new GcsFilename(bucketName, blobId.asString());
         GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
-        GcsOutputChannel channel = gcsService.createOrReplace(gcsFilename, GcsFileOptions.getDefaultInstance());
+        Builder builder = new Builder();
+
+        builder.contentDisposition(contentDisposition);
+        builder.mimeType(mimeType);
+
+        GcsFileOptions gcsFileOptions = builder.build();
+        GcsOutputChannel channel = gcsService.createOrReplace(gcsFilename, gcsFileOptions);
+
         try (OutputStream outputStream = Channels.newOutputStream(channel)) {
             byteSource.copyTo(outputStream);
         }

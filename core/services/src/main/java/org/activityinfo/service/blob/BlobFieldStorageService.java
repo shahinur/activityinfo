@@ -36,5 +36,6 @@ public interface BlobFieldStorageService {
      * @param byteSource
      * @throws IOException
      */
-    void put(AuthenticatedUser authenticatedUser, BlobId blobId, ByteSource byteSource) throws IOException;
+    void put(AuthenticatedUser authenticatedUser, String contentDisposition, String mimeType, BlobId blobId,
+             ByteSource byteSource) throws IOException;
 }
