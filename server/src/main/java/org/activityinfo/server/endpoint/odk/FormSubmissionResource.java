@@ -1,6 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.images.Image;
 import com.google.common.io.ByteSource;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
@@ -40,6 +41,7 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.google.appengine.api.images.ImagesServiceFactory.makeImage;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
@@ -140,11 +142,15 @@ public class FormSubmissionResource {
                                 for (int i = 0; i < mimeMultipart.getCount(); i++) {
                                     BodyPart bodyPart = mimeMultipart.getBodyPart(i);
                                     if (imageRowValue.getFilename().equals(bodyPart.getFileName())) {
-                                        byte[] image = ByteStreams.toByteArray(bodyPart.getInputStream());
+                                        Image image = makeImage(ByteStreams.toByteArray(bodyPart.getInputStream()));
+
                                         contentDisposition = bodyPart.getDisposition();
                                         mimeType = bodyPart.getContentType();
-                                        byteSource = ByteSource.wrap(image);
+                                        byteSource = ByteSource.wrap(image.getImageData());
                                         imageRowValue.setMimeType(mimeType);
+                                        imageRowValue.setHeight(image.getHeight());
+                                        imageRowValue.setWidth(image.getWidth());
+
                                         break;
                                     }
                                 }
