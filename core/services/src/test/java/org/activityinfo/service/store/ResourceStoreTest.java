@@ -13,6 +13,10 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.table.ColumnType;
+import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.jaxrs.EntityTags;
 import org.junit.Test;
 
@@ -22,7 +26,9 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests the Jersey setup, not the actual service itself
@@ -92,6 +98,43 @@ public class ResourceStoreTest extends JerseyTest {
                 .post(ResourceTree.class);
 
         assertThat(tree.getRootNode().getChildren(), hasSize(2));
+    }
+
+    @Test
+    public void queryTable() {
+
+        TableModel tableModel = new TableModel(ResourceStoreStub.MY_RESOURCE_ID);
+        tableModel.addColumn("c1").select(ColumnType.STRING).fieldPath(ResourceId.valueOf("foo"));
+        tableModel.addColumn("c2").select(ColumnType.STRING).fieldPath(ResourceId.valueOf("foo"));
+        tableModel.addColumn("c3").select(ColumnType.STRING).fieldPath(ResourceId.valueOf("foo"));
+
+        TableData tableData = getStoreService()
+                .path("query")
+                .path("table")
+                .accept(MediaType.APPLICATION_JSON)
+                .entity(tableModel, MediaType.APPLICATION_JSON_TYPE)
+                .post(TableData.class);
+
+
+        assertThat(tableData.getNumRows(), equalTo(3));
+        assertThat(tableData.getColumns(), hasKey("c1"));
+        assertThat(tableData.getColumns(), hasKey("c2"));
+        assertThat(tableData.getColumns(), hasKey("c3"));
+
+        assertThat(tableData.getColumnView("c1").getString(2), equalTo("foo"));
+
+        ColumnView c2 = tableData.getColumnView("c2");
+        assertThat(c2.getString(0), equalTo("a"));
+        assertThat(c2.getString(1), equalTo("b"));
+        assertThat(c2.getString(2), equalTo("c"));
+
+        // 91, Double.NaN, 92
+        ColumnView c3 = tableData.getColumnView("c3");
+        assertThat(c3.getDouble(0), equalTo(91.0));
+        assertTrue(Double.isNaN(c3.getDouble(1)));
+        assertThat(c3.getDouble(2), equalTo(92.0));
+
+
     }
 
     @Test

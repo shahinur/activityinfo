@@ -10,8 +10,7 @@ public class EmptyColumnView implements ColumnView {
     private ColumnType type;
     private int rowCount;
 
-    public EmptyColumnView(ColumnType type, int rowCount) {
-
+    public EmptyColumnView(int rowCount, ColumnType type) {
         this.type = type;
         this.rowCount = rowCount;
     }

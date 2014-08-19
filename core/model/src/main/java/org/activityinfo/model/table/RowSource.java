@@ -45,4 +45,33 @@ public class RowSource implements IsRecord {
         source.setCriteriaExpression(record.isString("criteriaExpression"));
         return source;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        RowSource rowSource = (RowSource) o;
+
+        if (criteriaExpression != null ? !criteriaExpression.equals(rowSource.criteriaExpression) :
+                rowSource.criteriaExpression != null) {
+            return false;
+        }
+        if (!rootFormClass.equals(rowSource.rootFormClass)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = rootFormClass.hashCode();
+        result = 31 * result + (criteriaExpression != null ? criteriaExpression.hashCode() : 0);
+        return result;
+    }
 }

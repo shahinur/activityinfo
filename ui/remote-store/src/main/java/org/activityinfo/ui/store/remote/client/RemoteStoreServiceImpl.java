@@ -8,7 +8,7 @@ import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.ui.store.remote.client.table.TableDataParser;
+import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     public Promise<TableData> queryTable(TableModel tableModel) {
         return store.resolve("query").resolve("table")
                 .post(Resources.toJson(tableModel.asRecord()))
-                .then(new TableDataParser());
+                .then(new JsTableDataBuilder());
     }
 
     @Override

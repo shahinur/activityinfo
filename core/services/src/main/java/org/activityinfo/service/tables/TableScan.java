@@ -4,8 +4,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -79,7 +79,7 @@ public class TableScan {
         return new Supplier<ColumnView>() {
             @Override
             public ColumnView get() {
-                return new EmptyColumnView(type, rowCount.get());
+                return new EmptyColumnView(rowCount.get(), type);
             }
         };
     }
