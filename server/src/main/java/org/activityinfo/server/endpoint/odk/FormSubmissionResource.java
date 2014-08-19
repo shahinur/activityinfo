@@ -1,12 +1,9 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.common.base.Charsets;
 import com.google.common.io.ByteSource;
+import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
-import com.sun.jersey.multipart.FormDataBodyPart;
-import com.sun.jersey.multipart.FormDataMultiPart;
-import com.sun.jersey.multipart.FormDataParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -25,6 +22,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -34,8 +35,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,17 +64,21 @@ public class FormSubmissionResource {
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
-    public Response submit(@FormDataParam("xml_submission_file") String xml, FormDataMultiPart formDataMultiPart) {
-        //TODO Not everything is fully tested yet and especially authorization is still missing
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(xml.getBytes(Charsets.UTF_8));
+    public Response submit(byte bytes[]) {
+        ByteArrayDataSource byteArrayDataSource = new ByteArrayDataSource(bytes, MediaType.MULTIPART_FORM_DATA);
+        MimeMultipart mimeMultipart;
+        InputStream inputStream;
         DocumentBuilder documentBuilder;
         Document document;
 
         try {
+            mimeMultipart = new MimeMultipart(byteArrayDataSource);
+            inputStream = mimeMultipart.getBodyPart(0).getInputStream();
             documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            document = documentBuilder.parse(byteArrayInputStream);
+            document = documentBuilder.parse(inputStream);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            LOGGER.log(Level.SEVERE, "Unable to parse input", e);
+            return Response.status(BAD_REQUEST).build();
         }
 
         document.normalizeDocument();
@@ -127,11 +132,28 @@ public class FormSubmissionResource {
                     for (FieldValue fieldValue : formInstance.getFieldValueMap().values()) {
                         if (fieldValue instanceof ImageValue) {
                             ImageRowValue imageRowValue = ((ImageValue) fieldValue).getValues().get(0);
-                            FormDataBodyPart formDataBodyPart = formDataMultiPart.getField(imageRowValue.getFilename());
-                            imageRowValue.setMimeType(formDataBodyPart.getMediaType().toString());
-                            ByteSource byteSource = ByteSource.wrap(formDataBodyPart.getValueAs(byte[].class));
+                            if (imageRowValue.getFilename() == null) continue;
                             try {
+                                ByteSource byteSource = null;
+
+                                for (int i = 0; i < mimeMultipart.getCount(); i++) {
+                                    BodyPart bodyPart = mimeMultipart.getBodyPart(i);
+                                    if (imageRowValue.getFilename().equals(bodyPart.getFileName())) {
+                                        byte[] image = ByteStreams.toByteArray(bodyPart.getInputStream());
+                                        imageRowValue.setMimeType(bodyPart.getContentType());
+                                        byteSource = ByteSource.wrap(image);
+                                    }
+                                }
+
+                                if (byteSource == null) {
+                                    LOGGER.log(Level.SEVERE, "Could not find the specified filename");
+                                    return Response.status(BAD_REQUEST).build();
+                                }
+
                                 blobFieldStorageService.put(user, new BlobId(imageRowValue.getBlobId()), byteSource);
+                            } catch (MessagingException messagingException) {
+                                LOGGER.log(Level.SEVERE, "Unable to parse input", messagingException);
+                                return Response.status(BAD_REQUEST).build();
                             } catch (IOException ioException) {
                                 LOGGER.log(Level.SEVERE, "Could not write image to GCS", ioException);
                                 return Response.status(SERVICE_UNAVAILABLE).build();

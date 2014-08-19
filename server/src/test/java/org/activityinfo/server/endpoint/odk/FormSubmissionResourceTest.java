@@ -1,6 +1,5 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.google.common.base.Charsets;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
@@ -18,7 +17,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
-import static com.google.common.io.Resources.asCharSource;
+import static com.google.common.io.Resources.asByteSource;
 import static com.google.common.io.Resources.getResource;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
@@ -40,10 +39,9 @@ public class FormSubmissionResourceTest {
 
     @Test
     public void parse() throws IOException {
+        byte bytes[] = asByteSource(getResource(FormSubmissionResourceTest.class, "form.mime")).read();
 
-        String xml = asCharSource(getResource(FormSubmissionResourceTest.class, "form.xml"), Charsets.UTF_8).read();
-
-        Response response = resource.submit(xml, null);
+        Response response = resource.submit(bytes);
         assertEquals(CREATED, fromStatusCode(response.getStatus()));
 
         Map<String, Object> map = store.getLastUpdated().getProperties();
