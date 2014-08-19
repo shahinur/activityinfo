@@ -39,6 +39,8 @@ public interface BlobFieldStorageService {
     /**
      * Uploads a blob with the specified id to GCS
      * @param authenticatedUser
+     * @param contentDisposition
+     * @param mimeType
      * @param blobId
      * @param byteSource
      * @throws IOException
