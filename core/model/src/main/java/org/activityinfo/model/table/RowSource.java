@@ -1,5 +1,7 @@
 package org.activityinfo.model.table;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
@@ -10,7 +12,8 @@ public class RowSource implements IsRecord {
     private ResourceId rootFormClass;
     private String criteriaExpression;
 
-    public RowSource(ResourceId rootFormClass) {
+    @JsonCreator
+    public RowSource(@JsonProperty("rootFormClass") ResourceId rootFormClass) {
         this.rootFormClass = rootFormClass;
     }
 

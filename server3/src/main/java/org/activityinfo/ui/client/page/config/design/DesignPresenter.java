@@ -27,9 +27,7 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.google.common.base.Function;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
@@ -44,22 +42,15 @@ import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.ui.client.AppEvents;
 import org.activityinfo.ui.client.EventBus;
-import org.activityinfo.ui.client.page.NavigationEvent;
-import org.activityinfo.ui.client.page.NavigationHandler;
 import org.activityinfo.ui.client.page.PageId;
 import org.activityinfo.ui.client.page.PageState;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.ui.client.page.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.ui.client.page.common.grid.TreeGridView;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
-import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
-import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
-import org.activityinfo.ui.client.page.instance.InstancePlace;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,7 +64,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     public static final PageId PAGE_ID = new PageId("design");
 
     @ImplementedBy(DesignView.class)
-    public interface View extends TreeGridView<DesignPresenter, ModelData> {
+    public interface View extends org.activityinfo.ui.client.page.common.grid.GridView<DesignPresenter,ModelData> {
         public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store);
 
         public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback);
@@ -172,33 +163,33 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     @Override
     public void onUIAction(String actionId) {
         super.onUIAction(actionId);
-
-        if (UIActions.EXPORT.equals(actionId)) {
-            Window.open("/resources/database/" + db.getId() + "/schema.csv", "_blank", null);
-
-        } else if (UIActions.IMPORT.equals(actionId)) {
-            SchemaImporter importer = new SchemaImporter(service, db);
-            SchemaImportDialog dialog = new SchemaImportDialog(importer);
-            dialog.show().then(new Function<Void, Object>() {
-                @Nullable
-                @Override
-                public Object apply(@Nullable Void input) {
-                    refresh();
-                    return null;
-                }
-            });
-        } else if(UIActions.EDIT.equals(actionId)) {
-            IsFormClass formClass = (IsFormClass) view.getSelection();
-            eventBus.fireEvent(new NavigationEvent(
-                    NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClass.getResourceId(), "design")));
-
-        } else if(UIActions.OPEN_TABLE.equals(actionId)) {
-            IsFormClass formClass = (IsFormClass) view.getSelection();
-            eventBus.fireEvent(new NavigationEvent(
-                    NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClass.getResourceId())));
-        }
+//
+//        if (UIActions.EXPORT.equals(actionId)) {
+//            Window.open("/resources/database/" + db.getId() + "/schema.csv", "_blank", null);
+//
+//        } else if (UIActions.IMPORT.equals(actionId)) {
+//            SchemaImporter importer = new SchemaImporter(service, db);
+//            SchemaImportDialog dialog = new SchemaImportDialog(importer);
+//            dialog.show().then(new Function<Void, Object>() {
+//                @Nullable
+//                @Override
+//                public Object apply(@Nullable Void input) {
+//                    refresh();
+//                    return null;
+//                }
+//            });
+//        } else if(UIActions.EDIT.equals(actionId)) {
+//            IsFormClass formClass = (IsFormClass) view.getSelection();
+//            eventBus.fireEvent(new NavigationEvent(
+//                    NavigationHandler.NAVIGATION_REQUESTED,
+//                    new InstancePlace(formClass.getResourceId(), "design")));
+//
+//        } else if(UIActions.OPEN_TABLE.equals(actionId)) {
+//            IsFormClass formClass = (IsFormClass) view.getSelection();
+//            eventBus.fireEvent(new NavigationEvent(
+//                    NavigationHandler.NAVIGATION_REQUESTED,
+//                    new InstancePlace(formClass.getResourceId())));
+//        }
     }
 
     public void onNodeDropped(ModelData source) {

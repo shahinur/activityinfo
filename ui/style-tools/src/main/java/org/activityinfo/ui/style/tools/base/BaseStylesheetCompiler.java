@@ -50,7 +50,8 @@ public class BaseStylesheetCompiler {
         optimize();
         emitResources();
         emitStylesheet();
-        generateAccessorSources();
+        generateStyleNameEnum();
+        generateStyleAccessors();
 
         // Writes a mapping to strong names that can be
         // loaded at runtime
@@ -74,7 +75,7 @@ public class BaseStylesheetCompiler {
     }
 
 
-    private void generateAccessorSources() throws IOException {
+    private void generateStyleNameEnum() throws IOException {
         List<String> classNames = Lists.newArrayList(cssTree.getClassNames());
         Collections.sort(classNames);
 
@@ -92,6 +93,26 @@ public class BaseStylesheetCompiler {
         accessorWriter.writeDivBuilder();
         accessorWriter.close();
     }
+
+
+    private void generateStyleAccessors() throws IOException {
+        List<String> classNames = Lists.newArrayList(cssTree.getClassNames());
+        Collections.sort(classNames);
+
+        ClassWriter accessorWriter = new ClassWriter(baseDir, "org.activityinfo.ui.style", "BaseStyle");
+        accessorWriter.declareClass();
+
+        for(String className : classNames) {
+            if(!className.startsWith("glyphicon") &&
+               !className.startsWith("fa")) {
+
+                accessorWriter.writeAccessor(ClassNames.toCamelCase(className), className);
+            }
+        }
+        accessorWriter.close();
+    }
+
+
 
     private void optimize() throws IOException, UnableToCompleteException {
         GssCompiler compiler = new GssCompiler();

@@ -4,18 +4,18 @@ package org.activityinfo.ui.client.service;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import org.activityinfo.core.client.InstanceQuery;
-import org.activityinfo.core.client.PromiseMatchers;
-import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.criteria.ClassCriteria;
+import org.activityinfo.promise.PromiseMatchers;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.legacy.InstanceQuery;
 import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.legacy.Projection;
+import org.activityinfo.model.legacy.criteria.ClassCriteria;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.store.ResourceLocator;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +26,9 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
-import static org.activityinfo.core.shared.criteria.ParentCriteria.isChildOf;
 import static org.activityinfo.model.legacy.CuidAdapter.*;
+import static org.activityinfo.model.legacy.criteria.ParentCriteria.isChildOf;
+import static org.activityinfo.store.test.TestResourceStore.createLocator;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
@@ -60,7 +61,7 @@ public class ResourceLocatorAdaptorTest {
 
     @Before
     public final void setup() throws IOException {
-        resourceLocator = new TestResourceLocator("/dbunit/sites-simple1.json");
+        resourceLocator = createLocator("/dbunit/sites-simple1.json");
     }
 
     @Test
@@ -82,7 +83,7 @@ public class ResourceLocatorAdaptorTest {
     @Test
     public void getLocation() throws IOException {
 
-        ResourceLocator jordanLocator = new TestResourceLocator("/dbunit/jordan-locations.json");
+        ResourceLocator jordanLocator = createLocator("/dbunit/jordan-locations.json");
 
         ResourceId classId = locationFormClass(50512);
         FormInstance instance = PromiseMatchers.assertResolves(jordanLocator.getFormInstance(locationInstanceId(

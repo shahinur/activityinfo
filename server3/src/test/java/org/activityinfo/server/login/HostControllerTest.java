@@ -28,11 +28,13 @@ import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.login.model.HostPageModel;
 import org.activityinfo.server.login.model.RootPageModel;
 import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.ui.style.BaseStyleResources;
 import org.junit.Before;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.Properties;
 
 import static org.easymock.EasyMock.*;
@@ -43,18 +45,19 @@ public class HostControllerTest extends ControllerTestCase {
 
     private static final String CHROME_USER_AGENT = "Mozilla/6.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/3.0.195.27 Safari/532.0";
     private static final String VALID_TOKEN = "XYZ123";
+    public static final boolean NO_REDIRECT = false;
 
     private HostController resource;
     private ServerSideAuthProvider authProvider;
 
     @Before
-    public void setup() {
+    public void setup() throws IOException {
         DeploymentConfiguration deploymentConfig = new DeploymentConfiguration(
                 new Properties());
 
         authProvider = new ServerSideAuthProvider();
         authProvider.clear();
-        resource = new HostController(deploymentConfig, authProvider);
+        resource = new HostController(deploymentConfig, authProvider, BaseStyleResources.load());
     }
 
     @Test
@@ -68,8 +71,7 @@ public class HostControllerTest extends ControllerTestCase {
         replay(req);
 
         Response response = resource.getHostPage(
-                RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req,
-                false, "oldui");
+                RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, NO_REDIRECT);
 
         assertThat(response.getEntity(), instanceOf(Viewable.class));
         assertThat(((Viewable) response.getEntity()).getModel(),
@@ -88,8 +90,7 @@ public class HostControllerTest extends ControllerTestCase {
         replay(req);
 
         Response response = resource.getHostPage(
-                RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req,
-                false, "oldui");
+                RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, NO_REDIRECT);
 
         assertThat(response.getEntity(), instanceOf(Viewable.class));
         assertThat(((Viewable) response.getEntity()).getModel(),

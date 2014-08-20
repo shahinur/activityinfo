@@ -3,12 +3,13 @@
     "@id": "_geodb",
     "@owner": "_root",
     "classId": "_folder",
-    "label": "Geodatabase"
+    "_folder_label": "Geodatabase"
   },
   {
     "@id": "_country",
     "@owner": "_geodb",
     "classId": "_class",
+    "_class_label": "Country",
     "elements": [
       {
         "id": "_countryf1",
@@ -84,9 +85,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E1"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -134,9 +136,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E2"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E2"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -184,9 +187,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E3"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E3"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -234,9 +238,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E4"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E4"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -284,9 +289,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E1"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -334,9 +340,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "E7"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E7"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -87978,15 +87985,18 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": [
-              "E2",
-              "E1",
-              "E4",
-              "E3",
-              "E5",
-              "E7",
-              "E8"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": [
+                "E2",
+                "E1",
+                "E4",
+                "E3",
+                "E5",
+                "E7",
+                "E8"
+              ]
+            },
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -88039,15 +88049,18 @@
         "required": false,
         "type": {
           "parameters": {
-            "range": [
-              "E2",
-              "E1",
-              "E4",
-              "E3",
-              "E5",
-              "E7",
-              "E8"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": [
+                "E2",
+                "E1",
+                "E4",
+                "E3",
+                "E5",
+                "E7",
+                "E8"
+              ]
+            },
             "classId": "_type:ref",
             "cardinality": "MULTIPLE"
           },
@@ -95973,9 +95986,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "P4"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "P4"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -96007,9 +96021,10 @@
         "required": true,
         "type": {
           "parameters": {
-            "range": [
-              "L1"
-            ],
+            "range": {
+              "@type": "REFERENCE",
+              "value": "L1"
+            },
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
@@ -96028,6 +96043,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96040,6 +96056,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96052,6 +96069,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96064,6 +96082,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96076,6 +96095,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96088,6 +96108,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96100,6 +96121,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96119,6 +96141,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "enfants"
               },
               "typeClass": "QUANTITY"
@@ -96131,6 +96154,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "enfants"
               },
               "typeClass": "QUANTITY"
@@ -96143,6 +96167,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "femme"
               },
               "typeClass": "QUANTITY"
@@ -96162,6 +96187,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "kits"
               },
               "typeClass": "QUANTITY"
@@ -96174,6 +96200,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96186,6 +96213,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96205,6 +96233,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96217,6 +96246,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96229,6 +96259,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96241,6 +96272,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "familles"
               },
               "typeClass": "QUANTITY"
@@ -96253,6 +96285,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96265,6 +96298,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96277,6 +96311,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96296,6 +96331,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "personnes"
               },
               "typeClass": "QUANTITY"
@@ -96308,6 +96344,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "femmes"
               },
               "typeClass": "QUANTITY"
@@ -96320,6 +96357,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "hommes"
               },
               "typeClass": "QUANTITY"
@@ -96339,6 +96377,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96351,6 +96390,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "menages"
               },
               "typeClass": "QUANTITY"
@@ -96363,6 +96403,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96375,6 +96416,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96387,6 +96429,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96399,6 +96442,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "ménages"
               },
               "typeClass": "QUANTITY"
@@ -96411,6 +96455,7 @@
             "required": false,
             "type": {
               "parameters": {
+                "classId": "_type:quantity",
                 "units": "menages"
               },
               "typeClass": "QUANTITY"

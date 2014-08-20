@@ -18,5 +18,17 @@
       <artifactId>activityinfo-services</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>unit-testing-tools</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
   </dependencies>
 </project>

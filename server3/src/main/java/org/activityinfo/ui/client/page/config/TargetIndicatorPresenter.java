@@ -43,7 +43,6 @@ import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.page.PageId;
 import org.activityinfo.ui.client.page.PageState;
 import org.activityinfo.ui.client.page.common.grid.AbstractEditorGridPresenter;
-import org.activityinfo.ui.client.page.common.grid.TreeGridView;
 import org.activityinfo.ui.client.page.common.nav.Link;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
@@ -55,7 +54,7 @@ import java.util.Map;
 public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelData> {
 
     @ImplementedBy(TargetIndicatorView.class)
-    public interface View extends TreeGridView<TargetIndicatorPresenter, ModelData> {
+    public interface View extends org.activityinfo.ui.client.page.common.grid.GridView<TargetIndicatorPresenter,ModelData> {
         void init(TargetIndicatorPresenter presenter, UserDatabaseDTO db, TreeStore store);
 
         void expandAll();

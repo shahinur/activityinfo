@@ -5,11 +5,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import freemarker.cache.WebappTemplateLoader;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resources;
-import org.activityinfo.ui.client.component.form.field.hierarchy.Level;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;

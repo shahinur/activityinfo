@@ -22,14 +22,17 @@ package org.activityinfo.server.login;
  * #L%
  */
 
-import com.bedatadriven.rebar.appcache.server.UserAgentProvider;
 import com.google.inject.Inject;
 import com.sun.jersey.api.view.Viewable;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
-import org.activityinfo.server.login.model.HostPageModel;
 import org.activityinfo.server.login.model.RootPageModel;
-import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.ui.app.client.chrome.Chrome;
+import org.activityinfo.ui.app.client.store.AppStores;
+import org.activityinfo.ui.style.BaseStyleResources;
+import org.activityinfo.ui.vdom.shared.html.HtmlRenderer;
+import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -45,19 +48,22 @@ public class HostController {
 
     private final DeploymentConfiguration deployConfig;
     private final ServerSideAuthProvider authProvider;
+    private final BaseStyleResources style;
 
     @Inject
-    public HostController(DeploymentConfiguration deployConfig, ServerSideAuthProvider authProvider) {
+    public HostController(DeploymentConfiguration deployConfig,
+                          ServerSideAuthProvider authProvider,
+                          BaseStyleResources style) {
         super();
         this.deployConfig = deployConfig;
         this.authProvider = authProvider;
+        this.style = style;
     }
 
     @GET @Produces(MediaType.TEXT_HTML) @LogException(emailAlert = true)
     public Response getHostPage(@Context UriInfo uri,
                                 @Context HttpServletRequest req,
-                                @QueryParam("redirect") boolean redirect,
-                                @QueryParam("ui") String ui) throws Exception {
+                                @QueryParam("redirect") boolean redirect) throws Exception {
 
         if (!authProvider.isAuthenticated()) {
             // Otherwise, go to the default ActivityInfo root page
@@ -71,21 +77,20 @@ public class HostController {
             return Response.seeOther(uri.getAbsolutePathBuilder().replacePath(ENDPOINT).build()).build();
         }
 
-        String appUri = uri.getAbsolutePathBuilder().replaceQuery("").build().toString();
 
-        HostPageModel model = new HostPageModel(appUri);
-        model.setAppCacheEnabled(checkAppCacheEnabled(req));
+        AppStores appStores = new AppStores(null);
 
-        // NEW UI!!
-        if("new".equals(ui)) {
-            model.setAppCacheEnabled(false);
-            model.setNewUI(true);
-        }
+        VTree tree = Chrome.renderPage(new HostPageContext(style), appStores);
 
-        return Response.ok(model.asViewable())
-                       .type(MediaType.TEXT_HTML)
-                       .cacheControl(CacheControl.valueOf("no-cache"))
-                       .build();
+        HtmlRenderer renderer = new HtmlRenderer();
+        renderer.writeDocTypeDeclaration();
+        tree.accept(renderer);
+
+        return Response.ok().type(MediaType.TEXT_HTML)
+                .entity(renderer.getHtml())
+                .cacheControl(CacheControl.valueOf("no-cache"))
+                .build();
+
     }
 
     /**
@@ -97,17 +102,6 @@ public class HostController {
     @GET @Path("/unsupportedBrowser")
     public Viewable getUnsupportedBrowserMessage() {
         return new Viewable("/page/UnsupportedBrowser.ftl", new HashMap());
-    }
-
-    private boolean checkAppCacheEnabled(HttpServletRequest req) {
-        // for browsers that only support database synchronisation via gears at
-        // this point,
-        // we would rather use gears managed resources stores than HTML5
-        // appcache
-        // so that we only have to display one permission
-        // (this really only applies to FF <= 3.6 right now)
-        UserAgentProvider userAgentProvider = new UserAgentProvider();
-        return !userAgentProvider.canSupportGears(req);
     }
 
 }

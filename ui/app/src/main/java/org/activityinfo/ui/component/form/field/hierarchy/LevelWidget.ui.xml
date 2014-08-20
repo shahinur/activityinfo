@@ -1,0 +1,12 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:a="urn:import:org.activityinfo.ui.widget">
+
+  <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
+
+  <g:HTMLPanel styleName="field-element">
+      <label class="control-label" ui:field="levelLabel"/>
+      <g:ListBox ui:field="listBox" styleName="form-control"/>
+      <a:CloseButton ui:field="clearButton" addStyleNames="clear-button"/>
+  </g:HTMLPanel>
+</ui:UiBinder>

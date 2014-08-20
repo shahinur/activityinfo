@@ -24,12 +24,6 @@ package org.activityinfo.server.command;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import org.activityinfo.core.client.InstanceQuery;
-import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.criteria.ClassCriteria;
-import org.activityinfo.core.shared.criteria.CriteriaIntersection;
-import org.activityinfo.core.shared.criteria.ParentCriteria;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.exception.CommandException;
@@ -38,24 +32,19 @@ import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 import org.activityinfo.legacy.shared.model.LockedPeriodSet;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.ui.client.service.TestResourceLocator;
+import org.activityinfo.service.store.ResourceLocator;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
-import java.util.List;
 
-import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.activityinfo.core.client.PromiseMatchers.resolvesTo;
+import static org.activityinfo.promise.PromiseMatchers.resolvesTo;
+import static org.activityinfo.store.test.TestResourceStore.createLocator;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
@@ -162,7 +151,7 @@ public class GetSchemaTest extends CommandTestCase2 {
     @Test
     public void newApiTest() throws IOException {
 
-        ResourceLocator locator = new TestResourceLocator("/dbunit/sites-simple1.json");
+        ResourceLocator locator = createLocator("/dbunit/sites-simple1.json");
 
         Promise<FormClass> userForm = locator.getFormClass(CuidAdapter.activityFormClass(1));
 

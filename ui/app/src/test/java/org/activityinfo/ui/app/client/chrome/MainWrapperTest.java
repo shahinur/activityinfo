@@ -1,23 +1,19 @@
 package org.activityinfo.ui.app.client.chrome;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-import com.google.gwt.dom.client.Style;
+import org.activityinfo.store.test.TestResourceStore;
 import org.activityinfo.ui.style.BaseStyleResources;
-import org.activityinfo.ui.vdom.shared.html.HtmlRenderer;
-import org.activityinfo.ui.vdom.shared.tree.VTree;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 
-import static org.activityinfo.ui.vdom.shared.html.H.*;
-
 public class MainWrapperTest {
 
     private BaseStyleResources base;
     private File tempDir;
+    private TestResourceStore store;
+    private TestRemoteStoreService service;
 
     @Before
     public void setUp() throws IOException {
@@ -25,32 +21,30 @@ public class MainWrapperTest {
         tempDir.mkdirs();
         base = BaseStyleResources.load();
         base.copyTo(tempDir);
+
+        store = new TestResourceStore().load("/test.json");
+        service = new TestRemoteStoreService(store);
     }
 
     @Test
     public void test() throws IOException {
-
-
-        VTree tree =
-        html(
-            head(
-                Meta.charset(Charsets.UTF_8),
-                Meta.viewport("width=device-width, initial-scale=1.0, maximum-scale=1.0"),
-                title("ActivityInfo 3.0 Beta"),
-                Link.stylesheet(base.getStylesheetStrongName())
-            ),
-            body(style().overflow(Style.Overflow.VISIBLE),
-                Chrome.mainWrapper()
-            )
-        );
-
-        HtmlRenderer renderer = new HtmlRenderer();
-        tree.accept(renderer);
-
-        File indexFile = new File(tempDir, "index.html");
-        Files.write(renderer.getHtml(), indexFile, Charsets.UTF_8);
-
-        System.out.println("Navigate to file://" + indexFile.getCanonicalFile());
+//
+//        PageContext pageContext = new
+//        pageContext.setStylesheetUrl(base.getStylesheetStrongName());
+//        pageContext.setApplicationTitle("ActivityInfo");
+//
+//
+//        AppState state = new AppState(service);
+//
+//        VTree tree = Chrome.renderPage(pageContext, Chrome.mainWrapper(state));
+//
+//        HtmlRenderer renderer = new HtmlRenderer();
+//        tree.accept(renderer);
+//
+//        File indexFile = new File(tempDir, "index.html");
+//        Files.write(renderer.getHtml(), indexFile, Charsets.UTF_8);
+//
+//        System.out.println("Navigate to file://" + indexFile.getCanonicalFile());
     }
 
     public File targetDir(){

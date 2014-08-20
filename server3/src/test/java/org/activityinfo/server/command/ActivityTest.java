@@ -23,8 +23,6 @@ package org.activityinfo.server.command;
  */
 
 import com.google.common.base.Joiner;
-import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.ui.client.service.TestResourceLocator;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
@@ -36,20 +34,25 @@ import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.service.store.ResourceLocator;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
 
-import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
+import static org.activityinfo.promise.PromiseMatchers.assertResolves;
+import static org.activityinfo.store.test.TestResourceStore.createLocator;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ActivityTest {
 
@@ -60,7 +63,7 @@ public class ActivityTest {
 
     @Before
     public void setUser() throws IOException {
-        resourceLocator = new TestResourceLocator("/dbunit/schema1.json");
+        resourceLocator = createLocator("/dbunit/schema1.json");
       //  setUser(1);
     }
 

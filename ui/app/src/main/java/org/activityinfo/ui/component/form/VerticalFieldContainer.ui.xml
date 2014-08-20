@@ -1,0 +1,13 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'
+             xmlns:field="urn:import:org.activityinfo.ui.component.form.field">
+
+  <ui:with field="styles" type="org.activityinfo.ui.style.BaseStyle"/>
+
+  <g:HTMLPanel addStyleNames="{styles.formGroup}">
+    <label ui:field="label" class="control-label"/>
+    <field:FormFieldWidget ui:field="fieldWidget"/>
+    <span class="{styles.helpBlock}" ui:field="helpText"/>
+    <span class="{styles.helpBlock}" ui:field="validationMessage"/>
+  </g:HTMLPanel>
+</ui:UiBinder>
