@@ -70,7 +70,7 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
 
     @Override
     public void writeUserIndex(Multimap<ResourceId, ResourceId> resources) throws Exception {
-        this.append("INSERT INTO user_index" +
+        this.append("INSERT INTO user_root_index" +
                           " (user_id, resource_id)" +
                           " VALUES\n");
 
@@ -84,6 +84,7 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
             append(',');
             appendParameter(entry.getValue());
             append(")");
+            needsComma=true;
         }
         append(";\n");
     }

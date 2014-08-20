@@ -1,9 +1,7 @@
 package org.activityinfo.migrator.tables;
 
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.type.primitive.TextType;
@@ -12,8 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
-import static org.activityinfo.model.legacy.CuidAdapter.databaseId;
-import static org.activityinfo.model.legacy.CuidAdapter.partnerFormClass;
 
 public class PartnerFormClass extends SimpleTableMigrator {
 
@@ -29,7 +25,7 @@ public class PartnerFormClass extends SimpleTableMigrator {
         ResourceId classId = partnerFormClass(databaseId);
         FormClass form = new FormClass(classId)
         .setOwnerId(databaseId(databaseId))
-        .setLabel("Partner");
+        .setLabel("Partners");
 
         form.addField(field(classId, NAME_FIELD))
             .setRequired(true)
