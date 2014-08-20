@@ -37,7 +37,7 @@ public class ConnectionCleanupFilter implements javax.servlet.Filter {
             // Cleanup normally
             connectionProvider.cleanupAfterRequestFinishes(false);
 
-        } catch (Exception e) {
+        } catch (Throwable caught) {
 
             // Cleanup after an error
             connectionProvider.cleanupAfterRequestFinishes(true);

@@ -81,6 +81,9 @@ public class ConnectionProvider implements Provider<Connection> {
                 connection = DriverManager.getConnection(connectionUrl, username, password);
             }
             connection.setAutoCommit(false);
+
+            LOGGER.info("Opened MySQL connection for request.");
+
             return connection;
         } catch (SQLException e) {
             if(connection != null) {
@@ -112,11 +115,19 @@ public class ConnectionProvider implements Provider<Connection> {
      *                         of the original exception
      */
     public void cleanupAfterRequestFinishes(boolean swallowException) {
+
         Connection connection = connectionForRequest.get();
         connectionForRequest.remove();
 
         if(connection != null) {
+
+            LOGGER.info("Closing MySQL connection for request.");
+
             Connections.close(connection, swallowException);
+
+        } else {
+            LOGGER.info("No open MySQL connection to close.");
+
         }
     }
 }
