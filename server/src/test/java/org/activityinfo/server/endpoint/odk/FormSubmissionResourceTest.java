@@ -32,9 +32,9 @@ public class FormSubmissionResourceTest {
         store = new TestResourceStore().load("/dbunit/formSubmissionResourceTest.json");
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
-        DeploymentConfiguration deploymentConfiguration = new DeploymentConfiguration(new Properties());
-        GcsBlobFieldStorageService gcsBlobFieldStorageService = new GcsBlobFieldStorageService(deploymentConfiguration);
-        resource = new FormSubmissionResource(factory, store, authenticationTokenService, gcsBlobFieldStorageService);
+        BlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
+        resource = new FormSubmissionResource(
+                factory, store, authenticationTokenService, blobFieldStorageService, null);
     }
 
     @Test
