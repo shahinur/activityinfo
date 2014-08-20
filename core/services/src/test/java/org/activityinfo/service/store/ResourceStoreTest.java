@@ -1,5 +1,7 @@
 package org.activityinfo.service.store;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
@@ -9,6 +11,7 @@ import com.sun.jersey.test.framework.LowLevelAppDescriptor;
 import com.sun.jersey.test.framework.spi.container.TestContainerException;
 import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
 import com.sun.jersey.test.framework.spi.container.inmemory.InMemoryTestContainerFactory;
+import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
@@ -18,10 +21,12 @@ import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.jaxrs.EntityTags;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -80,8 +85,7 @@ public class ResourceStoreTest extends JerseyTest {
                 .put(ClientResponse.class);
 
         assertThat(response.getStatusInfo(), equalTo((Response.StatusType)ClientResponse.Status.CREATED));
-        assertThat(response.getEntityTag(), equalTo(EntityTags.ofResource(
-                newResource.getId(),
+        assertThat(response.getEntityTag(), equalTo(EntityTags.ofResource(newResource.getId(),
                 ResourceStoreStub.NEW_VERSION)));
     }
 
@@ -133,9 +137,28 @@ public class ResourceStoreTest extends JerseyTest {
         assertThat(c3.getDouble(0), equalTo(91.0));
         assertTrue(Double.isNaN(c3.getDouble(1)));
         assertThat(c3.getDouble(2), equalTo(92.0));
-
-
     }
+
+    @Test
+    public void updateResultSerializes() throws IOException {
+        ObjectMapper m = ObjectMapperFactory.get();
+        String committedJson = m.writeValueAsString(UpdateResult.committed(ResourceId.valueOf("cxyz"), 94));
+        String pendingJson = m.writeValueAsString(UpdateResult.pending());
+        String rejectedJson = m.writeValueAsString(UpdateResult.rejected());
+
+        UpdateResult committed = m.readValue(committedJson, UpdateResult.class);
+        UpdateResult pending = m.readValue(pendingJson, UpdateResult.class);
+        UpdateResult rejected = m.readValue(rejectedJson, UpdateResult.class);
+
+        assertThat(committed.getStatus(), Matchers.equalTo(CommitStatus.COMMITTED));
+        assertThat(committed.getResourceId(), equalTo(ResourceId.valueOf("cxyz")));
+        assertThat(pending.getStatus(), Matchers.equalTo(CommitStatus.PENDING));
+        assertThat(rejected.getStatus(), Matchers.equalTo(CommitStatus.REJECTED));
+
+        ObjectNode pendingObject = (ObjectNode) m.readTree(pendingJson);
+        assertThat(pendingObject.has("newVersion"), Matchers.equalTo(false));
+    }
+
 
     @Test
     public void getUserRoots() {
