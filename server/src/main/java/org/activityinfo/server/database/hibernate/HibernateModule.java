@@ -30,8 +30,6 @@ import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import org.activityinfo.server.database.hibernate.dao.FixGeometryTask;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
 import org.activityinfo.service.DeploymentConfiguration;
@@ -73,10 +71,6 @@ public class HibernateModule extends ServletModule {
         configureEm();
         install(new HibernateDAOModule());
         install(new TransactionModule());
-
-        // temporary fix for geometry types
-        bind(FixGeometryTask.class);
-        filter("/tasks/fixGeometry").through(GuiceContainer.class);
 
     }
 
@@ -122,10 +116,6 @@ public class HibernateModule extends ServletModule {
             config.setProperty(Environment.HBM2DDL_AUTO, "");
             config.setNamingStrategy(new AINamingStrategy());
             EntityManagerFactory emf = config.buildEntityManagerFactory();
-
-//            if (DeploymentEnvironment.isAppEngineDevelopment()) {
-//                SchemaServlet.performMigration((HibernateEntityManager) emf.createEntityManager());
-//            }
 
             return emf;
         }

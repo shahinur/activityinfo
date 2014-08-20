@@ -29,17 +29,14 @@ import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.ui.client.page.PageId;
 import org.activityinfo.ui.client.page.app.Section;
 import org.activityinfo.ui.client.page.common.grid.AbstractPagingGridPageState;
-import org.activityinfo.ui.client.page.entry.DataEntryPage;
-import org.activityinfo.ui.client.page.entry.grouping.GroupingModel;
-import org.activityinfo.ui.client.page.entry.grouping.NullGroupingModel;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class DataEntryPlace extends AbstractPagingGridPageState {
 
+    public static final PageId PAGE_ID = new PageId("data-entry");
     private Filter filter;
-    private GroupingModel grouping = NullGroupingModel.INSTANCE;
 
     public DataEntryPlace() {
         filter = new Filter();
@@ -47,12 +44,6 @@ public class DataEntryPlace extends AbstractPagingGridPageState {
 
     public DataEntryPlace(Filter filter) {
         this.filter = filter;
-    }
-
-    public DataEntryPlace(GroupingModel grouping, Filter filter) {
-        super();
-        this.filter = filter;
-        this.grouping = grouping;
     }
 
     public DataEntryPlace(ActivityDTO activity) {
@@ -75,71 +66,21 @@ public class DataEntryPlace extends AbstractPagingGridPageState {
         return filter;
     }
 
-    public GroupingModel getGrouping() {
-        return grouping;
-    }
-
-    public DataEntryPlace setGrouping(GroupingModel grouping) {
-        this.grouping = grouping;
-        return this;
-    }
-
     @Override
     public PageId getPageId() {
-        return DataEntryPage.PAGE_ID;
+        return PAGE_ID;
     }
 
     @Override
     public String serializeAsHistoryToken() {
-        return DataEntryPlaceParser.serialize(this);
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public List<PageId> getEnclosingFrames() {
-        return Arrays.asList(DataEntryPage.PAGE_ID);
+        return Arrays.asList(PAGE_ID);
     }
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((filter == null) ? 0 : filter.hashCode());
-        result = prime * result + ((grouping == null) ? 0 : grouping.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        DataEntryPlace other = (DataEntryPlace) obj;
-        if (filter == null) {
-            if (other.filter != null) {
-                return false;
-            }
-        } else if (!filter.equals(other.filter)) {
-            return false;
-        }
-        if (grouping == null) {
-            if (other.grouping != null) {
-                return false;
-            }
-        } else if (!grouping.equals(other.grouping)) {
-            return false;
-        }
-        return true;
-    }
-
-    public DataEntryPlace copy() {
-        return new DataEntryPlace(grouping, new Filter(filter));
-    }
 
     public DataEntryPlace setFilter(Filter filter) {
         this.filter = filter;

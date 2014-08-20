@@ -22,15 +22,12 @@ package org.activityinfo.ui.client.util;
  */
 
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * @author yuriyz on 1/27/14.
  */
 public class GwtUtil {
 
-    public static final int DEFAULT_COLUMN_WIDTH_IN_EM = 10;
 
     /**
      * Avoid instance creation.
@@ -38,17 +35,6 @@ public class GwtUtil {
     private GwtUtil() {
     }
 
-    /**
-     * Sometimes "hardcode" is not as good solution if column width is big, here we are trying to increase
-     * column width if column header is bigger then default value. (Indeed we have room for improvements for this dummy algorithm ;))
-     *
-     * @param columnHeader column header string
-     * @return width of column in em
-     */
-    public static int columnWidthInEm(String columnHeader) {
-        int width = columnHeader.length() / 2;
-        return width < DEFAULT_COLUMN_WIDTH_IN_EM ? DEFAULT_COLUMN_WIDTH_IN_EM : width;
-    }
 
     public static void setVisibleInline(boolean visible, Element... elements) {
         if (elements != null) {
@@ -82,15 +68,5 @@ public class GwtUtil {
         return "<span qtip='" + value + "'>" + value + "</span>";
     }
 
-    public static ScrollPanel getScrollAncestor(Widget widget) {
-        if (widget != null && widget.getParent() != null) {
-            final Widget parent = widget.getParent();
-            if (parent instanceof ScrollPanel) {
-                return (ScrollPanel) parent;
-            } else {
-                return getScrollAncestor(parent);
-            }
-        }
-        return null;
-    }
+
 }

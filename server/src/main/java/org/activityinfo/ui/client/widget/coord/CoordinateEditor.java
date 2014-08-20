@@ -25,11 +25,11 @@ package org.activityinfo.ui.client.widget.coord;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.PropertyEditor;
 import com.extjs.gxt.ui.client.widget.form.Validator;
-import org.activityinfo.core.client.type.converter.JsCoordinateNumberFormatter;
-import org.activityinfo.core.shared.type.converter.CoordinateAxis;
-import org.activityinfo.core.shared.type.converter.CoordinateFormatException;
-import org.activityinfo.core.shared.type.converter.CoordinateParser;
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.model.type.converter.CoordinateAxis;
+import org.activityinfo.model.type.converter.CoordinateFormatException;
+import org.activityinfo.model.type.converter.CoordinateParser;
+import org.activityinfo.model.type.converter.JsCoordinateNumberFormatter;
 
 public class CoordinateEditor implements PropertyEditor<Double>, Validator {
 

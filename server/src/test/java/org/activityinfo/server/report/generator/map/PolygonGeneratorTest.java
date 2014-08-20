@@ -25,7 +25,7 @@ package org.activityinfo.server.report.generator.map;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
-import org.activityinfo.core.shared.model.AiLatLng;
+import org.activityinfo.model.type.geo.AiLatLng;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.shared.command.GenerateElement;

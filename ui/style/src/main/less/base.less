@@ -2,55 +2,97 @@
 @import "bootstrap/variables";
 @import "bootstrap/mixins";
 
-@import "bootstrap/normalize";
 
+// Reset and dependencies
+@import "bootstrap/normalize";
+@import "bootstrap/print";
+@import "bootstrap/glyphicons";
+
+// Core CSS
 @import "bootstrap/scaffolding";
 @import "bootstrap/type";
 @import "bootstrap/code";
 @import "bootstrap/grid";
+@import "bootstrap/tables";
 @import "bootstrap/forms";
 @import "bootstrap/buttons";
-@import "bootstrap/panels";
-@import "bootstrap/glyphicons";
-@import "bootstrap/alerts";
-@import "bootstrap/breadcrumbs";
-@import "bootstrap/progress-bars";
-@import "bootstrap/wells";
-@import "bootstrap/navs";
-@import "bootstrap/close";
-@import "bootstrap/utilities";
+
+// Components
 @import "bootstrap/component-animations";
-@import "bootstrap/responsive-utilities";
+@import "bootstrap/dropdowns";
+@import "bootstrap/button-groups";
+@import "bootstrap/input-groups";
+@import "bootstrap/navs";
+@import "bootstrap/navbar";
+@import "bootstrap/breadcrumbs";
+//@import "bootstrap/pagination";
+//@import "bootstrap/pager";
+@import "bootstrap/labels";
 @import "bootstrap/badges";
-@import "bootstrap/dropdowns.less";
+//@import "bootstrap/jumbotron";
+@import "bootstrap/thumbnails";
+@import "bootstrap/alerts";
+@import "bootstrap/progress-bars";
+@import "bootstrap/media";
+//@import "bootstrap/list-group";
+@import "bootstrap/panels";
+//@import "bootstrap/responsive-embed";
+@import "bootstrap/wells";
+@import "bootstrap/close";
+
+@import "bootstrap/modals";
+
+@import "bootstrap/utilities";
+
 
 @import "fontawesome/font-awesome";
 
 // Variables
-@import "bracket/variables.less";
+@import "bracket/variables";
 
-@import "bracket/mixins.less";
+@import "bracket/mixins";
 
 // General
-@import "bracket/general.less";
+@import "bracket/general";
 
 // Header Styles
-@import "bracket/headerpanel.less";
+@import "bracket/headerpanel";
 
 // Left Panel
-@import "bracket/leftpanel.less";
+@import "bracket/leftpanel";
 
 // Main Panels
-@import "bracket/mainpanel.less";
-@import "bracket/nav.less";
-//@import "bracket/dashboard.less";
-//@import "bracket/forms.less";
-//@import "bracket/ui-elements.less";
-//@import "bracket/email.less";
-//@import "bracket/table.less";
-//@import "bracket/pages.less";
-//@import "bracket/leftpanel-collapse.less";
-//@import "bracket/rightpanel.less";
-//@import "bracket/horizontal-menu.less";
-//@import "addons.less";
-@import "bracket/media-queries.less";
+@import "bracket/mainpanel";
+@import "bracket/nav";
+//@import "bracket/dashboard";
+//@import "bracket/forms";
+//@import "bracket/ui-elements";
+@import "bracket/widget-bloglist";
+@import "bracket/email";
+@import "bracket/table";
+//@import "bracket/pages";
+@import "bracket/filemanger-options";
+@import "bracket/error-page";
+
+//@import "bracket/leftpanel-collapse";
+//@import "bracket/rightpanel";
+//@import "bracket/horizontal-menu";
+//@import "addons";
+@import "bracket/media-queries";
+
+
+// AI Components
+// TODO: need to find a way to manage LESS sources for
+// components in a modular way, they should stay close
+// to the components in which they're used, even if we
+// deploy all styles as a single monolithic stylesheet in the end.
+
+@import "components/CellTable";
+@import "components/ColumnMapping";
+@import "components/datagrid";
+@import "components/filterdatagrid";
+@import "components/FormDesigner";
+@import "components/Loading";
+@import "components/ValidationPage";
+@import "components/InstanceTable";
+@import "components/SuggestBox";

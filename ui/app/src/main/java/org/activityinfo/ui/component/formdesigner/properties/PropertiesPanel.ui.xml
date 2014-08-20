@@ -1,0 +1,110 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:a="urn:import:org.activityinfo.ui.widget.form"
+        >
+
+  <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
+  <ui:with field="style" type="org.activityinfo.ui.component.formdesigner.FormDesignerStyles"/>
+  <ui:with field="base" type="org.activityinfo.ui.style.BaseStyle"/>
+
+  <g:HTMLPanel width="100%" ui:field="panel" addStyleNames="{base.formHorizontal}">
+
+    <!-- Label -->
+    <div class="{base.formGroup}">
+      <label class="{base.controlLabel} {base.colXs4}">
+        <ui:text from='{i18n.label}'/>
+      </label>
+      <div class="{base.colXs8}">
+        <a:TextBox ui:field="label" width="100%"/>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div class="{base.formGroup}">
+      <label class="{base.controlLabel} {base.colXs4}">
+        <ui:text from='{i18n.description}'/>
+      </label>
+      <div class="{base.colXs8}">
+        <a:TextArea ui:field="description" width="100%"/>
+      </div>
+    </div>
+
+    <!-- Required & ReadOnly -->
+    <g:HTMLPanel addStyleNames="{base.formGroup}">
+      <g:HTMLPanel ui:field="requiredGroup">
+        <label class="control-label col-xs-4">
+          <ui:text from='{i18n.required}'/>
+        </label>
+        <div class="col-xs-2">
+          <a:CheckBox ui:field="required"/>
+        </div>
+      </g:HTMLPanel>
+      <g:HTMLPanel ui:field="readOnlyGroup">
+        <label class="control-label col-xs-4">
+          <ui:text from='{i18n.readonly}'/>
+        </label>
+        <div class="col-xs-2">
+          <a:CheckBox ui:field="readOnly"/>
+        </div>
+      </g:HTMLPanel>
+    </g:HTMLPanel>
+
+    <!-- Visible -->
+    <g:HTMLPanel addStyleNames="{base.formGroup}">
+      <g:HTMLPanel ui:field="visibleGroup">
+        <label class="{base.controlLabel} {base.colXs4}">
+          <ui:text from='{i18n.visible}'/>
+        </label>
+        <div class="col-xs-2">
+          <a:CheckBox ui:field="visible"/>
+        </div>
+      </g:HTMLPanel>
+      <!--<g:HTMLPanel ui:field="readOnlyGroup">-->
+        <!--<label class="control-label col-xs-4">-->
+          <!--<ui:text from='{i18n.readonly}'/>-->
+        <!--</label>-->
+        <!--<div class="col-xs-2">-->
+          <!--<a:CheckBox ui:field="readOnly"/>-->
+        <!--</div>-->
+      <!--</g:HTMLPanel>-->
+    </g:HTMLPanel>
+
+    <!-- Relevance -->
+    <g:HTMLPanel addStyleNames="{base.formGroup}" ui:field="relevanceGroup">
+      <label class="control-label col-xs-4">
+        <ui:text from='{i18n.relevance}'/>
+      </label>
+      <div class="col-xs-8">
+        <g:RadioButton name="relevance" ui:field="relevanceEnabled"><ui:text from='{i18n.relevanceEnabled}'/></g:RadioButton><br/>
+        <g:RadioButton name="relevance" ui:field="relevanceEnabledIf"><ui:text from='{i18n.relevanceEnabledIf}'/></g:RadioButton>
+      </div>
+      <div class="col-xs-8"/> <!-- reserve space-->
+      <div class="col-xs-4">
+        <g:Button addStyleNames="{base.btn} {base.btnDefault} {base.btnXs}" ui:field="relevanceButton">
+          <ui:text from='{i18n.defineRelevanceLogic}'/>
+        </g:Button>
+      </div>
+      <div class="col-xs-4"/> <!-- reserve space-->
+      <div class="col-xs-8">
+        <span class="hide help-block" ui:field="relevanceExpression"/>
+      </div>
+    </g:HTMLPanel>
+
+    <!-- Code -->
+    <g:HTMLPanel addStyleNames="{base.formGroup}" ui:field="codeGroup">
+      <label class="{base.controlLabel} {base.colXs4}">
+        <ui:text from='{i18n.codeFieldLabel}'/>
+      </label>
+      <div class="{base.colXs8}">
+        <a:TextBox ui:field="code" width="100%"/>
+      </div>
+      <div class="{base.colXs4}"/> <!-- reserve space-->
+      <div class="{base.colXs8}">
+        <span class="{base.hidden} {base.helpBlock}">
+          <ui:text from='{i18n.nameInExpressionTooltip}'/>
+        </span>
+      </div>
+    </g:HTMLPanel>
+  </g:HTMLPanel>
+</ui:UiBinder>

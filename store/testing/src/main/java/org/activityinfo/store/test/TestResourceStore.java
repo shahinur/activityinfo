@@ -12,6 +12,7 @@ import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.service.store.*;
 import org.activityinfo.service.tables.TableBuilder;
 
@@ -43,7 +44,8 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     public TestResourceStore load(String resourceName) throws IOException {
         JsonParser parser = new JsonParser();
         JsonArray resourceArray;
-        try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(resourceName), Charsets.UTF_8)) {
+        try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(resourceName),
+                Charsets.UTF_8)) {
             resourceArray = parser.parse(reader).getAsJsonArray();
         }
 
@@ -101,7 +103,25 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     @Override
     public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
-        throw new UnsupportedOperationException();
+        List<ResourceNode> nodes = Lists.newArrayList();
+        for(Resource resource : all()) {
+            if(resource.getOwnerId().asString().startsWith("U")) {
+                nodes.add(newNode(resource));
+            }
+        }
+        return nodes;
+    }
+
+    private ResourceNode newNode(Resource resource) {
+        ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
+        ResourceNode node = new ResourceNode(resource.getId(), classId);
+
+        if(classId.equals(FormClass.CLASS_ID)) {
+            node.setLabel(resource.isString(FormClass.LABEL_FIELD_ID));
+        } else if(classId.equals(FolderClass.CLASS_ID)) {
+            node.setLabel(resource.isString(FolderClass.LABEL_FIELD_ID.asString()));
+        }
+        return node;
     }
 
     @Override
@@ -170,6 +190,14 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     public Resource getLastUpdated() {
         return lastUpdated.copy();
+    }
+
+    public ResourceLocator createLocator() {
+        return new ResourceLocatorAdaptor(new TestRemoteStoreService(this));
+    }
+
+    public static ResourceLocator createLocator(String jsonResourceName) throws IOException {
+        return new TestResourceStore().load(jsonResourceName).createLocator();
     }
 
     private class Cursor implements ResourceCursor {

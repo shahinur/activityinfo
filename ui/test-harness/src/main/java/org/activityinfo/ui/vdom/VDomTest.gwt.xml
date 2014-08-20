@@ -37,6 +37,9 @@
 
   <add-linker name="xsiframe" />
 
+  <extend-property name="locale" values="en"/>
+
+
   <entry-point class="org.activityinfo.ui.vdom.client.VDomTestEntryPoint"/>
 
 </module>

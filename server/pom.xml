@@ -47,9 +47,21 @@
 
     <dependency>
       <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-app</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-testing-store</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-importing</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
 
@@ -68,11 +80,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.allen-sauer.gwt.dnd</groupId>
-      <artifactId>gwt-dnd</artifactId>
-      <version>3.3.0</version>
-    </dependency>
 
     <dependency>
       <groupId>com.google.appengine</groupId>
@@ -80,11 +87,6 @@
       <version>${gae.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>com.teklabs.gwt-i18n-server</groupId>
-      <artifactId>gwt-i18n-server</artifactId>
-      <version>0.7-bedatadriven2</version>
-    </dependency>
 
     <dependency>
       <groupId>org.xerial</groupId>
@@ -104,6 +106,12 @@
       <groupId>org.mindrot.bcrypt</groupId>
       <artifactId>bcrypt</artifactId>
       <version>0.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-i18n</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -293,6 +301,8 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+
 
 
     <!-- Dependency Injection Framework -->
@@ -521,9 +531,7 @@
               <logLevel>INFO</logLevel>
               <compileReport>false</compileReport>
               <modules>
-                <module>org.activityinfo.ui.ActivityInfoCI</module>
-                <module>org.activityinfo.ui.AI</module>
-                <module>org.activityinfo.ui.Embed</module>
+                <module>org.activityinfo.ui.app.ActivityInfoApp</module>
               </modules>
             </configuration>
           </execution>
@@ -578,8 +586,7 @@
             <configuration>
               <compileReport>true</compileReport>
               <modules>
-                <module>org.activityinfo.ui.ActivityInfoCI</module>
-                <module>org.activityinfo.ui.AI</module>
+                <module>org.activityinfo.ui.app.ActivityInfoApp</module>
               </modules>
             </configuration>
           </plugin>
@@ -603,9 +610,7 @@
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
               <modules>
-                <module>org.activityinfo.ui.ActivityInfoRelease</module>
-                <module>org.activityinfo.ui.AI</module>
-                <module>org.activityinfo.ui.embed.Embed</module>
+                <module>org.activityinfo.ui.app.ActivityInfoApp</module>
               </modules>
             </configuration>
           </plugin>

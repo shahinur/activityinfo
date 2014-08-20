@@ -25,6 +25,6 @@ package org.activityinfo.ui.client.page.common.grid;
 import com.extjs.gxt.ui.client.data.ModelData;
 
 public abstract class AbstractEditorTreeGridView<ModelT extends ModelData, PresenterT extends GridPresenter<ModelT>>
-        extends AbstractEditorGridView<ModelT, PresenterT> implements TreeGridView<PresenterT, ModelT> {
+        extends AbstractEditorGridView<ModelT, PresenterT> implements GridView<PresenterT,ModelT> {
 
 }

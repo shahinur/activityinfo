@@ -15,6 +15,10 @@ public class HtmlRenderer implements VTreeVisitor {
         html = new StringBuilder();
     }
 
+    public void writeDocTypeDeclaration() {
+        html.append("<!DOCTYPE html>\n");
+    }
+
     public void visitNode(VNode node) {
         String tagName = node.tag.name().toLowerCase();
         html.append("<").append(tagName);
@@ -25,12 +29,12 @@ public class HtmlRenderer implements VTreeVisitor {
         if(node.tag.isSingleton()) {
             // Tags like <input> and <br> are not closed...
             // but they also don't have children
-            assert node.children == null;
+            assert node.children.length == 0 : node.tag + " is a singleton";
 
         } else {
 
             appendChildren(node.children);
-            html.append("</").append(tagName).append("/>");
+            html.append("</").append(tagName).append(">");
         }
     }
 
@@ -64,12 +68,15 @@ public class HtmlRenderer implements VTreeVisitor {
     }
 
     private void appendProperty(String attributeName, String value) {
-        html.append(" ")
-            .append(attributeName)
-                .append("=")
-                .append(QUOTE)
-                .append(SafeHtmlUtils.htmlEscape(value))
-                .append(QUOTE);
+        //assert value != null : attributeName;
+        if(value != null) {
+            html.append(" ")
+                    .append(attributeName)
+                    .append("=")
+                    .append(QUOTE)
+                    .append(SafeHtmlUtils.htmlEscape(value))
+                    .append(QUOTE);
+        }
     }
 
     private void appendStyleProperty(PropMap styleMap) {
@@ -92,7 +99,7 @@ public class HtmlRenderer implements VTreeVisitor {
 
     @Override
     public void visitThunk(VThunk vThunk) {
-        vThunk.render(null).accept(this);
+        vThunk.force().accept(this);
     }
 
     @Override

@@ -104,8 +104,17 @@
     <module>store/testing</module>
     <module>server</module>
     <module>tools/migrator</module>
+    <module>io/importing</module>
     <module>ui/remote-store</module>
+    <module>ui/test-harness</module>
     <module>ui/barcode-scanner</module>
+    <module>ui/app</module>
+    <module>ui/style</module>
+    <module>ui/style-tools</module>
+    <module>ui/virtual-dom</module>
+    <module>i18n</module>
+    <module>core/model-overlays</module>
+    <module>tools/unit-testing</module>
   </modules>
 
   <dependencies>
