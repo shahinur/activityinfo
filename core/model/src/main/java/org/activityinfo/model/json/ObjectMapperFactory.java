@@ -7,6 +7,10 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 
+/**
+ * Provides an {@link com.fasterxml.jackson.databind.ObjectMapper} instance configured with
+ * the necessary custom serializers/deserializes for ActivityInfo's model objects.
+ */
 public class ObjectMapperFactory {
 
     public static ObjectMapper get() {

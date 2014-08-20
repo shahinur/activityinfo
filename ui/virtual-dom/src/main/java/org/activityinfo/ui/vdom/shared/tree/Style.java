@@ -16,8 +16,12 @@ public class Style {
         return setPixels("lineHeight", height);
     }
 
-    public Style border(String border) {
-        return set("border", border);
+    public Style border(int border) {
+        return setPixels("border", border);
+    }
+
+    public Style border(String shorthand) {
+        return set("border", shorthand);
     }
 
     public Style width(int width) {
@@ -29,16 +33,27 @@ public class Style {
     }
 
     private Style setPixels(String propName, int pixels) {
-        return set(propName, pixels + "px");
+        if(pixels == 0) {
+            return set(propName, Integer.toString(pixels));
+        } else {
+            return set(propName, pixels + "px");
+        }
     }
 
-    private Style set(String propName, String value) {
+    public Style fontSize(int size) { return setPixels("fontSize", size); }
+
+
+    public Style set(String propName, String value) {
         declarations.set(propName, value);
         return this;
     }
 
+    public Style setPosition(com.google.gwt.dom.client.Style.Position position) {
+        return set("position", position.getCssName());
+    }
+
     public PropMap asPropMap() {
-        return new PropMap().set("style", declarations);
+        return declarations;
     }
 
     /**
@@ -47,7 +62,6 @@ public class Style {
     public Style overflow(com.google.gwt.dom.client.Style.Overflow value) {
         return set("overflow", value.getCssName());
     }
-
 
 
 }

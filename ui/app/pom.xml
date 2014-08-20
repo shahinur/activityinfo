@@ -27,7 +27,31 @@
 
     <dependency>
       <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-importing</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-style</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-remote-store</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-testing-store</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-i18n</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -35,7 +59,46 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-barcode-scanner</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.allen-sauer.gwt.dnd</groupId>
+      <artifactId>gwt-dnd</artifactId>
+      <version>3.3.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>unit-testing-tools</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <version>${gwtVersion}</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+
+  </build>
 
 </project>

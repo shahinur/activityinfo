@@ -3,6 +3,7 @@ package org.activityinfo.ui.store.remote.client.table;
 import com.google.common.base.Function;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.http.client.Response;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.columns.ConstantColumnView;
@@ -14,15 +15,18 @@ import java.util.Map;
 /**
  * Creates a TableData and a set of ColumnViews that wrap a set of JavaScript arrays.
  */
-public class JsTableDataBuilder implements Function<String, TableData> {
+public class JsTableDataBuilder implements Function<Response, TableData> {
 
 
     @Override
-    public TableData apply(String input) {
+    public TableData apply(Response response) {
+        return build(response.getText());
+    }
 
+    public TableData build(String json) {
         Map<String, ColumnView> columnMap = new HashMap<>();
 
-        TableDataOverlay overlay = JsonUtils.safeEval(input);
+        TableDataOverlay overlay = JsonUtils.safeEval(json);
         JsArrayString columns = overlay.getColumns();
         for(int i=0;i!=columns.length();++i) {
             String columnId = columns.get(i);

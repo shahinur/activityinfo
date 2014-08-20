@@ -19,10 +19,43 @@
       <version>${gwtVersion}</version>
     </dependency>
     <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-promises</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-gwt</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
       <version>2.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>gwt-maven-plugin</artifactId>
+        <version>${gwtVersion}</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

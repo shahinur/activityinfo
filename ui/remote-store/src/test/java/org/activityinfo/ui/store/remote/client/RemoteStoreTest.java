@@ -8,6 +8,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
+import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
 import java.util.List;
@@ -74,9 +75,9 @@ public class RemoteStoreTest extends GWTTestCase {
         });
         delayTestFinish(5000);
     }
-    
+
     public void testQueryTable() {
-        
+
         String jsonResponse =
           ("{'rows':3," +
              "'columns':" +
@@ -86,7 +87,7 @@ public class RemoteStoreTest extends GWTTestCase {
                 .replace('\'', '"');
 
 
-        TableData tableData = new JsTableDataBuilder().apply(jsonResponse);
+        TableData tableData = new JsTableDataBuilder().build(jsonResponse);
         assertEquals(3, tableData.getNumRows());
         assertTrue(tableData.getColumns().containsKey("c1"));
         assertTrue(tableData.getColumns().containsKey("c2"));
