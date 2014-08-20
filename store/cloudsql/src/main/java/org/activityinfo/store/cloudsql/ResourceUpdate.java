@@ -185,9 +185,9 @@ public class ResourceUpdate {
         if(resource.has("classId")) {
             ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
             if(classId.equals(FormClass.CLASS_ID)) {
-                return resource.getString(FormClass.LABEL_FIELD_ID);
+                return resource.isString(FormClass.LABEL_FIELD_ID);
             } else if(classId.equals(FolderClass.CLASS_ID)) {
-                return resource.getString(FolderClass.LABEL_FIELD_ID.asString());
+                return resource.isString(FolderClass.LABEL_FIELD_ID.asString());
             }
         }
         return null;
