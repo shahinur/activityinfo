@@ -31,7 +31,8 @@ public class FormSubmissionResourceTest {
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
         BlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
-        resource = new FormSubmissionResource(factory, store, authenticationTokenService, blobFieldStorageService);
+        resource = new FormSubmissionResource(
+                factory, store, authenticationTokenService, blobFieldStorageService, null);
     }
 
     @Test

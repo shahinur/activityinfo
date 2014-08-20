@@ -18,6 +18,7 @@ import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.OdkFormSubmissionBackupService;
 import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,19 +56,29 @@ public class FormSubmissionResource {
     final private ResourceStore locator;
     final private AuthenticationTokenService authenticationTokenService;
     final private BlobFieldStorageService blobFieldStorageService;
+    final private OdkFormSubmissionBackupService odkFormSubmissionBackupService;
 
     @Inject
     public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator,
                                   AuthenticationTokenService authenticationTokenService,
-                                  BlobFieldStorageService blobFieldStorageService) {
+                                  BlobFieldStorageService blobFieldStorageService,
+                                  OdkFormSubmissionBackupService odkFormSubmissionBackupService) {
         this.factory = factory;
         this.locator = locator;
         this.authenticationTokenService = authenticationTokenService;
         this.blobFieldStorageService = blobFieldStorageService;
+        this.odkFormSubmissionBackupService = odkFormSubmissionBackupService;
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
     public Response submit(byte bytes[]) {
+        ResourceId resourceId = ResourceId.generateId();
+        try {
+            odkFormSubmissionBackupService.backup(resourceId, ByteSource.wrap(bytes));
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Form submission could not be backed up to GCS", e);
+        }
+
         ByteArrayDataSource byteArrayDataSource = new ByteArrayDataSource(bytes, MediaType.MULTIPART_FORM_DATA);
         MimeMultipart mimeMultipart;
         InputStream inputStream;
@@ -120,7 +131,7 @@ public class FormSubmissionResource {
 
                     Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
-                    FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
+                    FormInstance formInstance = new FormInstance(resourceId, formClass.getId());
 
                     for (FormField formField : formClass.getFields()) {
                         OdkFieldValueParser odkFieldValueParser = factory.fromFieldType(formField.getType());
