@@ -81,15 +81,6 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
         <version>${gwtVersion}</version>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <phase>prepare-package</phase>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
