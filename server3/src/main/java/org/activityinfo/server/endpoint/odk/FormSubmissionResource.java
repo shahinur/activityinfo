@@ -38,6 +38,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -131,7 +132,9 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    for (FieldValue fieldValue : formInstance.getFieldValueMap().values()) {
+                    Map<ResourceId, FieldValue> fieldValueMap = formInstance.getFieldValueMap();
+                    for (ResourceId resourceId : fieldValueMap.keySet()) {
+                        FieldValue fieldValue = fieldValueMap.get(resourceId);
                         if (fieldValue instanceof ImageValue) {
                             ImageRowValue imageRowValue = ((ImageValue) fieldValue).getValues().get(0);
                             if (imageRowValue.getFilename() == null) continue;
@@ -169,6 +172,8 @@ public class FormSubmissionResource {
                                 LOGGER.log(Level.SEVERE, "Could not write image to GCS", ioException);
                                 return Response.status(SERVICE_UNAVAILABLE).build();
                             }
+
+                            formInstance.set(resourceId, fieldValue);
                         }
                     }
 

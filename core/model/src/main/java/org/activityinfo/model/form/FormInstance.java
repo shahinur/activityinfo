@@ -44,6 +44,8 @@ import java.util.Set;
  * Wrapper for a {@code Record} or {@code Resource} that exposes its properties
  * as {@code FieldValue}s
  *
+ * TODO Either rewrite this class so that it has reference semantics, or make it clear that it does not!
+ *
  * @author yuriyz on 1/29/14.
  */
 public class FormInstance implements IsResource {
