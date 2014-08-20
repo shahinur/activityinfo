@@ -226,7 +226,7 @@ public class FormField extends FormElement {
 
     public static FormElement fromRecord(Record record) {
         FormField formField = new FormField(ResourceId.valueOf(record.getString("id")))
-            .setLabel(record.getString("label"))
+            .setLabel(Strings.nullToEmpty(record.isString("label")))
             .setType(typeFromRecord(record.getRecord("type")))
             .setVisible(record.getBoolean("visible", true))
             .setRequired(record.getBoolean("required", false));
@@ -254,5 +254,4 @@ public class FormField extends FormElement {
             return typeClass.createType();
         }
     }
-
 }

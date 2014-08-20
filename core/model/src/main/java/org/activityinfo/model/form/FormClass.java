@@ -1,6 +1,7 @@
 package org.activityinfo.model.form;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.*;
 
@@ -25,9 +26,9 @@ public class FormClass implements IsResource, FormElementContainer {
     /**
      * Instances of FormClass have one FormField: a label, which has its own
      * FormField id. It is defined at the application level to be a subproperty of
-     * {@code _label}
-     */
-    public static final ResourceId LABEL_FIELD_ID = ResourceId.valueOf("_class_label");
+                                     * {@code _label}
+                                     */
+    public static final String LABEL_FIELD_ID = "_class_label";
 
 
     @NotNull
@@ -165,6 +166,13 @@ public class FormClass implements IsResource, FormElementContainer {
         return this;
     }
 
+
+    public FormField addField(ResourceId fieldId) {
+        FormField field = new FormField(fieldId);
+        elements.add(field);
+        return field;
+    }
+
     public FormClass insertElement(int index, FormElement element) {
         elements.add(index, element);
         return this;
@@ -178,6 +186,7 @@ public class FormClass implements IsResource, FormElementContainer {
     public static FormClass fromResource(Resource resource) {
         FormClass formClass = new FormClass(resource.getId());
         formClass.setOwnerId(resource.getOwnerId());
+        formClass.setLabel(Strings.nullToEmpty(resource.isString(LABEL_FIELD_ID)));
         formClass.setLabel(resource.getString("label"));
         formClass.elements.addAll(fromRecords(resource.getRecordList("elements")));
         return formClass;
@@ -202,7 +211,8 @@ public class FormClass implements IsResource, FormElementContainer {
         Resource resource = Resources.createResource();
         resource.setId(id);
         resource.setOwnerId(ownerId);
-        resource.set("label", label);
+        resource.set("classId", CLASS_ID);
+        resource.set(LABEL_FIELD_ID, label);
         resource.set("elements", FormElement.asRecordList(elements));
         return resource;
     }
