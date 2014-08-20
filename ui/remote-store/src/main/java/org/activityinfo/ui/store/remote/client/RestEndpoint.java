@@ -70,7 +70,6 @@ public class RestEndpoint {
                     result.onFailure(exception);
                 }
             });
-            request.send();
         } catch (RequestException e) {
             result.reject(e);
         }
