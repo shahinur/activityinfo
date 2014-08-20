@@ -31,7 +31,6 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.database.hibernate.dao.FixGeometryTask;
 import org.activityinfo.server.database.hibernate.dao.HibernateDAOModule;
 import org.activityinfo.server.database.hibernate.dao.TransactionModule;
@@ -124,9 +123,9 @@ public class HibernateModule extends ServletModule {
             config.setNamingStrategy(new AINamingStrategy());
             EntityManagerFactory emf = config.buildEntityManagerFactory();
 
-            if (DeploymentEnvironment.isAppEngineDevelopment()) {
-                SchemaServlet.performMigration((HibernateEntityManager) emf.createEntityManager());
-            }
+//            if (DeploymentEnvironment.isAppEngineDevelopment()) {
+//                SchemaServlet.performMigration((HibernateEntityManager) emf.createEntityManager());
+//            }
 
             return emf;
         }
