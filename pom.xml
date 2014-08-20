@@ -115,6 +115,8 @@
     <module>i18n</module>
     <module>core/model-overlays</module>
     <module>tools/unit-testing</module>
+    <module>core/security</module>
+    <module>clients/java</module>
   </modules>
 
   <dependencies>
