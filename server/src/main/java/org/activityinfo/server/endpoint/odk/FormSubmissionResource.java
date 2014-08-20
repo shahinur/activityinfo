@@ -156,8 +156,8 @@ public class FormSubmissionResource {
                     }
 
                     Map<ResourceId, FieldValue> fieldValueMap = formInstance.getFieldValueMap();
-                    for (ResourceId resourceId : fieldValueMap.keySet()) {
-                        FieldValue fieldValue = fieldValueMap.get(resourceId);
+                    for (ResourceId fieldValueId : fieldValueMap.keySet()) {
+                        FieldValue fieldValue = fieldValueMap.get(fieldValueId);
                         if (fieldValue instanceof ImageValue) {
                             ImageRowValue imageRowValue = ((ImageValue) fieldValue).getValues().get(0);
                             if (imageRowValue.getFilename() == null) continue;
@@ -196,7 +196,7 @@ public class FormSubmissionResource {
                                 return Response.status(SERVICE_UNAVAILABLE).build();
                             }
 
-                            formInstance.set(resourceId, fieldValue);
+                            formInstance.set(fieldValueId, fieldValue);
                         }
                     }
 
