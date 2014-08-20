@@ -15,6 +15,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
+import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.ResourceStore;
@@ -127,7 +128,18 @@ public class FormSubmissionResource {
                                 OdkHelper.toRelativeFieldName(formField.getId().asString())).item(0);
 
                         if (element instanceof Element) {
-                            formInstance.set(formField.getId(), odkFieldValueParser.parse((Element) element));
+                            try {
+                                formInstance.set(formField.getId(), odkFieldValueParser.parse((Element) element));
+                            } catch (Exception e) {
+                                String text = OdkHelper.extractText(element);
+
+                                if (text == null) {
+                                    LOGGER.log(Level.SEVERE, "Malformed Element in form instance prevents parsing", e);
+                                } else if (!text.equals("")) {
+                                    LOGGER.log(Level.WARNING, "Can't parse form instance contents, storing as text", e);
+                                    formInstance.set(formField.getId(), TextValue.valueOf(text));
+                                }
+                            }
                         }
                     }
 
