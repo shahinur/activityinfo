@@ -2,6 +2,13 @@ package org.activityinfo.service.blob;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.Image;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
+import com.google.appengine.api.images.Transform;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions.Builder;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
@@ -21,7 +28,6 @@ import org.activityinfo.service.gcs.GcsAppIdentityServiceUrlSigner;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -84,7 +90,16 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
+        ImagesService imagesService = ImagesServiceFactory.getImagesService();
+        BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
-        throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+        BlobKey blobKey = blobstoreService.createGsBlobKey("/gs/" + bucketName + "/" + blobId.asString());
+
+        Image oldImage = ImagesServiceFactory.makeImageFromBlob(blobKey);
+        Transform resize = ImagesServiceFactory.makeResize(width, height);
+        Image newImage = imagesService.applyTransform(resize, oldImage);
+
+        byte[] imageData = newImage.getImageData();
+        return Response.ok(imageData).build();
     }
 }
