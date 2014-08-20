@@ -16,16 +16,16 @@
 
   <static-files>
     <include path="/robots.txt" expiration="1d"/>
-    <include path="/ActivityInfo/**.gif" expiration="365d"/>
-    <include path="/ActivityInfo/**.png" expiration="365d"/>
-    <include path="/ActivityInfo/**.js" expiration="365d"/>
-    <include path="/ActivityInfo/**.css" expiration="365d"/>
-    <include path="/ActivityInfo/**.swf" expiration="365d"/>
-    <include path="/ActivityInfo/**.cache.html" expiration="365d"/>
+    <include path="/AI/**.gif" expiration="365d"/>
+    <include path="/AI/**.png" expiration="365d"/>
+    <include path="/AI/**.js" expiration="365d"/>
+    <include path="/AI/**.css" expiration="365d"/>
+    <include path="/AI/**.cache.html" expiration="365d"/>
     <include path="/**.nocache.html" expiration="0s"/>
     <include path="/Login/**.css" expiration="365d"/>
     <include path="/Login/**.cache.html" expiration="365d"/>
     <include path="/static/**.png" expiration="365d"/>
+    <include path="/assets/**.cache.*" expiration="365d"/>
     <include path="/error.html"/>
   </static-files>
 
