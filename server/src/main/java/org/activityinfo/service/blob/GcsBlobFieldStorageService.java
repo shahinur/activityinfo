@@ -2,13 +2,8 @@ package org.activityinfo.service.blob;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
-import com.google.appengine.tools.cloudstorage.GcsFileOptions;
+import com.google.appengine.tools.cloudstorage.*;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions.Builder;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
-import com.google.appengine.tools.cloudstorage.GcsService;
-import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
-import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.google.common.io.ByteSource;
 import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
@@ -27,8 +22,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.Channels;
+import java.util.logging.Logger;
 
 public class GcsBlobFieldStorageService implements BlobFieldStorageService {
+
+    private static final Logger LOGGER = Logger.getLogger(GcsBlobFieldStorageService.class.getName());
 
     private final String bucketName;
     private AppIdentityService appIdentityService;
@@ -38,6 +36,8 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         this.bucketName = config.getBlobServiceBucketName();
         appIdentityService = DeploymentEnvironment.isAppEngineDevelopment() ?
                 new DevAppIdentityService(config) : AppIdentityServiceFactory.getAppIdentityService();
+
+        LOGGER.info("Service account: " + appIdentityService.getServiceAccountName());
     }
 
     @Override
