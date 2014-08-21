@@ -4,6 +4,9 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.service.DeploymentConfiguration;
+import org.apache.tomcat.jdbc.pool.DataSource;
+import org.apache.tomcat.jdbc.pool.PoolProperties;
+import org.joda.time.Duration;
 
 import javax.inject.Provider;
 import java.sql.Connection;
@@ -31,12 +34,7 @@ public class ConnectionProvider implements Provider<Connection> {
     private final String password;
     private final String driverClassName;
 
-    /**
-     * Avoid loading driver class eagerly to reduce startup time of new instances.
-     */
-    private boolean driverLoaded = false;
-
-    private final ThreadLocal<Connection> connectionForRequest = new ThreadLocal<>();
+    private DataSource connectionPool = null;
 
 
     @Inject
@@ -54,24 +52,18 @@ public class ConnectionProvider implements Provider<Connection> {
 
     @Override
     public Connection get() {
-
-        Connection connection = connectionForRequest.get();
-
         try {
-            if(connection == null || connection.isClosed()) {
-                connection = openConnection();
-                connectionForRequest.set(connection);
-            }
+            ensureConnectionPoolIsCreated();
+
+            return connectionPool.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return new LeasedConnection(connection);
     }
 
-    private Connection openConnection() {
+    private Connection openConnection() throws SQLException {
 
-        ensureJdbcDriverIsLoaded();
+        ensureConnectionPoolIsCreated();
 
         Connection connection = null;
         try {
@@ -94,40 +86,51 @@ public class ConnectionProvider implements Provider<Connection> {
     }
 
 
-    private void ensureJdbcDriverIsLoaded() {
-        if(!driverLoaded) {
-            // ensure the JDBC driver is loaded
-            try {
-                Class.forName(driverClassName);
-                driverLoaded = true;
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to load JDBC Driver Class '" + driverClassName + "'");
-            }
+    private void ensureConnectionPoolIsCreated() throws SQLException {
+        if(connectionPool == null) {
+            initConnectionPool();
         }
     }
 
-    /**
-     *
-     * Cleans up any connection that was opened during the request.
-     *
-     * @param swallowException true if this method is called from an exception handler and subsequent
-     *                         exceptions should only be logged and not thrown to avoid loosing track
-     *                         of the original exception
-     */
-    public void cleanupAfterRequestFinishes(boolean swallowException) {
+    private synchronized void initConnectionPool() {
+        if(connectionPool == null) {
+            PoolProperties p = new PoolProperties();
+            p.setUrl(connectionUrl);
+            p.setDriverClassName(driverClassName);
+            p.setUsername(username);
+            p.setPassword(password);
 
-        Connection connection = connectionForRequest.get();
-        connectionForRequest.remove();
+            p.setJmxEnabled(false);
 
-        if(connection != null) {
+            p.setTestOnBorrow(true);
+            p.setTestOnReturn(false);
+            p.setValidationQuery("SELECT 1");
+            p.setValidationInterval(Duration.standardMinutes(5).getMillis());
 
-            LOGGER.info("Closing MySQL connection for request.");
+            // Keep the number of active connections low as there
+            // may be a large number of other application servers running
+            p.setMaxActive(4);
+            p.setInitialSize(0);
+            p.setMinIdle(0);
 
-            Connections.close(connection, swallowException);
+            // Don't wait longer than 5 seconds for a connection to be available
+            p.setMaxWait(5000);
 
-        } else {
-            LOGGER.info("No open MySQL connection to close.");
+            // CloudSQL connections time out after 15 minutes
+            p.setMaxAge(Duration.standardMinutes(10).getMillis());
 
+            // Turn off the async queue which will not run on AppEngine
+            p.setTestWhileIdle(false);
+            p.setFairQueue(false);
+            p.setTimeBetweenEvictionRunsMillis(-1);
+
+            // Turn auto-commit off
+            p.setDefaultAutoCommit(false);
+
+            p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;" +
+                                  "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
+            connectionPool = new DataSource();
+            connectionPool.setPoolProperties(p);
         }
     }
 }
