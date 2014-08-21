@@ -33,8 +33,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.Channels;
+import java.util.logging.Logger;
 
 public class GcsBlobFieldStorageService implements BlobFieldStorageService {
+
+    private static final Logger LOGGER = Logger.getLogger(GcsBlobFieldStorageService.class.getName());
 
     private final String bucketName;
     private AppIdentityService appIdentityService;
@@ -44,6 +47,8 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         this.bucketName = config.getBlobServiceBucketName();
         appIdentityService = DeploymentEnvironment.isAppEngineDevelopment() ?
                 new DevAppIdentityService(config) : AppIdentityServiceFactory.getAppIdentityService();
+
+        LOGGER.info("Service account: " + appIdentityService.getServiceAccountName());
     }
 
     @Override

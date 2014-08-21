@@ -89,6 +89,11 @@ public class ImageUploadRow extends Composite {
                 download();
             }
         });
+
+        if (value.getBlobId() != null) {
+            imageContainer.setVisible(false);
+            downloadButton.setVisible(true);
+        }
     }
 
     public void setReadOnly(boolean readOnly) {
