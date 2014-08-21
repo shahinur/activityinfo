@@ -202,6 +202,7 @@ public class FormField extends FormElement {
         Record record = new Record();
         record.set("id", id.asString());
         record.set("code", code);
+        record.set("description", description);
         record.set("label", label);
         record.set("type", toRecord(type));
         record.set("required", required);
@@ -226,6 +227,7 @@ public class FormField extends FormElement {
 
     public static FormElement fromRecord(Record record) {
         FormField formField = new FormField(ResourceId.valueOf(record.getString("id")))
+            .setDescription(record.isString("description"))
             .setLabel(Strings.nullToEmpty(record.isString("label")))
             .setType(typeFromRecord(record.getRecord("type")))
             .setVisible(record.getBoolean("visible", true))
