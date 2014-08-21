@@ -2,11 +2,14 @@ package org.activityinfo.client;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.base.Preconditions;
+import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
+import com.sun.jersey.multipart.FormDataMultiPart;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.service.store.UpdateResult;
 
@@ -16,6 +19,7 @@ import java.net.URI;
 public class ActivityInfoClient {
 
     private final Client client;
+    private final URI rootUri;
     private WebResource store;
 
     public ActivityInfoClient(URI rootUri, String accountEmail, String password) {
@@ -23,10 +27,12 @@ public class ActivityInfoClient {
                 JacksonJsonProvider.class,
                 ObjectMapperProvider.class);
 
+        this.rootUri = rootUri;
+
         client = Client.create(clientConfig);
         client.addFilter(new HTTPBasicAuthFilter(accountEmail, password));
 
-        store = client.resource(rootUri).path("service").path("store");
+        store = client.resource(this.rootUri).path("service").path("store");
     }
 
 
@@ -52,5 +58,24 @@ public class ActivityInfoClient {
                 .entity(formClass, MediaType.APPLICATION_JSON_TYPE)
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .put(UpdateResult.class);
+    }
+
+    public ClientResponse submitXForm(XFormInstance instance) {
+        WebResource submission = client.resource(rootUri).path("submission");
+        return submission
+                .type(MediaType.MULTIPART_FORM_DATA_TYPE)
+                .entity(instance.build())
+                .post(ClientResponse.class);
+    }
+
+    public java.util.concurrent.Future<ClientResponse> submitXFormAsync(XFormInstance instance) {
+        FormDataMultiPart multipartBody = instance.build();
+
+        AsyncWebResource.Builder resource = client.asyncResource(rootUri)
+                .path("submission")
+                .type(MediaType.MULTIPART_FORM_DATA_TYPE)
+                .entity(multipartBody);
+
+        return resource.post(ClientResponse.class);
     }
 }
