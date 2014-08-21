@@ -68,7 +68,9 @@ public class StartupListener extends GuiceServletContextListener {
     protected Injector getInjector() {
 
         List<Module> modules = Lists.newArrayList();
-        modules.addAll(Arrays.asList(new HibernateModule(),
+        modules.addAll(Arrays.asList(
+                new MySqlStoreModule(),
+                new HibernateModule(),
                 new ConfigModule(),
                 new LoggingModule(),
                 new TemplateModule(),
@@ -82,7 +84,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new RestApiModule(),
                 new OdkModule(),
                 new ServiceModule(),
-                new MySqlStoreModule(),
                 new GcsBlobFieldStorageServiceModule(),
                 new ServiceModule()));
 
