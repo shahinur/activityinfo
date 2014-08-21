@@ -23,7 +23,7 @@ class BundleBuilder implements ResourceWriter {
      * @param outputDir the classes output directory
      */
     public BundleBuilder(File outputDir) {
-        this.outputDir = new File(outputDir, "org.activityinfo.ui.style".replaceAll("\\.", File.separator));
+        this.outputDir = new File(outputDir, "org.activityinfo.ui.style".replaceAll("\\.", "\\" + File.separatorChar));
         ensureOutputDirExists();
     }
 
