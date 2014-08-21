@@ -30,7 +30,7 @@ public class RandomText {
         }
     }
 
-    public String getRandomLabel() {
+    public String sampleLabel() {
         int numWords = 1 + (int)wordCountDistribution.sample();
         StringBuilder label = new StringBuilder();
         for(int i=0;i<numWords;++i) {
