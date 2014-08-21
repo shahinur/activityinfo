@@ -63,7 +63,7 @@ public class DevAppIdentityService implements AppIdentityService {
                 }
                 privateKey = (PrivateKey) keystore.getKey("privatekey", password.toCharArray());
             } catch(Exception e) {
-                LOGGER.log(Level.SEVERE, "Failed to load private key: " + e.getMessage(), e);
+                LOGGER.log(Level.WARNING, "Failed to load private key: " + e.getMessage());
             }
         }
     }
