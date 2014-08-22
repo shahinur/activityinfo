@@ -1,4 +1,4 @@
-package org.activityinfo.client;
+package org.activityinfo.client.xform;
 
 
 import com.google.common.collect.Lists;
@@ -25,14 +25,14 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
 
-public class XFormInstance {
+public class XFormInstanceBuilder {
 
     private Document doc;
     private final Element data;
 
     private List<BodyPart> files = Lists.newArrayList();
 
-    public XFormInstance(String accessToken)  {
+    public XFormInstanceBuilder(String accessToken)  {
 
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = null;
