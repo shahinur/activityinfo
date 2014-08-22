@@ -28,10 +28,23 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.*;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.shared.util.MimeTypeUtil;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.resource.Resource;
@@ -184,7 +197,17 @@ public class ImageUploadRow extends Composite {
     }
 
     private void download() {
-        // todo
+        StringBuilder stringBuilder = new StringBuilder("/service/blob/");
+        stringBuilder.append("resource_id");                    // TODO
+        stringBuilder.append("/");
+        stringBuilder.append("field_name");                     // TODO
+        stringBuilder.append("/");
+        stringBuilder.append(value.getBlobId());
+        stringBuilder.append("/thumbnail?width=");
+        stringBuilder.append(value.getWidth());
+        stringBuilder.append("&height=");
+        stringBuilder.append(value.getHeight());
+        Window.open(stringBuilder.toString(), "_blank", null);
     }
 
     @Override
