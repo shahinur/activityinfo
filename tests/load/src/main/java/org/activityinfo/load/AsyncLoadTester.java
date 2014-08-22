@@ -3,51 +3,34 @@ package org.activityinfo.load;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Supplier;
 import com.sun.jersey.api.client.ClientResponse;
-import org.joda.time.Duration;
 
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 public class AsyncLoadTester {
+
     private final Supplier<Future<ClientResponse>> requester;
-    private Duration duration;
-    private GrowthFunction growthFunction = null;
+    private final LoadProfile loadProfile;
 
-    public AsyncLoadTester(Supplier<Future<ClientResponse>> requester) {
+    public AsyncLoadTester(Supplier<Future<ClientResponse>> requester, LoadProfile loadProfile) {
         this.requester = requester;
+        this.loadProfile = loadProfile;
     }
 
-    public Supplier<Future<ClientResponse>> getRequester() {
-        return requester;
-    }
-
-    public Duration getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
-
-    public GrowthFunction getGrowthFunction() {
-        return growthFunction;
-    }
-
-    public void setGrowthFunction(GrowthFunction growthFunction) {
-        this.growthFunction = growthFunction;
-    }
-
+    /**
+     * Starts the test run
+     * @return statistics on the requests
+     *
+     * @throws InterruptedException
+     */
     public RequestStats run() throws InterruptedException {
+
+        Stopwatch stopwatch = Stopwatch.createStarted();
         RequestTracker tracker = new RequestTracker();
 
-        // During the test period, make sure we have at least
-        // numConcurrentRequests active at any time
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        while(stopwatch.elapsed(TimeUnit.MILLISECONDS) < duration.getMillis()) {
+        while(!loadProfile.isFinished(stopwatch, tracker.totalRequestCount())) {
             int numPending = tracker.countPending();
-            int targetNum = growthFunction.getValue();
-            while(numPending < targetNum) {
-              //  System.out.println("Submitting new request...");
+            int maxConcurrent = loadProfile.getMaxConcurrentRequests(stopwatch);
+            while(numPending < maxConcurrent) {
                 tracker.add(requester);
                 numPending++;
             }
