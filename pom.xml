@@ -117,6 +117,7 @@
     <module>tools/unit-testing</module>
     <module>core/security</module>
     <module>clients/java</module>
+    <module>tests/api</module>
   </modules>
 
   <dependencies>

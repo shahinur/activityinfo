@@ -13,7 +13,5 @@ public class RequestTrackerTest {
         assertThat(RequestTracker.median(new double[] { 1, 3 }), equalTo(2d));
         assertThat(RequestTracker.median(new double[] { 1, 4, 4, 4, 3 }), equalTo(4d));
         assertThat(RequestTracker.median(new double[] { 5 }), equalTo(5d));
-
-
     }
 }

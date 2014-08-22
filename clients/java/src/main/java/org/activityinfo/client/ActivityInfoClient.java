@@ -15,6 +15,7 @@ import org.activityinfo.service.store.UpdateResult;
 
 import javax.ws.rs.core.MediaType;
 import java.net.URI;
+import java.util.concurrent.Future;
 
 public class ActivityInfoClient {
 
@@ -68,7 +69,13 @@ public class ActivityInfoClient {
                 .post(ClientResponse.class);
     }
 
-    public java.util.concurrent.Future<ClientResponse> submitXFormAsync(XFormInstance instance) {
+    /**
+     * Submits an XForm Instance asynchronously.
+     *
+     * @param instance a XForm Instance
+     * @return
+     */
+    public Future<ClientResponse> submitXFormAsync(XFormInstance instance) {
         FormDataMultiPart multipartBody = instance.build();
 
         AsyncWebResource.Builder resource = client.asyncResource(rootUri)

@@ -75,7 +75,7 @@ public class RequestTracker {
 
     public void printSummary() {
         System.out.println(String.format(
-            "Pending: %3d   Completed: %3d  Successful: %3d%%  Median Latency: %7.0f ms",
+            "Pending: %3d   Completed: %3d  Successful: %3d%%  Median Latency: %s",
                 pending.size(),
                 completed.size(),
                 pctSuccessful(),
@@ -83,26 +83,29 @@ public class RequestTracker {
     }
 
 
-    private double medianLatency() {
-        if(completed.isEmpty()) {
-            return 0;
-        } else {
+    private String medianLatency() {
 
-            // Calculate the medium latency over a rolling window of 5 seconds
+        // Calculate the medium latency over a rolling window of 5 seconds
 
-            DateTime periodBegin = new DateTime().minusSeconds(5);
-            double latency[] = new double[completed.size()];
+        DateTime windowStart = new DateTime().minusSeconds(5);
 
-            int i;
-            int j = completed.size() - 1;
-            for (i = 0; i != latency.length; ++i) {
-                Request request = completed.get(j--);
-                if(request.getStartTime().isBefore(periodBegin)) {
-                    break;
-                }
-                latency[i] = request.getLatency();
+        double latency[] = new double[completed.size()];
+
+        int i;
+        int j = completed.size() - 1;
+
+        for (i = 0; i != latency.length; ++i) {
+            Request request = completed.get(j--);
+            if(request.getStartTime().isBefore(windowStart)) {
+                break;
             }
-            return median(Arrays.copyOf(latency, i));
+            latency[i] = request.getLatency();
+        }
+
+        if(i == 0) {
+            return "--";
+        } else {
+            return String.format("%7.0f ms", median(Arrays.copyOf(latency, i)));
         }
     }
 
@@ -135,4 +138,13 @@ public class RequestTracker {
     public RequestStats getRequestStats() {
         return new RequestStats(start, completed);
     }
+
+    /**
+     *
+     * @return the number of pending and completed requests so far.
+     */
+    public long totalRequestCount() {
+        return pending.size() + completed.size();
+    }
+
 }
