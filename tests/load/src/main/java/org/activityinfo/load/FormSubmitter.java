@@ -5,7 +5,7 @@ import com.google.common.io.ByteSource;
 import com.google.common.io.Resources;
 import com.sun.jersey.api.client.ClientResponse;
 import org.activityinfo.client.ActivityInfoClient;
-import org.activityinfo.client.XFormInstance;
+import org.activityinfo.client.xform.XFormInstanceBuilder;
 import org.activityinfo.model.resource.ResourceId;
 
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class FormSubmitter implements Supplier<Future<ClientResponse>> {
 
     @Override
     public Future<ClientResponse> get() {
-        XFormInstance instance = new XFormInstance("jGxWlW/l");
+        XFormInstanceBuilder instance = new XFormInstanceBuilder("jGxWlW/l");
         instance.addFieldValue(ResourceId.valueOf("chz3y5vxl1"), text.sampleLabel());
         instance.addFieldValue(ResourceId.valueOf("chz3y64oj2"), text.sampleLabel());
         instance.addFieldValue(ResourceId.valueOf("chz3y6cq63"), "42");

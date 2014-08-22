@@ -10,17 +10,23 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.multipart.FormDataMultiPart;
+import org.activityinfo.client.xform.XFormInstanceBuilder;
+import org.activityinfo.client.xform.XFormItem;
+import org.activityinfo.client.xform.XFormList;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.service.store.UpdateResult;
+import org.w3c.dom.Document;
 
 import javax.ws.rs.core.MediaType;
 import java.net.URI;
+import java.util.List;
 import java.util.concurrent.Future;
 
 public class ActivityInfoClient {
 
     private final Client client;
     private final URI rootUri;
+    private final WebResource root;
     private WebResource store;
 
     public ActivityInfoClient(URI rootUri, String accountEmail, String password) {
@@ -33,7 +39,8 @@ public class ActivityInfoClient {
         client = Client.create(clientConfig);
         client.addFilter(new HTTPBasicAuthFilter(accountEmail, password));
 
-        store = client.resource(this.rootUri).path("service").path("store");
+        root = client.resource(this.rootUri);
+        store = root.path("service").path("store");
     }
 
 
@@ -61,12 +68,25 @@ public class ActivityInfoClient {
                 .put(UpdateResult.class);
     }
 
-    public ClientResponse submitXForm(XFormInstance instance) {
+    public ClientResponse submitXForm(XFormInstanceBuilder instance) {
         WebResource submission = client.resource(rootUri).path("submission");
         return submission
                 .type(MediaType.MULTIPART_FORM_DATA_TYPE)
                 .entity(instance.build())
                 .post(ClientResponse.class);
+    }
+
+    public List<XFormItem> getXForms() {
+        return root.path("formList")
+                .type(MediaType.APPLICATION_XML_TYPE)
+                .get(XFormList.class)
+                .getForms();
+    }
+
+    public Document getXForm(XFormItem formItem) {
+        return client.resource(formItem.getUrl())
+                .type(MediaType.APPLICATION_XML_TYPE)
+                .get(Document.class);
     }
 
     /**
@@ -75,7 +95,7 @@ public class ActivityInfoClient {
      * @param instance a XForm Instance
      * @return
      */
-    public Future<ClientResponse> submitXFormAsync(XFormInstance instance) {
+    public Future<ClientResponse> submitXFormAsync(XFormInstanceBuilder instance) {
         FormDataMultiPart multipartBody = instance.build();
 
         AsyncWebResource.Builder resource = client.asyncResource(rootUri)
