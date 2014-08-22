@@ -11,5 +11,12 @@
 
   <artifactId>activityinfo-api-tests</artifactId>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-java-client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
 
 </project>
