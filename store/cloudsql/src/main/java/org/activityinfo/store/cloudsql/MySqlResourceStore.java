@@ -103,6 +103,26 @@ public class MySqlResourceStore implements ResourceStore {
     }
 
     @Override
+    public UpdateResult create(AuthenticatedUser user, Resource resource) {
+        try(StoreConnection connection = open()) {
+            try(StoreWriter writer = new StoreWriter(connection, cache)) {
+                if (get(user, Collections.singleton(resource.getId())).isEmpty()) {
+                    return writer
+                            .put(resource)
+                            .byUser(user.getUserResourceId())
+                            .execute();
+                } else {
+                    return UpdateResult.rejected();
+                }
+            } catch (GlobalLockTimeoutException e) {
+                throw new UnsupportedOperationException();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public UpdateResult put(AuthenticatedUser user, ResourceId id, Resource resource) {
 
         Preconditions.checkArgument(id.equals(resource.getId()), "id == resource.getId()");

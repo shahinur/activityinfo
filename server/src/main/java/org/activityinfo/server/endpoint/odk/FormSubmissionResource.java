@@ -108,6 +108,7 @@ public class FormSubmissionResource {
                 "data".equals(node.getParentNode().getParentNode().getNodeName()) &&
                 "#document".equals(node.getParentNode().getParentNode().getParentNode().getNodeName()) &&
                 node.getParentNode().getParentNode().getParentNode().getParentNode() == null) {
+            String instanceId = OdkHelper.extractText(node);
             Node dataNode = node.getParentNode().getParentNode();
 
             if (dataNode.hasAttributes() && dataNode.getAttributes().getLength() == 1) {
@@ -132,7 +133,7 @@ public class FormSubmissionResource {
 
                     Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
-                    FormInstance formInstance = new FormInstance(resourceId, formClass.getId());
+                    FormInstance formInstance = new FormInstance(ResourceId.valueOf(instanceId), formClass.getId());
 
                     for (FormField formField : formClass.getFields()) {
                         OdkFieldValueParser odkFieldValueParser = factory.fromFieldType(formField.getType());
@@ -200,7 +201,7 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    locator.put(user, formInstance.asResource());
+                    locator.create(user, formInstance.asResource().set("backupBlobId", resourceId.asString()));
                     return Response.status(CREATED).build();
                 }
             }
