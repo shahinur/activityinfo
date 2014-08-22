@@ -21,6 +21,7 @@ package org.activityinfo.ui.component.form.field.image;
  * #L%
  */
 
+import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -36,6 +37,8 @@ import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.component.form.field.FormFieldWidget;
+
+import java.util.List;
 
 /**
  * @author yuriyz on 8/7/14.
@@ -70,9 +73,9 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
         imageUploadRow.removeButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {
-                setButtonsState();
                 value.getValues().remove(imageUploadRow.getValue());
                 rootPanel.remove(imageUploadRow);
+                setButtonsState();
             }
         });
 
@@ -86,11 +89,19 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                if (rootPanel.getWidgetCount() > 0 && rootPanel.getWidget(0) instanceof ImageUploadRow) {
-                    // disable button if it's first row, otherwise user may be trapped in widget without any rows
+                List<ImageUploadRow> rows = Lists.newArrayListWithCapacity(rootPanel.getWidgetCount());
+                for (int i = 0; i < rootPanel.getWidgetCount(); i++) {
+                    Widget widget = rootPanel.getWidget(i);
+                    if (widget instanceof ImageUploadRow) rows.add((ImageUploadRow) widget);
+                }
 
-                    ImageUploadRow firstUploadRow = (ImageUploadRow) rootPanel.getWidget(0);
-                    firstUploadRow.removeButton.setEnabled(false);
+                // Disable the button if it's the only row, so the user will not be trapped in a widget without any rows
+                if (rows.size() == 1) {
+                    rows.get(0).removeButton.setEnabled(false);
+                } else if (rows.size() > 1) {
+                    for (ImageUploadRow row : rows) {
+                        row.removeButton.setEnabled(true);
+                    }
                 }
             }
         });
