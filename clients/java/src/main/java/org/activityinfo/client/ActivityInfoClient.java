@@ -48,7 +48,7 @@ public class ActivityInfoClient {
      * Creates or updates a FormClass resource
      *
      * <p>When creating a new FormClass, you must generate and assign
-     * its id before submission using {@link org.activityinfo.model.resource.ResourceId#generateId()}
+     * its id before submission using {@link org.activityinfo.model.resource.Resources#generateId()}
      *
      * <p>You must also provide the resource's owner by calling
      * {@link org.activityinfo.model.form.FormClass#setOwnerId(org.activityinfo.model.resource.ResourceId)}.

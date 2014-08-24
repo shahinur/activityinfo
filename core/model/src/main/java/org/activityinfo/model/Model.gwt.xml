@@ -42,4 +42,6 @@
   <source path="legacy"/>
   <source path="hierarchy"/>
 
+  <super-source path="translatable" />
+
 </module>

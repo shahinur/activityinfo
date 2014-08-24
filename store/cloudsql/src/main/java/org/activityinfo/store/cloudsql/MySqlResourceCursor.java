@@ -1,7 +1,8 @@
 package org.activityinfo.store.cloudsql;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.ResourceCursor;
 
 import java.sql.ResultSet;
@@ -10,6 +11,8 @@ import java.sql.SQLException;
 public class MySqlResourceCursor implements ResourceCursor {
 
     private final ResultSet resultSet;
+
+    private final ObjectMapper objectMapper = ObjectMapperFactory.get();
 
     private Resource next;
 
@@ -21,7 +24,7 @@ public class MySqlResourceCursor implements ResourceCursor {
     private void fetchNext() {
         try {
             if (resultSet.next()) {
-                next = Resources.fromJson(resultSet.getString(2));
+                next = objectMapper.readValue(resultSet.getString(2), Resource.class);
                 next.setVersion(resultSet.getLong(1));
             } else {
                 next = null;

@@ -1,7 +1,7 @@
 package org.activityinfo.ui.component.formdesigner.palette;
 
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldTypeClass;
 
 /**
@@ -23,7 +23,7 @@ public class TypeClassTemplate implements FieldTemplate {
 
     @Override
     public FormField createField() {
-        FormField formField = new FormField(ResourceId.generateId());
+        FormField formField = new FormField(Resources.generateId());
         formField.setType(typeClass.createType());
         formField.setLabel(typeClass.getLabel());
         return formField;

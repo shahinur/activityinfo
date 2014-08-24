@@ -112,8 +112,8 @@
     <module>ui/style</module>
     <module>ui/style-tools</module>
     <module>ui/virtual-dom</module>
+    <module>ui/flux</module>
     <module>i18n</module>
-    <module>core/model-overlays</module>
     <module>tools/unit-testing</module>
     <module>core/security</module>
     <module>clients/java</module>

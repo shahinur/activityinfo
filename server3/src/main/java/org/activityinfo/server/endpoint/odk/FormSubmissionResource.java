@@ -11,7 +11,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
@@ -27,11 +27,7 @@ import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
@@ -42,9 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.google.appengine.api.images.ImagesServiceFactory.makeImage;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.CREATED;
-import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
+import static javax.ws.rs.core.Response.Status.*;
 
 @Path("/submission")
 public class FormSubmissionResource {
@@ -119,7 +113,7 @@ public class FormSubmissionResource {
 
                     Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
-                    FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
+                    FormInstance formInstance = new FormInstance(Resources.generateId(), formClass.getId());
 
                     for (FormField formField : formClass.getFields()) {
                         OdkFieldValueParser odkFieldValueParser = factory.fromFieldType(formField.getType());

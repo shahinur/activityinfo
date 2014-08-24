@@ -6,6 +6,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -35,101 +36,101 @@ public class TableServiceCalcTest {
         store = new TestResourceStore().load("/dbunit/sites-simple1.json");
         tableService = new TableBuilder(store);
 
-        formClass = new FormClass(ResourceId.generateId());
+        formClass = new FormClass(Resources.generateId());
         formClass.setLabel("Calculation Test");
         formClass.setOwnerId(CuidAdapter.resourceId(CuidAdapter.USER_DOMAIN, 1));
 
-        FormField expField = new FormField(ResourceId.generateId());
+        FormField expField = new FormField(Resources.generateId());
         expField.setType(new QuantityType().setUnits("currency"));
         expField.setLabel("Expenditure");
         expField.setCode("EXP");
         formClass.addElement(expField);
 
-        FormField waterAllocField = new FormField(ResourceId.generateId());
+        FormField waterAllocField = new FormField(Resources.generateId());
         waterAllocField.setType(new QuantityType().setUnits("%"));
         waterAllocField.setLabel("Allocation watter programme");
         waterAllocField.setCode("WATER_ALLOC");
         formClass.addElement(waterAllocField);
 
-        FormField pctInitialField = new FormField(ResourceId.generateId());
+        FormField pctInitialField = new FormField(Resources.generateId());
         pctInitialField.setType(new QuantityType().setUnits("%"));
         pctInitialField.setLabel("Initial Cost - Not specified");
         pctInitialField.setCode("PCT_INITIAL");
         formClass.addElement(pctInitialField);
 
-        FormField pctInitialHardField = new FormField(ResourceId.generateId());
+        FormField pctInitialHardField = new FormField(Resources.generateId());
         pctInitialHardField.setType(new QuantityType().setUnits("%"));
         pctInitialHardField.setLabel("Initial Cost - Cap Hard");
         pctInitialHardField.setCode("PCT_INITIAL_HARD");
         formClass.addElement(pctInitialHardField);
 
-        FormField pctInitialSoftField = new FormField(ResourceId.generateId());
+        FormField pctInitialSoftField = new FormField(Resources.generateId());
         pctInitialSoftField.setType(new QuantityType().setUnits("%"));
         pctInitialSoftField.setLabel("Initial Cost - Cap Soft");
         pctInitialSoftField.setCode("PCT_INITIAL_SOFT");
         formClass.addElement(pctInitialSoftField);
 
-        FormField pctExtensionField = new FormField(ResourceId.generateId());
+        FormField pctExtensionField = new FormField(Resources.generateId());
         pctExtensionField.setType(new QuantityType().setUnits("%"));
         pctExtensionField.setLabel("Extension Cost - Not specified");
         pctExtensionField.setCode("PCT_EXTENSION");
         formClass.addElement(pctExtensionField);
 
-        FormField pctExtensionHardField = new FormField(ResourceId.generateId());
+        FormField pctExtensionHardField = new FormField(Resources.generateId());
         pctExtensionHardField.setType(new QuantityType().setUnits("%"));
         pctExtensionHardField.setLabel("Extension Cost - Hard");
         pctExtensionHardField.setCode("PCT_EXTENSION_HARD");
         formClass.addElement(pctExtensionHardField);
         
-        FormField pctExtensionSoftField = new FormField(ResourceId.generateId());
+        FormField pctExtensionSoftField = new FormField(Resources.generateId());
         pctExtensionSoftField.setType(new QuantityType().setUnits("%"));
         pctExtensionSoftField.setLabel("Extension Cost - Soft");
         pctExtensionSoftField.setCode("PCT_EXTENSION_SOFT");
         formClass.addElement(pctExtensionSoftField);
         
-        FormField pctOpField = new FormField(ResourceId.generateId());
+        FormField pctOpField = new FormField(Resources.generateId());
         pctOpField.setType(new QuantityType().setUnits("%"));
         pctOpField.setLabel("Operational Cost");
         pctOpField.setCode("PCT_OP");
         formClass.addElement(pctOpField);
 
-        FormField pctMaintenanceField = new FormField(ResourceId.generateId());
+        FormField pctMaintenanceField = new FormField(Resources.generateId());
         pctMaintenanceField.setType(new QuantityType().setUnits("%"));
         pctMaintenanceField.setLabel("Maintenance Cost");
         pctMaintenanceField.setCode("PCT_MAINTENANCE");
         formClass.addElement(pctMaintenanceField);
         
-        FormField pctOpMaintField = new FormField(ResourceId.generateId());
+        FormField pctOpMaintField = new FormField(Resources.generateId());
         pctOpMaintField.setType(new QuantityType().setUnits("%"));
         pctOpMaintField.setLabel("Operational & Maintenance Cost");
         pctOpMaintField.setCode("PCT_OP_MAINT");
         formClass.addElement(pctOpMaintField);
 
-        FormField waterExpField = new FormField(ResourceId.generateId());
+        FormField waterExpField = new FormField(Resources.generateId());
         waterExpField.setLabel("Expenditure on water programme");
         waterExpField.setCode("WATER_EXP");
         waterExpField.setType(new CalculatedFieldType("{EXP}*({WATER_ALLOC}/100)"));
         formClass.addElement(waterExpField);
         
-        FormField initialField = new FormField(ResourceId.generateId());
+        FormField initialField = new FormField(Resources.generateId());
         initialField.setLabel("Value of Initial Cost - Not specified");
         initialField.setCode("INITIAL");
         initialField.setType(new CalculatedFieldType("{WATER_EXP}*({PCT_INITIAL}/100)"));
         formClass.addElement(initialField);
 
-        FormField initialHardField = new FormField(ResourceId.generateId());
+        FormField initialHardField = new FormField(Resources.generateId());
         initialHardField.setLabel("Value of Initial Cost - Cap Hard");
         initialHardField.setCode("INITIAL_HARD");
         initialHardField.setType(new CalculatedFieldType("{WATER_EXP}*({PCT_INITIAL_HARD}/100)"));
         formClass.addElement(initialHardField);
 
-        FormField initialSoftField = new FormField(ResourceId.generateId());
+        FormField initialSoftField = new FormField(Resources.generateId());
         initialSoftField.setLabel("Value of Initial Cost – Cap Soft");
         initialSoftField.setCode("INITIAL_SOFT");
         initialSoftField.setType(new CalculatedFieldType("{WATER_EXP}*({PCT_INITIAL_SOFT}/100)"));
         formClass.addElement(initialSoftField);
         
-        FormField initialTotalField = new FormField(ResourceId.generateId());
+        FormField initialTotalField = new FormField(Resources.generateId());
         initialTotalField.setLabel("Total Value of Initial Cost");
         initialTotalField.setCode("INITIAL_TOTAL");
         initialTotalField.setType(new CalculatedFieldType("{INITIAL}+{INITIAL_HARD}+{INITIAL_SOFT}"));
@@ -181,7 +182,7 @@ public class TableServiceCalcTest {
     @Test
     public void formContextTest() {
 
-        FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
+        FormInstance instance = new FormInstance(Resources.generateId(), formClass.getId());
         instance.set(fieldId("EXP"), new Quantity(3, "currency"));
         instance.set(fieldId("WATER_ALLOC"), 400);
         instance.set(fieldId("PCT_INITIAL"), 50);
@@ -195,7 +196,7 @@ public class TableServiceCalcTest {
     @Test
     public void calculations() throws Exception {
 
-        FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
+        FormInstance instance = new FormInstance(Resources.generateId(), formClass.getId());
         instance.set(fieldId("EXP"), new Quantity(3, "currency"));
         instance.set(fieldId("WATER_ALLOC"), 400);
         instance.set(fieldId("PCT_INITIAL"), 50);

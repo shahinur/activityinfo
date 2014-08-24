@@ -1,12 +1,17 @@
 package org.activityinfo.store.cloudsql;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.json.ObjectMapperFactory;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.ResourceNotFound;
@@ -34,6 +39,8 @@ public class MySqlResourceStore implements ResourceStore {
 
     private final Provider<Connection> connectionProvider;
     private final StoreCache cache;
+
+    private final ObjectMapper mapper = ObjectMapperFactory.get();
 
     @Inject
     public MySqlResourceStore(Provider<Connection> connectionProvider, MemcacheService memcacheService) {
@@ -71,12 +78,12 @@ public class MySqlResourceStore implements ResourceStore {
 
             while (resultSet.next()) {
                 String json = resultSet.getString(1);
-                Resource resource = Resources.fromJson(json);
+                Resource resource = mapper.readValue(json, Resource.class);
                 resource.setVersion(resultSet.getLong(2));
                 resources.add(resource);
             }
             return resources;
-        } catch(SQLException e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -126,7 +133,7 @@ public class MySqlResourceStore implements ResourceStore {
                 throw new UnsupportedOperationException();
 
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

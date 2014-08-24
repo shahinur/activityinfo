@@ -115,13 +115,6 @@
     </dependency>
 
     <dependency>
-      <groupId>gson-gwt</groupId>
-      <artifactId>gson-gwt</artifactId>
-      <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.bedatadriven.appengine.export</groupId>
       <artifactId>appengine-itext</artifactId>
       <version>${appengine.export.version}</version>
@@ -563,7 +556,7 @@
               <logLevel>INFO</logLevel>
               <compileReport>false</compileReport>
               <modules>
-                <module>org.activityinfo.ui.app.ActivityInfoApp</module>
+                <module>org.activityinfo.ui.app.ActivityInfoAppProd</module>
               </modules>
             </configuration>
           </execution>

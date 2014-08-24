@@ -12,10 +12,7 @@ import com.sun.jersey.test.framework.spi.container.TestContainerException;
 import com.sun.jersey.test.framework.spi.container.TestContainerFactory;
 import com.sun.jersey.test.framework.spi.container.inmemory.InMemoryTestContainerFactory;
 import org.activityinfo.model.json.ObjectMapperFactory;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
@@ -92,7 +89,7 @@ public class ResourceStoreTest extends JerseyTest {
     @Test
     public void queryTree() {
 
-        ResourceTreeRequest request = new ResourceTreeRequest(ResourceId.ROOT_ID);
+        ResourceTreeRequest request = new ResourceTreeRequest(Resources.ROOT_ID);
 
         ResourceTree tree = getStoreService()
                 .path("query")

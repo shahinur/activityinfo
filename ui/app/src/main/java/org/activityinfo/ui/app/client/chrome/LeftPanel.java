@@ -35,7 +35,7 @@ public class LeftPanel extends VThunk<LeftPanel> {
     }
 
     public static VNode leftPanel(AppStores AppStores) {
-        return LEFTPANEL.div(logoPanel(), innerPanel(AppStores));
+        return div(LEFTPANEL, logoPanel(), innerPanel(AppStores));
     }
 
 
@@ -60,7 +60,7 @@ public class LeftPanel extends VThunk<LeftPanel> {
         List<VTree> items = Lists.newArrayList();
         for (ResourceNode node : workspaces.get()) {
             SafeUri uri = ResourcePageContainer.uri(node.getId());
-            FontAwesome icon = FontAwesome.TH_LARGE;
+            Icon icon = FontAwesome.TH_LARGE;
             String label = node.getLabel();
             items.add( navItem(uri, icon, label) );
         }
