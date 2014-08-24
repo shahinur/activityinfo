@@ -3,6 +3,7 @@ package org.activityinfo.model.table;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class TableModelTest {
 
         ResourceId classId = ResourceId.valueOf("f023423");
         TableModel model = new TableModel(classId);
-        model.addColumn("c1").select().fieldPath(ResourceId.generateId());
+        model.addColumn("c1").select().fieldPath(Resources.generateId());
 
         String json = mapper.writeValueAsString(model);
         System.out.println(json);

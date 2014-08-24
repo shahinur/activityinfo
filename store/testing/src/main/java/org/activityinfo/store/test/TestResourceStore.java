@@ -1,24 +1,24 @@
 package org.activityinfo.store.test;
 
-import com.google.common.base.Charsets;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.json.ObjectMapperFactory;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.service.store.*;
 import org.activityinfo.service.tables.TableBuilder;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,17 +42,12 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
      * @throws IOException
      */
     public TestResourceStore load(String resourceName) throws IOException {
-        JsonParser parser = new JsonParser();
-        JsonArray resourceArray;
-        try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(resourceName),
-                Charsets.UTF_8)) {
-            resourceArray = parser.parse(reader).getAsJsonArray();
-        }
-
-        for(int i=0;i!=resourceArray.size();++i) {
-            Resource resource = Resources.fromJson(resourceArray.get(i).getAsJsonObject());
-            resource.setVersion(currentVersion++);
-            resourceMap.put(resource.getId(), resource);
+        ObjectMapper mapper = ObjectMapperFactory.get();
+        URL resourceURL = getClass().getResource(resourceName);
+        Resource[] resources = mapper.readValue(resourceURL, Resource[].class);
+        for(int i=0;i!=resources.length;++i) {
+            resources[i].setVersion(currentVersion++);
+            resourceMap.put(resources[i].getId(), resources[i]);
         }
         return this;
     }

@@ -24,12 +24,10 @@ package org.activityinfo.ui.component.table.action;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.ui.component.importDialog.ImportCallback;
 import org.activityinfo.ui.component.importDialog.ImportLauncher;
-import org.activityinfo.ui.component.importDialog.ImportPresenter;
-import org.activityinfo.ui.component.importDialog.ImportResultEvent;
 import org.activityinfo.ui.component.table.InstanceTable;
 import org.activityinfo.ui.style.icons.FontAwesome;
 
@@ -49,34 +47,22 @@ public class ImportHeaderAction implements TableHeaderAction {
     @Override
     public void execute() {
         final FormClass rootFormClass = table.getRootFormClass();
-        ImportLauncher.showPresenter(rootFormClass.getId(), table.getResourceLocator()).then(
-                new AsyncCallback<ImportPresenter>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        // handled by the dialog
-                    }
-
-                    @Override
-            public void onSuccess(ImportPresenter result) {
-                result.getEventBus().addHandler(ImportResultEvent.TYPE, new ImportResultEvent.Handler() {
-                    @Override
-                    public void onResultChanged(ImportResultEvent event) {
-                        table.reload();
-                    }
-                });
-                result.show();
+        ImportLauncher.showImportDialog(rootFormClass.getId(), table.getResourceLocator(), new ImportCallback() {
+            @Override
+            public void importComplete() {
+                table.reload();
             }
         });
     }
 
     @Override
     public void render(Cell.Context context, String value, SafeHtmlBuilder sb) {
-//        final boolean isOneSelected = table.getSelectionModel().getSelectedSet().size() == 1;
-//        if (isOneSelected) {
+        //        final boolean isOneSelected = table.getSelectionModel().getSelectedSet().size() == 1;
+        //        if (isOneSelected) {
         sb.append(TEMPLATE.enabled(uniqueId, FontAwesome.CLOUD_UPLOAD.getClassNames(), I18N.CONSTANTS.importText()));
-//        } else {
-//            sb.append(TEMPLATE.disabled(uniqueId, Icons.INSTANCE.importIcon(), I18N.CONSTANTS.importText()));
-//        }
+        //        } else {
+        //            sb.append(TEMPLATE.disabled(uniqueId, Icons.INSTANCE.importIcon(), I18N.CONSTANTS.importText()));
+        //        }
     }
 
     @Override

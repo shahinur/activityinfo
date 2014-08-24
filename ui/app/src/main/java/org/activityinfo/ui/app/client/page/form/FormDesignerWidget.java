@@ -1,12 +1,10 @@
 package org.activityinfo.ui.app.client.page.form;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.service.store.ResourceLocator;
-import org.activityinfo.service.store.ResourceLocatorAdaptor;
-import org.activityinfo.ui.app.client.AppEntryPoint;
-import org.activityinfo.ui.component.formdesigner.FormDesigner;
-import org.activityinfo.ui.component.formdesigner.FormDesignerPanel;
+import org.activityinfo.ui.component.FormLoader;
 import org.activityinfo.ui.vdom.shared.tree.Destructible;
 import org.activityinfo.ui.vdom.shared.tree.VWidget;
 
@@ -20,11 +18,22 @@ class FormDesignerWidget extends VWidget implements Destructible {
 
     @Override
     public Widget createWidget() {
-        ResourceLocator adapter = new ResourceLocatorAdaptor(AppEntryPoint.service);
-        FormClass formClass = page.getFormClass();
-        FormDesignerPanel formDesignerPanel = new FormDesignerPanel(adapter, formClass);
-        FormDesigner designer = new FormDesigner(formDesignerPanel, adapter, formClass);
-        return formDesignerPanel.asWidget();
+        final FlowPanel flowPanel = new FlowPanel();
+        flowPanel.add(new Label("Loading..."));
+        FormLoader.loadDesigner(page.getFormClass()).then(new AsyncCallback<Widget>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                flowPanel.clear();
+                flowPanel.add(new Label("Error loading form designer"));
+            }
+
+            @Override
+            public void onSuccess(Widget result) {
+                flowPanel.clear();
+                flowPanel.add(result);
+            }
+        });
+        return flowPanel;
     }
 
     @Override

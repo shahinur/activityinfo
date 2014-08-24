@@ -29,11 +29,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
-import org.activityinfo.model.expr.functions.*;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.expr.functions.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.ui.component.form.field.FieldWidgetMode;
@@ -90,7 +91,7 @@ public class SkipRowPresenter {
             }
         };
 
-        widgetFactory.createWidget(new FormClass(ResourceId.generateId()), getSelectedFormField(), valueUpdater).then(new AsyncCallback<FormFieldWidget>() {
+        widgetFactory.createWidget(new FormClass(Resources.generateId()), getSelectedFormField(), valueUpdater).then(new AsyncCallback<FormFieldWidget>() {
             @Override
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();

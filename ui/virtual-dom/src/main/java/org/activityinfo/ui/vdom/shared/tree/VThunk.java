@@ -8,7 +8,6 @@ public abstract class VThunk<T> extends VTree {
     private RenderContext context = null;
 
 
-
     /**
      * Cached result of the last call to render
      */
@@ -34,6 +33,10 @@ public abstract class VThunk<T> extends VTree {
         return dirty;
     }
 
+//    public boolean shouldUpdate(P nextProps, S nextState) {
+//        return true;
+//    }
+
 
     /**
      * Renders this Thunk to a concrete {@code VTree}. During diffing,
@@ -53,10 +56,6 @@ public abstract class VThunk<T> extends VTree {
      */
     public void onMounted() {
 
-    }
-
-    public boolean update(T newValue) {
-        return true;
     }
 
 

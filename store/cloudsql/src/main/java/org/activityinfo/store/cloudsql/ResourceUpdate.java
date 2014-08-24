@@ -1,7 +1,10 @@
 package org.activityinfo.store.cloudsql;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
@@ -27,6 +30,8 @@ public class ResourceUpdate {
     private Resource resource;
     private long newVersion;
 
+    private final ObjectMapper mapper = ObjectMapperFactory.get();
+
 
     public ResourceUpdate(StoreConnection connection, StoreCache cache) {
         this.connection = connection;
@@ -45,7 +50,7 @@ public class ResourceUpdate {
     }
 
 
-    public UpdateResult execute() throws SQLException {
+    public UpdateResult execute() throws SQLException, JsonProcessingException {
 
         newVersion = incrementGlobalVersion();
 
@@ -59,7 +64,7 @@ public class ResourceUpdate {
         updateOwnerSubTreeVersions();
 
         // if this is a root resource, add it to the user's index
-        if(resource.getOwnerId().equals(ResourceId.ROOT_ID)) {
+        if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
             indexUserRoot();
         }
 
@@ -89,7 +94,7 @@ public class ResourceUpdate {
      * keys used for caching.
      *
      */
-    private void updateResourceTable() throws SQLException {
+    private void updateResourceTable() throws SQLException, JsonProcessingException {
         try(PreparedStatement stmt = connection.prepareStatement(
             "INSERT INTO resource (id, version, owner_id, class_id, label, sub_tree_version, content) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?)" +
@@ -105,7 +110,7 @@ public class ResourceUpdate {
             stmt.setString(4, resource.isString("classId"));
             stmt.setString(5, getLabel(resource));
             stmt.setLong(  6, newVersion);
-            stmt.setString(7, Resources.toJson(resource));
+            stmt.setString(7, mapper.writeValueAsString(resource));
 
             stmt.executeUpdate();
         }
@@ -116,7 +121,7 @@ public class ResourceUpdate {
      * Updates the {@code resource_version} table, which maintains a trace of all versions
      * of resources.
      */
-    private void updateResourceVersionTable() throws SQLException {
+    private void updateResourceVersionTable() throws SQLException, JsonProcessingException {
 
         // TODO: if the parent has changed, we have to update the old parent too
 
@@ -128,7 +133,7 @@ public class ResourceUpdate {
             stmt.setLong(2, newVersion);
             stmt.setString(3, resource.getOwnerId().asString());
             stmt.setString(4, userId.asString());
-            stmt.setString(5, Resources.toJson(resource));
+            stmt.setString(5, mapper.writeValueAsString(resource));
             stmt.executeUpdate();
         }
     }
@@ -152,7 +157,7 @@ public class ResourceUpdate {
                 "SELECT owner_id FROM resource WHERE id = ?")) {
 
             ResourceId ownerId = resource.getOwnerId();
-            while (!ownerId.equals(ResourceId.ROOT_ID)) {
+            while (!ownerId.equals(Resources.ROOT_ID)) {
 
                 LOGGER.fine("Updating owner [" + ownerId.asString() + "] to sub_tree_version " + newVersion);
 

@@ -1,6 +1,10 @@
 package org.activityinfo.ui.app.client.page.form;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.service.store.ResourceLocatorAdaptor;
 import org.activityinfo.ui.app.client.AppEntryPoint;
@@ -17,10 +21,24 @@ class FormTableWidget extends VWidget {
 
     @Override
     public IsWidget createWidget() {
-        ResourceLocator adapter = new ResourceLocatorAdaptor(AppEntryPoint.service);
-        TablePage tablePage = new TablePage(adapter);
-        tablePage.show(formPage.getResourceId());
-        return tablePage.asWidget();
+        final FlowPanel flowPanel = new FlowPanel();
+        flowPanel.add(new Label("Loading..."));
+        GWT.runAsync(new RunAsyncCallback() {
+            @Override
+            public void onFailure(Throwable reason) {
+                flowPanel.clear();
+                flowPanel.add(new Label("Failed to load table component: " + reason.getMessage()));
+            }
+
+            @Override
+            public void onSuccess() {
+                ResourceLocator adapter = new ResourceLocatorAdaptor(AppEntryPoint.service);
+                TablePage tablePage = new TablePage(adapter);
+                tablePage.show(formPage.getResourceId());
+                flowPanel.add(tablePage);
+            }
+        });
+        return flowPanel;
     }
 
     @Override

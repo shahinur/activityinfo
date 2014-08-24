@@ -27,6 +27,12 @@
 
     <dependency>
       <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-flux</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-importing</artifactId>
       <version>${project.version}</version>
     </dependency>
