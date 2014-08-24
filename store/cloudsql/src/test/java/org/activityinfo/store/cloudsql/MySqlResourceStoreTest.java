@@ -5,10 +5,7 @@ import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -112,16 +109,16 @@ public class MySqlResourceStoreTest {
     }
 
     private FormClass createWidgetsFormClass(ResourceId ownerId) {
-        FormClass formClass = new FormClass(ResourceId.generateId());
+        FormClass formClass = new FormClass(Resources.generateId());
         formClass.setOwnerId(ownerId);
         formClass.setLabel("Widgets");
 
-        FormField nameField = new FormField(ResourceId.generateId());
+        FormField nameField = new FormField(Resources.generateId());
         nameField.setLabel("Name");
         nameField.setType(TextType.INSTANCE);
         formClass.addElement(nameField);
 
-        FormField countField = new FormField(ResourceId.generateId());
+        FormField countField = new FormField(Resources.generateId());
         countField.setLabel("Count");
         countField.setType(new QuantityType().setUnits("widgets"));
         formClass.addElement(countField);
@@ -133,8 +130,8 @@ public class MySqlResourceStoreTest {
     }
 
     private FormInstance createFolder(String label) {
-        FormInstance divA = new FormInstance(ResourceId.generateId(), FolderClass.CLASS_ID);
-        divA.setOwnerId(ResourceId.ROOT_ID);
+        FormInstance divA = new FormInstance(Resources.generateId(), FolderClass.CLASS_ID);
+        divA.setOwnerId(Resources.ROOT_ID);
         divA.set(FolderClass.LABEL_FIELD_ID, label);
         return divA;
     }

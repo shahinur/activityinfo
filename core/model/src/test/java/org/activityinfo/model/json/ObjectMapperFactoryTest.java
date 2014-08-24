@@ -3,7 +3,7 @@ package org.activityinfo.model.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,8 +25,8 @@ public class ObjectMapperFactoryTest {
     @Test
     public void testAsResource() throws IOException {
 
-        FormClass formClass = new FormClass(ResourceId.generateId());
-        formClass.setOwnerId(ResourceId.ROOT_ID);
+        FormClass formClass = new FormClass(Resources.generateId());
+        formClass.setOwnerId(Resources.ROOT_ID);
         formClass.setLabel("A Form");
 
         ObjectMapper mapper = objectMapper;

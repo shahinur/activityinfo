@@ -1,13 +1,15 @@
 package org.activityinfo.store.cloudsql;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreAccessor;
 
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +19,8 @@ public class MySqlStoreAccessor implements StoreAccessor {
 
     private final StoreConnection connection;
     private final AuthenticatedUser user;
+
+    private final ObjectMapper objectMapper = ObjectMapperFactory.get();
 
     public MySqlStoreAccessor(StoreConnection connection, AuthenticatedUser user) {
         this.connection = connection;
@@ -43,7 +47,7 @@ public class MySqlStoreAccessor implements StoreAccessor {
     }
 
     @Override
-    public Resource get(ResourceId id) throws SQLException {
+    public Resource get(ResourceId id) throws SQLException, IOException {
 
         Set<Resource> resources = Sets.newHashSet();
         try (PreparedStatement statement = connection.prepareStatement(
@@ -58,7 +62,7 @@ public class MySqlStoreAccessor implements StoreAccessor {
                 }
 
                 String json = rs.getString(1);
-                Resource resource = Resources.fromJson(json);
+                Resource resource = objectMapper.readValue(json, Resource.class);
                 resource.setVersion(rs.getLong(2));
                 resources.add(resource);
                 return resource;

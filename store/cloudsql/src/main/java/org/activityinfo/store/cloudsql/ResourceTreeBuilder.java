@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceTreeRequest;
 
@@ -58,7 +59,7 @@ public class ResourceTreeBuilder {
 
     private ResourceNode fetchRootNode(ResourceId rootId) throws SQLException {
 
-        if(rootId.equals(ResourceId.ROOT_ID)) {
+        if(rootId.equals(Resources.ROOT_ID)) {
             return fetchGlobalRoot(rootId);
 
         } else {
@@ -81,7 +82,7 @@ public class ResourceTreeBuilder {
 
     private ResourceNode fetchGlobalRoot(ResourceId rootId) throws SQLException {
         long version = fetchGlobalVersion();
-        ResourceNode globalRoot = new ResourceNode(ResourceId.ROOT_ID);
+        ResourceNode globalRoot = new ResourceNode(Resources.ROOT_ID);
         globalRoot.setVersion(version);
         globalRoot.setSubTreeVersion(version);
         return globalRoot;
@@ -95,7 +96,7 @@ public class ResourceTreeBuilder {
         if(cachedVersion != null) {
             return cachedVersion;
 
-        } else if(id.equals(ResourceId.ROOT_ID)) {
+        } else if(id.equals(Resources.ROOT_ID)) {
             return fetchGlobalVersion();
 
         } else {

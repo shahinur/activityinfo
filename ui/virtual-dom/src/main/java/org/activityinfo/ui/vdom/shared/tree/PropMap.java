@@ -1,8 +1,7 @@
 package org.activityinfo.ui.vdom.shared.tree;
 
-import com.google.common.base.Joiner;
 import org.activityinfo.ui.vdom.shared.html.AriaRole;
-import org.activityinfo.ui.vdom.shared.html.HasClassNames;
+import org.activityinfo.ui.vdom.shared.html.CssClass;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,7 +37,7 @@ public class PropMap {
     /**
      * Creates a new {@code PropMap} with the given value for the {@code className} property
      */
-    public static PropMap withClasses(HasClassNames classNames) {
+    public static PropMap withClasses(CssClass classNames) {
         return withClasses(classNames.getClassNames());
     }
 
@@ -73,7 +72,7 @@ public class PropMap {
     }
 
 
-    public PropMap setClass(HasClassNames classNames) {
+    public PropMap setClass(CssClass classNames) {
         return set("className", classNames.getClassNames());
     }
 
@@ -124,7 +123,7 @@ public class PropMap {
 
     @Override
     public String toString() {
-        return Joiner.on(" ").withKeyValueSeparator("=").join(propMap);
+        return propMap.toString();
     }
 
 }

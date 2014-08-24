@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.primitive.TextType;
 
@@ -21,7 +22,7 @@ public class FormDistribution {
         randomText = new RandomText();
 
         // Create a new form to test against
-        FormClass formClass = new FormClass(ResourceId.generateId());
+        FormClass formClass = new FormClass(Resources.generateId());
         formClass.setOwnerId(ResourceId.valueOf("d518"));
         formClass.setLabel("Thousand monkeys");
 
@@ -36,7 +37,7 @@ public class FormDistribution {
     }
 
     private FormField generateRandomField() {
-        FormField field = new FormField(ResourceId.generateId());
+        FormField field = new FormField(Resources.generateId());
         field.setLabel(randomText.sampleLabel());
         field.setType(generateRandomType());
         return field;

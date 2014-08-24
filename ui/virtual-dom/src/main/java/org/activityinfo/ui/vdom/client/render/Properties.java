@@ -1,8 +1,7 @@
 package org.activityinfo.ui.vdom.client.render;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.Style;
+import org.activityinfo.ui.vdom.shared.dom.DomElement;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VHook;
 
@@ -12,15 +11,11 @@ import java.util.Map;
 public class Properties {
 
 
-    public static void applyProperties(Element node, PropMap props, PropMap previous) {
+    public static void applyProperties(DomElement node, PropMap props, PropMap previous) {
         for (String propName : props.keys()) {
             Object propValue = props.get(propName);
             if (propValue == null) {
                 removeProperty(node, props, previous, propName);
-
-            } else if (propValue instanceof VHook) {
-                VHook hook = (VHook) propValue;
-                hook.hook(node, propName, previousValueIfAny(previous, propName));
 
             } else {
                 if (PropMap.isObject(propValue)) {
@@ -37,7 +32,7 @@ public class Properties {
         return (previous != null) ? previous.get(propName) : null;
     }
 
-    private static void removeProperty(Element element, PropMap props, PropMap previous, String propName) {
+    private static void removeProperty(DomElement element, PropMap props, PropMap previous, String propName) {
         if (previous != null) {
             Object previousValue = previous.get(propName);
             if (!VHook.isHook(previousValue)) {
@@ -47,7 +42,7 @@ public class Properties {
                     }
                 } else if (propName.equals("style")) {
                     for (String name : keys(previousValue)) {
-                        element.getStyle().clearProperty(name);
+                        element.clearStyleProperty(name);
                     }
                 } else if (previousValue instanceof String) {
                     element.setPropertyString(propName, "");
@@ -74,7 +69,7 @@ public class Properties {
         }
     }
 
-    public static void patchObject(Element node, PropMap props, PropMap previous, String propName, Object propValue) {
+    public static void patchObject(DomElement node, PropMap props, PropMap previous, String propName, Object propValue) {
         Object previousValue = previousValueIfAny(previous, propName);
         // Set attributes
         if (propName.equals("attributes")) {
@@ -100,9 +95,8 @@ public class Properties {
 //        }
 
         if (propName.equals("style")) {
-            Style style = node.getStyle();
             for (Map.Entry<String, Object> prop : entries(propValue)) {
-                style.setProperty(prop.getKey(), (String) prop.getValue());
+                node.setStyleProperty(prop.getKey(), (String) prop.getValue());
             }
         } else {
             throw new UnsupportedOperationException(propName);

@@ -32,13 +32,9 @@ import com.google.gwt.http.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.image.ImageRowValue;
-import org.activityinfo.service.blob.UploadCredentials;
 
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -99,7 +95,7 @@ public class ImageUploadRow extends Composite {
     }
 
     private String createUploadUrl() {
-        String blobId = ResourceId.generateId().asString();
+        String blobId = Resources.generateId().asString();
 //        String classId = formClassId.asString();
 //        String fieldId = formField.getId().asString();
         String fileName = fileName();
@@ -140,18 +136,20 @@ public class ImageUploadRow extends Composite {
             requestBuilder.sendRequest(null, new RequestCallback() {
                 @Override
                 public void onResponseReceived(Request request, Response response) {
-                    String json = response.getText();
-                    Resource resource = Resources.fromJson(json);
-                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
-
-                    Map<String, String> formFields = uploadCredentials.getFormFields();
-                    for (Map.Entry<String, String> field : formFields.entrySet()) {
-                        formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
-                    }
-
-                    formPanel.setAction(uploadCredentials.getUrl());
-                    formPanel.setMethod(uploadCredentials.getMethod());
-                    upload();
+//                    String json = response.getText();
+//                    Resource resource = Resources.fromJson(json);
+//                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
+//
+//                    Map<String, String> formFields = uploadCredentials.getFormFields();
+//                    for (Map.Entry<String, String> field : formFields.entrySet()) {
+//                        formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
+//                    }
+//
+//
+//                    formPanel.setAction(uploadCredentials.getUrl());
+//                    formPanel.setMethod(uploadCredentials.getMethod());
+//                    upload();
+                    throw new UnsupportedOperationException("todo");
                 }
 
                 @Override

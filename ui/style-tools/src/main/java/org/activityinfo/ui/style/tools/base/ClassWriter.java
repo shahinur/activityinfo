@@ -2,9 +2,9 @@ package org.activityinfo.ui.style.tools.base;
 
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.ext.Generator;
-import org.activityinfo.ui.style.tools.rebind.ClassNames;
-import org.activityinfo.ui.vdom.shared.html.HasClassNames;
+import org.activityinfo.ui.vdom.shared.html.CssClass;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
+import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
@@ -39,6 +39,8 @@ class ClassWriter implements AutoCloseable {
         writer.println("import " + VTree.class.getName() + ";");
         writer.println("import " + PropMap.class.getName() + ";");
         writer.println("import " + HtmlTag.class.getName() + ";");
+        writer.println("import " + CssClass.class.getName() + ";");
+        writer.println("import " + Icon.class.getName() + ";");
 
         writer.println();
     }
@@ -52,45 +54,26 @@ class ClassWriter implements AutoCloseable {
         writer.println("    private " + className + "() { }");
     }
 
-    public void declareEnum(Class<? extends HasClassNames> implementsInterface) {
-        writer.println("public enum " + className + " implements " +
-                       implementsInterface.getName() + " {");
+
+    public void declareFinalClass() {
+        writer.println("public final class " + className + " {");
+        writer.println("    private " + className + "() {}");
     }
 
     public void writeAccessor(String methodName, String classNames) {
         writer.println("    public String " + methodName + "() { return \"" + Generator.escape(classNames) + "\"; }");
     }
 
-    public void writeAccessor(String className) {
-        Preconditions.checkArgument(className.indexOf(' ') == -1);
-
-        writeAccessor(ClassNames.toCamelCase(className), className);
-    }
-
-    public void writeEnumValue(String enumValue, String className) {
-        writer.println("   " + enumValue + "(\"" + Generator.escape(className) + "\"),");
-    }
-
-    public void writeEnumGetClassNameImpl() {
-        writer.println("    ;");
-        writer.println();
-        writer.println("    private final String classNames;");
-        writer.println("    private " + className + "(String classNames) { this.classNames = classNames; }");
-        writer.println("    @Override");
-        writer.println("    public final String getClassNames() { return classNames; }");
-    }
-
-    public void writeIconRender() {
-        writer.println("    public final VNode render() { return new VNode(HtmlTag.SPAN, PropMap.withClasses(classNames)); }");
-    }
-
-    public void writeDivBuilder() {
-        writer.println("    public final VNode div(VTree... children) { " +
-                       "return new VNode(HtmlTag.DIV, PropMap.withClasses(classNames), children); }");
+    public void writeConstant(String enumValue, Class wrapperClass, String className) {
+        writer.println("   public static final " +
+                       wrapperClass.getSimpleName() + " " + enumValue + " = " +
+                       wrapperClass.getSimpleName() + ".valueOf(\"" +
+                            Generator.escape(className) + " \");");
     }
 
     public void close() {
         writer.println("}");
         writer.close();
     }
+
 }

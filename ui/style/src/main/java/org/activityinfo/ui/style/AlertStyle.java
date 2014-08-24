@@ -1,16 +1,15 @@
 package org.activityinfo.ui.style;
 
-import org.activityinfo.ui.vdom.shared.html.HasClassNames;
+import org.activityinfo.ui.vdom.shared.html.CssClass;
 
-public enum AlertStyle implements HasClassNames {
+public enum AlertStyle {
 
     SUCCESS,
     INFO,
     WARNING,
     DANGER;
 
-    @Override
-    public String getClassNames() {
-        return "alert alert-" + name().toLowerCase();
+    public CssClass getClassNames() {
+        return CssClass.valueOf("alert alert-" + name().toLowerCase());
     }
 }

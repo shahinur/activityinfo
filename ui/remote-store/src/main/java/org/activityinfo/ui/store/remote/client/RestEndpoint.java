@@ -1,6 +1,5 @@
 package org.activityinfo.ui.store.remote.client;
 
-import com.github.nmorel.gwtjackson.client.ObjectMapper;
 import com.google.common.base.Function;
 import com.google.gwt.http.client.*;
 import org.activityinfo.promise.Promise;
@@ -65,11 +64,11 @@ public class RestEndpoint {
         return send(request);
     }
 
-    public <T>  Promise<T> get(final ObjectMapper<T> reader) {
+    public <T>  Promise<T> get(final Function<Response, T> reader) {
         return getJson().then(new Function<Response, T>() {
             @Override
             public T apply(Response response) {
-                return reader.read(response.getText());
+                return reader.apply(response);
             }
         });
     }

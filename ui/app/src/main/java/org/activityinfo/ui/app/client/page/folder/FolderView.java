@@ -6,7 +6,7 @@ import org.activityinfo.ui.app.client.page.resource.ResourcePageContainer;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.Grid;
 import org.activityinfo.ui.style.Media;
-import org.activityinfo.ui.style.Panels;
+import org.activityinfo.ui.style.Panel;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
@@ -34,7 +34,7 @@ public class FolderView {
     }
 
     private static VTree childTable(FolderPage page) {
-        return Panels.panel(
+        return new Panel(
         div(className(BaseStyles.WIDGET_BLOGLIST), map(page.getChildNodes(), new Render<ResourceNode>() {
                     @Override
                     public VTree render(ResourceNode item) {
@@ -64,7 +64,7 @@ public class FolderView {
         Style iconStyle = new Style().fontSize(50).lineHeight(50);
         PropMap iconProps = new PropMap();
         iconProps.setStyle(iconStyle);
-        iconProps.setClass(icon);
+        iconProps.setClass(icon.getCssClass());
 
         return div(className(BaseStyles.MEDIA_OBJECT), span(iconProps));
     }
@@ -74,13 +74,13 @@ public class FolderView {
     }
 
     private static VTree timelineColumn() {
-        return Grid.column(4, Panels.panel(t("Recent Activity"), p("Todo...")));
+        return Grid.column(4, new Panel("Recent Activity", p("Todo...")));
     }
 
     private static VTree helpColumn() {
         return Grid.column(3,
-                Panels.panel(t("Common Tasks"), p("Todo...")),
-                Panels.panel(t("Administration"), p("Todo..."))
+                new Panel("Common Tasks", p("Todo...")),
+                new Panel("Administration", p("Todo..."))
                 );
     }
 
