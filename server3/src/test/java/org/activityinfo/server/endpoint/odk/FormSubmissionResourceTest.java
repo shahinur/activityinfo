@@ -19,6 +19,7 @@ import static com.google.common.io.Resources.getResource;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 public class FormSubmissionResourceTest {
@@ -44,7 +45,7 @@ public class FormSubmissionResourceTest {
 
         Map<String, Object> map = store.getLastUpdated().getProperties();
 
-        assertEquals(6, map.size());
+        assertEquals(7, map.size());
         assertEquals("a1081", map.get("classId"));
         assertEquals(new ReferenceValue(CuidAdapter.partnerInstanceId(507, 562)).asRecord(), map.get("a1081f7"));
         assertEquals(new LocalDate(2005, 8, 31).asRecord(), map.get("a1081f12"));
@@ -52,5 +53,6 @@ public class FormSubmissionResourceTest {
         assertEquals(new ReferenceValue(CuidAdapter.entity(141796)).asRecord(), map.get("a1081f11"));
         assertNull(map.get("i5346"));
         assertEquals(new NarrativeValue("Awesome.").asRecord(), map.get("a1081f14"));
+        assertNotNull(map.get("backupBlobId"));
     }
 }
