@@ -114,9 +114,10 @@ public class FormResource {
         html.body.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
         for (FormField formField : formFields) {
             OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
-            if (odkFormFieldBuilder == null) continue;
-            html.body.jaxbElement.add(odkFormFieldBuilder.createPresentationElement(toAbsoluteFieldName(
-                    formField.getId().asString()), formField.getLabel(), formField.getDescription()));
+            if (odkFormFieldBuilder != null && formField.isVisible()) {
+                html.body.jaxbElement.add(odkFormFieldBuilder.createPresentationElement(toAbsoluteFieldName(
+                        formField.getId().asString()), formField.getLabel(), formField.getDescription()));
+            }
         }
         return Response.ok(html).build();
     }

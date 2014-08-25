@@ -9,7 +9,6 @@ public class MySqlStoreModule extends ServletModule {
     @Override
     protected void configureServlets() {
         bind(ConnectionProvider.class);
-        filter("/*").through(ConnectionCleanupFilter.class);
     }
 
     @Provides

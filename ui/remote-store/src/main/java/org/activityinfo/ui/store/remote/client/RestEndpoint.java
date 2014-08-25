@@ -1,6 +1,7 @@
 package org.activityinfo.ui.store.remote.client;
 
 import com.google.common.base.Function;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import org.activityinfo.promise.Promise;
 
@@ -90,6 +91,7 @@ public class RestEndpoint {
                 promise.reject(exception);
             }
         });
+        GWT.log("Sending request " + request.getUrl());
         try {
             request.send();
         } catch (RequestException e) {

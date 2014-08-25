@@ -125,6 +125,11 @@ public class ResourceStoreStub implements ResourceStore {
     }
 
     @Override
+    public UpdateResult create(AuthenticatedUser user, Resource resource) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
         return put(user, resource.getId(), resource);
     }

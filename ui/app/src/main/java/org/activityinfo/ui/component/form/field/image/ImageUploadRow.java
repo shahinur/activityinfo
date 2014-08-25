@@ -31,6 +31,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.image.ImageRowValue;
@@ -85,6 +86,11 @@ public class ImageUploadRow extends Composite {
                 download();
             }
         });
+
+        if (value.getBlobId() != null) {
+            imageContainer.setVisible(false);
+            downloadButton.setVisible(true);
+        }
     }
 
     public void setReadOnly(boolean readOnly) {
@@ -145,11 +151,11 @@ public class ImageUploadRow extends Composite {
 //                        formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
 //                    }
 //
-//
 //                    formPanel.setAction(uploadCredentials.getUrl());
 //                    formPanel.setMethod(uploadCredentials.getMethod());
 //                    upload();
-                    throw new UnsupportedOperationException("todo");
+
+                    throw new UnsupportedOperationException();
                 }
 
                 @Override
@@ -179,7 +185,17 @@ public class ImageUploadRow extends Composite {
     }
 
     private void download() {
-        // todo
+        StringBuilder stringBuilder = new StringBuilder("/service/blob/");
+        stringBuilder.append("resource_id");                    // TODO
+        stringBuilder.append("/");
+        stringBuilder.append("field_name");                     // TODO
+        stringBuilder.append("/");
+        stringBuilder.append(value.getBlobId());
+        stringBuilder.append("/thumbnail?width=");
+        stringBuilder.append(value.getWidth());
+        stringBuilder.append("&height=");
+        stringBuilder.append(value.getHeight());
+        Window.open(stringBuilder.toString(), "_blank", null);
     }
 
     @Override

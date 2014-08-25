@@ -52,6 +52,16 @@ public interface ResourceStore {
      */
     UpdateResult put(AuthenticatedUser user, Resource resource);
 
+    /**
+     * Creates a {@code Resource} within the store.
+     *
+     * <p>Non Jax-rs convenience method
+     *
+     * @param user
+     * @param resource
+     * @return
+     */
+    UpdateResult create(AuthenticatedUser user, Resource resource);
 
     /**
      * Fetches an outline of Resources, returning only their id and label.
