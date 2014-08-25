@@ -2,11 +2,15 @@ package org.activityinfo.ui.store.remote.client.resource;
 
 import com.google.common.base.Function;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
 import org.activityinfo.model.resource.PropertyBag;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResourceParser implements Function<Response, Resource> {
 
@@ -38,6 +42,14 @@ public class ResourceParser implements Function<Response, Resource> {
         return record;
     }
 
+    private static List<Record> parseArray(JsArray array) {
+        List<Record> list = new ArrayList<>();
+        for(int i=0;i!=array.length();++i) {
+            list.add(parseRecord(array.get(i)));
+        }
+        return list;
+    }
+
     private static native void parseProperties(PropertyBag bag, JavaScriptObject object) /*-{
       for(var key in object) {
         if(object.hasOwnProperty(key) && key.charCodeAt(0) != 64) {  // 64 = @
@@ -49,8 +61,13 @@ public class ResourceParser implements Function<Response, Resource> {
           } else if(typeof value === "boolean") {
             bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Z)(key, value);
           } else if(typeof value === "object") {
-            var record = @org.activityinfo.ui.store.remote.client.resource.ResourceParser::parseRecord(Lcom/google/gwt/core/client/JavaScriptObject;)(value);
-            bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Lorg/activityinfo/model/resource/Record;)(key, record);
+            if(value instanceof Array || value instanceof $wnd.Array) {
+              var list = @org.activityinfo.ui.store.remote.client.resource.ResourceParser::parseArray(Lcom/google/gwt/core/client/JsArray;)(value);
+              bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Ljava/util/List;)(key, list);
+            } else {
+              var record = @org.activityinfo.ui.store.remote.client.resource.ResourceParser::parseRecord(Lcom/google/gwt/core/client/JavaScriptObject;)(value);
+              bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Lorg/activityinfo/model/resource/Record;)(key, record);
+            }
           }
         }
       }

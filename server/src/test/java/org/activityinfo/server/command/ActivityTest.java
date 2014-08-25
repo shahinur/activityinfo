@@ -64,7 +64,7 @@ public class ActivityTest {
 
     @Before
     public void setUser() throws IOException {
-        resourceLocator = createLocator("/dbunit/schema1.json");
+        resourceLocator = createLocator("schema1.json");
       //  setUser(1);
     }
 

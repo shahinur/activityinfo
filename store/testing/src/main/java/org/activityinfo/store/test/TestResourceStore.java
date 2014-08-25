@@ -3,6 +3,7 @@ package org.activityinfo.store.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.io.Resources;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
@@ -43,7 +44,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
      */
     public TestResourceStore load(String resourceName) throws IOException {
         ObjectMapper mapper = ObjectMapperFactory.get();
-        URL resourceURL = getClass().getResource(resourceName);
+        URL resourceURL = Resources.getResource(resourceName);
         Resource[] resources = mapper.readValue(resourceURL, Resource[].class);
         for(int i=0;i!=resources.length;++i) {
             resources[i].setVersion(currentVersion++);

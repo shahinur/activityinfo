@@ -48,7 +48,7 @@ public class PastedTableTest {
     @Test
     public void parser() throws IOException {
         PastedTable pastedTable = new PastedTable(
-                Resources.toString(getResource("org/activityinfo/core/shared/importing/qis.csv"), Charsets.UTF_8));
+                Resources.toString(getResource("qis.csv"), Charsets.UTF_8));
         pastedTable.parseAllRows();
         final List<SourceColumn> columns = pastedTable.getColumns();
         final List<? extends SourceRow> rows = pastedTable.getRows();
@@ -60,7 +60,7 @@ public class PastedTableTest {
     @Test
     public void columnTypeGuesser() throws IOException {
         PastedTable pastedTable = new PastedTable(
-                Resources.toString(getResource("org/activityinfo/core/shared/importing/qis.csv"), Charsets.UTF_8));
+                Resources.toString(getResource("qis.csv"), Charsets.UTF_8));
 
         // guess column types
         pastedTable.parseAllRows();
@@ -84,7 +84,7 @@ public class PastedTableTest {
     public void nfiParsingPerformance() throws IOException {
         long start = System.currentTimeMillis();
         PastedTable pastedTable = new PastedTable(
-                Resources.toString(getResource("org/activityinfo/core/shared/importing/nfi-import-test.csv"), Charsets.UTF_8));
+                Resources.toString(getResource("nfi-import-test.csv"), Charsets.UTF_8));
         pastedTable.parseAllRows();
         final List<SourceColumn> columns = pastedTable.getColumns();
         final List<? extends SourceRow> rows = pastedTable.getRows();
@@ -96,7 +96,7 @@ public class PastedTableTest {
     @Test
     public void libreOfficeImport() throws IOException {
         PastedTable pastedTable = new PastedTable(
-                Resources.toString(getResource("org/activityinfo/core/shared/importing/somali-camps.txt"), Charsets.UTF_8));
+                Resources.toString(getResource("somali-camps.txt"), Charsets.UTF_8));
         pastedTable.parseAllRows();
         pastedTable.guessColumnsType(JvmConverterFactory.get());
 

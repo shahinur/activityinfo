@@ -28,7 +28,7 @@ public class FormSubmissionResourceTest {
 
     @Before
     public void setUp() throws IOException {
-        store = new TestResourceStore().load("/dbunit/formSubmissionResourceTest.json");
+        store = new TestResourceStore().load("formSubmissionResourceTest.json");
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
         BlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();

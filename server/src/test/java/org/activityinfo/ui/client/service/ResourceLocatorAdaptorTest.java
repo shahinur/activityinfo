@@ -61,7 +61,7 @@ public class ResourceLocatorAdaptorTest {
 
     @Before
     public final void setup() throws IOException {
-        resourceLocator = createLocator("/dbunit/sites-simple1.json");
+        resourceLocator = createLocator("sites-simple1.json");
     }
 
     @Test
@@ -83,7 +83,7 @@ public class ResourceLocatorAdaptorTest {
     @Test
     public void getLocation() throws IOException {
 
-        ResourceLocator jordanLocator = createLocator("/dbunit/jordan-locations.json");
+        ResourceLocator jordanLocator = createLocator("jordan-locations.json");
 
         ResourceId classId = locationFormClass(50512);
         FormInstance instance = PromiseMatchers.assertResolves(jordanLocator.getFormInstance(locationInstanceId(

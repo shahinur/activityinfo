@@ -4,10 +4,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.service.store.RemoteStoreService;
@@ -28,22 +28,29 @@ public class GwtTestRemoteStore extends GWTTestCase {
         RemoteStoreService service = getStore();
         service.get(ResourceId.valueOf("test")).then(new AsyncCallback<Resource>() {
             @Override
-            public void onFailure(Throwable throwable) {
-                fail(throwable.getMessage());
+            public void onFailure(Throwable caught) {
+                fail(caught.getMessage());
             }
 
             @Override
             public void onSuccess(Resource resource) {
+                FormClass form = FormClass.fromResource(resource);
+                assertEquals("resource.id", ResourceId.valueOf("a1"), form.getId());
+                assertEquals("resource.ownerId", ResourceId.valueOf("C1c4a0524b"),  form.getOwnerId());
+             //   assertEquals("resource.version", 41L, resource.getVersion());
+                assertEquals("resource.label", "NFI", form.getLabel());
 
-                assertEquals("resource.id", ResourceId.valueOf("test"), resource.getId());
-                assertEquals("resource.ownerId", Resources.ROOT_ID, resource.getOwnerId());
-                assertEquals("resource.version", 42L, resource.getVersion());
-                assertEquals("resource.hello", "world", resource.get("hello"));
+                assertEquals("resource.elements.size", 12, form.getElements().size());
+
+                FormField field = (FormField) form.getElements().get(0);
+                assertEquals("a1f7", field.getId().asString());
+                assertEquals("Partner", field.getLabel());
 
                 finishTest();
             }
         });
-        delayTestFinish(5000);
+
+        delayTestFinish(1000);
     }
 
     private RemoteStoreService getStore() {
@@ -111,4 +118,5 @@ public class GwtTestRemoteStore extends GWTTestCase {
         assertTrue(Double.isNaN(c3.getDouble(1)));
         assertEquals(92.0, c3.getDouble(2));
     }
+
 }

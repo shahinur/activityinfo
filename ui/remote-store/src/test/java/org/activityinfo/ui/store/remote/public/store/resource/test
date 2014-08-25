@@ -1,5 +1,229 @@
-{ "@id": "test",
-  "@version": 42,
-  "@owner": "_root",
-  "hello":"world"
+{
+    "@id": "a1",
+    "@owner": "C1c4a0524b",
+    "@version": 41,
+    "classId": "_class",
+    "_class_label": "NFI",
+    "elements": [
+      {
+        "id": "a1f7",
+        "visible": true,
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "P1"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a1f8",
+        "visible": true,
+        "label": "Project",
+        "required": false,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "R1"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a1f12",
+        "visible": true,
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a1f13",
+        "visible": true,
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a1f11",
+        "visible": true,
+        "label": "localite",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "L1"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a0000000001-1106114670",
+        "label": "outputs",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i2",
+            "visible": true,
+            "label": "baches",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "menages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i103",
+            "visible": true,
+            "label": "Nb. of distributions",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "distributions"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i675",
+            "visible": true,
+            "label": "A kivu thing",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "distributions"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "Q2",
+        "visible": true,
+        "label": "contenu du kit",
+        "required": false,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t3",
+                "@type": "enumerated",
+                "label": "Casserole"
+              },
+              {
+                "id": "t4",
+                "@type": "enumerated",
+                "label": "Soap"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q3",
+        "visible": true,
+        "label": "Something about Kivu",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "a0000000001-1183866391",
+        "label": "inputs",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i1",
+            "visible": true,
+            "label": "beneficiaries",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "menages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "Q1",
+        "visible": true,
+        "label": "cause",
+        "required": false,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t2",
+                "@type": "enumerated",
+                "label": "Deplacement"
+              },
+              {
+                "id": "t1",
+                "@type": "enumerated",
+                "label": "Catastrophe Naturelle"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "i12451",
+        "visible": true,
+        "label": "calculated",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "calculated"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "a1f14",
+        "visible": true,
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
 }
