@@ -50,7 +50,7 @@ public class UpdateResultWriter implements MessageBodyWriter<UpdateResult> {
             case COMMITTED:
                 throw new WebApplicationException(Response
                         .status(Response.Status.CREATED)
-                        .tag(EntityTags.ofResource(updateResult.getId(), updateResult.getNewVersion()))
+                        .tag(EntityTags.ofResource(updateResult.getResourceId(), updateResult.getNewVersion()))
                         .entity(objectMapper.writeValueAsString(updateResult))
                         .type(MediaType.APPLICATION_JSON_TYPE)
                         .build());

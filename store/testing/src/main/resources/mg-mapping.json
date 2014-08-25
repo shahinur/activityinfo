@@ -1,0 +1,1970 @@
+[
+  {
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "_folder_label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "_class_label": "Country",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "visible": true,
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "visible": true,
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c379",
+    "@owner": "_country",
+    "_countryf3": "MG",
+    "_countryf1": "Madagascar",
+    "classId": "_country"
+  },
+  {
+    "@id": "E1379",
+    "@owner": "c379",
+    "classId": "_class",
+    "_class_label": "Region",
+    "elements": [
+      {
+        "id": "E1379f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1379f3",
+        "visible": true,
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "E1508",
+    "@owner": "c379",
+    "classId": "_class",
+    "_class_label": "District",
+    "elements": [
+      {
+        "id": "E1508f2",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_parent"
+        },
+        "label": "Region",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1379"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "E1508f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1508f3",
+        "visible": true,
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "E1511",
+    "@owner": "c379",
+    "classId": "_class",
+    "_class_label": "Commune",
+    "elements": [
+      {
+        "id": "E1511f2",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_parent"
+        },
+        "label": "District",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1508"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "E1511f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1511f3",
+        "visible": true,
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "E1512",
+    "@owner": "c379",
+    "classId": "_class",
+    "_class_label": "Fokontany",
+    "elements": [
+      {
+        "id": "E1512f2",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_parent"
+        },
+        "label": "Commune",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1511"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "E1512f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1512f3",
+        "visible": true,
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "z2169",
+    "@owner": "E1403",
+    "classId": "E1403",
+    "E1403f1": "Zuid-holland"
+  },
+  {
+    "@id": "z41750",
+    "@owner": "E1379",
+    "classId": "E1379",
+    "E1379f1": "ALAOTRA-MANGORO",
+    "E1379f3": "11"
+  },
+  {
+    "@id": "z41751",
+    "@owner": "E1379",
+    "classId": "E1379",
+    "E1379f1": "AMORON'I MANIA",
+    "E1379f3": "14"
+  },
+  {
+    "@id": "z41752",
+    "@owner": "E1379",
+    "classId": "E1379",
+    "E1379f1": "ANALAMANGA",
+    "E1379f3": "4"
+  },
+  {
+    "@id": "z41753",
+    "@owner": "E1379",
+    "classId": "E1379",
+    "E1379f1": "ANALANJIROFO",
+    "E1379f3": "13"
+  },
+  {
+    "@id": "z41754",
+    "@owner": "E1379",
+    "classId": "E1379",
+    "E1379f1": "ANDROY",
+    "E1379f3": "21"
+  },
+  {
+    "@id": "z41756",
+    "@owner": "E1379",
+    "classId": "E1379",
+    "E1379f1": "ATSIMO-ANDREFANA",
+    "E1379f3": "20"
+  },
+  {
+    "@id": "z41758",
+    "@owner": "E1379",
+    "classId": "E1379",
+    "E1379f1": "ATSINANANA",
+    "E1379f3": "12"
+  },
+  {
+    "@id": "z41768",
+    "@owner": "E1379",
+    "classId": "E1379",
+    "E1379f1": "SAVA",
+    "E1379f3": "1"
+  },
+  {
+    "@id": "z302993",
+    "@owner": "E1508",
+    "E1508f3": "110706.0",
+    "E1508f1": "ANTANANARIVO RENIVOHITRA",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41752"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303013",
+    "@owner": "E1508",
+    "E1508f3": "310108.0",
+    "E1508f1": "AMBATOFINANDRAHANA",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41751"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303014",
+    "@owner": "E1508",
+    "E1508f3": "310221.0",
+    "E1508f1": "AMBOSITRA",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41751"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303035",
+    "@owner": "E1508",
+    "E1508f3": "530504.0",
+    "E1508f1": "TOAMASINA I",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41758"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303040",
+    "@owner": "E1508",
+    "E1508f3": "530208.0",
+    "E1508f1": "BRICKAVILLE",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41758"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303051",
+    "@owner": "E1508",
+    "E1508f3": "510405.0",
+    "E1508f1": "ANOSIBE AN'ALA",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41750"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303052",
+    "@owner": "E1508",
+    "E1508f3": "520505.0",
+    "E1508f1": "SOANIERANA IVONGO",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41753"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303074",
+    "@owner": "E1508",
+    "E1508f3": "630801.0",
+    "E1508f1": "TOLIARY I",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41756"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303076",
+    "@owner": "E1508",
+    "E1508f3": "630407.0",
+    "E1508f1": "BEROROHA",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41756"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303077",
+    "@owner": "E1508",
+    "E1508f3": "630603.0",
+    "E1508f1": "MOROMBE",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41756"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303079",
+    "@owner": "E1508",
+    "E1508f3": "630527.0",
+    "E1508f1": "BETIOKY ATSIMO",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41756"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303080",
+    "@owner": "E1508",
+    "E1508f3": "630112.0",
+    "E1508f1": "AMPANIHY OUEST",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41756"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303085",
+    "@owner": "E1508",
+    "E1508f3": "630704.0",
+    "E1508f1": "SAKARAHA",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41756"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303089",
+    "@owner": "E1508",
+    "E1508f3": "610113.0",
+    "E1508f1": "AMBOVOMBE ANDROY",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41754"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303093",
+    "@owner": "E1508",
+    "E1508f3": "630904.0",
+    "E1508f1": "TOLIARY II",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41756"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303095",
+    "@owner": "E1508",
+    "E1508f3": "220202.0",
+    "E1508f1": "ANTALAHA",
+    "E1508f2": {
+      "@type": "REFERENCE",
+      "value": "z41768"
+    },
+    "classId": "E1508"
+  },
+  {
+    "@id": "z303683",
+    "@owner": "E1511",
+    "E1511f3": "520504.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303052"
+    },
+    "E1511f1": "Antanifotsy",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z303853",
+    "@owner": "E1511",
+    "E1511f3": "530202.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303040"
+    },
+    "E1511f1": "Ambinaninony",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z303973",
+    "@owner": "E1511",
+    "E1511f3": "110701.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z302993"
+    },
+    "E1511f1": "ANTANANARIVO I",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304156",
+    "@owner": "E1511",
+    "E1511f3": "510407.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303051"
+    },
+    "E1511f1": "Longozabe",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304239",
+    "@owner": "E1511",
+    "E1511f3": "310102.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303013"
+    },
+    "E1511f1": "Ambatomifanongoa",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304244",
+    "@owner": "E1511",
+    "E1511f3": "310101.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303013"
+    },
+    "E1511f1": "Ambatofinandrahana",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304319",
+    "@owner": "E1511",
+    "E1511f3": "310211.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303014"
+    },
+    "E1511f1": "Antoetra",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304367",
+    "@owner": "E1511",
+    "E1511f3": "630403.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303076"
+    },
+    "E1511f1": "Beroroha",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304424",
+    "@owner": "E1511",
+    "E1511f3": "630601.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303077"
+    },
+    "E1511f1": "Ambahikily",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304445",
+    "@owner": "E1511",
+    "E1511f3": "630607.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303077"
+    },
+    "E1511f1": "Morombe",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304455",
+    "@owner": "E1511",
+    "E1511f3": "630404.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303076"
+    },
+    "E1511f1": "Fanjakana",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304539",
+    "@owner": "E1511",
+    "E1511f3": "630602.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303077"
+    },
+    "E1511f1": "Antanimieva",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304586",
+    "@owner": "E1511",
+    "E1511f3": "630914.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303093"
+    },
+    "E1511f1": "Manombo Sud",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304600",
+    "@owner": "E1511",
+    "E1511f3": "630907.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303093"
+    },
+    "E1511f1": "Ankiloaka I",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304612",
+    "@owner": "E1511",
+    "E1511f3": "630712.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303085"
+    },
+    "E1511f1": "Sakaraha",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304633",
+    "@owner": "E1511",
+    "E1511f3": "630916.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303093"
+    },
+    "E1511f1": "Marofoty",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304640",
+    "@owner": "E1511",
+    "E1511f3": "630906.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303093"
+    },
+    "E1511f1": "Andranovory",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304644",
+    "@owner": "E1511",
+    "E1511f3": "630908.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303093"
+    },
+    "E1511f1": "Ankilimalinike",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304678",
+    "@owner": "E1511",
+    "E1511f3": "630905.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303093"
+    },
+    "E1511f1": "Andranohinaly",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304689",
+    "@owner": "E1511",
+    "E1511f3": "630801.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303074"
+    },
+    "E1511f1": "Toliara I",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304694",
+    "@owner": "E1511",
+    "E1511f3": "630913.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303093"
+    },
+    "E1511f1": "Betsinjaka",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304731",
+    "@owner": "E1511",
+    "E1511f3": "630903.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303093"
+    },
+    "E1511f1": "Anakao",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304736",
+    "@owner": "E1511",
+    "E1511f3": "630511.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303079"
+    },
+    "E1511f1": "Betioky Sud",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304738",
+    "@owner": "E1511",
+    "E1511f3": "630514.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303079"
+    },
+    "E1511f1": "Lazarivo",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304762",
+    "@owner": "E1511",
+    "E1511f3": "630108.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303080"
+    },
+    "E1511f1": "Beahitse",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304849",
+    "@owner": "E1511",
+    "E1511f3": "610104.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303089"
+    },
+    "E1511f1": "Ambonaivo",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304896",
+    "@owner": "E1511",
+    "E1511f3": "220203.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303095"
+    },
+    "E1511f1": "Ambohitralanana",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z304952",
+    "@owner": "E1511",
+    "E1511f3": "530503.0",
+    "E1511f2": {
+      "@type": "REFERENCE",
+      "value": "z303035"
+    },
+    "E1511f1": "Morarano",
+    "classId": "E1511"
+  },
+  {
+    "@id": "z305455",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "317071001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304156"
+    },
+    "E1512f1": "LONGOZABE"
+  },
+  {
+    "@id": "z307886",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "318030001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z303683"
+    },
+    "E1512f1": "ANTANIFOTSY"
+  },
+  {
+    "@id": "z308098",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "516050002",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304849"
+    },
+    "E1512f1": "BERATRO I"
+  },
+  {
+    "@id": "z310736",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "111190006",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z303973"
+    },
+    "E1512f1": "AMBATOMAINTY"
+  },
+  {
+    "@id": "z311480",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "306110001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z303853"
+    },
+    "E1512f1": "AMBINANINONY"
+  },
+  {
+    "@id": "z312086",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "301003006",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304952"
+    },
+    "E1512f1": "21/43.AMBOLOMADINIKA"
+  },
+  {
+    "@id": "z314069",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "202010001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304244"
+    },
+    "E1512f1": "AMBATOFINANDRAHANA"
+  },
+  {
+    "@id": "z314089",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "202110008",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304239"
+    },
+    "E1512f1": "AMBALAMARINA"
+  },
+  {
+    "@id": "z314293",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "203410015",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304319"
+    },
+    "E1512f1": "ANALAMANANA"
+  },
+  {
+    "@id": "z315831",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "710210001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304896"
+    },
+    "E1512f1": "AMBOHITRALANANA"
+  },
+  {
+    "@id": "z318706",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "507190025",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304762"
+    },
+    "E1512f1": "BESELY"
+  },
+  {
+    "@id": "z319111",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "503050001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304367"
+    },
+    "E1512f1": "BEHISATSY"
+  },
+  {
+    "@id": "z319145",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "503030002",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304455"
+    },
+    "E1512f1": "MANAMBY"
+  },
+  {
+    "@id": "z319304",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "506011004",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304736"
+    },
+    "E1512f1": "BETIOKY II"
+  },
+  {
+    "@id": "z319370",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "506330028",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304738"
+    },
+    "E1512f1": "BEANTAKY"
+  },
+  {
+    "@id": "z319584",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "504050009",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304424"
+    },
+    "E1512f1": "ANKILIMAHAVELO"
+  },
+  {
+    "@id": "z319591",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "504130005",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304539"
+    },
+    "E1512f1": "MANOMBIKA"
+  },
+  {
+    "@id": "z319629",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "504010004",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304445"
+    },
+    "E1512f1": "MANGOLOVOLO"
+  },
+  {
+    "@id": "z319631",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "504010009",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304445"
+    },
+    "E1512f1": "AMBOHITSE"
+  },
+  {
+    "@id": "z319635",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "504010001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304445"
+    },
+    "E1512f1": "TSINJORANO"
+  },
+  {
+    "@id": "z319751",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "512011001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304612"
+    },
+    "E1512f1": "SAKARAHA BAS"
+  },
+  {
+    "@id": "z319758",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "501006006",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304689"
+    },
+    "E1512f1": "ANKETA BAS"
+  },
+  {
+    "@id": "z319766",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "501005002",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304689"
+    },
+    "E1512f1": "ANDABOLY"
+  },
+  {
+    "@id": "z319787",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "501002008",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304689"
+    },
+    "E1512f1": "ANDABIZY"
+  },
+  {
+    "@id": "z319792",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "501002006",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304689"
+    },
+    "E1512f1": "ANKATSAKA"
+  },
+  {
+    "@id": "z319821",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520132004",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304731"
+    },
+    "E1512f1": "BEFASY"
+  },
+  {
+    "@id": "z319846",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520112002",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304678"
+    },
+    "E1512f1": "SARERIAKE"
+  },
+  {
+    "@id": "z319875",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520270009",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304640"
+    },
+    "E1512f1": "VORONDREO VAOVAO"
+  },
+  {
+    "@id": "z319893",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520310017",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304600"
+    },
+    "E1512f1": "ANKILILOAKA II"
+  },
+  {
+    "@id": "z319897",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520310001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304600"
+    },
+    "E1512f1": "ANKILILOAKA I"
+  },
+  {
+    "@id": "z319899",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520310023",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304600"
+    },
+    "E1512f1": "AMBONDRO"
+  },
+  {
+    "@id": "z319910",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520170010",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304644"
+    },
+    "E1512f1": "ANDREVO HAUT"
+  },
+  {
+    "@id": "z319970",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520050011",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304694"
+    },
+    "E1512f1": "MOTOMBE EST"
+  },
+  {
+    "@id": "z319977",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520250014",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304586"
+    },
+    "E1512f1": "TSIHAKE"
+  },
+  {
+    "@id": "z319982",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520250007",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304586"
+    },
+    "E1512f1": "TSIFOTA"
+  },
+  {
+    "@id": "z319995",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520250001",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304586"
+    },
+    "E1512f1": "MANOMBO I"
+  },
+  {
+    "@id": "z320005",
+    "@owner": "E1512",
+    "classId": "E1512",
+    "E1512f3": "520210008",
+    "E1512f2": {
+      "@type": "REFERENCE",
+      "value": "z304633"
+    },
+    "E1512f1": "ANTANIMENA"
+  },
+  {
+    "@id": "U1070",
+    "@owner": "_users",
+    "email": "admin@admin.org",
+    "name": "Admin",
+    "locale": "fr",
+    "password": "xyz"
+  },
+  {
+    "@id": "d1026",
+    "@owner": "U1070",
+    "_classf11": {
+      "@type": "REFERENCE",
+      "value": "c379"
+    },
+    "classId": "_folder",
+    "_folder_description": "Education Database",
+    "_folder_label": "EDUCATION"
+  },
+  {
+    "@id": "P1026",
+    "@owner": "d1026",
+    "classId": "_class",
+    "_class_label": "Partner",
+    "elements": [
+      {
+        "id": "P1026f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P1026f10",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "d1026p30",
+    "@owner": "P1026",
+    "P1026f1": "UNICEF",
+    "classId": "P1026",
+    "P1026f10": "United Nations Children's Funds"
+  },
+  {
+    "@id": "C402c58b99ee",
+    "@owner": "d1026",
+    "_class": "_folder",
+    "_folder_label": "après"
+  },
+  {
+    "@id": "a2509",
+    "@owner": "C402c58b99ee",
+    "classId": "_class",
+    "_class_label": "réhabilitation reconstruction",
+    "elements": [
+      {
+        "id": "a2509f7",
+        "visible": true,
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "P1026"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a2509f12",
+        "visible": true,
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a2509f13",
+        "visible": true,
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a2509f11",
+        "visible": true,
+        "label": "Fokotany",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1512"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a00000025090093030929",
+        "label": "apres",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i12441",
+            "visible": true,
+            "label": "nombre d'école réhabilitée",
+            "required": true,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "nombre"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i12442",
+            "visible": true,
+            "label": "nombre d'école reconstruite",
+            "required": true,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "nombre"
+              },
+              "typeClass": "QUANTITY"
+            }
+          },
+          {
+            "id": "i12443",
+            "visible": true,
+            "label": "nombre de salle réhabilitée",
+            "required": true,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "nombre"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "i12444",
+        "visible": true,
+        "label": "nombre de salle reconstruite",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "nombre"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i12445",
+        "visible": true,
+        "label": "nombre d'élèves bénéficiaires",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "nombre"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i12446",
+        "visible": true,
+        "label": "nombre de garçon bénéficiaire",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "nombre"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i12447",
+        "visible": true,
+        "label": "nombre de fille bénéficiaire",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "nombre"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "a2509f14",
+        "visible": true,
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "s1336279918",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319635"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 906.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 452.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 454.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s2134793967",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319846"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 93.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 46.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 47.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s1064376554",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319584"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 232.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 109.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 123.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s593876266",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319629"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 212.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 117.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 95.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s244391543",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319977"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 305.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 181.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 124.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s1168757615",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319875"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 198.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 98.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 100.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s371004579",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319995"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 235.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 117.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 118.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s2033436440",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319591"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 154.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 96.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 58.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s952592497",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319631"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 281.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 157.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 124.0,
+      "units": "nombre"
+    }
+  },
+  {
+    "@id": "s824185149",
+    "@owner": "a2509",
+    "a2509f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2013-12-02"
+    },
+    "a2509f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2014-04-02"
+    },
+    "a2509f11": {
+      "@type": "REFERENCE",
+      "value": "z319982"
+    },
+    "classId": "a2509",
+    "i12441": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12443": {
+      "@type": "QUANTITY",
+      "value": 0.0,
+      "units": "nombre"
+    },
+    "i12442": {
+      "@type": "QUANTITY",
+      "value": 1.0,
+      "units": "nombre"
+    },
+    "i12445": {
+      "@type": "QUANTITY",
+      "value": 338.0,
+      "units": "nombre"
+    },
+    "i12444": {
+      "@type": "QUANTITY",
+      "value": 2.0,
+      "units": "nombre"
+    },
+    "i12447": {
+      "@type": "QUANTITY",
+      "value": 191.0,
+      "units": "nombre"
+    },
+    "a2509f7": {
+      "@type": "REFERENCE",
+      "value": "d1026p30"
+    },
+    "i12446": {
+      "@type": "QUANTITY",
+      "value": 147.0,
+      "units": "nombre"
+    }
+  }
+]

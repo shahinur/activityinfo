@@ -3,7 +3,6 @@ package org.activityinfo.model.type.expr;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.RecordFieldTypeClass;
 
 /**
@@ -11,7 +10,11 @@ import org.activityinfo.model.type.RecordFieldTypeClass;
  */
 public class ExprFieldType implements FieldType {
 
-    public static final FieldTypeClass TYPE_CLASS = new RecordFieldTypeClass() {
+    public interface ExprTypeClass extends RecordFieldTypeClass {
+        ExprValue deserialize(Record record);
+    }
+
+    public static final ExprTypeClass TYPE_CLASS = new ExprTypeClass() {
         @Override
         public String getId() {
             return "expr";
@@ -28,7 +31,7 @@ public class ExprFieldType implements FieldType {
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public ExprValue deserialize(Record record) {
             return ExprValue.fromRecord(record);
         }
     };

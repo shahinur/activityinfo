@@ -27,11 +27,4 @@
   <inherits name="org.activityinfo.model.Model"/>
   <inherits name="org.activityinfo.service.Service"/>
 
-  <inherits name="org.activityinfo.model.overlay.ModelOverlays"/>
-  <inherits name="com.github.nmorel.gwtjackson.GwtJackson" />
-  <inherits name="com.google.gson.Gson"/>
-
-  <extend-configuration-property name="gwtjackson.configuration.extension"
-                                 value="org.activityinfo.ui.store.remote.client.serde.JacksonConfiguration" />
-
 </module>

@@ -19,4 +19,14 @@ public class MyWidget extends VWidget {
         });
         return button;
     }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof MyWidget;
+    }
 }

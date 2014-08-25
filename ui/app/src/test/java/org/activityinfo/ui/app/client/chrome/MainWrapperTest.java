@@ -22,7 +22,7 @@ public class MainWrapperTest {
         base = BaseStyleResources.load();
         base.copyTo(tempDir);
 
-        store = new TestResourceStore().load("/test.json");
+        store = new TestResourceStore().load("test.json");
         service = new TestRemoteStoreService(store);
     }
 

@@ -60,8 +60,7 @@ public class RowParserTest {
 
     @Test
     public void qisCsvColumns() throws IOException {
-        PastedTable source = new PastedTable(
-                Resources.toString(getResource("org/activityinfo/core/shared/importing/qis.csv"), Charsets.UTF_8));
+        PastedTable source = new PastedTable(Resources.toString(getResource("qis.csv"), Charsets.UTF_8));
 
         final List<SourceColumn> columns = source.getColumns();
         System.out.println(Joiner.on('\n').join(columns));

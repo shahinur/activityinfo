@@ -69,7 +69,7 @@ public class H {
         return new VNode(DIV, new VText(text));
     }
 
-    public static VNode div(HasClassNames classNames, VTree... children) {
+    public static VNode div(CssClass classNames, VTree... children) {
         return new VNode(DIV, PropMap.withClasses(classNames), children);
     }
     public static VNode div(PropMap propMap, VTree... children) {
@@ -129,7 +129,7 @@ public class H {
         return new VNode(UL, PropMap.withClasses(className), children);
     }
 
-    public static VNode ul(HasClassNames className, VTree... children) {
+    public static VNode ul(CssClass className, VTree... children) {
         return new VNode(UL, PropMap.withClasses(className.getClassNames()), children);
     }
 
@@ -176,7 +176,7 @@ public class H {
         return new VNode(SPAN, propMap);
     }
 
-    public static VNode span(HasClassNames classNames, String text) {
+    public static VNode span(CssClass classNames, String text) {
         return new VNode(SPAN, PropMap.withClasses(classNames), new VText(text));
     }
 
@@ -252,7 +252,7 @@ public class H {
         return new VNode(HtmlTag.FORM, children);
     }
 
-    public static PropMap className(HasClassNames className) {
+    public static PropMap className(CssClass className) {
         return PropMap.withClasses(className.getClassNames());
     }
 
@@ -260,7 +260,7 @@ public class H {
         return PropMap.withClasses(className);
     }
 
-    public static PropMap classNames(HasClassNames class1, HasClassNames class2) {
+    public static PropMap classNames(CssClass class1, CssClass class2) {
         return PropMap.withClasses(class1.getClassNames() + " " + class2.getClassNames());
     }
 
@@ -283,17 +283,17 @@ public class H {
                 .set("src", src));
     }
 
-    public static PropMap classNames(HasClassNames class1, HasClassNames class2, HasClassNames class3) {
+    public static PropMap classNames(CssClass class1, CssClass class2, CssClass class3) {
         return PropMap.withClasses(
                 class1.getClassNames() + " " +
                 class2.getClassNames() + " " +
                 class3.getClassNames());
     }
 
-    public static PropMap classNames(HasClassNames class1,
-                                     HasClassNames class2,
-                                     HasClassNames class3,
-                                     HasClassNames class4) {
+    public static PropMap classNames(CssClass class1,
+                                     CssClass class2,
+                                     CssClass class3,
+                                     CssClass class4) {
         return PropMap.withClasses(
                 class1.getClassNames() + " " +
                 class2.getClassNames() + " " +
@@ -309,16 +309,16 @@ public class H {
         return new VNode(HtmlTag.I, propMap, children);
     }
 
-    public static PropMap classNames(HasClassNames class1,
-                                     HasClassNames class2,
-                                     HasClassNames class3,
-                                     HasClassNames class4,
-                                     HasClassNames... classNames) {
+    public static PropMap classNames(CssClass class1,
+                                     CssClass class2,
+                                     CssClass class3,
+                                     CssClass class4,
+                                     CssClass... classNames) {
         StringBuilder className = new StringBuilder(class1.getClassNames());
         className.append(" ").append(class2.getClassNames());
         className.append(" ").append(class3.getClassNames());
         className.append(" ").append(class4.getClassNames());
-        for(HasClassNames name : classNames) {
+        for(CssClass name : classNames) {
             className.append(" ");
             className.append(name.getClassNames());
         }

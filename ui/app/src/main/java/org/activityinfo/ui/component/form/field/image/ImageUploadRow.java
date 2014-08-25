@@ -28,30 +28,14 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
-import com.google.gwt.http.client.URL;
+import com.google.gwt.http.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Hidden;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
+import com.google.gwt.user.client.ui.*;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.image.ImageRowValue;
-import org.activityinfo.service.blob.UploadCredentials;
 
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -117,7 +101,7 @@ public class ImageUploadRow extends Composite {
     }
 
     private String createUploadUrl() {
-        String blobId = ResourceId.generateId().asString();
+        String blobId = Resources.generateId().asString();
 //        String classId = formClassId.asString();
 //        String fieldId = formField.getId().asString();
         String fileName = fileName();
@@ -158,18 +142,20 @@ public class ImageUploadRow extends Composite {
             requestBuilder.sendRequest(null, new RequestCallback() {
                 @Override
                 public void onResponseReceived(Request request, Response response) {
-                    String json = response.getText();
-                    Resource resource = Resources.fromJson(json);
-                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
+//                    String json = response.getText();
+//                    Resource resource = Resources.fromJson(json);
+//                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
+//
+//                    Map<String, String> formFields = uploadCredentials.getFormFields();
+//                    for (Map.Entry<String, String> field : formFields.entrySet()) {
+//                        formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
+//                    }
+//
+//                    formPanel.setAction(uploadCredentials.getUrl());
+//                    formPanel.setMethod(uploadCredentials.getMethod());
+//                    upload();
 
-                    Map<String, String> formFields = uploadCredentials.getFormFields();
-                    for (Map.Entry<String, String> field : formFields.entrySet()) {
-                        formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
-                    }
-
-                    formPanel.setAction(uploadCredentials.getUrl());
-                    formPanel.setMethod(uploadCredentials.getMethod());
-                    upload();
+                    throw new UnsupportedOperationException();
                 }
 
                 @Override

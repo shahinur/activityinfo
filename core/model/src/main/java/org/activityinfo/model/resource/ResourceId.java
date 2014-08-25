@@ -4,7 +4,6 @@ package org.activityinfo.model.resource;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import javax.annotation.Nonnull;
-import java.util.Date;
 
 /**
  * Globally, universally unique and persistent identifier
@@ -12,11 +11,6 @@ import java.util.Date;
  *
  */
 public final class ResourceId {
-
-    public static final ResourceId ROOT_ID = ResourceId.valueOf("_root");
-
-    public static final int RADIX = 10;
-    public static long COUNTER = 1;
 
     private final String text;
 
@@ -29,12 +23,6 @@ public final class ResourceId {
     public static ResourceId valueOf(@Nonnull String string) {
         return new ResourceId(string);
     }
-
-    public static ResourceId generateId() {
-        return valueOf("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
-                       Long.toString(COUNTER++, Character.MAX_RADIX));
-    }
-
 
     private ResourceId(@Nonnull String text) {
         this.text = text;

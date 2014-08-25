@@ -12,7 +12,7 @@ import org.activityinfo.ui.style.tools.gss.GssCompiler;
 import org.activityinfo.ui.style.tools.gss.GssTree;
 import org.activityinfo.ui.style.tools.rebind.ClassNames;
 import org.activityinfo.ui.style.tools.rebind.SourceResolver;
-import org.activityinfo.ui.vdom.shared.html.HasClassNames;
+import org.activityinfo.ui.vdom.shared.html.CssClass;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,7 +50,7 @@ public class BaseStylesheetCompiler {
         optimize();
         emitResources();
         emitStylesheet();
-        generateStyleNameEnum();
+        generateStyleNameConstants();
         generateStyleAccessors();
 
         // Writes a mapping to strong names that can be
@@ -75,22 +75,20 @@ public class BaseStylesheetCompiler {
     }
 
 
-    private void generateStyleNameEnum() throws IOException {
+    private void generateStyleNameConstants() throws IOException {
         List<String> classNames = Lists.newArrayList(cssTree.getClassNames());
         Collections.sort(classNames);
 
         ClassWriter accessorWriter = new ClassWriter(baseDir, "org.activityinfo.ui.style", "BaseStyles");
-        accessorWriter.declareEnum(HasClassNames.class);
+        accessorWriter.declareFinalClass();
 
         for(String className : classNames) {
             if(!className.startsWith("glyphicon") &&
                !className.startsWith("fa")) {
 
-                accessorWriter.writeEnumValue(ClassNames.hyphenatedToEnumStyle(className), className);
+                accessorWriter.writeConstant(ClassNames.hyphenatedToEnumStyle(className), CssClass.class, className);
             }
         }
-        accessorWriter.writeEnumGetClassNameImpl();
-        accessorWriter.writeDivBuilder();
         accessorWriter.close();
     }
 

@@ -46,7 +46,7 @@ public class ResourceStoreStub implements ResourceStore {
     public static Resource getMyResource() {
         Resource resource = Resources.createResource();
         resource.setId(MY_RESOURCE_ID);
-        resource.setOwnerId(ResourceId.ROOT_ID);
+        resource.setOwnerId(Resources.ROOT_ID);
         resource.setVersion(15);
         resource.set("stringProperty", "stringValue");
         resource.set("booleanValue", true);
@@ -77,15 +77,15 @@ public class ResourceStoreStub implements ResourceStore {
     @Override
     public ResourceTree queryTree(@InjectParam AuthenticatedUser user, ResourceTreeRequest request) {
 
-        ResourceNode parentFolder = new ResourceNode(ResourceId.generateId(), FolderClass.CLASS_ID);
+        ResourceNode parentFolder = new ResourceNode(Resources.generateId(), FolderClass.CLASS_ID);
         parentFolder.setLabel("Parent Folder");
-        parentFolder.setOwnerId(ResourceId.ROOT_ID);
+        parentFolder.setOwnerId(Resources.ROOT_ID);
 
-        ResourceNode child1 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
+        ResourceNode child1 = new ResourceNode(Resources.generateId(), FormClass.CLASS_ID);
         child1.setOwnerId(parentFolder.getOwnerId());
         child1.setLabel("Child 1");
 
-        ResourceNode child2 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
+        ResourceNode child2 = new ResourceNode(Resources.generateId(), FormClass.CLASS_ID);
         child2.setOwnerId(parentFolder.getOwnerId());
         child2.setLabel("Child 2");
 
@@ -153,19 +153,19 @@ public class ResourceStoreStub implements ResourceStore {
     @Override
     public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
 
-        ResourceNode folder1 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
-        folder1.setOwnerId(ResourceId.ROOT_ID);
+        ResourceNode folder1 = new ResourceNode(Resources.generateId(), FormClass.CLASS_ID);
+        folder1.setOwnerId(Resources.ROOT_ID);
         folder1.setVersion(41);
         folder1.setLabel("Child 1");
 
-        ResourceNode folder2 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
-        folder2.setOwnerId(ResourceId.ROOT_ID);
+        ResourceNode folder2 = new ResourceNode(Resources.generateId(), FormClass.CLASS_ID);
+        folder2.setOwnerId(Resources.ROOT_ID);
         folder2.setVersion(42);
         folder2.setLabel("Child 2");
 
-        ResourceNode folder3 = new ResourceNode(ResourceId.generateId(), FormClass.CLASS_ID);
+        ResourceNode folder3 = new ResourceNode(Resources.generateId(), FormClass.CLASS_ID);
         folder3.setVersion(43);
-        folder3.setOwnerId(ResourceId.ROOT_ID);
+        folder3.setOwnerId(Resources.ROOT_ID);
         folder3.setLabel("Child 3");
 
 

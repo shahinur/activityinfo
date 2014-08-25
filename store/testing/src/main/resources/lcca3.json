@@ -1,0 +1,880 @@
+[
+  {
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "_folder_label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "_class_label": "Country",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "visible": true,
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "visible": true,
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c317",
+    "@owner": "_country",
+    "_countryf3": "ET",
+    "_countryf1": "Ethiopia",
+    "classId": "_country"
+  },
+  {
+    "@id": "L50598",
+    "@owner": "c317",
+    "classId": "_class",
+    "_class_label": "Country",
+    "elements": [
+      {
+        "id": "L50598f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L50598f4",
+        "visible": true,
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L50598f5",
+        "visible": true,
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "g50598",
+    "@owner": "L50598",
+    "L50598f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 40.493059158325195,
+      "latitude": 9.147995948791525
+    },
+    "L50598f1": "Ethiopia",
+    "classId": "L50598"
+  },
+  {
+    "@id": "U165",
+    "@owner": "_users",
+    "email": "alex@bedatadriven.com",
+    "name": "Alex Bertram",
+    "locale": "en",
+    "password": "$2a$10$F3GSXu6cBJeVK.HnsnSnC.D52bLAqTLVm9.72MYJW8gc73ehYpkVm"
+  },
+  {
+    "@id": "U375",
+    "@owner": "_users",
+    "email": "cbarnhoorn@bedatadriven.com",
+    "name": "Claire Barnhoorn",
+    "locale": "fr",
+    "password": "$2a$10$m9E2WGniHKlZJVzyXG2kP.KstNmJUfGmdGO62OvDFKAY4NFdUJbKu"
+  },
+  {
+    "@id": "U2195",
+    "@owner": "_users",
+    "organization": "IRC International Water and Sanitation Centre",
+    "email": "bostoen@irc.nl",
+    "name": "KRISTOF BOSTOEN",
+    "locale": "en",
+    "password": "$2a$10$fGDZKQdFuffSG5GyN6JpDO/5OUNbfA9Z4xrIhRiqUitfI.MtdvDVO",
+    "jobTitle": "Senior Programme officer etc."
+  },
+  {
+    "@id": "U3955",
+    "@owner": "_users",
+    "organization": "IRC",
+    "email": "dickinson@ircwash.org",
+    "name": "Nicolas Dickinson",
+    "locale": "en",
+    "password": "$2a$10$MV9wl4XTCo60GNbUOPVBVuewhVivul8D0rbs48xf82O7Q/SDI08vu",
+    "jobTitle": "Senior Programme Officer"
+  },
+  {
+    "@id": "U4095",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "jacimovic@ircwash.org",
+    "name": "Ruzica Jacimovic",
+    "locale": "en",
+    "password": "$2a$10$XBMpfmTWSc1GZ17DRLiaXuk1sEn418LMB157zV5kf2UsAS69ICOdW"
+  },
+  {
+    "@id": "U4099",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "carrasco@ircwash.org",
+    "name": "Mélanie Carrasco",
+    "locale": "en",
+    "password": "$2a$10$kTqLUGMUT4MgjYviUQFbQe2F.XZf1NFm0XRyo3jDETWYWWloEw.6m"
+  },
+  {
+    "@id": "U4100",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "pezon@ircwash.org",
+    "name": "Chritelle Pezon",
+    "locale": "en",
+    "password": "$2a$10$dx5FRwO51WqAwf7OIZC1cuZRkCz5.uXTvyFUCzB/JKMVpc/YfbFV."
+  },
+  {
+    "@id": "U4143",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "oosterveen@ircwash.org",
+    "name": "Harry Oosterveen",
+    "locale": "en",
+    "password": "$2a$10$WcMDKg2acoyU94wC/XBFE.5RI1uFoh7hS7NN06lqo.iimBcDBcMnu"
+  },
+  {
+    "@id": "U4144",
+    "@owner": "_users",
+    "invitedBy": "U2195",
+    "email": "adank@ircwash.org",
+    "name": "Marieke Adank",
+    "locale": "en",
+    "password": "$2a$10$sMFUOwixh9dOubKa0xta1ubDUj7g6KrjbWF2pduHoGCGWl9ui5I7u"
+  },
+  {
+    "@id": "U4145",
+    "@owner": "_users",
+    "invitedBy": "U4144",
+    "email": "bostoen@ircwash.org",
+    "name": "Kristof bostoen",
+    "locale": "en"
+  },
+  {
+    "@id": "U4374",
+    "@owner": "_users",
+    "invitedBy": "U4095",
+    "email": "jacimovic+lcca@ircwash.org",
+    "name": "Surveyors 1-40",
+    "locale": "en",
+    "password": "$2a$10$zWfEjkHPXvT46.S.mfQagu.ssI/LHq3OEYSUIQ1NEKmo7jzolpQHC"
+  },
+  {
+    "@id": "d1350",
+    "@owner": "U2195",
+    "_classf11": {
+      "@type": "REFERENCE",
+      "value": "c317"
+    },
+    "classId": "_folder",
+    "_folder_description": "Cost per service level in Ethiopia and Chad",
+    "_folder_label": "UNHCR LCCA"
+  },
+  {
+    "@id": "P1350",
+    "@owner": "d1350",
+    "classId": "_class",
+    "_class_label": "Partner",
+    "elements": [
+      {
+        "id": "P1350f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P1350f10",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "d1350p1612",
+    "@owner": "P1350",
+    "P1350f1": "IRC LCCA staff",
+    "classId": "P1350"
+  },
+  {
+    "@id": "d1350p1629",
+    "@owner": "P1350",
+    "P1350f1": "IRC testers",
+    "classId": "P1350",
+    "P1350f10": "testers"
+  },
+  {
+    "@id": "a6464",
+    "@owner": "d1350",
+    "classId": "_class",
+    "_class_label": "Bambasi Water Service Ladders Survey",
+    "elements": [
+      {
+        "id": "a6464f7",
+        "visible": true,
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "P1350"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a6464f12",
+        "visible": true,
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a6464f13",
+        "visible": true,
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a6464f11",
+        "visible": true,
+        "label": "Country",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "L50598"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "Q25467",
+        "visible": true,
+        "label": "D1. Camp Name",
+        "required": true,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t119850",
+                "@type": "enumerated",
+                "label": "Bambasi"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q25153",
+        "visible": true,
+        "label": "D2. Water Point Number",
+        "required": true,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t119533",
+                "@type": "enumerated",
+                "label": "A1"
+              },
+              {
+                "id": "t119537",
+                "@type": "enumerated",
+                "label": "A5"
+              },
+              {
+                "id": "t119538",
+                "@type": "enumerated",
+                "label": "A6"
+              },
+              {
+                "id": "t119540",
+                "@type": "enumerated",
+                "label": "A8"
+              },
+              {
+                "id": "t119542",
+                "@type": "enumerated",
+                "label": "A10"
+              },
+              {
+                "id": "t119543",
+                "@type": "enumerated",
+                "label": "A11"
+              },
+              {
+                "id": "t119546",
+                "@type": "enumerated",
+                "label": "B3"
+              },
+              {
+                "id": "t119547",
+                "@type": "enumerated",
+                "label": "B4"
+              },
+              {
+                "id": "t119548",
+                "@type": "enumerated",
+                "label": "B5"
+              },
+              {
+                "id": "t119549",
+                "@type": "enumerated",
+                "label": "B6"
+              },
+              {
+                "id": "t119552",
+                "@type": "enumerated",
+                "label": "B9"
+              },
+              {
+                "id": "t119554",
+                "@type": "enumerated",
+                "label": "B11"
+              },
+              {
+                "id": "t119556",
+                "@type": "enumerated",
+                "label": "B13"
+              },
+              {
+                "id": "t119557",
+                "@type": "enumerated",
+                "label": "C1"
+              },
+              {
+                "id": "t119560",
+                "@type": "enumerated",
+                "label": "C4"
+              },
+              {
+                "id": "t119563",
+                "@type": "enumerated",
+                "label": "C7"
+              },
+              {
+                "id": "t119565",
+                "@type": "enumerated",
+                "label": "C9"
+              },
+              {
+                "id": "t119862",
+                "@type": "enumerated",
+                "label": "C12"
+              },
+              {
+                "id": "t119863",
+                "@type": "enumerated",
+                "label": "C13"
+              },
+              {
+                "id": "t119930",
+                "@type": "enumerated",
+                "label": "SWB6"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "i36185",
+        "visible": true,
+        "label": "D3. Surveyor number",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "Q25468",
+        "visible": true,
+        "label": "I1. Gender / Age of respondant:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t119851",
+                "@type": "enumerated",
+                "label": "Boy"
+              },
+              {
+                "id": "t119852",
+                "@type": "enumerated",
+                "label": "Girl"
+              },
+              {
+                "id": "t119853",
+                "@type": "enumerated",
+                "label": "Man"
+              },
+              {
+                "id": "t119854",
+                "@type": "enumerated",
+                "label": "Woman"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "Q25157",
+        "visible": true,
+        "label": "I2. Do you have an UNHCR ID?",
+        "required": true,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t119576",
+                "@type": "enumerated",
+                "label": "Yes"
+              },
+              {
+                "id": "t119577",
+                "@type": "enumerated",
+                "label": "No"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "i36090",
+        "visible": true,
+        "label": "I3. If YES, what is UNHCR ID number?",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "Q25623",
+        "visible": true,
+        "label": "I6. Were you provided a CODE ID?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t121123",
+                "@type": "enumerated",
+                "label": "Yes"
+              },
+              {
+                "id": "t121124",
+                "@type": "enumerated",
+                "label": "No"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "i37058",
+        "visible": true,
+        "label": "I7. If yes, what is it?",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "Q25158",
+        "visible": true,
+        "label": "I4. If NO, why you do not have ID?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t119578",
+                "@type": "enumerated",
+                "label": "I forgot it"
+              },
+              {
+                "id": "t119579",
+                "@type": "enumerated",
+                "label": "A member of my family is registered, but not me"
+              },
+              {
+                "id": "t119580",
+                "@type": "enumerated",
+                "label": "I live outside the camp"
+              },
+              {
+                "id": "t119581",
+                "@type": "enumerated",
+                "label": "I an new and not registered yet"
+              },
+              {
+                "id": "t119855",
+                "@type": "enumerated",
+                "label": "Not Relevant"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "i36106",
+        "visible": true,
+        "label": "I5. Provided code ID:",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "Q25162",
+        "visible": true,
+        "label": "L1. Do you know the code of the block you live in?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t119591",
+                "@type": "enumerated",
+                "label": "Yes"
+              },
+              {
+                "id": "t119592",
+                "@type": "enumerated",
+                "label": "No"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "i36199",
+        "visible": true,
+        "label": "L2. In which block do you live?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "Block number"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "Q25470",
+        "visible": true,
+        "label": "L3. In which zone do you live?",
+        "required": true,
+        "type": {
+          "parameters": {
+            "values": [
+              {
+                "id": "t119858",
+                "@type": "enumerated",
+                "label": "Zone A"
+              },
+              {
+                "id": "t119860",
+                "@type": "enumerated",
+                "label": "Zone C"
+              },
+              {
+                "id": "t119859",
+                "@type": "enumerated",
+                "label": "Zone B"
+              },
+              {
+                "id": "t119861",
+                "@type": "enumerated",
+                "label": "Not Relevant"
+              }
+            ],
+            "classId": "_type:enum",
+            "cardinality": "MULTIPLE"
+          },
+          "typeClass": "enumerated"
+        }
+      },
+      {
+        "id": "i36201",
+        "visible": true,
+        "label": "L4. In which community do you live?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "Comm. number"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36099",
+        "visible": true,
+        "label": "L5. How long does it take you to come here?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "minutes"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36100",
+        "visible": true,
+        "label": "Q1. For how many family members is the water you collect ?",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "people"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36104",
+        "visible": true,
+        "label": "Q2. TOTAL NUMBER of jerricanes that person fills up:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36187",
+        "visible": true,
+        "label": "Q3. Enter number of jerricanes of 5 litres",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36188",
+        "visible": true,
+        "label": "Q4. Enter number of jerricanes of 10 litres",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36189",
+        "visible": true,
+        "label": "Q5. Enter number of jerricanes of 15 litres",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36190",
+        "visible": true,
+        "label": "Q6. Enter number of jerricanes of 20 litres",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36345",
+        "visible": true,
+        "label": "Q7. Enter number of jerricanes of 25 liters",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36191",
+        "visible": true,
+        "label": "Q8. Enter number of jerricanes of other size",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "peaces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36192",
+        "visible": true,
+        "label": "Q9. Enter the size of the other jerricanes",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "liters"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36347",
+        "visible": true,
+        "label": "Q10. TOTAL NUMBER of buckets that person fills up:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i36348",
+        "visible": true,
+        "label": "Q11. Enter number of buckets of 5 liters:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i37047",
+        "visible": true,
+        "label": "Q12. Enter number of buckets of 12 liters:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "i37048",
+        "visible": true,
+        "label": "Q13. Enter number of buckets of 15 liters:",
+        "required": false,
+        "type": {
+          "parameters": {
+            "classId": "_type:quantity",
+            "units": "pieces"
+          },
+          "typeClass": "QUANTITY"
+        }
+      },
+      {
+        "id": "a6464f14",
+        "visible": true,
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  }
+]

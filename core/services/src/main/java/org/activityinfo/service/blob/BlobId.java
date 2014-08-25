@@ -1,6 +1,6 @@
 package org.activityinfo.service.blob;
 
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 
 /**
  * Globally unique Id for a given blob content.
@@ -15,7 +15,7 @@ public class BlobId {
     }
 
     public static BlobId generate() {
-        return new BlobId(ResourceId.generateId().asString());
+        return new BlobId(Resources.generateId().asString());
     }
 
     public String asString() {

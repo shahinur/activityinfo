@@ -68,7 +68,7 @@ public class InstanceScoreTest extends AbstractImporterTest {
 
         LocaleProxy.initialize();
 
-        resourceLocator = new TestResourceStore().load("/dbunit/nfi-import.json").createLocator();
+        resourceLocator = new TestResourceStore().load("nfi-import.json").createLocator();
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
     }
 
@@ -85,7 +85,7 @@ public class InstanceScoreTest extends AbstractImporterTest {
 
         // Step 1: User pastes in data to import
         PastedTable source = new PastedTable(
-                Resources.toString(getResource("org/activityinfo/core/shared/importing/school-import.csv"), Charsets.UTF_8));
+                Resources.toString(getResource("school-import.csv"), Charsets.UTF_8));
         importModel.setSource(source);
 
         dumpList("COLUMNS", source.getColumns());

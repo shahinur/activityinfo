@@ -4,7 +4,6 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.testing.StubScheduler;
-import com.google.gwt.junit.GWTMockUtilities;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.io.importing.model.ColumnAction;
 import org.activityinfo.io.importing.model.ImportModel;
@@ -38,7 +37,7 @@ public class AbstractImporterTest  {
         // disable GWT.create so that references in static initializers
         // don't sink our test
 
-        GWTMockUtilities.disarm();
+//        GWTMockUtilities.disarm();
     }
 
     protected void dumpHeaders(List<FieldImporterColumn> importColumns) {

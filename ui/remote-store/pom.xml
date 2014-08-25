@@ -39,20 +39,10 @@
       <version>${gwtVersion}</version>
     </dependency>
     <dependency>
-      <groupId>gson-gwt</groupId>
-      <artifactId>gson-gwt</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <version>${gwtVersion}</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.nmorel.gwtjackson</groupId>
-      <artifactId>gwt-jackson</artifactId>
-      <version>0.6.2</version>
     </dependency>
 
   </dependencies>
@@ -82,47 +72,18 @@
             </goals>
             <phase>generate-resources</phase>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
           <execution>
-            <id>ant-test</id>
-            <phase>test</phase>
             <goals>
-              <goal>run</goal>
+              <goal>test</goal>
             </goals>
+            <phase>integration-test</phase>
             <configuration>
-              <tasks>
-                <property name="test_classpath" refid="maven.test.classpath" />
-                <java classname="junit.textui.TestRunner" fork="true" failonerror="true" maxmemory="1024m">
-                  <sysproperty key="gwt.args" value="
-                      -war target/test-out
-                      -gen target/test-gen
-                      -prod
-                      -style pretty
-                      -codeServerPort 50101
-                      -logdir target/test-logs
-                      -logLevel INFO"/>
-
-                  <arg value="org.activityinfo.ui.store.remote.client.RemoteStoreTest" />
-                  <classpath>
-                    <pathelement path="${basedir}/src/main/java" />
-                    <pathelement path="${basedir}/src/test/java" />
-                    <pathelement path="${test_classpath}" />
-                  </classpath>
-                </java>
-              </tasks>
+              <productionMode>true</productionMode>
+              <mode>htmlunit</mode>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
     </plugins>
-
   </build>
-
-
 </project>

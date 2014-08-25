@@ -1,0 +1,263 @@
+[
+  {
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "_folder_label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "_class_label": "Country",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "visible": true,
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "visible": true,
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c1",
+    "@owner": "_country",
+    "_countryf1": "Rdc",
+    "classId": "_country"
+  },
+  {
+    "@id": "L1",
+    "@owner": "c1",
+    "classId": "_class",
+    "_class_label": "localite",
+    "elements": [
+      {
+        "id": "L1f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L1f4",
+        "visible": true,
+        "label": "Alternate Name",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "L1f5",
+        "visible": true,
+        "label": "Geographic Position",
+        "required": false,
+        "type": {
+          "typeClass": "GEOGRAPHIC_POINT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "g1",
+    "@owner": "L1",
+    "classId": "L1",
+    "L1f1": "Penekusu",
+    "L1f5": {
+      "@type": "GEOGRAPHIC_POINT",
+      "longitude": 1.532,
+      "latitude": 27.323
+    }
+  },
+  {
+    "@id": "U1",
+    "@owner": "_users",
+    "email": "akbertram@gmail.com",
+    "name": "Alex",
+    "locale": "fr",
+    "password": "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+  },
+  {
+    "@id": "d1",
+    "@owner": "U1",
+    "_classf11": {
+      "@type": "REFERENCE",
+      "value": "c1"
+    },
+    "classId": "_folder",
+    "_folder_label": "PEAR"
+  },
+  {
+    "@id": "P1",
+    "@owner": "d1",
+    "classId": "_class",
+    "_class_label": "Partner",
+    "elements": [
+      {
+        "id": "P1f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "P1f10",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_description"
+        },
+        "label": "Full Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "d1p1",
+    "@owner": "P1",
+    "classId": "P1",
+    "P1f1": "NRC"
+  },
+  {
+    "@id": "a1",
+    "@owner": "d1",
+    "classId": "_class",
+    "_class_label": "NFI",
+    "elements": [
+      {
+        "id": "a1f7",
+        "visible": true,
+        "label": "Partner",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "P1"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a1f12",
+        "visible": true,
+        "label": "Start Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a1f13",
+        "visible": true,
+        "label": "End Date",
+        "required": true,
+        "type": {
+          "typeClass": "LOCAL_DATE"
+        }
+      },
+      {
+        "id": "a1f11",
+        "visible": true,
+        "label": "localite",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "L1"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "a0000000001-1183866391",
+        "label": "inputs",
+        "type": "section",
+        "elements": [
+          {
+            "id": "i1",
+            "visible": true,
+            "label": "beneficiaries",
+            "required": false,
+            "type": {
+              "parameters": {
+                "classId": "_type:quantity",
+                "units": "menages"
+              },
+              "typeClass": "QUANTITY"
+            }
+          }
+        ]
+      },
+      {
+        "id": "a1f14",
+        "visible": true,
+        "label": "Comments",
+        "required": false,
+        "type": {
+          "typeClass": "NARRATIVE"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "s1",
+    "@owner": "a1",
+    "a1f13": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-02"
+    },
+    "classId": "a1",
+    "a1f7": {
+      "@type": "REFERENCE",
+      "value": "d1p1"
+    },
+    "a1f11": {
+      "@type": "REFERENCE",
+      "value": "g1"
+    },
+    "a1f12": {
+      "@type": "LOCAL_DATE",
+      "value": "2009-01-01"
+    },
+    "i1": {
+      "@type": "QUANTITY",
+      "value": 42.0,
+      "units": "menages"
+    }
+  }
+]

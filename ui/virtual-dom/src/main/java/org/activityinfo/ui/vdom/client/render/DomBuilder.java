@@ -1,10 +1,11 @@
 package org.activityinfo.ui.vdom.client.render;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.Text;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.ui.vdom.client.dom.BrowserDomNode;
+import org.activityinfo.ui.vdom.shared.dom.DomDocument;
+import org.activityinfo.ui.vdom.shared.dom.DomElement;
+import org.activityinfo.ui.vdom.shared.dom.DomNode;
+import org.activityinfo.ui.vdom.shared.dom.DomText;
 import org.activityinfo.ui.vdom.shared.tree.*;
 
 /**
@@ -13,16 +14,16 @@ import org.activityinfo.ui.vdom.shared.tree.*;
 public class DomBuilder {
 
     private RenderContext context;
-    private Document doc = Document.get();
+    private DomDocument doc;
 
-    public DomBuilder(RenderContext context, Document doc) {
+    public DomBuilder(RenderContext context) {
         this.context = context;
-        this.doc = doc;
+        this.doc = context.getDocument();
     }
 
-    public void updateRoot(Element rootElement, VTree vtree) {
+    public void updateRoot(DomElement rootElement, VTree vtree) {
         if(vtree instanceof VNode) {
-            updateRoot(rootElement, (VNode) vtree);
+            updateRootNode(rootElement, (VNode) vtree);
         } else if(vtree instanceof VThunk) {
             updateRootThunk(rootElement, (VThunk)vtree);
         } else {
@@ -30,7 +31,7 @@ public class DomBuilder {
         }
     }
 
-    public void updateRoot(Element rootElement, VNode vNode) {
+    public void updateRootNode(DomElement rootElement, VNode vNode) {
         if(!rootElement.getTagName().equalsIgnoreCase(vNode.tag.name())) {
             throw new UnsupportedOperationException("Cannot change the tag name of the root element");
         }
@@ -42,7 +43,7 @@ public class DomBuilder {
     }
 
 
-    public Node render(VTree vTree) {
+    public DomNode render(VTree vTree) {
 
         if(vTree instanceof VThunk) {
             return renderThunk((VThunk) vTree);
@@ -61,10 +62,10 @@ public class DomBuilder {
         }
     }
 
-    private Node renderTree(VNode vnode) {
-        Element domElement;
+    private DomElement renderTree(VNode vnode) {
+        DomElement domElement;
         if(vnode.namespace == null) {
-            domElement = doc.createElement(vnode.tag.name().toLowerCase());
+            domElement = doc.createElement(vnode.tag);
         } else {
             throw new UnsupportedOperationException("Todo: namespaces");
         }
@@ -77,7 +78,7 @@ public class DomBuilder {
         return appendChildren(domElement, vnode);
     }
 
-    private Node appendChildren(Element domElement, VNode vnode) {
+    private DomElement appendChildren(DomElement domElement, VNode vnode) {
         VTree[] children = vnode.children;
         for (int i = 0; i < children.length; ++i) {
             domElement.appendChild(render(children[i]));
@@ -86,16 +87,16 @@ public class DomBuilder {
         return domElement;
     }
 
-    private Node renderThunk(VThunk thunk) {
+    private DomNode renderThunk(VThunk thunk) {
         VTree virtualNode = materializeThunk(thunk);
-        Node domNode = render(virtualNode);
+        DomNode domNode = render(virtualNode);
 
         thunk.onMounted();
 
         return domNode;
     }
 
-    private void updateRootThunk(Element rootElement, VThunk thunk) {
+    private void updateRootThunk(DomElement rootElement, VThunk thunk) {
         VTree tree = materializeThunk(thunk);
         updateRoot(rootElement, tree);
 
@@ -106,14 +107,14 @@ public class DomBuilder {
         return thunk.force();
     }
 
-    private Text renderText(VText vTree) {
+    private DomText renderText(VText vTree) {
         return doc.createTextNode(vTree.text);
     }
 
-    private Node renderWidget(VWidget vWidget) {
+    private DomNode renderWidget(VWidget vWidget) {
         Widget widget = vWidget.createWidget().asWidget();
         context.attachWidget(widget);
 
-        return widget.getElement();
+        return BrowserDomNode.cast(widget.getElement());
     }
 }
