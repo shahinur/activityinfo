@@ -45,10 +45,8 @@ public class PPTMapRendererTest {
     @Before
     public void setUpDirs() {
         new File("target/report-tests").mkdirs();
-
         referenceBaseMap = new TileBaseMap();
-        referenceBaseMap
-                .setTileUrlPattern("http://mt{s}.aimaps.net/admin/v1/z{z}/{x}x{y}.png");
+        referenceBaseMap.setTileUrlPattern("http://www.activityinfo.org/resources/tiles/admin.cd/z{z}/{x}x{y}.png");
         referenceBaseMap.setName("Administrative Map");
 
     }

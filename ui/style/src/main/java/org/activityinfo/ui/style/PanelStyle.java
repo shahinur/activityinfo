@@ -1,8 +1,8 @@
 package org.activityinfo.ui.style;
 
-import org.activityinfo.ui.vdom.shared.html.HasClassNames;
+import org.activityinfo.ui.vdom.shared.html.CssClass;
 
-public enum PanelStyle implements HasClassNames {
+public enum PanelStyle {
 
     DEFAULT,
     PRIMARY,
@@ -11,8 +11,7 @@ public enum PanelStyle implements HasClassNames {
     WARNING,
     DANGER;
 
-    @Override
-    public String getClassNames() {
-        return "panel panel-" + name().toLowerCase();
+    public CssClass getClassNames() {
+        return CssClass.valueOf("panel panel-" + name().toLowerCase());
     }
 }

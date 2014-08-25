@@ -2,6 +2,7 @@ package org.activityinfo.model.legacy;
 
 import com.google.common.base.Strings;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 
 /**
  * Provides an adapter between legacy ids, which are either random or sequential 32-bit integers but only
@@ -87,11 +88,11 @@ public class CuidAdapter {
                     return attributeId(newId);
             }
         }
-        return ResourceId.generateId();
+        return Resources.generateId();
     }
 
     public static final int getLegacyIdFromCuid(String cuid) {
-        return Integer.parseInt(cuid.substring(1), ResourceId.RADIX);
+        return Integer.parseInt(cuid.substring(1), Resources.RADIX);
     }
 
     public static final ResourceId cuid(char domain, int id) {
@@ -230,13 +231,13 @@ public class CuidAdapter {
     }
 
     private static String block(int id) {
-        return Strings.padStart(Integer.toString(id, ResourceId.RADIX), BLOCK_SIZE, '0');
+        return Strings.padStart(Integer.toString(id, Resources.RADIX), BLOCK_SIZE, '0');
     }
 
     public static int getBlock(ResourceId resourceId, int blockIndex) {
         int startIndex = 1 + (blockIndex * BLOCK_SIZE);
         String block = resourceId.asString().substring(startIndex, startIndex + BLOCK_SIZE);
-        return Integer.parseInt(block, ResourceId.RADIX);
+        return Integer.parseInt(block, Resources.RADIX);
     }
 
     public static ResourceId databaseId(int databaseId) {

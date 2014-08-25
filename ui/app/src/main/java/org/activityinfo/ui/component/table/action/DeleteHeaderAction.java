@@ -28,6 +28,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.component.table.InstanceTable;
 import org.activityinfo.ui.component.table.dialog.DeleteAction;
 import org.activityinfo.ui.style.icons.FontAwesome;
+import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.widget.ConfirmDialog;
 
 /**
@@ -35,7 +36,7 @@ import org.activityinfo.ui.widget.ConfirmDialog;
  */
 public class DeleteHeaderAction implements TableHeaderAction {
 
-    public static final FontAwesome DELETE_ICON = FontAwesome.TIMES_CIRCLE;
+    public static final Icon DELETE_ICON = FontAwesome.TIMES_CIRCLE;
     private final InstanceTable table;
     private final String uniqueId;
 

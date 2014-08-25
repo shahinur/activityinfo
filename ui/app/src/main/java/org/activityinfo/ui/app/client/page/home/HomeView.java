@@ -1,7 +1,7 @@
 package org.activityinfo.ui.app.client.page.home;
 
+import org.activityinfo.ui.style.Alert;
 import org.activityinfo.ui.style.AlertStyle;
-import org.activityinfo.ui.style.Alerts;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.Grid;
 import org.activityinfo.ui.vdom.shared.tree.VThunk;
@@ -19,7 +19,7 @@ public class HomeView extends VThunk {
 
 
     public static VTree announcement() {
-        return Alerts.alert(AlertStyle.INFO,
+        return new Alert(AlertStyle.INFO,
                 h4("Welcome to Activity 3.0 Beta!"),
                 p(strong("Please note"),
                         t(" that not all functionality is yet available in this beta; we look forward " +

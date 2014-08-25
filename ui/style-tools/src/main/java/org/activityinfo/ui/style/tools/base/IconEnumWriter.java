@@ -29,29 +29,26 @@ public class IconEnumWriter {
     }
 
     private void generateFontAwesome() throws IOException {
-        try(ClassWriter accessorWriter = new ClassWriter(baseDir, PACKAGE_NAME, "FontAwesome")) {
+        try(ClassWriter classWriter = new ClassWriter(baseDir, PACKAGE_NAME, "FontAwesome")) {
 
-            accessorWriter.declareEnum(Icon.class);
+            classWriter.declareFinalClass();
             for (String iconName : readFontAwesomeIcons()) {
-                accessorWriter.writeEnumValue(ClassNames.hyphenatedToEnumStyle(iconName), "fa fa-" + iconName);
+                classWriter.writeConstant(ClassNames.hyphenatedToEnumStyle(iconName),
+                        Icon.class, "fa fa-" + iconName);
             }
-            accessorWriter.writeEnumGetClassNameImpl();
-            accessorWriter.writeIconRender();
-            accessorWriter.close();
+            classWriter.close();
         }
     }
 
     private void generateGlyphIcons() throws IOException {
-        try(ClassWriter accessorWriter = new ClassWriter(baseDir, PACKAGE_NAME, "GlyphIcons")) {
+        try(ClassWriter classWriter = new ClassWriter(baseDir, PACKAGE_NAME, "GlyphIcons")) {
 
-            accessorWriter.declareEnum(Icon.class);
+            classWriter.declareFinalClass();
             for (String iconName : readGlyphIcons()) {
-                accessorWriter.writeEnumValue(ClassNames.hyphenatedToEnumStyle(iconName),
-                        "glyphicon glyphicon-" + iconName);
+                classWriter.writeConstant(ClassNames.hyphenatedToEnumStyle(iconName),
+                        Icon.class, "glyphicon glyphicon-" + iconName);
             }
-            accessorWriter.writeEnumGetClassNameImpl();
-            accessorWriter.writeIconRender();
-            accessorWriter.close();
+            classWriter.close();
         }
     }
 

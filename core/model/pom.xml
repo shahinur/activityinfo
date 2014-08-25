@@ -83,6 +83,28 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>super-source</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>src/main/translatable</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+              <outputDirectory>${basedir}/target/classes/org/activityinfo/model/translatable</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

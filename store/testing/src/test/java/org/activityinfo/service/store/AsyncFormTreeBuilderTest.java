@@ -18,7 +18,7 @@ public class AsyncFormTreeBuilderTest {
 
     @Test
     public void treeResolver() throws IOException {
-        ResourceLocator locator = createLocator("/dbunit/sites-simple1.json") ;
+        ResourceLocator locator = createLocator("sites-simple1.json") ;
 
         AsyncFormTreeBuilder treeBuilder = new AsyncFormTreeBuilder(locator);
         ResourceId formClassId = CuidAdapter.activityFormClass(1);

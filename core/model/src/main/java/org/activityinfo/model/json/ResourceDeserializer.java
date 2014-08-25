@@ -28,13 +28,13 @@ public class ResourceDeserializer extends JsonDeserializer<Resource> {
             // read the value
             reader.nextToken();
 
-            if(propertyName.equals("@id")) {
+            if (propertyName.equals("@id")) {
                 resource.setId(ResourceId.valueOf(reader.getText()));
 
-            } else if(propertyName.equals("@owner")) {
+            } else if (propertyName.equals("@owner")) {
                 resource.setOwnerId(ResourceId.valueOf(reader.getText()));
 
-            } else if(propertyName.equals("@version")) {
+            } else if (propertyName.equals("@version")) {
                 resource.setVersion(reader.getNumberValue().longValue());
 
             } else {

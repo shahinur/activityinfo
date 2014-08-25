@@ -1,16 +1,13 @@
 package org.activityinfo.service.blob;
 
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.PropertyBag;
-import org.activityinfo.model.resource.Record;
 
 import java.util.Map;
 
 /**
  * Credentials that can be used upload a blob from the client
  */
-public class UploadCredentials implements IsRecord {
+public class UploadCredentials {
 
     private String url;
     private String method;
@@ -55,25 +52,5 @@ public class UploadCredentials implements IsRecord {
         }
         form.append("</form>");
         return form.toString();
-    }
-
-    public Record asRecord() {
-        Record formFieldsRecord = new Record();
-        for (Map.Entry<String,String> entry : formFields.entrySet()) {
-            formFieldsRecord.set(entry.getKey(), entry.getValue());
-        }
-        return new Record()
-                .set("url", url)
-                .set("method", method)
-                .set("formFields", formFieldsRecord);
-    }
-
-    public static UploadCredentials fromRecord(PropertyBag<? extends PropertyBag> record) {
-        Map<String, String> formFields = Maps.newHashMap();
-        Record formFieldRecord = record.getRecord("formFields");
-        for (Map.Entry<String,Object> property : formFieldRecord.getProperties().entrySet()) {
-            formFields.put(property.getKey(), (String) property.getValue());
-        }
-        return new UploadCredentials(record.getString("url"), record.getString("method"), formFields);
     }
 }

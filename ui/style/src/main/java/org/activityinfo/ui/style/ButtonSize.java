@@ -1,14 +1,13 @@
 package org.activityinfo.ui.style;
 
-import org.activityinfo.ui.vdom.shared.html.HasClassNames;
+import org.activityinfo.ui.vdom.shared.html.CssClass;
 
-public enum ButtonSize implements HasClassNames {
+public enum ButtonSize {
     LG,
     SM,
     XS;
 
-    @Override
-    public String getClassNames() {
-        return "btn-" + name().toLowerCase();
+    public CssClass getClassNames() {
+        return CssClass.valueOf("btn-" + name().toLowerCase());
     }
 }

@@ -1,15 +1,25 @@
 package org.activityinfo.service.store;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.Preconditions;
 import org.activityinfo.model.resource.ResourceId;
 
 public final class UpdateResult {
 
     private ResourceId resourceId;
+
     private CommitStatus status;
+
     private long newVersion;
 
-    private UpdateResult(CommitStatus status, ResourceId resourceId, long newVersion) {
+    @JsonCreator
+    private UpdateResult() {
+    }
+
+    private UpdateResult(CommitStatus status,
+                         ResourceId resourceId,
+                         long newVersion) {
         this.status = status;
         this.resourceId = resourceId;
         this.newVersion = newVersion;
@@ -37,14 +47,12 @@ public final class UpdateResult {
         return status;
     }
 
-    public ResourceId getId() {
+    public ResourceId getResourceId() {
         return resourceId;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_DEFAULT)
     public long getNewVersion() {
-        if(status != CommitStatus.COMMITTED) {
-            throw new IllegalStateException("Update was not committed");
-        }
         return newVersion;
     }
 

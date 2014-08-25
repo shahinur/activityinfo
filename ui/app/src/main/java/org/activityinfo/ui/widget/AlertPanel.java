@@ -65,7 +65,7 @@ public class AlertPanel extends Composite {
     @UiConstructor
     public AlertPanel(AlertStyle style) {
         initWidget(uiBinder.createAndBindUi(this));
-        container.setClassName(style.getClassNames());
+        container.setClassName(style.getClassNames().toString());
     }
 
     @UiHandler("close")

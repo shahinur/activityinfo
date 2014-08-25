@@ -1,6 +1,5 @@
 package org.activityinfo.ui.vdom.shared.diff;
 
-import com.google.common.base.Joiner;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.*;
@@ -82,6 +81,6 @@ public class VDiff {
 
     @Override
     public String toString() {
-        return Joiner.on("\n").withKeyValueSeparator(" = ").join(map);
+        return map.toString();
     }
 }

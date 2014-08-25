@@ -19,15 +19,6 @@
       <version>${gwtVersion}</version>
     </dependency>
     <dependency>
-      <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-promises</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-gwt</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.code.findbugs</groupId>
       <artifactId>annotations</artifactId>
       <version>2.0.1</version>
@@ -37,10 +28,55 @@
       <artifactId>hamcrest-library</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>${gwtVersion}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>unit-testing-tools</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>super-source</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>src/main/translatable</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+              <outputDirectory>${basedir}/target/classes/org/activityinfo/ui/vdom/translatable</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>**/client/*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -52,6 +88,17 @@
               <goal>resources</goal>
             </goals>
             <phase>generate-resources</phase>
+          </execution>
+          <execution>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <phase>integration-test</phase>
+            <configuration>
+              <productionMode>true</productionMode>
+              <mode>htmlunit</mode>
+              <style>PRETTY</style>
+            </configuration>
           </execution>
         </executions>
       </plugin>
