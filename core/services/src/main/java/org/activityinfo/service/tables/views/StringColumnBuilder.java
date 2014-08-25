@@ -1,5 +1,6 @@
 package org.activityinfo.service.tables.views;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormEvalContext;
@@ -17,6 +18,9 @@ import java.util.List;
 
 public class StringColumnBuilder implements ColumnViewBuilder {
 
+    private final String fieldName;
+    private final Function<FieldValue, String> converter;
+
     private List<String> values = Lists.newArrayList();
 
     // Keep track of some statistics to
@@ -24,18 +28,18 @@ public class StringColumnBuilder implements ColumnViewBuilder {
 
     private Optional<ColumnView> result = Optional.absent();
 
-    private String fieldName;
 
-    public StringColumnBuilder(ResourceId fieldId) {
+    public StringColumnBuilder(ResourceId fieldId, Function<FieldValue, String> valueConverter) {
         this.fieldName = fieldId.asString();
+        this.converter = valueConverter;
     }
 
     @Override
     public void accept(FormEvalContext instance) {
         FieldValue fieldValue = instance.getFieldValue(fieldName);
         String string = null;
-        if(fieldValue instanceof HasStringValue) {
-            string = ((HasStringValue) fieldValue).asString();
+        if(fieldValue != null) {
+            string = converter.apply(fieldValue);
         }
         stats.update(string);
         values.add(string);

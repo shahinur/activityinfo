@@ -33,7 +33,7 @@ public class TableServiceCalcTest {
 
     @Before
     public void setUp() throws Exception {
-        store = new TestResourceStore().load("/dbunit/sites-simple1.json");
+        store = new TestResourceStore().load("sites-simple1.json");
         tableService = new TableBuilder(store);
 
         formClass = new FormClass(Resources.generateId());

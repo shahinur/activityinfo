@@ -49,7 +49,7 @@ public class HierarchyTest {
     @Test
     public void buildViewModelTest() throws IOException {
         ResourceLocator resourceLocator = new TestResourceStore()
-                .load("/dbunit/jordan-admin.json")
+                .load("jordan-admin.json")
                 .createLocator();
         FormClass campForm = assertResolves(resourceLocator.getFormClass(CAMP_CLASS));
 
@@ -162,8 +162,8 @@ public class HierarchyTest {
 
         public void setSelection(String label) {
             List<Node> choices = assertResolves(this.choices.get());
-            for(Node Node : choices) {
-                if(Objects.equals(Node.getLabel(), label)) {
+            for (Node Node : choices) {
+                if (Objects.equals(Node.getLabel(), label)) {
                     this.selection = label;
                     SelectionEvent.fire(this, Node);
                     return;
@@ -185,8 +185,7 @@ public class HierarchyTest {
         @Override
         public String toString() {
             return Strings.padEnd(label, 20, ' ') + " [" +
-                    Strings.padEnd(Strings.nullToEmpty(selection), 30, ' ') + "]";
+                   Strings.padEnd(Strings.nullToEmpty(selection), 30, ' ') + "]";
         }
     }
-
 }
