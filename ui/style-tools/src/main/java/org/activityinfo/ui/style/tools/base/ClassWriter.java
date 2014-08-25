@@ -26,7 +26,7 @@ class ClassWriter implements AutoCloseable {
                             "target" + File.separator +
                             "generated-sources" + File.separator +
                             "style" + File.separator +
-                            packageName.replaceAll("\\.", File.separator));
+                            packageName.replaceAll("\\.", "\\" + File.separatorChar));
 
         if(!outputDir.exists()) {
             Preconditions.checkState(outputDir.mkdirs());

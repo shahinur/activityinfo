@@ -115,6 +115,26 @@ public class MySqlResourceStore implements ResourceStore {
     }
 
     @Override
+    public UpdateResult create(AuthenticatedUser user, Resource resource) {
+        try(StoreConnection connection = open()) {
+            try(StoreWriter writer = new StoreWriter(connection, cache)) {
+                if (get(user, Collections.singleton(resource.getId())).isEmpty()) {
+                    return writer
+                            .put(resource)
+                            .byUser(user.getUserResourceId())
+                            .execute();
+                } else {
+                    return UpdateResult.rejected();
+                }
+            } catch (GlobalLockTimeoutException e) {
+                throw new UnsupportedOperationException();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public UpdateResult put(AuthenticatedUser user, ResourceId id, Resource resource) {
         checkArgumentNotNull(resource.getId(), "The resource @id must be included in the posted resource.");
         checkArgumentNotNull(resource.getOwnerId(), "The resource @owner must be included in the posted resource");

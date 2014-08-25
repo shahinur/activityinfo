@@ -135,6 +135,12 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     @Override
+    public UpdateResult create(AuthenticatedUser user, Resource resource) {
+        if (resourceMap.get(resource) == null) return put(user, resource);
+        else return UpdateResult.rejected();
+    }
+
+    @Override
     public void close() {
 
     }

@@ -11,12 +11,15 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
+import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.OdkFormSubmissionBackupService;
 import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,6 +37,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,19 +52,29 @@ public class FormSubmissionResource {
     final private ResourceStore locator;
     final private AuthenticationTokenService authenticationTokenService;
     final private BlobFieldStorageService blobFieldStorageService;
+    final private OdkFormSubmissionBackupService odkFormSubmissionBackupService;
 
     @Inject
     public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator,
                                   AuthenticationTokenService authenticationTokenService,
-                                  BlobFieldStorageService blobFieldStorageService) {
+                                  BlobFieldStorageService blobFieldStorageService,
+                                  OdkFormSubmissionBackupService odkFormSubmissionBackupService) {
         this.factory = factory;
         this.locator = locator;
         this.authenticationTokenService = authenticationTokenService;
         this.blobFieldStorageService = blobFieldStorageService;
+        this.odkFormSubmissionBackupService = odkFormSubmissionBackupService;
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
     public Response submit(byte bytes[]) {
+        ResourceId resourceId = Resources.generateId();
+        try {
+            odkFormSubmissionBackupService.backup(resourceId, ByteSource.wrap(bytes));
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Form submission could not be backed up to GCS", e);
+        }
+
         ByteArrayDataSource byteArrayDataSource = new ByteArrayDataSource(bytes, MediaType.MULTIPART_FORM_DATA);
         MimeMultipart mimeMultipart;
         InputStream inputStream;
@@ -89,6 +103,7 @@ public class FormSubmissionResource {
                 "data".equals(node.getParentNode().getParentNode().getNodeName()) &&
                 "#document".equals(node.getParentNode().getParentNode().getParentNode().getNodeName()) &&
                 node.getParentNode().getParentNode().getParentNode().getParentNode() == null) {
+            String instanceId = OdkHelper.extractText(node).replace("-", "");
             Node dataNode = node.getParentNode().getParentNode();
 
             if (dataNode.hasAttributes() && dataNode.getAttributes().getLength() == 1) {
@@ -113,7 +128,7 @@ public class FormSubmissionResource {
 
                     Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
-                    FormInstance formInstance = new FormInstance(Resources.generateId(), formClass.getId());
+                    FormInstance formInstance = new FormInstance(ResourceId.valueOf(instanceId), formClass.getId());
 
                     for (FormField formField : formClass.getFields()) {
                         OdkFieldValueParser odkFieldValueParser = factory.fromFieldType(formField.getType());
@@ -121,11 +136,24 @@ public class FormSubmissionResource {
                                 OdkHelper.toRelativeFieldName(formField.getId().asString())).item(0);
 
                         if (element instanceof Element) {
-                            formInstance.set(formField.getId(), odkFieldValueParser.parse((Element) element));
+                            try {
+                                formInstance.set(formField.getId(), odkFieldValueParser.parse((Element) element));
+                            } catch (Exception e) {
+                                String text = OdkHelper.extractText(element);
+
+                                if (text == null) {
+                                    LOGGER.log(Level.SEVERE, "Malformed Element in form instance prevents parsing", e);
+                                } else if (!text.equals("")) {
+                                    LOGGER.log(Level.WARNING, "Can't parse form instance contents, storing as text", e);
+                                    formInstance.set(formField.getId(), TextValue.valueOf(text));
+                                }
+                            }
                         }
                     }
 
-                    for (FieldValue fieldValue : formInstance.getFieldValueMap().values()) {
+                    Map<ResourceId, FieldValue> fieldValueMap = formInstance.getFieldValueMap();
+                    for (ResourceId fieldValueId : fieldValueMap.keySet()) {
+                        FieldValue fieldValue = fieldValueMap.get(fieldValueId);
                         if (fieldValue instanceof ImageValue) {
                             ImageRowValue imageRowValue = ((ImageValue) fieldValue).getValues().get(0);
                             if (imageRowValue.getFilename() == null) continue;
@@ -163,10 +191,12 @@ public class FormSubmissionResource {
                                 LOGGER.log(Level.SEVERE, "Could not write image to GCS", ioException);
                                 return Response.status(SERVICE_UNAVAILABLE).build();
                             }
+
+                            formInstance.set(fieldValueId, fieldValue);
                         }
                     }
 
-                    locator.put(user, formInstance.asResource());
+                    locator.create(user, formInstance.asResource().set("backupBlobId", resourceId.asString()));
                     return Response.status(CREATED).build();
                 }
             }
