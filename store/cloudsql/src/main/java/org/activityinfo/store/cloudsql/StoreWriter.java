@@ -29,6 +29,7 @@ public class StoreWriter implements AutoCloseable {
         if(lockResult != 1) {
             throw new GlobalLockTimeoutException();
         }
+        connection.setAutoCommit(false);
     }
 
     /**
@@ -37,6 +38,7 @@ public class StoreWriter implements AutoCloseable {
      */
     @Override
     public void close() throws SQLException {
+        connection.setAutoCommit(true);
         Optional<Integer> releaseStatusCode = connection.queryInteger("SELECT RELEASE_LOCK('update')");
         Preconditions.checkState(releaseStatusCode.isPresent());
         Preconditions.checkState(releaseStatusCode.get() == 1, "Failed to release lock");
