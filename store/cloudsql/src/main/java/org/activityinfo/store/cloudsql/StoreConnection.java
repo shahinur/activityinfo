@@ -1,7 +1,6 @@
 package org.activityinfo.store.cloudsql;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
 
 import javax.inject.Provider;
 import java.sql.Connection;
@@ -31,8 +30,6 @@ public class StoreConnection implements AutoCloseable {
     private Connection getConnection() throws SQLException {
         if(connection == null) {
             connection = connectionProvider.get();
-            Preconditions.checkState(!connection.getAutoCommit(), "auto commit must be disabled");
-
         }
         return connection;
     }
@@ -77,12 +74,6 @@ public class StoreConnection implements AutoCloseable {
 
     public Statement createStatement() throws SQLException {
         return getConnection().createStatement();
-    }
-
-    public void commit() throws SQLException {
-        if(connection != null) {
-            connection.commit();
-        }
     }
 
     /**

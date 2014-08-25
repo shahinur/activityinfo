@@ -124,9 +124,6 @@ public class ConnectionProvider implements Provider<Connection> {
             p.setFairQueue(false);
             p.setTimeBetweenEvictionRunsMillis(-1);
 
-            // Turn auto-commit off
-            p.setDefaultAutoCommit(false);
-
             p.setJdbcInterceptors("org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;" +
                                   "org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer");
             connectionPool = new DataSource();
