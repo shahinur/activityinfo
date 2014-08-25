@@ -76,6 +76,18 @@ public class StoreConnection implements AutoCloseable {
         return getConnection().createStatement();
     }
 
+    public void setAutoCommit(boolean autoCommit) throws SQLException {
+        if(connection != null) {
+            connection.setAutoCommit(autoCommit);
+        }
+    }
+
+    public void commit() throws SQLException {
+        if(connection != null) {
+            connection.commit();
+        }
+    }
+
     /**
      * Closes a {@link java.sql.Connection}, with control over whether an {@code SQLException} may be thrown.
      * This is primarily useful in a finally block, where a thrown exception needs to be logged but
