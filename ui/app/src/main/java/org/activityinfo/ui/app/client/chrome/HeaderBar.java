@@ -23,9 +23,10 @@ public class HeaderBar extends VThunk {
     }
 
     public static VTree render() {
-        return HEADERBAR.div(menuToggle(),
+        return div(HEADERBAR, menuToggle(),
                 searchForm(),
-                HEADER_RIGHT.div(ul(HEADERMENU,
+                div(HEADER_RIGHT,
+                    ul(HEADERMENU,
                         headerMenu(FontAwesome.USER),
                         headerMenu(FontAwesome.ENVELOPE),
                         headerMenu(GlyphIcons.GLOBE),

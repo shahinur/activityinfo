@@ -27,7 +27,7 @@ public class TableBuilderTest {
 
     @Before
     public void setup() throws IOException {
-        store = new TestResourceStore().load("/dbunit/nfi-import.json");
+        store = new TestResourceStore().load("nfi-import.json");
         tableService = new TableBuilder(store);
     }
 

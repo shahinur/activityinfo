@@ -26,12 +26,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.io.importing.source.SourceRow;
 import org.activityinfo.io.importing.validation.ValidationResult;
-import org.activityinfo.model.legacy.Pair;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.InstanceQuery;
+import org.activityinfo.model.legacy.Pair;
 import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.legacy.criteria.ClassCriteria;
 import org.activityinfo.model.legacy.criteria.FormClassSet;
@@ -97,34 +96,44 @@ public class HierarchyClassImporter implements FieldImporter {
             ColumnAccessor columnAccessor = sourceColumns.get(i);
             if (!columnAccessor.isMissing(row)) {
                 FieldImporterColumn importedColumn = getImportedColumn(columnAccessor);
-                ResourceId targetSiteId = ResourceId.valueOf(importedColumn.getTarget().getSite().asString());
-                if (targetSiteId.getDomain() == CuidAdapter.ADMIN_LEVEL_DOMAIN) {
-                    final int levelId = CuidAdapter.getBlock(targetSiteId, 0);
-                    // todo : recreation of admin level cuid seems to be error prone, check later !
-                    ResourceId range = CuidAdapter.adminLevelFormClass(levelId);
-                    InstanceScoreSource scoreSource = scoreSources.get(range);
-                    InstanceScorer instanceScorer = new InstanceScorer(scoreSource);
-                    final InstanceScorer.Score score = instanceScorer.score(row);
-                    final int bestMatchIndex = score.getBestMatchIndex();
+                ResourceId range = getRange(importedColumn);
+                InstanceScoreSource scoreSource = scoreSources.get(range);
+                InstanceScorer instanceScorer = new InstanceScorer(scoreSource);
+                final InstanceScorer.Score score = instanceScorer.score(row);
+                final int bestMatchIndex = score.getBestMatchIndex();
 
-                    if (score.getImported()[i] == null) {
-                        results.add(ValidationResult.MISSING);
-                    } else if (bestMatchIndex == -1) {
-                        results.add(ValidationResult.error("No match"));
-                    } else {
-                        String matched = scoreSource.getReferenceValues().get(bestMatchIndex)[i];
-                        final ValidationResult converted = ValidationResult.converted(matched, score.getBestScores()[i]);
-                        converted.setRangeWithInstanceId(new Pair<>(range, scoreSource.getReferenceInstanceIds().get(bestMatchIndex)));
-                        results.add(converted);
-                    }
+                if (score.getImported()[i] == null) {
+                    results.add(ValidationResult.MISSING);
+                } else if (bestMatchIndex == -1) {
+                    results.add(ValidationResult.error("No match"));
                 } else {
-                    throw new UnsupportedOperationException("Not supported");
+                    String matched = scoreSource.getReferenceValues().get(bestMatchIndex)[i];
+                    final ValidationResult converted = ValidationResult.converted(matched, score.getBestScores()[i]);
+                    converted.setRangeWithInstanceId(new Pair<>(range, scoreSource.getReferenceInstanceIds().get(bestMatchIndex)));
+                    results.add(converted);
                 }
+
             } else {
                 results.add(ValidationResult.MISSING);
             }
         }
 
+    }
+
+    private ResourceId getRange(FieldImporterColumn importedColumn) {
+        throw new AssertionError("fix me: should not be using legacy cuids!");
+//        ImportTarget target = importedColumn.getTarget();
+//        ResourceId fieldId = ResourceId.valueOf(target.getSite().asString());
+//
+//        ResourceId range;
+//        if (fieldId.getDomain() == CuidAdapter.ADMIN_LEVEL_DOMAIN) {
+//            final int levelId = CuidAdapter.getBlock(fieldId, 0);
+//            // todo : recreation of admin level cuid seems to be error prone, check later !
+//            range = CuidAdapter.adminLevelFormClass(levelId);
+//        } else {
+//            throw new UnsupportedOperationException("Not supported");
+//        }
+//        return range;
     }
 
     @Override

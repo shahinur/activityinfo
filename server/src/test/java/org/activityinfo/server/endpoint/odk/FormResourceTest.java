@@ -32,7 +32,7 @@ public class FormResourceTest {
 
     @Before
     public void setUp() throws IOException {
-        ResourceStore store = new TestResourceStore().load("/dbunit/formResourceTest.json");
+        ResourceStore store = new TestResourceStore().load("formResourceTest.json");
         OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(
                 new InstanceTableProvider(store, Providers.of(AuthenticatedUser.getAnonymous())));
         resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory,

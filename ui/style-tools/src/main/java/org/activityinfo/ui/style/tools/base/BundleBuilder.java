@@ -41,8 +41,7 @@ class BundleBuilder implements ResourceWriter {
      * @param css minified CSS
      */
     public void writeStylesheet(String css) throws IOException {
-        String strongName = writeResource(ByteSource.wrap(css.getBytes(Charsets.UTF_8)), "css");
-        this.stylesheetStrongName = strongName;
+        this.stylesheetStrongName = writeResource(ByteSource.wrap(css.getBytes(Charsets.UTF_8)), "css");
     }
 
     @Override

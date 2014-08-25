@@ -1,7 +1,7 @@
 package org.activityinfo.ui.component.formdesigner.palette;
 
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.ReferenceType;
 
@@ -13,7 +13,7 @@ public class ReferenceTemplate implements FieldTemplate {
 
     @Override
     public FormField createField() {
-        FormField field = new FormField(ResourceId.generateId());
+        FormField field = new FormField(Resources.generateId());
         field.setLabel("Reference to another form");
         field.setType(new ReferenceType().setCardinality(Cardinality.SINGLE));
         return field;

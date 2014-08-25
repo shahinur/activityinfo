@@ -151,7 +151,7 @@ public class GetSchemaTest extends CommandTestCase2 {
     @Test
     public void newApiTest() throws IOException {
 
-        ResourceLocator locator = createLocator("/dbunit/sites-simple1.json");
+        ResourceLocator locator = createLocator("sites-simple1.json");
 
         Promise<FormClass> userForm = locator.getFormClass(CuidAdapter.activityFormClass(1));
 

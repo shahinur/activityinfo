@@ -163,14 +163,6 @@ public class PropertyBag<T extends PropertyBag> {
         return ResourceId.valueOf(value);
     }
 
-    public ResourceId isResourceId(String propertyName) {
-        Object value = properties.get(propertyName);
-        if(value instanceof ResourceId) {
-            return (ResourceId) value;
-        }
-        return null;
-    }
-
     /**
      * @return the value of this field as a {@code double}
      * @throws java.lang.ClassCastException if the value of the property is not a Number

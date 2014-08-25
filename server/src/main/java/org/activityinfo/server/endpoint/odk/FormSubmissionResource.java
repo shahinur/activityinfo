@@ -12,6 +12,7 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
@@ -29,11 +30,7 @@ import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
@@ -45,9 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.google.appengine.api.images.ImagesServiceFactory.makeImage;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.CREATED;
-import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
+import static javax.ws.rs.core.Response.Status.*;
 
 @Path("/submission")
 public class FormSubmissionResource {
@@ -73,7 +68,7 @@ public class FormSubmissionResource {
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
     public Response submit(byte bytes[]) {
-        ResourceId resourceId = ResourceId.generateId();
+        ResourceId resourceId = Resources.generateId();
         try {
             odkFormSubmissionBackupService.backup(resourceId, ByteSource.wrap(bytes));
         } catch (Exception e) {

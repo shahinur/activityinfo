@@ -1,0 +1,7 @@
+<module>
+  <!-- Inherit the core Web Toolkit stuff.                        -->
+  <inherits name="org.activityinfo.ui.vdom.VDom"/>
+
+  <super-source path="translatable" />
+
+</module>

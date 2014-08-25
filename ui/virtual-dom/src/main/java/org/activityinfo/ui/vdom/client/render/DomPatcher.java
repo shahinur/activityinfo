@@ -1,10 +1,12 @@
 package org.activityinfo.ui.vdom.client.render;
 
+
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.Text;
 import org.activityinfo.ui.vdom.shared.diff.VDiff;
 import org.activityinfo.ui.vdom.shared.diff.VPatch;
+import org.activityinfo.ui.vdom.shared.dom.DomElement;
+import org.activityinfo.ui.vdom.shared.dom.DomNode;
+import org.activityinfo.ui.vdom.shared.dom.DomText;
 import org.activityinfo.ui.vdom.shared.tree.*;
 
 import java.util.List;
@@ -20,15 +22,15 @@ public class DomPatcher {
         this.context = context;
     }
 
-    public Node patch(Node rootNode, VDiff patches) {
+    public DomNode patch(DomNode rootNode, VDiff patches) {
         return patchRecursive(rootNode, patches);
     }
 
-    public Node patchRecursive(Node rootNode, VDiff patches) {
+    public DomNode patchRecursive(DomNode rootNode, VDiff patches) {
         int[] indices = patches.patchedIndexArray();
         if(indices.length > 0) {
 
-            Map<Integer, Node> index = DomIndexBuilder.domIndex(rootNode, patches.original, indices);
+            Map<Integer, DomNode> index = DomIndexBuilder.domIndex(rootNode, patches.original, indices);
 
             for (int i = 0; i < indices.length; ++i) {
                 int nodeIndex = indices[i];
@@ -38,9 +40,9 @@ public class DomPatcher {
         return rootNode;
     }
 
-    private Node applyPatch(Node rootNode, Node domNode, List<VPatch> patchList) {
+    private DomNode applyPatch(DomNode rootNode, DomNode domNode, List<VPatch> patchList) {
         if(domNode != null) {
-            Node newNode;
+            DomNode newNode;
             for (int i = 0; i != patchList.size(); ++i) {
                 newNode = applyPatch(patchList.get(i), domNode);
                 if (domNode == rootNode) {
@@ -52,7 +54,7 @@ public class DomPatcher {
     }
 
 
-    private Node applyPatch(VPatch vPatch, Node domNode) {
+    private DomNode applyPatch(VPatch vPatch, DomNode domNode) {
         VTree vNode = vPatch.vNode;
         Object patch = vPatch.patch;
 
@@ -79,7 +81,7 @@ public class DomPatcher {
                 throw new UnsupportedOperationException();
 
             case PROPS:
-                Properties.applyProperties(domNode.<Element>cast(), (PropMap)patch, vNode.properties());
+                Properties.applyProperties((DomElement)domNode, (PropMap)patch, vNode.properties());
                 return domNode;
 
             case THUNK:
@@ -89,34 +91,34 @@ public class DomPatcher {
     }
 
 
-    private void removeNode(Node domNode, VTree vNode) {
+    private void removeNode(DomNode domNode, VTree vNode) {
 
         detachIfWidget(domNode, vNode);
 
-        Node parentNode = domNode.getParentNode();
+        DomNode parentNode = domNode.getParentNode();
         if (parentNode != null) {
             parentNode.removeChild(domNode);
         }
     }
 
-    private Node insertNode(Node parentNode, VTree vNode) {
-        Node domNode = domBuilder.render(vNode);
+    private DomNode insertNode(DomNode parentNode, VTree vNode) {
+        DomNode domNode = domBuilder.render(vNode);
         parentNode.appendChild(domNode);
         return domNode;
     }
 
-    private Node patchText(Node domNode, VTree leftVNode, VText vText) {
-        Node newNode;
+    private DomNode patchText(DomNode domNode, VTree leftVNode, VText vText) {
+        DomNode newNode;
 
-        if (domNode.getNodeType() == Node.TEXT_NODE) {
-            Text textNode = domNode.cast();
+        if (domNode.getNodeType() == DomNode.TEXT_NODE) {
+            DomText textNode = (DomText)domNode;
             textNode.setData(vText.text);
             newNode = textNode;
         } else {
 
             detachIfWidget(domNode, leftVNode);
 
-            Node parentNode = domNode.getParentNode();
+            DomNode parentNode = domNode.getParentNode();
             newNode = domBuilder.render(vText);
             if (parentNode != null) {
                 parentNode.replaceChild(newNode, domNode);
@@ -125,34 +127,34 @@ public class DomPatcher {
         return newNode;
     }
 
-    private Node patchWidget(Node domNode, VTree leftVNode, VWidget widget) {
+    private DomNode patchWidget(DomNode domNode, VTree leftVNode, VWidget widget) {
 
         detachIfWidget(domNode, leftVNode);
 
-        Node newWidget = domBuilder.render(widget);
+        DomNode newWidget = domBuilder.render(widget);
 
-        Node parentNode = domNode.getParentNode();
+        DomNode parentNode = domNode.getParentNode();
         if (parentNode != null) {
             parentNode.replaceChild(newWidget, domNode);
         }
         return newWidget;
     }
 
-    private Node patchNode(Node domNode, VTree leftVNode, VTree vNode) {
+    private DomNode patchNode(DomNode domNode, VTree leftVNode, VTree vNode) {
 
         detachIfWidget(domNode, leftVNode);
 
-        Node parentNode = domNode.getParentNode();
-        Node newNode = domBuilder.render(vNode);
+        DomNode parentNode = domNode.getParentNode();
+        DomNode newNode = domBuilder.render(vNode);
         if (parentNode != null) {
             parentNode.replaceChild(newNode, domNode);
         }
         return newNode;
     }
 
-    private void detachIfWidget(Node domNode, VTree w) {
+    private void detachIfWidget(DomNode domNode, VTree w) {
         if (w instanceof VWidget) {
-            context.detachWidget(domNode.<Element>cast());
+            context.detachWidget((Element)domNode);
         }
         if(w instanceof Destructible) {
             ((Destructible) w).destroy(domNode);
@@ -160,7 +162,7 @@ public class DomPatcher {
     }
 
 
-    private void reorderChildren(Node domNode, int[] bIndex) {
+    private void reorderChildren(DomNode domNode, int[] bIndex) {
         throw new UnsupportedOperationException();
 //        int[] children = new int[];
 //        var childNodes = domNode.childNodes
@@ -198,7 +200,7 @@ public class DomPatcher {
 //        }
     }
 
-    public Node replaceRoot(Node oldRoot, Node newRoot) {
+    public DomNode replaceRoot(DomNode oldRoot, DomNode newRoot) {
         if ( (oldRoot != null) && (newRoot != null) &&
              (oldRoot != newRoot) && (oldRoot.getParentNode() != null)) {
 

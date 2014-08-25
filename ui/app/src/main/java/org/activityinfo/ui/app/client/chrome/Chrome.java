@@ -53,7 +53,7 @@ public class Chrome {
     }
 
     private static VNode rightPanel() {
-        return BaseStyles.RIGHTPANEL.div();
+        return div(BaseStyles.RIGHTPANEL);
     }
 
 }

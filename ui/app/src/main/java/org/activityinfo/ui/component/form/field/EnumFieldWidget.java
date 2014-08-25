@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ReferenceValue;
@@ -116,7 +117,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     private void addOption() {
         String newLabel = Window.prompt("Enter a new label for this option", "");
         if(!Strings.isNullOrEmpty(newLabel)) {
-            EnumValue newValue = new EnumValue(ResourceId.generateId(), newLabel);
+            EnumValue newValue = new EnumValue(Resources.generateId(), newLabel);
             enumType.getValues().add(newValue);
             boxPanel.add(createControl(newValue));
         }

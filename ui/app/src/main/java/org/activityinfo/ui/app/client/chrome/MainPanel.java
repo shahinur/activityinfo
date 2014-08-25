@@ -19,17 +19,15 @@ import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-import static org.activityinfo.ui.style.BaseStyles.PAGEHEADER;
-import static org.activityinfo.ui.style.BaseStyles.SUBTITLE;
+import static org.activityinfo.ui.style.BaseStyles.*;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class MainPanel {
 
     public static VNode mainPanel(AppStores app) {
-        return BaseStyles.MAINPANEL.div(
+        return div(MAINPANEL,
                 HeaderBar.render(),
-                div(PAGEHEADER, pageHeading(app)),
-                contentPanel(app));
+                div(PAGEHEADER, pageHeading(app)), contentPanel(app));
     }
 
     private static VTree pageHeading(AppStores app) {
@@ -67,7 +65,7 @@ public class MainPanel {
             return renderResource((ResourcePageContainer)activePage);
 
         } else {
-            return BaseStyles.CONTENTPANEL.div(t(activePage.getClass().getName()));
+            return div(BaseStyles.CONTENTPANEL, t(activePage.getClass().getName()));
         }
     }
 

@@ -1,6 +1,5 @@
 package org.activityinfo.ui.vdom.shared.html;
 
-import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.Tag;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
@@ -14,27 +13,8 @@ public enum HtmlTag implements Tag {
 
     HTML,
     HEAD,
-    META(true) {
-
-
-    },
-    LINK(true) {
-
-        public VNode shortcutIcon(String rel, String href, String type) {
-            return create("shortcut icon", href, type);
-        }
-
-        public VNode stylesheet(String href) {
-            return create("stylesheet", href, null);
-        }
-
-        private VNode create(String rel, String href, String type) {
-            return new VNode(this, new PropMap()
-                    .set("rel", rel)
-                    .set("href", href)
-                    .set("type", type));
-        }
-    },
+    META(true),
+    LINK(true),
     TITLE,
     BASE,
     STYLE,

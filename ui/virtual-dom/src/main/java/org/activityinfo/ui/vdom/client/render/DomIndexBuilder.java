@@ -1,7 +1,7 @@
 package org.activityinfo.ui.vdom.client.render;
 
-import com.google.gwt.dom.client.Node;
 import org.activityinfo.ui.vdom.shared.Truthyness;
+import org.activityinfo.ui.vdom.shared.dom.DomNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.Arrays;
@@ -11,13 +11,13 @@ import java.util.Map;
 
 public class DomIndexBuilder {
 
-    private Map<Integer, Node> map;
+    private Map<Integer, DomNode> map;
 
-    public static Map<Integer, Node> domIndex(Node rootNode, VTree a, int[] indices) {
+    public static Map<Integer, DomNode> domIndex(DomNode rootNode, VTree a, int[] indices) {
         return new DomIndexBuilder().buildIndex(rootNode, a, indices);
     }
 
-    public Map<Integer, Node> buildIndex(Node rootNode, VTree tree, int[] indices) {
+    public Map<Integer, DomNode> buildIndex(DomNode rootNode, VTree tree, int[] indices) {
         if (indices.length == 0) {
             return Collections.emptyMap();
 
@@ -32,7 +32,7 @@ public class DomIndexBuilder {
         }
     }
 
-    public void recurse(Node rootNode, VTree tree, int[] indices, int rootIndex) {
+    public void recurse(DomNode rootNode, VTree tree, int[] indices, int rootIndex) {
         if (Truthyness.isTrue(rootNode)) {
             if (indexInRange(indices, rootIndex, rootIndex)) {
                 map.put(rootIndex, rootNode);
@@ -44,7 +44,7 @@ public class DomIndexBuilder {
                 int nextIndex = rootIndex + childCount(vChildren, i);
                 // skip recursion down the tree if there are no nodes down here
                 if (indexInRange(indices, rootIndex, nextIndex)) {
-                    recurse(rootNode.getChild(i), vChildren[i], indices, rootIndex);
+                    recurse(rootNode.getChildDomNode(i), vChildren[i], indices, rootIndex);
                 }
                 rootIndex = nextIndex;
             }

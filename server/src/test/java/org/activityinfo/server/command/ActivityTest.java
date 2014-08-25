@@ -29,6 +29,7 @@ import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -63,7 +64,7 @@ public class ActivityTest {
 
     @Before
     public void setUser() throws IOException {
-        resourceLocator = createLocator("/dbunit/schema1.json");
+        resourceLocator = createLocator("schema1.json");
       //  setUser(1);
     }
 
@@ -75,7 +76,7 @@ public class ActivityTest {
          * Create a new form
          */
 
-        FormClass act = new FormClass(ResourceId.generateId());
+        FormClass act = new FormClass(Resources.generateId());
         act.setOwnerId(CuidAdapter.databaseId(1));
         act.setLabel("Warshing the dishes");
 
@@ -110,7 +111,7 @@ public class ActivityTest {
     @Test
     public void orderFields() {
 
-        ResourceId classId = ResourceId.generateId();
+        ResourceId classId = Resources.generateId();
         FormClass formClass = new FormClass(classId);
         formClass.setOwnerId(CuidAdapter.databaseId(1));
         formClass.setLabel("Household Survey");
@@ -121,19 +122,19 @@ public class ActivityTest {
 
         // create three new fields with an order that mixes "attributes" and "indicators"
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(Resources.generateId());
         newField.setLabel("How old are you?");
         newField.setType(new QuantityType().setUnits("years"));
         formClass.addElement(newField);
 
-        FormField newGenderField = new FormField(ResourceId.generateId());
+        FormField newGenderField = new FormField(Resources.generateId());
         newGenderField.setLabel("Gender");
-        EnumValue male = new EnumValue(ResourceId.generateId(), "Male");
-        EnumValue female = new EnumValue(ResourceId.generateId(), "Female");
+        EnumValue male = new EnumValue(Resources.generateId(), "Male");
+        EnumValue female = new EnumValue(Resources.generateId(), "Female");
         newGenderField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(male, female)));
         formClass.addElement(newGenderField);
 
-        FormField newTextField = new FormField(ResourceId.generateId());
+        FormField newTextField = new FormField(Resources.generateId());
         newTextField.setLabel("What is your name?");
         newTextField.setType(TextType.INSTANCE);
         formClass.addElement(newTextField);
@@ -156,7 +157,7 @@ public class ActivityTest {
     public void createForm() {
 
 
-        ResourceId classId = ResourceId.generateId();
+        ResourceId classId = Resources.generateId();
         FormClass formClass = new FormClass(classId);
         formClass.setOwnerId(CuidAdapter.databaseId(1));
         formClass.setLabel("Household Survey");
@@ -165,12 +166,12 @@ public class ActivityTest {
 
         formClass = assertResolves(resourceLocator.getFormClass(classId));
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(Resources.generateId());
         newField.setLabel("How old are you?");
         newField.setType(new QuantityType().setUnits("years"));
         formClass.addElement(newField);
 
-        FormField newTextField = new FormField(ResourceId.generateId());
+        FormField newTextField = new FormField(Resources.generateId());
         newTextField.setLabel("What is your name?");
         newTextField.setType(TextType.INSTANCE);
         formClass.addElement(newTextField);
@@ -195,10 +196,10 @@ public class ActivityTest {
 
         FormClass formClass = assertResolves(resourceLocator.getFormClass(NFI_FORM_ID));
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(Resources.generateId());
         newField.setLabel("New Group");
-        EnumValue yes = new EnumValue(ResourceId.generateId(), "Yes");
-        EnumValue no = new EnumValue(ResourceId.generateId(), "No");
+        EnumValue yes = new EnumValue(Resources.generateId(), "Yes");
+        EnumValue no = new EnumValue(Resources.generateId(), "No");
         newField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(yes, no)));
 
         formClass.getElements().add(newField);
