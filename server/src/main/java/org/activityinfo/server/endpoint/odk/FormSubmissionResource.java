@@ -108,7 +108,7 @@ public class FormSubmissionResource {
                 "data".equals(node.getParentNode().getParentNode().getNodeName()) &&
                 "#document".equals(node.getParentNode().getParentNode().getParentNode().getNodeName()) &&
                 node.getParentNode().getParentNode().getParentNode().getParentNode() == null) {
-            String instanceId = OdkHelper.extractText(node);
+            String instanceId = OdkHelper.extractText(node).replace("-", "");
             Node dataNode = node.getParentNode().getParentNode();
 
             if (dataNode.hasAttributes() && dataNode.getAttributes().getLength() == 1) {
