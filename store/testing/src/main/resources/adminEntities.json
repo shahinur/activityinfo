@@ -1,0 +1,190 @@
+[
+  {
+    "@id": "_geodb",
+    "@owner": "_root",
+    "classId": "_folder",
+    "_folder_label": "Geodatabase"
+  },
+  {
+    "@id": "_country",
+    "@owner": "_geodb",
+    "classId": "_class",
+    "_class_label": "Country",
+    "elements": [
+      {
+        "id": "_countryf1",
+        "visible": true,
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "_countryf3",
+        "visible": true,
+        "label": "Code",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "c1",
+    "@owner": "_country",
+    "_countryf1": "Rdc",
+    "classId": "_country"
+  },
+  {
+    "@id": "E1",
+    "@owner": "c1",
+    "classId": "_class",
+    "_class_label": "Province",
+    "elements": [
+      {
+        "id": "E1f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E1f3",
+        "visible": true,
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "E2",
+    "@owner": "c1",
+    "classId": "_class",
+    "_class_label": "Territoire",
+    "elements": [
+      {
+        "id": "E2f2",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "_parent"
+        },
+        "label": "Province",
+        "required": true,
+        "type": {
+          "parameters": {
+            "range": {
+              "@type": "REFERENCE",
+              "value": "E1"
+            },
+            "classId": "_type:ref",
+            "cardinality": "SINGLE"
+          },
+          "typeClass": "REFERENCE"
+        }
+      },
+      {
+        "id": "E2f1",
+        "visible": true,
+        "superProperties": {
+          "@type": "REFERENCE",
+          "value": "label"
+        },
+        "label": "Name",
+        "required": true,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      },
+      {
+        "id": "E2f3",
+        "visible": true,
+        "label": "Code",
+        "required": false,
+        "type": {
+          "typeClass": "FREE_TEXT"
+        }
+      }
+    ]
+  },
+  {
+    "@id": "z1",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Kinshasa",
+    "E1f3": "10"
+  },
+  {
+    "@id": "z2",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Sud Kivu",
+    "E1f3": "20"
+  },
+  {
+    "@id": "z3",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Nord Kivu",
+    "E1f3": "30"
+  },
+  {
+    "@id": "z4",
+    "@owner": "E1",
+    "classId": "E1",
+    "E1f1": "Bandundu",
+    "E1f3": "40"
+  },
+  {
+    "@id": "z11",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "201",
+    "E2f1": "Walungu",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "z2"
+    }
+  },
+  {
+    "@id": "z12",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "202",
+    "E2f1": "Shabunda",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "z2"
+    }
+  },
+  {
+    "@id": "z13",
+    "@owner": "E2",
+    "classId": "E2",
+    "E2f3": "203",
+    "E2f1": "Kalehe",
+    "E2f2": {
+      "@type": "REFERENCE",
+      "value": "z2"
+    }
+  },
+  {
+    "@id": "U1",
+    "@owner": "_users",
+    "email": "akbertram@gmail.com",
+    "name": "Alex",
+    "locale": "fr",
+    "password": "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+  }
+]

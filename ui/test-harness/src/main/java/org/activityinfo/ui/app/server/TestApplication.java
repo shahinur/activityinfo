@@ -27,7 +27,7 @@ public class TestApplication extends DefaultResourceConfig {
 
     private TestResourceStore loadStore() {
         try {
-            return new TestResourceStore().load("/test.json");
+            return new TestResourceStore().load("test.json");
         } catch (IOException e) {
             throw new RuntimeException("Failed to load test database");
         }

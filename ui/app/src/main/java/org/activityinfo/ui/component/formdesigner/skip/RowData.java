@@ -111,5 +111,8 @@ public class RowData {
         return result;
     }
 
-
+    @Override
+    public String toString() {
+        return joinFunction + " " + formField.getId() + " " + function + " " + value;
+    }
 }

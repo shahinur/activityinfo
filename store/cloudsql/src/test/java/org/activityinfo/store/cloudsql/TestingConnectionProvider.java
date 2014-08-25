@@ -5,9 +5,7 @@ import com.google.common.collect.Lists;
 import javax.inject.Provider;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -60,7 +58,7 @@ public class TestingConnectionProvider implements Provider<Connection> {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Connection connection = DriverManager.getConnection(connectionUrl, username, password);
-            connection.setAutoCommit(false);
+            connection.setAutoCommit(true);
 
             leasedConnections.add(connection);
 
