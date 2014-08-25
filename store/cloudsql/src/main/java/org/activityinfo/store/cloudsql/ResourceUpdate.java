@@ -68,9 +68,6 @@ public class ResourceUpdate {
             indexUserRoot();
         }
 
-        // commit the transaction
-        connection.commit();
-
         return UpdateResult.committed(resource.getId(), newVersion);
     }
 
