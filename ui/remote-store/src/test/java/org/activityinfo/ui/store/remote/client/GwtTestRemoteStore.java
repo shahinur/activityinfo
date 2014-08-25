@@ -23,6 +23,8 @@ public class GwtTestRemoteStore extends GWTTestCase {
 
     public void testGet() throws Exception {
 
+        GWT.log("testGet() starting...");
+
         RemoteStoreService service = getStore();
         service.get(ResourceId.valueOf("test")).then(new AsyncCallback<Resource>() {
             @Override
@@ -41,7 +43,7 @@ public class GwtTestRemoteStore extends GWTTestCase {
                 finishTest();
             }
         });
-        delayTestFinish(1000);
+        delayTestFinish(5000);
     }
 
     private RemoteStoreService getStore() {

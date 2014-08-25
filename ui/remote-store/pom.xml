@@ -80,6 +80,8 @@
             <configuration>
               <productionMode>true</productionMode>
               <mode>htmlunit</mode>
+              <logLevel>DEBUG</logLevel>
+              <logDir>${basedir}/gwt-test-logs</logDir>
             </configuration>
           </execution>
         </executions>
