@@ -126,10 +126,11 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     }
 
     private Promise<Void> createWidgets() {
+        final String resourceId = instance.getId().asString();
         return Promise.forEach(formClass.getFields(), new Function<FormField, Promise<Void>>() {
             @Override
             public Promise<Void> apply(final FormField field) {
-                return widgetFactory.createWidget(formClass, field, new ValueUpdater<FieldValue>() {
+                return widgetFactory.createWidget(resourceId, formClass, field, new ValueUpdater<FieldValue>() {
                     @Override
                     public void update(FieldValue value) {
                         onFieldUpdated(field, value);
