@@ -1,7 +1,7 @@
 package org.activityinfo.ui.app.client.page;
 
-import org.activityinfo.ui.vdom.client.flux.store.LoadingStatus;
-import org.activityinfo.ui.vdom.client.flux.store.Store;
+import org.activityinfo.ui.flux.store.LoadingStatus;
+import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 
 import java.util.List;

@@ -82,10 +82,11 @@ public class FormFieldWidgetFactory {
     }
 
     public Promise<? extends FormFieldWidget> createWidget(FormClass formClass, FormField field, ValueUpdater valueUpdater) {
-        return createWidget(formClass, field, valueUpdater, null);
+        return createWidget(null, formClass, field, valueUpdater, null);
     }
 
-    public Promise<? extends FormFieldWidget> createWidget(FormClass formClass, FormField field, ValueUpdater valueUpdater, FormClass validationFormClass) {
+    public Promise<? extends FormFieldWidget> createWidget(String resourceId, FormClass formClass, FormField field,
+                                                           ValueUpdater valueUpdater, FormClass validationFormClass) {
         FieldType type = field.getType();
 
         if (type instanceof QuantityType) {
@@ -119,7 +120,7 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new BooleanFieldWidget(valueUpdater));
 
         }  else if (type instanceof ImageType) {
-            return Promise.resolved(new ImageUploadFieldWidget(field, valueUpdater));
+            return Promise.resolved(new ImageUploadFieldWidget(resourceId, field, valueUpdater));
 
         } else if (type instanceof ReferenceType) {
             return createReferenceWidget(field, valueUpdater);
