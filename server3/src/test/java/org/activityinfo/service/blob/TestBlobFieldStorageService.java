@@ -30,7 +30,7 @@ public class TestBlobFieldStorageService implements BlobFieldStorageService {
     @Override
     public Response getThumbnail(@InjectParam AuthenticatedUser user,
                                  @PathParam("resourceId") ResourceId resourceId,
-                                 @PathParam("fieldName") String fieldName,
+                                 @PathParam("fieldId") ResourceId fieldId,
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
