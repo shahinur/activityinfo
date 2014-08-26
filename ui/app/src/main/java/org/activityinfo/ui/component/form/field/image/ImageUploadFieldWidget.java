@@ -52,9 +52,11 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
 
     private final HTMLPanel rootPanel;
     private final FormField formField;
+    private String resourceId;
     private ImageValue value = new ImageValue();
 
-    public ImageUploadFieldWidget(FormField formField, final ValueUpdater valueUpdater) {
+    public ImageUploadFieldWidget(String resourceId, FormField formField, final ValueUpdater valueUpdater) {
+        this.resourceId = resourceId;
         this.formField = formField;
         rootPanel = ourUiBinder.createAndBindUi(this);
 
@@ -62,7 +64,7 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
     }
 
     private void addNewRow(final ImageRowValue rowValue) {
-        final ImageUploadRow imageUploadRow = new ImageUploadRow(rowValue);
+        final ImageUploadRow imageUploadRow = new ImageUploadRow(rowValue, formField.getId().asString(), resourceId);
         imageUploadRow.addButton.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent clickEvent) {

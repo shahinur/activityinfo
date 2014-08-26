@@ -1,0 +1,7 @@
+<module>
+  <inherits name="com.google.gwt.core.Core"/>
+
+  <!-- Include generated sources -->
+  <source path="flux"/>
+
+</module>

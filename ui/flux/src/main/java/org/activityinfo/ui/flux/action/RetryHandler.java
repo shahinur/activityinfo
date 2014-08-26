@@ -1,4 +1,4 @@
-package org.activityinfo.ui.vdom.client.flux.action;
+package org.activityinfo.ui.flux.action;
 
 public interface RetryHandler {
 

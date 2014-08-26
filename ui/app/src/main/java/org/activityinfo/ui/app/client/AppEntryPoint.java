@@ -14,8 +14,8 @@ import org.activityinfo.ui.app.client.store.AppStores;
 import org.activityinfo.ui.store.remote.client.RemoteStoreServiceImpl;
 import org.activityinfo.ui.store.remote.client.RestEndpoint;
 import org.activityinfo.ui.vdom.client.VDomWidget;
-import org.activityinfo.ui.vdom.client.flux.store.Store;
-import org.activityinfo.ui.vdom.client.flux.store.StoreChangeListener;
+import org.activityinfo.ui.flux.store.Store;
+import org.activityinfo.ui.flux.store.StoreChangeListener;
 
 public class AppEntryPoint implements EntryPoint, StoreChangeListener {
 
