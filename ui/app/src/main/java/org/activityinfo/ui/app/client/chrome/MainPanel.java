@@ -12,7 +12,7 @@ import org.activityinfo.ui.app.client.page.resource.ResourcePageContainer;
 import org.activityinfo.ui.app.client.store.AppStores;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.icons.FontAwesome;
-import org.activityinfo.ui.vdom.client.flux.store.LoadingStatus;
+import org.activityinfo.ui.flux.store.LoadingStatus;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;

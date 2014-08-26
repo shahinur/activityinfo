@@ -1,8 +1,8 @@
-package org.activityinfo.ui.vdom.client.flux.action;
+package org.activityinfo.ui.flux.action;
 
 import org.activityinfo.promise.Promise;
-import org.activityinfo.ui.vdom.client.flux.store.RemoteStore;
-import org.activityinfo.ui.vdom.client.flux.store.Store;
+import org.activityinfo.ui.flux.store.RemoteStore;
+import org.activityinfo.ui.flux.store.Store;
 
 public class RetryAction implements Action {
 
