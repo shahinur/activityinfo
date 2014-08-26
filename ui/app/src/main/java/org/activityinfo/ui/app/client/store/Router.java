@@ -4,9 +4,9 @@ import org.activityinfo.ui.app.client.page.PageStore;
 import org.activityinfo.ui.app.client.page.home.HomePage;
 import org.activityinfo.ui.app.client.page.resource.ResourcePageContainer;
 import org.activityinfo.service.store.RemoteStoreService;
-import org.activityinfo.ui.vdom.client.flux.store.Store;
-import org.activityinfo.ui.vdom.client.flux.store.StoreChangeListener;
-import org.activityinfo.ui.vdom.client.flux.store.StoreEventEmitter;
+import org.activityinfo.ui.flux.store.Store;
+import org.activityinfo.ui.flux.store.StoreChangeListener;
+import org.activityinfo.ui.flux.store.StoreEventEmitter;
 
 import java.util.Arrays;
 

@@ -29,6 +29,8 @@
   <inherits name="com.google.gwt.i18n.I18N"/>
 
   <inherits name="org.activityinfo.ui.vdom.VDom"/>
+  <inherits name="org.activityinfo.ui.Flux"/>
+
   <inherits name="org.activityinfo.ui.Style"/>
   <inherits name="org.activityinfo.ui.store.remote.RemoteStore"/>
 
