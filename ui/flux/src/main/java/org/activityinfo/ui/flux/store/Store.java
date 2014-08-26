@@ -1,4 +1,4 @@
-package org.activityinfo.ui.vdom.client.flux.store;
+package org.activityinfo.ui.flux.store;
 
 /**
  * Stores contain the application state and logic.

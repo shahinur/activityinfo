@@ -2,7 +2,7 @@ package org.activityinfo.ui.app.client.store;
 
 import org.activityinfo.ui.app.client.chrome.FailureDescription;
 import org.activityinfo.service.store.RemoteStoreService;
-import org.activityinfo.ui.vdom.client.flux.store.LoadingStatus;
+import org.activityinfo.ui.flux.store.LoadingStatus;
 
 public class AppStores {
 

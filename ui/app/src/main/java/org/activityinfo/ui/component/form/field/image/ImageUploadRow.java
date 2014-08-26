@@ -52,6 +52,8 @@ public class ImageUploadRow extends Composite {
     private static OurUiBinder ourUiBinder = GWT.create(OurUiBinder.class);
 
     private final ImageRowValue value;
+    private final String fieldId;
+    private final String resourceId;
 
     @UiField
     FileUpload fileUpload;
@@ -70,9 +72,11 @@ public class ImageUploadRow extends Composite {
     @UiField
     FormPanel formPanel;
 
-    public ImageUploadRow(ImageRowValue value) {
+    public ImageUploadRow(ImageRowValue value, String fieldId, String resourceId) {
         initWidget(ourUiBinder.createAndBindUi(this));
         this.value = value;
+        this.fieldId = fieldId;
+        this.resourceId = resourceId;
 
         fileUpload.addChangeHandler(new ChangeHandler() {
             @Override
@@ -186,9 +190,9 @@ public class ImageUploadRow extends Composite {
 
     private void download() {
         StringBuilder stringBuilder = new StringBuilder("/service/blob/");
-        stringBuilder.append("resource_id");                    // TODO
+        stringBuilder.append(resourceId);
         stringBuilder.append("/");
-        stringBuilder.append("field_name");                     // TODO
+        stringBuilder.append(fieldId);
         stringBuilder.append("/");
         stringBuilder.append(value.getBlobId());
         stringBuilder.append("/thumbnail?width=");

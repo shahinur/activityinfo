@@ -20,14 +20,22 @@ import com.google.common.io.ByteSource;
 import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.image.ImageRowValue;
+import org.activityinfo.model.type.image.ImageType;
+import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.util.blob.DevAppIdentityService;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.gcs.GcsAppIdentityServiceUrlSigner;
+import org.activityinfo.service.store.ResourceNotFound;
+import org.activityinfo.service.store.ResourceStore;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -41,12 +49,14 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
 
     private final String bucketName;
     private AppIdentityService appIdentityService;
+    private ResourceStore locator;
 
     @Inject
-    public GcsBlobFieldStorageService(DeploymentConfiguration config) {
+    public GcsBlobFieldStorageService(DeploymentConfiguration config, ResourceStore locator) {
         this.bucketName = config.getBlobServiceBucketName();
         appIdentityService = DeploymentEnvironment.isAppEngineDevelopment() ?
                 new DevAppIdentityService(config) : AppIdentityServiceFactory.getAppIdentityService();
+        this.locator = locator;
 
         LOGGER.info("Service account: " + appIdentityService.getServiceAccountName());
     }
@@ -91,26 +101,48 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
     @Override
     public Response getThumbnail(@InjectParam AuthenticatedUser user,
                                  @PathParam("resourceId") ResourceId resourceId,
-                                 @PathParam("fieldName") String fieldName,
+                                 @PathParam("fieldId") ResourceId fieldId,
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
+        final Resource resource;
+
+        try {
+            resource = locator.get(user, resourceId);
+        } catch (ResourceNotFound resourceNotFound) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
+        FormInstance formInstance = FormInstance.fromResource(resource);
+        ImageValue imageValue = (ImageValue) formInstance.get(fieldId, ImageType.TYPE_CLASS);
+        ImageRowValue imageRowValue = null;
+
+        if (imageValue != null) {
+            for (ImageRowValue row : imageValue.getValues()) {
+                if (row.getBlobId().equals(blobId.asString())) {
+                    imageRowValue = row;
+                    break;
+                }
+            }
+        }
+
+        if (imageRowValue == null) throw new WebApplicationException(Response.Status.NOT_FOUND);
+
         ImagesService imagesService = ImagesServiceFactory.getImagesService();
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
         BlobKey blobKey = blobstoreService.createGsBlobKey("/gs/" + bucketName + "/" + blobId.asString());
 
         Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
-        byte[] imageData;
 
-        // TODO Do not perform a resize transform if the requested width and height match those from the resource store
-//        if (width != image.getWidth() || image.getHeight() != height) {
+        if (width != imageRowValue.getWidth() || imageRowValue.getHeight() != height) {
             Transform resize = ImagesServiceFactory.makeResize(width, height);
             Image newImage = imagesService.applyTransform(resize, image);
 
-            imageData = newImage.getImageData();
-//        }
-
-        return Response.ok(imageData).build();
+            byte[] imageData = newImage.getImageData();
+            return Response.ok(imageData).build();
+        } else {
+            return Response.ok(image.getImageData()).build();
+        }
     }
 }
