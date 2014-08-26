@@ -134,16 +134,15 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         BlobKey blobKey = blobstoreService.createGsBlobKey("/gs/" + bucketName + "/" + blobId.asString());
 
         Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
-        byte[] imageData;
 
-        // TODO Do not perform a resize transform if the requested width and height match those from the resource store
-//        if (width != image.getWidth() || image.getHeight() != height) {
+        if (width != imageRowValue.getWidth() || imageRowValue.getHeight() != height) {
             Transform resize = ImagesServiceFactory.makeResize(width, height);
             Image newImage = imagesService.applyTransform(resize, image);
 
-            imageData = newImage.getImageData();
-//        }
-
-        return Response.ok(imageData).build();
+            byte[] imageData = newImage.getImageData();
+            return Response.ok(imageData).build();
+        } else {
+            return Response.ok(image.getImageData()).build();
+        }
     }
 }
