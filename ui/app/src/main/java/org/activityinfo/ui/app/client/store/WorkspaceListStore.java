@@ -6,10 +6,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.ui.app.client.chrome.FailureDescription;
 import org.activityinfo.service.store.RemoteStoreService;
-import org.activityinfo.ui.vdom.client.flux.store.LoadingStatus;
-import org.activityinfo.ui.vdom.client.flux.store.RemoteStore;
-import org.activityinfo.ui.vdom.client.flux.store.StoreChangeListener;
-import org.activityinfo.ui.vdom.client.flux.store.StoreEventEmitter;
+import org.activityinfo.ui.flux.store.LoadingStatus;
+import org.activityinfo.ui.flux.store.RemoteStore;
+import org.activityinfo.ui.flux.store.StoreChangeListener;
+import org.activityinfo.ui.flux.store.StoreEventEmitter;
 
 import java.util.List;
 import java.util.logging.Level;

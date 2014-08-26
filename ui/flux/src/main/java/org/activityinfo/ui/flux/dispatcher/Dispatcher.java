@@ -1,7 +1,7 @@
-package org.activityinfo.ui.vdom.client.flux.dispatcher;
+package org.activityinfo.ui.flux.dispatcher;
 
-import org.activityinfo.ui.vdom.client.flux.action.Action;
-import org.activityinfo.ui.vdom.client.flux.store.Store;
+import org.activityinfo.ui.flux.action.Action;
+import org.activityinfo.ui.flux.store.Store;
 
 import java.util.ArrayList;
 import java.util.List;

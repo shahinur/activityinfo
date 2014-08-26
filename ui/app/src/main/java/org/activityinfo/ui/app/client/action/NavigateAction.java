@@ -1,8 +1,8 @@
 package org.activityinfo.ui.app.client.action;
 
 import org.activityinfo.promise.Promise;
-import org.activityinfo.ui.vdom.client.flux.action.Action;
-import org.activityinfo.ui.vdom.client.flux.store.Store;
+import org.activityinfo.ui.flux.action.Action;
+import org.activityinfo.ui.flux.store.Store;
 
 /**
  * Action triggered by navigation to a new url, for example from

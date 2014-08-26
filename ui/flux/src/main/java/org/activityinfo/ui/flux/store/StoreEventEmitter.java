@@ -1,4 +1,4 @@
-package org.activityinfo.ui.vdom.client.flux.store;
+package org.activityinfo.ui.flux.store;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
