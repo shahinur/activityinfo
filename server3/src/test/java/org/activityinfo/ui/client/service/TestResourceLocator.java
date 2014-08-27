@@ -19,6 +19,7 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.store.test.TestResourceStore;
+import org.activityinfo.ui.client.component.form.field.InstanceLabelTable;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -144,5 +145,10 @@ public class TestResourceLocator implements ResourceLocator {
 
         System.out.println("Dumped resources to " + tempFile.getAbsolutePath());
 
+    }
+
+    @Override
+    public Promise<InstanceLabelTable> queryFormList() {
+        throw new UnsupportedOperationException();
     }
 }

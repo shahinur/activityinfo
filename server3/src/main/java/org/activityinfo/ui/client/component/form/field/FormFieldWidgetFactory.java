@@ -121,6 +121,7 @@ public class FormFieldWidgetFactory {
 
         } else if (type instanceof ReferenceType) {
             return createReferenceWidget(field, valueUpdater);
+
         } else if (type instanceof BarcodeType) {
             return Promise.resolved(new BarcodeFieldWidget(valueUpdater));
         }
@@ -131,9 +132,6 @@ public class FormFieldWidgetFactory {
 
     private Promise<? extends FormFieldWidget> createReferenceWidget(FormField field, ValueUpdater updater) {
         ReferenceType type = (ReferenceType) field.getType();
-        if( type.getRange().size() == 1 && type.getRange().contains(FormClass.CLASS_ID) ) {
-            return Promise.resolved(new FormClassSelectorWidget());
-        }
         if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
             return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) field.getType(), updater);
         } else {
@@ -143,31 +141,45 @@ public class FormFieldWidgetFactory {
 
     private Promise<? extends FormFieldWidget> createSimpleListWidget(final ReferenceType type, final ValueUpdater valueUpdater) {
 
-        TableModel tableModel = new TableModel(Iterables.getOnlyElement(type.getRange()));
-        tableModel.addResourceId("id");
-        tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
+        if(type.getRange().isEmpty()) {
+            return Promise.resolved(new ComboBoxFieldWidget(InstanceLabelTable.empty(), valueUpdater));
+        }
 
-        return resourceLocator.queryTable(tableModel).then(new Function<TableData, FormFieldWidget>() {
+        return queryReferenceList(type).then(new Function<InstanceLabelTable, FormFieldWidget>() {
             @Override
-            public FormFieldWidget apply(TableData table) {
-
-                InstanceLabelTable instanceLabelTable = new InstanceLabelTable(table.getColumnView("id"),
-                        table.getColumnView("label"));
+            public FormFieldWidget apply(InstanceLabelTable table) {
 
                 if (table.getNumRows() < SMALL_BALANCE_NUMBER) {
                     // Radio buttons
-                    return new CheckBoxFieldWidget(type, instanceLabelTable, valueUpdater);
-
-                } else if (table.getNumRows() < MEDIUM_BALANCE_NUMBER) {
-                    // Dropdown list
-                    return new ComboBoxFieldWidget(instanceLabelTable, valueUpdater);
+                    return new CheckBoxFieldWidget(type, table, valueUpdater);
 
                 } else {
-                    // Suggest box
-                    return new SuggestBoxWidget(instanceLabelTable, valueUpdater);
+                    // Dropdown list
+                    return new ComboBoxFieldWidget(table, valueUpdater);
+
                 }
             }
         });
     }
+
+    private Promise<InstanceLabelTable> queryReferenceList(ReferenceType type) {
+
+        if(type.getRange().size() == 1 && type.getRange().contains(FormClass.CLASS_ID)) {
+            return resourceLocator.queryFormList();
+        } else {
+
+            TableModel tableModel = new TableModel(Iterables.getOnlyElement(type.getRange()));
+            tableModel.addResourceId("id");
+            tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
+
+            return resourceLocator.queryTable(tableModel).then(new Function<TableData, InstanceLabelTable>() {
+                @Override
+                public InstanceLabelTable apply(TableData input) {
+                    return new InstanceLabelTable(input.getColumnView("id"), input.getColumnView("label"));
+                }
+            });
+        }
+    }
+
 }
 

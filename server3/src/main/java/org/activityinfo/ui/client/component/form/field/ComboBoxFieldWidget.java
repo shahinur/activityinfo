@@ -94,7 +94,7 @@ public class ComboBoxFieldWidget implements ReferenceFieldWidget {
 
     @Override
     public void clearValue() {
-        setValue(ReferenceValue.EMPTY);
+        dropBox.setSelectedIndex(-1);
     }
 
     @Override

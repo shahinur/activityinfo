@@ -12,6 +12,7 @@ import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.ui.client.component.form.field.InstanceLabelTable;
 
 import java.util.Collection;
 import java.util.List;
@@ -61,4 +62,7 @@ public interface ResourceLocator {
     Promise<QueryResult> queryProjection(InstanceQuery query);
 
     Promise<ResourceTree> getTree(ResourceId rootId);
+
+    Promise<InstanceLabelTable> queryFormList();
+
 }
