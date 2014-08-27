@@ -68,6 +68,7 @@ public class ImageUploadRow extends Composite {
     private final ImageRowValue value;
     private final String fieldId;
     private final String resourceId;
+    private boolean readOnly;
 
     @UiField
     FileUpload fileUpload;
@@ -111,7 +112,12 @@ public class ImageUploadRow extends Composite {
         }
     }
 
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
     public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
         fileUpload.setEnabled(!readOnly);
         downloadButton.setEnabled(!readOnly);
         removeButton.setEnabled(!readOnly);
