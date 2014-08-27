@@ -43,6 +43,7 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.shared.util.MimeTypeUtil;
@@ -59,6 +60,7 @@ import java.util.Map;
  * @author yuriyz on 8/12/14.
  */
 public class ImageUploadRow extends Composite {
+    private static final int THUMBNAIL_SIZE = 24;
 
     interface OurUiBinder extends UiBinder<FormPanel, ImageUploadRow> {
     }
@@ -76,6 +78,8 @@ public class ImageUploadRow extends Composite {
     HTMLPanel imageContainer;
     @UiField
     ImageElement loadingImage;
+    @UiField
+    Image thumbnail;
     @UiField
     Button downloadButton;
     @UiField
@@ -109,6 +113,8 @@ public class ImageUploadRow extends Composite {
         if (value.getBlobId() != null) {
             imageContainer.setVisible(false);
             downloadButton.setVisible(true);
+            thumbnail.setVisible(true);
+            thumbnail.setUrl(buildUrl(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
         }
     }
 
@@ -201,23 +207,15 @@ public class ImageUploadRow extends Composite {
 
                 imageContainer.setVisible(false);
                 downloadButton.setVisible(true);
+                thumbnail.setVisible(true);
+                thumbnail.setUrl(buildUrl(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
             }
         });
         formPanel.submit();
     }
 
     private void download() {
-        StringBuilder stringBuilder = new StringBuilder("/service/blob/");
-        stringBuilder.append(resourceId);
-        stringBuilder.append("/");
-        stringBuilder.append(fieldId);
-        stringBuilder.append("/");
-        stringBuilder.append(value.getBlobId());
-        stringBuilder.append("/thumbnail?width=");
-        stringBuilder.append(value.getWidth());
-        stringBuilder.append("&height=");
-        stringBuilder.append(value.getHeight());
-        Window.open(stringBuilder.toString(), "_blank", null);
+        Window.open(buildUrl(value.getWidth(), value.getHeight()), "_blank", null);
     }
 
     @Override
@@ -227,5 +225,19 @@ public class ImageUploadRow extends Composite {
 
     public ImageRowValue getValue() {
         return value;
+    }
+
+    private String buildUrl(int width, int height) {
+        StringBuilder stringBuilder = new StringBuilder("/service/blob/");
+        stringBuilder.append(resourceId);
+        stringBuilder.append("/");
+        stringBuilder.append(fieldId);
+        stringBuilder.append("/");
+        stringBuilder.append(value.getBlobId());
+        stringBuilder.append("/thumbnail?width=");
+        stringBuilder.append(width);
+        stringBuilder.append("&height=");
+        stringBuilder.append(height);
+        return stringBuilder.toString();
     }
 }
