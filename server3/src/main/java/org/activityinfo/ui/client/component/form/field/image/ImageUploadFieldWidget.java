@@ -127,10 +127,12 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
     public Promise<Void> setValue(ImageValue value) {
         clearValue();
 
-        if (value != null) {
+        if (value != null && value.getValues() != null && value.getValues().size() > 0) {
             for (ImageRowValue rowValue : value.getValues()) {
                 addNewRow(rowValue);
             }
+        } else {
+            addNewRow(new ImageRowValue());
         }
 
         return Promise.done();
