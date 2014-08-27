@@ -102,7 +102,7 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                     rows.get(0).removeButton.setEnabled(false);
                 } else if (rows.size() > 1) {
                     for (ImageUploadRow row : rows) {
-                        row.removeButton.setEnabled(true);
+                        row.removeButton.setEnabled(!row.isReadOnly());
                     }
                 }
             }
@@ -118,6 +118,8 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                 row.setReadOnly(readOnly);
             }
         }
+
+        setButtonsState();
     }
 
     @Override
