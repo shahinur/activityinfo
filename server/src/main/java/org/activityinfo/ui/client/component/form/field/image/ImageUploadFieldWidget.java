@@ -94,7 +94,8 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                 List<ImageUploadRow> rows = Lists.newArrayListWithCapacity(rootPanel.getWidgetCount());
                 for (int i = 0; i < rootPanel.getWidgetCount(); i++) {
                     Widget widget = rootPanel.getWidget(i);
-                    if (widget instanceof ImageUploadRow) rows.add((ImageUploadRow) widget);
+                    if (widget instanceof ImageUploadRow)
+                        rows.add((ImageUploadRow) widget);
                 }
 
                 // Disable the button if it's the only row, so the user will not be trapped in a widget without any rows

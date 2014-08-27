@@ -8,11 +8,12 @@ import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.ResourceResult;
-import org.activityinfo.legacy.shared.model.GetResource;
-import org.activityinfo.legacy.shared.model.PutResource;
+import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -20,9 +21,12 @@ import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.model.table.columns.StringArrayColumnView;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.ui.client.component.form.field.InstanceLabelTable;
 import org.activityinfo.ui.store.remote.client.RemoteStoreService;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -109,6 +113,28 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     @Override
     public Promise<ResourceTree> getTree(final ResourceId rootId) {
         return store.queryTree(rootId);
+    }
+
+    @Override
+    public Promise<InstanceLabelTable> queryFormList() {
+        return dispatcher.execute(new GetSchema()).then(new Function<SchemaDTO, InstanceLabelTable>() {
+            @Nullable
+            @Override
+            public InstanceLabelTable apply(@Nullable SchemaDTO input) {
+                List<String> id = Lists.newArrayList();
+                List<String> name = Lists.newArrayList();
+
+                for(UserDatabaseDTO db : input.getDatabases()) {
+                    for(ActivityDTO form : db.getActivities()) {
+                        id.add(CuidAdapter.activityFormClass(form.getId()).asString());
+                        name.add(db.getName() + " / " + form.getName());
+                    }
+                }
+
+                return new InstanceLabelTable(new StringArrayColumnView(id), new StringArrayColumnView(name));
+            }
+        });
+
     }
 
     @Override

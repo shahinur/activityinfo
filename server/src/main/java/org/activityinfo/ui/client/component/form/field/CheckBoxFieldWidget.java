@@ -38,10 +38,7 @@ import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.RadioButton;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author yuriyz on 2/11/14.
@@ -102,7 +99,11 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
 
     @Override
     public Promise<Void> setValue(ReferenceValue value) {
-        Set<ResourceId> ids = value.getResourceIds();
+        return setValue(value.getResourceIds());
+    }
+
+    private Promise<Void> setValue(Set<ResourceId> resourceIds) {
+        Set<ResourceId> ids = resourceIds;
         for (CheckBox entry : controls) {
             ResourceId resourceId = ResourceId.valueOf(entry.getFormValue());
             entry.setValue(ids.contains(resourceId));
@@ -112,7 +113,7 @@ public class CheckBoxFieldWidget implements ReferenceFieldWidget {
 
     @Override
     public void clearValue() {
-       setValue(ReferenceValue.EMPTY);
+       setValue(Collections.<ResourceId>emptySet());
     }
 
     @Override
