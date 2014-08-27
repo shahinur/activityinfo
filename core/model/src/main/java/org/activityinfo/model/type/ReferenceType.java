@@ -51,7 +51,8 @@ public class ReferenceType implements ParametrizedFieldType {
             }
             Record record = parameters.isRecord("range");
             if(record != null) {
-                type.setRange(ReferenceValue.fromRecord(record).getResourceIds());
+                ReferenceValue referenceValue = ReferenceValue.fromRecord(record);
+                type.setRange(referenceValue.getResourceIds());
             } else {
                 // previous encoding
                 type.setRange(parameters.getStringList("range"));
@@ -71,6 +72,7 @@ public class ReferenceType implements ParametrizedFieldType {
             rangeField.setDescription("Choose the form to which the field should be linked. " +
                                       "When filling out the form, you will be able to choose from " +
                                       "among the submissions to that form.");
+            rangeField.setType(ReferenceType.single(FormClass.CLASS_ID));
 
             FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("ref"));
             formClass.addElement(rangeField);
@@ -81,7 +83,7 @@ public class ReferenceType implements ParametrizedFieldType {
     public static final TypeClass TYPE_CLASS = new TypeClass();
 
     private Cardinality cardinality;
-    private Set<ResourceId> range;
+    private Set<ResourceId> range = Collections.emptySet();
 
     public ReferenceType() {
     }
@@ -128,10 +130,13 @@ public class ReferenceType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record()
-                .set("classId", getTypeClass().getParameterFormClass().getId())
-                .set("range", new ReferenceValue(range).asRecord())
-                .set("cardinality", cardinality);
+        Record record = new Record();
+        record.set("classId", getTypeClass().getParameterFormClass().getId());
+        record.set("cardinality", cardinality);
+        if(!range.isEmpty()) {
+            record.set("range", new ReferenceValue(range).asRecord());
+        }
+        return record;
     }
 
     @Override
