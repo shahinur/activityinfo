@@ -1,9 +1,10 @@
 package org.activityinfo.migrator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Multimap;
+import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.apache.commons.lang.StringEscapeUtils;
 
 import java.io.BufferedWriter;
@@ -19,6 +20,8 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
 
     private final BufferedWriter output;
     private int writtenCount = 0;
+
+    private final ObjectMapper objectMapper = ObjectMapperFactory.get();
 
     public MySqlResourceDumpWriter(File file) throws IOException {
         System.out.println("Writing SQL dump to " + file);
@@ -52,7 +55,7 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
         append(',');
         appendParameter(ResourceWriters.getLabel(resource));
         append(',');
-        appendParameter(Resources.toJson(resource));
+        appendParameter(objectMapper.writeValueAsString(resource));
         append(')');
 
         writtenCount++;

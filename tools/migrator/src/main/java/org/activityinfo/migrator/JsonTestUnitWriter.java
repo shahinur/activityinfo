@@ -1,24 +1,25 @@
 package org.activityinfo.migrator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import com.google.gson.JsonArray;
-import com.google.gson.internal.Streams;
-import com.google.gson.stream.JsonWriter;
+import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 public class JsonTestUnitWriter implements ResourceWriter {
     private final File file;
-    private JsonArray array;
+    private List<Resource> resources;
+
+    private final ObjectMapper objectMapper = ObjectMapperFactory.get();
 
     public JsonTestUnitWriter(File file) throws IOException {
-        this.array = new JsonArray();
         this.file = file;
+        this.resources = Lists.newArrayList();
     }
 
     @Override
@@ -28,7 +29,7 @@ public class JsonTestUnitWriter implements ResourceWriter {
 
     @Override
     public void writeResource(Resource resource) throws IOException {
-        array.add(Resources.toJsonObject(resource));
+        resources.add(resource.copy());
     }
 
     @Override
@@ -47,11 +48,6 @@ public class JsonTestUnitWriter implements ResourceWriter {
     }
 
     public void finish() throws IOException {
-        FileWriter fileWriter = new FileWriter(file);
-        JsonWriter jsonWriter = new JsonWriter(fileWriter);
-        jsonWriter.setLenient(true);
-        jsonWriter.setIndent("  ");
-        Streams.write(array, jsonWriter);
-        fileWriter.close();
+        objectMapper.writeValue(file, resources);
     }
 }
