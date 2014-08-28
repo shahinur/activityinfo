@@ -2,8 +2,10 @@ package org.activityinfo.service.blob;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
 import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
+import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.google.common.io.BaseEncoding;
+import org.joda.time.Period;
 
 import java.util.Map;
 
@@ -54,13 +56,20 @@ public class GcsUploadCredentialBuilder {
         return setMaxContentLength(megabytes * BYTES_IN_MEGA_BYTE);
     }
 
+    public GcsUploadCredentialBuilder expireAfter(Period period) {
+        policyDocument.expiresAfter(period.toStandardDuration());
+        return this;
+    }
+
     public UploadCredentials build() {
 
-        byte[] policy = policyDocument.toJson();
-        AppIdentityService.SigningResult signature = identityService.signForApp(policy);
+        byte[] policy = policyDocument.toJsonBytes();
+        String encodedPolicy = BaseEncoding.base64().encode(policy);
+
+        AppIdentityService.SigningResult signature = identityService.signForApp(encodedPolicy.getBytes(Charsets.UTF_8));
 
         formFields.put("GoogleAccessId", identityService.getServiceAccountName());
-        formFields.put("policy", BaseEncoding.base64().encode(policy));
+        formFields.put("policy", encodedPolicy);
         formFields.put("signature", BaseEncoding.base64().encode(signature.getSignature()));
 
         return new UploadCredentials(END_POINT, "POST", formFields);
