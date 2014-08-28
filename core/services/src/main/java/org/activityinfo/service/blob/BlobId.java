@@ -27,17 +27,18 @@ public class BlobId {
         if (this == o) {
             return true;
         }
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
         BlobId blobId = (BlobId) o;
 
-        if (value != null ? !value.equals(blobId.value) : blobId.value != null) {
-            return false;
+        if (value == null) {
+            return blobId.value == null;
+        } else {
+            return value.equals(blobId.value);
         }
-
-        return true;
     }
 
     @Override
