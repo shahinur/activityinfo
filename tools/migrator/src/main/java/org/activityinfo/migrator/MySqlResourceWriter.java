@@ -1,9 +1,11 @@
 package org.activityinfo.migrator;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Multimap;
+import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +16,8 @@ import java.util.Map;
 class MySqlResourceWriter implements ResourceWriter {
 
     private long version = 1;
+
+    private final ObjectMapper objectMapper = ObjectMapperFactory.get();
 
     private final Connection connection;
     private int count;
@@ -47,7 +51,7 @@ class MySqlResourceWriter implements ResourceWriter {
 
 
     @Override
-    public void writeResource(Resource resource) throws SQLException {
+    public void writeResource(Resource resource) throws SQLException, JsonProcessingException {
 
         if(resource == null) {
             throw new NullPointerException("resource");
@@ -59,7 +63,7 @@ class MySqlResourceWriter implements ResourceWriter {
         statement.setString(4, resource.getOwnerId().asString());
         statement.setString(5, resource.isString("classId"));
         statement.setString(6, ResourceWriters.getLabel(resource));
-        statement.setString(7, Resources.toJson(resource));
+        statement.setString(7, objectMapper.writeValueAsString(resource));
         statement.addBatch();
         count ++ ;
 
