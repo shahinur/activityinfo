@@ -13,22 +13,25 @@ import java.util.Map;
  * @see <a href="https://developers.google.com/storage/docs/reference-methods?csw=1#postobject">GCS Docs</a>
  */
 public class GcsUploadCredentialBuilder {
-
-    public static final String END_POINT = "https://storage.googleapis.com";
+    private static final String STATUS_CODE = "201";
+    private static final String END_POINT_URL_FORMAT = "https://%s.storage.googleapis.com";
 
     public static final int BYTES_IN_MEGA_BYTE = 1024 * 1024;
 
-    private GcsPolicyBuilder policyDocument = new GcsPolicyBuilder();
-    private Map<String, String> formFields = Maps.newHashMap();
-    private AppIdentityService identityService;
+    private final GcsPolicyBuilder policyDocument;
+    private final Map<String, String> formFields;
+    private final AppIdentityService identityService;
 
 
     public GcsUploadCredentialBuilder() {
-        this.identityService = AppIdentityServiceFactory.getAppIdentityService();
+        this(AppIdentityServiceFactory.getAppIdentityService());
     }
 
     public GcsUploadCredentialBuilder(AppIdentityService identityService) {
+        this.policyDocument = new GcsPolicyBuilder();
+        this.formFields = Maps.newHashMap();
         this.identityService = identityService;
+        policyDocument.successActionStatusMustBe(STATUS_CODE);
     }
 
     /**
@@ -71,7 +74,8 @@ public class GcsUploadCredentialBuilder {
         formFields.put("GoogleAccessId", identityService.getServiceAccountName());
         formFields.put("policy", encodedPolicy);
         formFields.put("signature", BaseEncoding.base64().encode(signature.getSignature()));
+        formFields.put("success_action_status", STATUS_CODE);
 
-        return new UploadCredentials(END_POINT, "POST", formFields);
+        return new UploadCredentials(String.format(END_POINT_URL_FORMAT, formFields.get("bucket")), "POST", formFields);
     }
 }
