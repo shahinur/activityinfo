@@ -45,6 +45,9 @@ import java.net.URI;
 import java.nio.channels.Channels;
 import java.util.logging.Logger;
 
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+
 public class GcsBlobFieldStorageService implements BlobFieldStorageService {
 
     private static final Logger LOGGER = Logger.getLogger(GcsBlobFieldStorageService.class.getName());
@@ -98,12 +101,14 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
+        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
+
         final Resource resource;
 
         try {
             resource = locator.get(user, resourceId);
         } catch (ResourceNotFound resourceNotFound) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException(NOT_FOUND);
         }
 
         FormInstance formInstance = FormInstance.fromResource(resource);
@@ -119,7 +124,7 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
             }
         }
 
-        if (imageRowValue == null) throw new WebApplicationException(Response.Status.NOT_FOUND);
+        if (imageRowValue == null) throw new WebApplicationException(NOT_FOUND);
 
         ImagesService imagesService = ImagesServiceFactory.getImagesService();
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -142,6 +147,8 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
     @Override
     public Response getUploadCredentials(@InjectParam AuthenticatedUser user,
                                          @PathParam("blobId") BlobId blobId) {
+        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
+
         GcsUploadCredentialBuilder builder = new GcsUploadCredentialBuilder(appIdentityService);
         builder.setBucket(bucketName);
         builder.setKey(blobId.asString());
