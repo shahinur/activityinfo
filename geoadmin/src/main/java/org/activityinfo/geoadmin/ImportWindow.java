@@ -1,52 +1,36 @@
 package org.activityinfo.geoadmin;
 
-import java.awt.BorderLayout;
-import java.awt.Dialog;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.vividsolutions.jts.geom.Envelope;
+import net.miginfocom.swing.MigLayout;
+import org.activityinfo.geoadmin.model.*;
+import org.apache.commons.lang.StringEscapeUtils;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import com.vividsolutions.jts.geom.Envelope;
-import net.miginfocom.swing.MigLayout;
-
-import org.activityinfo.geoadmin.model.ActivityInfoClient;
-import org.activityinfo.geoadmin.model.AdminEntity;
-import org.activityinfo.geoadmin.model.AdminLevel;
-import org.activityinfo.geoadmin.model.Bounds;
-import org.activityinfo.geoadmin.model.Country;
-
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * User interface for matching imported features with their parents in the
  * existing hierarchy.
- * 
+ *
  */
 public class ImportWindow extends JDialog {
 
-	private static final Logger LOGGER = Logger.getLogger(ImportWindow.class.getName());
-	
+    private static final Logger LOGGER = Logger.getLogger(ImportWindow.class.getName());
+
     private ActivityInfoClient client;
     private List<AdminEntity> parentEntities;
 
@@ -60,9 +44,9 @@ public class ImportWindow extends JDialog {
     private JTable table;
 
     public ImportWindow(JFrame parent, ActivityInfoClient client,
-        Country country,
-        AdminLevel parentLevel,
-        File shapeFile) throws Exception {
+                        Country country,
+                        AdminLevel parentLevel,
+                        File shapeFile) throws Exception {
 
         super(parent, "Import - " + shapeFile.getName(), Dialog.ModalityType.APPLICATION_MODAL);
         setSize(650, 350);
@@ -85,7 +69,7 @@ public class ImportWindow extends JDialog {
         tableModel = new ImportTableModel(source);
         JComboBox parentComboBox = new JComboBox(parentEntities.toArray());
         parentComboBox.setEditable(false);
-        
+
         JComboBox actionComboBox = new JComboBox(ImportAction.values());
         actionComboBox.setEditable(false);
 
@@ -130,7 +114,7 @@ public class ImportWindow extends JDialog {
 
     /**
      * Display the parent match score of the selected item in the status bar
-     * 
+     *
      * @param featureIndex
      */
     private void showScore(int featureIndex) {
@@ -157,6 +141,17 @@ public class ImportWindow extends JDialog {
             }
         });
 
+        JButton linkCodeButton = new JButton("Link Parents via Code");
+        linkCodeButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                guessParentsWithCode();
+            }
+
+        });
+
+
         JButton updateButton = new JButton("Import");
         updateButton.addActionListener(new ActionListener() {
 
@@ -171,71 +166,172 @@ public class ImportWindow extends JDialog {
             }
         });
 
+        JButton saveButton = new JButton("Write import");
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    doWriteImport();
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
         toolBar.add(guessButton);
+        toolBar.add(linkCodeButton);
         toolBar.add(updateButton);
+        toolBar.add(saveButton);
         toolBar.addSeparator();
 
         return toolBar;
     }
 
     protected void doImport() throws FileNotFoundException {
+        AdminLevel newLevel = buildUpdate();
+
+        if(parentLevel != null) {
+            client.postChildLevel(parentLevel, newLevel);
+
+        } else {
+            client.postRootLevel(country, newLevel);
+        }
+        // hide window
+        setVisible(false);
+    }
+
+    private void doWriteImport() throws IOException {
+        File tempFile = File.createTempFile("level", ".sql.gz");
+        try(
+            PrintWriter out = new PrintWriter(
+                new GZIPOutputStream(
+                    new FileOutputStream(tempFile))) ) {
+
+            AdminLevel newLevel = buildUpdate();
+
+            out.println("BEGIN;");
+            out.println(String.format("INSERT INTO adminlevel (name, countryid, parentid) VALUES (%s, %d, %d);",
+                quote(newLevel.getName()),
+                country.getId(),
+                parentLevel.getId()));
+
+
+            out.println("select @newLevelId:=last_insert_id();");
+
+
+            out.println(String.format("INSERT INTO locationtype (name, countryid, boundadminlevelid, reuse) " +
+                    "VALUES (%s, %d, @newLevelId, 0);",
+                quote(newLevel.getName()),
+                country.getId()));
+
+            out.println("COMMIT;");
+
+            out.println("BEGIN;");
+
+            int count = 0;
+            boolean first = true;
+
+            for(AdminEntity entity : newLevel.getEntities()) {
+
+                if(first) {
+                    out.println("INSERT DELAYED INTO adminentity " +
+                        "(adminlevelid, name, code, adminentityparentid, x1, y1, x2, y2) VALUES");
+                    first = false;
+                } else {
+                    out.println(",");
+                }
+
+                out.print(String.format("(@newLevelId, %s, %s, %s, %f, %f, %f, %f)",
+                    quote(entity.getName()),
+                    quote(entity.getCode()),
+                    parentLevel == null ? "null" : Integer.toString(entity.getParentId()),
+                    entity.getBounds().getX1(),
+                    entity.getBounds().getY1(),
+                    entity.getBounds().getX2(),
+                    entity.getBounds().getY2()));
+
+                count ++;
+
+                if(count % 1000 == 0) {
+                    out.println(";");
+                    first = true;
+                }
+            }
+            out.println(";");
+            out.println("COMMIT;");
+        }
+        System.out.println("Wrote to " + tempFile.getAbsolutePath());
+    }
+
+    private String quote(String code) {
+        if(code == null) {
+            return "null";
+        } else {
+            return "\'" + StringEscapeUtils.escapeSql(code) + "\'";
+        }
+    }
+
+    private AdminLevel buildUpdate() {
         int nameAttribute = importForm.getNameAttributeIndex();
         int codeAttribute = importForm.getCodeAttributeIndex();
 
         List<AdminEntity> entities = Lists.newArrayList();
         Map<ImportKey, AdminEntity> entityMap = Maps.newHashMap();
-        
-        for (int i = 0; i != tableModel.getRowCount(); ++i) {        	
-        	if(tableModel.getActionAt(i) == ImportAction.IMPORT) {
-	            ImportFeature feature = tableModel.getFeatureAt(i);
-	            String featureName = feature.getAttributeStringValue(nameAttribute);
-	            AdminEntity parent = tableModel.getParent(i);
-	           
-	            if(Strings.isNullOrEmpty(featureName)) {
-	            	throw new RuntimeException("Feature " + i + " has an empty name");
-	            }
-	            
-	            // we can't have two entities with the same name within a
-	            // given parent. This happens often because secondary exterior rings
-	            // are stored as separate features.
-	        	ImportKey key = new ImportKey(parent, featureName);
-	        	
-	        	if(!entityMap.containsKey(key)) {
-	        		// create a new entity
-		            AdminEntity entity = new AdminEntity();
-					entity.setName(featureName);
-		            if(codeAttribute != -1) {
-		            	entity.setCode(feature.getAttributeStringValue(codeAttribute));
-		            }
-		            Bounds bounds = GeoUtils.toBounds(feature.getEnvelope());
-		            entity.setBounds(bounds);
 
-                    if(importForm.isGeometryImported()) {
-		                entity.setGeometry(feature.getGeometry());
+        for (int i = 0; i != tableModel.getRowCount(); ++i) {
+            if(tableModel.getActionAt(i) == ImportAction.IMPORT) {
+                ImportFeature feature = tableModel.getFeatureAt(i);
+                String featureName = feature.getAttributeStringValue(nameAttribute);
+                AdminEntity parent = tableModel.getParent(i);
+
+                if(!validateFeature(feature, featureName, parent)) {
+                    continue;
+                }
+
+                if(Strings.isNullOrEmpty(featureName)) {
+                    throw new RuntimeException("Feature " + i + " has an empty name");
+                }
+
+                // we can't have two entities with the same name within a
+                // given parent. This happens often because secondary exterior rings
+                // are stored as separate features.
+                ImportKey key = new ImportKey(parent, featureName);
+
+                if(!entityMap.containsKey(key)) {
+                    AdminEntity entity = new AdminEntity();
+                    entity.setName(featureName);
+                    if (codeAttribute != -1) {
+                        entity.setCode(feature.getAttributeStringValue(codeAttribute));
                     }
-		
-		            if (parentLevel != null) {
-		                entity.setParentId(parent.getId());
-		            }
-		            entities.add(entity);
-		            entityMap.put(key, entity);
-	        	} else {
-	        		// add this geometry to the existing entity
-	        		
-	        		LOGGER.info("Merging geometry for entity named '" + featureName + "'");
-	        		
-	        		AdminEntity entity = entityMap.get(key);
+                    Bounds bounds = GeoUtils.toBounds(feature.getEnvelope());
+                    entity.setBounds(bounds);
+
+                    if (importForm.isGeometryImported()) {
+                        entity.setGeometry(feature.getGeometry());
+                    }
+
+                    if (parentLevel != null) {
+                        entity.setParentId(parent.getId());
+                    }
+                    entities.add(entity);
+                    entityMap.put(key, entity);
+                } else {
+                    // add this geometry to the existing entity
+
+                    LOGGER.info("Merging geometry for entity named '" + featureName + "'");
+
+                    AdminEntity entity = entityMap.get(key);
 
                     Envelope bounds = GeoUtils.toEnvelope(entity.getBounds());
                     bounds.expandToInclude(feature.getEnvelope());
                     entity.setBounds(GeoUtils.toBounds(bounds));
                     if(importForm.isGeometryImported()) {
-	        		    entity.setGeometry( entity.getGeometry().union(feature.getGeometry()) );
+                        entity.setGeometry( entity.getGeometry().union(feature.getGeometry()) );
                     }
-	        	}
-        	}
+                }
+            }
         }
 
         AdminLevel newLevel = new AdminLevel();
@@ -244,15 +340,21 @@ public class ImportWindow extends JDialog {
             newLevel.setParentId(parentLevel.getId());
         }
         newLevel.setEntities(entities);
+        return newLevel;
+    }
 
+    private boolean validateFeature(ImportFeature feature, String featureName, AdminEntity parent) {
         if(parentLevel != null) {
-            client.postChildLevel(parentLevel, newLevel);
-        } else {
-            client.postRootLevel(country, newLevel);
+            if(parent == null) {
+                System.err.println(feature + " has no parent");
+                return false;
+            }
         }
-
-        // hide window
-        setVisible(false);
+        if(Strings.nullToEmpty(featureName).length() == 0) {
+            System.err.println(feature + " has no name");
+            return false;
+        }
+        return true;
     }
 
     private List<AdminEntity> sort(List<AdminEntity> adminEntities) {
@@ -278,4 +380,25 @@ public class ImportWindow extends JDialog {
         }
     }
 
+
+    private void guessParentsWithCode() {
+
+        int index = importForm.getParentCodeAttributeIndex();
+        if(index < 0) {
+            System.out.println("Choose parent code first");
+            return;
+        }
+
+        Map<String, AdminEntity> codeMap = Maps.newHashMap();
+        for(AdminEntity entity : this.parentEntities) {
+            codeMap.put(entity.getCode(), entity);
+        }
+
+        for (int featureIndex = 0; featureIndex != source.getFeatureCount(); ++featureIndex) {
+            String code = source.getFeatures().get(featureIndex).getAttributeStringValue(index);
+            AdminEntity entity = codeMap.get(code);
+
+            tableModel.setValueAt(entity, featureIndex, ImportTableModel.PARENT_COLUMN);
+        }
+    }
 }

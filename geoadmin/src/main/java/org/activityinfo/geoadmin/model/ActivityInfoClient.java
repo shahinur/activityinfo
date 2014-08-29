@@ -1,15 +1,5 @@
 package org.activityinfo.geoadmin.model;
 
-import java.net.URI;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.ext.ContextResolver;
-
-import org.codehaus.jackson.map.ObjectMapper;
-
 import com.bedatadriven.geojson.GeoJsonModule;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.Client;
@@ -19,6 +9,14 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import com.sun.jersey.api.json.JSONConfiguration;
 import com.vividsolutions.jts.geom.Point;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.ext.ContextResolver;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * ActivityInfo REST Client
@@ -242,5 +240,9 @@ public class ActivityInfoClient {
             .accept(MediaType.APPLICATION_JSON_TYPE)
             .type(MediaType.APPLICATION_JSON_TYPE)
             .post(new GenericType<List<List<AdminEntity>>>() { }, points);
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return new ObjectMapperProvider().getContext(ObjectMapper.class);
     }
 }

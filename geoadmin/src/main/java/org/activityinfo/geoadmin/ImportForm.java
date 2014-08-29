@@ -1,12 +1,10 @@
 package org.activityinfo.geoadmin;
 
-import java.util.List;
+import net.miginfocom.swing.MigLayout;
+import org.activityinfo.geoadmin.model.AdminEntity;
 
 import javax.swing.*;
-
-import net.miginfocom.swing.MigLayout;
-
-import org.activityinfo.geoadmin.model.AdminEntity;
+import java.util.List;
 
 public class ImportForm extends JPanel {
 
@@ -14,6 +12,8 @@ public class ImportForm extends JPanel {
     private JTextField levelNameField;
     private JComboBox nameCombo;
     private JComboBox codeCombo;
+    private JComboBox parentCodeCombo;
+
     private JCheckBox importGeometryCheckBox;
     private List<AdminEntity> parentUnits;
 
@@ -32,6 +32,9 @@ public class ImportForm extends JPanel {
         codeCombo = new JComboBox(codeChoices(source));
         codeCombo.setSelectedIndex(0);
 
+        parentCodeCombo = new JComboBox(codeChoices(source));
+        parentCodeCombo.setSelectedIndex(0);
+
         add(new JLabel("Level Name:"));
         add(levelNameField, "width 100!, wrap");
 
@@ -40,6 +43,9 @@ public class ImportForm extends JPanel {
 
         add(new JLabel("Code Attribute"));
         add(codeCombo, "width 160!, wrap");
+
+        add(new JLabel("Parent Code Attribute"));
+        add(parentCodeCombo, "width 160!, wrap");
 
         importGeometryCheckBox = new JCheckBox("Import Geometry");
         add(importGeometryCheckBox);
@@ -90,6 +96,8 @@ public class ImportForm extends JPanel {
     public int getCodeAttributeIndex() {
         return codeCombo.getSelectedIndex()-1;
     }
+
+    public int getParentCodeAttributeIndex() { return parentCodeCombo.getSelectedIndex()-1; }
 
     public boolean isGeometryImported() {
         return importGeometryCheckBox.isSelected();

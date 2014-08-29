@@ -1,13 +1,10 @@
 package org.activityinfo.geoadmin;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.channels.FileChannel.MapMode;
-import java.security.MessageDigest;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.collect.UnmodifiableIterator;
+import com.google.common.io.Files;
+import com.vividsolutions.jts.geom.*;
 import org.activityinfo.geoadmin.model.Country;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
@@ -24,16 +21,13 @@ import org.opengis.feature.type.PropertyDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.google.common.collect.UnmodifiableIterator;
-import com.google.common.io.Files;
-import com.vividsolutions.jts.geom.Envelope;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Polygon;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.channels.FileChannel.MapMode;
+import java.security.MessageDigest;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A set of features from a file to be imported into ActivityInfo's
@@ -74,12 +68,22 @@ public class ImportSource {
         SimpleFeatureIterator it = features.features();
         while (it.hasNext()) {
             SimpleFeature feature = (SimpleFeature) it.next();
-            ImportFeature importFeature = new ImportFeature(
-                attributes,
-                toAttributeArray(feature),
-                calcWgs84Geometry(feature));
-            this.features.add(importFeature);
+            if(hasGeometry(feature)) {
+              ImportFeature importFeature = new ImportFeature(
+                  attributes,
+                  toAttributeArray(feature),
+                  calcWgs84Geometry(feature));
+
+              this.features.add(importFeature);
+            } else {
+              System.err.println("No geometry: " + attributes);
+            }
         }
+    }
+
+    public boolean hasGeometry(SimpleFeature feature) {
+        Geometry geometry = (Geometry) feature.getDefaultGeometryProperty().getValue();
+        return geometry != null;
     }
 
     /**
@@ -90,7 +94,7 @@ public class ImportSource {
         try {
             Geometry geometry = (Geometry) feature.getDefaultGeometryProperty().getValue();
             Geometry geometryInWgs84 = JTS.transform(geometry, transform);
-            return geometryInWgs84;
+            return geometryInWgs84.getEnvelope();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

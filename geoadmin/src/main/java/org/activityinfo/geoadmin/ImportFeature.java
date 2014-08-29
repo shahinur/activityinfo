@@ -1,11 +1,11 @@
 package org.activityinfo.geoadmin;
 
-import java.util.List;
-
-import org.opengis.feature.type.PropertyDescriptor;
-
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import org.opengis.feature.type.PropertyDescriptor;
+
+import java.util.List;
+import java.util.Objects;
 
 public class ImportFeature {
     private ImportSource source;
@@ -74,4 +74,16 @@ public class ImportFeature {
         }
         return sb.toString();
     }
+
+  public double matchCode(String code) {
+    for (int attributeIndex = 0; attributeIndex != attributeValues.length; ++attributeIndex) {
+      Object value = attributeValues[attributeIndex];
+      if (Objects.equals(value, code)) {
+        return 1;
+      }
+    }
+    return 0;
+  }
+
+
 }

@@ -1,24 +1,7 @@
 package org.activityinfo.geoadmin;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.util.List;
-
-import javax.swing.DefaultCellEditor;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JToolBar;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-
+import com.google.common.collect.Lists;
 import net.miginfocom.swing.MigLayout;
-
 import org.activityinfo.geoadmin.merge.MergeAction;
 import org.activityinfo.geoadmin.merge.MergeNode;
 import org.activityinfo.geoadmin.merge.MergeTreeBuilder;
@@ -29,7 +12,14 @@ import org.activityinfo.geoadmin.model.AdminLevel;
 import org.activityinfo.geoadmin.model.VersionMetadata;
 import org.jdesktop.swingx.JXTreeTable;
 
-import com.google.common.collect.Lists;
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Window proving a user interface to match a shapefile to an existing admin
@@ -65,6 +55,7 @@ public class UpdateWindow extends JFrame {
 
         MergeTreeBuilder treeBuilder = new MergeTreeBuilder(client, level, source);
         treeModel = new MergeTreeTableModel(treeBuilder.build(), source);
+
         treeTable = new JXTreeTable(treeModel);
 
         JComboBox actionCombo = new JComboBox(MergeAction.values());
@@ -140,6 +131,7 @@ public class UpdateWindow extends JFrame {
                 mergeSelection();
             }
         });
+
 
         JButton updateButton = new JButton("Update");
         updateButton.addActionListener(new ActionListener() {
@@ -257,6 +249,7 @@ public class UpdateWindow extends JFrame {
         updatedLevel.setParentId(level.getParentId());
         updatedLevel.setEntities(entities);
         updatedLevel.setVersionMetadata(metadata);
+
 
         client.updateAdminLevel(updatedLevel);
         	

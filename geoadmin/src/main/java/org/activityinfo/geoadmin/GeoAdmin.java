@@ -1,29 +1,28 @@
 package org.activityinfo.geoadmin;
 
-import java.awt.BorderLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.List;
-import java.util.Map;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.activityinfo.geoadmin.model.ActivityInfoClient;
+import org.activityinfo.geoadmin.model.Country;
 
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTree;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
-
-import org.activityinfo.geoadmin.model.ActivityInfoClient;
-import org.activityinfo.geoadmin.model.Country;
-
-import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 /**
  * Swing Application that provides a user interface for managing ActivityInfo's
@@ -165,19 +164,50 @@ public class GeoAdmin extends JFrame {
             endpoint = "http://www.activityinfo.org/resources";
         }
 
-        new PasswordForm().show(new PasswordForm.Callback() {
-            @Override
-            public void ok(String username, String password) {
+        if(!tryLoadCredentialsFromHomeDir(endpoint)) {
 
-                final ActivityInfoClient client = new ActivityInfoClient(endpoint, username, password);
+            new PasswordForm().show(new PasswordForm.Callback() {
+                @Override
+                public void ok(String username, String password) {
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        GeoAdmin ex = new GeoAdmin(client);
-                        ex.setVisible(true);
+                    onAuthenticated(username, password, endpoint);
+                }
+            });
+        }
+    }
+
+    private static boolean tryLoadCredentialsFromHomeDir(String endpoint) {
+        File homeDir = new File(System.getProperty("user.home"));
+        File credentialsFile = new File(homeDir, ".geoadmin.credentials");
+
+        if(credentialsFile.exists()) {
+            Properties credentials = new Properties();
+            try {
+                try( FileInputStream in = new FileInputStream(credentialsFile)) {
+                    credentials.load(in);
+                    String accountEmail = credentials.getProperty("accountEmail");
+                    String password = credentials.getProperty("password");
+                    if(!Strings.isNullOrEmpty(accountEmail) &&
+                       !Strings.isNullOrEmpty(password)) {
+                        onAuthenticated(accountEmail, password, endpoint);
+                        return true;
                     }
-                });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    private static void onAuthenticated(String username, String password, String endpoint) {
+        final ActivityInfoClient client = new ActivityInfoClient(endpoint, username, password);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                GeoAdmin ex = new GeoAdmin(client);
+                ex.setVisible(true);
             }
         });
     }
