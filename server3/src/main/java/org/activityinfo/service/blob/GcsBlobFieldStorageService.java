@@ -23,6 +23,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.image.ImageValue;
@@ -32,6 +33,7 @@ import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.gcs.GcsAppIdentityServiceUrlSigner;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
+import org.joda.time.Period;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -59,15 +61,6 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         this.locator = locator;
 
         LOGGER.info("Service account: " + appIdentityService.getServiceAccountName());
-    }
-
-    @Override
-    public UploadCredentials getUploadCredentials(ResourceId userId, BlobId blobId) {
-        GcsUploadCredentialBuilder builder = new GcsUploadCredentialBuilder(appIdentityService);
-        builder.setBucket(bucketName);
-        builder.setKey(blobId.asString());
-        builder.setMaxContentLengthInMegabytes(5);
-        return builder.build();
     }
 
     @Override
@@ -144,5 +137,16 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         } else {
             return Response.ok(image.getImageData()).build();
         }
+    }
+
+    @Override
+    public Response getUploadCredentials(@InjectParam AuthenticatedUser user,
+                                         @PathParam("blobId") BlobId blobId) {
+        GcsUploadCredentialBuilder builder = new GcsUploadCredentialBuilder(appIdentityService);
+        builder.setBucket(bucketName);
+        builder.setKey(blobId.asString());
+        builder.setMaxContentLengthInMegabytes(10);
+        builder.expireAfter(Period.minutes(5));
+        return Response.ok(Resources.toJson(builder.build().asRecord())).build();
     }
 }
