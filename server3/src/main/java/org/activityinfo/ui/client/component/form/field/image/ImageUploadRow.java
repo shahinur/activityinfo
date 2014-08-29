@@ -48,6 +48,7 @@ import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.core.shared.util.MimeTypeUtil;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -135,6 +136,10 @@ public class ImageUploadRow extends Composite {
 
     private String createUploadUrl() {
         String blobId = ResourceId.generateId().asString();
+        String fileName = fileName();
+        String mimeType = MimeTypeUtil.mimeTypeFromFileExtension(fileExtension(fileName));
+        value.setMimeType(mimeType);
+        value.setFilename(fileName);
         value.setBlobId(blobId);
         return "/service/blob/credentials/" + blobId;
     }
