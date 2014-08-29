@@ -13,11 +13,6 @@ import java.net.URI;
 
 public class TestBlobFieldStorageService implements BlobFieldStorageService {
     @Override
-    public UploadCredentials getUploadCredentials(ResourceId userId, BlobId blobId) {
-        return null;
-    }
-
-    @Override
     public URI getBlobUrl(BlobId blobId) {
         return null;
     }
@@ -35,6 +30,11 @@ public class TestBlobFieldStorageService implements BlobFieldStorageService {
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
 
+        throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+    }
+
+    @Override
+    public Response getUploadCredentials(@InjectParam AuthenticatedUser user, BlobId blobId) {
         throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
     }
 }
