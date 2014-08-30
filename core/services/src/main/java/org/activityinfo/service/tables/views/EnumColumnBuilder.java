@@ -6,6 +6,7 @@ import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.columns.DiscreteStringColumnView;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -36,13 +37,16 @@ public class EnumColumnBuilder implements ColumnViewBuilder {
 
     @Override
     public void accept(FormEvalContext instance) {
-        EnumFieldValue fieldValue = (EnumFieldValue) instance.getFieldValue(fieldName);
-        if(fieldValue != null && fieldValue.getValueIds().size() == 1) {
-            Integer index = labelIndexMap.get(fieldValue.getValueId());
-            if(index == null) {
-                values.add(-1);
-            } else {
-                values.add(index);
+        FieldValue value = instance.getFieldValue(fieldName);
+        if(value instanceof EnumFieldValue) {
+            EnumFieldValue fieldValue = (EnumFieldValue) value;
+            if (fieldValue.getValueIds().size() == 1) {
+                Integer index = labelIndexMap.get(fieldValue.getValueId());
+                if (index == null) {
+                    values.add(-1);
+                } else {
+                    values.add(index);
+                }
             }
         }
     }
