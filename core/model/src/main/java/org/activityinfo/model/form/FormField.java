@@ -46,9 +46,10 @@ public class FormField extends FormElement {
     }
 
 
-    public void setCode(String code) {
+    public FormField setCode(String code) {
         assert isValidCode(code) : "Invalid code: [" + code + "]";
         this.code = code;
+        return this;
     }
 
 

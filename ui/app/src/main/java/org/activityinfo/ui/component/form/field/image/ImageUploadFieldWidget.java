@@ -94,7 +94,8 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                 List<ImageUploadRow> rows = Lists.newArrayListWithCapacity(rootPanel.getWidgetCount());
                 for (int i = 0; i < rootPanel.getWidgetCount(); i++) {
                     Widget widget = rootPanel.getWidget(i);
-                    if (widget instanceof ImageUploadRow) rows.add((ImageUploadRow) widget);
+                    if (widget instanceof ImageUploadRow)
+                        rows.add((ImageUploadRow) widget);
                 }
 
                 // Disable the button if it's the only row, so the user will not be trapped in a widget without any rows
@@ -102,7 +103,7 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                     rows.get(0).removeButton.setEnabled(false);
                 } else if (rows.size() > 1) {
                     for (ImageUploadRow row : rows) {
-                        row.removeButton.setEnabled(true);
+                        row.removeButton.setEnabled(!row.isReadOnly());
                     }
                 }
             }
@@ -118,16 +119,20 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
                 row.setReadOnly(readOnly);
             }
         }
+
+        setButtonsState();
     }
 
     @Override
     public Promise<Void> setValue(ImageValue value) {
         clearValue();
 
-        if (value != null) {
+        if (value != null && value.getValues() != null && value.getValues().size() > 0) {
             for (ImageRowValue rowValue : value.getValues()) {
                 addNewRow(rowValue);
             }
+        } else {
+            addNewRow(new ImageRowValue());
         }
 
         return Promise.done();

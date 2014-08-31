@@ -71,7 +71,11 @@ public class FormEvalContext implements EvalContext {
 
     public FieldValue getFieldValue(String fieldName) {
         assert formInstance != null;
-        return fieldMap.get(fieldName).getValue(formInstance, this);
+        try {
+            return fieldMap.get(fieldName).getValue(formInstance, this);
+        } catch(Exception e) {
+            return new ErrorValue(e);
+        }
     }
 
     public FieldValue getFieldValue(ResourceId fieldId) {

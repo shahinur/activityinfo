@@ -1,20 +1,17 @@
 package org.activityinfo.ui.client.service;
 
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import org.activityinfo.promise.PromiseMatchers;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.legacy.InstanceQuery;
-import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.legacy.criteria.ClassCriteria;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.promise.PromiseMatchers;
 import org.activityinfo.service.store.ResourceLocator;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -27,7 +24,6 @@ import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.activityinfo.model.legacy.CuidAdapter.*;
-import static org.activityinfo.model.legacy.criteria.ParentCriteria.isChildOf;
 import static org.activityinfo.store.test.TestResourceStore.createLocator;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -92,20 +88,6 @@ public class ResourceLocatorAdaptorTest {
         System.out.println(adminUnits);
     }
 
-    @Test
-    public void persistSiteException() {
-
-        FormInstance instance = new FormInstance(cuid(SITE_DOMAIN, new KeyGenerator().generateInt()),
-                NFI_DIST_FORM_CLASS);
-
-        Promise<Void> result;
-
-        result = resourceLocator.persist(instance);
-        assertThat(result.getState(), equalTo(Promise.State.REJECTED));
-
-        result = resourceLocator.persist(Arrays.asList(instance, instance));
-        assertThat(result.getState(), equalTo(Promise.State.REJECTED));
-    }
 
     @Test
     public void persistLocation() {
@@ -231,6 +213,8 @@ public class ResourceLocatorAdaptorTest {
                 field(PROVINCE_CLASS, NAME_FIELD));
         FieldPath partnerName = new FieldPath(field(activityFormClass(NFI_DIST_ID), PARTNER_FIELD),
                 field(partnerClassId, NAME_FIELD));
+        FieldPath partnerFullName = new FieldPath(field(activityFormClass(NFI_DIST_ID), PARTNER_FIELD),
+                field(partnerClassId, FULL_NAME_FIELD));
         FieldPath indicator1 = new FieldPath(indicatorField(1));
         FieldPath startDate = new FieldPath(field(NFI_DIST_FORM_CLASS, START_DATE_FIELD));
         FieldPath endDate = new FieldPath(field(NFI_DIST_FORM_CLASS, END_DATE_FIELD));
@@ -241,35 +225,20 @@ public class ResourceLocatorAdaptorTest {
                 villageName,
           //      provinceName,
                 indicator1,
-                endDate), new ClassCriteria(NFI_DIST_FORM_CLASS))));
+                endDate,
+                partnerFullName), new ClassCriteria(NFI_DIST_FORM_CLASS))));
 
         System.out.println(Joiner.on("\n").join(projections));
 
         final Projection firstProjection = projections.get(0);
         assertThat(projections.size(), equalTo(3));
+        assertThat(firstProjection.getValue(partnerFullName), is(nullValue()));
         assertThat(firstProjection.getStringValue(villageName), equalTo("Boga"));
    //     assertThat(firstProjection.getStringValue(provinceName), equalTo("Sud Kivu"));
         assertThat(firstProjection.getValue(startDate), is(nullValue()));
-        assertThat(firstProjection.getValue(endDate), equalTo((Object) new LocalDate(2009, 1, 2)));
+        assertThat(firstProjection.getValue(indicator1), is(not(nullValue())));
+    //    assertThat(firstProjection.getValue(endDate), equalTo((Object) new LocalDate(2009, 1, 2)));
+        assertThat(firstProjection.getValue(endDate), equalTo((Object)"2008-10-06"));
     }
 
-    @Test
-    public void geodb() {
-
-        FormInstance geodbFolder = PromiseMatchers.assertResolves(resourceLocator.getFormInstance(GEODB_ID));
-
-        FormInstance countryForm = PromiseMatchers.assertResolves(resourceLocator.getFormInstance(ResourceId.valueOf(
-                "_country")));
-        assertThat(countryForm.getOwnerId(), equalTo(geodbFolder.getId()));
-
-        List<FormInstance> countries = PromiseMatchers.assertResolves(resourceLocator.queryInstances(isChildOf(
-                geodbFolder.getId())));
-        assertThat(countries, Matchers.hasSize(1));
-
-        FormInstance rdc = countries.get(0);
-        assertThat(rdc.getString(ApplicationProperties.LABEL_PROPERTY), equalTo("Rdc"));
-
-        List<FormInstance> levels = PromiseMatchers.assertResolves(resourceLocator.queryInstances(isChildOf(rdc.getId())));
-        System.out.println(levels);
-    }
 }
