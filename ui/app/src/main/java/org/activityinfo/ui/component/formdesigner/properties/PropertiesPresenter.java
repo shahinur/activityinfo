@@ -22,6 +22,7 @@ package org.activityinfo.ui.component.formdesigner.properties;
  */
 
 import com.google.common.base.Strings;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -30,7 +31,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
-import org.activityinfo.service.store.ResourceLocator;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
@@ -40,6 +41,7 @@ import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.model.type.ParametrizedFieldTypeClass;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.expr.ExprValue;
+import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.ui.component.form.SimpleFormPanel;
 import org.activityinfo.ui.component.form.VerticalFieldContainer;
 import org.activityinfo.ui.component.form.field.FieldWidgetMode;
@@ -246,7 +248,19 @@ public class PropertiesPresenter {
             ParametrizedFieldType parametrizedType = (ParametrizedFieldType) formField.getType();
             currentDesignWidget.asWidget().setVisible(true);
             currentDesignWidget.setValidationFormClass(fieldWidgetContainer.getFormDesigner().getFormClass());
-            currentDesignWidget.setValue(Resources.createResource(parametrizedType.getParameters()));
+            currentDesignWidget.show(Resources.createResource(parametrizedType.getParameters())).then(new AsyncCallback<Void>() {
+
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    GWT.log("Exception thrown while showing properties form", caught);
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+
+                }
+            });
 
         } else {
             currentDesignWidget.asWidget().setVisible(false);

@@ -51,13 +51,9 @@ class Presenter {
         }
     }
 
-    public Promise<Void> setInitialSelection(Iterable<ResourceId> resourceIds) {
-        return setInitialSelection(new ReferenceValue(resourceIds));
-    }
-
-    public Promise<Void> setInitialSelection(ReferenceValue value) {
+    public Promise<Void> setInitialSelection(Set<ResourceId> resourceIds) {
         final InitialSelection initialSelection = new InitialSelection(tree);
-        return initialSelection.fetch(locator, value.getResourceIds()).then(new Function<Void, Void>() {
+        return initialSelection.fetch(locator, resourceIds).then(new Function<Void, Void>() {
 
             @Nullable
             @Override

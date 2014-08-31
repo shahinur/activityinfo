@@ -29,12 +29,15 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.http.client.*;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.image.ImageRowValue;
+import org.activityinfo.ui.component.form.field.image.MimeTypeUtil;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,17 +46,19 @@ import java.util.logging.Logger;
  * @author yuriyz on 8/12/14.
  */
 public class ImageUploadRow extends Composite {
-
-    private static final Logger LOGGER = Logger.getLogger(ImageUploadRow.class.getName());
+    private static final int THUMBNAIL_SIZE = 24;
 
     interface OurUiBinder extends UiBinder<FormPanel, ImageUploadRow> {
     }
 
     private static OurUiBinder ourUiBinder = GWT.create(OurUiBinder.class);
 
+    private static final Logger LOGGER = Logger.getLogger(ImageUploadRow.class.getName());
+
     private final ImageRowValue value;
     private final String fieldId;
     private final String resourceId;
+    private boolean readOnly;
 
     @UiField
     FileUpload fileUpload;
@@ -61,6 +66,8 @@ public class ImageUploadRow extends Composite {
     HTMLPanel imageContainer;
     @UiField
     ImageElement loadingImage;
+    @UiField
+    Image thumbnail;
     @UiField
     Button downloadButton;
     @UiField
@@ -94,10 +101,17 @@ public class ImageUploadRow extends Composite {
         if (value.getBlobId() != null) {
             imageContainer.setVisible(false);
             downloadButton.setVisible(true);
+            thumbnail.setVisible(true);
+            thumbnail.setUrl(buildUrl(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
         }
     }
 
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
     public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
         fileUpload.setEnabled(!readOnly);
         downloadButton.setEnabled(!readOnly);
         removeButton.setEnabled(!readOnly);
@@ -146,20 +160,16 @@ public class ImageUploadRow extends Composite {
             requestBuilder.sendRequest(null, new RequestCallback() {
                 @Override
                 public void onResponseReceived(Request request, Response response) {
-//                    String json = response.getText();
-//                    Resource resource = Resources.fromJson(json);
-//                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
-//
-//                    Map<String, String> formFields = uploadCredentials.getFormFields();
-//                    for (Map.Entry<String, String> field : formFields.entrySet()) {
-//                        formFieldsContainer.add(new Hidden(field.getKey(), field.getValue()));
-//                    }
-//
-//                    formPanel.setAction(uploadCredentials.getUrl());
-//                    formPanel.setMethod(uploadCredentials.getMethod());
-//                    upload();
+                    String json = response.getText();
+                    JSONObject credentials = JSONParser.parseStrict(json).isObject();
+                    JSONObject formFields = credentials.get("formFields").isObject();
+                    for (String fieldName : formFields.keySet()) {
+                        formFieldsContainer.add(new Hidden(fieldName, formFields.get(fieldName).isString().stringValue()));
+                    }
 
-                    throw new UnsupportedOperationException();
+                    formPanel.setAction(credentials.get("url").isString().stringValue());
+                    formPanel.setMethod(credentials.get("method").isString().stringValue());
+                    upload();
                 }
 
                 @Override
@@ -183,23 +193,15 @@ public class ImageUploadRow extends Composite {
 
                 imageContainer.setVisible(false);
                 downloadButton.setVisible(true);
+                thumbnail.setVisible(true);
+                thumbnail.setUrl(buildUrl(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
             }
         });
         formPanel.submit();
     }
 
     private void download() {
-        StringBuilder stringBuilder = new StringBuilder("/service/blob/");
-        stringBuilder.append(resourceId);
-        stringBuilder.append("/");
-        stringBuilder.append(fieldId);
-        stringBuilder.append("/");
-        stringBuilder.append(value.getBlobId());
-        stringBuilder.append("/thumbnail?width=");
-        stringBuilder.append(value.getWidth());
-        stringBuilder.append("&height=");
-        stringBuilder.append(value.getHeight());
-        Window.open(stringBuilder.toString(), "_blank", null);
+        Window.open(buildUrl(value.getWidth(), value.getHeight()), "_blank", null);
     }
 
     @Override
@@ -209,5 +211,19 @@ public class ImageUploadRow extends Composite {
 
     public ImageRowValue getValue() {
         return value;
+    }
+
+    private String buildUrl(int width, int height) {
+        StringBuilder stringBuilder = new StringBuilder("/service/blob/");
+        stringBuilder.append(resourceId);
+        stringBuilder.append("/");
+        stringBuilder.append(fieldId);
+        stringBuilder.append("/");
+        stringBuilder.append(value.getBlobId());
+        stringBuilder.append("/thumbnail?width=");
+        stringBuilder.append(width);
+        stringBuilder.append("&height=");
+        stringBuilder.append(height);
+        return stringBuilder.toString();
     }
 }

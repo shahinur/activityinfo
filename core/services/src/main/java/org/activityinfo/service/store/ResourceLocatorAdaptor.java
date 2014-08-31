@@ -10,6 +10,7 @@ import org.activityinfo.model.legacy.QueryResult;
 import org.activityinfo.model.legacy.criteria.Criteria;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.ApplicationClassProvider;
+import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
@@ -126,5 +127,10 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     @Override
     public Promise<Void> remove(Collection<ResourceId> resources) {
         throw new UnsupportedOperationException("todo");
+    }
+
+    @Override
+    public Promise<InstanceLabelTable> queryFormList() {
+        throw new UnsupportedOperationException();
     }
 }

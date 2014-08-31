@@ -37,16 +37,17 @@ public class ViewBuilders {
         if (fieldType instanceof TextType ||
             fieldType instanceof BarcodeType ||
             fieldType instanceof NarrativeType) {
-            return new StringColumnBuilder(fieldId, new HasStringValueConverter());
+            return new StringColumnBuilder(fieldId);
 
         } else if (fieldType instanceof EnumType) {
             return new EnumColumnBuilder(fieldId, (EnumType) fieldType);
 
         } else if (fieldType instanceof ReferenceType) {
-            return new StringColumnBuilder(fieldId, new ReferenceToString());
+            return new StringColumnBuilder(fieldId);
 
         } else {
-            return null;
+            // hack to make sure we have values for all fields in the table
+            return new StringColumnBuilder(fieldId);
         }
     }
 
