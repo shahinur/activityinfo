@@ -10,6 +10,7 @@ import org.activityinfo.model.table.columns.ConstantColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
 import org.activityinfo.model.table.columns.StringArrayColumnView;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.NullFieldValue;
 import org.activityinfo.model.type.primitive.HasStringValue;
 import org.activityinfo.service.tables.stats.StringStatistics;
 
@@ -36,7 +37,7 @@ public class StringColumnBuilder implements ColumnViewBuilder {
         String string = null;
         if(fieldValue instanceof HasStringValue) {
             string = ((HasStringValue) fieldValue).asString();
-        } else if(fieldValue != null) {
+        } else if(fieldValue != null && fieldValue != NullFieldValue.INSTANCE) {
             string = fieldValue.toString();
         }
         stats.update(string);
