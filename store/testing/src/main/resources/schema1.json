@@ -1,444 +1,427 @@
-[
-  {
-    "@id": "_geodb",
-    "@owner": "_root",
-    "classId": "_folder",
-    "_folder_label": "Geodatabase"
-  },
-  {
-    "@id": "_country",
-    "@owner": "_geodb",
-    "classId": "_class",
-    "_class_label": "Country",
-    "elements": [
-      {
-        "id": "_countryf1",
-        "visible": true,
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "_countryf3",
-        "visible": true,
-        "label": "Code",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "c1",
-    "@owner": "_country",
-    "_countryf1": "Rdc",
-    "classId": "_country"
-  },
-  {
-    "@id": "E1",
-    "@owner": "c1",
-    "classId": "_class",
-    "_class_label": "Province",
-    "elements": [
-      {
-        "id": "E1f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "E1f3",
-        "visible": true,
-        "label": "Code",
-        "required": false,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "L1",
-    "@owner": "c1",
-    "classId": "_class",
-    "_class_label": "localite",
-    "elements": [
-      {
-        "id": "L1f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "L1f4",
-        "visible": true,
-        "label": "Alternate Name",
-        "required": false,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "L1f6",
-        "visible": true,
-        "label": "Administrative Unit",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "E1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "MULTIPLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "L1f5",
-        "visible": true,
-        "label": "Geographic Position",
-        "required": false,
-        "type": {
-          "typeClass": "GEOGRAPHIC_POINT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "U1",
-    "@owner": "_users",
-    "email": "user1@user.com",
-    "name": "Alex",
-    "locale": "fr"
-  },
-  {
-    "@id": "U2",
-    "@owner": "_users",
-    "email": "bavon@nrcdrc.org",
-    "name": "Bavon",
-    "locale": "fr"
-  },
-  {
-    "@id": "U3",
-    "@owner": "_users",
-    "email": "stefan@irc.org",
-    "name": "Stefan",
-    "locale": "fr"
-  },
-  {
-    "@id": "d1",
-    "@owner": "U1",
-    "_classf11": {
-      "@type": "REFERENCE",
-      "value": "c1"
+[ {
+  "@id" : "_geodb",
+  "@owner" : "_root",
+  "@version" : 0,
+  "classId" : "_folder",
+  "_folder_label" : "Geodatabase"
+}, {
+  "@id" : "_country",
+  "@owner" : "_geodb",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Country",
+  "elements" : [ {
+    "id" : "_countryf1",
+    "visible" : true,
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "_countryf3",
+    "visible" : true,
+    "description" : "ISO 3166-1 alpha-2 code",
+    "label" : "Code",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "c1",
+  "@owner" : "_country",
+  "@version" : 0,
+  "_countryf1" : "Rdc",
+  "classId" : "_country"
+}, {
+  "@id" : "E1",
+  "@owner" : "c1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Province",
+  "elements" : [ {
+    "id" : "E1f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
     },
-    "classId": "_folder",
-    "_folder_label": "PEAR"
-  },
-  {
-    "@id": "d2",
-    "@owner": "U1",
-    "_classf11": {
-      "@type": "REFERENCE",
-      "value": "c1"
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "E1f3",
+    "visible" : true,
+    "label" : "Code",
+    "required" : false,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "L1",
+  "@owner" : "c1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "localite",
+  "elements" : [ {
+    "id" : "L1f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
     },
-    "classId": "_folder",
-    "_folder_label": "RRM"
-  },
-  {
-    "@id": "P1",
-    "@owner": "d1",
-    "classId": "_class",
-    "_class_label": "Partner",
-    "elements": [
-      {
-        "id": "P1f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "L1f4",
+    "visible" : true,
+    "label" : "Alternate Name",
+    "required" : false,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "L1f6",
+    "visible" : true,
+    "label" : "Administrative Unit",
+    "required" : false,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "E1"
         },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
+        "classId" : "_type:ref",
+        "cardinality" : "MULTIPLE"
       },
-      {
-        "id": "P1f10",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "_description"
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "L1f5",
+    "visible" : true,
+    "label" : "Geographic Position",
+    "required" : false,
+    "type" : {
+      "typeClass" : "GEOGRAPHIC_POINT"
+    }
+  } ]
+}, {
+  "@id" : "U1",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "user1@user.com",
+  "name" : "Alex",
+  "locale" : "fr"
+}, {
+  "@id" : "U2",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "bavon@nrcdrc.org",
+  "name" : "Bavon",
+  "locale" : "fr"
+}, {
+  "@id" : "U3",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "stefan@irc.org",
+  "name" : "Stefan",
+  "locale" : "fr"
+}, {
+  "@id" : "d1",
+  "@owner" : "_root",
+  "@version" : 0,
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "classId" : "_folder",
+  "_folder_label" : "PEAR"
+}, {
+  "@id" : "_acr:d1:U1",
+  "@owner" : "d1",
+  "@version" : 0,
+  "principal" : {
+    "@type" : "REFERENCE",
+    "value" : "U1"
+  },
+  "classId" : "_acr",
+  "owner" : true
+}, {
+  "@id" : "d2",
+  "@owner" : "_root",
+  "@version" : 0,
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "classId" : "_folder",
+  "_folder_label" : "RRM"
+}, {
+  "@id" : "_acr:d2:U1",
+  "@owner" : "d2",
+  "@version" : 0,
+  "principal" : {
+    "@type" : "REFERENCE",
+    "value" : "U1"
+  },
+  "classId" : "_acr",
+  "owner" : true
+}, {
+  "@id" : "P1",
+  "@owner" : "d1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Partners",
+  "elements" : [ {
+    "id" : "P1f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "P1f10",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "_description"
+    },
+    "label" : "Full Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "P2",
+  "@owner" : "d2",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Partners",
+  "elements" : [ {
+    "id" : "P2f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "P2f10",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "_description"
+    },
+    "label" : "Full Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "d1p1",
+  "@owner" : "P1",
+  "@version" : 0,
+  "classId" : "P1",
+  "P1f1" : "NRC"
+}, {
+  "@id" : "a1",
+  "@owner" : "d1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "NFI",
+  "elements" : [ {
+    "id" : "a1f7",
+    "visible" : true,
+    "label" : "Partner",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "P1"
         },
-        "label": "Full Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "P2",
-    "@owner": "d2",
-    "classId": "_class",
-    "_class_label": "Partner",
-    "elements": [
-      {
-        "id": "P2f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
+      },
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a1f12",
+    "visible" : true,
+    "label" : "Start Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a1f13",
+    "visible" : true,
+    "label" : "End Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a1f11",
+    "visible" : true,
+    "label" : "localite",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "L1"
         },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
       },
-      {
-        "id": "P2f10",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "_description"
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a0000000001-1106114670",
+    "label" : "outputs",
+    "type" : "section",
+    "elements" : [ {
+      "id" : "i2",
+      "visible" : true,
+      "description" : "desc",
+      "label" : "kits",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "classId" : "_type:quantity",
+          "units" : "menages"
         },
-        "label": "Full Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
+        "typeClass" : "QUANTITY"
       }
-    ]
-  },
-  {
-    "@id": "d1p1",
-    "@owner": "P1",
-    "classId": "P1",
-    "P1f1": "NRC"
-  },
-  {
-    "@id": "a1",
-    "@owner": "d1",
-    "classId": "_class",
-    "_class_label": "NFI",
-    "elements": [
-      {
-        "id": "a1f7",
-        "visible": true,
-        "label": "Partner",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
+    } ]
+  }, {
+    "id" : "Q1",
+    "visible" : true,
+    "label" : "Cause",
+    "required" : false,
+    "type" : {
+      "parameters" : {
+        "values" : [ {
+          "id" : "t2",
+          "@type" : "enumerated",
+          "label" : "Deplacement"
+        }, {
+          "id" : "t1",
+          "@type" : "enumerated",
+          "label" : "Retour"
+        } ],
+        "classId" : "_type:enum",
+        "cardinality" : "MULTIPLE"
       },
-      {
-        "id": "a1f12",
-        "visible": true,
-        "label": "Start Date",
-        "required": true,
-        "type": {
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a1f13",
-        "visible": true,
-        "label": "End Date",
-        "required": true,
-        "type": {
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a1f11",
-        "visible": true,
-        "label": "localite",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a0000000001-1106114670",
-        "label": "outputs",
-        "type": "section",
-        "elements": [
-          {
-            "id": "i2",
-            "visible": true,
-            "label": "kits",
-            "required": false,
-            "type": {
-              "parameters": {
-                "classId": "_type:quantity",
-                "units": "menages"
-              },
-              "typeClass": "QUANTITY"
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q1",
-        "visible": true,
-        "label": "Cause",
-        "required": false,
-        "type": {
-          "parameters": {
-            "values": [
-              {
-                "id": "t2",
-                "@type": "enumerated",
-                "label": "Deplacement"
-              },
-              {
-                "id": "t1",
-                "@type": "enumerated",
-                "label": "Retour"
-              }
-            ],
-            "classId": "_type:enum",
-            "cardinality": "MULTIPLE"
-          },
-          "typeClass": "enumerated"
-        }
-      },
-      {
-        "id": "a0000000001-1183866391",
-        "label": "inputs",
-        "type": "section",
-        "elements": [
-          {
-            "id": "i1",
-            "visible": true,
-            "label": "beneficiaries",
-            "required": false,
-            "type": {
-              "parameters": {
-                "classId": "_type:quantity",
-                "units": "menages^2"
-              },
-              "typeClass": "QUANTITY"
-            }
-          }
-        ]
-      },
-      {
-        "id": "a1f14",
-        "visible": true,
-        "label": "Comments",
-        "required": false,
-        "type": {
-          "typeClass": "NARRATIVE"
-        }
+      "typeClass" : "enumerated"
+    }
+  }, {
+    "id" : "a0000000001-1183866391",
+    "label" : "inputs",
+    "type" : "section",
+    "elements" : [ {
+      "id" : "i1",
+      "visible" : true,
+      "description" : "falling in lve",
+      "label" : "beneficiaries",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "classId" : "_type:quantity",
+          "units" : "menages^2"
+        },
+        "typeClass" : "QUANTITY"
       }
-    ]
-  },
-  {
-    "@id": "a2",
-    "@owner": "d1",
-    "classId": "_class",
-    "_class_label": "empty activity",
-    "elements": [
-      {
-        "id": "a2f7",
-        "visible": true,
-        "label": "Partner",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
+    } ]
+  }, {
+    "id" : "a1f14",
+    "visible" : true,
+    "label" : "Comments",
+    "required" : false,
+    "type" : {
+      "typeClass" : "NARRATIVE"
+    }
+  } ]
+}, {
+  "@id" : "a2",
+  "@owner" : "d1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "empty activity",
+  "elements" : [ {
+    "id" : "a2f7",
+    "visible" : true,
+    "label" : "Partner",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "P1"
+        },
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
       },
-      {
-        "id": "a2f12",
-        "visible": true,
-        "label": "Start Date",
-        "required": true,
-        "type": {
-          "typeClass": "LOCAL_DATE"
-        }
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a2f12",
+    "visible" : true,
+    "label" : "Start Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a2f13",
+    "visible" : true,
+    "label" : "End Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a2f11",
+    "visible" : true,
+    "label" : "localite",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "L1"
+        },
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
       },
-      {
-        "id": "a2f13",
-        "visible": true,
-        "label": "End Date",
-        "required": true,
-        "type": {
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a2f11",
-        "visible": true,
-        "label": "localite",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a2f14",
-        "visible": true,
-        "label": "Comments",
-        "required": false,
-        "type": {
-          "typeClass": "NARRATIVE"
-        }
-      }
-    ]
-  }
-]
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a2f14",
+    "visible" : true,
+    "label" : "Comments",
+    "required" : false,
+    "type" : {
+      "typeClass" : "NARRATIVE"
+    }
+  } ]
+} ]

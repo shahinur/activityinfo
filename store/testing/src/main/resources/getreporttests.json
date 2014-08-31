@@ -1,48 +1,45 @@
-[
-  {
-    "@id": "_geodb",
-    "@owner": "_root",
-    "classId": "_folder",
-    "_folder_label": "Geodatabase"
-  },
-  {
-    "@id": "_country",
-    "@owner": "_geodb",
-    "classId": "_class",
-    "_class_label": "Country",
-    "elements": [
-      {
-        "id": "_countryf1",
-        "visible": true,
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "_countryf3",
-        "visible": true,
-        "label": "Code",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "U1",
-    "@owner": "_users",
-    "email": "user1@user.com",
-    "name": "Alex",
-    "locale": "fr"
-  },
-  {
-    "@id": "U2",
-    "@owner": "_users",
-    "email": "bavon@nrcdrc.org",
-    "name": "Bavon",
-    "locale": "fr"
-  }
-]
+[ {
+  "@id" : "_geodb",
+  "@owner" : "_root",
+  "@version" : 0,
+  "classId" : "_folder",
+  "_folder_label" : "Geodatabase"
+}, {
+  "@id" : "_country",
+  "@owner" : "_geodb",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Country",
+  "elements" : [ {
+    "id" : "_countryf1",
+    "visible" : true,
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "_countryf3",
+    "visible" : true,
+    "description" : "ISO 3166-1 alpha-2 code",
+    "label" : "Code",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "U1",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "user1@user.com",
+  "name" : "Alex",
+  "locale" : "fr"
+}, {
+  "@id" : "U2",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "bavon@nrcdrc.org",
+  "name" : "Bavon",
+  "locale" : "fr"
+} ]

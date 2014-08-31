@@ -1,593 +1,597 @@
-[
-  {
-    "@id": "_geodb",
-    "@owner": "_root",
-    "classId": "_folder",
-    "_folder_label": "Geodatabase"
-  },
-  {
-    "@id": "_country",
-    "@owner": "_geodb",
-    "classId": "_class",
-    "_class_label": "Country",
-    "elements": [
-      {
-        "id": "_countryf1",
-        "visible": true,
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "_countryf3",
-        "visible": true,
-        "label": "Code",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "c1",
-    "@owner": "_country",
-    "_countryf1": "Rdc",
-    "classId": "_country"
-  },
-  {
-    "@id": "L1",
-    "@owner": "c1",
-    "classId": "_class",
-    "_class_label": "localite",
-    "elements": [
-      {
-        "id": "L1f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "L1f4",
-        "visible": true,
-        "label": "Alternate Name",
-        "required": false,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "L1f5",
-        "visible": true,
-        "label": "Geographic Position",
-        "required": false,
-        "type": {
-          "typeClass": "GEOGRAPHIC_POINT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "g1",
-    "@owner": "L1",
-    "classId": "L1",
-    "L1f1": "Penekusu Kivu",
-    "L1f5": {
-      "@type": "GEOGRAPHIC_POINT",
-      "longitude": 1.532,
-      "latitude": 27.323
+[ {
+  "@id" : "_geodb",
+  "@owner" : "_root",
+  "@version" : 0,
+  "classId" : "_folder",
+  "_folder_label" : "Geodatabase"
+}, {
+  "@id" : "_country",
+  "@owner" : "_geodb",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Country",
+  "elements" : [ {
+    "id" : "_countryf1",
+    "visible" : true,
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
     }
-  },
-  {
-    "@id": "U1",
-    "@owner": "_users",
-    "email": "akbertram@gmail.com",
-    "name": "Alex",
-    "locale": "fr",
-    "password": "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-  },
-  {
-    "@id": "U2",
-    "@owner": "_users",
-    "email": "marlene@solidarites",
-    "name": "Marlene",
-    "locale": "en",
-    "password": "xyz"
-  },
-  {
-    "@id": "U3",
-    "@owner": "_users",
-    "email": "bavon@nrc.org",
-    "name": "Bavon",
-    "locale": "fr",
-    "password": "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-  },
-  {
-    "@id": "U4",
-    "@owner": "_users",
-    "email": "lisa@solidarites",
-    "name": "Lisa",
-    "locale": "fr",
-    "password": "xyz"
-  },
-  {
-    "@id": "U5",
-    "@owner": "_users",
-    "email": "jack@nrc.org",
-    "name": "Jack",
-    "locale": "fr",
-    "password": "xyz"
-  },
-  {
-    "@id": "U6",
-    "@owner": "_users",
-    "email": "john@nrc.org",
-    "name": "John",
-    "locale": "fr",
-    "password": "xyz"
-  },
-  {
-    "@id": "U7",
-    "@owner": "_users",
-    "email": "spencer@nrc.org",
-    "name": "Spencer",
-    "locale": "fr",
-    "password": "xyz"
-  },
-  {
-    "@id": "U8",
-    "@owner": "_users",
-    "email": "edward@nrc.org",
-    "name": "Edward",
-    "locale": "fr",
-    "password": "xyz"
-  },
-  {
-    "@id": "U100",
-    "@owner": "_users",
-    "email": "super@gmail.com",
-    "name": "Super",
-    "locale": "en",
-    "password": "xyz"
-  },
-  {
-    "@id": "d1",
-    "@owner": "U1",
-    "_classf11": {
-      "@type": "REFERENCE",
-      "value": "c1"
-    },
-    "classId": "_folder",
-    "_folder_label": "PEAR"
-  },
-  {
-    "@id": "d2",
-    "@owner": "U1",
-    "_classf11": {
-      "@type": "REFERENCE",
-      "value": "c1"
-    },
-    "classId": "_folder",
-    "_folder_label": "PEAR Plus"
-  },
-  {
-    "@id": "d3",
-    "@owner": "U2",
-    "_classf11": {
-      "@type": "REFERENCE",
-      "value": "c1"
-    },
-    "classId": "_folder",
-    "_folder_label": "Public"
-  },
-  {
-    "@id": "d100",
-    "@owner": "U100",
-    "_classf11": {
-      "@type": "REFERENCE",
-      "value": "c1"
-    },
-    "classId": "_folder",
-    "_folder_label": "Public"
-  },
-  {
-    "@id": "P1",
-    "@owner": "d1",
-    "classId": "_class",
-    "_class_label": "Partner",
-    "elements": [
-      {
-        "id": "P1f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "P1f10",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "_description"
-        },
-        "label": "Full Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "P2",
-    "@owner": "d2",
-    "classId": "_class",
-    "_class_label": "Partner",
-    "elements": [
-      {
-        "id": "P2f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "P2f10",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "_description"
-        },
-        "label": "Full Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "P3",
-    "@owner": "d3",
-    "classId": "_class",
-    "_class_label": "Partner",
-    "elements": [
-      {
-        "id": "P3f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "P3f10",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "_description"
-        },
-        "label": "Full Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "P100",
-    "@owner": "d100",
-    "classId": "_class",
-    "_class_label": "Partner",
-    "elements": [
-      {
-        "id": "P100f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "P100f10",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "_description"
-        },
-        "label": "Full Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "R1",
-    "@owner": "d1",
-    "classId": "_class",
-    "_class_label": "Projects",
-    "elements": [
-      {
-        "id": "R1f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "R1f10",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Description",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "r1",
-    "@owner": "R1",
-    "R1f1": "Project A",
-    "classId": "R1",
-    "R1f10": "A Project"
-  },
-  {
-    "@id": "a1",
-    "@owner": "d1",
-    "classId": "_class",
-    "_class_label": "NFI",
-    "elements": [
-      {
-        "id": "a1f7",
-        "visible": true,
-        "label": "Partner",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a1f8",
-        "visible": true,
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "R1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a1f12",
-        "visible": true,
-        "label": "Start Date",
-        "required": true,
-        "type": {
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a1f13",
-        "visible": true,
-        "label": "End Date",
-        "required": true,
-        "type": {
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a1f11",
-        "visible": true,
-        "label": "localite",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a1f14",
-        "visible": true,
-        "label": "Comments",
-        "required": false,
-        "type": {
-          "typeClass": "NARRATIVE"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "a2",
-    "@owner": "d1",
-    "classId": "_class",
-    "_class_label": "NFI",
-    "elements": [
-      {
-        "id": "a2f7",
-        "visible": true,
-        "label": "Partner",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "P1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a2f8",
-        "visible": true,
-        "label": "Project",
-        "required": false,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "R1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a2f12",
-        "visible": true,
-        "label": "Start Date",
-        "required": true,
-        "type": {
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a2f13",
-        "visible": true,
-        "label": "End Date",
-        "required": true,
-        "type": {
-          "typeClass": "LOCAL_DATE"
-        }
-      },
-      {
-        "id": "a2f11",
-        "visible": true,
-        "label": "localite",
-        "required": true,
-        "type": {
-          "parameters": {
-            "range": {
-              "@type": "REFERENCE",
-              "value": "L1"
-            },
-            "classId": "_type:ref",
-            "cardinality": "SINGLE"
-          },
-          "typeClass": "REFERENCE"
-        }
-      },
-      {
-        "id": "a2f14",
-        "visible": true,
-        "label": "Comments",
-        "required": false,
-        "type": {
-          "typeClass": "NARRATIVE"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "s1",
-    "@owner": "a1",
-    "a1f13": {
-      "@type": "LOCAL_DATE",
-      "value": "2009-01-02"
-    },
-    "classId": "a1",
-    "a1f7": {
-      "@type": "REFERENCE",
-      "value": "d1p1"
-    },
-    "a1f11": {
-      "@type": "REFERENCE",
-      "value": "g1"
-    },
-    "a1f12": {
-      "@type": "LOCAL_DATE",
-      "value": "2009-01-01"
+  }, {
+    "id" : "_countryf3",
+    "visible" : true,
+    "description" : "ISO 3166-1 alpha-2 code",
+    "label" : "Code",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
     }
-  },
-  {
-    "@id": "s2",
-    "@owner": "a2",
-    "a2f7": {
-      "@type": "REFERENCE",
-      "value": "d1p1"
+  } ]
+}, {
+  "@id" : "c1",
+  "@owner" : "_country",
+  "@version" : 0,
+  "_countryf1" : "Rdc",
+  "classId" : "_country"
+}, {
+  "@id" : "L1",
+  "@owner" : "c1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "localite",
+  "elements" : [ {
+    "id" : "L1f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
     },
-    "classId": "a2",
-    "a2f12": {
-      "@type": "LOCAL_DATE",
-      "value": "2009-01-01"
-    },
-    "a2f13": {
-      "@type": "LOCAL_DATE",
-      "value": "2009-01-02"
-    },
-    "a2f11": {
-      "@type": "REFERENCE",
-      "value": "g1"
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
     }
+  }, {
+    "id" : "L1f4",
+    "visible" : true,
+    "label" : "Alternate Name",
+    "required" : false,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "L1f5",
+    "visible" : true,
+    "label" : "Geographic Position",
+    "required" : false,
+    "type" : {
+      "typeClass" : "GEOGRAPHIC_POINT"
+    }
+  } ]
+}, {
+  "@id" : "g1",
+  "@owner" : "L1",
+  "@version" : 0,
+  "classId" : "L1",
+  "L1f1" : "Penekusu Kivu",
+  "L1f5" : {
+    "@type" : "GEOGRAPHIC_POINT",
+    "longitude" : 1.532,
+    "latitude" : 27.323
   }
-]
+}, {
+  "@id" : "U1",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "akbertram@gmail.com",
+  "name" : "Alex",
+  "locale" : "fr",
+  "password" : "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+}, {
+  "@id" : "U2",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "marlene@solidarites",
+  "name" : "Marlene",
+  "locale" : "en",
+  "password" : "xyz"
+}, {
+  "@id" : "U3",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "bavon@nrc.org",
+  "name" : "Bavon",
+  "locale" : "fr",
+  "password" : "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
+}, {
+  "@id" : "U4",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "lisa@solidarites",
+  "name" : "Lisa",
+  "locale" : "fr",
+  "password" : "xyz"
+}, {
+  "@id" : "U5",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "jack@nrc.org",
+  "name" : "Jack",
+  "locale" : "fr",
+  "password" : "xyz"
+}, {
+  "@id" : "U6",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "john@nrc.org",
+  "name" : "John",
+  "locale" : "fr",
+  "password" : "xyz"
+}, {
+  "@id" : "U7",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "spencer@nrc.org",
+  "name" : "Spencer",
+  "locale" : "fr",
+  "password" : "xyz"
+}, {
+  "@id" : "U8",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "edward@nrc.org",
+  "name" : "Edward",
+  "locale" : "fr",
+  "password" : "xyz"
+}, {
+  "@id" : "U100",
+  "@owner" : "_users",
+  "@version" : 0,
+  "email" : "super@gmail.com",
+  "name" : "Super",
+  "locale" : "en",
+  "password" : "xyz"
+}, {
+  "@id" : "d1",
+  "@owner" : "_root",
+  "@version" : 0,
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "classId" : "_folder",
+  "_folder_label" : "PEAR"
+}, {
+  "@id" : "_acr:d1:U1",
+  "@owner" : "d1",
+  "@version" : 0,
+  "principal" : {
+    "@type" : "REFERENCE",
+    "value" : "U1"
+  },
+  "classId" : "_acr",
+  "owner" : true
+}, {
+  "@id" : "d2",
+  "@owner" : "_root",
+  "@version" : 0,
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "classId" : "_folder",
+  "_folder_label" : "PEAR Plus"
+}, {
+  "@id" : "_acr:d2:U1",
+  "@owner" : "d2",
+  "@version" : 0,
+  "principal" : {
+    "@type" : "REFERENCE",
+    "value" : "U1"
+  },
+  "classId" : "_acr",
+  "owner" : true
+}, {
+  "@id" : "d3",
+  "@owner" : "_root",
+  "@version" : 0,
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "classId" : "_folder",
+  "_folder_label" : "Public"
+}, {
+  "@id" : "_acr:d3:U2",
+  "@owner" : "d3",
+  "@version" : 0,
+  "principal" : {
+    "@type" : "REFERENCE",
+    "value" : "U2"
+  },
+  "classId" : "_acr",
+  "owner" : true
+}, {
+  "@id" : "d100",
+  "@owner" : "_root",
+  "@version" : 0,
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "classId" : "_folder",
+  "_folder_label" : "Public"
+}, {
+  "@id" : "_acr:d100:U100",
+  "@owner" : "d100",
+  "@version" : 0,
+  "principal" : {
+    "@type" : "REFERENCE",
+    "value" : "U100"
+  },
+  "classId" : "_acr",
+  "owner" : true
+}, {
+  "@id" : "P1",
+  "@owner" : "d1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Partners",
+  "elements" : [ {
+    "id" : "P1f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "P1f10",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "_description"
+    },
+    "label" : "Full Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "P2",
+  "@owner" : "d2",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Partners",
+  "elements" : [ {
+    "id" : "P2f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "P2f10",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "_description"
+    },
+    "label" : "Full Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "P3",
+  "@owner" : "d3",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Partners",
+  "elements" : [ {
+    "id" : "P3f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "P3f10",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "_description"
+    },
+    "label" : "Full Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "P100",
+  "@owner" : "d100",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Partners",
+  "elements" : [ {
+    "id" : "P100f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "P100f10",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "_description"
+    },
+    "label" : "Full Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "R1",
+  "@owner" : "d1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Projects",
+  "elements" : [ {
+    "id" : "R1f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "R1f10",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Description",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "r1",
+  "@owner" : "R1",
+  "@version" : 0,
+  "R1f1" : "Project A",
+  "classId" : "R1",
+  "R1f10" : "A Project"
+}, {
+  "@id" : "a1",
+  "@owner" : "d1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "NFI",
+  "elements" : [ {
+    "id" : "a1f7",
+    "visible" : true,
+    "label" : "Partner",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "P1"
+        },
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
+      },
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a1f8",
+    "visible" : true,
+    "label" : "Project",
+    "required" : false,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "R1"
+        },
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
+      },
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a1f12",
+    "visible" : true,
+    "label" : "Start Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a1f13",
+    "visible" : true,
+    "label" : "End Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a1f11",
+    "visible" : true,
+    "label" : "localite",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "L1"
+        },
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
+      },
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a1f14",
+    "visible" : true,
+    "label" : "Comments",
+    "required" : false,
+    "type" : {
+      "typeClass" : "NARRATIVE"
+    }
+  } ]
+}, {
+  "@id" : "a2",
+  "@owner" : "d1",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "NFI",
+  "elements" : [ {
+    "id" : "a2f7",
+    "visible" : true,
+    "label" : "Partner",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "P1"
+        },
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
+      },
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a2f8",
+    "visible" : true,
+    "label" : "Project",
+    "required" : false,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "R1"
+        },
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
+      },
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a2f12",
+    "visible" : true,
+    "label" : "Start Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a2f13",
+    "visible" : true,
+    "label" : "End Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a2f11",
+    "visible" : true,
+    "label" : "localite",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "L1"
+        },
+        "classId" : "_type:ref",
+        "cardinality" : "SINGLE"
+      },
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "a2f14",
+    "visible" : true,
+    "label" : "Comments",
+    "required" : false,
+    "type" : {
+      "typeClass" : "NARRATIVE"
+    }
+  } ]
+}, {
+  "@id" : "s1",
+  "@owner" : "a1",
+  "@version" : 0,
+  "a1f13" : {
+    "@type" : "LOCAL_DATE",
+    "value" : "2009-01-02"
+  },
+  "classId" : "a1",
+  "a1f7" : {
+    "@type" : "REFERENCE",
+    "value" : "d1p1"
+  },
+  "a1f11" : {
+    "@type" : "REFERENCE",
+    "value" : "g1"
+  },
+  "a1f12" : {
+    "@type" : "LOCAL_DATE",
+    "value" : "2009-01-01"
+  }
+}, {
+  "@id" : "s2",
+  "@owner" : "a2",
+  "@version" : 0,
+  "a2f7" : {
+    "@type" : "REFERENCE",
+    "value" : "d1p1"
+  },
+  "classId" : "a2",
+  "a2f12" : {
+    "@type" : "LOCAL_DATE",
+    "value" : "2009-01-01"
+  },
+  "a2f13" : {
+    "@type" : "LOCAL_DATE",
+    "value" : "2009-01-02"
+  },
+  "a2f11" : {
+    "@type" : "REFERENCE",
+    "value" : "g1"
+  }
+} ]

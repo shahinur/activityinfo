@@ -99,7 +99,7 @@ public class MySqlResourceStoreTest {
         assertCommitted(environment.getStore().put(environment.getUser(),  folder1.asResource()));
         assertCommitted(environment.getStore().put(environment.getUser(), folder2.asResource()));
 
-        List<ResourceNode> roots = environment.getStore().getUserRootResources(environment.getUser());
+        List<ResourceNode> roots = environment.getStore().getOwnedOrSharedWorkspaces(environment.getUser());
 
         assertThat(roots, hasSize(2));
         assertThat(roots, containsInAnyOrder(

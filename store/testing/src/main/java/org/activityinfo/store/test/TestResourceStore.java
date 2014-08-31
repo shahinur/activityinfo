@@ -18,6 +18,7 @@ import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.*;
 import org.activityinfo.service.tables.TableBuilder;
 
+import javax.ws.rs.PathParam;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
@@ -98,7 +99,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     @Override
-    public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
+    public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
         List<ResourceNode> nodes = Lists.newArrayList();
         for(Resource resource : all()) {
             if(resource.getOwnerId().asString().startsWith("U")) {
@@ -137,7 +138,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-        if (resourceMap.get(resource) == null) return put(user, resource);
+        if (resourceMap.get(resource.getId()) == null) return put(user, resource);
         else return UpdateResult.rejected();
     }
 
@@ -158,6 +159,12 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
             }
         }
         return node;
+    }
+
+    @Override
+    public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
+                                                @PathParam("id") ResourceId resourceId) {
+        throw new UnsupportedOperationException();
     }
 
     private String getLabel(Resource resource, ResourceId classId) {

@@ -34,7 +34,7 @@ public class TestRemoteStoreService implements RemoteStoreService {
 
     @Override
     public Promise<List<ResourceNode>> queryRoots() {
-        return Promise.resolved(store.getUserRootResources(AuthenticatedUser.getAnonymous()));
+        return Promise.resolved(store.getOwnedOrSharedWorkspaces(AuthenticatedUser.getAnonymous()));
     }
 
     @Override

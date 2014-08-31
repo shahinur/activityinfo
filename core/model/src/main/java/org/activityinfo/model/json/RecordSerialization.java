@@ -38,6 +38,9 @@ public class RecordSerialization {
 
         } else if(value instanceof Collection) {
             writeArray(json, (Collection)value);
+
+        } else {
+            throw new UnsupportedOperationException("Expected value type: " + value);
         }
     }
 
