@@ -36,6 +36,8 @@ public class StringColumnBuilder implements ColumnViewBuilder {
         String string = null;
         if(fieldValue instanceof HasStringValue) {
             string = ((HasStringValue) fieldValue).asString();
+        } else if(fieldValue != null) {
+            string = fieldValue.toString();
         }
         stats.update(string);
         values.add(string);
