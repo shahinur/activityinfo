@@ -1,5 +1,6 @@
 package org.activityinfo.migrator.tables;
 
+import com.google.common.base.Preconditions;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.model.form.FormClass;
@@ -28,8 +29,11 @@ public class Geodatabase extends ResourceMigrator {
         Resource resource = Resources.createResource();
         resource.setId(GEODB_ID);
         resource.set("classId", "_folder");
-        resource.setOwnerId(ResourceId.valueOf("_root"));
+        resource.setOwnerId(Resources.ROOT_ID);
         resource.set(FolderClass.LABEL_FIELD_ID.asString(), "Geodatabase");
+
+        Preconditions.checkNotNull(resource.getId());
+
         writer.writeResource(resource);
     }
 
