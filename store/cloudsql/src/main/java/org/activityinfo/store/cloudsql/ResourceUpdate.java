@@ -27,7 +27,8 @@ public class ResourceUpdate {
     private final StoreCache cache;
 
     private ResourceId userId;
-    private Resource resource;
+    private Resource updatedVersion;
+    private long previousVersion;
     private long newVersion;
 
     private final ObjectMapper mapper = ObjectMapperFactory.get();
@@ -40,7 +41,7 @@ public class ResourceUpdate {
 
 
     public ResourceUpdate put(Resource resource) {
-        this.resource = resource;
+        this.updatedVersion = resource;
         return this;
     }
 
@@ -54,24 +55,43 @@ public class ResourceUpdate {
 
         newVersion = incrementGlobalVersion();
 
-        // stmt first into the resource_version table
+        fetchPreviousVersion();
+
+        // insert first into the resource_version table
         updateResourceVersionTable();
 
-        // stmt or replace now the latest version record
+        // insert or replace now the latest version record
         updateResourceTable();
 
         // update the sub_tree_version of all parents
         updateOwnerSubTreeVersions();
 
         // if this is a root resource, add it to the user's index
-        if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
+        if(updatedVersion.getOwnerId().equals(Resources.ROOT_ID)) {
             indexUserRoot();
         }
 
         // commit the transaction
         connection.commit();
 
-        return UpdateResult.committed(resource.getId(), newVersion);
+        return UpdateResult.committed(updatedVersion.getId(), newVersion);
+    }
+
+    private void fetchPreviousVersion() throws SQLException {
+
+        try (PreparedStatement stmt = connection.prepareStatement(
+                "SELECT version FROM resource WHERE id = ?")) {
+
+            stmt.setString(1, updatedVersion.getId().asString());
+            try(ResultSet rs = stmt.executeQuery()) {
+
+                if(rs.next()) {
+                    previousVersion = rs.getLong(1);
+                } else {
+                    previousVersion = -1;
+                }
+            }
+        }
     }
 
     /**
@@ -104,13 +124,13 @@ public class ResourceUpdate {
                 "sub_tree_version = VALUES(sub_tree_version), " +
                 "content = VALUES(content)")) {
 
-            stmt.setString(1, resource.getId().asString());
+            stmt.setString(1, updatedVersion.getId().asString());
             stmt.setLong(  2, newVersion);
-            stmt.setString(3, resource.getOwnerId().asString());
-            stmt.setString(4, resource.isString("classId"));
-            stmt.setString(5, getLabel(resource));
+            stmt.setString(3, updatedVersion.getOwnerId().asString());
+            stmt.setString(4, updatedVersion.isString("classId"));
+            stmt.setString(5, getLabel(updatedVersion));
             stmt.setLong(  6, newVersion);
-            stmt.setString(7, mapper.writeValueAsString(resource));
+            stmt.setString(7, mapper.writeValueAsString(updatedVersion));
 
             stmt.executeUpdate();
         }
@@ -129,11 +149,11 @@ public class ResourceUpdate {
             "INSERT INTO resource_version (id, version, owner_id, user_id, content) " +
             "VALUES (?, ?, ?, ?, ?)")) {
 
-            stmt.setString(1, resource.getId().asString());
+            stmt.setString(1, updatedVersion.getId().asString());
             stmt.setLong(2, newVersion);
-            stmt.setString(3, resource.getOwnerId().asString());
+            stmt.setString(3, updatedVersion.getOwnerId().asString());
             stmt.setString(4, userId.asString());
-            stmt.setString(5, mapper.writeValueAsString(resource));
+            stmt.setString(5, mapper.writeValueAsString(updatedVersion));
             stmt.executeUpdate();
         }
     }
@@ -144,7 +164,7 @@ public class ResourceUpdate {
                 "REPLACE INTO user_root_index (user_id, resource_id) VALUES (?, ?)")) {
 
             stmt.setString(1, userId.asString());
-            stmt.setString(2, resource.getId().asString());
+            stmt.setString(2, updatedVersion.getId().asString());
             stmt.executeUpdate();
         }
     }
@@ -156,7 +176,7 @@ public class ResourceUpdate {
             PreparedStatement ownerQuery = connection.prepareStatement(
                 "SELECT owner_id FROM resource WHERE id = ?")) {
 
-            ResourceId ownerId = resource.getOwnerId();
+            ResourceId ownerId = updatedVersion.getOwnerId();
             while (!ownerId.equals(Resources.ROOT_ID)) {
 
                 LOGGER.fine("Updating owner [" + ownerId.asString() + "] to sub_tree_version " + newVersion);

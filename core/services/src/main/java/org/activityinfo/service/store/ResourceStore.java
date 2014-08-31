@@ -25,6 +25,11 @@ public interface ResourceStore {
     @Produces("application/json")
     Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
 
+    @GET
+    @Path("resource/{id}/acr")
+    @Produces("application/json")
+    List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
+
     /**
      * Fetches the latest version of the resources from the store
      */
@@ -83,11 +88,11 @@ public interface ResourceStore {
 
     /**
      *
-     * @return a list of resources owned or explicitly shared with a
+     * @return a list of workspaces owned or explicitly shared with a
      * given user
      */
     @GET
     @Path("query/roots")
     @Produces("application/json")
-    List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user);
+    List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user);
 }

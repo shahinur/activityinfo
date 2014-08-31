@@ -23,6 +23,8 @@ class MySqlResourceWriter implements ResourceWriter {
     private int count;
     private PreparedStatement statement;
 
+    private ObjectMapper objectMapper = ObjectMapperFactory.get();
+
     public MySqlResourceWriter(Connection connection) throws SQLException {
         this.connection = connection;
 

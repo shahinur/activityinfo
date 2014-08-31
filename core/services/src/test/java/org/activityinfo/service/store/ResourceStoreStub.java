@@ -16,6 +16,7 @@ import org.activityinfo.model.table.columns.DoubleArrayColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
 import org.activityinfo.model.table.columns.StringArrayColumnView;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
@@ -151,7 +152,7 @@ public class ResourceStoreStub implements ResourceStore {
 
 
     @Override
-    public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
+    public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
 
         ResourceNode folder1 = new ResourceNode(Resources.generateId(), FormClass.CLASS_ID);
         folder1.setOwnerId(Resources.ROOT_ID);
@@ -170,5 +171,11 @@ public class ResourceStoreStub implements ResourceStore {
 
 
         return Arrays.asList(folder1, folder2, folder3);
+    }
+
+    @Override
+    public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
+                                                @PathParam("id") ResourceId resourceId) {
+        throw new UnsupportedOperationException();
     }
 }
