@@ -1,7 +1,6 @@
 package org.activityinfo.service.blob;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.BaseEncoding;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -19,6 +18,7 @@ public class GcsPolicyBuilder {
 
     private final JsonArray conditions;
     private final JsonObject document;
+    private DateTime expiration;
 
     public GcsPolicyBuilder() {
 
@@ -29,8 +29,7 @@ public class GcsPolicyBuilder {
 
     public GcsPolicyBuilder expiresAfter(Duration duration) {
         DateTime now = new DateTime();
-        DateTime expiration = now.plus(duration);
-        document.addProperty("expiration", expiration.toString(ISODateTimeFormat.dateTime()));
+        expiration = now.plus(duration);
         return this;
     }
 
@@ -76,12 +75,17 @@ public class GcsPolicyBuilder {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return document.toString();
+    public byte[] toJsonBytes() {
+        String json = toJson();
+        return json.getBytes(Charsets.UTF_8);
     }
 
-    public byte[] toJson() {
-        return document.toString().getBytes(Charsets.UTF_8);
+    public String toJson() {
+        if(expiration == null) {
+            throw new IllegalStateException("Expiration date must be set");
+        }
+        document.addProperty("expiration", expiration.toString(ISODateTimeFormat.dateTime()));
+
+        return document.toString();
     }
 }

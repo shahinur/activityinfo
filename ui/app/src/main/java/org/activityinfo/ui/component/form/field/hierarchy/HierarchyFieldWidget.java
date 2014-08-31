@@ -17,9 +17,7 @@ import org.activityinfo.ui.component.form.field.ReferenceFieldWidget;
 import org.activityinfo.service.store.ResourceLocator;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Widget for Reference fields which presents multi-level combo boxes
@@ -53,12 +51,12 @@ public class HierarchyFieldWidget implements ReferenceFieldWidget {
 
     @Override
     public Promise<Void> setValue(ReferenceValue value) {
-        return presenter.setInitialSelection(value);
+        return presenter.setInitialSelection(value.getResourceIds());
     }
 
     @Override
     public void clearValue() {
-        presenter.setInitialSelection(ReferenceValue.EMPTY);
+        presenter.setInitialSelection(Collections.<ResourceId>emptySet());
     }
 
     @Override

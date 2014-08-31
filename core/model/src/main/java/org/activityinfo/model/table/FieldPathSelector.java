@@ -7,6 +7,8 @@ import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.type.primitive.TextType;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -99,16 +101,45 @@ public class FieldPathSelector implements FieldSelector {
         Step head = steps.get(0);
         List<Step> tail = steps.subList(1, steps.size());
 
-        for(FormTree.Node field : fields) {
-            if(head.apply(field)) {
-                if(tail.isEmpty()) {
-                    // end of the road
-                    matching.add(field);
-                } else {
+        if(tail.isEmpty()) {
+            // last node
+            if(head.fieldId.equals(ApplicationProperties.LABEL_PROPERTY)) {
+                findLabelField(head, fields, matching);
+            } else {
+                findMatchingField(head, fields, matching);
+            }
+        } else {
+            for(FormTree.Node field : fields) {
+                if(head.apply(field)) {
                     collect(tail, field.getChildren(), matching);
                 }
             }
         }
+
+    }
+
+    private void findLabelField(Step head, List<FormTree.Node> fields, List<FormTree.Node> matching) {
+        int matchCount = findMatchingField(head, fields, matching);
+        if(matchCount == 0) {
+            for(FormTree.Node field : fields) {
+                if(field.getType() instanceof TextType) {
+                    matching.add(field);
+                    break;
+                }
+            }
+        }
+    }
+
+    private int findMatchingField(Step head, List<FormTree.Node> fields, List<FormTree.Node> matching) {
+        int count = 0;
+        for(FormTree.Node field : fields) {
+            if(head.apply(field)) {
+                if(matching.add(field)) {
+                    count ++;
+                }
+            }
+        }
+        return count;
     }
 
     @Override

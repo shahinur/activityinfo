@@ -11,6 +11,7 @@ import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
@@ -65,4 +66,7 @@ public interface ResourceLocator {
     Promise<ResourceTree> getTree(ResourceId rootId);
 
     Promise<List<org.activityinfo.model.resource.ResourceNode>> getRoots();
+
+    Promise<InstanceLabelTable> queryFormList();
+
 }
