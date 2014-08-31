@@ -9,7 +9,7 @@ import org.activityinfo.model.resource.Record;
 public class ColumnModel implements IsRecord {
 
     private String id;
-    private ColumnType type = ColumnType.STRING;
+    private ColumnType type;
     private ColumnSource source;
 
     /**
