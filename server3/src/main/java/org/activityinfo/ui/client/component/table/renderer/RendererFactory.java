@@ -22,7 +22,6 @@ package org.activityinfo.ui.client.component.table.renderer;
  */
 
 import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.number.QuantityType;
 
 /**
  * @author yuriyz on 3/28/14.
@@ -34,8 +33,6 @@ public class RendererFactory {
     public static ValueRenderer create(FieldTypeClass type) {
         if (type == FieldTypeClass.GEOGRAPHIC_POINT) {
             return new GeographicPointRenderer();
-        } else if(type == QuantityType.TYPE_CLASS) {
-            return new QuantityRenderer();
         }
         return new GenericRenderer();
     }

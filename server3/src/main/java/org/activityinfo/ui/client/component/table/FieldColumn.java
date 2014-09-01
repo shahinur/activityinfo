@@ -1,6 +1,5 @@
 package org.activityinfo.ui.client.component.table;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
@@ -19,7 +18,6 @@ import java.util.List;
 public class FieldColumn extends Column<Projection, String> {
 
     public static final String NON_BREAKING_SPACE = "\u00A0";
-
     private FormTree.Node node;
     private List<FieldPath> fieldPaths;
     private String header;
@@ -53,10 +51,7 @@ public class FieldColumn extends Column<Projection, String> {
         final Object valueAsObject = getValueAsObject(projection);
         if (valueAsObject != null) {
             final ValueRenderer valueRenderer = RendererFactory.create(getNode().getTypeClass());
-            String string = valueRenderer.asString(valueAsObject);
-            if(!Strings.isNullOrEmpty(string)) {
-                return string;
-            }
+            return valueRenderer.asString(valueAsObject);
         }
 
         return NON_BREAKING_SPACE;
