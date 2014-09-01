@@ -37,7 +37,7 @@ public class JsDoubleArrayColumnView implements ColumnView {
     }
 
     private native double getDouble(JavaScriptObject array, int row) /*-{
-      return array[row] || Double.NaN;
+      return +(array[row]);
     }-*/;
 
     @Override
