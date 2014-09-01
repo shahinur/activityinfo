@@ -9,7 +9,7 @@ import org.activityinfo.model.resource.Record;
 public class ColumnModel implements IsRecord {
 
     private String id;
-    private ColumnType type = ColumnType.STRING;
+    private ColumnType type;
     private ColumnSource source;
 
     /**
@@ -70,7 +70,9 @@ public class ColumnModel implements IsRecord {
     public Record asRecord() {
         Record record = new Record();
         record.set("id", id);
-        record.set("type", type.name());
+        if(type != null) {
+            record.set("type", type.name());
+        }
         record.set("source", source.asRecord());
         return record;
     }
@@ -78,7 +80,10 @@ public class ColumnModel implements IsRecord {
     public static ColumnModel fromRecords(Record record) {
         ColumnModel model = new ColumnModel();
         model.setId(record.getString("id"));
-        model.setType(ColumnType.valueOf(record.getString("type")));
+
+        if(record.has("type")) {
+            model.setType(ColumnType.valueOf(record.getString("type")));
+        }
 
         Record sourceRecord = record.getRecord("source");
         String sourceType = sourceRecord.getString("type");

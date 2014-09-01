@@ -6,6 +6,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -19,14 +20,6 @@ import java.net.URI;
  */
 @Path("/service/blob")
 public interface BlobFieldStorageService {
-
-    /**
-     * Provides the upload credentials for a user to upload a blob.
-     *
-     * @param blobId
-     * @return the
-     */
-    UploadCredentials getUploadCredentials(ResourceId userId, BlobId blobId);
 
     /**
      * Provides a temporary, signed URL via which the user can access a blob
@@ -58,4 +51,8 @@ public interface BlobFieldStorageService {
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height);
 
+    @POST
+    @Path("credentials/{blobId}")
+    Response getUploadCredentials(@InjectParam AuthenticatedUser user,
+                                  @PathParam("blobId") BlobId blobId);
 }
