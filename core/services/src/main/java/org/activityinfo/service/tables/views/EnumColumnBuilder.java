@@ -38,17 +38,20 @@ public class EnumColumnBuilder implements ColumnViewBuilder {
     @Override
     public void accept(FormEvalContext instance) {
         FieldValue value = instance.getFieldValue(fieldName);
+        values.add(indexOf(value));
+    }
+
+    private int indexOf(FieldValue value) {
         if(value instanceof EnumFieldValue) {
             EnumFieldValue fieldValue = (EnumFieldValue) value;
             if (fieldValue.getValueIds().size() == 1) {
                 Integer index = labelIndexMap.get(fieldValue.getValueId());
-                if (index == null) {
-                    values.add(-1);
-                } else {
-                    values.add(index);
+                if (index != null) {
+                    return index;
                 }
             }
         }
+        return -1;
     }
 
     @Override

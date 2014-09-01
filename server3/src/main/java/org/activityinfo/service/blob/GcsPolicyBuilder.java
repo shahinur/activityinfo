@@ -49,6 +49,10 @@ public class GcsPolicyBuilder {
         return addStartsWithCondition("Content-Type", contentTypePrefix);
     }
 
+    public GcsPolicyBuilder successActionStatusMustBe(String successActionStatus) {
+        return addExactCondition("success_action_status", successActionStatus);
+    }
+
     public GcsPolicyBuilder contentLengthMustBeBetween(long min, long max) {
        // ["content-length-range", <min_range>, <max_range>].
         JsonArray condition = new JsonArray();
