@@ -40,7 +40,8 @@ public class ViewBuilders {
             return new EnumColumnBuilder(fieldId, (EnumType)fieldType);
 
         } else {
-            return null;
+            // hack to make sure we have values for all fields in the table
+            return new StringColumnBuilder(fieldId);
         }
     }
 

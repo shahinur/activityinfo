@@ -9,8 +9,12 @@ import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.barcode.BarcodeValue;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
@@ -21,6 +25,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -35,6 +40,9 @@ public class TableQueryTest {
     private ResourceId age;
     private ResourceId dogYears;
     private ResourceId barcode;
+    private ResourceId gender;
+    private EnumFieldValue male;
+    private EnumFieldValue female;
 
 
     @Before
@@ -44,7 +52,8 @@ public class TableQueryTest {
         age = ResourceId.generateId();
         dogYears = ResourceId.generateId();
         barcode = ResourceId.generateId();
-
+        gender = ResourceId.generateId();
+        
         FormClass formClass = new FormClass(formClassId);
         formClass.setParentId(ResourceId.ROOT_ID);
         formClass.setLabel("Test Form");
@@ -52,6 +61,15 @@ public class TableQueryTest {
         formClass.addElement(new FormField(age).setCode("AGE").setLabel("Age").setType(new QuantityType().setUnits("years")));
         formClass.addElement(new FormField(dogYears).setLabel("Dog years").setType(new CalculatedFieldType("AGE*7")));
         formClass.addElement(new FormField(barcode).setLabel("Bar code").setType(BarcodeType.INSTANCE));
+
+        male = new EnumFieldValue(ResourceId.generateId());
+        female = new EnumFieldValue(ResourceId.generateId());
+
+        EnumType genderType = new EnumType(Cardinality.SINGLE, Arrays.asList(
+                new EnumValue(male.getValueId(), "Male"),
+                new EnumValue(female.getValueId(), "Female")));
+
+        formClass.addElement(new FormField(gender).setLabel("Gender").setType(genderType));
         put(formClass);
     }
 
@@ -59,28 +77,28 @@ public class TableQueryTest {
     @Test
     public void basicTable() {
 
-        put(newInstance().set(name, "Bob").set(age, years(42)));
-        put(newInstance().set(name, "Jim").set(age, years(10)));
-        put(newInstance().set(name, "Doug").set(age, years(18)));
-
+        put(newInstance().set(name, "Bob").set(age, years(42)).set(gender, male));
+        put(newInstance().set(name, "Francine").set(age, years(10)).set(gender, female));
+        put(newInstance().set(name, "Doug").set(age, years(18)).set(gender, male));
 
         TableModel tableModel = new TableModel(formClassId);
         tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
         tableModel.addColumn("C2").select(ColumnType.NUMBER).fieldPath(age);
-
+        tableModel.addColumn("C3").select(ColumnType.STRING).fieldPath(gender);
 
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
 
         assertThat(data.getNumRows(), equalTo(3));
-        assertThat(data.getColumnView("C1"), hasValues("Bob", "Jim", "Doug"));
+        assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug"));
         assertThat(data.getColumnView("C2"), hasValues(42, 10, 18));
+        assertThat(data.getColumnView("C3"), hasValues("Male", "Female", "Male"));
     }
 
     @Test
     public void calculatedColumn() {
 
         put(newInstance().set(name, "Bob").set(age, years(42)));
-        put(newInstance().set(name, "Jim").set(age, years(10)));
+        put(newInstance().set(name, "Francine").set(age, years(10)));
         put(newInstance().set(name, "Doug").set(age, years(18)));
 
 
@@ -92,16 +110,35 @@ public class TableQueryTest {
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
 
         assertThat(data.getNumRows(), equalTo(3));
-        assertThat(data.getColumnView("C1"), hasValues("Bob", "Jim", "Doug"));
+        assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug"));
         assertThat(data.getColumnView("C2"), hasValues(42*7, 10*7, 18*7));
     }
+
+
+    @Test
+    public void missingEnumValues() {
+
+        put(newInstance().set(name, "Bob").set(age, years(42)));
+        put(newInstance().set(name, "Francine").set(age, years(10)).set(gender, female));
+
+        TableModel tableModel = new TableModel(formClassId);
+        tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
+        tableModel.addColumn("C2").select(ColumnType.STRING).fieldPath(gender);
+
+
+        TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
+
+        assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine"));
+        assertThat(data.getColumnView("C2"), hasValues(null, "Female"));
+    }
+
 
 
     @Test
     public void calculatedWithMissingColumn() {
 
         put(newInstance().set(name, "Bob").set(age, years(42)));
-        put(newInstance().set(name, "Jim"));
+        put(newInstance().set(name, "Francine"));
         put(newInstance().set(name, "Doug").set(age, years(18)));
 
 
@@ -112,14 +149,14 @@ public class TableQueryTest {
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
 
         assertThat(data.getNumRows(), equalTo(3));
-        assertThat(data.getColumnView("C1"), hasValues("Bob", "Jim", "Doug"));
+        assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug"));
         assertThat(data.getColumnView("C2"), hasValues(42*7, null, 18*7));
     }
 
     @Test
     public void barcodeAsString() {
         put(newInstance().set(name, "Bob").set(barcode, BarcodeValue.valueOf("01010101")));
-        put(newInstance().set(name, "Jim").set(barcode, BarcodeValue.valueOf("XYZ123")));
+        put(newInstance().set(name, "Francine").set(barcode, BarcodeValue.valueOf("XYZ123")));
         put(newInstance().set(name, "Doug").set(barcode, BarcodeValue.valueOf("XOXOXO")));
         put(newInstance().set(age, years(44)));
 
@@ -130,7 +167,7 @@ public class TableQueryTest {
 
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
 
-        assertThat(data.getColumnView("C1"), hasValues("Bob", "Jim", "Doug", null));
+        assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug", null));
         assertThat(data.getColumnView("C2"), hasValues("01010101", "XYZ123", "XOXOXO", null));
 
     }
