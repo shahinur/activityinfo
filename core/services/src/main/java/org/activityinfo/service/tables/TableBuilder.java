@@ -1,13 +1,12 @@
 package org.activityinfo.service.tables;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.*;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.tree.FormTreeBuilder;
 
@@ -36,17 +35,15 @@ public class TableBuilder {
         Map<String, Supplier<ColumnView>> columnViews = Maps.newHashMap();
 
         for(ColumnModel column : table.getColumns()) {
+            Preconditions.checkNotNull(column.getType(), "column.getType()");
+
             if(column.getSource() instanceof FieldSource) {
                 FieldSource source = (FieldSource) column.getSource();
                 List<FormTree.Node> sourceNodes = source.select(tree);
-                ColumnType type = column.getType();
-                if(type == null) {
-                    type = detectType(sourceNodes);
-                }
                 if(sourceNodes.isEmpty()) {
-                    columnViews.put(column.getId(), batch.addEmptyColumn(type, formClass));
+                    columnViews.put(column.getId(), batch.addEmptyColumn(column.getType(), formClass));
                 } else {
-                    columnViews.put(column.getId(), batch.addColumn(type, sourceNodes));
+                    columnViews.put(column.getId(), batch.addColumn(column.getType(), sourceNodes));
                 }
             } else if(column.getSource() instanceof ResourceIdSource) {
                 columnViews.put(column.getId(), batch.getIdColumn(formClass));
@@ -72,21 +69,5 @@ public class TableBuilder {
         }
 
         return new TableData(numRows, dataMap);
-    }
-
-    private ColumnType detectType(List<FormTree.Node> sourceNodes) {
-        if(sourceNodes.isEmpty()) {
-            return ColumnType.STRING;
-        } else {
-            FieldType fieldType = sourceNodes.get(0).getType();
-            if(fieldType instanceof QuantityType) {
-                return ColumnType.NUMBER;
-//            } else if(fieldType instanceof LocalDateType) {
-//                return ColumnType.DATE;
-            } else {
-                return ColumnType.STRING;
-            }
-
-        }
     }
 }
