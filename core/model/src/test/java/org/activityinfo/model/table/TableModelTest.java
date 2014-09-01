@@ -3,7 +3,6 @@ package org.activityinfo.model.table;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.ResourceId;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -15,15 +14,9 @@ import static org.junit.Assert.assertThat;
 public class TableModelTest {
 
 
-    private ObjectMapper mapper;
-
-    @Before
-    public void setUp() throws Exception {
-        mapper = ObjectMapperFactory.get();
-    }
-
     @Test
     public void serialization() throws IOException {
+        ObjectMapper mapper = ObjectMapperFactory.get();
 
         ResourceId classId = ResourceId.valueOf("f023423");
         TableModel model = new TableModel(classId);
