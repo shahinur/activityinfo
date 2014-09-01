@@ -17,6 +17,7 @@ public class GcsUploadCredentialBuilderTest {
     public void test() throws Exception {
 
         UploadCredentials credentials = new GcsUploadCredentialBuilder(new TestingIdentityService())
+                .setBucket("ai-dev-field-blob-test")
                 .setKey(BlobId.generate().asString())
                 .setMaxContentLengthInMegabytes(10)
                 .expireAfter(Period.minutes(5))
@@ -32,7 +33,7 @@ public class GcsUploadCredentialBuilderTest {
                 MediaType.valueOf(PNG.toString()));
 
         Client.create()
-                .resource("http://ai-dev-field-blob-test.storage.googleapis.com")
+                .resource(credentials.getUrl())
                 .entity(form, MediaType.MULTIPART_FORM_DATA_TYPE)
                 .post();
 
