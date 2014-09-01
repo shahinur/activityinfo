@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -62,7 +61,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     private final List<CheckBox> controls;
     private final FieldWidgetMode fieldWidgetMode;
 
-    public EnumFieldWidget(EnumType enumType, final ValueUpdater<ReferenceValue> valueUpdater, FieldWidgetMode fieldWidgetMode) {
+    public EnumFieldWidget(EnumType enumType, final ValueUpdater<EnumFieldValue> valueUpdater, FieldWidgetMode fieldWidgetMode) {
         this.enumType = enumType;
         this.groupName = "group" + (nextId++);
         this.fieldWidgetMode = fieldWidgetMode;
@@ -186,14 +185,14 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
         }
     }
 
-    private ReferenceValue updatedValue() {
+    private EnumFieldValue updatedValue() {
         final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
                 value.add(ResourceId.valueOf(control.getFormValue()));
             }
         }
-        return new ReferenceValue(value);
+        return new EnumFieldValue(value);
     }
 
     @Override
