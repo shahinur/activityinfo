@@ -22,23 +22,38 @@ package org.activityinfo.ui.component.form.field.image;
  */
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.http.client.*;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FileUpload;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.image.ImageRowValue;
-import org.activityinfo.ui.component.form.field.image.MimeTypeUtil;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -59,6 +74,7 @@ public class ImageUploadRow extends Composite {
     private final String fieldId;
     private final String resourceId;
     private boolean readOnly;
+    private HandlerRegistration oldHandler;
 
     @UiField
     FileUpload fileUpload;
@@ -120,14 +136,12 @@ public class ImageUploadRow extends Composite {
 
     private String createUploadUrl() {
         String blobId = Resources.generateId().asString();
-//        String classId = formClassId.asString();
-//        String fieldId = formField.getId().asString();
         String fileName = fileName();
         String mimeType = MimeTypeUtil.mimeTypeFromFileExtension(fileExtension(fileName));
         value.setMimeType(mimeType);
         value.setFilename(fileName);
         value.setBlobId(blobId);
-        return "/service/blob/" + blobId;
+        return "/service/blob/credentials/" + blobId;
     }
 
     public static String fileExtension(String filename) {
@@ -160,6 +174,19 @@ public class ImageUploadRow extends Composite {
             requestBuilder.sendRequest(null, new RequestCallback() {
                 @Override
                 public void onResponseReceived(Request request, Response response) {
+                    // Remove the old hidden fields before adding the new ones
+                    List<Hidden> hidden = Lists.newArrayListWithCapacity(formFieldsContainer.getWidgetCount());
+                    for (int i = 0; i < formFieldsContainer.getWidgetCount(); i++) {
+                        Widget widget = formFieldsContainer.getWidget(i);
+                        if (widget instanceof Hidden) {
+                            hidden.add((Hidden) widget);
+                        }
+                    }
+                    // We can't just iterate once using the getWidget() method because removing a widget changes indexes
+                    for (Hidden old : hidden) {
+                        formFieldsContainer.remove(old);
+                    }
+
                     String json = response.getText();
                     JSONObject credentials = JSONParser.parseStrict(json).isObject();
                     JSONObject formFields = credentials.get("formFields").isObject();
@@ -186,7 +213,8 @@ public class ImageUploadRow extends Composite {
         imageContainer.setVisible(true);
         downloadButton.setVisible(false);
 
-        formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+        if (oldHandler != null) oldHandler.removeHandler();
+        oldHandler = formPanel.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
             @Override
             public void onSubmitComplete(FormPanel.SubmitCompleteEvent event) {
                 String responseString = event.getResults(); // what about fail results?
