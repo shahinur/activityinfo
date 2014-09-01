@@ -7,8 +7,6 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.ui.client.component.table.renderer.RendererFactory;
-import org.activityinfo.ui.client.component.table.renderer.ValueRenderer;
 
 import java.util.List;
 
@@ -18,6 +16,7 @@ import java.util.List;
 public class FieldColumn extends Column<Projection, String> {
 
     public static final String NON_BREAKING_SPACE = "\u00A0";
+
     private FormTree.Node node;
     private List<FieldPath> fieldPaths;
     private String header;
@@ -49,9 +48,14 @@ public class FieldColumn extends Column<Projection, String> {
     @Override
     public String getValue(Projection projection) {
         final Object valueAsObject = getValueAsObject(projection);
-        if (valueAsObject != null) {
-            final ValueRenderer valueRenderer = RendererFactory.create(getNode().getTypeClass());
-            return valueRenderer.asString(valueAsObject);
+
+        if (valueAsObject instanceof Double) {
+            Double value = (Double) valueAsObject;
+            if (!value.isNaN()) {
+                return value.toString();
+            }
+        } else if (valueAsObject instanceof String) {
+            return (String) valueAsObject;
         }
 
         return NON_BREAKING_SPACE;

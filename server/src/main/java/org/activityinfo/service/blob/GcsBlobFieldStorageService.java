@@ -23,6 +23,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.image.ImageValue;
@@ -32,6 +33,7 @@ import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.gcs.GcsAppIdentityServiceUrlSigner;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
+import org.joda.time.Period;
 
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
@@ -42,6 +44,9 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.Channels;
 import java.util.logging.Logger;
+
+import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 public class GcsBlobFieldStorageService implements BlobFieldStorageService {
 
@@ -59,15 +64,6 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         this.locator = locator;
 
         LOGGER.info("Service account: " + appIdentityService.getServiceAccountName());
-    }
-
-    @Override
-    public UploadCredentials getUploadCredentials(ResourceId userId, BlobId blobId) {
-        GcsUploadCredentialBuilder builder = new GcsUploadCredentialBuilder(appIdentityService);
-        builder.setBucket(bucketName);
-        builder.setKey(blobId.asString());
-        builder.setMaxContentLengthInMegabytes(5);
-        return builder.build();
     }
 
     @Override
@@ -105,12 +101,14 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
+        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
+
         final Resource resource;
 
         try {
             resource = locator.get(user, resourceId);
         } catch (ResourceNotFound resourceNotFound) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new WebApplicationException(NOT_FOUND);
         }
 
         FormInstance formInstance = FormInstance.fromResource(resource);
@@ -126,7 +124,7 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
             }
         }
 
-        if (imageRowValue == null) throw new WebApplicationException(Response.Status.NOT_FOUND);
+        if (imageRowValue == null) throw new WebApplicationException(NOT_FOUND);
 
         ImagesService imagesService = ImagesServiceFactory.getImagesService();
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -144,5 +142,18 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         } else {
             return Response.ok(image.getImageData()).build();
         }
+    }
+
+    @Override
+    public Response getUploadCredentials(@InjectParam AuthenticatedUser user,
+                                         @PathParam("blobId") BlobId blobId) {
+        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
+
+        GcsUploadCredentialBuilder builder = new GcsUploadCredentialBuilder(appIdentityService);
+        builder.setBucket(bucketName);
+        builder.setKey(blobId.asString());
+        builder.setMaxContentLengthInMegabytes(10);
+        builder.expireAfter(Period.minutes(5));
+        return Response.ok(Resources.toJson(builder.build().asRecord())).build();
     }
 }
