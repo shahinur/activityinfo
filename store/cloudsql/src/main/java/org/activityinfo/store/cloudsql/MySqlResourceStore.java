@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sun.jersey.api.core.InjectParam;
@@ -60,20 +59,19 @@ public class MySqlResourceStore implements ResourceStore {
 
     @Override
     public Resource get(AuthenticatedUser user, final ResourceId resourceId) {
-        Set<Resource> resource = get(user, Collections.singleton(resourceId));
+        List<Resource> resource = get(user, Collections.singleton(resourceId));
         if(resource.isEmpty()) {
             throw new ResourceNotFound(resourceId);
         }
         return resource.iterator().next();
     }
 
-    @Override
-    public Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
+    private List<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
 
         String sql = "SELECT content, version FROM resource WHERE " +
                  where().withId(resourceIds);
 
-        Set<Resource> resources = Sets.newHashSet();
+        List<Resource> resources = Lists.newArrayList();
         try(StoreConnection connection = open();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql)) {

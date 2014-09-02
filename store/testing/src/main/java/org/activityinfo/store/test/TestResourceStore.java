@@ -78,8 +78,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         return get(resourceId);
     }
 
-    @Override
-    public Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
+    private Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
         throw new UnsupportedOperationException();
     }
 
@@ -237,5 +236,4 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
         }
     }
-
 }
