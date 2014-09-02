@@ -101,30 +101,7 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
-        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
-
-        final Resource resource;
-
-        try {
-            resource = locator.get(user, resourceId);
-        } catch (ResourceNotFound resourceNotFound) {
-            throw new WebApplicationException(NOT_FOUND);
-        }
-
-        FormInstance formInstance = FormInstance.fromResource(resource);
-        ImageValue imageValue = (ImageValue) formInstance.get(fieldId, ImageType.TYPE_CLASS);
-        ImageRowValue imageRowValue = null;
-
-        if (imageValue != null) {
-            for (ImageRowValue row : imageValue.getValues()) {
-                if (row.getBlobId().equals(blobId.asString())) {
-                    imageRowValue = row;
-                    break;
-                }
-            }
-        }
-
-        if (imageRowValue == null) throw new WebApplicationException(NOT_FOUND);
+        ImageRowValue imageRowValue = getImageRowValue(user, resourceId, fieldId, blobId);
 
         ImagesService imagesService = ImagesServiceFactory.getImagesService();
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -155,5 +132,30 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         builder.setMaxContentLengthInMegabytes(10);
         builder.expireAfter(Period.minutes(5));
         return Response.ok(Resources.toJson(builder.build().asRecord())).build();
+    }
+
+    private ImageRowValue getImageRowValue(AuthenticatedUser user, ResourceId resourceId, ResourceId fieldId, BlobId blobId) {
+        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
+
+        final Resource resource;
+
+        try {
+            resource = locator.get(user, resourceId);
+        } catch (ResourceNotFound resourceNotFound) {
+            throw new WebApplicationException(NOT_FOUND);
+        }
+
+        FormInstance formInstance = FormInstance.fromResource(resource);
+        ImageValue imageValue = (ImageValue) formInstance.get(fieldId, ImageType.TYPE_CLASS);
+
+        if (imageValue != null) {
+            for (ImageRowValue imageRowValue : imageValue.getValues()) {
+                if (imageRowValue.getBlobId().equals(blobId.asString())) {
+                    return imageRowValue;
+                }
+            }
+        }
+
+        throw new WebApplicationException(NOT_FOUND);
     }
 }
