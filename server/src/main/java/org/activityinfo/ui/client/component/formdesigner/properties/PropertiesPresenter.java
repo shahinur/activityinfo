@@ -22,6 +22,8 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  */
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -30,6 +32,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -104,6 +107,8 @@ public class PropertiesPresenter {
         view.getVisibleGroup().setVisible(false);
         view.getRelevanceGroup().setVisible(false);
         view.getCodeGroup().setVisible(false);
+        view.getInvalidCodeMessage().addClassName("hide");
+        view.getDuplicateCodeMessage().addClassName("hide");
 
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
@@ -153,6 +158,8 @@ public class PropertiesPresenter {
         view.getCode().setValue(Strings.nullToEmpty(formField.getCode()));
 
         setRelevanceState(formField, true);
+        validateCode(fieldWidgetContainer);
+
         relevanceButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -246,12 +253,56 @@ public class PropertiesPresenter {
             ParametrizedFieldType parametrizedType = (ParametrizedFieldType) formField.getType();
             currentDesignWidget.asWidget().setVisible(true);
             currentDesignWidget.setValidationFormClass(fieldWidgetContainer.getFormDesigner().getFormClass());
-            currentDesignWidget.show(Resources.createResource(parametrizedType.getParameters()));
+            currentDesignWidget.show(Resources.createResource(parametrizedType.getParameters())).then(new AsyncCallback<Void>() {
+
+
+                @Override
+                public void onFailure(Throwable caught) {
+                    GWT.log("Exception thrown while showing properties form", caught);
+                }
+
+                @Override
+                public void onSuccess(Void result) {
+
+                }
+            });
 
         } else {
             currentDesignWidget.asWidget().setVisible(false);
         }
         view.getPanel().add(currentDesignWidget);
+    }
+
+    /**
+     * Returns whether code is valid.
+     *
+     * @return whether code is valid
+     */
+    private boolean validateCode(FieldWidgetContainer fieldWidgetContainer) {
+        String code = view.getCode().getValue();
+        if (Strings.isNullOrEmpty(code)) {
+            return true;
+        }
+
+        if (!FormField.isValidCode(code)) {
+            view.getInvalidCodeMessage().removeClassName("hide");
+            return false;
+        } else {
+            view.getInvalidCodeMessage().addClassName("hide");
+
+            // check whether code is unique
+            List<FormField> formFields = Lists.newArrayList(fieldWidgetContainer.getFormDesigner().getFormClass().getFields());
+            formFields.remove(fieldWidgetContainer.getFormField());
+
+            for (FormField formField : formFields) {
+                if (code.equals(formField.getCode())) {
+                    view.getDuplicateCodeMessage().removeClassName("hide");
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 
     public void setRelevanceState(FormField formField, boolean setRadioButtonsState) {

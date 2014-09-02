@@ -73,6 +73,10 @@ public class PropertiesPanel extends Composite {
     TextBox code;
     @UiField
     HTMLPanel codeGroup;
+    @UiField
+    SpanElement invalidCodeMessage;
+    @UiField
+    SpanElement duplicateCodeMessage;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -140,5 +144,13 @@ public class PropertiesPanel extends Composite {
 
     public HTMLPanel getCodeGroup() {
         return codeGroup;
+    }
+
+    public SpanElement getInvalidCodeMessage() {
+        return invalidCodeMessage;
+    }
+
+    public SpanElement getDuplicateCodeMessage() {
+        return duplicateCodeMessage;
     }
 }
