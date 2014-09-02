@@ -124,14 +124,14 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
 
     @Override
     public Promise<Void> setValue(ImageValue value) {
-        clearValue();
-
         if (value != null && value.getValues() != null && value.getValues().size() > 0) {
+            clear();
+
             for (ImageRowValue rowValue : value.getValues()) {
                 addNewRow(rowValue);
             }
         } else {
-            addNewRow(new ImageRowValue());
+            clearValue();
         }
 
         return Promise.done();
@@ -144,12 +144,17 @@ public class ImageUploadFieldWidget implements FormFieldWidget<ImageValue> {
 
     @Override
     public void clearValue() {
-        value = new ImageValue();
-        rootPanel.clear();
+        clear();
+        addNewRow(new ImageRowValue());
     }
 
     @Override
     public Widget asWidget() {
         return rootPanel;
+    }
+
+    private void clear() {
+        value = new ImageValue();
+        rootPanel.clear();
     }
 }
