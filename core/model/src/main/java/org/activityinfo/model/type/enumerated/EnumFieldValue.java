@@ -68,6 +68,10 @@ public class EnumFieldValue implements FieldValue, IsRecord {
         if(id != null) {
             return new EnumFieldValue(ResourceId.valueOf(id));
         }
+        id = record.isString("id"); // ugly workaround for inconsistent data that appears on production db
+        if(id != null) {
+            return new EnumFieldValue(ResourceId.valueOf(id));
+        }
         List<String> strings = record.getStringList("value");
         Set<ResourceId> ids = Sets.newHashSet();
         for(String string : strings) {

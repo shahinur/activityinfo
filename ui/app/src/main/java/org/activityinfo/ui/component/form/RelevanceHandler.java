@@ -43,11 +43,9 @@ public class RelevanceHandler {
     }
 
     public void onValueChange() {
-        // TODO: correct enforcement of skip logic
-        // Disabled until corrected
-//        for (FormField formField : fieldsWithSkipExpression) {
-//            applySkipLogic(formField);
-//        }
+        for (FormField formField : fieldsWithSkipExpression) {
+            applySkipLogic(formField);
+        }
     }
 
     private void applySkipLogic(final FormField field) {
