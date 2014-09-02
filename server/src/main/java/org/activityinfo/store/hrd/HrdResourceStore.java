@@ -1,42 +1,45 @@
 package org.activityinfo.store.hrd;
 
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.common.collect.Sets;
+import com.google.appengine.api.datastore.Transaction;
+import com.google.common.collect.Lists;
 import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.ResourceTreeRequest;
 import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.service.tables.TableBuilder;
+import org.activityinfo.store.hrd.entity.GlobalVersion;
+import org.activityinfo.store.hrd.entity.ResourceGroup;
+import org.activityinfo.store.hrd.index.AcrIndex;
+import org.activityinfo.store.hrd.index.FolderIndex;
+import org.activityinfo.store.hrd.index.WorkspaceIndex;
 
 import javax.ws.rs.PathParam;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import static com.google.appengine.api.datastore.TransactionOptions.Builder.withXG;
 
 public class HrdResourceStore implements ResourceStore {
 
     private final DatastoreService datastore;
-    private final DatastoreMapper mapper;
 
     public HrdResourceStore(DatastoreService datastore) {
         this.datastore = datastore;
-        this.mapper = new DatastoreMapper();
     }
 
     @Override
     public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
         try {
-            return mapper.toResource(datastore.get(DatastoreMapper.resourceKey(resourceId)));
+            ResourceGroup group = new ResourceGroup(resourceId);
+            return group.getLatestContent(resourceId).get(datastore);
+
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(resourceId);
         }
@@ -45,45 +48,93 @@ public class HrdResourceStore implements ResourceStore {
     @Override
     public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
                                                 @PathParam("id") ResourceId resourceId) {
-        return null;
-    }
 
-    @Override
-    public Set<Resource> get(@InjectParam AuthenticatedUser user, Set<ResourceId> resourceIds) {
-        Iterable<Key> keys = mapper.resourceKeys(resourceIds);
-        Map<Key, Entity> entities = datastore.get(keys);
-        return Sets.newHashSet(mapper.toResources(entities.values()));
+         return Lists.newArrayList(AcrIndex.queryRules(datastore, resourceId));
     }
 
     @Override
     public UpdateResult put(@InjectParam AuthenticatedUser user,
                             @PathParam("id") ResourceId resourceId,
                             Resource resource) {
-        datastore.put(mapper.toEntity(resource));
+
+       return put(user, resource);
     }
+
 
     @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
-        return null;
+
+        Transaction tx = datastore.beginTransaction(withXG(true));
+        ResourceGroup group = new ResourceGroup(resource.getId());
+
+        try {
+            Resource previousVersion = group.getLatestContent(resource.getId()).get(datastore, tx);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFound(resource.getId());
+        }
+
+        long newVersion = GlobalVersion.incrementVersion(datastore, tx);
+        Resource updatedResource = resource.copy();
+        updatedResource.setVersion(newVersion);
+
+        group.update(datastore, tx, user, updatedResource);
+
+        tx.commit();
+
+        return UpdateResult.committed(resource.getId(), newVersion);
     }
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-        return null;
+
+        Transaction tx = datastore.beginTransaction(withXG(true));
+        ResourceGroup group = new ResourceGroup(resource.getId());
+
+        long newVersion = GlobalVersion.incrementVersion(datastore, tx);
+        Resource newResource = resource.copy();
+        newResource.setVersion(newVersion);
+
+        group.update(datastore, tx, user, newResource);
+
+        // if this is a root workspace, grant ownership to user
+        if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
+
+            AccessControlRule acr = new AccessControlRule(resource.getId(), user.getUserResourceId());
+            acr.setOwner(true);
+            Resource acrResource = acr.asResource();
+            acrResource.setVersion(newVersion);
+            group.update(datastore, tx, user, acrResource);
+
+            // add to the index
+            datastore.put(tx, WorkspaceIndex.createOwnerIndex(resource.getId(), user));
+        }
+
+        tx.commit();
+
+        return UpdateResult.committed(resource.getId(), newVersion);
     }
 
     @Override
     public ResourceTree queryTree(@InjectParam AuthenticatedUser user, ResourceTreeRequest request) {
-        return null;
+        try {
+            return new ResourceTree(FolderIndex.queryNode(datastore, request.getRootId()));
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFound(request.getRootId());
+        }
     }
 
     @Override
     public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
-        return null;
+        TableBuilder builder = new TableBuilder(new HrdStoreAccessor(datastore));
+        try {
+            return builder.buildTable(tableModel);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
-        return null;
+        return WorkspaceIndex.queryUserWorkspaces(datastore, user);
     }
 }
