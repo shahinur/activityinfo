@@ -102,13 +102,15 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
                              @PathParam("resourceId") ResourceId resourceId,
                              @PathParam("fieldId") ResourceId fieldId,
                              @PathParam("blobId") BlobId blobId) throws IOException {
+        /* TODO: Ensure that users can download images they've just uploaded
         ImageRowValue imageRowValue = getImageRowValue(user, resourceId, fieldId, blobId);
+        */
         GcsFilename gcsFilename = new GcsFilename(bucketName, blobId.asString());
         GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
         GcsInputChannel gcsInputChannel = gcsService.openPrefetchingReadChannel(gcsFilename, 0, ONE_MEGABYTE);
 
         try (InputStream inputStream = Channels.newInputStream(gcsInputChannel)) {
-            return Response.ok(ByteStreams.toByteArray(inputStream)).type(imageRowValue.getMimeType()).build();
+            return Response.ok(ByteStreams.toByteArray(inputStream))/*.type(imageRowValue.getMimeType())*/.build();
         }
     }
 
@@ -119,7 +121,9 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
+        /* TODO: Ensure that users can see thumbnails of images they've just uploaded
         ImageRowValue imageRowValue = getImageRowValue(user, resourceId, fieldId, blobId);
+        */
 
         ImagesService imagesService = ImagesServiceFactory.getImagesService();
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -128,15 +132,19 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
 
         Image image = ImagesServiceFactory.makeImageFromBlob(blobKey);
 
+        /*
         if (width != imageRowValue.getWidth() || imageRowValue.getHeight() != height) {
+        */
             Transform resize = ImagesServiceFactory.makeResize(width, height);
             Image newImage = imagesService.applyTransform(resize, image);
 
             byte[] imageData = newImage.getImageData();
-            return Response.ok(imageData).type(imageRowValue.getMimeType()).build();
+            return Response.ok(imageData)/*.type(imageRowValue.getMimeType())*/.build();
+        /*
         } else {
             return Response.ok(image.getImageData()).type(imageRowValue.getMimeType()).build();
         }
+        */
     }
 
     @Override
