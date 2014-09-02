@@ -23,13 +23,20 @@ public class TestBlobFieldStorageService implements BlobFieldStorageService {
     }
 
     @Override
+    public Response getImage(@InjectParam AuthenticatedUser user,
+                             @PathParam("resourceId") ResourceId resourceId,
+                             @PathParam("fieldId") ResourceId fieldId,
+                             @PathParam("blobId") BlobId blobId) {
+        throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+    }
+
+    @Override
     public Response getThumbnail(@InjectParam AuthenticatedUser user,
                                  @PathParam("resourceId") ResourceId resourceId,
                                  @PathParam("fieldId") ResourceId fieldId,
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
-
         throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
     }
 
