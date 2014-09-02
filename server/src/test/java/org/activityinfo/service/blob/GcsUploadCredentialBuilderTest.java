@@ -1,6 +1,6 @@
 package org.activityinfo.service.blob;
 
-import com.google.appengine.repackaged.com.google.common.io.Resources;
+import com.google.common.io.Resources;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.multipart.FormDataMultiPart;
 import org.joda.time.Period;
