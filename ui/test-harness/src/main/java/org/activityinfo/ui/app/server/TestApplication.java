@@ -4,6 +4,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.Sets;
 import com.sun.jersey.api.core.DefaultResourceConfig;
 import org.activityinfo.model.json.ObjectMapperFactory;
+import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.test.TestResourceStore;
 
 import java.io.IOException;
@@ -11,6 +12,9 @@ import java.util.Set;
 
 public class TestApplication extends DefaultResourceConfig {
 
+
+    public TestApplication() {
+    }
 
     @Override
     public Set<Object> getSingletons() {
@@ -22,7 +26,7 @@ public class TestApplication extends DefaultResourceConfig {
 
     @Override
     public Set<Class<?>> getClasses() {
-        return Sets.newHashSet(HostPage.class, TestResourceStore.class);
+        return Sets.newHashSet(HostPage.class, HrdResourceStore.class);
     }
 
     private TestResourceStore loadStore() {
