@@ -70,8 +70,7 @@ public class ResourceStoreStub implements ResourceStore {
         return resource;
     }
 
-    @Override
-    public Set<Resource> get(@InjectParam AuthenticatedUser user, Set<ResourceId> resourceIds) {
+    private List<Resource> get(@InjectParam AuthenticatedUser user, Set<ResourceId> resourceIds) {
         throw new UnsupportedOperationException();
     }
 

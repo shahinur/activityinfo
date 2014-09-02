@@ -208,7 +208,6 @@ public class TableQueryTest {
         };
     }
 
-
     private TypeSafeMatcher<ColumnView> hasValues(final Number... values) {
         return new TypeSafeMatcher<ColumnView>() {
             @Override

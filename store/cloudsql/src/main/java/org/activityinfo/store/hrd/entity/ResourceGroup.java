@@ -16,9 +16,7 @@ import org.activityinfo.store.hrd.index.FolderIndex;
  */
 public class ResourceGroup {
 
-    public static final String KIND = "R";
-
-    private ResourceId resourceId;
+    public static final String KIND = "G";
 
     /**
      * The root key of the group
@@ -26,7 +24,6 @@ public class ResourceGroup {
     private final Key rootKey;
 
     public ResourceGroup(ResourceId id) {
-        this.resourceId = id;
         this.rootKey = KeyFactory.createKey(KIND, id.asString());
     }
 
@@ -34,26 +31,17 @@ public class ResourceGroup {
         return rootKey;
     }
 
-    public LatestContent getLatestContent() {
-        return new LatestContent(this);
+    public LatestContent getLatestContent(ResourceId id) {
+        return new LatestContent(rootKey, id);
     }
 
-    public LatestVersion getLatestVersion() {
-        return new LatestVersion(this);
-    }
-
-    public Snapshot getSnapshot(long version) {
-        return new Snapshot(this, version);
-    }
-
-    public ResourceId getResourceId() {
-        return resourceId;
+    public Snapshot getSnapshot(ResourceId resourceId, long version) {
+        return new Snapshot(rootKey, resourceId, version);
     }
 
     public void update(DatastoreService datastore, Transaction tx, AuthenticatedUser user, Resource resource) {
-        datastore.put(tx, getLatestContent().createEntity(resource));
-        datastore.put(tx, getLatestVersion().createEntity(resource.getVersion()));
-        datastore.put(tx, getSnapshot(resource.getVersion()).createEntity(user, resource));
+        datastore.put(tx, getLatestContent(resource.getId()).createEntity(resource));
+        datastore.put(tx, getSnapshot(resource.getId(), resource.getVersion()).createEntity(user, resource));
 
         if(FolderIndex.isFolderItem(resource)) {
             datastore.put(tx, FolderIndex.createEntities(resource));

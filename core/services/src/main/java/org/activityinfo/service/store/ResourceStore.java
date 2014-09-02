@@ -11,7 +11,6 @@ import org.activityinfo.model.table.TableModel;
 
 import javax.ws.rs.*;
 import java.util.List;
-import java.util.Set;
 
 @Path("/service/store")
 public interface ResourceStore {
@@ -29,11 +28,6 @@ public interface ResourceStore {
     @Path("resource/{id}/acr")
     @Produces("application/json")
     List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
-
-    /**
-     * Fetches the latest version of the resources from the store
-     */
-    Set<Resource> get(@InjectParam AuthenticatedUser user, Set<ResourceId> resourceIds);
 
 
     /**
@@ -95,4 +89,6 @@ public interface ResourceStore {
     @Path("query/roots")
     @Produces("application/json")
     List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user);
+
+
 }
