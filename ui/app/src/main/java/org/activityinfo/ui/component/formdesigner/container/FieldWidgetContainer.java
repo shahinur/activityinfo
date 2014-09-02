@@ -81,6 +81,10 @@ public class FieldWidgetContainer implements WidgetContainer {
     public void syncWithModel() {
         final SafeHtmlBuilder label = new SafeHtmlBuilder();
 
+        if (!Strings.isNullOrEmpty(formField.getCode())) { // append code
+            label.appendHtmlConstant("<span class='small'>" + SafeHtmlUtils.fromString(formField.getCode()).asString() + "</span>&nbsp;");
+        }
+
         label.append(SafeHtmlUtils.fromString(Strings.nullToEmpty(formField.getLabel())));
         if (formField.isRequired()) {
             label.append(LABEL_TEMPLATE.mandatoryMarker());

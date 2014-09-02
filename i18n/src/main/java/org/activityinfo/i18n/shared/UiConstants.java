@@ -3502,4 +3502,11 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("This form field will only applicable based on the answer of another form field. " +
             "Please define the relevance or applicability of the form field.")
     String relevanceWelcomeText();
+
+    @DefaultStringValue("Invalid code. Valid code must starting with a letter and " +
+            "containing only letters, numbers, and the underscore symbol")
+    String invalidCodeMessage();
+
+    @DefaultStringValue("A code with this name already exists. Please select another code.")
+    String duplicateCodeMessage();
 }
