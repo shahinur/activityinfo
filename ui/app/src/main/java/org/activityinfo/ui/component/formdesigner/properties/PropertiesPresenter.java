@@ -22,6 +22,7 @@ package org.activityinfo.ui.component.formdesigner.properties;
  */
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -52,6 +53,8 @@ import org.activityinfo.ui.component.formdesigner.event.HeaderSelectionEvent;
 import org.activityinfo.ui.component.formdesigner.event.WidgetContainerSelectionEvent;
 import org.activityinfo.ui.component.formdesigner.header.HeaderPresenter;
 import org.activityinfo.ui.component.formdesigner.skip.SkipDialog;
+
+import java.util.List;
 
 /**
  * @author yuriyz on 7/9/14.
@@ -106,6 +109,8 @@ public class PropertiesPresenter {
         view.getVisibleGroup().setVisible(false);
         view.getRelevanceGroup().setVisible(false);
         view.getCodeGroup().setVisible(false);
+        view.getInvalidCodeMessage().addClassName("hide");
+        view.getDuplicateCodeMessage().addClassName("hide");
 
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
@@ -152,9 +157,11 @@ public class PropertiesPresenter {
         view.getDescription().setValue(Strings.nullToEmpty(formField.getDescription()));
         view.getRequired().setValue(formField.isRequired());
         view.getVisible().setValue(formField.isVisible());
-        view.getCode().setValue(Strings.isNullOrEmpty(formField.getCode()) ? formField.getId().asString() : formField.getCode());
+        view.getCode().setValue(Strings.nullToEmpty(formField.getCode()));
 
         setRelevanceState(formField, true);
+        validateCode(fieldWidgetContainer);
+
         relevanceButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -180,8 +187,10 @@ public class PropertiesPresenter {
         codeKeyUpHandler = view.getCode().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent keyUpEvent) {
-                formField.setCode(view.getCode().getValue());
-                fieldWidgetContainer.syncWithModel();
+                if (validateCode(fieldWidgetContainer)) {
+                    formField.setCode(view.getCode().getValue());
+                    fieldWidgetContainer.syncWithModel();
+                }
             }
         });
         requiredValueChangeHandler = view.getRequired().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -237,7 +246,7 @@ public class PropertiesPresenter {
                 if (formField.getType() instanceof CalculatedFieldType && newValue instanceof ExprValue) {
                     // for calculated fields we updated expression directly because it is handled via ExprFieldType
                     ExprValue exprValue = (ExprValue) newValue;
-                    ((CalculatedFieldType)formField.getType()).setExpression(exprValue.getExpression());
+                    ((CalculatedFieldType) formField.getType()).setExpression(exprValue.getExpression());
                 } else {
                     formField.setType(typeClass.deserializeType(param));
                 }
@@ -266,6 +275,38 @@ public class PropertiesPresenter {
             currentDesignWidget.asWidget().setVisible(false);
         }
         view.getPanel().add(currentDesignWidget);
+    }
+
+    /**
+     * Returns whether code is valid.
+     *
+     * @return whether code is valid
+     */
+    private boolean validateCode(FieldWidgetContainer fieldWidgetContainer) {
+        String code = view.getCode().getValue();
+        if (Strings.isNullOrEmpty(code)) {
+            return true;
+        }
+
+        if (!FormField.isValidCode(code)) {
+            view.getInvalidCodeMessage().removeClassName("hide");
+            return false;
+        } else {
+            view.getInvalidCodeMessage().addClassName("hide");
+
+            // check whether code is unique
+            List<FormField> formFields = Lists.newArrayList(fieldWidgetContainer.getFormDesigner().getFormClass().getFields());
+            formFields.remove(fieldWidgetContainer.getFormField());
+
+            for (FormField formField : formFields) {
+                if (code.equals(formField.getCode())) {
+                    view.getDuplicateCodeMessage().removeClassName("hide");
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 
     public void setRelevanceState(FormField formField, boolean setRadioButtonsState) {
