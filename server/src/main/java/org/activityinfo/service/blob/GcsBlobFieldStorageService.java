@@ -9,9 +9,11 @@ import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.Transform;
+import com.google.appengine.repackaged.com.google.common.io.ByteStreams;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions;
 import com.google.appengine.tools.cloudstorage.GcsFileOptions.Builder;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
+import com.google.appengine.tools.cloudstorage.GcsInputChannel;
 import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
@@ -40,6 +42,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.Channels;
@@ -49,7 +52,7 @@ import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 public class GcsBlobFieldStorageService implements BlobFieldStorageService {
-
+    private static final int ONE_MEGABYTE = 1 << 20;
     private static final Logger LOGGER = Logger.getLogger(GcsBlobFieldStorageService.class.getName());
 
     private final String bucketName;
@@ -95,36 +98,28 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
     }
 
     @Override
+    public Response getImage(@InjectParam AuthenticatedUser user,
+                             @PathParam("resourceId") ResourceId resourceId,
+                             @PathParam("fieldId") ResourceId fieldId,
+                             @PathParam("blobId") BlobId blobId) throws IOException {
+        ImageRowValue imageRowValue = getImageRowValue(user, resourceId, fieldId, blobId);
+        GcsFilename gcsFilename = new GcsFilename(bucketName, blobId.asString());
+        GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
+        GcsInputChannel gcsInputChannel = gcsService.openPrefetchingReadChannel(gcsFilename, 0, ONE_MEGABYTE);
+
+        try (InputStream inputStream = Channels.newInputStream(gcsInputChannel)) {
+            return Response.ok(ByteStreams.toByteArray(inputStream)).type(imageRowValue.getMimeType()).build();
+        }
+    }
+
+    @Override
     public Response getThumbnail(@InjectParam AuthenticatedUser user,
                                  @PathParam("resourceId") ResourceId resourceId,
                                  @PathParam("fieldId") ResourceId fieldId,
                                  @PathParam("blobId") BlobId blobId,
                                  @QueryParam("width") int width,
                                  @QueryParam("height") int height) {
-        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
-
-        final Resource resource;
-
-        try {
-            resource = locator.get(user, resourceId);
-        } catch (ResourceNotFound resourceNotFound) {
-            throw new WebApplicationException(NOT_FOUND);
-        }
-
-        FormInstance formInstance = FormInstance.fromResource(resource);
-        ImageValue imageValue = (ImageValue) formInstance.get(fieldId, ImageType.TYPE_CLASS);
-        ImageRowValue imageRowValue = null;
-
-        if (imageValue != null) {
-            for (ImageRowValue row : imageValue.getValues()) {
-                if (row.getBlobId().equals(blobId.asString())) {
-                    imageRowValue = row;
-                    break;
-                }
-            }
-        }
-
-        if (imageRowValue == null) throw new WebApplicationException(NOT_FOUND);
+        ImageRowValue imageRowValue = getImageRowValue(user, resourceId, fieldId, blobId);
 
         ImagesService imagesService = ImagesServiceFactory.getImagesService();
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
@@ -138,9 +133,9 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
             Image newImage = imagesService.applyTransform(resize, image);
 
             byte[] imageData = newImage.getImageData();
-            return Response.ok(imageData).build();
+            return Response.ok(imageData).type(imageRowValue.getMimeType()).build();
         } else {
-            return Response.ok(image.getImageData()).build();
+            return Response.ok(image.getImageData()).type(imageRowValue.getMimeType()).build();
         }
     }
 
@@ -155,5 +150,30 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         builder.setMaxContentLengthInMegabytes(10);
         builder.expireAfter(Period.minutes(5));
         return Response.ok(Resources.toJson(builder.build().asRecord())).build();
+    }
+
+    private ImageRowValue getImageRowValue(AuthenticatedUser user, ResourceId resourceId, ResourceId fieldId, BlobId blobId) {
+        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
+
+        final Resource resource;
+
+        try {
+            resource = locator.get(user, resourceId);
+        } catch (ResourceNotFound resourceNotFound) {
+            throw new WebApplicationException(NOT_FOUND);
+        }
+
+        FormInstance formInstance = FormInstance.fromResource(resource);
+        ImageValue imageValue = (ImageValue) formInstance.get(fieldId, ImageType.TYPE_CLASS);
+
+        if (imageValue != null) {
+            for (ImageRowValue imageRowValue : imageValue.getValues()) {
+                if (imageRowValue.getBlobId().equals(blobId.asString())) {
+                    return imageRowValue;
+                }
+            }
+        }
+
+        throw new WebApplicationException(NOT_FOUND);
     }
 }
