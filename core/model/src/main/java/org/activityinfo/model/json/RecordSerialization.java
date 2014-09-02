@@ -13,7 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 public class RecordSerialization {
-    static void writeProperties(JsonGenerator json, PropertyBag<?> resource) throws IOException {
+
+    public static void writeProperties(JsonGenerator json, PropertyBag<?> resource) throws IOException {
         for (Map.Entry<String, Object> entry : resource.getProperties().entrySet()) {
             json.writeFieldName(entry.getKey());
             writeValue(json, entry.getValue());
@@ -76,6 +77,11 @@ public class RecordSerialization {
 
     public static Record readRecord(JsonParser reader) throws IOException {
         Record record = new Record();
+        readProperties(reader, record);
+        return record;
+    }
+
+    public static void readProperties(JsonParser reader, PropertyBag record) throws IOException {
         while(reader.nextToken() == JsonToken.FIELD_NAME) {
             String propertyName = reader.getCurrentName();
 
@@ -83,7 +89,6 @@ public class RecordSerialization {
                 readProperty(reader, record, propertyName);
             }
         }
-        return record;
     }
 
     public static List<Object> readArray(JsonParser reader) throws IOException {
