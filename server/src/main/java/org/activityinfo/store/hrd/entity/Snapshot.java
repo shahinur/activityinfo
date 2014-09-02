@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * An entity in the Resource entity group that stores the properties
@@ -14,16 +15,17 @@ public class Snapshot {
 
     public static final String KIND = "S";
 
+    public static final String PARENT_KIND = "R";
+
     public static final String TIMESTAMP_PROPERTY = "t";
 
     public static final String USER_PROPERTY = "u";
 
-    private ResourceGroup group;
     private Key key;
 
-    public Snapshot(ResourceGroup group, long version) {
-        this.key = KeyFactory.createKey(group.getKey(), KIND, version);
-        this.group = group;
+    public Snapshot(Key rootKey, ResourceId id, long version) {
+        Key parentKind = KeyFactory.createKey(rootKey, PARENT_KIND, id.asString());
+        this.key = KeyFactory.createKey(parentKind, KIND, version);
     }
 
 

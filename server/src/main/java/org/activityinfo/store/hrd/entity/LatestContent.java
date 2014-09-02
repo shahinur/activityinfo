@@ -5,15 +5,11 @@ import com.google.appengine.api.datastore.*;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * An entity within the {@code ResourceGroup} which contains the
@@ -33,12 +29,10 @@ public class LatestContent {
 
     public static final String LABEL_PROPERTY = "L";
 
-    private final ResourceGroup group;
     private final Key key;
 
-    public LatestContent(ResourceGroup group) {
-        this.group = group;
-        this.key = KeyFactory.createKey(group.getKey(), KIND, NAME);
+    public LatestContent(Key rootKey, ResourceId id) {
+        this.key = KeyFactory.createKey(rootKey, KIND, id.asString());
     }
 
     public Resource get(DatastoreService datastore, Transaction tx) throws EntityNotFoundException {
@@ -91,22 +85,11 @@ public class LatestContent {
         });
     }
 
-    public static List<Resource> getLatestVersions(DatastoreService datastore, Set<ResourceId> ids) {
-
-        List<Key> keys = Lists.newArrayList();
-        for(ResourceId id : ids) {
-            keys.add(new LatestContent(new ResourceGroup(id)).key);
-        }
-
-        Map<Key, Entity> entities = datastore.get(keys);
-        List<Resource> resources = Lists.newArrayList();
-        for(Entity entity : entities.values()) {
-            resources.add(deserializeResource(entity));
-        }
-        return resources;
+    public static Resource get(DatastoreService datastoreService, ResourceId resourceId) throws EntityNotFoundException {
+        return new ResourceGroup(resourceId).getLatestContent(resourceId).get(datastoreService);
     }
 
-    public static Resource get(DatastoreService datastoreService, ResourceId resourceId) throws EntityNotFoundException {
-        return new ResourceGroup(resourceId).getLatestContent().get(datastoreService);
+    public Key getKey() {
+        return key;
     }
 }
