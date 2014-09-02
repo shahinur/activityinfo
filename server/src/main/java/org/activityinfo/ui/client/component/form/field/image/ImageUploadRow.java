@@ -118,7 +118,7 @@ public class ImageUploadRow extends Composite {
             imageContainer.setVisible(false);
             downloadButton.setVisible(true);
             thumbnail.setVisible(true);
-            thumbnail.setUrl(buildUrl(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
+            thumbnail.setUrl(buildThumbnailUrl());
         }
     }
 
@@ -224,14 +224,14 @@ public class ImageUploadRow extends Composite {
                 imageContainer.setVisible(false);
                 downloadButton.setVisible(true);
                 thumbnail.setVisible(true);
-                thumbnail.setUrl(buildUrl(THUMBNAIL_SIZE, THUMBNAIL_SIZE));
+                thumbnail.setUrl(buildThumbnailUrl());
             }
         });
         formPanel.submit();
     }
 
     private void download() {
-        Window.open(buildUrl(value.getWidth(), value.getHeight()), "_blank", null);
+        Window.open(buildImageUrl(), "_blank", null);
     }
 
     @Override
@@ -243,17 +243,28 @@ public class ImageUploadRow extends Composite {
         return value;
     }
 
-    private String buildUrl(int width, int height) {
+    private StringBuilder buildBaseUrl() {
         StringBuilder stringBuilder = new StringBuilder("/service/blob/");
         stringBuilder.append(resourceId);
         stringBuilder.append("/");
         stringBuilder.append(fieldId);
         stringBuilder.append("/");
         stringBuilder.append(value.getBlobId());
+        return stringBuilder;
+    }
+
+    private String buildThumbnailUrl() {
+        StringBuilder stringBuilder = buildBaseUrl();
         stringBuilder.append("/thumbnail?width=");
-        stringBuilder.append(width);
+        stringBuilder.append(THUMBNAIL_SIZE);
         stringBuilder.append("&height=");
-        stringBuilder.append(height);
+        stringBuilder.append(THUMBNAIL_SIZE);
+        return stringBuilder.toString();
+    }
+
+    private String buildImageUrl() {
+        StringBuilder stringBuilder = buildBaseUrl();
+        stringBuilder.append("/image");
         return stringBuilder.toString();
     }
 }
