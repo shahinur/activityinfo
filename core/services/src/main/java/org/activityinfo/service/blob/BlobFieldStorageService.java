@@ -43,6 +43,13 @@ public interface BlobFieldStorageService {
 
 
     @GET
+    @Path("{resourceId}/{fieldId}/{blobId}/image")
+    public Response getImage(@InjectParam AuthenticatedUser user,
+                                 @PathParam("resourceId") ResourceId resourceId,
+                                 @PathParam("fieldId") ResourceId fieldId,
+                                 @PathParam("blobId") BlobId blobId) throws IOException;
+
+    @GET
     @Path("{resourceId}/{fieldId}/{blobId}/thumbnail")
     public Response getThumbnail(@InjectParam AuthenticatedUser user,
                                  @PathParam("resourceId") ResourceId resourceId,
