@@ -152,7 +152,7 @@ public class PropertiesPresenter {
         view.getDescription().setValue(Strings.nullToEmpty(formField.getDescription()));
         view.getRequired().setValue(formField.isRequired());
         view.getVisible().setValue(formField.isVisible());
-        view.getCode().setValue(Strings.isNullOrEmpty(formField.getCode()) ? formField.getId().asString() : formField.getCode());
+        view.getCode().setValue(Strings.nullToEmpty(formField.getCode()));
 
         setRelevanceState(formField, true);
         relevanceButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
