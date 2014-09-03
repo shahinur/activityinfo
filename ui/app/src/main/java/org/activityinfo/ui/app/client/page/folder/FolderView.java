@@ -1,24 +1,33 @@
 package org.activityinfo.ui.app.client.page.folder;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.safehtml.shared.UriUtils;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.ui.app.client.page.resource.ResourcePageContainer;
+import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.ui.app.client.page.form.FormPlace;
+import org.activityinfo.ui.app.client.page.form.FormViewType;
+import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.Grid;
 import org.activityinfo.ui.style.Media;
 import org.activityinfo.ui.style.Panel;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Icon;
-import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.Style;
-import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VTree;
+import org.activityinfo.ui.vdom.shared.tree.*;
 
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
-public class FolderView {
+public class FolderView extends VThunk<FolderView> {
 
-    public static VTree render(FolderPage page) {
+    private FolderPage page;
+
+    public FolderView(FolderPage page) {
+        this.page = page;
+    }
+
+    @Override
+    public VTree render() {
 
         return div(BaseStyles.CONTENTPANEL,
                 div(BaseStyles.ROW,
@@ -45,8 +54,18 @@ public class FolderView {
 
     private static VTree media(ResourceNode child) {
         return Media.media(childIcon(child),
-                ResourcePageContainer.uri(child.getId()),
+                link(child),
                 t(child.getLabel()), description(child));
+    }
+
+    private static SafeUri link(ResourceNode node) {
+        if(node.getClassId().equals(FormClass.CLASS_ID)) {
+            return Router.uri(new FormPlace(node.getId(), FormViewType.TABLE));
+        } else if(node.getClassId().equals(FolderClass.CLASS_ID)) {
+            return Router.uri(new FolderPlace(node.getClassId()));
+        } else {
+            return UriUtils.fromTrustedString("#");
+        }
     }
 
     private static VTree description(ResourceNode child) {

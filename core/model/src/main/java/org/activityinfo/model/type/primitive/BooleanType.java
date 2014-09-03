@@ -21,6 +21,8 @@ package org.activityinfo.model.type.primitive;
  * #L%
  */
 
+import org.activityinfo.model.form.FormClassVisitor;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 
@@ -51,6 +53,11 @@ public class BooleanType implements FieldType {
     @Override
     public FieldTypeClass getTypeClass() {
         return TYPE_CLASS;
+    }
+
+    @Override
+    public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
+        return visitor.visitBooleanField(field, this);
     }
 
 }

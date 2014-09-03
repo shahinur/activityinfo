@@ -16,6 +16,7 @@ import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.store.remote.client.resource.*;
 import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -44,6 +45,20 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
         return store.resolve("query").resolve("table")
                 .postJson(ResourceSerializer.toJson(tableModel.asRecord()))
                 .then(new JsTableDataBuilder());
+    }
+
+    @Override
+    public Promise<UpdateResult> create(Resource resource) {
+        return store
+                .resolve("resources")
+                .postJson(ResourceSerializer.toJson(resource))
+                .then(new Function<Response, UpdateResult>() {
+                    @Nullable
+                    @Override
+                    public UpdateResult apply(@Nullable Response input) {
+                        return UpdateResultParser.parse(input);
+                    }
+                });
     }
 
     public Promise<UpdateResult> put(final Resource resource) {

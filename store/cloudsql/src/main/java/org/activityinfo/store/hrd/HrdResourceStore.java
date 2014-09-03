@@ -1,6 +1,7 @@
 package org.activityinfo.store.hrd;
 
 import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.common.collect.Lists;
@@ -29,6 +30,10 @@ import static com.google.appengine.api.datastore.TransactionOptions.Builder.with
 public class HrdResourceStore implements ResourceStore {
 
     private final DatastoreService datastore;
+
+    public HrdResourceStore() {
+        this(DatastoreServiceFactory.getDatastoreService());
+    }
 
     public HrdResourceStore(DatastoreService datastore) {
         this.datastore = datastore;

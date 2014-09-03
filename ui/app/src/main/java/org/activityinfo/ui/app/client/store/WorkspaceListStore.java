@@ -8,8 +8,7 @@ import org.activityinfo.ui.app.client.chrome.FailureDescription;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.ui.flux.store.LoadingStatus;
 import org.activityinfo.ui.flux.store.RemoteStore;
-import org.activityinfo.ui.flux.store.StoreChangeListener;
-import org.activityinfo.ui.flux.store.StoreEventEmitter;
+import org.activityinfo.ui.flux.store.StoreEventBus;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -26,13 +25,14 @@ public class WorkspaceListStore implements RemoteStore {
     private RemoteStoreService remoteStore;
     private List<ResourceNode> nodes = Lists.newArrayList();
 
-    private final StoreEventEmitter emitter = new StoreEventEmitter();
+    private final StoreEventBus eventBus;
 
     private LoadingStatus status = LoadingStatus.PENDING;
     private FailureDescription failureDescription;
 
-    public WorkspaceListStore(RemoteStoreService remoteStore) {
+    public WorkspaceListStore(StoreEventBus storeEventBus, RemoteStoreService remoteStore) {
         this.remoteStore = remoteStore;
+        this.eventBus = storeEventBus;
     }
 
     public void load() {
@@ -44,30 +44,20 @@ public class WorkspaceListStore implements RemoteStore {
                 failureDescription = FailureDescription.of(caught);
 
                 status = LoadingStatus.FAILED;
-                emitter.fireChange(WorkspaceListStore.this);
+                eventBus.fireChange(WorkspaceListStore.this);
             }
 
             @Override
             public void onSuccess(List<ResourceNode> result) {
                 status = LoadingStatus.LOADED;
                 nodes = result;
-                emitter.fireChange(WorkspaceListStore.this);
+                eventBus.fireChange(WorkspaceListStore.this);
             }
         });
     }
 
     public List<ResourceNode> get() {
         return nodes;
-    }
-
-    @Override
-    public void addChangeListener(StoreChangeListener listener) {
-        emitter.addChangeListener(listener);
-    }
-
-    @Override
-    public void removeChangeListener(StoreChangeListener listener) {
-        emitter.removeChangeListener(listener);
     }
 
     public LoadingStatus getLoadingStatus() {

@@ -32,8 +32,14 @@ public class Dispatcher {
         return stores.size() - 1;
     }
 
-    public void dispatch(Action<?> action) {
+    public void unregister(Store store) {
+        stores.remove(store);
+    }
 
+    public void dispatch(Action<?> action) {
+        for(Store store : stores) {
+            action.accept(store);
+        }
     }
 
 }

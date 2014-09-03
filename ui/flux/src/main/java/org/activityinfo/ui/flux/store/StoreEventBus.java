@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class StoreEventEmitter {
+public final class StoreEventBus {
 
-    private static final Logger LOGGER = Logger.getLogger(StoreEventEmitter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(StoreEventBus.class.getName());
 
     private Set<StoreChangeListener> listeners = null;
 

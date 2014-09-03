@@ -252,6 +252,10 @@ public class H {
         return new VNode(HtmlTag.FORM, children);
     }
 
+    public static VNode label(CssClass className, VTree... children) {
+        return new VNode(HtmlTag.LABEL, PropMap.withClasses(className), children);
+    }
+
     public static PropMap className(CssClass className) {
         return PropMap.withClasses(className.getClassNames());
     }

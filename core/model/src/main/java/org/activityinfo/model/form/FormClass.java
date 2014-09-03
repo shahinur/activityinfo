@@ -206,6 +206,12 @@ public class FormClass implements IsResource, FormElementContainer {
         return elements;
     }
 
+    public void accept(FormClassVisitor visitor) {
+        for(FormField field : getFields()) {
+            field.getType().accept(field, visitor);
+        }
+    }
+
     public Resource asResource() {
         Resource resource = Resources.createResource();
         resource.setId(id);
