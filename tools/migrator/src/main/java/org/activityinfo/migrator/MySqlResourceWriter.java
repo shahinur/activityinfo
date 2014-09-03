@@ -17,6 +17,8 @@ class MySqlResourceWriter implements ResourceWriter {
 
     private long version = 1;
 
+    private final ObjectMapper objectMapper = ObjectMapperFactory.get();
+
     private final Connection connection;
     private int count;
     private PreparedStatement statement;
