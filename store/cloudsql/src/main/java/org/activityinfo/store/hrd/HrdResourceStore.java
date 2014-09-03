@@ -3,12 +3,19 @@ package org.activityinfo.store.hrd;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.repackaged.com.google.common.collect.Maps;
+import com.google.apphosting.api.ApiProxy;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.ResourceNotFound;
@@ -18,17 +25,19 @@ import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
 import org.activityinfo.store.hrd.entity.GlobalVersion;
 import org.activityinfo.store.hrd.entity.ResourceGroup;
+import org.activityinfo.store.hrd.entity.Snapshot;
 import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.FolderIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 
 import javax.ws.rs.PathParam;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.appengine.api.datastore.TransactionOptions.Builder.withXG;
 
 public class HrdResourceStore implements ResourceStore {
-
+    private final static long TIME_LIMIT_MILLISECONDS = 10 * 1000L;
     private final DatastoreService datastore;
 
     public HrdResourceStore() {
@@ -141,5 +150,33 @@ public class HrdResourceStore implements ResourceStore {
     @Override
     public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
         return WorkspaceIndex.queryUserWorkspaces(datastore, user);
+    }
+
+    // TODO Authorization must be added, the requested ResourceGroup must be respected, etc.
+    public List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceGroup resourceGroup, long version) {
+        ApiProxy.Environment environment = ApiProxy.getCurrentEnvironment();
+        Map<Key, Snapshot> snapshots = Maps.newLinkedHashMap();
+
+        for (Snapshot snapshot : Snapshot.getSnapshotsAfter(datastore, version)) {
+            Key parentKey = snapshot.getParentKey();
+
+            // We want the linked list to be sorted based on the most recent insertion of a resource
+            snapshots.remove(parentKey);
+            snapshots.put(parentKey, snapshot);
+
+            if (environment.getRemainingMillis() < TIME_LIMIT_MILLISECONDS) break;
+        }
+
+        try {
+            List<Resource> resources = Lists.newArrayListWithCapacity(snapshots.size());
+
+            for (Snapshot snapshot : snapshots.values()) {
+                resources.add(snapshot.get(datastore));
+            }
+
+            return resources;
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

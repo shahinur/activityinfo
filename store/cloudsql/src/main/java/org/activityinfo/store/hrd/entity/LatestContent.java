@@ -1,15 +1,23 @@
 package org.activityinfo.store.hrd.entity;
 
-
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 
 import java.util.Iterator;
+
+import static org.activityinfo.store.hrd.entity.Content.OWNER_PROPERTY;
+import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
+import static org.activityinfo.store.hrd.entity.Content.deserializeResource;
 
 /**
  * An entity within the {@code ResourceGroup} which contains the
@@ -22,10 +30,6 @@ public class LatestContent {
     public static final String KIND = "C";
 
     public static final String NAME = "C";
-
-    public static final String OWNER_PROPERTY = "o";
-
-    public static final String VERSION_PROPERTY = "v";
 
     public static final String LABEL_PROPERTY = "L";
 
@@ -42,15 +46,6 @@ public class LatestContent {
 
     public Resource get(DatastoreService datastore) throws EntityNotFoundException {
         return get(datastore, (Transaction)null);
-    }
-
-    private static Resource deserializeResource(Entity entity) {
-        Resource resource = Resources.createResource();
-        resource.setId(ResourceId.valueOf(entity.getKey().getParent().getName()));
-        resource.setVersion((Long)entity.getProperty(VERSION_PROPERTY));
-        resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
-        Content.readProperties(entity, resource);
-        return resource;
     }
 
     public Entity createEntity(Resource resource) {

@@ -9,12 +9,16 @@ import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.json.RecordSerialization;
 import org.activityinfo.model.resource.PropertyBag;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
 public class Content {
+    public static final String OWNER_PROPERTY = "o";
 
+    public static final String VERSION_PROPERTY = "v";
 
     public static final String CONTENTS_PROPERTY = "c";
 
@@ -49,5 +53,14 @@ public class Content {
 
     public static void writeProperties(Resource resource, Entity entity) {
         entity.setProperty(CONTENTS_PROPERTY, new Text(writePropertiesAsString(resource)));
+    }
+
+    static Resource deserializeResource(Entity entity) {
+        Resource resource = Resources.createResource();
+        resource.setId(ResourceId.valueOf(entity.getKey().getParent().getName()));
+        resource.setVersion((Long)entity.getProperty(VERSION_PROPERTY));
+        resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
+        readProperties(entity, resource);
+        return resource;
     }
 }
