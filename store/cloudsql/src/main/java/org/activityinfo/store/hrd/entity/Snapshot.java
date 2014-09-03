@@ -6,6 +6,7 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import org.activityinfo.model.auth.AuthenticatedUser;
@@ -66,7 +67,7 @@ public class Snapshot {
     }
 
     public static Iterable<Snapshot> getSnapshotsAfter(DatastoreService datastore, long version) {
-        Query.FilterPredicate keysFilter = new Query.FilterPredicate(VERSION_PROPERTY, GREATER_THAN, version);
+        FilterPredicate keysFilter = new FilterPredicate(VERSION_PROPERTY, GREATER_THAN, version);
         Query query = new Query(Snapshot.KIND).setFilter(keysFilter).addSort(VERSION_PROPERTY, ASCENDING).setKeysOnly();
         Iterable<Entity> iterable = datastore.prepare(query).asIterable();
 
