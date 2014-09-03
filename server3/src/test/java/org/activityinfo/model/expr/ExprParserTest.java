@@ -5,7 +5,6 @@ import org.activityinfo.model.expr.functions.*;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 public class ExprParserTest {
 
@@ -79,6 +78,19 @@ public class ExprParserTest {
         expect("A==B", new FunctionCallNode(EqualFunction.INSTANCE,
                 new SymbolExpr("A"),
                 new SymbolExpr("B")));
+    }
+
+    @Test
+    public void parseFunctions() {
+        expect("contains({f1},{v1})", new FunctionCallNode(ContainsFunction.INSTANCE,
+                new SymbolExpr("f1"),
+                new SymbolExpr("v1"))
+        );
+        expect("!contains({f1},{v1})", new FunctionCallNode(NotFunction.INSTANCE,
+                new FunctionCallNode(ContainsFunction.INSTANCE,
+                        new SymbolExpr("f1"),
+                        new SymbolExpr("v1"))
+        ));
     }
 
 
