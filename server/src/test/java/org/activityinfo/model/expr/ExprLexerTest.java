@@ -159,6 +159,21 @@ public class ExprLexerTest {
         );
     }
 
+    @Test
+    public void functionTokenizing() {
+        expect("contains({f1},{v1})",
+                new Token(TokenType.SYMBOL, 0, "contains"),
+                new Token(TokenType.PAREN_START, 9, "("),
+                new Token(TokenType.BRACE_START, 10, "{"),
+                new Token(TokenType.SYMBOL, 11, "f1"),
+                new Token(TokenType.BRACE_END, 13, "}"),
+                new Token(TokenType.COMMA, 14, ","),
+                new Token(TokenType.BRACE_START, 15, "{"),
+                new Token(TokenType.SYMBOL, 16, "v1"),
+                new Token(TokenType.BRACE_END, 18, "}"),
+                new Token(TokenType.PAREN_END, 18, ")")
+        );
+    }
 
     private void expect(String string, Token... tokens) {
         System.out.println("Tokenizing [" + string + "]");

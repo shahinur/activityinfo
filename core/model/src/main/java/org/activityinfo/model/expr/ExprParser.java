@@ -2,12 +2,15 @@ package org.activityinfo.model.expr;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.common.collect.PeekingIterator;
 import com.google.common.collect.Sets;
+import org.activityinfo.model.expr.functions.ContainsFunction;
 import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.expr.functions.ExprFunctions;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class ExprParser {
@@ -15,6 +18,10 @@ public class ExprParser {
     private static final Set<String> INFIX_OPERATORS = Sets.newHashSet("+", "-", "*", "/", "&&", "||", "==", "!=" );
 
     private static final Set<String> PREFIX_OPERATORS = Sets.newHashSet("!" );
+
+    private static final Set<String> FUNCTIONS = Sets.newHashSet(
+            ContainsFunction.INSTANCE.getId()
+    );
 
     private PeekingIterator<Token> lexer;
 
@@ -70,6 +77,29 @@ public class ExprParser {
             ExprNode right = parse();
             return new FunctionCallNode(function, right);
 
+        } else if (isFunction(token)) {
+            ExprFunction function = ExprFunctions.get(token.getString());
+            List<ExprNode> arguments = Lists.newArrayList();
+            while(lexer.hasNext()) {
+                Token next = lexer.next();
+
+                if (next.getType() == TokenType.COMMA || next.getType() == TokenType.PAREN_START) {
+                    continue;
+
+                } else if (next.getType() == TokenType.PAREN_END) {
+                    break;
+
+                } else if (next.getType() == TokenType.SYMBOL) {
+                    arguments.add(new SymbolExpr(token.getString()));
+
+                } else if (next.getType() == TokenType.BRACE_START) {
+                    arguments.add(parsePlaceholder());
+
+                } else {
+                    throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");
+                }
+            }
+            return new FunctionCallNode(function, arguments);
         } else if (token.getType() == TokenType.STRING_LITERAL) {
             return new ConstantExpr(token.getString());
 
@@ -84,6 +114,11 @@ public class ExprParser {
     private boolean prefixOperator(Token token) {
         return token.getType() == TokenType.OPERATOR && PREFIX_OPERATORS.contains(token.getString());
     }
+
+    private boolean isFunction(Token token) {
+        return token.getType() == TokenType.SYMBOL && FUNCTIONS.contains(token.getString()) && lexer.peek().getType() == TokenType.PAREN_START;
+    }
+
 
     private ExprNode parseGroup() {
         ExprNode expr = parse();
