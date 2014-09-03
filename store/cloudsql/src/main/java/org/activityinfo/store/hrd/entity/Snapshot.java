@@ -67,8 +67,8 @@ public class Snapshot {
     }
 
     public static Iterable<Snapshot> getSnapshotsAfter(DatastoreService datastore, long version) {
-        FilterPredicate keysFilter = new FilterPredicate(VERSION_PROPERTY, GREATER_THAN, version);
-        Query query = new Query(Snapshot.KIND).setFilter(keysFilter).addSort(VERSION_PROPERTY, ASCENDING).setKeysOnly();
+        FilterPredicate keysFilterPredicate = new FilterPredicate(VERSION_PROPERTY, GREATER_THAN, version);
+        Query query = new Query(KIND).setFilter(keysFilterPredicate).addSort(VERSION_PROPERTY, ASCENDING).setKeysOnly();
         Iterable<Entity> iterable = datastore.prepare(query).asIterable();
 
         return Iterables.transform(iterable, new Function<Entity, Snapshot>() {
