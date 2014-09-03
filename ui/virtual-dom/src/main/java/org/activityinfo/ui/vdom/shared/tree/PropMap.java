@@ -37,6 +37,25 @@ public class PropMap {
     /**
      * Creates a new {@code PropMap} with the given value for the {@code className} property
      */
+    public static PropMap withClasses(CssClass class1, CssClass class2) {
+        PropMap propMap = new PropMap();
+        propMap.set("className", class1 + " " + class2);
+        return propMap;
+    }
+
+    public void addClassName(CssClass newClass) {
+        String classNameValue = (String) propMap.get("className");
+        if(classNameValue == null) {
+            set("className", newClass.getClassNames());
+        } else {
+            set("classNames", classNameValue + " " + newClass);
+        }
+    }
+
+
+    /**
+     * Creates a new {@code PropMap} with the given value for the {@code className} property
+     */
     public static PropMap withClasses(CssClass classNames) {
         return withClasses(classNames.getClassNames());
     }

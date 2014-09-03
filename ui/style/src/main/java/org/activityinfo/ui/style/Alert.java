@@ -24,7 +24,7 @@ public class Alert extends VThunk {
     }
 
     @Override
-    protected VTree render(VThunk previous) {
+    protected VTree render() {
         return new VNode(HtmlTag.DIV, PropMap.withClasses(style.getClassNames()).role(AriaRole.ALERT), content);
     }
 }

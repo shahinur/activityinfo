@@ -16,5 +16,5 @@ public interface Action<H> {
      * callback defined on {@code H}
      *
      */
-    Promise<Void> accept(Store listener);
+    Promise<Void> accept(Store store);
 }

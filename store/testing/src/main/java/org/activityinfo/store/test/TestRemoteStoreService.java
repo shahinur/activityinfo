@@ -43,6 +43,11 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
+    public Promise<UpdateResult> create(Resource resource) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Promise<List<ResourceNode>> queryRoots() {
         return null;
     }

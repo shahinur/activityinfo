@@ -249,18 +249,18 @@ public class Diff {
                 //patch.add(index, new VPatch(VPatch.Type.PROPS, vNode.hooks(), vNode.hooks()));
             }
 
-            if (vNode.descendantHooks()) {
-                VTree[] children = vNode.children();
-                int len = children.length;
-                for (int i = 0; i < len; i++) {
-                    VTree child = children[i];
-                    index += 1;
-
-                    hooks(child, index);
-
-                    index += child.count();
-                }
-            }
+//            if (vNode.descendantHooks()) {
+//                VTree[] children = vNode.children();
+//                int len = children.length;
+//                for (int i = 0; i < len; i++) {
+//                    VTree child = children[i];
+//                    index += 1;
+//
+//                    hooks(child, index);
+//
+//                    index += child.count();
+//                }
+//            }
         }
     }
 

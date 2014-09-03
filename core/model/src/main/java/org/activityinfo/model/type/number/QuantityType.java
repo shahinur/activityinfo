@@ -1,6 +1,7 @@
 package org.activityinfo.model.type.number;
 
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
@@ -87,6 +88,11 @@ public class QuantityType implements ParametrizedFieldType {
     @Override
     public boolean isValid() {
         return true;
+    }
+
+    @Override
+    public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
+        return visitor.visitQuantityField(field, this);
     }
 
     @Override

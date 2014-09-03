@@ -60,7 +60,11 @@ public interface ResourceStore {
      * @param resource
      * @return
      */
-    UpdateResult create(AuthenticatedUser user, Resource resource);
+    @POST
+    @Path("resources")
+    @Consumes("application/json")
+    @Produces("application/json")
+    UpdateResult create(@InjectParam AuthenticatedUser user, Resource resource);
 
     /**
      * Fetches an outline of Resources, returning only their id and label.

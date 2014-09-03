@@ -4,8 +4,8 @@ import org.activityinfo.ui.app.client.page.Breadcrumb;
 import org.activityinfo.ui.app.client.page.PageStore;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.flux.store.LoadingStatus;
-import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.vdom.shared.html.Icon;
+import org.activityinfo.ui.vdom.shared.tree.VThunk;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +29,11 @@ public class HomePage implements PageStore {
     }
 
     @Override
+    public VThunk getView() {
+        return new HomeView();
+    }
+
+    @Override
     public Icon getPageIcon() {
         return FontAwesome.HOME;
     }
@@ -44,22 +49,8 @@ public class HomePage implements PageStore {
     }
 
     @Override
-    public boolean tryHandleNavigation(String[] path) {
-        return path.length == 0;
-    }
-
-    @Override
     public LoadingStatus getLoadingStatus() {
         return LoadingStatus.LOADED;
     }
 
-    @Override
-    public void addChangeListener(StoreChangeListener listener) {
-
-    }
-
-    @Override
-    public void removeChangeListener(StoreChangeListener listener) {
-
-    }
 }

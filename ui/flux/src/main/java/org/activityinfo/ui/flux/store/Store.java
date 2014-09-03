@@ -24,8 +24,4 @@ package org.activityinfo.ui.flux.store;
  */
 public interface Store {
 
-    void addChangeListener(StoreChangeListener listener);
-
-    void removeChangeListener(StoreChangeListener listener);
-
 }

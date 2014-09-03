@@ -3502,4 +3502,17 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("This form field will only applicable based on the answer of another form field. " +
             "Please define the relevance or applicability of the form field.")
     String relevanceWelcomeText();
+
+    @DefaultStringValue("New workspace")
+    String newWorkspace();
+
+    @DefaultStringValue("Workspaces")
+    String workspaces();
+
+    @DefaultStringValue("Create workspace")
+    String createWorkspace();
+
+    @DefaultStringValue("Create an empty workspace")
+    String createEmptyWorkspace();
+
 }

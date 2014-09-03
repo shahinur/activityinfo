@@ -1,14 +1,16 @@
 package org.activityinfo.ui.app.client.store;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.safehtml.shared.UriUtils;
 import org.activityinfo.ui.app.client.page.PageStore;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.PlaceMapper;
+import org.activityinfo.ui.app.client.page.create.NewWorkspacePage;
+import org.activityinfo.ui.app.client.page.create.NewWorkspacePlace;
+import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.app.client.page.home.HomePage;
-import org.activityinfo.ui.app.client.page.resource.ResourcePageContainer;
-import org.activityinfo.service.store.RemoteStoreService;
+import org.activityinfo.ui.app.client.page.home.HomePlace;
 import org.activityinfo.ui.flux.store.Store;
-import org.activityinfo.ui.flux.store.StoreChangeListener;
-import org.activityinfo.ui.flux.store.StoreEventEmitter;
-
-import java.util.Arrays;
 
 /**
  * Tracks the current "route" or internal URL within the application,
@@ -18,46 +20,37 @@ import java.util.Arrays;
  */
 public class Router implements Store {
 
-    private final StoreEventEmitter emitter = new StoreEventEmitter();
+    private PlaceMapper placeMapper = new PlaceMapper();
 
-    private String[] currentPath = new String[0];
+    private Place currentPlace = new HomePlace();
 
     private PageStore activePage = new HomePage();
-    private RemoteStoreService service;
 
-    public Router(RemoteStoreService service) {
-        this.service = service;
+    private Application application;
+
+    public Router(Application application) {
+        this.application = application;
     }
 
-    public void updatePath(String token) {
-        String[] path = parseToken(token);
-        if(!Arrays.equals(path, currentPath)) {
-            navigateAndFire(path);
+    public void updatePath(String path) {
+        Place place = placeMapper.parse(path);
+        if(!place.equals(currentPlace)) {
+            navigateAndFire(place);
         }
     }
 
-    private String[] parseToken(String token) {
-        if(token.length() == 0) {
-            return new String[0];
-        } else {
-            return token.split("/");
-        }
-    }
-
-    private void navigateAndFire(String[] path) {
-        this.currentPath = path;
-        if(currentPath.length == 0 && !(activePage instanceof HomePage)) {
+    private void navigateAndFire(Place path) {
+        this.currentPlace = path;
+        if(path instanceof HomePlace) {
             navigate(new HomePage());
-        } else {
-            // Will the current page handle the navigation?
-            if(activePage != null && activePage.tryHandleNavigation(path)) {
-                // great! done.
-                return;
-            }
-            // switch out the current page
-            navigate(new ResourcePageContainer(service, currentPath));
+
+        } else if(path instanceof NewWorkspacePlace) {
+            navigate(new NewWorkspacePage(application));
+
+        } else if(path instanceof FolderPlace) {
+
         }
-        emitter.fireChange(this);
+        application.getStoreEventBus().fireChange(this);
     }
 
     private void navigate(PageStore homePage) {
@@ -68,17 +61,20 @@ public class Router implements Store {
         activePage.start();
     }
 
-    @Override
-    public void addChangeListener(StoreChangeListener listener) {
-        emitter.addChangeListener(listener);
-    }
-
-    @Override
-    public void removeChangeListener(StoreChangeListener listener) {
-        emitter.removeChangeListener(listener);
-    }
-
     public PageStore getActivePage() {
         return activePage;
+    }
+
+
+    public static SafeUri uri(Place place) {
+        StringBuilder sb = new StringBuilder("#");
+        String[] tokens = place.getPath();
+        for(int i=0;i!=tokens.length;++i) {
+            if(i > 0) {
+                sb.append("/");
+            }
+            sb.append(tokens[i]);
+        }
+        return UriUtils.fromTrustedString(sb.toString());
     }
 }

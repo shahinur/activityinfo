@@ -9,7 +9,7 @@ import static org.activityinfo.ui.vdom.shared.html.H.className;
 
 public class CloseButton extends VThunk {
     @Override
-    protected VTree render(VThunk previous) {
+    protected VTree render() {
         //<button aria-hidden="true" data-dismiss="alert" class="close" type="button">×</button>
         return new VNode(HtmlTag.BUTTON, className(BaseStyles.CLOSE).ariaHidden().data("dismiss", "alert"));
     }

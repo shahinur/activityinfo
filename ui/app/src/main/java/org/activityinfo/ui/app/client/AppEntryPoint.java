@@ -8,20 +8,18 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.activityinfo.ui.app.client.chrome.Chrome;
 import org.activityinfo.ui.app.client.effects.Effects;
-import org.activityinfo.ui.app.client.page.PageStore;
-import org.activityinfo.ui.app.client.page.resource.ResourcePageContainer;
-import org.activityinfo.ui.app.client.store.AppStores;
+import org.activityinfo.ui.app.client.store.Application;
+import org.activityinfo.ui.flux.store.Store;
+import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.store.remote.client.RemoteStoreServiceImpl;
 import org.activityinfo.ui.store.remote.client.RestEndpoint;
 import org.activityinfo.ui.vdom.client.VDomWidget;
-import org.activityinfo.ui.flux.store.Store;
-import org.activityinfo.ui.flux.store.StoreChangeListener;
 
 public class AppEntryPoint implements EntryPoint, StoreChangeListener {
 
     public static RemoteStoreServiceImpl service;
     private VDomWidget widget;
-    private AppStores app;
+    private Application app;
 
     @Override
     public void onModuleLoad() {
@@ -29,7 +27,7 @@ public class AppEntryPoint implements EntryPoint, StoreChangeListener {
         service = new RemoteStoreServiceImpl(
                 new RestEndpoint("/service/store"));
 
-        app = new AppStores(service);
+        app = new Application(service);
 
         // Ensure that GWT's event system gets initialized
         RootPanel rootPanel = RootPanel.get();
@@ -37,9 +35,7 @@ public class AppEntryPoint implements EntryPoint, StoreChangeListener {
         widget = new VDomWidget(Chrome.mainSection(app));
         rootPanel.add(widget);
 
-        // hack event handling for the moment
-        app.getWorkspaceStore().addChangeListener(this);
-        app.getRouter().addChangeListener(this);
+        app.getStoreEventBus().addChangeListener(this);
 
         // load the workspaces
         app.getWorkspaceStore().load();
@@ -49,7 +45,7 @@ public class AppEntryPoint implements EntryPoint, StoreChangeListener {
         hidePreloader();
     }
 
-    private void initializeRoute(final AppStores app) {
+    private void initializeRoute(final Application app) {
         app.getRouter().updatePath(History.getToken());
 
         History.addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -72,14 +68,6 @@ public class AppEntryPoint implements EntryPoint, StoreChangeListener {
 
     @Override
     public void onStoreChanged(Store store) {
-        PageStore activePage = app.getRouter().getActivePage();
-        activePage.addChangeListener(this);
-        if(activePage instanceof ResourcePageContainer) {
-            ResourcePageContainer container = (ResourcePageContainer) activePage;
-            if(container.getPage() != null) {
-                container.getPage().addChangeListener(this);
-            }
-        }
         widget.update(Chrome.mainSection(app));
     }
 }

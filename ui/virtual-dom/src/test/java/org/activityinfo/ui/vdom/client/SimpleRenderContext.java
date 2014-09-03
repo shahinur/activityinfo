@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.ui.vdom.client.dom.BrowserDomDocument;
 import org.activityinfo.ui.vdom.client.render.RenderContext;
 import org.activityinfo.ui.vdom.shared.dom.DomDocument;
+import org.activityinfo.ui.vdom.shared.dom.DomNode;
 import org.activityinfo.ui.vdom.shared.tree.VThunk;
 
 public class SimpleRenderContext implements RenderContext {
@@ -28,6 +29,16 @@ public class SimpleRenderContext implements RenderContext {
 
     @Override
     public void fireUpdate(VThunk thunk) {
+
+    }
+
+    @Override
+    public void registerEventListener(DomNode node, VThunk thunk) {
+
+    }
+
+    @Override
+    public void onComponentUnmounted(DomNode node, VThunk w) {
 
     }
 }
