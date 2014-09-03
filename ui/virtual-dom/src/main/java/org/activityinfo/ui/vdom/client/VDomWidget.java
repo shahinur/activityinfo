@@ -2,6 +2,7 @@ package org.activityinfo.ui.vdom.client;
 
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.ui.vdom.client.dom.BrowserDomDocument;
@@ -18,8 +19,7 @@ import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VThunk;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +35,9 @@ public class VDomWidget extends ComplexPanel implements RenderContext {
     private VTree tree = null;
 
     private boolean updating = false;
+
+
+    private Map<DomNode, VThunk> componentMap = new HashMap<>();
 
     /**
      * Widgets that have been created as part of rendering a new or updated
@@ -56,6 +59,7 @@ public class VDomWidget extends ComplexPanel implements RenderContext {
         completeWidgetAdoptions();
         completeDetachments();
         tree = vNode;
+        sinkEvents(Event.ONCLICK | Event.FOCUSEVENTS | Event.ONCHANGE);
     }
 
     public void update(VTree vTree) {
@@ -89,8 +93,9 @@ public class VDomWidget extends ComplexPanel implements RenderContext {
             throw new IllegalStateException("Cannot replace the root node!");
         }
 
-        tree = newTree;
+        cleanUpEventListeners();
 
+        tree = newTree;
     }
 
     private BrowserDomNode getRootNode() {
@@ -145,6 +150,32 @@ public class VDomWidget extends ComplexPanel implements RenderContext {
 
     }
 
+    @Override
+    public void registerEventListener(DomNode node, VThunk thunk) {
+        componentMap.put(node, thunk);
+//        sinkEvents(thunk.getEventMask());
+    }
+
+    @Override
+    public void onComponentUnmounted(DomNode node, VThunk w) {
+        componentMap.remove(node);
+    }
+
+    @Override
+    public void onBrowserEvent(Event event) {
+        Element domNode = event.getEventTarget().cast();
+        while(true) {
+            if (domNode == getElement()) {
+                break;
+            }
+            VThunk component = componentMap.get(domNode);
+            if(component != null) {
+                component.onBrowserEvent(event);
+            }
+            domNode = domNode.getParentElement();
+        }
+    }
+
     private void completeWidgetAdoptions() {
         for(Widget child : pendingAttachments) {
             try {
@@ -165,5 +196,16 @@ public class VDomWidget extends ComplexPanel implements RenderContext {
             }
         }
         pendingDetachments.clear();
+    }
+
+    private void cleanUpEventListeners() {
+        Element container = getElement();
+        Iterator<Map.Entry<DomNode, VThunk>> it = componentMap.entrySet().iterator();
+        while(it.hasNext()) {
+            Element element = ((BrowserDomNode)it.next().getKey()).cast();
+            if(!container.isOrHasChild(element)) {
+                it.remove();
+            }
+        }
     }
 }

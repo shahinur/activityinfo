@@ -85,7 +85,8 @@ public class DomPatcher {
                 return domNode;
 
             case THUNK:
-                return replaceRoot(domNode, patch(domNode, (VDiff) patch));
+                VDiff thunkPatch = (VDiff) patch;
+                return replaceRoot(domNode, patch(domNode, thunkPatch));
         }
         return domNode;
     }
@@ -104,7 +105,7 @@ public class DomPatcher {
     private DomNode insertNode(DomNode parentNode, VTree vNode) {
         DomNode domNode = domBuilder.render(vNode);
         parentNode.appendChild(domNode);
-        return domNode;
+        return parentNode;
     }
 
     private DomNode patchText(DomNode domNode, VTree leftVNode, VText vText) {

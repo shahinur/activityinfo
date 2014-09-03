@@ -19,9 +19,15 @@ public interface RemoteStoreService {
     Promise<Resource> get(ResourceId resourceId);
 
     /**
-     * Creates or updates a Response
+     * Updates a Response
      */
     Promise<UpdateResult> put(Resource resource);
+
+    /**
+     * Creates a new Response
+     */
+    Promise<UpdateResult> create(Resource resource);
+
 
     /**
      * Retrieves the root resources that are owned or have been shared by the user

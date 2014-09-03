@@ -16,6 +16,7 @@ public class DomBuilder {
     private RenderContext context;
     private DomDocument doc;
 
+
     public DomBuilder(RenderContext context) {
         this.context = context;
         this.doc = context.getDocument();
@@ -90,6 +91,10 @@ public class DomBuilder {
     private DomNode renderThunk(VThunk thunk) {
         VTree virtualNode = materializeThunk(thunk);
         DomNode domNode = render(virtualNode);
+
+        if(thunk.getEventMask() > 0) {
+            context.registerEventListener(domNode, thunk);
+        }
 
         thunk.onMounted();
 

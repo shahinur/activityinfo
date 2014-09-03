@@ -1,6 +1,9 @@
 package org.activityinfo.model.type;
 
 
+import org.activityinfo.model.form.FormClassVisitor;
+import org.activityinfo.model.form.FormField;
+
 public interface FieldType {
 
     /**
@@ -9,5 +12,7 @@ public interface FieldType {
      */
     FieldTypeClass getTypeClass();
 
+
+    <T> T accept(FormField field, FormClassVisitor<T> visitor);
 
 }

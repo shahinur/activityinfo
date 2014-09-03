@@ -43,7 +43,7 @@ public class VNode extends VTree {
         this(tag, properties, new VTree[] { child });
     }
 
-    public VNode(Tag tag, PropMap properties, VTree[] children) {
+    public VNode(Tag tag, PropMap properties, VTree... children) {
         this(tag, properties, children, null, null);
     }
 

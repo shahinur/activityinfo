@@ -1,6 +1,7 @@
 package org.activityinfo.store.cloudsql;
 
 import com.google.common.base.Stopwatch;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
@@ -28,6 +29,21 @@ public class MySqlResourceStoreTest {
 
     @Rule
     public TestingEnvironment environment = new TestingEnvironment();
+
+    @Test
+    public void createWorkspace() {
+
+        AuthenticatedUser me = environment.getUser();
+
+        FormInstance workspace = createFolder("Workspace A");
+        environment.getStore().create(me, workspace.asResource());
+
+        List<ResourceNode> workspaces = environment.getStore().getOwnedOrSharedWorkspaces(me);
+        assertThat(workspaces, hasSize(1));
+
+
+    }
+
 
     @Test
     public void simple() throws IOException, SQLException {

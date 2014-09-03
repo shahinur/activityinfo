@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
 public class VThunkTest {
 
 
-    public class Sqrt extends VThunk {
+    public class Sqrt extends VThunk<Sqrt> {
 
         private final double value;
 
@@ -24,35 +24,14 @@ public class VThunkTest {
         }
 
         @Override
-        public VTree render(VThunk previous) {
-            if(this.equals(previous)) {
-                return previous.vNode;
-            }
+        public VTree render() {
             evaluationCount ++;
             return new VText(Double.toString(Math.sqrt(value)));
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            Sqrt sqrt = (Sqrt) o;
-
-            if (Double.compare(sqrt.value, value) != 0) {
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            long temp = Double.doubleToLongBits(value);
-            return (int) (temp ^ (temp >>> 32));
+        public boolean shouldUpdate(Sqrt previousProperties) {
+            return value != previousProperties.value;
         }
     }
 

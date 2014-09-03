@@ -29,7 +29,7 @@ import org.activityinfo.server.login.model.RootPageModel;
 import org.activityinfo.server.util.logging.LogException;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.ui.app.client.chrome.Chrome;
-import org.activityinfo.ui.app.client.store.AppStores;
+import org.activityinfo.ui.app.client.store.Application;
 import org.activityinfo.ui.style.BaseStyleResources;
 import org.activityinfo.ui.vdom.shared.html.HtmlRenderer;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
@@ -78,9 +78,9 @@ public class HostController {
         }
 
 
-        AppStores appStores = new AppStores(null);
+        Application application = new Application(null);
 
-        VTree tree = Chrome.renderPage(new HostPageContext(style), appStores);
+        VTree tree = Chrome.renderPage(new HostPageContext(style), application);
 
         HtmlRenderer renderer = new HtmlRenderer();
         renderer.writeDocTypeDeclaration();

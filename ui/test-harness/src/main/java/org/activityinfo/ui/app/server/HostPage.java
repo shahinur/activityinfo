@@ -2,7 +2,7 @@ package org.activityinfo.ui.app.server;
 
 import com.google.common.io.ByteSource;
 import com.google.common.io.Resources;
-import org.activityinfo.ui.app.client.store.AppStores;
+import org.activityinfo.ui.app.client.store.Application;
 import org.activityinfo.ui.app.client.chrome.Chrome;
 import org.activityinfo.ui.style.BaseStyleResources;
 import org.activityinfo.ui.vdom.shared.html.HtmlRenderer;
@@ -28,9 +28,9 @@ public class HostPage {
     @Path("/index.html")
     public Response get() {
 
-        AppStores appStores = new AppStores(null);
+        Application application = new Application(null);
 
-        VTree tree = Chrome.renderPage(new HostPageContext(style), appStores);
+        VTree tree = Chrome.renderPage(new HostPageContext(style), application);
 
         HtmlRenderer renderer = new HtmlRenderer();
         renderer.writeDocTypeDeclaration();
@@ -55,5 +55,4 @@ public class HostPage {
             return MediaType.APPLICATION_OCTET_STREAM_TYPE;
         }
     }
-
 }

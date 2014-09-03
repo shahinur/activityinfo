@@ -12,7 +12,7 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 public class HomeView extends VThunk {
 
     @Override
-    protected VTree render(VThunk previous) {
+    protected VTree render() {
         return div(BaseStyles.CONTENTPANEL,
                 Grid.row( announcement() ) );
     }

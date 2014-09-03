@@ -2,6 +2,7 @@ package org.activityinfo.model.type;
 
 import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
@@ -153,6 +154,11 @@ public class ReferenceType implements ParametrizedFieldType {
         type.setCardinality(Cardinality.SINGLE);
         type.setRange(Collections.singleton(formClassId));
         return type;
+    }
+
+    @Override
+    public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
+        return visitor.visitReferenceField(field, this);
     }
 
     /**

@@ -18,7 +18,8 @@ public class ResourceSerializer {
             jso.set(entry.getKey(), entry.getValue());
         }
 
-        return new JSONObject(jso).toString();
+        String json = new JSONObject(jso).toString();
+        return json;
     }
 
     public static String toJson(Record record) {
