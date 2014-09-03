@@ -47,6 +47,11 @@ public enum TokenType {
     FUNCTION,
 
     /**
+     * Comma: ','
+     */
+    COMMA,
+
+    /**
      * Numeric Literal: 1, 3 ...
      */
     NUMBER,

@@ -29,8 +29,8 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
-import org.activityinfo.model.expr.functions.*;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.expr.functions.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
@@ -50,6 +50,10 @@ public class SkipRowPresenter {
 
     private static final List<ComparisonOperator> COMPARISON_OPERATORS = Lists.newArrayList(
             EqualFunction.INSTANCE, NotEqualFunction.INSTANCE
+    );
+
+    private static final List<ExprFunction> SET_FUNCTIONS = Lists.newArrayList(
+            ContainsFunction.INSTANCE, NotContainsFunction.INSTANCE
     );
 
     private final FieldWidgetContainer fieldWidgetContainer;
@@ -117,7 +121,7 @@ public class SkipRowPresenter {
         List<FormField> formFields = Lists.newArrayList(fieldWidgetContainer.getFormDesigner().getFormClass().getFields());
         formFields.remove(fieldWidgetContainer.getFormField()); // remove selected field
 
-        for (FormField formField :  formFields) {
+        for (FormField formField : formFields) {
             if (formField.getType() instanceof ImageType) {
                 continue;
             }
@@ -141,9 +145,17 @@ public class SkipRowPresenter {
     private void initFunction() {
         view.getFunction().clear();
 
-        for (ComparisonOperator function : COMPARISON_OPERATORS) {
-            view.getFunction().addItem(function.getLabel(), function.getId());
-        }
+//        FieldType type = getSelectedFormField().getType();
+        // todo uncomment when expr and row data builder is ready
+//        if (type instanceof EnumType || type instanceof ReferenceType) {
+//            for (ExprFunction function : SET_FUNCTIONS) {
+//                view.getFunction().addItem(function.getLabel(), function.getId());
+//            }
+//        } else {
+            for (ComparisonOperator function : COMPARISON_OPERATORS) {
+                view.getFunction().addItem(function.getLabel(), function.getId());
+            }
+//        }
     }
 
     private void initJoinFunction() {
@@ -169,7 +181,7 @@ public class SkipRowPresenter {
     }
 
     private static void setSelectedValue(ListBox listBox, String value) {
-        for (int i = 0; i< listBox.getItemCount(); i++) {
+        for (int i = 0; i < listBox.getItemCount(); i++) {
             String itemValue = listBox.getValue(i);
             if (!Strings.isNullOrEmpty(itemValue) && itemValue.equals(value)) {
                 listBox.setSelectedIndex(i);

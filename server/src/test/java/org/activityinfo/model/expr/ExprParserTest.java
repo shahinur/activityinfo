@@ -90,6 +90,19 @@ public class ExprParserTest {
         evaluate("3*(400/100)", 12);
     }
 
+    @Test
+    public void parseFunctions() {
+        expect("contains({f1},{v1})", new FunctionCallNode(ContainsFunction.INSTANCE,
+                new SymbolExpr("f1"),
+                new SymbolExpr("v1"))
+        );
+        expect("!contains({f1},{v1})", new FunctionCallNode(NotFunction.INSTANCE,
+                new FunctionCallNode(ContainsFunction.INSTANCE,
+                        new SymbolExpr("f1"),
+                        new SymbolExpr("v1"))
+        ));
+    }
+
 
     private void expect(String string, ExprNode expr) {
         System.out.println("Parsing [" + string + "]");

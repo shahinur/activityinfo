@@ -78,6 +78,9 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         } else if (c == '}') {
             return finishToken(TokenType.BRACE_END);
 
+        }  else if (c == ',') {
+            return finishToken(TokenType.COMMA);
+
         } else if (c == '"') {
             if (!startedStringLiteral) {
                 startedStringLiteral = true;
@@ -108,8 +111,6 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
             throw new RuntimeException("Symbol '" + c + "' is not supported");
         }
     }
-
-
 
     private boolean isOperator(char c) {
         return OPERATOR_CHARS.indexOf(c) != -1;

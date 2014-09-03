@@ -15,7 +15,7 @@ public final class ExprFunctions {
     }
 
     public static ExprFunction get(String name) {
-        if(lookupMap == null) {
+        if (lookupMap == null) {
             lookupMap = new HashMap<>();
             register(AndFunction.INSTANCE);
             register(DivideFunction.INSTANCE);
@@ -26,10 +26,12 @@ public final class ExprFunctions {
             register(NotFunction.INSTANCE);
             register(OrFunction.INSTANCE);
             register(PlusFunction.INSTANCE);
+            register(ContainsFunction.INSTANCE);
+            register(NotContainsFunction.INSTANCE);
         }
 
         ExprFunction exprFunction = lookupMap.get(name);
-        if(exprFunction == null) {
+        if (exprFunction == null) {
             throw new UnsupportedOperationException("No such function '" + name + "'");
         }
         return exprFunction;
