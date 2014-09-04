@@ -82,12 +82,12 @@ public class ExprParserTest {
 
     @Test
     public void parseFunctions() {
-        expect("contains({f1},{v1})", new FunctionCallNode(ContainsFunction.INSTANCE,
+        expect("containsAll({f1},{v1})", new FunctionCallNode(ContainsAllFunction.INSTANCE,
                 new SymbolExpr("f1"),
                 new SymbolExpr("v1"))
         );
-        expect("!contains({f1},{v1})", new FunctionCallNode(NotFunction.INSTANCE,
-                new FunctionCallNode(ContainsFunction.INSTANCE,
+        expect("!containsAll({f1},{v1})", new FunctionCallNode(NotFunction.INSTANCE,
+                new FunctionCallNode(ContainsAllFunction.INSTANCE,
                         new SymbolExpr("f1"),
                         new SymbolExpr("v1"))
         ));

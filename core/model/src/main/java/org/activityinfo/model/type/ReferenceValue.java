@@ -17,7 +17,7 @@ import java.util.Set;
  * A Field Value containing the value of {@code ReferenceType} or
  * {@code EnumType}
  */
-public class ReferenceValue implements FieldValue, IsRecord {
+public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
 
 
     private final Set<ResourceId> resourceIds;

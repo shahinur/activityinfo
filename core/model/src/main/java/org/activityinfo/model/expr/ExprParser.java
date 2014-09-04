@@ -5,10 +5,9 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.PeekingIterator;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.expr.functions.ContainsFunction;
-import org.activityinfo.model.expr.functions.ExprFunction;
-import org.activityinfo.model.expr.functions.ExprFunctions;
+import org.activityinfo.model.expr.functions.*;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -19,9 +18,12 @@ public class ExprParser {
 
     private static final Set<String> PREFIX_OPERATORS = Sets.newHashSet("!" );
 
-    private static final Set<String> FUNCTIONS = Sets.newHashSet(
-            ContainsFunction.INSTANCE.getId()
-    );
+    public static final Set<String> FUNCTIONS = Collections.unmodifiableSet(Sets.newHashSet(
+            ContainsAllFunction.INSTANCE.getId(),
+            ContainsAnyFunction.INSTANCE.getId(),
+            NotContainsAllFunction.INSTANCE.getId(),
+            NotContainsAnyFunction.INSTANCE.getId()
+    ));
 
     private PeekingIterator<Token> lexer;
 

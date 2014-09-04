@@ -199,7 +199,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     @Override
     public Promise<Void> setValue(EnumFieldValue value) {
         for (CheckBox entry : controls) {
-            entry.setValue(containsIgnoreCase(value.getValueIds(), entry.getFormValue()));
+            entry.setValue(containsIgnoreCase(value.getResourceIds(), entry.getFormValue()));
         }
         return Promise.done();
     }
