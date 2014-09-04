@@ -6,7 +6,7 @@ import com.google.appengine.api.datastore.*;
  * A single entity which maintains the global version index
  */
 public class GlobalVersion {
-
+    public static final long INITIAL_VERSION = 0L;
     public static final String KIND = "GV";
     public static final String KEY_NAME = "current";
     public static final String GLOBAL_VERSION_PROPERTY = "V";
@@ -21,7 +21,7 @@ public class GlobalVersion {
             return (Long) entity.getProperty(GLOBAL_VERSION_PROPERTY);
 
         } catch (EntityNotFoundException e) {
-            return 1;
+            return INITIAL_VERSION;
         }
     }
 
@@ -39,7 +39,7 @@ public class GlobalVersion {
 
         } catch(EntityNotFoundException e) {
             entity = new Entity(KIND, KEY_NAME);
-            version = 1;
+            version = INITIAL_VERSION;
         }
         version++;
         entity.setProperty(GLOBAL_VERSION_PROPERTY, version);
