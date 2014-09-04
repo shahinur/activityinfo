@@ -31,7 +31,7 @@ public class ApplicationClassProvider {
     }
 
     private FormClass createFormClassClass() {
-        FormField labelField = new FormField(FormClass.LABEL_FIELD_ID);
+        FormField labelField = new FormField(ResourceId.valueOf(FormClass.LABEL_FIELD_ID));
         labelField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
 
         FormClass formClass = new FormClass(FormClass.CLASS_ID);

@@ -15,7 +15,7 @@ import java.util.Set;
  * A Field Value containing the value of {@code ReferenceType} or
  * {@code EnumType}
  */
-public class ReferenceValue implements FieldValue, IsRecord {
+public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     public static final ReferenceValue EMPTY = new ReferenceValue(Collections.<ResourceId>emptySet());
 

@@ -54,6 +54,8 @@ import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSe
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPresenter;
 import org.activityinfo.ui.client.component.formdesigner.skip.SkipDialog;
 
+import java.util.List;
+
 /**
  * @author yuriyz on 7/9/14.
  */

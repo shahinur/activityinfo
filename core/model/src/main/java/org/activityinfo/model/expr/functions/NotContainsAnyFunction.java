@@ -21,48 +21,36 @@ package org.activityinfo.model.expr.functions;
  * #L%
  */
 
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.BooleanType;
 
 import java.util.List;
-import java.util.Set;
 
 /**
- * We need better way to handle function composition: e.g. !contains() instead of notContains() as separate function.
- *
  * @author yuriyz on 9/3/14.
  */
-public class NotContainsFunction extends ExprFunction {
+public class NotContainsAnyFunction extends ExprFunction {
 
-    public static final NotContainsFunction INSTANCE = new NotContainsFunction();
+    public static final NotContainsAnyFunction INSTANCE = new NotContainsAnyFunction();
 
-    private NotContainsFunction() {
+    private NotContainsAnyFunction() {
     }
 
     @Override
     public String getId() {
-        return "notContains";
+        return "notContainsAny";
     }
 
     @Override
     public String getLabel() {
-        return "Excludes";
+        return "Excludes Any";
     }
 
     @Override
     public BooleanFieldValue apply(List<FieldValue> arguments) {
-        Set<ResourceId> arg1 = Casting.toSet(arguments.get(0));
-        for (int i = 1; i<arguments.size();i++) {
-            Set<ResourceId> arg = Casting.toSet(arguments.get(i));
-            if (arg1.containsAll(arg)) {
-                return BooleanFieldValue.FALSE;
-            }
-        }
-
-        return BooleanFieldValue.TRUE;
+        return BooleanFieldValue.valueOf(!ContainsAnyFunction.INSTANCE.apply(arguments).asBoolean());
     }
 
     @Override

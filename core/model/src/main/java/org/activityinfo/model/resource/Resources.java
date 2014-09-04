@@ -160,7 +160,7 @@ public class Resources {
         }
     }
 
-    private static JsonElement toJsonObject(Record value) {
+    public static JsonElement toJsonObject(Record value) {
         JsonObject jsonObject = new JsonObject();
         for(Map.Entry<String, Object> property :  value.getProperties().entrySet()) {
             if(property.getValue() != null) {

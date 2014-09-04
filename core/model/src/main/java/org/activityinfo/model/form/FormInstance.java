@@ -156,6 +156,11 @@ public class FormInstance implements IsResource {
         return this;
     }
 
+
+    public FormInstance set(String fieldId, String name) {
+        return set(ResourceId.valueOf(fieldId), name);
+    }
+
     public FormInstance set(@NotNull ResourceId fieldId, double value) {
         return set(fieldId, new Quantity(value));
     }

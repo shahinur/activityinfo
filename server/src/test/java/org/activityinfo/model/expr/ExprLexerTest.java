@@ -161,8 +161,8 @@ public class ExprLexerTest {
 
     @Test
     public void functionTokenizing() {
-        expect("contains({f1},{v1})",
-                new Token(TokenType.SYMBOL, 0, "contains"),
+        expect("containsAll({f1},{v1})",
+                new Token(TokenType.SYMBOL, 0, "containsAll"),
                 new Token(TokenType.PAREN_START, 9, "("),
                 new Token(TokenType.BRACE_START, 10, "{"),
                 new Token(TokenType.SYMBOL, 11, "f1"),

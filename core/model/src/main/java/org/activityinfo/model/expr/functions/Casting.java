@@ -2,8 +2,7 @@ package org.activityinfo.model.expr.functions;
 
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.HasSetFieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 
@@ -31,11 +30,9 @@ public class Casting {
     }
 
     public static Set<ResourceId> toSet(FieldValue value) {
-        if (value instanceof EnumFieldValue) {
-            return ((EnumFieldValue) value).getValueIds();
-        } else if (value instanceof ReferenceValue) {
-            return ((ReferenceValue) value).getResourceIds();
-        } else {
+        if (value instanceof HasSetFieldValue) {
+            return ((HasSetFieldValue) value).getResourceIds();
+        }else {
             throw new RuntimeException("Cannot cast [" + value + "] to Set<ResourceId>");
         }
     }

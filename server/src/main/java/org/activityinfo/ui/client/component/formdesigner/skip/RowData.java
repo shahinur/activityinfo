@@ -82,10 +82,6 @@ public class RowData {
         this.value = value;
     }
 
-    public void setValue(Set<ResourceId> resourceIds) {
-        this.value = new ReferenceValue(resourceIds);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

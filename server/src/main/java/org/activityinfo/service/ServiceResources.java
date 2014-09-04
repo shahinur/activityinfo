@@ -35,10 +35,9 @@ public class ServiceResources {
     @POST
     @Path("blob/{blobId}")
     @Produces("application/json")
-    public UploadCredentials getUploadCredentials(@PathParam("blobId") String blobId) throws IOException {
+    public javax.ws.rs.core.Response getUploadCredentials(@PathParam("blobId") String blobId) throws IOException {
 
-        return blobFieldStorageService.getUploadCredentials(authProvider.get().getUserResourceId(),
-                new BlobId(blobId));
+        return blobFieldStorageService.getUploadCredentials(authProvider.get(), new BlobId(blobId));
     }
 
 }

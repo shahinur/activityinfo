@@ -43,6 +43,11 @@ public class TestResourceStore implements ResourceStore {
 
     }
 
+    @Override
+    public void create(AuthenticatedUser user, Resource backupBlobId) {
+
+    }
+
     public Resource getLastUpdated() {
         throw new UnsupportedOperationException();
 

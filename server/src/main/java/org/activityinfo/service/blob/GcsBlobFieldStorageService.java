@@ -157,7 +157,7 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         builder.setKey(blobId.asString());
         builder.setMaxContentLengthInMegabytes(10);
         builder.expireAfter(Period.minutes(5));
-        return Response.ok(Resources.toJson(builder.build().asRecord())).build();
+        return Response.ok(Resources.toJsonObject(builder.build().asRecord())).build();
     }
 
     private ImageRowValue getImageRowValue(AuthenticatedUser user, ResourceId resourceId, ResourceId fieldId, BlobId blobId) {

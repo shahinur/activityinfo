@@ -25,4 +25,5 @@ public interface ResourceStore {
     void put(AuthenticatedUser user, Resource resource);
 
 
+    void create(AuthenticatedUser user, Resource backupBlobId);
 }

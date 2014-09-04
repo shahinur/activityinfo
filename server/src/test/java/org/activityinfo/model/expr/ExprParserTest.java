@@ -1,9 +1,6 @@
 package org.activityinfo.model.expr;
 
-import org.activityinfo.model.expr.functions.ArithmeticFunctions;
-import org.activityinfo.model.expr.functions.BooleanFunctions;
-import org.activityinfo.model.expr.functions.EqualFunction;
-import org.activityinfo.model.expr.functions.PlusFunction;
+import org.activityinfo.model.expr.functions.*;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -92,12 +89,12 @@ public class ExprParserTest {
 
     @Test
     public void parseFunctions() {
-        expect("contains({f1},{v1})", new FunctionCallNode(ContainsFunction.INSTANCE,
+        expect("containsAll({f1},{v1})", new FunctionCallNode(ContainsAllFunction.INSTANCE,
                 new SymbolExpr("f1"),
                 new SymbolExpr("v1"))
         );
-        expect("!contains({f1},{v1})", new FunctionCallNode(NotFunction.INSTANCE,
-                new FunctionCallNode(ContainsFunction.INSTANCE,
+        expect("!containsAll({f1},{v1})", new FunctionCallNode(NotFunction.INSTANCE,
+                new FunctionCallNode(ContainsAllFunction.INSTANCE,
                         new SymbolExpr("f1"),
                         new SymbolExpr("v1"))
         ));

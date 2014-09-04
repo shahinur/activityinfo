@@ -26,8 +26,10 @@ public final class ExprFunctions {
             register(NotFunction.INSTANCE);
             register(OrFunction.INSTANCE);
             register(PlusFunction.INSTANCE);
-            register(ContainsFunction.INSTANCE);
-            register(NotContainsFunction.INSTANCE);
+            register(ContainsAllFunction.INSTANCE);
+            register(ContainsAnyFunction.INSTANCE);
+            register(NotContainsAllFunction.INSTANCE);
+            register(NotContainsAnyFunction.INSTANCE);
         }
 
         ExprFunction exprFunction = lookupMap.get(name);

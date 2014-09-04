@@ -25,6 +25,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <version>${gwtVersion}</version>
@@ -43,7 +47,6 @@
       <artifactId>rebar-time</artifactId>
       <version>${rebarVersion}</version>
     </dependency>
-
   </dependencies>
 
   <build>

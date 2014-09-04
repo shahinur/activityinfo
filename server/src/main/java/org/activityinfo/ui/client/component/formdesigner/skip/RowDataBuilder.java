@@ -29,6 +29,8 @@ import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.HasSetFieldValue;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
@@ -64,70 +66,106 @@ public class RowDataBuilder {
             node = ((GroupExpr) node).getExpr();
         }
 
-        // handle Function call node
-        if (node instanceof FunctionCallNode && ((FunctionCallNode) node).getArguments().size() == 2) {
+        // handle Function call node with at least one argument
+        if (node instanceof FunctionCallNode && ((FunctionCallNode) node).getArguments().size() > 0) {
             final FunctionCallNode functionCallNode = (FunctionCallNode) node;
-            ExprNode arg1 = unwrap(functionCallNode.getArguments().get(0));
-            ExprNode arg2 = unwrap(functionCallNode.getArguments().get(1));
 
+            if (ExprParser.FUNCTIONS.contains(functionCallNode.getFunction().getId())) {
+                FormField field = formClass.getField(ResourceId.valueOf(placeholder(unwrap(functionCallNode.getArguments().get(0)))));
+                parseRowWithFunction(joinFunction, functionCallNode, field);
+                return;
 
-            if (arg1 instanceof SymbolExpr) {
+            } else if (functionCallNode.getArguments().size() == 2) { // for non-function node it's expected to have exactly 2 arguments!
 
-                if (isFieldFunction(functionCallNode.getFunction())) {
-                    final FormField field = formClass.getField(ResourceId.valueOf(placeholder(arg1)));
+                ExprNode arg1 = unwrap(functionCallNode.getArguments().get(0));
+                ExprNode arg2 = unwrap(functionCallNode.getArguments().get(1));
 
-                    final RowData row = getOrCreateRow(field);
-                    row.setFunction(functionCallNode.getFunction());
-                    row.setJoinFunction(joinFunction);
+                if (arg1 instanceof SymbolExpr) {
 
-                    if (setValueInRow(row, arg2)) {
-                        return;
-                    } else if (arg2 instanceof FunctionCallNode) {
-                        final FunctionCallNode arg2Node = (FunctionCallNode) arg2;
+                    if (isFieldFunction(functionCallNode.getFunction())) {
+                        FormField field = formClass.getField(ResourceId.valueOf(placeholder(unwrap(functionCallNode.getArguments().get(0)))));
 
-                        if (isFieldFunction(arg2Node.getFunction())) {
-                            parse(arg2Node, arg2Node.getFunction());
+                        final RowData row = getOrCreateRow(field);
+                        row.setFunction(functionCallNode.getFunction());
+                        row.setJoinFunction(joinFunction);
+
+                        if (setValueInRow(row, arg2)) {
                             return;
-                        } else {
-                            // not field function -> means &&, || (but not ==, !=)
+                        } else if (arg2 instanceof FunctionCallNode) {
+                            final FunctionCallNode arg2Node = (FunctionCallNode) arg2;
 
-                            final ExprNode nestArg1 = arg2Node.getArguments().get(0);
-                            final ExprNode nestArg2 = arg2Node.getArguments().get(1);
-
-                            setValueInRow(row, nestArg1);
-
-                            if (nestArg2 instanceof FunctionCallNode || nestArg2 instanceof GroupExpr) {
-                                parse(nestArg2, arg2Node.getFunction());
+                            if (isFieldFunction(arg2Node.getFunction())) {
+                                parse(arg2Node, arg2Node.getFunction());
                                 return;
                             } else {
-                                throw new UnsupportedOperationException();
+                                // not field function -> means &&, || (but not ==, !=)
+
+                                final ExprNode nestArg1 = arg2Node.getArguments().get(0);
+                                final ExprNode nestArg2 = arg2Node.getArguments().get(1);
+
+                                setValueInRow(row, nestArg1);
+
+                                if (nestArg2 instanceof FunctionCallNode || nestArg2 instanceof GroupExpr) {
+                                    parse(nestArg2, arg2Node.getFunction());
+                                    return;
+                                } else {
+                                    throw new UnsupportedOperationException();
+                                }
                             }
                         }
                     }
-                }
-            } else if (arg1 instanceof FunctionCallNode) {
-                // parse flat structure
-                for (Object exprNode : functionCallNode.getArguments()) {
-                    FunctionCallNode unwrappedNode = (FunctionCallNode) unwrap((ExprNode) exprNode);
-                    if (isFieldFunction(unwrappedNode.getFunction())) {
-                        ExprNode unwrappedArg1 = unwrappedNode.getArguments().get(0);
-                        ExprNode unwrappedArg2 = unwrappedNode.getArguments().get(1);
+                } else if (arg1 instanceof FunctionCallNode) {
+                    // parse flat structure
+                    for (Object exprNode : functionCallNode.getArguments()) {
+                        FunctionCallNode unwrappedNode = (FunctionCallNode) unwrap((ExprNode) exprNode);
+                        if (isFieldFunction(unwrappedNode.getFunction())) {
+                            ExprNode unwrappedArg1 = unwrappedNode.getArguments().get(0);
+                            ExprNode unwrappedArg2 = unwrappedNode.getArguments().get(1);
 
-                        final FormField field = formClass.getField(ResourceId.valueOf(placeholder(unwrappedArg1)));
+                            final FormField field = formClass.getField(ResourceId.valueOf(placeholder(unwrappedArg1)));
 
-                        final RowData row = getOrCreateRow(field);
-                        row.setFunction(unwrappedNode.getFunction());
-                        row.setJoinFunction(functionCallNode.getFunction());
+                            final RowData row = getOrCreateRow(field);
+                            row.setFunction(unwrappedNode.getFunction());
+                            row.setJoinFunction(functionCallNode.getFunction());
 
-                        setValueInRow(row, unwrappedArg2);
-                    } else {
-                        parse(unwrappedNode, unwrappedNode.getFunction());
+                            setValueInRow(row, unwrappedArg2);
+                        } else {
+                            parse(unwrappedNode, unwrappedNode.getFunction());
+                        }
                     }
+                    return;
                 }
-                return;
             }
         }
         throw new UnsupportedOperationException();
+    }
+
+    private void parseRowWithFunction(ExprFunction joinFunction, FunctionCallNode functionCallNode, FormField field) {
+        final RowData row = getOrCreateRow(field);
+        row.setFunction(functionCallNode.getFunction());
+        row.setJoinFunction(joinFunction);
+
+        // set value
+        FieldType type = field.getType();
+
+        // start from second element, first one is field id
+        Set<ResourceId> resourceIdSet = Sets.newHashSet();
+        for (int i = 1; i < functionCallNode.getArguments().size(); i++) {
+            ExprNode argNode = functionCallNode.getArguments().get(i);
+            if (argNode instanceof SymbolExpr) {
+                String symbol = ((SymbolExpr) argNode).getName();
+                resourceIdSet.add(ResourceId.valueOf(symbol));
+            } else {
+                throw new UnsupportedOperationException("Unknown argument node for function: " + functionCallNode.getFunction().getId());
+            }
+        }
+        if (type instanceof ReferenceType) {
+            row.setValue(new ReferenceValue(resourceIdSet));
+        } else if (type instanceof EnumType) {
+            row.setValue(new EnumFieldValue(resourceIdSet));
+        } else {
+            throw new UnsupportedOperationException("Unknown value type for function: " + functionCallNode.getFunction().getId());
+        }
     }
 
     private RowData getOrCreateRow(FormField formField) {
@@ -167,11 +205,15 @@ public class RowDataBuilder {
         } else if (node instanceof SymbolExpr) {
             ResourceId newItem = ResourceId.valueOf(placeholder(node));
 
-            if (row.getValue() instanceof ReferenceValue) { // update existing value
-                ReferenceValue oldValue = (ReferenceValue) row.getValue();
+            if (row.getValue() instanceof HasSetFieldValue) { // update existing value
+                HasSetFieldValue oldValue = (HasSetFieldValue) row.getValue();
                 Set<ResourceId> newValue = Sets.newHashSet(oldValue.getResourceIds());
                 newValue.add(newItem);
-                row.setValue(new ReferenceValue(newValue));
+                if (row.getFormField().getType() instanceof EnumType) {
+                    row.setValue(new EnumFieldValue(newValue));
+                } else if (row.getFormField().getType() instanceof ReferenceType) {
+                    row.setValue(new ReferenceValue(newValue));
+                }
             } else { // create value
                 if (row.getFormField().getType() instanceof EnumType) {
                     row.setValue(new EnumFieldValue(newItem));
