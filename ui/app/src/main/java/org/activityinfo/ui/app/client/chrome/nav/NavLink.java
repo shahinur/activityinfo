@@ -2,24 +2,42 @@ package org.activityinfo.ui.app.client.chrome.nav;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.store.Router;
+import org.activityinfo.ui.flux.store.Store;
+import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
+
+import java.util.Objects;
 
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
-public class NavLink extends VThunk {
+public class NavLink extends VComponent implements StoreChangeListener {
 
     public static SafeUri DEFAULT_URL = UriUtils.fromSafeConstant("#");
 
+    private final Router router;
+
     private String label;
     private Icon icon;
-    private SafeUri url = DEFAULT_URL;
-    private boolean active;
+    private Place target;
 
-    public NavLink() {
+    public NavLink(Router router) {
+        this.router = router;
+    }
+
+    @Override
+    protected void componentDidMount() {
+        router.addChangeListener(this);
+    }
+
+    @Override
+    protected void componentWillUnmount() {
+        router.removeChangeListener(this);
     }
 
     public String getLabel() {
@@ -38,33 +56,35 @@ public class NavLink extends VThunk {
         this.icon = icon;
     }
 
-    public SafeUri getUrl() {
-        return url;
+    public Place getTarget() {
+        return target;
     }
 
-    public void setUrl(SafeUri url) {
-        assert url != null;
-        this.url = url;
+    public void setTarget(Place target) {
+        this.target = target;
     }
 
     public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
+        return Objects.equals(router.getCurrentPlace(), target);
     }
 
     @Override
     protected VTree render() {
-        return li(listItemStyle(), link(url, icon.render(), space(), span(label)));
+        SafeUri uri = target == null ? DEFAULT_URL : Router.uri(target);
+
+        return li(listItemStyle(), link(uri, icon.render(), space(), span(label)));
     }
 
     private PropMap listItemStyle() {
-        if(active) {
+        if(isActive()) {
             return PropMap.withClasses(BaseStyles.NAV_ACTIVE, BaseStyles.ACTIVE);
         } else {
             return PropMap.EMPTY;
         }
+    }
+
+    @Override
+    public void onStoreChanged(Store store) {
+        refresh();
     }
 }

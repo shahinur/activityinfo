@@ -1,70 +1,76 @@
 package org.activityinfo.ui.app.client.chrome;
 
-import org.activityinfo.ui.app.client.page.PageStore;
-import org.activityinfo.ui.app.client.store.Application;
-import org.activityinfo.ui.style.icons.FontAwesome;
-import org.activityinfo.ui.vdom.shared.html.HtmlTag;
-import org.activityinfo.ui.vdom.shared.html.Icon;
-import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.VNode;
+import com.google.common.collect.Lists;
+import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.create.NewWorkspacePage;
+import org.activityinfo.ui.app.client.page.folder.FolderPage;
+import org.activityinfo.ui.app.client.page.home.HomePage;
+import org.activityinfo.ui.flux.store.Store;
+import org.activityinfo.ui.flux.store.StoreChangeListener;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-import static org.activityinfo.ui.style.BaseStyles.*;
-import static org.activityinfo.ui.vdom.shared.html.H.*;
+import java.util.List;
 
-public class MainPanel {
+import static org.activityinfo.ui.style.BaseStyles.MAINPANEL;
+import static org.activityinfo.ui.vdom.shared.html.H.div;
 
-    public static VNode mainPanel(Application app) {
-        return div(MAINPANEL,
-                HeaderBar.render(),
-                div(PAGEHEADER, pageHeading(app)), contentPanel(app));
+public class MainPanel extends VComponent<MainPanel> implements StoreChangeListener {
+
+    private final Application application;
+
+    /**
+     * Page views are singletons
+     */
+    private final List<PageView> pageViews = Lists.newArrayList();
+
+    private final HeaderBar headerBar;
+
+   private PageView pageView;
+
+    public MainPanel(Application application) {
+        this.application = application;
+
+        headerBar = new HeaderBar();
+
+        pageViews.add(new FolderPage(application));
+        pageViews.add(new NewWorkspacePage(application));
+        pageViews.add(new HomePage());
+
+        pageView = pageViewForCurrentPlace();
     }
 
-    private static VTree pageHeading(Application app) {
+    @Override
+    public void componentDidMount() {
+        application.getRouter().addChangeListener(this);
+    }
 
-        PageStore page = app.getRouter().getActivePage();
-
-        switch (page.getLoadingStatus()) {
-            case PENDING:
-                return h2( pageIcon(FontAwesome.SPINNER), t("Loading...") );
-            case LOADED:
-                if(page.getPageDescription() == null) {
-                    return h2( pageIcon(page.getPageIcon()), t(page.getPageTitle()));
-                } else {
-                    return h2( pageIcon(page.getPageIcon()), t(page.getPageTitle()),
-                                span(SUBTITLE, page.getPageDescription()));
-                }
-
-            default:
-            case FAILED:
-                return new VNode(HtmlTag.DIV);
+    @Override
+    public void onStoreChanged(Store store) {
+        PageView newView = pageViewForCurrentPlace();
+        if(newView != pageView) {
+            pageView = newView;
+            refresh();
         }
     }
 
-    private static VNode pageIcon(Icon home) {
-        return new VNode(HtmlTag.I, PropMap.withClasses(home.getClassNames()));
+    @Override
+    protected VTree render() {
+        return div(MAINPANEL, headerBar, pageView);
     }
 
-    private static VTree contentPanel(Application app) {
-        PageStore activePage = app.getRouter().getActivePage();
-        return activePage.getView();
+    private PageView pageViewForCurrentPlace() {
+
+        Place place = application.getRouter().getCurrentPlace();
+
+        for(PageView pageView : pageViews) {
+            if(pageView.accepts(place)) {
+                return pageView;
+            }
+        }
+        throw new IllegalStateException(place.toString());
     }
-//
-//    private static VTree renderResource(ResourcePageContainer container) {
-//        if(container.getLoadingStatus() == LoadingStatus.LOADED) {
-//            ResourcePage page = container.getPage();
-//
-//            if (page instanceof FolderPage) {
-//                return FolderView.render((FolderPage) page);
-//
-//            } else if(page instanceof FormPage) {
-//                return FormView.render((FormPage) page);
-//
-//            } else {
-//                return div("todo");
-//            }
-//        } else {
-//            return div("");
-//        }
-//    }
+
 }

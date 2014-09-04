@@ -94,12 +94,12 @@ public class HtmlRenderer implements VTreeVisitor {
     
     @Override
     public void visitText(VText text) {
-        html.append(SafeHtmlUtils.htmlEscape(text.text));
+        html.append(SafeHtmlUtils.htmlEscape(text.getText()));
     }
 
     @Override
-    public void visitThunk(VThunk vThunk) {
-        vThunk.force().accept(this);
+    public void visitComponent(VComponent vComponent) {
+        vComponent.forceRender().accept(this);
     }
 
     @Override

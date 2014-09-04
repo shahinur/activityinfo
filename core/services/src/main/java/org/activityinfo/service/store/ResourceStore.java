@@ -2,10 +2,10 @@ package org.activityinfo.service.store;
 
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 
@@ -72,7 +72,7 @@ public interface ResourceStore {
     @POST
     @Path("query/tree")
     @Produces("application/json")
-    ResourceTree queryTree(@InjectParam AuthenticatedUser user, ResourceTreeRequest request);
+    FolderProjection queryTree(@InjectParam AuthenticatedUser user, FolderRequest request);
 
     /**
      * Fetches an outline of Resources, returning only their id and label.

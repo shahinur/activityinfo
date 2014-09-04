@@ -3,6 +3,7 @@ package org.activityinfo.model.resource;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
+import org.activityinfo.model.system.FolderClass;
 
 import java.util.List;
 
@@ -34,6 +35,14 @@ public class ResourceNode {
     public ResourceNode(ResourceId id, ResourceId classId) {
         this.id = id;
         this.classId = classId;
+    }
+
+    public ResourceNode(Resource resource) {
+        this.id = resource.getId();
+        this.label = resource.getString(FolderClass.LABEL_FIELD_ID.asString());
+        this.ownerId = resource.getOwnerId();
+        this.classId = ResourceId.valueOf(resource.getString("classId"));
+        this.version = resource.getVersion();
     }
 
     /**

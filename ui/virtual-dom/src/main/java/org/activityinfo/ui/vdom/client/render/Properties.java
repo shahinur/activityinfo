@@ -15,12 +15,10 @@ public class Properties {
         for (String propName : props.keys()) {
             Object propValue = props.get(propName);
             if (propValue == null) {
-                removeProperty(node, props, previous, propName);
-
+                removeProperty(node, previous, propName);
             } else {
                 if (PropMap.isObject(propValue)) {
-                    patchObject(node, props, previous, propName, propValue);
-
+                    patchObject(node, propName, propValue);
                 } else {
                     node.setPropertyString(propName, (String) propValue);
                 }
@@ -28,11 +26,7 @@ public class Properties {
         }
     }
 
-    private static Object previousValueIfAny(PropMap previous, String propName) {
-        return (previous != null) ? previous.get(propName) : null;
-    }
-
-    private static void removeProperty(DomElement element, PropMap props, PropMap previous, String propName) {
+    private static void removeProperty(DomElement element, PropMap previous, String propName) {
         if (previous != null) {
             Object previousValue = previous.get(propName);
             if (!VHook.isHook(previousValue)) {
@@ -69,8 +63,7 @@ public class Properties {
         }
     }
 
-    public static void patchObject(DomElement node, PropMap props, PropMap previous, String propName, Object propValue) {
-        Object previousValue = previousValueIfAny(previous, propName);
+    public static void patchObject(DomElement node, String propName, Object propValue) {
         // Set attributes
         if (propName.equals("attributes")) {
             for (Map.Entry<String, Object> attr : entries(propValue)) {

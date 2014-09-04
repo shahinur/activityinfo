@@ -240,6 +240,7 @@ public class FormInstance implements IsResource {
 
     public FormInstance copy() {
         final FormInstance copy = new FormInstance(getId(), getClassId());
+        copy.setOwnerId(getOwnerId());
         copy.propertyBag.setAll(propertyBag);
         return copy;
     }

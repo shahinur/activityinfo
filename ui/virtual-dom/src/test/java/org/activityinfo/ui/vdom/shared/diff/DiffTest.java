@@ -41,7 +41,7 @@ public class DiffTest {
 
 
         // Find the differences between the two trees
-        VDiff diff = Diff.diff(a, b);
+        VPatchSet diff = Diff.diff(a, b);
         System.out.println(diff);
 
         // The only node to be patched should be the UL at index #5,
@@ -55,9 +55,13 @@ public class DiffTest {
         VNode updatedList = (VNode) b.childAt(2);
         assertThat(updatedList.tag, is((Tag) UL));
         assertThat(diff.get(5), contains(
-                VPatch.insert(updatedList.childAt(0)),
-                VPatch.insert(updatedList.childAt(1)),
-                VPatch.insert(updatedList.childAt(2)),
-                VPatch.insert(updatedList.childAt(3))));
+                insert(updatedList.childAt(0)),
+                insert(updatedList.childAt(1)),
+                insert(updatedList.childAt(2)),
+                insert(updatedList.childAt(3))));
+    }
+
+    private PatchOp insert(VTree node) {
+        return new InsertOp(node);
     }
 }

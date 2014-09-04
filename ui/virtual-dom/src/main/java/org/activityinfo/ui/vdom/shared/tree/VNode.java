@@ -26,7 +26,7 @@ public class VNode extends VTree {
 
 
     private int count;
-    private boolean hasWidgets;
+    private boolean hasComponents;
     private boolean hooks = false;
     private int descendants = 0;
     private boolean descendantHooks = false;
@@ -82,31 +82,26 @@ public class VNode extends VTree {
                 VNode childNode = (VNode) child;
                 descendants += childNode.count;
 
-                if (!hasWidgets && childNode.hasWidgets) {
+                if (!hasWidgets && childNode.hasComponents) {
                     hasWidgets = true;
                 }
                 if (!descendantHooks && (childNode.hooks || childNode.descendantHooks)) {
                     descendantHooks = true;
                 }
-            } else if (!hasWidgets && child instanceof VWidget) {
+            } else if (!hasWidgets && child instanceof VComponent) {
                 hasWidgets = true;
             }
         }
 
         this.count = count + descendants;
         this.descendants = descendants;
-        this.hasWidgets = hasWidgets;
-    }
-
-
-    public static boolean isVNode(VTree b) {
-        return b instanceof VNode;
+        this.hasComponents = hasWidgets;
     }
 
 
     @Override
-    public boolean hasWidgets() {
-        return hasWidgets;
+    public boolean hasComponents() {
+        return hasComponents;
     }
 
     @Override
@@ -129,7 +124,6 @@ public class VNode extends VTree {
         return properties;
     }
 
-    @Override
     public PropMap hooks() {
         return null;
     }

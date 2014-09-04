@@ -3,16 +3,16 @@ package org.activityinfo.ui.store.remote.client.resource;
 import com.google.common.base.Function;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 
-public class ResourceTreeParser implements Function<Response, ResourceTree> {
+public class ResourceTreeParser implements Function<Response, FolderProjection> {
     @Override
-    public ResourceTree apply(Response input) {
+    public FolderProjection apply(Response input) {
         ResourceTreeOverlay overlay = JsonUtils.safeEval(input.getText());
         ResourceNode root = parse(overlay.getRootNode());
-        return new ResourceTree(root);
+        return new FolderProjection(root);
     }
 
     public static ResourceNode parse(ResourceNodeOverlay overlay) {

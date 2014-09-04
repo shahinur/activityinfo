@@ -2,24 +2,23 @@ package org.activityinfo.ui.vdom.shared.tree;
 
 public class VText extends VTree {
 
-    public final String text;
-    public final String version = null;
+    private final String text;
 
     public VText(String text) {
         this.text = text;
     }
 
-    public static boolean isVText(VTree b) {
-        return b instanceof VText;
-    }
-
     @Override
     public String text() {
-        return text;
+        return getText();
     }
 
     @Override
     public void accept(VTreeVisitor visitor) {
         visitor.visitText(this);
+    }
+
+    public String getText() {
+        return text;
     }
 }
