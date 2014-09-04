@@ -1,9 +1,6 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.*;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -45,6 +42,19 @@ public class ResourceGroup {
 
         if(FolderIndex.isFolderItem(resource)) {
             datastore.put(tx, FolderIndex.createEntities(resource));
+        }
+    }
+
+    public boolean exists(DatastoreService datastore, ResourceId resourceId) {
+        if(resourceId.asString().startsWith("_")) {
+            return false;
+        }
+        Key key = getLatestContent(resourceId).getKey();
+        try {
+            datastore.get(key);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
         }
     }
 
