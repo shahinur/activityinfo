@@ -27,8 +27,7 @@ import org.activityinfo.model.expr.functions.BooleanFunctions;
 import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.HasSetFieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
@@ -60,24 +59,35 @@ public class ExpressionBuilder {
         FieldValue value = row.getValue();
 
         ExprFunction rowFunction = row.getFunction();
-        // todo handle funtions : include/exclude
 
+        // FUNCTIONS building
+        if (SkipRowPresenter.SET_FUNCTIONS.contains(rowFunction)) {
+
+            List<ExprNode> arguments = Lists.newArrayList();
+            arguments.add(new SymbolExpr(row.getFormField().getId().asString()));
+
+            if (value instanceof BooleanFieldValue || value instanceof Quantity || value instanceof TextValue) {
+                arguments.add(new ConstantExpr(value));
+            } else if (value instanceof HasSetFieldValue) {
+                List<ResourceId> idSet = Lists.newArrayList(((HasSetFieldValue)value).getResourceIds());
+                for (ResourceId resourceId : idSet) {
+                    arguments.add(new SymbolExpr(resourceId.asString()));
+                }
+            } else {
+                throw new UnsupportedOperationException("Not supported value: " + value);
+            }
+            return new FunctionCallNode(rowFunction, arguments);
+        }
+
+        // OPERATOR building
         if (value instanceof BooleanFieldValue) {
             right = new ConstantExpr(value);
         } else if (value instanceof Quantity) {
             right = new ConstantExpr(value);
         } else if (value instanceof TextValue) {
             right = new ConstantExpr(value);
-        } else if (value instanceof ReferenceValue) {
-            List<ResourceId> idSet = Lists.newArrayList(((ReferenceValue)value).getResourceIds());
-            int size = idSet.size();
-            if (size == 1) {
-                right = new SymbolExpr(idSet.get(0).asString());
-            } else {
-                return new GroupExpr(buildNodeForSet(left, idSet, row));
-            }
-        } else if (value instanceof EnumFieldValue) {
-            List<ResourceId> idSet = Lists.newArrayList(((EnumFieldValue)value).getValueIds());
+        } else if (value instanceof HasSetFieldValue) {
+            List<ResourceId> idSet = Lists.newArrayList(((HasSetFieldValue)value).getResourceIds());
             int size = idSet.size();
             if (size == 1) {
                 right = new SymbolExpr(idSet.get(0).asString());

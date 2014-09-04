@@ -23,11 +23,7 @@ package org.activityinfo.ui.component.formdesigner.skip;
 
 import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.ReferenceValue;
-
-import java.util.Set;
 
 /**
  * @author yuriyz on 7/25/14.
@@ -80,10 +76,6 @@ public class RowData {
 
     public void setValue(FieldValue value) {
         this.value = value;
-    }
-
-    public void setValue(Set<ResourceId> resourceIds) {
-        this.value = new ReferenceValue(resourceIds);
     }
 
     @Override

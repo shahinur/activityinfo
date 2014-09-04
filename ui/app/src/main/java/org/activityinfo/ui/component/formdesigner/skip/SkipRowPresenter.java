@@ -35,13 +35,17 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.ui.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.component.formdesigner.container.FieldWidgetContainer;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -53,9 +57,9 @@ public class SkipRowPresenter {
             EqualFunction.INSTANCE, NotEqualFunction.INSTANCE
     );
 
-    private static final List<ExprFunction> SET_FUNCTIONS = Lists.newArrayList(
-            ContainsFunction.INSTANCE, NotContainsFunction.INSTANCE
-    );
+    public static final List<ExprFunction> SET_FUNCTIONS = Collections.unmodifiableList(Lists.newArrayList(
+            ContainsAllFunction.INSTANCE, ContainsAnyFunction.INSTANCE, NotContainsAllFunction.INSTANCE, NotContainsAnyFunction.INSTANCE
+    ));
 
     private final FieldWidgetContainer fieldWidgetContainer;
     private final SkipRow view = new SkipRow();
@@ -146,17 +150,16 @@ public class SkipRowPresenter {
     private void initFunction() {
         view.getFunction().clear();
 
-//        FieldType type = getSelectedFormField().getType();
-        // todo uncomment when expr and row data builder is ready
-//        if (type instanceof EnumType || type instanceof ReferenceType) {
-//            for (ExprFunction function : SET_FUNCTIONS) {
-//                view.getFunction().addItem(function.getLabel(), function.getId());
-//            }
-//        } else {
+        FieldType type = getSelectedFormField().getType();
+        if (type instanceof EnumType || type instanceof ReferenceType) {
+            for (ExprFunction function : SET_FUNCTIONS) {
+                view.getFunction().addItem(function.getLabel(), function.getId());
+            }
+        } else {
             for (ComparisonOperator function : COMPARISON_OPERATORS) {
                 view.getFunction().addItem(function.getLabel(), function.getId());
             }
-//        }
+        }
     }
 
     private void initJoinFunction() {
@@ -176,8 +179,13 @@ public class SkipRowPresenter {
     public void updateWith(final RowData rowData) {
         this.rowData = rowData;
         setSelectedValue(view.getJoinFunction(), rowData.getJoinFunction().getId());
-        setSelectedValue(view.getFunction(), rowData.getFunction().getId());
+
+        // formfield list must be initialized before function list
         setSelectedValue(view.getFormfield(), rowData.getFormField().getId().asString());
+
+        initFunction(); // re-init function (funtions depends on formfield type)
+        setSelectedValue(view.getFunction(), rowData.getFunction().getId());
+
         initValueWidgetLater();
     }
 
