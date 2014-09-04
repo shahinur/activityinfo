@@ -24,6 +24,7 @@ package org.activityinfo.model.expr.functions;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.NullFieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.BooleanType;
 
@@ -33,34 +34,38 @@ import java.util.Set;
 /**
  * @author yuriyz on 9/3/14.
  */
-public class ContainsFunction extends ExprFunction {
+public class ContainsAnyFunction extends ExprFunction {
 
-    public static final ContainsFunction INSTANCE = new ContainsFunction();
+    public static final ContainsAnyFunction INSTANCE = new ContainsAnyFunction();
 
-    private ContainsFunction() {
+    private ContainsAnyFunction() {
     }
 
     @Override
     public String getId() {
-        return "contains";
+        return "containsAny";
     }
 
     @Override
     public String getLabel() {
-        return "Includes";
+        return "Includes Any";
     }
 
     @Override
     public BooleanFieldValue apply(List<FieldValue> arguments) {
+        if (arguments.get(0).equals(NullFieldValue.INSTANCE)) {
+            return BooleanFieldValue.FALSE;
+        }
+
         Set<ResourceId> arg1 = Casting.toSet(arguments.get(0));
-        for (int i = 1; i<arguments.size();i++) {
+        for (int i = 1; i < arguments.size(); i++) {
             Set<ResourceId> arg = Casting.toSet(arguments.get(i));
-            if (!arg1.containsAll(arg)) {
-                return BooleanFieldValue.FALSE;
+            if (arg1.containsAll(arg)) {
+                return BooleanFieldValue.TRUE;
             }
         }
 
-        return BooleanFieldValue.TRUE;
+        return BooleanFieldValue.FALSE;
     }
 
     @Override

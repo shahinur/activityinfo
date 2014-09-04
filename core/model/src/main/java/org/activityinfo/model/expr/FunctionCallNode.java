@@ -31,7 +31,7 @@ public class FunctionCallNode extends ExprNode {
     @Override
     public FieldValue evaluate(EvalContext context) {
         List<FieldValue> evaluatedArguments = Lists.newArrayList();
-        for(ExprNode expr : arguments) {
+        for (ExprNode expr : arguments) {
             evaluatedArguments.add(expr.evaluate(context));
         }
         return function.apply(evaluatedArguments);
@@ -40,7 +40,7 @@ public class FunctionCallNode extends ExprNode {
     @Override
     public FieldType resolveType(EvalContext context) {
         List<FieldType> argumentTypes = Lists.newArrayList();
-        for(ExprNode expr : arguments) {
+        for (ExprNode expr : arguments) {
             argumentTypes.add(expr.resolveType(context));
         }
         return function.getResultType(argumentTypes);
@@ -63,7 +63,18 @@ public class FunctionCallNode extends ExprNode {
 
     @Override
     public String asExpression() {
-        return arguments.get(0) + "" + function.getId() + "" + arguments.get(1);
+        if (ExprParser.FUNCTIONS.contains(function.getId())) {
+            String argumentString = "";
+            for (ExprNode arg : arguments) {
+                argumentString += arg;
+                if (!arg.equals(arguments.get(arguments.size() - 1))) { // add comma if not last element
+                    argumentString += ",";
+                }
+            }
+            return function.getId() + "(" + argumentString + ")";
+        } else {
+            return arguments.get(0).asExpression() + "" + function.getId() + "" + arguments.get(1).asExpression();
+        }
     }
 
     @Override
