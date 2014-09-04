@@ -394,4 +394,8 @@ public class PropertyBag<T extends PropertyBag> {
         return properties.hashCode();
     }
 
+    @Override
+    public String toString() {
+        return properties.toString();
+    }
 }
