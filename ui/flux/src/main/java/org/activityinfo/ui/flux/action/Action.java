@@ -1,6 +1,5 @@
 package org.activityinfo.ui.flux.action;
 
-import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.flux.store.Store;
 
 /**
@@ -16,5 +15,5 @@ public interface Action<H> {
      * callback defined on {@code H}
      *
      */
-    Promise<Void> accept(Store store);
+    void accept(Store store);
 }

@@ -2,7 +2,7 @@ package org.activityinfo.ui.style;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.ui.vdom.shared.html.Children;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 import static org.activityinfo.ui.style.BaseStyles.*;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
-public class Panel extends VThunk {
+public class Panel extends VComponent {
 
     private PanelStyle style;
     private VTree title;

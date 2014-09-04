@@ -3,11 +3,11 @@ package org.activityinfo.ui.style;
 import com.google.gwt.user.client.Event;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-public class Button extends VThunk {
+public class Button extends VComponent {
 
     private ButtonStyle style;
     private ButtonSize size;

@@ -1,15 +1,15 @@
 package org.activityinfo.store.test;
 
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.service.store.ResourceTreeRequest;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.store.RemoteStoreService;
 
@@ -48,13 +48,13 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<List<ResourceNode>> queryRoots() {
+    public Promise<List<ResourceNode>> getWorkspaces() {
         return null;
     }
 
     @Override
-    public Promise<ResourceTree> queryTree(ResourceId rootId) {
+    public Promise<FolderProjection> getFolder(ResourceId rootId) {
         return Promise.resolved(store.queryTree(
-                AuthenticatedUser.getAnonymous(), new ResourceTreeRequest(rootId)));
+                AuthenticatedUser.getAnonymous(), new FolderRequest(rootId)));
     }
 }

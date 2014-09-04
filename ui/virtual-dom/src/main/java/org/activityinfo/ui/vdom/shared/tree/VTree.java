@@ -2,7 +2,7 @@ package org.activityinfo.ui.vdom.shared.tree;
 
 public abstract class VTree {
 
-    public boolean hasWidgets() {
+    public boolean hasComponents() {
         return false;
     }
 
@@ -21,11 +21,7 @@ public abstract class VTree {
 
     public PropMap properties() { throw new UnsupportedOperationException(); }
 
-    public PropMap hooks() { throw new UnsupportedOperationException(); }
-
     public String text() { throw new UnsupportedOperationException(); }
-
-    public boolean descendantHooks() { throw new UnsupportedOperationException(); }
 
     public VTree[] children() {
         return VNode.NO_CHILDREN;
@@ -37,14 +33,6 @@ public abstract class VTree {
 
     public abstract void accept(VTreeVisitor visitor);
 
-    /**
-     * Forces a Thunk to a concrete value if this VTree is a Thunk, or
-     * this VTree itself is a concrete value.
-     * @param previous the previously render thunk if available.
-     */
-    public VTree force(VTree previous) {
-        return this;
-    }
 
     /**
      * Forces a Thunk to a concrete value if this VTree is a Thunk, or

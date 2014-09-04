@@ -8,10 +8,10 @@ import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -83,9 +83,9 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     @Override
-    public ResourceTree queryTree(AuthenticatedUser user, ResourceTreeRequest request) {
+    public FolderProjection queryTree(AuthenticatedUser user, FolderRequest request) {
         ResourceNode root = createNode(request, get(request.getRootId()));
-        return new ResourceTree(root);
+        return new FolderProjection(root);
     }
 
     @Override
@@ -146,7 +146,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     }
 
-    private ResourceNode createNode(ResourceTreeRequest request, Resource resource) {
+    private ResourceNode createNode(FolderRequest request, Resource resource) {
         ResourceId classId = getClassId(resource);
         ResourceNode node = new ResourceNode(resource.getId(), classId);
         node.setLabel(getLabel(resource, classId));

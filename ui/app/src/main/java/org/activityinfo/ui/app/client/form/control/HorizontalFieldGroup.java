@@ -2,15 +2,13 @@ package org.activityinfo.ui.app.client.form.control;
 
 import com.google.common.base.Strings;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.app.client.form.store.FieldState;
-import org.activityinfo.ui.app.client.form.store.InstanceStore;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 import org.activityinfo.ui.widget.validation.ValidationMessage;
 
@@ -19,15 +17,13 @@ import java.util.List;
 
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
-public class HorizontalFieldGroup extends VThunk<HorizontalFieldGroup> {
+public class HorizontalFieldGroup extends VComponent<HorizontalFieldGroup> {
 
-    private final InstanceStore store;
-    private final ResourceId fieldId;
-    private VThunk control;
+    private VComponent control;
+    private final FieldState fieldState;
 
-    public HorizontalFieldGroup(InstanceStore store, ResourceId fieldId, VThunk control) {
-        this.store = store;
-        this.fieldId = fieldId;
+    public HorizontalFieldGroup(FieldState fieldState, VComponent control) {
+        this.fieldState = fieldState;
         this.control = control;
     }
 
@@ -36,20 +32,19 @@ public class HorizontalFieldGroup extends VThunk<HorizontalFieldGroup> {
 
         String classNames = BaseStyles.FORM_GROUP.getClassNames();
 
-        FieldState state = store.getState(fieldId);
-        FormField field = state.getField();
+        FormField field = fieldState.getField();
 
         List<VTree> children = new ArrayList<>();
-        children.add(renderLabel(state.getField()));
+        children.add(renderLabel(field));
         children.add(renderControl());
 
         if(!Strings.isNullOrEmpty(field.getDescription())) {
             children.add(renderHelpBlock(field));
         }
 
-        if(!state.isValid()) {
+        if(!fieldState.isValid()) {
             classNames += " " + BaseStyles.HAS_ERROR;
-            for(ValidationMessage message : state.getValidationMessages()) {
+            for(ValidationMessage message : fieldState.getValidationMessages()) {
                 children.add(render(message));
             }
         }

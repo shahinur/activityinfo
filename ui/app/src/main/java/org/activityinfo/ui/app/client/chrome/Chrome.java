@@ -1,14 +1,13 @@
 package org.activityinfo.ui.app.client.chrome;
 
 import com.google.gwt.dom.client.Style;
+import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.nav.LeftPanel;
-import org.activityinfo.ui.app.client.store.Application;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 
-import static org.activityinfo.ui.app.client.chrome.MainPanel.mainPanel;
 import static org.activityinfo.ui.style.PagePreLoader.preLoader;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
@@ -37,7 +36,7 @@ public class Chrome {
     public static VNode mainSection(Application app) {
         return section(id(ROOT_ID),
             new LeftPanel(app),
-            mainPanel(app),
+            new MainPanel(app),
             rightPanel()
         );
     }
@@ -54,5 +53,6 @@ public class Chrome {
     private static VNode rightPanel() {
         return div(BaseStyles.RIGHTPANEL);
     }
+
 
 }

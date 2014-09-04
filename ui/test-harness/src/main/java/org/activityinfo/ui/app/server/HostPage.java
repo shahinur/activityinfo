@@ -2,7 +2,7 @@ package org.activityinfo.ui.app.server;
 
 import com.google.common.io.ByteSource;
 import com.google.common.io.Resources;
-import org.activityinfo.ui.app.client.store.Application;
+import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.Chrome;
 import org.activityinfo.ui.style.BaseStyleResources;
 import org.activityinfo.ui.vdom.shared.html.HtmlRenderer;

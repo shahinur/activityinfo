@@ -74,27 +74,32 @@ public class RestEndpoint {
         });
     }
 
-    private Promise<Response> send(RequestBuilder request) {
+    private Promise<Response> send(final RequestBuilder reqBuilder) {
         final Promise<Response> promise = new Promise<>();
-        request.setCallback(new RequestCallback() {
+        reqBuilder.setCallback(new RequestCallback() {
             @Override
             public void onResponseReceived(Request request, Response response) {
-                if(isSuccessful(response.getStatusCode())) {
+                GWT.log("Response " + response.getStatusCode() + " from " + reqBuilder.getUrl());
+
+                if (isSuccessful(response.getStatusCode())) {
                     promise.resolve(response);
                 } else {
+                    GWT.log("Response message: " + response.getText());
                     promise.reject(new StatusCodeException(response.getStatusCode()));
                 }
             }
 
             @Override
             public void onError(Request request, Throwable exception) {
+                GWT.log("Error from " + reqBuilder.getUrl(), exception);
                 promise.reject(exception);
             }
         });
-        GWT.log("Sending request " + request.getUrl());
+        GWT.log("Sending request " + reqBuilder.getUrl());
         try {
-            request.send();
+            reqBuilder.send();
         } catch (RequestException e) {
+            GWT.log("Request sending failed", e);
             promise.reject(e);
         }
         return promise;

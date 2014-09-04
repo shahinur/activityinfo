@@ -24,4 +24,10 @@ package org.activityinfo.ui.flux.store;
  */
 public interface Store {
 
+    int getStoreId();
+
+    void addChangeListener(StoreChangeListener listener);
+
+    void removeChangeListener(StoreChangeListener listener);
+
 }

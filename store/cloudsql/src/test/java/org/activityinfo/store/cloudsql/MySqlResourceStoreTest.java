@@ -10,7 +10,7 @@ import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.store.CommitStatus;
-import org.activityinfo.service.store.ResourceTreeRequest;
+import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.UpdateResult;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
@@ -65,9 +65,9 @@ public class MySqlResourceStoreTest {
         Stopwatch stopwatch = Stopwatch.createStarted();
         int requestCount = 10000;
         for(int i=0;i!= requestCount;++i) {
-            ResourceTree tree = environment.getStore().queryTree(
+            FolderProjection tree = environment.getStore().queryTree(
                     environment.getUser(),
-                    new ResourceTreeRequest(divA.getId()));
+                    new FolderRequest(divA.getId()));
             assertThat(tree.getRootNode().getId(), equalTo(divA.getId()));
             assertThat(tree.getRootNode().getLabel(), equalTo("Division A"));
             assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
@@ -85,9 +85,9 @@ public class MySqlResourceStoreTest {
 
         // Verify that the subtree version gets updated
 
-        ResourceTree tree = environment.getStore().queryTree(
+        FolderProjection tree = environment.getStore().queryTree(
                 environment.getUser(),
-                new ResourceTreeRequest(divA.getId()));
+                new FolderRequest(divA.getId()));
         assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
       //  assertThat(tree.getRootNode().getSubTreeVersion(), equalTo(formCreationResult.getNewVersion()));
 

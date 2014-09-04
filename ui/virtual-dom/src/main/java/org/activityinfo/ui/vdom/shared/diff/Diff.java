@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.activityinfo.ui.vdom.shared.diff.VPatch.Type.*;
 import static org.activityinfo.ui.vdom.shared.tree.PropMap.isObject;
 
 /**
@@ -27,62 +26,62 @@ import static org.activityinfo.ui.vdom.shared.tree.PropMap.isObject;
  */
 public class Diff {
 
-    private VDiff patchSet;
+    private VPatchSet patchSet;
 
-    public static VDiff diff(VTree a, VTree b) {
+    public static VPatchSet diff(VTree a, VTree b) {
         Diff diff = new Diff();
-        diff.patchSet = new VDiff(a);
+        diff.patchSet = new VPatchSet(a);
         diff.walk(a, b, 0);
         return diff.patchSet;
     }
 
+
     private Diff() {}
 
     public void walk(VTree a, VTree b, int index) {
+
+        assert a != null;
+
         if (a == b) {
-            if (a instanceof VThunk || b instanceof VThunk) {
-                thunks(a, b, index);
-            } else {
-                hooks(b, index);
+            // We assume that VNode and VText are immutable,
+            // so if a == b, we only need to address components
+            // which have marked themselves as dirty with refresh()
+
+            if (a instanceof VComponent) {
+                diffComponent((VComponent) a, index);
+
+            } else if (a.hasComponents()) {
+                diffChildren(a, b, index);
+
             }
-            return;
-        }
+        } else if (b == null) {
+            patchSet.add(index, RemoveOp.INSTANCE);
+            unmountComponents(a);
 
-        if (b == null) {
-            patchSet.add(index, VPatch.remove(a));
-            destroyWidgets(a, index);
-
-        } else if (a instanceof VThunk || b instanceof VThunk) {
-            thunks(a, b, index);
+        } else if (b instanceof VComponent) {
+            if (a instanceof VComponent) {
+                diffComponents((VComponent)a, (VComponent)b, index);
+            } else {
+                patchSet.add(index, new ReplaceOp(b));
+            }
 
         } else if (b instanceof VNode) {
             if (a instanceof VNode) {
                 diffVNodes((VNode)a, (VNode)b, index);
 
             } else {
-                patchSet.add(index, VPatch.replace(VNODE, a, b));
-                destroyWidgets(a, index);
+                patchSet.add(index, new ReplaceOp(b));
+                unmountComponents(a);
             }
 
         } else if (b instanceof VText) {
-            if (!(a instanceof VText)) {
-
-                patchSet.add(index, VPatch.replace(VTEXT, a, b));
-                destroyWidgets(a, index);
-
-            } else if (!a.text().equals(b.text())) {
-                patchSet.add(index, VPatch.replace(VTEXT, a, b));
-            }
-
-        } else if (b instanceof VWidget) {
-
-            // right now we consider any two widgets to be equal--
-            // that's probably not what we want...
-
-            if (!Objects.equals(a, b)) {
-
-                patchSet.add(index, VPatch.replace(WIDGET, a, b));
-                destroyWidgets(a, index);
+            if (a instanceof VText) {
+                if(!a.text().equals(b.text())) {
+                    patchSet.add(index, new PatchTextOp(b.text()));
+                }
+            } else {
+                patchSet.add(index, new ReplaceOp(b));
+                unmountComponents(a);
             }
         }
     }
@@ -93,14 +92,15 @@ public class Diff {
 
             PropMap propsPatch = diffProps(a.properties, b.properties, b.hooks());
             if (propsPatch != null) {
-                patchSet.add(index, VPatch.patchProps(a, propsPatch));
+                patchSet.add(index, new PatchPropsOp(propsPatch, a.properties));
             }
-        } else {
-            patchSet.add(index, VPatch.replace(VNODE, a, b));
-            destroyWidgets(a, index);
-        }
 
-        diffChildren(a, b, index);
+            diffChildren(a, b, index);
+
+        } else {
+            patchSet.add(index, new ReplaceOp(b));
+            unmountComponents(a);
+        }
     }
 
     public static PropMap diffProps(PropMap a, PropMap b, PropMap hooks) {
@@ -175,17 +175,17 @@ public class Diff {
             VTree rightNode = i < bLen ? bChildren[i] : null;
             childIndex += 1;
 
-            if (isAbsent(leftNode)) {
-                if (isPresent(rightNode)) {
-                    // Excess nodes in b need to be added
-                    patchSet.add(parentIndex, VPatch.insert(rightNode));
-                }
-            } else if (isAbsent(rightNode)) {
-                if (isPresent(leftNode)) {
-                    // Excess nodes in a need to be removed
-                    patchSet.add(childIndex, VPatch.remove(leftNode));
-                    destroyWidgets(leftNode, childIndex);
-                }
+            if (isAbsent(leftNode) && isPresent(rightNode)) {
+
+                // Excess nodes in b need to be added
+                patchSet.add(parentIndex, new InsertOp(rightNode));
+
+            } else if (isAbsent(rightNode) && isPresent(leftNode)) {
+
+                // Excess nodes in a need to be removed
+                patchSet.add(childIndex, RemoveOp.INSTANCE);
+                unmountComponents(leftNode);
+
             } else {
                 walk(leftNode, rightNode, childIndex);
             }
@@ -210,59 +210,72 @@ public class Diff {
         return node == null;
     }
 
-    // Patch records for all destroyed widgets must be added because we need
-    // a DOM node reference for the destroy public static void
-    public void destroyWidgets(VTree vNode, int index) {
-        if (VWidget.isWidget(vNode)) {
-            patchSet.add(index, VPatch.remove(vNode));
-        } else if (vNode.hasWidgets()) {
+
+    public void unmountComponents(VTree vNode) {
+        if (vNode instanceof VComponent) {
+            VComponent component = (VComponent) vNode;
+            component.fireWillUnmount();
+            unmountComponents(component.vNode);
+
+        } else if (vNode.hasComponents()) {
             VTree[] children = vNode.children();
             int len = children.length;
             for (int i = 0; i < len; i++) {
                 VTree child = children[i];
-                index += 1;
 
-                destroyWidgets(child, index);
-
-                index += child.count();
+                unmountComponents(child);
             }
         }
     }
 
-    // Create a sub-patch for thunks
-    public  void thunks(VTree a, VTree b, int index) {
-
-        VTree renderedB = b.force(a);
-        VTree renderedA = a.force();
-
-        VDiff thunkPatch = diff(renderedA, renderedB);
-        if (!thunkPatch.isEmpty()) {
-            patchSet.add(index, VPatch.thunkPatch(thunkPatch));
+    /**
+     * Updates a single component in place
+     *
+     */
+    private void diffComponent(VComponent a, int index) {
+        VTree previous = a.vNode;
+        if(previous == null) {
+            throw new IllegalStateException();
         }
-    }
 
-    // Execute hooks when two nodes are identical
-    public static void hooks(VTree vNode, int index) {
-        if (VNode.isVNode(vNode)) {
-            if (Truthyness.isTrue(vNode.hooks())) {
-                throw new UnsupportedOperationException("todo");
-                //patch.add(index, new VPatch(VPatch.Type.PROPS, vNode.hooks(), vNode.hooks()));
+        if(a.isDirty()) {
+            VTree updated = a.forceRender();
+            addComponentDiff(a, previous, updated, index);
+
+        } else {
+
+            // if there have been no changes to the component, we
+            // still need to look for dirty components within the
+            // component's tree
+            if(previous.hasComponents()) {
+                addComponentDiff(a, previous, previous, index);
             }
-
-//            if (vNode.descendantHooks()) {
-//                VTree[] children = vNode.children();
-//                int len = children.length;
-//                for (int i = 0; i < len; i++) {
-//                    VTree child = children[i];
-//                    index += 1;
-//
-//                    hooks(child, index);
-//
-//                    index += child.count();
-//                }
-//            }
         }
     }
+
+
+    private void addComponentDiff(VComponent component, VTree previous, VTree updated, int index) {
+        VPatchSet patch = diff(previous, updated);
+        if (!patch.isEmpty()) {
+            patchSet.add(index, new PatchComponentOp(component, patch));
+        }
+    }
+
+    public void diffComponents(VComponent a, VComponent b, int index) {
+
+        assert a != null;
+        assert b != null;
+        assert a.isRendered();
+
+        VTree renderedA = a.vNode;
+        VTree renderedB = b.ensureRendered();
+
+        assert renderedA != null;
+        assert renderedB != null;
+
+        patchSet.add(index, new PatchComponentOp(a, b, diff(renderedA, renderedB)));
+    }
+
 
     // List diff, naive left to right reordering
     public static VTree[] reorder(VTree[] aChildren, VTree[] bChildren) {
@@ -347,7 +360,6 @@ public class Diff {
         //
         //        return shuffle;
     }
-
 
     public static Map<String, Integer> keyIndex(VTree[] children) {
         Map<String, Integer> keys = null;

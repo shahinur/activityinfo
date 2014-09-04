@@ -9,11 +9,11 @@ import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-public class TextControl extends VThunk<TextControl> {
+public class TextControl extends VComponent<TextControl> {
 
     private final Dispatcher dispatcher;
     private final FormField field;
