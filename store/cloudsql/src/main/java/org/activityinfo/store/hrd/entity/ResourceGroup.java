@@ -1,9 +1,7 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Transaction;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -39,13 +37,17 @@ public class ResourceGroup {
         return new Snapshot(rootKey, resourceId, version);
     }
 
-    public void update(DatastoreService datastore, Transaction tx, AuthenticatedUser user, Resource resource) {
-        datastore.put(tx, getLatestContent(resource.getId()).createEntity(resource));
-        datastore.put(tx, getSnapshot(resource.getId(), resource.getVersion()).createEntity(user, resource));
+    public long update(VersionedTransaction versionedTransaction, AuthenticatedUser user, Resource resource) {
+        resource = resource.copy();
+        resource.setVersion(versionedTransaction.incrementVersion());
+
+        versionedTransaction.put(getLatestContent(resource.getId()).createEntity(resource));
+        versionedTransaction.put(getSnapshot(resource.getId(), resource.getVersion()).createEntity(user, resource));
 
         if(FolderIndex.isFolderItem(resource)) {
-            datastore.put(tx, FolderIndex.createEntities(resource));
+            versionedTransaction.put(FolderIndex.createEntities(resource));
         }
-    }
 
+        return resource.getVersion();
+    }
 }

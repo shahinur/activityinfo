@@ -1,11 +1,9 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Transaction;
 
 import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
 
@@ -27,9 +25,9 @@ public class LatestVersion {
         this.key = KeyFactory.createKey(group.getKey(), KIND, KEY_ID);
     }
 
-    public long get(DatastoreService datastore, Transaction tx) {
+    public long get(VersionedTransaction versionedTransaction) {
         try {
-            Entity entity = datastore.get(tx, key);
+            Entity entity = versionedTransaction.get(key);
             return (Long) entity.getProperty(VERSION_PROPERTY);
         } catch (EntityNotFoundException e) {
             return 0;

@@ -6,7 +6,6 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
@@ -39,13 +38,14 @@ public class LatestContent {
         this.key = KeyFactory.createKey(rootKey, KIND, id.asString());
     }
 
-    public Resource get(DatastoreService datastore, Transaction tx) throws EntityNotFoundException {
-        Entity entity = datastore.get(tx, key);
+    public Resource get(VersionedTransaction versionedTransaction) throws EntityNotFoundException {
+        Entity entity = versionedTransaction.get(key);
         return deserializeResource(entity);
     }
 
     public Resource get(DatastoreService datastore) throws EntityNotFoundException {
-        return get(datastore, (Transaction)null);
+        Entity entity = datastore.get(key);
+        return deserializeResource(entity);
     }
 
     public Entity createEntity(Resource resource) {

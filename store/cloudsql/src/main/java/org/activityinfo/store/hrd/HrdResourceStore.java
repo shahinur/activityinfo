@@ -4,7 +4,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.Transaction;
 import com.google.apphosting.api.ApiProxy;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -23,9 +22,9 @@ import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.ResourceTreeRequest;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
-import org.activityinfo.store.hrd.entity.GlobalVersion;
 import org.activityinfo.store.hrd.entity.ResourceGroup;
 import org.activityinfo.store.hrd.entity.Snapshot;
+import org.activityinfo.store.hrd.entity.VersionedTransaction;
 import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.FolderIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
@@ -33,8 +32,6 @@ import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import javax.ws.rs.PathParam;
 import java.util.List;
 import java.util.Map;
-
-import static com.google.appengine.api.datastore.TransactionOptions.Builder.withXG;
 
 public class HrdResourceStore implements ResourceStore {
     private final static long TIME_LIMIT_MILLISECONDS = 10 * 1000L;
@@ -77,53 +74,43 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
-
-        Transaction tx = datastore.beginTransaction(withXG(true));
+        long newVersion;
         ResourceGroup group = new ResourceGroup(resource.getId());
 
-        try {
-            Resource previousVersion = group.getLatestContent(resource.getId()).get(datastore, tx);
+        try (VersionedTransaction versionedTransaction = new VersionedTransaction(datastore)) {
+            group.getLatestContent(resource.getId()).get(versionedTransaction);
+            newVersion = group.update(versionedTransaction, user, resource);
+            versionedTransaction.commit();
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(resource.getId());
         }
-
-        long newVersion = GlobalVersion.incrementVersion(datastore, tx);
-        Resource updatedResource = resource.copy();
-        updatedResource.setVersion(newVersion);
-
-        group.update(datastore, tx, user, updatedResource);
-
-        tx.commit();
 
         return UpdateResult.committed(resource.getId(), newVersion);
     }
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-
-        Transaction tx = datastore.beginTransaction(withXG(true));
+        long newVersion;
         ResourceGroup group = new ResourceGroup(resource.getId());
 
-        long newVersion = GlobalVersion.incrementVersion(datastore, tx);
-        Resource newResource = resource.copy();
-        newResource.setVersion(newVersion);
+        try (VersionedTransaction versionedTransaction = new VersionedTransaction(datastore)) {
+            newVersion = group.update(versionedTransaction, user, resource);
 
-        group.update(datastore, tx, user, newResource);
+            // if this is a root workspace, grant ownership to user
+            if (resource.getOwnerId().equals(Resources.ROOT_ID)) {
 
-        // if this is a root workspace, grant ownership to user
-        if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
+                AccessControlRule acr = new AccessControlRule(resource.getId(), user.getUserResourceId());
+                acr.setOwner(true);
+                Resource acrResource = acr.asResource();
+                acrResource.setVersion(newVersion);
+                group.update(versionedTransaction, user, acrResource);
 
-            AccessControlRule acr = new AccessControlRule(resource.getId(), user.getUserResourceId());
-            acr.setOwner(true);
-            Resource acrResource = acr.asResource();
-            acrResource.setVersion(newVersion);
-            group.update(datastore, tx, user, acrResource);
+                // add to the index
+                versionedTransaction.put(WorkspaceIndex.createOwnerIndex(resource.getId(), user));
+            }
 
-            // add to the index
-            datastore.put(tx, WorkspaceIndex.createOwnerIndex(resource.getId(), user));
+            versionedTransaction.commit();
         }
-
-        tx.commit();
 
         return UpdateResult.committed(resource.getId(), newVersion);
     }

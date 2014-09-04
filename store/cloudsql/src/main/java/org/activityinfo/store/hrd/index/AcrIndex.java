@@ -1,6 +1,11 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import org.activityinfo.model.auth.AccessControlRule;
@@ -8,6 +13,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.store.hrd.entity.ResourceGroup;
+import org.activityinfo.store.hrd.entity.VersionedTransaction;
 
 /**
  * Entity which stores resourceId, subjectId, permissions in an entity
@@ -37,12 +43,12 @@ public class AcrIndex {
         return entity;
     }
 
-    public static AccessControlRule get(DatastoreService datastore, Transaction tx,
+    public static AccessControlRule get(VersionedTransaction versionedTransaction,
                                         ResourceId resourceId,
                                         ResourceId principalId) {
 
         try {
-            Entity entity = datastore.get(tx, key(resourceId, principalId));
+            Entity entity = versionedTransaction.get(key(resourceId, principalId));
             return fromEntity(entity);
 
         } catch (EntityNotFoundException e) {
