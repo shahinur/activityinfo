@@ -59,6 +59,9 @@ public class ExpressionBuilder {
 
         FieldValue value = row.getValue();
 
+        ExprFunction rowFunction = row.getFunction();
+        // todo handle funtions : include/exclude
+
         if (value instanceof BooleanFieldValue) {
             right = new ConstantExpr(value);
         } else if (value instanceof Quantity) {
@@ -85,7 +88,7 @@ public class ExpressionBuilder {
             throw new UnsupportedOperationException("Not supported value: " + value);
         }
 
-        ExprNode node = new FunctionCallNode(row.getFunction(), left, right);
+        ExprNode node = new FunctionCallNode(rowFunction, left, right);
         if (rows.size() > 1) {
             node = new GroupExpr(node);
         }
