@@ -1,12 +1,12 @@
 package org.activityinfo.ui.vdom.client;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.vdom.client.dom.BrowserDomDocument;
+import org.activityinfo.ui.vdom.shared.dom.BrowserDomDocument;
 import org.activityinfo.ui.vdom.client.render.RenderContext;
 import org.activityinfo.ui.vdom.shared.dom.DomDocument;
+import org.activityinfo.ui.vdom.shared.dom.DomElement;
 import org.activityinfo.ui.vdom.shared.dom.DomNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 
 public class SimpleRenderContext implements RenderContext {
 
@@ -17,28 +17,24 @@ public class SimpleRenderContext implements RenderContext {
         return document;
     }
 
+
     @Override
-    public void attachWidget(Widget widget) {
+    public void fireUpdate(VComponent thunk) {
 
     }
 
     @Override
-    public void detachWidget(Element element) {
+    public void registerEventListener(DomNode node, VComponent thunk) {
 
     }
 
     @Override
-    public void fireUpdate(VThunk thunk) {
+    public void attachWidget(Widget widget, DomElement container) {
 
     }
 
     @Override
-    public void registerEventListener(DomNode node, VThunk thunk) {
-
-    }
-
-    @Override
-    public void onComponentUnmounted(DomNode node, VThunk w) {
+    public void detachWidget(Widget widget) {
 
     }
 }

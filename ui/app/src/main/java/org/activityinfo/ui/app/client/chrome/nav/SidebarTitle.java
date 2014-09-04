@@ -2,14 +2,14 @@ package org.activityinfo.ui.app.client.chrome.nav;
 
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import static org.activityinfo.ui.style.BaseStyles.SIDEBARTITLE;
 import static org.activityinfo.ui.vdom.shared.html.H.t;
 
-public class SidebarTitle extends VThunk<SidebarTitle> {
+public class SidebarTitle extends VComponent<SidebarTitle> {
 
     private final String title;
 

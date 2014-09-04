@@ -1,6 +1,8 @@
 package org.activityinfo.ui.app.client.action;
 
+import org.activityinfo.ui.app.client.page.Place;
+
 public interface NavigationHandler {
 
-    void changePath(String newPath);
+    void navigate(Place place);
 }

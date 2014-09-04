@@ -2,69 +2,41 @@ package org.activityinfo.ui.app.client.store;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
-import org.activityinfo.ui.app.client.page.PageStore;
+import org.activityinfo.ui.app.client.action.NavigationHandler;
 import org.activityinfo.ui.app.client.page.Place;
-import org.activityinfo.ui.app.client.page.PlaceMapper;
-import org.activityinfo.ui.app.client.page.create.NewWorkspacePage;
-import org.activityinfo.ui.app.client.page.create.NewWorkspacePlace;
-import org.activityinfo.ui.app.client.page.folder.FolderPlace;
-import org.activityinfo.ui.app.client.page.home.HomePage;
 import org.activityinfo.ui.app.client.page.home.HomePlace;
-import org.activityinfo.ui.flux.store.Store;
+import org.activityinfo.ui.flux.dispatcher.Dispatcher;
+import org.activityinfo.ui.flux.store.AbstractStore;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Tracks the current "route" or internal URL within the application,
- * and manages the starting and stopping of "stores" associated with
- * current activity.
+ * Stores the current "route" or internal URL within the application
  *
  */
-public class Router implements Store {
+public class Router extends AbstractStore implements NavigationHandler {
 
-    private PlaceMapper placeMapper = new PlaceMapper();
+    private static final Logger LOGGER = Logger.getLogger(Router.class.getName());
 
-    private Place currentPlace = new HomePlace();
+    private Place currentPlace = HomePlace.INSTANCE;
 
-    private PageStore activePage = new HomePage();
-
-    private Application application;
-
-    public Router(Application application) {
-        this.application = application;
+    public Router(Dispatcher dispatcher) {
+        super(dispatcher);
     }
 
-    public void updatePath(String path) {
-        Place place = placeMapper.parse(path);
+    @Override
+    public void navigate(Place place) {
         if(!place.equals(currentPlace)) {
-            navigateAndFire(place);
+            this.currentPlace = place;
+            LOGGER.log(Level.INFO, "Router.currentPlace = " + place);
+            fireChange();
         }
     }
 
-    private void navigateAndFire(Place path) {
-        this.currentPlace = path;
-        if(path instanceof HomePlace) {
-            navigate(new HomePage());
-
-        } else if(path instanceof NewWorkspacePlace) {
-            navigate(new NewWorkspacePage(application));
-
-        } else if(path instanceof FolderPlace) {
-
-        }
-        application.getStoreEventBus().fireChange(this);
+    public <X extends Place> X getCurrentPlace() {
+        return (X)currentPlace;
     }
-
-    private void navigate(PageStore homePage) {
-        if(activePage != null) {
-            activePage.stop();
-        }
-        activePage = homePage;
-        activePage.start();
-    }
-
-    public PageStore getActivePage() {
-        return activePage;
-    }
-
 
     public static SafeUri uri(Place place) {
         StringBuilder sb = new StringBuilder("#");
@@ -77,4 +49,5 @@ public class Router implements Store {
         }
         return UriUtils.fromTrustedString(sb.toString());
     }
+
 }

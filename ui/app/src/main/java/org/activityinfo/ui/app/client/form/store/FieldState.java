@@ -3,6 +3,7 @@ package org.activityinfo.ui.app.client.form.store;
 import com.google.common.collect.Lists;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.ui.widget.validation.ValidationMessage;
 import org.activityinfo.ui.widget.validation.ValidationSeverity;
@@ -15,8 +16,9 @@ public class FieldState {
     private FieldValue value;
     private List<ValidationMessage> validationMessages = Lists.newArrayList();
 
-    public FieldState(FormField field) {
+    public FieldState(FormField field, FieldValue fieldValue) {
         this.field = field;
+        this.value = value;
     }
 
     public FormField getField() {
@@ -42,6 +44,10 @@ public class FieldState {
     public void updateValue(FieldValue value) {
         this.value = value;
         validate();
+    }
+
+    public ResourceId getFieldId() {
+        return field.getId();
     }
 
 

@@ -26,9 +26,8 @@ public class PlaceMapper {
                 return place;
             }
         }
-        return new HomePlace();
+        return HomePlace.INSTANCE;
     }
-
 
     private static String[] parseToken(String token) {
         if(token.length() == 0) {

@@ -2,12 +2,12 @@ package org.activityinfo.store.cloudsql;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.service.store.ResourceTreeRequest;
 
 import javax.annotation.Nullable;
 import java.sql.PreparedStatement;
@@ -19,8 +19,8 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 /**
- * Constructs a {@link org.activityinfo.model.resource.ResourceTree} in response to
- * a {@link org.activityinfo.service.store.ResourceTreeRequest}.
+ * Constructs a {@link org.activityinfo.model.resource.FolderProjection} in response to
+ * a {@link org.activityinfo.service.store.FolderRequest}.
  */
 public class ResourceTreeBuilder {
 
@@ -29,17 +29,17 @@ public class ResourceTreeBuilder {
     private final StoreConnection connection;
     private final StoreCache cache;
 
-    private final ResourceTreeRequest request;
+    private final FolderRequest request;
 
     private final Map<ResourceId, ResourceNode> nodeMap = Maps.newHashMap();
 
-    public ResourceTreeBuilder(StoreConnection connection, StoreCache storeCache, ResourceTreeRequest request) {
+    public ResourceTreeBuilder(StoreConnection connection, StoreCache storeCache, FolderRequest request) {
         this.connection = connection;
         this.cache = storeCache;
         this.request = request;
     }
 
-    public ResourceTree build() throws SQLException {
+    public FolderProjection build() throws SQLException {
         ResourceId rootId = request.getRootId();
         ResourceNode rootNode = getCachedSubTree(rootId);
 
@@ -53,7 +53,7 @@ public class ResourceTreeBuilder {
 
             cache.put(rootNode);
         }
-        return new ResourceTree(rootNode);
+        return new FolderProjection(rootNode);
     }
 
 

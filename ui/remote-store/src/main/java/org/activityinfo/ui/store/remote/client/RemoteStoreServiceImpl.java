@@ -4,10 +4,10 @@ import com.google.common.base.Function;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
@@ -36,7 +36,7 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     }
 
     @Override
-    public Promise<List<ResourceNode>> queryRoots() {
+    public Promise<List<ResourceNode>> getWorkspaces() {
         return store.resolve("query").resolve("roots").get(new ResourceNodeListParser());
     }
 
@@ -76,7 +76,7 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
 
 
     @Override
-    public Promise<ResourceTree> queryTree(ResourceId rootId) {
+    public Promise<FolderProjection> getFolder(ResourceId rootId) {
 
         JSONObject request = new JSONObject();
         request.put("rootId", new JSONString(rootId.asString()));

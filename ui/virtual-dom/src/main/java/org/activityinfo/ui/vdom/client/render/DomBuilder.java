@@ -1,7 +1,5 @@
 package org.activityinfo.ui.vdom.client.render;
 
-import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.vdom.client.dom.BrowserDomNode;
 import org.activityinfo.ui.vdom.shared.dom.DomDocument;
 import org.activityinfo.ui.vdom.shared.dom.DomElement;
 import org.activityinfo.ui.vdom.shared.dom.DomNode;
@@ -25,8 +23,8 @@ public class DomBuilder {
     public void updateRoot(DomElement rootElement, VTree vtree) {
         if(vtree instanceof VNode) {
             updateRootNode(rootElement, (VNode) vtree);
-        } else if(vtree instanceof VThunk) {
-            updateRootThunk(rootElement, (VThunk)vtree);
+        } else if(vtree instanceof VComponent) {
+            updateRootThunk(rootElement, (VComponent)vtree);
         } else {
             throw new IllegalStateException("Root vTree must be an element");
         }
@@ -46,11 +44,8 @@ public class DomBuilder {
 
     public DomNode render(VTree vTree) {
 
-        if(vTree instanceof VThunk) {
-            return renderThunk((VThunk) vTree);
-
-        } else if(vTree instanceof VWidget) {
-            return renderWidget((VWidget) vTree);
+        if(vTree instanceof VComponent) {
+            return renderComponent((VComponent) vTree);
 
         } else if(vTree instanceof VText) {
             return renderText((VText) vTree);
@@ -88,38 +83,32 @@ public class DomBuilder {
         return domElement;
     }
 
-    private DomNode renderThunk(VThunk thunk) {
-        VTree virtualNode = materializeThunk(thunk);
+    private DomNode renderComponent(VComponent thunk) {
+        VTree virtualNode = thunk.forceRender();
         DomNode domNode = render(virtualNode);
 
         if(thunk.getEventMask() > 0) {
             context.registerEventListener(domNode, thunk);
         }
 
-        thunk.onMounted();
+        thunk.fireMounted(context, domNode);
 
         return domNode;
     }
 
-    private void updateRootThunk(DomElement rootElement, VThunk thunk) {
+    private void updateRootThunk(DomElement rootElement, VComponent thunk) {
         VTree tree = materializeThunk(thunk);
         updateRoot(rootElement, tree);
 
-        thunk.onMounted();
+        thunk.fireMounted(context, rootElement);
     }
 
-    private VTree materializeThunk(VThunk thunk) {
+    private VTree materializeThunk(VComponent thunk) {
         return thunk.force();
     }
 
     private DomText renderText(VText vTree) {
-        return doc.createTextNode(vTree.text);
+        return doc.createTextNode(vTree.getText());
     }
 
-    private DomNode renderWidget(VWidget vWidget) {
-        Widget widget = vWidget.createWidget().asWidget();
-        context.attachWidget(widget);
-
-        return BrowserDomNode.cast(widget.getElement());
-    }
 }

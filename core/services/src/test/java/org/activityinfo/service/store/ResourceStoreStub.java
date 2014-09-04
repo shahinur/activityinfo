@@ -75,7 +75,7 @@ public class ResourceStoreStub implements ResourceStore {
     }
 
     @Override
-    public ResourceTree queryTree(@InjectParam AuthenticatedUser user, ResourceTreeRequest request) {
+    public FolderProjection queryTree(@InjectParam AuthenticatedUser user, FolderRequest request) {
 
         ResourceNode parentFolder = new ResourceNode(Resources.generateId(), FolderClass.CLASS_ID);
         parentFolder.setLabel("Parent Folder");
@@ -92,7 +92,7 @@ public class ResourceStoreStub implements ResourceStore {
         parentFolder.getChildren().add(child1);
         parentFolder.getChildren().add(child2);
 
-        return new ResourceTree(parentFolder);
+        return new FolderProjection(parentFolder);
     }
 
     @Override

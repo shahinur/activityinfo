@@ -1,9 +1,9 @@
 package org.activityinfo.service.store;
 
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
@@ -32,9 +32,9 @@ public interface RemoteStoreService {
     /**
      * Retrieves the root resources that are owned or have been shared by the user
      */
-    Promise<List<ResourceNode>> queryRoots();
+    Promise<List<ResourceNode>> getWorkspaces();
 
     Promise<TableData> queryTable(TableModel tableModel);
 
-    Promise<ResourceTree> queryTree(ResourceId rootId);
+    Promise<FolderProjection> getFolder(ResourceId rootId);
 }

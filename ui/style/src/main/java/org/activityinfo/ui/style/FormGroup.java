@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.activityinfo.ui.vdom.shared.html.H.div;
 
-public class FormGroup extends VThunk {
+public class FormGroup extends VComponent {
 
     private VTree labelContent;
     private VTree control;

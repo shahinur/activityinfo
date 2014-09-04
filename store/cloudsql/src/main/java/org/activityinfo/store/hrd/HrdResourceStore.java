@@ -11,11 +11,12 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.service.store.ResourceTreeRequest;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
+import org.activityinfo.store.cloudsql.BadRequestException;
 import org.activityinfo.store.hrd.entity.GlobalVersion;
 import org.activityinfo.store.hrd.entity.ResourceGroup;
 import org.activityinfo.store.hrd.index.AcrIndex;
@@ -24,10 +25,13 @@ import org.activityinfo.store.hrd.index.WorkspaceIndex;
 
 import javax.ws.rs.PathParam;
 import java.util.List;
+import java.util.logging.Logger;
 
 import static com.google.appengine.api.datastore.TransactionOptions.Builder.withXG;
 
 public class HrdResourceStore implements ResourceStore {
+
+    private static final Logger LOGGER = Logger.getLogger(HrdResourceStore.class.getName());
 
     private final DatastoreService datastore;
 
@@ -92,6 +96,9 @@ public class HrdResourceStore implements ResourceStore {
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
 
+        // Verify that the resource's owner is valid
+        validateOwner(resource);
+
         Transaction tx = datastore.beginTransaction(withXG(true));
         ResourceGroup group = new ResourceGroup(resource.getId());
 
@@ -116,13 +123,31 @@ public class HrdResourceStore implements ResourceStore {
 
         tx.commit();
 
+        LOGGER.info("Committed new resource by " + user + ": " + resource);
+
         return UpdateResult.committed(resource.getId(), newVersion);
     }
 
+    private void validateOwner(Resource resource) {
+
+        // All users are allowed to create a new workspace of their own
+        if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
+            return;
+        }
+
+        // Make sure the resource actually exists.
+        if(!new ResourceGroup(resource.getId()).exists(datastore, resource.getId())) {
+
+            throw new BadRequestException(String.format(
+                "Cannot create resource %s with non-existent owner %s.",
+                        resource.getId(), resource.getOwnerId()));
+        }
+    }
+
     @Override
-    public ResourceTree queryTree(@InjectParam AuthenticatedUser user, ResourceTreeRequest request) {
+    public FolderProjection queryTree(@InjectParam AuthenticatedUser user, FolderRequest request) {
         try {
-            return new ResourceTree(FolderIndex.queryNode(datastore, request.getRootId()));
+            return new FolderProjection(FolderIndex.queryNode(datastore, request.getRootId()));
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(request.getRootId());
         }

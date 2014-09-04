@@ -13,9 +13,9 @@ import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.service.store.ResourceTreeRequest;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
 
@@ -122,7 +122,7 @@ public class MySqlResourceStore implements ResourceStore {
     }
 
     @Override
-    public ResourceTree queryTree(AuthenticatedUser user, ResourceTreeRequest request) {
+    public FolderProjection queryTree(AuthenticatedUser user, FolderRequest request) {
         try(StoreConnection connection = open()) {
             ResourceTreeBuilder builder = new ResourceTreeBuilder(connection, cache, request);
             return builder.build();

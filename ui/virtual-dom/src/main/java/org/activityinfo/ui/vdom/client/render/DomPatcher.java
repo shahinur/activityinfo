@@ -1,18 +1,19 @@
 package org.activityinfo.ui.vdom.client.render;
 
 
-import com.google.gwt.dom.client.Element;
-import org.activityinfo.ui.vdom.shared.diff.VDiff;
-import org.activityinfo.ui.vdom.shared.diff.VPatch;
+import org.activityinfo.ui.vdom.shared.diff.PatchOp;
+import org.activityinfo.ui.vdom.shared.diff.VPatchSet;
 import org.activityinfo.ui.vdom.shared.dom.DomElement;
 import org.activityinfo.ui.vdom.shared.dom.DomNode;
 import org.activityinfo.ui.vdom.shared.dom.DomText;
-import org.activityinfo.ui.vdom.shared.tree.*;
+import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
+import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.List;
 import java.util.Map;
 
-public class DomPatcher {
+public class DomPatcher implements PatchOpExecutor {
 
     private DomBuilder domBuilder;
     private RenderContext context;
@@ -22,11 +23,11 @@ public class DomPatcher {
         this.context = context;
     }
 
-    public DomNode patch(DomNode rootNode, VDiff patches) {
+    public DomNode patch(DomNode rootNode, VPatchSet patches) {
         return patchRecursive(rootNode, patches);
     }
 
-    public DomNode patchRecursive(DomNode rootNode, VDiff patches) {
+    public DomNode patchRecursive(DomNode rootNode, VPatchSet patches) {
         int[] indices = patches.patchedIndexArray();
         if(indices.length > 0) {
 
@@ -40,11 +41,11 @@ public class DomPatcher {
         return rootNode;
     }
 
-    private DomNode applyPatch(DomNode rootNode, DomNode domNode, List<VPatch> patchList) {
+    private DomNode applyPatch(DomNode rootNode, DomNode domNode, List<PatchOp> patchList) {
         if(domNode != null) {
             DomNode newNode;
             for (int i = 0; i != patchList.size(); ++i) {
-                newNode = applyPatch(patchList.get(i), domNode);
+                newNode = patchList.get(i).apply(this, domNode);
                 if (domNode == rootNode) {
                     rootNode = newNode;
                 }
@@ -53,97 +54,41 @@ public class DomPatcher {
         return rootNode;
     }
 
-
-    private DomNode applyPatch(VPatch vPatch, DomNode domNode) {
-        VTree vNode = vPatch.vNode;
-        Object patch = vPatch.patch;
-
-        switch (vPatch.type) {
-            case REMOVE:
-                removeNode(domNode, vNode);
-                return null;
-
-            case INSERT:
-                return insertNode(domNode, (VTree) patch);
-
-            case VTEXT:
-                return patchText(domNode, vNode, (VText) patch);
-
-            case WIDGET:
-                return patchWidget(domNode, vNode, (VWidget) patch);
-
-            case VNODE:
-                return patchNode(domNode, vNode, (VNode) patch);
-
-            case ORDER:
-//                reorderChildren(domNode, [])vPatch);
-//                return domNode;
-                throw new UnsupportedOperationException();
-
-            case PROPS:
-                Properties.applyProperties((DomElement)domNode, (PropMap)patch, vNode.properties());
-                return domNode;
-
-            case THUNK:
-                VDiff thunkPatch = (VDiff) patch;
-                return replaceRoot(domNode, patch(domNode, thunkPatch));
-        }
+    @Override
+    public DomNode updateProperties(DomNode domNode, PropMap propPatch, PropMap previous) {
+        Properties.applyProperties((DomElement) domNode, propPatch, previous);
         return domNode;
     }
 
 
-    private void removeNode(DomNode domNode, VTree vNode) {
-
-        detachIfWidget(domNode, vNode);
-
+    @Override
+    public DomNode removeNode(DomNode domNode) {
         DomNode parentNode = domNode.getParentNode();
         if (parentNode != null) {
             parentNode.removeChild(domNode);
         }
+        return null;
     }
 
-    private DomNode insertNode(DomNode parentNode, VTree vNode) {
-        DomNode domNode = domBuilder.render(vNode);
+    @Override
+    public DomNode insertNode(DomNode parentNode, VTree newNode) {
+        DomNode domNode = domBuilder.render(newNode);
         parentNode.appendChild(domNode);
         return parentNode;
     }
 
-    private DomNode patchText(DomNode domNode, VTree leftVNode, VText vText) {
-        DomNode newNode;
+    @Override
+    public DomNode patchText(DomNode domNode, String newText) {
+        assert domNode.getNodeType() == DomNode.TEXT_NODE;
 
-        if (domNode.getNodeType() == DomNode.TEXT_NODE) {
-            DomText textNode = (DomText)domNode;
-            textNode.setData(vText.text);
-            newNode = textNode;
-        } else {
+        DomText textNode = (DomText)domNode;
+        textNode.setData(newText);
 
-            detachIfWidget(domNode, leftVNode);
-
-            DomNode parentNode = domNode.getParentNode();
-            newNode = domBuilder.render(vText);
-            if (parentNode != null) {
-                parentNode.replaceChild(newNode, domNode);
-            }
-        }
-        return newNode;
+        return domNode;
     }
 
-    private DomNode patchWidget(DomNode domNode, VTree leftVNode, VWidget widget) {
-
-        detachIfWidget(domNode, leftVNode);
-
-        DomNode newWidget = domBuilder.render(widget);
-
-        DomNode parentNode = domNode.getParentNode();
-        if (parentNode != null) {
-            parentNode.replaceChild(newWidget, domNode);
-        }
-        return newWidget;
-    }
-
-    private DomNode patchNode(DomNode domNode, VTree leftVNode, VTree vNode) {
-
-        detachIfWidget(domNode, leftVNode);
+    @Override
+    public DomNode replaceNode(DomNode domNode, VTree vNode) {
 
         DomNode parentNode = domNode.getParentNode();
         DomNode newNode = domBuilder.render(vNode);
@@ -151,15 +96,6 @@ public class DomPatcher {
             parentNode.replaceChild(newNode, domNode);
         }
         return newNode;
-    }
-
-    private void detachIfWidget(DomNode domNode, VTree w) {
-        if (w instanceof VWidget) {
-            context.detachWidget((Element)domNode);
-        }
-        if(w instanceof Destructible) {
-            ((Destructible) w).destroy(domNode);
-        }
     }
 
 
@@ -199,6 +135,30 @@ public class DomPatcher {
 //                insertOffset++
 //            }
 //        }
+    }
+
+    @Override
+    public DomNode patchComponent(DomNode rootDomNode, VComponent previous, VComponent replacement, VPatchSet patch) {
+
+        DomNode newNode = patch(rootDomNode, patch);
+
+        if( previous != replacement) {
+            assert previous.isMounted();
+            previous.fireWillUnmount();
+        }
+
+        if( replacement != previous &&
+            replacement.isMounted() &&
+            replacement.getDomNode() != newNode) {
+
+            replacement.fireWillUnmount();
+        }
+        rootDomNode = replaceRoot(rootDomNode, newNode);
+
+        if(!replacement.isMounted()) {
+            replacement.fireMounted(context, rootDomNode);
+        }
+        return rootDomNode;
     }
 
     public DomNode replaceRoot(DomNode oldRoot, DomNode newRoot) {

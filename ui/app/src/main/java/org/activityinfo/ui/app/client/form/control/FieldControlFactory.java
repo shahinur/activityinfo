@@ -16,9 +16,9 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 
-public class FieldControlFactory implements FormClassVisitor<VThunk> {
+public class FieldControlFactory implements FormClassVisitor<VComponent> {
 
     private final Dispatcher dispatcher;
 
@@ -26,72 +26,72 @@ public class FieldControlFactory implements FormClassVisitor<VThunk> {
         this.dispatcher = dispatcher;
     }
 
-    public VThunk create(FormField field) {
+    public VComponent create(FormField field) {
         return field.accept(this);
     }
 
     @Override
-    public VThunk visitTextField(FormField field, TextType type) {
+    public VComponent visitTextField(FormField field, TextType type) {
         return new TextControl(dispatcher, field);
     }
 
     @Override
-    public VThunk visitQuantityField(FormField field, QuantityType type) {
+    public VComponent visitQuantityField(FormField field, QuantityType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitReferenceField(FormField field, ReferenceType type) {
+    public VComponent visitReferenceField(FormField field, ReferenceType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitEnumField(FormField field, EnumType type) {
+    public VComponent visitEnumField(FormField field, EnumType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitBarcodeField(FormField field, BarcodeType type) {
+    public VComponent visitBarcodeField(FormField field, BarcodeType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitBooleanField(FormField field, BooleanType type) {
+    public VComponent visitBooleanField(FormField field, BooleanType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitCalculatedField(FormField field, CalculatedFieldType type) {
+    public VComponent visitCalculatedField(FormField field, CalculatedFieldType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitGeoPointField(FormField field, GeoPointType type) {
+    public VComponent visitGeoPointField(FormField field, GeoPointType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitImageField(FormField field, ImageType type) {
+    public VComponent visitImageField(FormField field, ImageType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitLocalDateIntervalField(FormField field, LocalDateIntervalType type) {
+    public VComponent visitLocalDateIntervalField(FormField field, LocalDateIntervalType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitExprField(FormField field, ExprFieldType type) {
+    public VComponent visitExprField(FormField field, ExprFieldType type) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitLocalDateField(FormField field, LocalDateType localDateType) {
+    public VComponent visitLocalDateField(FormField field, LocalDateType localDateType) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public VThunk visitNarrativeField(FormField field, NarrativeType narrativeType) {
+    public VComponent visitNarrativeField(FormField field, NarrativeType narrativeType) {
         throw new UnsupportedOperationException();
     }
 }

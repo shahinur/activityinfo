@@ -2,13 +2,13 @@ package org.activityinfo.ui.style;
 
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import static org.activityinfo.ui.vdom.shared.html.H.a;
 import static org.activityinfo.ui.vdom.shared.html.H.t;
 
-public class LinkButton extends VThunk {
+public class LinkButton extends VComponent {
 
     private Icon icon;
     private String label;

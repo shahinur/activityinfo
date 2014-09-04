@@ -5,8 +5,8 @@ import org.activityinfo.ui.vdom.shared.html.AriaRole;
 import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @see <a href="http://getbootstrap.com/css/#forms-horizontal">Bootstrap Forms</a>
  */
-public class HorizontalForm extends VThunk {
+public class HorizontalForm extends VComponent {
 
     private final List<VTree> formGroups = Lists.newArrayList();
 
