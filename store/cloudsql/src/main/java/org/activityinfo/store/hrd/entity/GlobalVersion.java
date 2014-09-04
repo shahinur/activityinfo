@@ -9,7 +9,7 @@ public class GlobalVersion {
 
     public static final String KIND = "GV";
     public static final String KEY_NAME = "current";
-    public static final String VERSION_PROPERTY = "V";
+    public static final String GLOBAL_VERSION_PROPERTY = "V";
 
     /**
      *
@@ -18,7 +18,7 @@ public class GlobalVersion {
     public static long getCurrentVersion(DatastoreService datastore, Transaction transaction) {
         try {
             Entity entity = datastore.get(transaction, KeyFactory.createKey(KIND, KEY_NAME));
-            return (Long) entity.getProperty(VERSION_PROPERTY);
+            return (Long) entity.getProperty(GLOBAL_VERSION_PROPERTY);
 
         } catch (EntityNotFoundException e) {
             return 1;
@@ -35,14 +35,14 @@ public class GlobalVersion {
         long version;
         try {
             entity = datastore.get(tx, KeyFactory.createKey(KIND, KEY_NAME));
-            version = (Long) entity.getProperty(VERSION_PROPERTY);
+            version = (Long) entity.getProperty(GLOBAL_VERSION_PROPERTY);
 
         } catch(EntityNotFoundException e) {
             entity = new Entity(KIND, KEY_NAME);
             version = 1;
         }
         version++;
-        entity.setProperty(VERSION_PROPERTY, version);
+        entity.setProperty(GLOBAL_VERSION_PROPERTY, version);
 
         datastore.put(tx, entity);
 

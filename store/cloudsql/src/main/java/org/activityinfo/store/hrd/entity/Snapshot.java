@@ -19,8 +19,8 @@ import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
 import static org.activityinfo.store.hrd.entity.Content.deserializeResource;
 
 /**
- * An entity in the Resource entity group that stores the properties
- * and author of a given version of a resource.
+ * An entity in the Resource entity group that stores the properties and author of a given version of a resource.
+ * In other words, all versions of all resources are stored in the datastore.
  */
 public class Snapshot {
 
@@ -50,7 +50,8 @@ public class Snapshot {
 
     public Entity createEntity(AuthenticatedUser user, Resource resource) {
         Entity entity = new Entity(key);
-        entity.setProperty(TIMESTAMP_PROPERTY, System.currentTimeMillis());
+        entity.setProperty(VERSION_PROPERTY, resource.getVersion());
+        entity.setUnindexedProperty(TIMESTAMP_PROPERTY, System.currentTimeMillis());
         entity.setUnindexedProperty(USER_PROPERTY, user.getId());
 
         Content.writeProperties(resource, entity);

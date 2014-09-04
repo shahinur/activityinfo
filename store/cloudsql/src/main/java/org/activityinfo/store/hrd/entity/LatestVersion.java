@@ -1,6 +1,13 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Transaction;
+
+import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
 
 /**
  * An entity within the {@code ResourceGroup}  which stores
@@ -11,8 +18,6 @@ public class LatestVersion {
     public static final String KIND = "CV";
 
     public static final long KEY_ID = 1;
-
-    public static final String VERSION_PROPERTY = "v";
 
     private final ResourceGroup group;
     private final Key key;
