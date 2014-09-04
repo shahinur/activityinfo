@@ -53,6 +53,10 @@ public class SkipRowPresenter {
             EqualFunction.INSTANCE, NotEqualFunction.INSTANCE
     );
 
+    private static final List<ExprFunction> SET_FUNCTIONS = Lists.newArrayList(
+            ContainsFunction.INSTANCE, NotContainsFunction.INSTANCE
+    );
+
     private final FieldWidgetContainer fieldWidgetContainer;
     private final SkipRow view = new SkipRow();
     private final FormFieldWidgetFactory widgetFactory;
@@ -118,7 +122,7 @@ public class SkipRowPresenter {
         List<FormField> formFields = Lists.newArrayList(fieldWidgetContainer.getFormDesigner().getFormClass().getFields());
         formFields.remove(fieldWidgetContainer.getFormField()); // remove selected field
 
-        for (FormField formField :  formFields) {
+        for (FormField formField : formFields) {
             if (formField.getType() instanceof ImageType) {
                 continue;
             }
@@ -142,9 +146,17 @@ public class SkipRowPresenter {
     private void initFunction() {
         view.getFunction().clear();
 
-        for (ComparisonOperator function : COMPARISON_OPERATORS) {
-            view.getFunction().addItem(function.getLabel(), function.getId());
-        }
+//        FieldType type = getSelectedFormField().getType();
+        // todo uncomment when expr and row data builder is ready
+//        if (type instanceof EnumType || type instanceof ReferenceType) {
+//            for (ExprFunction function : SET_FUNCTIONS) {
+//                view.getFunction().addItem(function.getLabel(), function.getId());
+//            }
+//        } else {
+            for (ComparisonOperator function : COMPARISON_OPERATORS) {
+                view.getFunction().addItem(function.getLabel(), function.getId());
+            }
+//        }
     }
 
     private void initJoinFunction() {
@@ -170,7 +182,7 @@ public class SkipRowPresenter {
     }
 
     private static void setSelectedValue(ListBox listBox, String value) {
-        for (int i = 0; i< listBox.getItemCount(); i++) {
+        for (int i = 0; i < listBox.getItemCount(); i++) {
             String itemValue = listBox.getValue(i);
             if (!Strings.isNullOrEmpty(itemValue) && itemValue.equals(value)) {
                 listBox.setSelectedIndex(i);
