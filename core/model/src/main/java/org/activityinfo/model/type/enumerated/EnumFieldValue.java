@@ -10,12 +10,13 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.HasSetFieldValue;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EnumFieldValue implements FieldValue, IsRecord {
+public class EnumFieldValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     public static final EnumFieldValue EMPTY = new EnumFieldValue(Collections.<ResourceId>emptySet());
 
@@ -33,7 +34,7 @@ public class EnumFieldValue implements FieldValue, IsRecord {
         this.valueIds = ImmutableSet.copyOf(valueIds);
     }
 
-    public Set<ResourceId> getValueIds() {
+    public Set<ResourceId> getResourceIds() {
         return valueIds;
     }
 

@@ -44,7 +44,7 @@ public class EnumColumnBuilder implements ColumnViewBuilder {
     private int indexOf(FieldValue value) {
         if(value instanceof EnumFieldValue) {
             EnumFieldValue fieldValue = (EnumFieldValue) value;
-            if (fieldValue.getValueIds().size() == 1) {
+            if (fieldValue.getResourceIds().size() == 1) {
                 Integer index = labelIndexMap.get(fieldValue.getValueId());
                 if (index != null) {
                     return index;
