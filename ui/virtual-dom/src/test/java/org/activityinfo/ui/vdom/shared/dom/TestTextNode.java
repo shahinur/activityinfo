@@ -14,6 +14,11 @@ public class TestTextNode extends TestNode implements DomText {
     }
 
     @Override
+    public String getData() {
+        return text;
+    }
+
+    @Override
     public int getNodeType() {
         return DomNode.TEXT_NODE;
     }

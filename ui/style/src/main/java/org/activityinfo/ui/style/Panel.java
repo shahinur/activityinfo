@@ -99,4 +99,8 @@ public class Panel extends VComponent {
         return div(PANEL_HEADING, Children.toArray(headerElements));
     }
 
+    @Override
+    public String getPropertiesForDebugging() {
+        return "title = " + title;
+    }
 }

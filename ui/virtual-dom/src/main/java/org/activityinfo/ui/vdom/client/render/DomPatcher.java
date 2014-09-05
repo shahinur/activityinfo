@@ -1,6 +1,7 @@
 package org.activityinfo.ui.vdom.client.render;
 
 
+import org.activityinfo.ui.vdom.shared.VDomLogger;
 import org.activityinfo.ui.vdom.shared.diff.PatchOp;
 import org.activityinfo.ui.vdom.shared.diff.VPatchSet;
 import org.activityinfo.ui.vdom.shared.dom.DomElement;
@@ -8,6 +9,7 @@ import org.activityinfo.ui.vdom.shared.dom.DomNode;
 import org.activityinfo.ui.vdom.shared.dom.DomText;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
+import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.List;
@@ -45,7 +47,11 @@ public class DomPatcher implements PatchOpExecutor {
         if(domNode != null) {
             DomNode newNode;
             for (int i = 0; i != patchList.size(); ++i) {
-                newNode = patchList.get(i).apply(this, domNode);
+                PatchOp op = patchList.get(i);
+
+                VDomLogger.applyPatch(op);
+
+                newNode = op.apply(this, domNode);
                 if (domNode == rootNode) {
                     rootNode = newNode;
                 }
@@ -62,7 +68,10 @@ public class DomPatcher implements PatchOpExecutor {
 
 
     @Override
-    public DomNode removeNode(DomNode domNode) {
+    public DomNode removeNode(VTree virtualNode, DomNode domNode) {
+
+        fireUnmountRecursively(virtualNode);
+
         DomNode parentNode = domNode.getParentNode();
         if (parentNode != null) {
             parentNode.removeChild(domNode);
@@ -88,7 +97,9 @@ public class DomPatcher implements PatchOpExecutor {
     }
 
     @Override
-    public DomNode replaceNode(DomNode domNode, VTree vNode) {
+    public DomNode replaceNode(VTree previousNode, VTree vNode, DomNode domNode) {
+
+        fireUnmountRecursively(previousNode);
 
         DomNode parentNode = domNode.getParentNode();
         DomNode newNode = domBuilder.render(vNode);
@@ -144,21 +155,40 @@ public class DomPatcher implements PatchOpExecutor {
 
         if( previous != replacement) {
             assert previous.isMounted();
+
+            // Avoid firing recursively here as any child components will be
+            // unmounted when _patch_ is applied
             previous.fireWillUnmount();
+
+        } else {
+            // same instance, is it being remounted to the
+            // same dom node?
+            if(replacement.isMounted() &&
+               replacement.getDomNode() != newNode) {
+                previous.fireWillUnmount();
+            }
         }
 
-        if( replacement != previous &&
-            replacement.isMounted() &&
-            replacement.getDomNode() != newNode) {
-
-            replacement.fireWillUnmount();
-        }
         rootDomNode = replaceRoot(rootDomNode, newNode);
 
         if(!replacement.isMounted()) {
             replacement.fireMounted(context, rootDomNode);
         }
         return rootDomNode;
+    }
+
+
+    private void fireUnmountRecursively(VTree vNode) {
+        if(vNode instanceof VComponent) {
+            VComponent component = (VComponent) vNode;
+            fireUnmountRecursively(component.vNode);
+            component.fireWillUnmount();
+        } else if(vNode instanceof VNode && vNode.hasComponents()) {
+            VNode parent = (VNode) vNode;
+            for(int i=0;i!= parent.children.length;++i) {
+                fireUnmountRecursively(parent.children[i]);
+            }
+        }
     }
 
     public DomNode replaceRoot(DomNode oldRoot, DomNode newRoot) {

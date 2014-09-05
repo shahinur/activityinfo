@@ -8,6 +8,7 @@ import org.activityinfo.ui.app.client.action.RemoteUpdate;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 /**
  * The request launcher should be used by views to initiate remote calls
@@ -16,6 +17,8 @@ import java.util.Map;
  * The Facebook people call this a "ActionCreator"
  */
 public class RequestDispatcher {
+
+    private static final Logger LOGGER = Logger.getLogger(Request.class.getName());
 
     private final Dispatcher dispatcher;
     private final RemoteStoreService service;
@@ -28,6 +31,8 @@ public class RequestDispatcher {
     }
 
     public <T> Promise<T> execute(final Request<T> request) {
+
+        LOGGER.info("Executing " + request.getClass().getSimpleName());
 
         Promise<T> promise = (Promise<T>) pendingRequests.get(request);
         if(promise == null || promise.isSettled()) {

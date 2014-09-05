@@ -18,7 +18,7 @@ public class TestRenderContext implements RenderContext {
     private DomBuilder builder;
     private DomPatcher patcher;
 
-    private DomElement domRoot;
+    private DomNode domRoot;
     VTree virtualRoot;
 
     boolean dirty = false;
@@ -26,6 +26,10 @@ public class TestRenderContext implements RenderContext {
     public TestRenderContext() {
         builder = new DomBuilder(this);
         patcher = new DomPatcher(builder, this);
+    }
+
+    public DomBuilder getBuilder() {
+        return builder;
     }
 
     @Override
@@ -62,9 +66,10 @@ public class TestRenderContext implements RenderContext {
         } else {
             VDomLogger.start("render:diff");
             VPatchSet diff = Diff.diff(virtualRoot, tree);
+            VDomLogger.dump(diff);
 
             VDomLogger.start("render:patch");
-            patcher.patch(getDomRoot(), diff);
+            domRoot =  patcher.patch(getDomRoot(), diff);
             virtualRoot = tree;
             dirty = false;
         }
@@ -81,7 +86,7 @@ public class TestRenderContext implements RenderContext {
         dirty = false;
     }
 
-    public DomElement getDomRoot() {
+    public DomNode getDomRoot() {
         return domRoot;
     }
 }

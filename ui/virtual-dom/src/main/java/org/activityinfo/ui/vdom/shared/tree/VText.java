@@ -21,4 +21,9 @@ public class VText extends VTree {
     public String getText() {
         return text;
     }
+
+    @Override
+    public String toString() {
+        return "VText(" + text() + ")";
+    }
 }

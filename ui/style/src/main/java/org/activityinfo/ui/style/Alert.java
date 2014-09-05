@@ -27,4 +27,9 @@ public class Alert extends VComponent {
     protected VTree render() {
         return new VNode(HtmlTag.DIV, PropMap.withClasses(style.getClassNames()).role(AriaRole.ALERT), content);
     }
+
+    @Override
+    public String getPropertiesForDebugging() {
+        return "content = " + content;
+    }
 }
