@@ -5,10 +5,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.ui.component.FormLoader;
-import org.activityinfo.ui.vdom.shared.tree.Destructible;
 import org.activityinfo.ui.vdom.shared.tree.VWidget;
 
-class FormDesignerWidget extends VWidget implements Destructible {
+class FormDesignerWidget extends VWidget {
 
     private final FormPage page;
 
@@ -55,8 +54,4 @@ class FormDesignerWidget extends VWidget implements Destructible {
         return page != null ? page.hashCode() : 0;
     }
 
-    @Override
-    public void destroy(Object node) {
-
-    }
 }

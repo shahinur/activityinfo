@@ -13,9 +13,10 @@ public class Resources {
      */
     public static final ResourceId USER_DATABASE_ID = ResourceId.valueOf("_users");
 
-    public static final String ROOT_RESOURCE_ID = "_root";
     public static final int RADIX = 10;
+
     public static final ResourceId ROOT_ID = ResourceId.valueOf("_root");
+
     public static long COUNTER = 1;
 
     public static Resource createResource() {

@@ -89,14 +89,14 @@ public class ResourceStoreTest extends JerseyTest {
     @Test
     public void queryTree() {
 
-        ResourceTreeRequest request = new ResourceTreeRequest(Resources.ROOT_ID);
+        FolderRequest request = new FolderRequest(Resources.ROOT_ID);
 
-        ResourceTree tree = getStoreService()
+        FolderProjection tree = getStoreService()
                 .path("query")
                 .path("tree")
                 .accept(MediaType.APPLICATION_JSON)
                 .entity(request, MediaType.APPLICATION_JSON_TYPE)
-                .post(ResourceTree.class);
+                .post(FolderProjection.class);
 
         assertThat(tree.getRootNode().getChildren(), hasSize(2));
     }

@@ -20,7 +20,7 @@ public class UpdateResultParser implements Function<Response, UpdateResult> {
             case "COMMITTED":
                 return UpdateResult.committed(
                         ResourceId.valueOf(getString(object, "id")),
-                        Long.parseLong(getString(object, "newVersion")));
+                    (int)getInt(object, "newVersion"));
             case "PENDING":
                 return UpdateResult.pending();
         }
@@ -29,5 +29,9 @@ public class UpdateResultParser implements Function<Response, UpdateResult> {
 
     private static native String getString(JavaScriptObject object, String key) /*-{
       return object[key];
+    }-*/;
+
+    private static native double getInt(JavaScriptObject object, String key) /*-{
+        return +object[key];
     }-*/;
 }

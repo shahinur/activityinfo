@@ -8,16 +8,17 @@ import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.*;
 import org.activityinfo.service.tables.TableBuilder;
 
+import javax.ws.rs.PathParam;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Iterator;
@@ -77,15 +78,14 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         return get(resourceId);
     }
 
-    @Override
-    public Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
+    private Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ResourceTree queryTree(AuthenticatedUser user, ResourceTreeRequest request) {
+    public FolderProjection queryTree(AuthenticatedUser user, FolderRequest request) {
         ResourceNode root = createNode(request, get(request.getRootId()));
-        return new ResourceTree(root);
+        return new FolderProjection(root);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     @Override
-    public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
+    public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
         List<ResourceNode> nodes = Lists.newArrayList();
         for(Resource resource : all()) {
             if(resource.getOwnerId().asString().startsWith("U")) {
@@ -137,7 +137,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-        if (resourceMap.get(resource) == null) return put(user, resource);
+        if (resourceMap.get(resource.getId()) == null) return put(user, resource);
         else return UpdateResult.rejected();
     }
 
@@ -146,7 +146,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     }
 
-    private ResourceNode createNode(ResourceTreeRequest request, Resource resource) {
+    private ResourceNode createNode(FolderRequest request, Resource resource) {
         ResourceId classId = getClassId(resource);
         ResourceNode node = new ResourceNode(resource.getId(), classId);
         node.setLabel(getLabel(resource, classId));
@@ -158,6 +158,12 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
             }
         }
         return node;
+    }
+
+    @Override
+    public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
+                                                @PathParam("id") ResourceId resourceId) {
+        throw new UnsupportedOperationException();
     }
 
     private String getLabel(Resource resource, ResourceId classId) {
@@ -230,5 +236,4 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
         }
     }
-
 }

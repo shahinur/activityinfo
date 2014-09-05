@@ -1,8 +1,10 @@
 package org.activityinfo.model.system;
 
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.type.primitive.TextType;
 
 /**
  * Defines a system-level FormClass of folders
@@ -19,8 +21,13 @@ public class FolderClass {
 
         FormField labelField = new FormField(LABEL_FIELD_ID);
         labelField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
+        labelField.setType(TextType.INSTANCE);
+        labelField.setLabel(I18N.CONSTANTS.name());
+        labelField.setRequired(true);
 
         FormField descriptionField = new FormField(DESCRIPTION_FIELD_ID);
+        descriptionField.setLabel(I18N.CONSTANTS.description());
+        descriptionField.setType(TextType.INSTANCE);
         descriptionField.setSuperProperty(ApplicationProperties.DESCRIPTION_PROPERTY);
 
         FormClass formClass = new FormClass(CLASS_ID);

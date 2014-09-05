@@ -1,10 +1,10 @@
 package org.activityinfo.ui.app.client.chrome;
 
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
@@ -33,8 +33,13 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<List<ResourceNode>> queryRoots() {
-        return Promise.resolved(store.getUserRootResources(AuthenticatedUser.getAnonymous()));
+    public Promise<UpdateResult> create(Resource resource) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Promise<List<ResourceNode>> getWorkspaces() {
+        return Promise.resolved(store.getOwnedOrSharedWorkspaces(AuthenticatedUser.getAnonymous()));
     }
 
     @Override
@@ -43,7 +48,7 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<ResourceTree> queryTree(ResourceId rootId) {
+    public Promise<FolderProjection> getFolder(ResourceId rootId) {
         throw new UnsupportedOperationException();
     }
 }

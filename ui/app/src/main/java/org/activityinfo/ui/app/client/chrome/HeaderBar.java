@@ -8,21 +8,18 @@ import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import static org.activityinfo.ui.style.BaseStyles.*;
-import static org.activityinfo.ui.style.Button.dropDownToggle;
+import static org.activityinfo.ui.style.Buttons.dropDownToggle;
 import static org.activityinfo.ui.style.Forms.input;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
-public class HeaderBar extends VThunk {
-    @Override
-    public VTree render(VThunk previous) {
-        throw new UnsupportedOperationException();
-    }
+public class HeaderBar extends VComponent<HeaderBar> {
 
-    public static VTree render() {
+    @Override
+    public VTree render() {
         return div(HEADERBAR, menuToggle(),
                 searchForm(),
                 div(HEADER_RIGHT,

@@ -1,161 +1,155 @@
-[
-  {
-    "@id": "_geodb",
-    "@owner": "_root",
-    "classId": "_folder",
-    "_folder_label": "Geodatabase"
-  },
-  {
-    "@id": "_country",
-    "@owner": "_geodb",
-    "classId": "_class",
-    "_class_label": "Country",
-    "elements": [
-      {
-        "id": "_countryf1",
-        "visible": true,
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "_countryf3",
-        "visible": true,
-        "label": "Code",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "c360",
-    "@owner": "_country",
-    "_countryf3": "JO",
-    "_countryf1": "Jordan",
-    "classId": "_country"
-  },
-  {
-    "@id": "E1360",
-    "@owner": "c360",
-    "classId": "_class",
-    "_class_label": "Governorate",
-    "elements": [
-      {
-        "id": "E1360f1",
-        "visible": true,
-        "superProperties": {
-          "@type": "REFERENCE",
-          "value": "label"
-        },
-        "label": "Name",
-        "required": true,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      },
-      {
-        "id": "E1360f3",
-        "visible": true,
-        "label": "Code",
-        "required": false,
-        "type": {
-          "typeClass": "FREE_TEXT"
-        }
-      }
-    ]
-  },
-  {
-    "@id": "z1701",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "8",
-    "E1360f1": "Ajlun"
-  },
-  {
-    "@id": "z1702",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "2",
-    "E1360f1": "Al Balqa"
-  },
-  {
-    "@id": "z1703",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "12",
-    "E1360f1": "Aqaba"
-  },
-  {
-    "@id": "z1704",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "9",
-    "E1360f1": "Karak"
-  },
-  {
-    "@id": "z1705",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "1",
-    "E1360f1": "Amman"
-  },
-  {
-    "@id": "z1706",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "11",
-    "E1360f1": "Tafileh"
-  },
-  {
-    "@id": "z1707",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "5",
-    "E1360f1": "Irbid"
-  },
-  {
-    "@id": "z1708",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "7",
-    "E1360f1": "Jarash"
-  },
-  {
-    "@id": "z1709",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "10",
-    "E1360f1": "Ma'an"
-  },
-  {
-    "@id": "z1710",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "4",
-    "E1360f1": "Madaba"
-  },
-  {
-    "@id": "z1711",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "6",
-    "E1360f1": "Mafraq"
-  },
-  {
-    "@id": "z1712",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f3": "3",
-    "E1360f1": "Zarqa"
-  },
-  {
-    "@id": "z65712",
-    "@owner": "E1360",
-    "classId": "E1360",
-    "E1360f1": "Administrative unit not available"
-  }
-]
+[ {
+  "@id" : "_geodb",
+  "@owner" : "_root",
+  "@version" : 0,
+  "classId" : "_folder",
+  "_folder_label" : "Geodatabase"
+}, {
+  "@id" : "_country",
+  "@owner" : "_geodb",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Country",
+  "elements" : [ {
+    "id" : "_countryf1",
+    "visible" : true,
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "_countryf3",
+    "visible" : true,
+    "description" : "ISO 3166-1 alpha-2 code",
+    "label" : "Code",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "c360",
+  "@owner" : "_country",
+  "@version" : 0,
+  "_countryf3" : "JO",
+  "_countryf1" : "Jordan",
+  "classId" : "_country"
+}, {
+  "@id" : "E1360",
+  "@owner" : "c360",
+  "@version" : 0,
+  "classId" : "_class",
+  "_class_label" : "Governorate",
+  "elements" : [ {
+    "id" : "E1360f1",
+    "visible" : true,
+    "superProperties" : {
+      "@type" : "REFERENCE",
+      "value" : "label"
+    },
+    "label" : "Name",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  }, {
+    "id" : "E1360f3",
+    "visible" : true,
+    "label" : "Code",
+    "required" : false,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
+    }
+  } ]
+}, {
+  "@id" : "z1701",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "8",
+  "E1360f1" : "Ajlun"
+}, {
+  "@id" : "z1702",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "2",
+  "E1360f1" : "Al Balqa"
+}, {
+  "@id" : "z1703",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "12",
+  "E1360f1" : "Aqaba"
+}, {
+  "@id" : "z1704",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "9",
+  "E1360f1" : "Karak"
+}, {
+  "@id" : "z1705",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "1",
+  "E1360f1" : "Amman"
+}, {
+  "@id" : "z1706",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "11",
+  "E1360f1" : "Tafileh"
+}, {
+  "@id" : "z1707",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "5",
+  "E1360f1" : "Irbid"
+}, {
+  "@id" : "z1708",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "7",
+  "E1360f1" : "Jarash"
+}, {
+  "@id" : "z1709",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "10",
+  "E1360f1" : "Ma'an"
+}, {
+  "@id" : "z1710",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "4",
+  "E1360f1" : "Madaba"
+}, {
+  "@id" : "z1711",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "6",
+  "E1360f1" : "Mafraq"
+}, {
+  "@id" : "z1712",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f3" : "3",
+  "E1360f1" : "Zarqa"
+}, {
+  "@id" : "z65712",
+  "@owner" : "E1360",
+  "@version" : 0,
+  "classId" : "E1360",
+  "E1360f1" : "Administrative unit not available"
+} ]

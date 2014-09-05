@@ -1,65 +1,38 @@
 package org.activityinfo.ui.app.client.page.home;
 
-import org.activityinfo.ui.app.client.page.Breadcrumb;
-import org.activityinfo.ui.app.client.page.PageStore;
+import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.ui.app.client.chrome.PageFrame;
+import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.style.Alert;
+import org.activityinfo.ui.style.AlertStyle;
+import org.activityinfo.ui.style.BaseStyles;
+import org.activityinfo.ui.style.Grid;
 import org.activityinfo.ui.style.icons.FontAwesome;
-import org.activityinfo.ui.flux.store.LoadingStatus;
-import org.activityinfo.ui.flux.store.StoreChangeListener;
-import org.activityinfo.ui.vdom.shared.html.Icon;
+import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-import java.util.Collections;
-import java.util.List;
+import static org.activityinfo.ui.vdom.shared.html.H.*;
 
-public class HomePage implements PageStore {
-
+public class HomePage extends PageView {
 
     @Override
-    public String getPageTitle() {
-        return "Home";
+    protected VTree render() {
+        return new PageFrame(FontAwesome.HOME, I18N.CONSTANTS.home(),
+            div(BaseStyles.CONTENTPANEL, Grid.row(announcement())));
     }
 
     @Override
-    public String getPageDescription() {
-        return null;
+    public boolean accepts(Place place) {
+        return place instanceof HomePlace;
     }
 
-    @Override
-    public List<Breadcrumb> getBreadcrumbs() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Icon getPageIcon() {
-        return FontAwesome.HOME;
-    }
-
-    @Override
-    public void stop() {
+    public static VTree announcement() {
+        return new Alert(AlertStyle.INFO,
+            h4("Welcome to Activity 3.0 Beta!"),
+            p(strong("Please note"),
+                t(" that not all functionality is yet available in this beta; we look forward " +
+                    " to your feedback and are working to completing the migration as soon as possible.")));
 
     }
 
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public boolean tryHandleNavigation(String[] path) {
-        return path.length == 0;
-    }
-
-    @Override
-    public LoadingStatus getLoadingStatus() {
-        return LoadingStatus.LOADED;
-    }
-
-    @Override
-    public void addChangeListener(StoreChangeListener listener) {
-
-    }
-
-    @Override
-    public void removeChangeListener(StoreChangeListener listener) {
-
-    }
 }

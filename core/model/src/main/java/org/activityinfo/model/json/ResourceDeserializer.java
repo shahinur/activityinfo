@@ -35,7 +35,13 @@ public class ResourceDeserializer extends JsonDeserializer<Resource> {
                 resource.setOwnerId(ResourceId.valueOf(reader.getText()));
 
             } else if (propertyName.equals("@version")) {
-                resource.setVersion(reader.getNumberValue().longValue());
+                if(reader.getCurrentToken() == JsonToken.VALUE_NUMBER_INT) {
+                    resource.setVersion(reader.getNumberValue().longValue());
+                } else if(reader.getCurrentToken() == JsonToken.VALUE_STRING) {
+                    resource.setVersion(Long.parseLong(reader.getValueAsString()));
+                } else {
+                    throw new UnsupportedOperationException("@version = " + reader.getCurrentToken().name());
+                }
 
             } else {
                 RecordSerialization.readProperty(reader, resource, propertyName);
