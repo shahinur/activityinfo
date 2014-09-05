@@ -60,7 +60,7 @@ public class GwtTestRemoteStore extends GWTTestCase {
     public void testQueryRoots() throws Exception {
 
         RemoteStoreService service = getStore();
-        service.queryRoots().then(new AsyncCallback<List<ResourceNode>>() {
+        service.getWorkspaces().then(new AsyncCallback<List<ResourceNode>>() {
             @Override
             public void onFailure(Throwable throwable) {
                 fail(throwable.getMessage());

@@ -1,17 +1,13 @@
 package org.activityinfo.migrator;
 
-import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.LowerCaseDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
 import org.dbunit.ext.mysql.MySqlConnection;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.sql.*;
 
@@ -66,34 +62,19 @@ public class DbUnitMigrator {
 
     private void migrate(Connection jdbcConnection, File file) throws Exception {
 
+        File projectDir = new File(file.getParent() + "../../../../../../").getCanonicalFile();
+        File resourcesDir = new File(projectDir + "/store/testing/src/main/resources").getCanonicalFile();
+
+        if(!resourcesDir.exists()) {
+            throw new IllegalStateException("No such dir: " + resourcesDir.getAbsolutePath());
+        }
+
         String fileName = file.getName().replace(".db.xml", ".json");
-        File migratedFile = new File(file.getParentFile(), fileName);
+        File migratedFile = new File(resourcesDir, fileName);
 
         JsonTestUnitWriter writer = new JsonTestUnitWriter(migratedFile);
         new MySqlMigrator().migrate(jdbcConnection, writer);
         writer.finish();
-
-        // we need one db unit xml file to test the MySqlResourceStore against
-        if(file.getName().startsWith("sites-simple1")) {
-            createResourcesDbXmlFile(jdbcConnection, file.getParentFile());
-        }
-
-    }
-
-    private void createResourcesDbXmlFile(Connection jdbcConnection, File dbUnitDir) throws Exception {
-
-        MySqlResourceWriter writer = new MySqlResourceWriter(jdbcConnection);
-        new MySqlMigrator().migrate(jdbcConnection, writer);
-        writer.close();
-
-        IDatabaseConnection connection = new DatabaseConnection(jdbcConnection);
-
-        // partial database export
-        QueryDataSet partialDataSet = new QueryDataSet(connection);
-        partialDataSet.addTable("resource", "select * from resource");
-
-
-        FlatXmlDataSet.write(partialDataSet, new FileOutputStream(new File(dbUnitDir, "resources.db.xml")));
     }
 
     private void loadDataset(Connection connection, File file) throws Exception {

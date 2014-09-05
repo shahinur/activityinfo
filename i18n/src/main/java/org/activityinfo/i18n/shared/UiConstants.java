@@ -3509,4 +3509,17 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("A code with this name already exists. Please select another code.")
     String duplicateCodeMessage();
+
+    @DefaultStringValue("New workspace")
+    String newWorkspace();
+
+    @DefaultStringValue("Workspaces")
+    String workspaces();
+
+    @DefaultStringValue("Create workspace")
+    String createWorkspace();
+
+    @DefaultStringValue("Create an empty workspace")
+    String createEmptyWorkspace();
+
 }

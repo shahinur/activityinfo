@@ -148,6 +148,10 @@ public class FormField extends FormElement {
         return this;
     }
 
+    public <T> T accept(FormClassVisitor<T> visitor) {
+        return type.accept(this, visitor);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
