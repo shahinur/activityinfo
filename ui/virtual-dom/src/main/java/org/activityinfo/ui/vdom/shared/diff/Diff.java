@@ -55,14 +55,13 @@ public class Diff {
 
             }
         } else if (b == null) {
-            patchSet.add(index, RemoveOp.INSTANCE);
-            unmountComponents(a);
+            patchSet.add(index, new RemoveOp(a));
 
         } else if (b instanceof VComponent) {
             if (a instanceof VComponent) {
                 diffComponents((VComponent)a, (VComponent)b, index);
             } else {
-                patchSet.add(index, new ReplaceOp(b));
+                patchSet.add(index, new ReplaceOp(a, b));
             }
 
         } else if (b instanceof VNode) {
@@ -70,8 +69,7 @@ public class Diff {
                 diffVNodes((VNode)a, (VNode)b, index);
 
             } else {
-                patchSet.add(index, new ReplaceOp(b));
-                unmountComponents(a);
+                patchSet.add(index, new ReplaceOp(a, b));
             }
 
         } else if (b instanceof VText) {
@@ -80,8 +78,7 @@ public class Diff {
                     patchSet.add(index, new PatchTextOp(b.text()));
                 }
             } else {
-                patchSet.add(index, new ReplaceOp(b));
-                unmountComponents(a);
+                patchSet.add(index, new ReplaceOp(a, b));
             }
         }
     }
@@ -98,8 +95,7 @@ public class Diff {
             diffChildren(a, b, index);
 
         } else {
-            patchSet.add(index, new ReplaceOp(b));
-            unmountComponents(a);
+            patchSet.add(index, new ReplaceOp(a, b));
         }
     }
 
@@ -183,8 +179,7 @@ public class Diff {
             } else if (isAbsent(rightNode) && isPresent(leftNode)) {
 
                 // Excess nodes in a need to be removed
-                patchSet.add(childIndex, RemoveOp.INSTANCE);
-                unmountComponents(leftNode);
+                patchSet.add(childIndex, new RemoveOp(leftNode));
 
             } else {
                 walk(leftNode, rightNode, childIndex);
@@ -208,24 +203,6 @@ public class Diff {
 
     private boolean isAbsent(VTree node) {
         return node == null;
-    }
-
-
-    public void unmountComponents(VTree vNode) {
-        if (vNode instanceof VComponent) {
-            VComponent component = (VComponent) vNode;
-            component.fireWillUnmount();
-            unmountComponents(component.vNode);
-
-        } else if (vNode.hasComponents()) {
-            VTree[] children = vNode.children();
-            int len = children.length;
-            for (int i = 0; i < len; i++) {
-                VTree child = children[i];
-
-                unmountComponents(child);
-            }
-        }
     }
 
     /**

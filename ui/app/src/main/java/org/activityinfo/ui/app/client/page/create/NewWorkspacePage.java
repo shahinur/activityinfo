@@ -1,5 +1,6 @@
 package org.activityinfo.ui.app.client.page.create;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.promise.Promise;
@@ -55,12 +56,18 @@ public class NewWorkspacePage extends PageView {
     public void componentDidMount() {
     }
 
+    @Override
+    protected void componentWillUnmount() {
+        GWT.log("new workspace will unmount!");
+    }
+
     private VTree content() {
         return div(BaseStyles.CONTENTPANEL,
             Grid.row(
                 Grid.column(12,
                     introPanel(),
-                    formPanel())));
+                    blankWorkspacePanel(),
+                    templateWorkspace())));
     }
 
     private VTree introPanel() {
@@ -71,7 +78,7 @@ public class NewWorkspacePage extends PageView {
     }
 
 
-    private VTree formPanel() {
+    private VTree blankWorkspacePanel() {
 
         Panel panel = new Panel();
         panel.setTitle(t(I18N.CONSTANTS.createEmptyWorkspace()));
@@ -83,25 +90,38 @@ public class NewWorkspacePage extends PageView {
         return panel;
     }
 
+    private VTree templateWorkspace() {
+
+        Panel panel = new Panel();
+        panel.setTitle(t(I18N.CONSTANTS.createWorkspaceFromTemplate()));
+        panel.setIntroParagraph(t("Jump start your project by choosing from an existing template."));
+        panel.setContent(p("Todo"));
+
+        return panel;
+    }
+
 
     private void createWorkspace() {
         // Note that the promise returned by the request dispatcher constitutes local state
         // for this component.
 
-        final Promise<UpdateResult> request = application.getRequestDispatcher().execute(
-            new SaveRequest(workspaceDraft.getUpdatedResource()));
+        if(workspaceDraft.isValid()) {
 
-        savePanel.updateRequestState(request.getState());
+            final Promise<UpdateResult> request = application.getRequestDispatcher().execute(
+                new SaveRequest(workspaceDraft.getUpdatedResource()));
 
-        request.then(new AsyncCallback<UpdateResult>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                savePanel.updateRequestState(request.getState());
-            }
+            savePanel.updateRequestState(request.getState());
 
-            @Override
-            public void onSuccess(UpdateResult result) {
-                new FolderPlace(workspaceDraft.getInstanceId()).navigateTo(application);
-            }
-        });
+            request.then(new AsyncCallback<UpdateResult>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    savePanel.updateRequestState(request.getState());
+                }
+
+                @Override
+                public void onSuccess(UpdateResult result) {
+                    new FolderPlace(workspaceDraft.getInstanceId()).navigateTo(application);
+                }
+            });
+        }
     }}

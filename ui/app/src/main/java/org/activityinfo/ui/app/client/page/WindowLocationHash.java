@@ -4,7 +4,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
 import org.activityinfo.ui.app.client.Application;
-import org.activityinfo.ui.app.client.action.UpdatePlace;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.Store;
@@ -37,7 +36,7 @@ public class WindowLocationHash implements StoreChangeListener {
 
     public void start() {
 
-        dispatcher.dispatch(new UpdatePlace(getCurrentPlace()));
+        getCurrentPlace().navigateTo(application);
 
         router.addChangeListener(this);
 

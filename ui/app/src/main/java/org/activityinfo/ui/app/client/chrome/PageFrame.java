@@ -38,4 +38,9 @@ public class PageFrame extends VComponent<PageFrame> {
     private static VNode pageIcon(Icon home) {
         return new VNode(HtmlTag.I, PropMap.withClasses(home.getClassNames()));
     }
+
+    @Override
+    public String getPropertiesForDebugging() {
+        return "pageTitle = " + pageTitle;
+    }
 }

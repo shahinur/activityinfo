@@ -30,6 +30,10 @@ public class PatchComponentOp implements PatchOp {
         return previous;
     }
 
+    public VComponent getReplacement() {
+        return replacement;
+    }
+
     @Override
     public String toString() {
         return "[UPDATE COMPONENT " + previous.getDebugId() + "]";

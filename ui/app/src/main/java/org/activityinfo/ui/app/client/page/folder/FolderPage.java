@@ -29,9 +29,13 @@ import org.activityinfo.ui.vdom.shared.tree.Style;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
+import java.util.logging.Logger;
+
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class FolderPage extends PageView implements StoreChangeListener {
+
+    private static final Logger LOGGER = Logger.getLogger(FolderPage.class.getName());
 
     public static final Icon PAGE_ICON = FontAwesome.FOLDER_OPEN_O;
 
@@ -54,11 +58,18 @@ public class FolderPage extends PageView implements StoreChangeListener {
     @Override
     public void componentDidMount() {
         application.getFolderStore().addChangeListener(this);
+        application.getRouter().addChangeListener(this);
     }
 
     @Override
     public void onStoreChanged(Store store) {
         refresh();
+    }
+
+    @Override
+    protected void componentWillUnmount() {
+        application.getFolderStore().removeChangeListener(this);
+        application.getRouter().removeChangeListener(this);
     }
 
     @Override
@@ -70,6 +81,10 @@ public class FolderPage extends PageView implements StoreChangeListener {
             return new PagePreLoader(folder);
 
         } else {
+
+            LOGGER.info("Folder id = " + folder.get().getRootNode().getId() +
+                ", label = " + folder.get().getRootNode().getLabel());
+
             return new PageFrame(PAGE_ICON,
                 folder.get().getRootNode().getLabel(),
                 renderContents(folder.get().getRootNode()));

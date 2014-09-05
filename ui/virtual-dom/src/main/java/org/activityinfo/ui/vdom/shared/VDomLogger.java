@@ -18,8 +18,6 @@ public class VDomLogger {
 
     private static final Level LOG_LEVEL = Level.INFO;
 
-    public static boolean ENABLED = false;
-
     public static boolean STD_OUT = true;
 
     public static void event(VComponent component, String eventName) {
@@ -71,13 +69,27 @@ public class VDomLogger {
         }
     }
 
+    public static void applyPatch(PatchOp op) {
+        if(STD_OUT) {
+            if (op instanceof PatchComponentOp) {
+                PatchComponentOp compOp = (PatchComponentOp) op;
+                System.out.println("# PATCH " + compOp.getPrevious().getDebugId() + " WITH " +
+                    compOp.getReplacement().getDebugId());
+
+            } else {
+                System.out.println("# " + op);
+            }
+        }
+    }
+
     private static void printPatches(String indent, VPatchSet patchSet) {
         for (Integer index : patchSet.getPatchedIndexes()) {
             List<PatchOp> patchOps = patchSet.get(index);
             if(patchOps.size() == 1 && patchOps.get(0) instanceof PatchComponentOp) {
                 PatchComponentOp op = (PatchComponentOp) patchOps.get(0);
                 System.out.println(indent + index + " = PATCH COMPONENT " +
-                    (op.getPrevious() == null ? "-" : op.getPrevious().getDebugId()));
+                    (op.getPrevious() == null ? "-" : op.getPrevious().getDebugId()) + " WITH " +
+                    (op.getReplacement() == null ? "-" : op.getReplacement().getDebugId()));
                 printPatches(indent + "  ", op.getPatchSet());
             } else {
                 System.out.println(indent + index + " = " + patchOps);

@@ -3522,4 +3522,6 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Create an empty workspace")
     String createEmptyWorkspace();
 
+    @DefaultStringValue("Create a workspace from a template")
+    String createWorkspaceFromTemplate();
 }

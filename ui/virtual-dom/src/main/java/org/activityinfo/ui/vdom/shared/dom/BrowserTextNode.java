@@ -10,4 +10,9 @@ public final class BrowserTextNode extends BrowserDomNode implements DomText {
     public void setData(String text) {
         this.<Text>cast().setData(text);
     }
+
+    @Override
+    public String getData() {
+        return this.<Text>cast().getData();
+    }
 }

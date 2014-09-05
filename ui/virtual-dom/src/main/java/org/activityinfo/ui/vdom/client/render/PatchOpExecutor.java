@@ -10,13 +10,13 @@ public interface PatchOpExecutor {
 
     DomNode updateProperties(DomNode domNode, PropMap propPatch, PropMap previous);
 
-    DomNode removeNode(DomNode domNode);
+    DomNode removeNode(VTree virtualNode, DomNode domNode);
 
     DomNode insertNode(DomNode parentNode, VTree newNode);
 
     DomNode patchText(DomNode domNode, String newText);
 
-    DomNode replaceNode(DomNode domNode, VTree newNode);
+    DomNode replaceNode(VTree previousNode, VTree newNode, DomNode domNode);
 
     DomNode patchComponent(DomNode domNode, VComponent previous, VComponent replacement, VPatchSet patchSet);
 
