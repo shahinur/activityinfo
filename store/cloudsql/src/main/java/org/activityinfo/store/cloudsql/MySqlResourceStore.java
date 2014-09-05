@@ -3,29 +3,30 @@ package org.activityinfo.store.cloudsql;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.json.ObjectMapperFactory;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.ResourceTree;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.service.store.ResourceTreeRequest;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
 
 import javax.inject.Provider;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.sql.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,20 +59,19 @@ public class MySqlResourceStore implements ResourceStore {
 
     @Override
     public Resource get(AuthenticatedUser user, final ResourceId resourceId) {
-        Set<Resource> resource = get(user, Collections.singleton(resourceId));
+        List<Resource> resource = get(user, Collections.singleton(resourceId));
         if(resource.isEmpty()) {
             throw new ResourceNotFound(resourceId);
         }
         return resource.iterator().next();
     }
 
-    @Override
-    public Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
+    private List<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
 
         String sql = "SELECT content, version FROM resource WHERE " +
                  where().withId(resourceIds);
 
-        Set<Resource> resources = Sets.newHashSet();
+        List<Resource> resources = Lists.newArrayList();
         try(StoreConnection connection = open();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql)) {
@@ -89,7 +89,40 @@ public class MySqlResourceStore implements ResourceStore {
     }
 
     @Override
-    public ResourceTree queryTree(AuthenticatedUser user, ResourceTreeRequest request) {
+    public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
+                                                @PathParam("id") ResourceId resourceId) {
+
+        try(StoreConnection connection = open();
+            Statement statement = connection.createStatement()) {
+
+            Map<ResourceId, Resource> principalMap = Maps.newHashMap();
+            while(!resourceId.equals(Resources.ROOT_ID)) {
+
+                String sql = "SELECT id, version, content FROM resource "  +
+                         QueryBuilder.where().ownedBy(resourceId).ofClass(AccessControlRule.CLASS_ID).sql();
+
+                try(ResultSet rs = statement.executeQuery(sql)) {
+                    while(rs.next()) {
+                        Resource resource = mapper.readValue(rs.getString(2), Resource.class);
+                        resource.setVersion(rs.getLong(2));
+
+                        AccessControlRule rule = AccessControlRule.fromResource(resource);
+
+                        if(!principalMap.containsKey(rule.getPrincipalId())) {
+                            principalMap.put(rule.getPrincipalId(), resource);
+                        }
+                    }
+                }
+            }
+            return Lists.newArrayList(principalMap.values());
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public FolderProjection queryTree(AuthenticatedUser user, FolderRequest request) {
         try(StoreConnection connection = open()) {
             ResourceTreeBuilder builder = new ResourceTreeBuilder(connection, cache, request);
             return builder.build();
@@ -159,7 +192,7 @@ public class MySqlResourceStore implements ResourceStore {
     }
 
     @Override
-    public List<ResourceNode> getUserRootResources(AuthenticatedUser userId) {
+    public List<ResourceNode> getOwnedOrSharedWorkspaces(AuthenticatedUser userId) {
         try(
             StoreConnection connection = open();
             PreparedStatement statement = connection.prepareStatement(

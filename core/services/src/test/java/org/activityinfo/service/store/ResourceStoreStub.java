@@ -16,6 +16,7 @@ import org.activityinfo.model.table.columns.DoubleArrayColumnView;
 import org.activityinfo.model.table.columns.EmptyColumnView;
 import org.activityinfo.model.table.columns.StringArrayColumnView;
 
+import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
@@ -69,13 +70,12 @@ public class ResourceStoreStub implements ResourceStore {
         return resource;
     }
 
-    @Override
-    public Set<Resource> get(@InjectParam AuthenticatedUser user, Set<ResourceId> resourceIds) {
+    private List<Resource> get(@InjectParam AuthenticatedUser user, Set<ResourceId> resourceIds) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public ResourceTree queryTree(@InjectParam AuthenticatedUser user, ResourceTreeRequest request) {
+    public FolderProjection queryTree(@InjectParam AuthenticatedUser user, FolderRequest request) {
 
         ResourceNode parentFolder = new ResourceNode(Resources.generateId(), FolderClass.CLASS_ID);
         parentFolder.setLabel("Parent Folder");
@@ -92,7 +92,7 @@ public class ResourceStoreStub implements ResourceStore {
         parentFolder.getChildren().add(child1);
         parentFolder.getChildren().add(child2);
 
-        return new ResourceTree(parentFolder);
+        return new FolderProjection(parentFolder);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class ResourceStoreStub implements ResourceStore {
 
 
     @Override
-    public List<ResourceNode> getUserRootResources(@InjectParam AuthenticatedUser user) {
+    public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
 
         ResourceNode folder1 = new ResourceNode(Resources.generateId(), FormClass.CLASS_ID);
         folder1.setOwnerId(Resources.ROOT_ID);
@@ -170,5 +170,11 @@ public class ResourceStoreStub implements ResourceStore {
 
 
         return Arrays.asList(folder1, folder2, folder3);
+    }
+
+    @Override
+    public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
+                                                @PathParam("id") ResourceId resourceId) {
+        throw new UnsupportedOperationException();
     }
 }

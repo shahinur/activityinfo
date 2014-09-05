@@ -2,6 +2,8 @@ package org.activityinfo.model.type.enumerated;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormClassVisitor;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
@@ -83,6 +85,11 @@ public class EnumType implements ParametrizedFieldType {
     @Override
     public ParametrizedFieldTypeClass getTypeClass() {
         return TYPE_CLASS;
+    }
+
+    @Override
+    public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
+        return visitor.visitEnumField(field, this);
     }
 
     @Override

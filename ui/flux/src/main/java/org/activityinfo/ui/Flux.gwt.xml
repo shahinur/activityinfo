@@ -1,5 +1,6 @@
 <module>
   <inherits name="com.google.gwt.core.Core"/>
+  <inherits name="org.activityinfo.Promises"/>
 
   <!-- Include generated sources -->
   <source path="flux"/>

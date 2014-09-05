@@ -7,10 +7,10 @@ import org.activityinfo.model.legacy.InstanceQuery;
 import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.legacy.QueryResult;
 import org.activityinfo.model.legacy.criteria.Criteria;
+import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceTree;
 import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -63,7 +63,7 @@ public interface ResourceLocator {
 
     Promise<QueryResult> queryProjection(InstanceQuery query);
 
-    Promise<ResourceTree> getTree(ResourceId rootId);
+    Promise<FolderProjection> getTree(ResourceId rootId);
 
     Promise<List<org.activityinfo.model.resource.ResourceNode>> getRoots();
 

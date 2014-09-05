@@ -22,6 +22,7 @@ package org.activityinfo.model.type.image;
  */
 
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
@@ -94,6 +95,11 @@ public class ImageType implements ParametrizedFieldType {
     @Override
     public ParametrizedFieldTypeClass getTypeClass() {
         return TYPE_CLASS;
+    }
+
+    @Override
+    public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
+        return visitor.visitImageField(field, this);
     }
 
     public Cardinality getCardinality() {

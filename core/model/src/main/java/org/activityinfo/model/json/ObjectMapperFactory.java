@@ -14,18 +14,24 @@ import org.activityinfo.model.table.TableModel;
  */
 public class ObjectMapperFactory {
 
+    private static ObjectMapper INSTANCE;
+
     public static ObjectMapper get() {
-        ObjectMapper mapper = new ObjectMapper();
-        SimpleModule module = new SimpleModule();
-        module.addSerializer(Resource.class, new ResourceSerializer());
-        module.addSerializer(IsResource.class, new IsResourceSerializer());
-        module.addSerializer(IsRecord.class, new IsRecordSerializer());
-        module.addDeserializer(Resource.class, new ResourceDeserializer());
-        module.addDeserializer(TableModel.class, new IsRecordDeserializer<TableModel>(TableModel.class));
-        module.addSerializer(TableData.class, new TableDataSerializer());
-        module.addDeserializer(TableData.class, new TableDataDeserializer());
-        mapper.registerModule(module);
-        return mapper;
+        if(INSTANCE == null) {
+
+            ObjectMapper mapper = new ObjectMapper();
+            SimpleModule module = new SimpleModule();
+            module.addSerializer(Resource.class, new ResourceSerializer());
+            module.addSerializer(IsResource.class, new IsResourceSerializer());
+            module.addSerializer(IsRecord.class, new IsRecordSerializer());
+            module.addDeserializer(Resource.class, new ResourceDeserializer());
+            module.addDeserializer(TableModel.class, new IsRecordDeserializer<TableModel>(TableModel.class));
+            module.addSerializer(TableData.class, new TableDataSerializer());
+            module.addDeserializer(TableData.class, new TableDataDeserializer());
+            mapper.registerModule(module);
+            INSTANCE = mapper;
+        }
+        return INSTANCE;
 
     }
 

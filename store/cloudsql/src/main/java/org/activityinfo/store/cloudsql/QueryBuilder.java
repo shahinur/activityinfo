@@ -3,6 +3,8 @@ package org.activityinfo.store.cloudsql;
 import com.google.common.collect.Iterables;
 import org.activityinfo.model.resource.ResourceId;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Set;
 
 public class QueryBuilder {
@@ -18,9 +20,17 @@ public class QueryBuilder {
         return this;
     }
 
+    public QueryBuilder ownedBy(ResourceId resourceId) {
+        return ownedBy(Collections.singleton(resourceId));
+    }
+
     public QueryBuilder ofClass(Set<ResourceId> classIds) {
         appendCriteria("class_id", classIds);
         return this;
+    }
+
+    public QueryBuilder ofClass(ResourceId classId) {
+        return ofClass(Collections.singleton(classId));
     }
 
     public QueryBuilder withId(Set<ResourceId> resourceIds) {
@@ -76,4 +86,5 @@ public class QueryBuilder {
     public String toString() {
         return where.toString();
     }
+
 }

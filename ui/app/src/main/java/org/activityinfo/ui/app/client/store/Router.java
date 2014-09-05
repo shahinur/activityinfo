@@ -1,84 +1,53 @@
 package org.activityinfo.ui.app.client.store;
 
-import org.activityinfo.ui.app.client.page.PageStore;
-import org.activityinfo.ui.app.client.page.home.HomePage;
-import org.activityinfo.ui.app.client.page.resource.ResourcePageContainer;
-import org.activityinfo.service.store.RemoteStoreService;
-import org.activityinfo.ui.flux.store.Store;
-import org.activityinfo.ui.flux.store.StoreChangeListener;
-import org.activityinfo.ui.flux.store.StoreEventEmitter;
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.safehtml.shared.UriUtils;
+import org.activityinfo.ui.app.client.action.NavigationHandler;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.home.HomePlace;
+import org.activityinfo.ui.flux.dispatcher.Dispatcher;
+import org.activityinfo.ui.flux.store.AbstractStore;
 
-import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * Tracks the current "route" or internal URL within the application,
- * and manages the starting and stopping of "stores" associated with
- * current activity.
+ * Stores the current "route" or internal URL within the application
  *
  */
-public class Router implements Store {
+public class Router extends AbstractStore implements NavigationHandler {
 
-    private final StoreEventEmitter emitter = new StoreEventEmitter();
+    private static final Logger LOGGER = Logger.getLogger(Router.class.getName());
 
-    private String[] currentPath = new String[0];
+    private Place currentPlace = HomePlace.INSTANCE;
 
-    private PageStore activePage = new HomePage();
-    private RemoteStoreService service;
-
-    public Router(RemoteStoreService service) {
-        this.service = service;
+    public Router(Dispatcher dispatcher) {
+        super(dispatcher);
     }
 
-    public void updatePath(String token) {
-        String[] path = parseToken(token);
-        if(!Arrays.equals(path, currentPath)) {
-            navigateAndFire(path);
+    @Override
+    public void navigate(Place place) {
+        if(!place.equals(currentPlace)) {
+            this.currentPlace = place;
+            LOGGER.log(Level.INFO, "Router.currentPlace = " + place);
+            fireChange();
         }
     }
 
-    private String[] parseToken(String token) {
-        if(token.length() == 0) {
-            return new String[0];
-        } else {
-            return token.split("/");
-        }
+    public <X extends Place> X getCurrentPlace() {
+        return (X)currentPlace;
     }
 
-    private void navigateAndFire(String[] path) {
-        this.currentPath = path;
-        if(currentPath.length == 0 && !(activePage instanceof HomePage)) {
-            navigate(new HomePage());
-        } else {
-            // Will the current page handle the navigation?
-            if(activePage != null && activePage.tryHandleNavigation(path)) {
-                // great! done.
-                return;
+    public static SafeUri uri(Place place) {
+        StringBuilder sb = new StringBuilder("#");
+        String[] tokens = place.getPath();
+        for(int i=0;i!=tokens.length;++i) {
+            if(i > 0) {
+                sb.append("/");
             }
-            // switch out the current page
-            navigate(new ResourcePageContainer(service, currentPath));
+            sb.append(tokens[i]);
         }
-        emitter.fireChange(this);
+        return UriUtils.fromTrustedString(sb.toString());
     }
 
-    private void navigate(PageStore homePage) {
-        if(activePage != null) {
-            activePage.stop();
-        }
-        activePage = homePage;
-        activePage.start();
-    }
-
-    @Override
-    public void addChangeListener(StoreChangeListener listener) {
-        emitter.addChangeListener(listener);
-    }
-
-    @Override
-    public void removeChangeListener(StoreChangeListener listener) {
-        emitter.removeChangeListener(listener);
-    }
-
-    public PageStore getActivePage() {
-        return activePage;
-    }
 }

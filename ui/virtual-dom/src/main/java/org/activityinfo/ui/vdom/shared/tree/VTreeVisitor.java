@@ -6,8 +6,7 @@ public interface VTreeVisitor {
 
     void visitText(VText text);
 
-    void visitThunk(VThunk vThunk);
+    void visitComponent(VComponent vComponent);
 
     void visitWidget(VWidget widget);
-
 }

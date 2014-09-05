@@ -80,7 +80,7 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
 
     @Override
     public Promise<List<ResourceNode>> getRoots() {
-        return store.queryRoots();
+        return store.getWorkspaces();
     }
 
     @Override
@@ -110,8 +110,8 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
     }
 
     @Override
-    public Promise<ResourceTree> getTree(final ResourceId rootId) {
-        return store.queryTree(rootId);
+    public Promise<FolderProjection> getTree(final ResourceId rootId) {
+        return store.getFolder(rootId);
     }
 
     @Override

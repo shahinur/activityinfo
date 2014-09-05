@@ -1,9 +1,11 @@
 package org.activityinfo.store.cloudsql;
 
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.store.hrd.HrdResourceStore;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
@@ -12,27 +14,18 @@ import java.sql.SQLException;
 public class TestingEnvironment extends TestWatcher {
 
     private final LocalServiceTestHelper helper =
-            new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+            new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
+                    .setApplyAllHighRepJobPolicy());
 
 
-    private MySqlResourceStore store;
+    private HrdResourceStore store;
     private AuthenticatedUser user;
     private TestingConnectionProvider connectionProvider;
 
     @Override
     protected void starting(Description description) {
         helper.setUp();
-
-        try {
-            connectionProvider = new TestingConnectionProvider();
-            connectionProvider.clearTables();
-
-        } catch(Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        store = new MySqlResourceStore(connectionProvider,
-                MemcacheServiceFactory.getMemcacheService());
+        store = new HrdResourceStore(DatastoreServiceFactory.getDatastoreService());
 
         user = new AuthenticatedUser("XYZ", 1, "test@test.org");
     }
@@ -42,12 +35,8 @@ public class TestingEnvironment extends TestWatcher {
         helper.tearDown();
     }
 
-    public MySqlResourceStore getStore() {
+    public ResourceStore getStore() {
         return store;
-    }
-
-    public void setStore(MySqlResourceStore store) {
-        this.store = store;
     }
 
     public AuthenticatedUser getUser() {
@@ -55,6 +44,6 @@ public class TestingEnvironment extends TestWatcher {
     }
 
     public void assertThatAllConnectionsHaveBeenClosed() throws SQLException {
-        connectionProvider.assertThatAllConnectionsHaveBeenClosed();
+       // connectionProvider.assertThatAllConnectionsHaveBeenClosed();
     }
 }

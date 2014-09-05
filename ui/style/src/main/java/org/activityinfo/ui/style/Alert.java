@@ -3,8 +3,8 @@ package org.activityinfo.ui.style;
 import org.activityinfo.ui.vdom.shared.html.AriaRole;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 /**
@@ -13,7 +13,7 @@ import org.activityinfo.ui.vdom.shared.tree.VTree;
  *
  * @see <a href="http://getbootstrap.com/components/#alerts">Bootstrap Docs</a>
  */
-public class Alert extends VThunk {
+public class Alert extends VComponent {
 
     private AlertStyle style;
     private VTree[] content;
@@ -24,7 +24,7 @@ public class Alert extends VThunk {
     }
 
     @Override
-    protected VTree render(VThunk previous) {
+    protected VTree render() {
         return new VNode(HtmlTag.DIV, PropMap.withClasses(style.getClassNames()).role(AriaRole.ALERT), content);
     }
 }

@@ -1,30 +1,25 @@
 package org.activityinfo.ui.style;
 
+import com.google.gwt.user.client.Event;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VThunk;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-import static org.activityinfo.ui.vdom.shared.html.H.className;
-
-public class Button extends VThunk {
+public class Button extends VComponent {
 
     private ButtonStyle style;
     private ButtonSize size;
     private VTree[] content;
+    private boolean enabled = true;
 
+    private ClickHandler clickHandler;
 
-    public static VNode dropDownToggle(VTree icon, VTree label) {
-        return new VNode(HtmlTag.BUTTON, PropMap.withClasses(ButtonStyle.DEFAULT.getClassNames() +
-                                                             " " + BaseStyles.DROPDOWN_TOGGLE.getClassNames()),
-                  new VTree[] { icon, label, caret() });
+    public Button(ButtonStyle style, ButtonSize size) {
+        this.style = style;
+        this.size = size;
     }
-
-    public static VNode caret() {
-        return new VNode(HtmlTag.SPAN, className(BaseStyles.CARET));
-    }
-
 
     public Button(ButtonStyle style, ButtonSize size, VTree... content) {
         this.style = style;
@@ -37,8 +32,49 @@ public class Button extends VThunk {
         this.content = content;
     }
 
-    @Override
-    protected VTree render(VThunk previous) {
-        return new VNode(HtmlTag.BUTTON, PropMap.withClasses(style.getClassNames() + size.getClassNames()), content);
+    public VTree[] getContent() {
+        return content;
     }
+
+    public void setContent(VTree... content) {
+        this.content = content;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setClickHandler(ClickHandler clickHandler) {
+        this.clickHandler = clickHandler;
+    }
+
+    @Override
+    public int getEventMask() {
+        return clickHandler == null ? 0 : Event.ONCLICK;
+    }
+
+    @Override
+    public void onBrowserEvent(Event event) {
+        if(clickHandler != null && event.getTypeInt() == Event.ONCLICK) {
+            clickHandler.onClicked();
+        }
+    }
+
+    @Override
+    protected VTree render() {
+        PropMap properties = PropMap.withClasses(style.getClassNames());
+        if(size != null) {
+            properties.addClassName(size.getClassNames());
+        }
+        if(!enabled) {
+            properties.set("disabled", "disabled");
+        }
+
+        return new VNode(HtmlTag.BUTTON, properties, content);
+    }
+
 }
