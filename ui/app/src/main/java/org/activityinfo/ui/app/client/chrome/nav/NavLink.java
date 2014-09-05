@@ -87,4 +87,9 @@ public class NavLink extends VComponent implements StoreChangeListener {
     public void onStoreChanged(Store store) {
         refresh();
     }
+
+    @Override
+    public String getPropertiesForDebugging() {
+        return "label=" + label;
+    }
 }

@@ -22,7 +22,6 @@ public class AppEntryPoint implements EntryPoint {
     public void onModuleLoad() {
 
         VDomLogger.STD_OUT = true;
-        VDomLogger.ENABLED = true;
 
         service = new RemoteStoreServiceImpl(
                 new RestEndpoint("/service/store"));

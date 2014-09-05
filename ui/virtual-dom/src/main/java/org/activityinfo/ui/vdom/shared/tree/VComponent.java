@@ -55,9 +55,11 @@ public abstract class VComponent<T> extends VTree {
      * Marks this node as dirty
      */
     public final void refresh() {
-        assert context != null : "No render context is set for " + getDebugId();
+        //assert context != null : "No render context is set for " + getDebugId();
         dirty = true;
-        context.fireUpdate(this);
+        if(isMounted()) {
+            context.fireUpdate(this);
+        }
     }
 
     public final boolean isDirty() {
@@ -168,5 +170,10 @@ public abstract class VComponent<T> extends VTree {
 
     public String getDebugId() {
         return getClass().getSimpleName() + "#" + debugIndex + "[ " + getPropertiesForDebugging() + " ]";
+    }
+
+    @Override
+    public String toString() {
+        return getDebugId();
     }
 }

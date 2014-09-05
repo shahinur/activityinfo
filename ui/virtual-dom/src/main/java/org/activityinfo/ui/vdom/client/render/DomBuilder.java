@@ -84,7 +84,7 @@ public class DomBuilder {
     }
 
     private DomNode renderComponent(VComponent thunk) {
-        VTree virtualNode = thunk.forceRender();
+        VTree virtualNode = thunk.ensureRendered();
         DomNode domNode = render(virtualNode);
 
         if(thunk.getEventMask() > 0) {

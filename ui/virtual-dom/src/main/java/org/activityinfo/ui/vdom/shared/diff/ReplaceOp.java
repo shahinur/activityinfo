@@ -9,15 +9,19 @@ import javax.annotation.Nonnull;
 public class ReplaceOp implements PatchOp {
 
     @Nonnull
+    private VTree previousNode;
+
+    @Nonnull
     private final VTree newNode;
 
-    public ReplaceOp(VTree newNode) {
+    public ReplaceOp(VTree previousNode, VTree newNode) {
+        this.previousNode = previousNode;
         this.newNode = newNode;
     }
 
     @Override
     public DomNode apply(PatchOpExecutor executor, DomNode domNode) {
-        return executor.replaceNode(domNode, newNode);
+        return executor.replaceNode(previousNode, newNode, domNode);
     }
 
     @Override
@@ -39,6 +43,6 @@ public class ReplaceOp implements PatchOp {
 
     @Override
     public String toString() {
-        return "[REPLACE WITH" + newNode + "]";
+        return "REPLACE " + previousNode + " WITH " + newNode;
     }
 }

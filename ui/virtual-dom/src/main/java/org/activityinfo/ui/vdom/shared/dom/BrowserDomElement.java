@@ -36,6 +36,11 @@ public class BrowserDomElement extends BrowserDomNode implements DomElement {
     }
 
     @Override
+    public final int getChildCount() {
+        return asElement().getChildCount();
+    }
+
+    @Override
     public final String getTagName() {
         return asElement().getTagName();
     }

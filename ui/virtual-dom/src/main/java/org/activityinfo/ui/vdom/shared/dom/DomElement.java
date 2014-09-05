@@ -14,6 +14,8 @@ public interface DomElement extends DomNode {
 
     void appendChild(DomNode domNode);
 
+    int getChildCount();
+
     String getTagName();
 
 }

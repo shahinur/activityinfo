@@ -132,4 +132,16 @@ public class VNode extends VTree {
     public void accept(VTreeVisitor visitor) {
         visitor.visitNode(this);
     }
+
+    @Override
+    public String toString() {
+        String tag = this.tag.name().toLowerCase();
+        if(children.length == 1 && children[0] instanceof VText) {
+            return "<" + tag + ">" + children[0].text() + "</" + tag + "/>";
+        } else if(children.length > 0) {
+            return "<" + tag + "> ... </" + tag + ">";
+        } else {
+            return "<" + tag + "/>";
+        }
+    }
 }

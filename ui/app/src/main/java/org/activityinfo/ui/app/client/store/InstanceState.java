@@ -56,8 +56,12 @@ public class InstanceState extends AbstractStore implements PersistHandler, Upda
         boolean valid = true;
         for(FieldState field : this.fields.values()) {
             if(!field.validate()) {
-                    valid = false;
+                valid = false;
             }
+        }
+        if(this.valid != valid) {
+            this.valid = valid;
+            fireChange();
         }
         if(this.valid != valid) {
             this.valid = valid;
@@ -91,7 +95,7 @@ public class InstanceState extends AbstractStore implements PersistHandler, Upda
      * @return true if the form instance is valid
      */
     public boolean isValid() {
-        return valid;
+        return validate();
     }
 
 

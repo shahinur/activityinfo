@@ -40,6 +40,11 @@ public class TestElement extends TestNode implements DomElement {
     }
 
     @Override
+    public int getChildCount() {
+        return children.size();
+    }
+
+    @Override
     public String getTagName() {
         return tagName;
     }

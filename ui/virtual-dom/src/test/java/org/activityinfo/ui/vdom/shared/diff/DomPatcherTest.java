@@ -1,97 +1,142 @@
 package org.activityinfo.ui.vdom.shared.diff;
 
-import org.activityinfo.ui.vdom.shared.diff.component.FormComponent;
-import org.activityinfo.ui.vdom.shared.diff.component.MainPage;
-import org.activityinfo.ui.vdom.shared.diff.component.State;
+import com.google.common.base.Strings;
 import org.activityinfo.ui.vdom.shared.VDomLogger;
+import org.activityinfo.ui.vdom.shared.dom.DomElement;
+import org.activityinfo.ui.vdom.shared.dom.DomNode;
+import org.activityinfo.ui.vdom.shared.dom.DomText;
+import org.activityinfo.ui.vdom.shared.tree.VTree;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.activityinfo.ui.vdom.shared.html.H.div;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class DomPatcherTest {
 
     @Before
-    public void setUp() {
-        VDomLogger.ENABLED = true;
-
-        FormComponent.constructionCount = 0;
-        FormComponent.mountCount = 0;
-        FormComponent.willUnmountCount = 0;
+    public void enableLogging() {
+        VDomLogger.STD_OUT = true;
     }
 
     @Test
-    public void test()  {
-
-        State state = new State("A", "B", "C");
-
-        TestRenderContext context = new TestRenderContext();
-        context.render(new MainPage(state));
-
-        // ensure initial rendering is correct and that
-        assertThat(context.getDomRoot().toString(), equalTo("<ol><li>A</li><li>B</li><li>C</li></ol>"));
-        assertThat("listener is attached", state.listener, notNullValue());
-
-        // update our state object, which should result in the FormComponent forcing an update
-        VDomLogger.event("state updated B -> X ");
-        state.update(1, "X");
-        assertThat("dirty", context.dirty, equalTo(true));
-        context.updateDirty();
-        assertThat(context.getDomRoot().toString(), equalTo("<ol><li>A</li><li>X</li><li>C</li></ol>"));
+    public void test() {
+        assertCorrectlyPatched(div("a"), div("b"));
 
 
+        assertCorrectlyPatched(div("red", p("cow")),
+                               div("red", li("a"), li("c")));
 
-        // tear down
-        VDomLogger.event("tear down");
-
-        context.render(div("the end"));
-
-        assertThat("construction count", FormComponent.constructionCount, equalTo(1));
-        assertThat("mount count", FormComponent.mountCount, equalTo(1));
-        assertThat("unmount count", FormComponent.willUnmountCount, equalTo(1));
     }
 
     @Test
-    public void dirtyDescendantsOfDirtyThunks()  {
-
-        State state = new State("X", "Y", "Z");
-
-        TestRenderContext context = new TestRenderContext();
-        MainPage mainPage = new MainPage(state);
-        context.render(mainPage);
-
-        assertThat(context.getDomRoot().toString(), equalTo("<ol><li>X</li><li>Y</li><li>Z</li></ol>"));
-
-        state.update(2, "Q");
-        mainPage.pretendAChangeWasTriggered();
-
-        context.updateDirty();
-
-        assertThat(context.getDomRoot().toString(), equalTo("<ol><li>X</li><li>Y</li><li>Q</li></ol>"));
-
-        // make sure the new thunk gets mounted!
-        state.update(0, "Z");
-        context.updateDirty();
-
-        assertThat(context.getDomRoot().toString(), equalTo("<ol><li>Z</li><li>Y</li><li>Q</li></ol>"));
+    public void elementAndText() {
+        assertCorrectlyPatched(div("a"), p("b"));
     }
 
     @Test
-    public void unmountCalled() {
-        State state = new State("X", "Y", "Z");
-        TestRenderContext context = new TestRenderContext();
-        MainPage mainPage = new MainPage(state);
-
-        context.render(mainPage);
-
-        mainPage.setVisible(false);
-
-        context.updateDirty();
-
-        assertThat("unmounted", state.listener, is(nullValue()));
+    public void childRemoved() {
+        assertCorrectlyPatched(
+            div("red", li("a"), li("b"), li("c")),
+            div("red", li("a"), li("c")));
     }
 
+    @Test
+    public void childInserted() {
+        assertCorrectlyPatched(
+            div("red", li("a"), li("c")),
+            div("red", li("a"), li("b"), li("c")));
+    }
+
+//    @Test
+//    public void componentsReplaced() {
+//        dump(new FooComponent(), new BarComponent());
+//        assertCorrectlyPatched(new FooComponent(), new BarComponent());
+//    }
+
+    public void assertCorrectlyPatched(VTree a, VTree b) {
+        TestRenderContext context = new TestRenderContext();
+        context.render(a);
+        context.render(b);
+
+        DomNode patchedResult = context.getDomRoot();
+        DomNode expectedResult = context.getBuilder().render(b);
+
+        checkEquivalent(expectedResult, patchedResult);
+    }
+    
+
+    public void checkEquivalent(DomNode expectedResult, DomNode actualResult) {
+
+
+        List<String> expectedTree = buildTree(expectedResult);
+        List<String> actualTree = buildTree(actualResult);
+
+        if(!actualTree.equals(expectedTree)) {
+            dump(expectedTree, actualTree);
+            throw new AssertionError("patch problem");
+        }
+    }
+
+    private void dump(VTree a, VTree b) {
+
+        TestRenderContext ca = new TestRenderContext();
+        ca.render(a);
+
+        TestRenderContext cb = new TestRenderContext();
+        cb.render(b);
+
+        List<String> ta = buildTree(ca.getDomRoot());
+        List<String> tb = buildTree(cb.getDomRoot());
+
+        dump(ta, tb);
+
+    }
+
+    public List<String> buildTree(DomNode node) {
+        List<String> tree = new ArrayList<>();
+        buildTree(tree, "", node);
+        return tree;
+    }
+
+    public void buildTree(List<String> tree, String indent, DomNode node) {
+        if(node instanceof DomElement) {
+            buildTree(tree, indent, (DomElement) node);
+        } else if(node instanceof DomText) {
+            tree.add(indent + "\"" + ((DomText) node).getData() + "\"");
+        }
+    }
+
+    public void buildTree(List<String> tree, String indent, DomElement node) {
+        String tag = node.getTagName().toLowerCase();
+
+        if(node.getChildCount() == 0) {
+            tree.add(indent + "<" + tag + "/>");
+        } else {
+            tree.add(indent + "<" + tag + ">");
+            for(int i=0;i!=node.getChildCount();++i) {
+                buildTree(tree, indent + " ", node.getChildDomNode(i));
+            }
+            tree.add(indent + "</" + tag + ">");
+        }
+    }
+
+    private void dump(List<String> expectedTree, List<String> actualTree) {
+
+        System.out.println(Strings.padEnd("Expected", 50, ' ') +
+                           Strings.padEnd("Actual", 50, ' '));
+
+        Iterator<String> a = expectedTree.iterator();
+        Iterator<String> b = actualTree.iterator();
+        while(a.hasNext() || b.hasNext()) {
+            String sa = a.hasNext() ? a.next() : "";
+            String sb = b.hasNext() ? b.next() : "";
+            System.out.println(Strings.padEnd(sa, 50, ' ') +
+                               Strings.padEnd(sb, 50, ' '));
+        }
+    }
 
 }
