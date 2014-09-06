@@ -128,7 +128,7 @@ public class HierarchyClassImporter implements FieldImporter {
 //        ResourceId range;
 //        if (fieldId.getDomain() == CuidAdapter.ADMIN_LEVEL_DOMAIN) {
 //            final int levelId = CuidAdapter.getBlock(fieldId, 0);
-//            // todo : recreation of admin level cuid seems to be error prone, check later !
+//            // todo : recreation of admin level resourceId seems to be error prone, check later !
 //            range = CuidAdapter.adminLevelFormClass(levelId);
 //        } else {
 //            throw new UnsupportedOperationException("Not supported");

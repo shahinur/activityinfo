@@ -10,7 +10,6 @@ import org.joda.time.Duration;
 
 import javax.inject.Provider;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.logging.Logger;
 
@@ -54,37 +53,11 @@ public class ConnectionProvider implements Provider<Connection> {
     public Connection get() {
         try {
             ensureConnectionPoolIsCreated();
-
             return connectionPool.getConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
-    private Connection openConnection() throws SQLException {
-
-        ensureConnectionPoolIsCreated();
-
-        Connection connection = null;
-        try {
-            if(Strings.isNullOrEmpty(username)) {
-                connection = DriverManager.getConnection(connectionUrl);
-            } else {
-                connection = DriverManager.getConnection(connectionUrl, username, password);
-            }
-            connection.setAutoCommit(false);
-
-            LOGGER.info("Opened MySQL connection for request.");
-
-            return connection;
-        } catch (SQLException e) {
-            if(connection != null) {
-                Connections.close(connection, true);
-            }
-            throw new RuntimeException("Failed to open SQL connection using URL [" + connectionUrl + "]");
-        }
-    }
-
 
     private void ensureConnectionPoolIsCreated() throws SQLException {
         if(connectionPool == null) {

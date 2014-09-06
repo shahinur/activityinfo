@@ -97,7 +97,7 @@ public class AuthenticatedUser  {
     }
 
     public ResourceId getUserResourceId() {
-        return CuidAdapter.cuid(CuidAdapter.USER_DOMAIN, userId);
+        return CuidAdapter.resourceId(CuidAdapter.USER_DOMAIN, userId);
     }
 
     public boolean isAnonymous() {

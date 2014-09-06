@@ -2,6 +2,7 @@ package org.activityinfo.migrator.tables;
 
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
+import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 
@@ -15,6 +16,12 @@ import static org.activityinfo.model.legacy.CuidAdapter.field;
 
 public class UserPermissionTable extends ResourceMigrator {
 
+    private MigrationContext context;
+
+    public UserPermissionTable(MigrationContext context) {
+        this.context = context;
+    }
+
     @Override
     public void getResources(Connection connection, ResourceWriter writer) throws Exception {
 
@@ -26,14 +33,15 @@ public class UserPermissionTable extends ResourceMigrator {
             try(ResultSet rs = statement.executeQuery(sql)) {
 
                 while(rs.next()) {
-                    ResourceId id = partnerInstanceId(rs.getInt("DatabaseId"), rs.getInt("PartnerId"));
-                    ResourceId classId = partnerFormClass(rs.getInt("DatabaseId"));
+                    ResourceId id = context.getIdStrategy()
+                        .partnerInstanceId(rs.getInt("DatabaseId"), rs.getInt("PartnerId"));
+                    ResourceId classId = context.resourceId(DATABASE_DOMAIN, rs.getInt("DatabaseId"));
 
                     FormInstance instance = new FormInstance(id, classId);
                     instance.set(field(classId, NAME_FIELD), rs.getString("name"));
                     instance.set(field(classId, FULL_NAME_FIELD), rs.getString("fullName"));
 
-                    writer.writeResource(instance.asResource());
+                    writer.writeResource(instance.asResource(), null, null);
                 }
             }
         }

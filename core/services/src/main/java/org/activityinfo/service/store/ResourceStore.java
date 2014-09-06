@@ -24,6 +24,7 @@ public interface ResourceStore {
     @Produces("application/json")
     Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
 
+
     @GET
     @Path("resource/{id}/acr")
     @Produces("application/json")

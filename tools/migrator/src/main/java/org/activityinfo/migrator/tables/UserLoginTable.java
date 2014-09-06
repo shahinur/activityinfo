@@ -1,5 +1,6 @@
 package org.activityinfo.migrator.tables;
 
+import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
@@ -11,10 +12,16 @@ import static org.activityinfo.model.legacy.CuidAdapter.USER_DOMAIN;
 import static org.activityinfo.model.legacy.CuidAdapter.resourceId;
 
 public class UserLoginTable extends SimpleTableMigrator {
+
+
+    public UserLoginTable(MigrationContext context) {
+        super(context);
+    }
+
     @Override
     protected Resource toResource(ResultSet rs) throws SQLException {
         return Resources.createResource()
-        .setId(resourceId(USER_DOMAIN, rs.getInt("UserId")))
+        .setId(context.resourceId(USER_DOMAIN, rs.getInt("UserId")))
         .setOwnerId(Resources.USER_DATABASE_ID)
         .set("email", rs.getString("email"))
         .set("password", rs.getString("password"))
@@ -30,7 +37,7 @@ public class UserLoginTable extends SimpleTableMigrator {
         if(rs.wasNull()) {
             return null;
         } else {
-            return resourceId(USER_DOMAIN, invitedById);
+            return context.resourceId(USER_DOMAIN, invitedById);
         }
     }
 }

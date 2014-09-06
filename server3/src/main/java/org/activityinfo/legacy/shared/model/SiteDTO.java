@@ -94,7 +94,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
     }
 
     public ResourceId getInstanceId() {
-        return CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, getId());
+        return CuidAdapter.resourceId(CuidAdapter.SITE_DOMAIN, getId());
     }
 
 
@@ -107,7 +107,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 
 
     public ResourceId getFormClassId() {
-        return CuidAdapter.cuid(CuidAdapter.ACTIVITY_DOMAIN, getActivityId());
+        return CuidAdapter.resourceId(CuidAdapter.ACTIVITY_DOMAIN, getActivityId());
     }
 
     /**

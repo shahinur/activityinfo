@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.activityinfo.migrator.filter.MigrationContext;
+import org.activityinfo.migrator.filter.MigrationFilter;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.model.form.FormClass;
@@ -20,11 +22,11 @@ import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,9 +39,14 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class ActivityTable extends ResourceMigrator {
 
-
     public static final int ONCE = 0;
     public static final int MONTHLY = 1;
+
+    private final MigrationContext context;
+
+    public ActivityTable(MigrationContext context) {
+        this.context = context;
+    }
 
     @Override
     public void getResources(Connection connection, ResourceWriter writer) throws Exception {
@@ -57,10 +64,10 @@ public class ActivityTable extends ResourceMigrator {
                 "FROM activity A " +
                 "LEFT JOIN locationtype L on (A.locationtypeid=L.locationtypeid) " +
                 "LEFT JOIN userdatabase d on (A.databaseId=d.DatabaseId) " +
-                "WHERE d.dateDeleted is null and A.dateDeleted is null ";
+                "WHERE d.dateDeleted is null and A.dateDeleted is null AND " + context.filter().activityFilter("A");
 
         Map<Integer, List<EnumValue>> attributes = queryAttributes(connection);
-        Map<Integer, List<FormElement>> fields = queryFields(connection, attributes);
+        Map<Integer, List<FormElement>> fields = queryFields(connection, attributes, context.filter());
         Set<Integer> databasesWithProjects = queryDatabasesWithProjects(connection);
         Set<ResourceId> categories = Sets.newHashSet();
 
@@ -69,7 +76,7 @@ public class ActivityTable extends ResourceMigrator {
 
                 while(rs.next()) {
                     int databaseId = rs.getInt("databaseId");
-                    ResourceId databaseResourceId = cuid(DATABASE_DOMAIN, databaseId);
+                    ResourceId databaseResourceId = context.resourceId(DATABASE_DOMAIN, databaseId);
 
                     int activityId = rs.getInt("activityId");
                     String category = rs.getString("category");
@@ -78,10 +85,10 @@ public class ActivityTable extends ResourceMigrator {
                     if(Strings.isNullOrEmpty(category)) {
                         ownerId = databaseResourceId;
                     } else {
-                        ResourceId categoryId = CuidAdapter.activityCategoryFolderId(databaseId, category);
+                        ResourceId categoryId = context.getIdStrategy().activityCategoryId(databaseId, category);
                         ownerId = categoryId;
                         if(!categories.contains(categoryId)) {
-                            writer.writeResource(categoryResource(databaseResourceId, categoryId, category));
+                            writer.writeResource(categoryResource(databaseResourceId, categoryId, category), null, null);
                             categories.add(categoryId);
                         }
                     }
@@ -117,7 +124,7 @@ public class ActivityTable extends ResourceMigrator {
     }
 
     private Map<Integer, List<FormElement>> queryFields(
-            Connection connection, Map<Integer, List<EnumValue>> attributes) throws SQLException {
+            Connection connection, Map<Integer, List<EnumValue>> attributes, MigrationFilter filter) throws SQLException {
 
         String indicatorQuery = "(SELECT " +
                                         "ActivityId, " +
@@ -129,9 +136,14 @@ public class ActivityTable extends ResourceMigrator {
                                         "Type, " +
                                         "NULL as MultipleAllowed, " +
                                         "units, " +
-                                        "SortOrder " +
+                                        "SortOrder, " +
+                                        "nameinexpression code, " +
+                                        "calculatedautomatically ca, " +
+                                        "expression expr " +
                                     "FROM indicator " +
-                                    "WHERE dateDeleted IS NULL) " +
+                                    "WHERE dateDeleted IS NULL AND " +
+                                        filter.indicatorFilter("indicator") +
+                                   " ) " +
                                 "UNION ALL " +
                                 "(SELECT " +
                                         "A.ActivityId, " +
@@ -143,10 +155,15 @@ public class ActivityTable extends ResourceMigrator {
                                         "'ENUM' as Type, " +
                                         "multipleAllowed, " +
                                         "NULL as Units, " +
-                                        "SortOrder " +
+                                        "SortOrder, " +
+                                        "NULL code, " +
+                                        "NULL ca, " +
+                                        "NULL expr " +
                                     "FROM attributegroup G " +
                                     "INNER JOIN attributegroupinactivity A on G.attributeGroupId = A.attributeGroupId " +
-                                    "WHERE dateDeleted is null) " +
+                                    "WHERE dateDeleted is null AND " +
+                                        filter.attributeGroupFilter("A") +
+                                    ") " +
                                 "ORDER BY SortOrder";
 
         Map<Integer, List<FormElement>> activityMap = Maps.newHashMap();
@@ -202,7 +219,7 @@ public class ActivityTable extends ResourceMigrator {
                     int attributeId = rs.getInt("attributeId");
                     String attributeName = rs.getString("name");
 
-                    values.add(new EnumValue(CuidAdapter.attributeId(attributeId), attributeName));
+                    values.add(new EnumValue(context.resourceId(ATTRIBUTE_DOMAIN, attributeId), attributeName));
                 }
             }
         }
@@ -222,22 +239,28 @@ public class ActivityTable extends ResourceMigrator {
         FormField field = new FormField(fieldId)
                 .setLabel(rs.getString("Name"))
                 .setRequired(rs.getInt("Mandatory") == 1)
-                .setDescription(rs.getString("Description"));
+                .setDescription(rs.getString("Description"))
+                .setCode(rs.getString("Code"));
 
-        switch (rs.getString("Type")) {
-            default:
-            case "QUANTITY":
-                field.setType(new QuantityType().setUnits(rs.getString("units")));
-                break;
-            case "FREE_TEXT":
-                field.setType(TextType.INSTANCE);
-                break;
-            case "NARRATIVE":
-                field.setType(TextType.INSTANCE);
-                break;
-            case "ENUM":
-                field.setType(createEnumType(rs, attributes));
-                break;
+        if(rs.getInt("ca") == 1) {
+            field.setType(new CalculatedFieldType(rs.getString("expr")));
+
+        } else {
+            switch (rs.getString("Type")) {
+                default:
+                case "QUANTITY":
+                    field.setType(new QuantityType().setUnits(rs.getString("units")));
+                    break;
+                case "FREE_TEXT":
+                    field.setType(TextType.INSTANCE);
+                    break;
+                case "NARRATIVE":
+                    field.setType(TextType.INSTANCE);
+                    break;
+                case "ENUM":
+                    field.setType(createEnumType(rs, attributes));
+                    break;
+            }
         }
         return field;
     }
@@ -276,7 +299,7 @@ public class ActivityTable extends ResourceMigrator {
 
         int activityId = rs.getInt("activityId");
         int databaseId = rs.getInt("databaseId");
-        ResourceId classId = CuidAdapter.activityFormClass(activityId);
+        ResourceId classId = context.resourceId(ACTIVITY_DOMAIN, activityId);
 
         FormClass siteForm = new FormClass(classId);
         siteForm.setLabel(rs.getString("name"));
@@ -284,14 +307,14 @@ public class ActivityTable extends ResourceMigrator {
 
         FormField partnerField = new FormField(field(classId, PARTNER_FIELD))
                 .setLabel("Partner")
-                .setType(ReferenceType.single(CuidAdapter.partnerFormClass(databaseId)))
+                .setType(ReferenceType.single(context.resourceId(PARTNER_FORM_CLASS_DOMAIN, databaseId)))
                 .setRequired(true);
         siteForm.addElement(partnerField);
 
         if(databasesWithProjects.contains(databaseId)) {
             FormField projectField = new FormField(field(classId, PROJECT_FIELD))
                 .setLabel("Project")
-                .setType(ReferenceType.single(CuidAdapter.projectFormClass(databaseId)));
+                .setType(ReferenceType.single(context.resourceId(PROJECT_DOMAIN, databaseId)));
             siteForm.addElement(projectField);
         }
 
@@ -330,7 +353,7 @@ public class ActivityTable extends ResourceMigrator {
         commentsField.setLabel("Comments");
         siteForm.addElement(commentsField);
 
-        writer.writeResource(siteForm.asResource());
+        writer.writeResource(siteForm.asResource(), null, null);
     }
 
     private ResourceId locationRange(ResultSet rs) throws SQLException {
@@ -338,9 +361,9 @@ public class ActivityTable extends ResourceMigrator {
         int boundAdminLevelId = rs.getInt("BoundAdminLevelId");
         if(rs.wasNull()) {
             int locationTypeId = rs.getInt("LocationTypeId");
-            return CuidAdapter.locationFormClass(locationTypeId);
+            return context.resourceId(LOCATION_TYPE_DOMAIN, locationTypeId);
         } else {
-            return CuidAdapter.adminLevelFormClass(boundAdminLevelId);
+            return context.resourceId(ADMIN_LEVEL_DOMAIN, boundAdminLevelId);
         }
     }
 

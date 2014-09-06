@@ -9,6 +9,7 @@ import org.activityinfo.model.resource.ResourceId;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 public class JsonTestUnitWriter implements ResourceWriter {
@@ -28,7 +29,7 @@ public class JsonTestUnitWriter implements ResourceWriter {
     }
 
     @Override
-    public void writeResource(Resource resource) throws IOException {
+    public void writeResource(Resource resource, Date dateCreated, Date dateDeleted) throws IOException {
         resources.add(resource.copy());
     }
 

@@ -5,15 +5,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import org.activityinfo.migrator.filter.MigrationContext;
+import org.activityinfo.migrator.filter.NullFilter;
 import org.activityinfo.migrator.tables.*;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.*;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,20 +25,20 @@ public class MySqlMigrator {
 
     private List<ResourceMigrator> migrators = Lists.newArrayList();
 
-    public MySqlMigrator() {
-        migrators.add(new Geodatabase());
-        migrators.add(new CountryTable());
-        migrators.add(new AdminLevelTable());
-        migrators.add(new AdminEntityTable());
-        migrators.add(new LocationTypeTable());
-        migrators.add(new LocationTable());
-        migrators.add(new UserLoginTable());
-        migrators.add(new UserDatabaseTable());
-        migrators.add(new PartnerFormClass());
-        migrators.add(new PartnerTable());
-        migrators.add(new ProjectTable());
-        migrators.add(new ActivityTable());
-        migrators.add(new SiteTable());
+    public MySqlMigrator(MigrationContext context) {
+        migrators.add(new UserDatabaseTable(context));
+        migrators.add(new Geodatabase(context));
+        migrators.add(new CountryTable(context));
+        migrators.add(new AdminLevelTable(context));
+        migrators.add(new AdminEntityTable(context));
+        migrators.add(new LocationTypeTable(context));
+        migrators.add(new LocationTable(context));
+    //    migrators.add(new UserLoginTable());
+        migrators.add(new PartnerFormClass(context));
+        migrators.add(new PartnerTable(context));
+        migrators.add(new ProjectTable(context));
+        migrators.add(new ActivityTable(context));
+        migrators.add(new SiteTable(context));
     }
 
     public static void main(String[] args) throws Exception {
@@ -46,9 +47,12 @@ public class MySqlMigrator {
                 "jdbc:mysql://" + args[0] + ":3306/activityinfo?zeroDateTimeBehavior=convertToNull", args[1],
                 args.length < 3 ? "" : args[2])) {
 
-            new MySqlMigrator().migrate(connection);
-        }
+            MigrationContext context = new MigrationContext(new NullFilter());
+            context.setGeoDbOwnerId(context.getIdStrategy().geoDbId());
+            context.setRootId(Resources.ROOT_ID);
 
+            new MySqlMigrator(context).migrate(connection);
+        }
     }
 
     public void migrate(Connection connection) throws Exception {
