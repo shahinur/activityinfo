@@ -130,17 +130,19 @@ public class HrdResourceStore implements ResourceStore {
 
     private void validateOwner(Resource resource) {
 
+        ResourceId ownerId = resource.getOwnerId();
+
         // All users are allowed to create a new workspace of their own
-        if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
+        if(ownerId.equals(Resources.ROOT_ID)) {
             return;
         }
 
         // Make sure the resource actually exists.
-        if(!new ResourceGroup(resource.getId()).exists(datastore, resource.getId())) {
+        if(!new ResourceGroup(ownerId).exists(datastore, ownerId)) {
 
             throw new BadRequestException(String.format(
                 "Cannot create resource %s with non-existent owner %s.",
-                        resource.getId(), resource.getOwnerId()));
+                        resource.getId(), ownerId));
         }
     }
 
