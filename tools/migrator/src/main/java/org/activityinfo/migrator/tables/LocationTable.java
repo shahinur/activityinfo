@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
+import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.ReferenceValue;
@@ -22,6 +23,11 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class LocationTable extends ResourceMigrator {
 
+    private final MigrationContext context;
+
+    public LocationTable(MigrationContext context) {
+        this.context = context;
+    }
 
     @Override
     public void getResources(Connection connection, ResourceWriter writer) throws Exception {
@@ -35,7 +41,7 @@ public class LocationTable extends ResourceMigrator {
                      "WHERE locationtypeid NOT IN " +
                         "(SELECT locationtypeid " +
                                 "FROM locationtype " +
-                                "WHERE boundadminlevelid IS NOT NULL) " +
+                                "WHERE boundadminlevelid IS NOT NULL) AND " + context.filter().locationFilter() + " " +
                      "ORDER BY L.LocationID";
 
         int currentLocationId = -1;
@@ -50,7 +56,7 @@ public class LocationTable extends ResourceMigrator {
                     if(locationId != currentLocationId) {
                         if(location != null) {
                             location.set(field(location.getClassId(), ADMIN_FIELD), normalize(parentMap, adminUnits));
-                            writer.writeResource(location.asResource());
+                            writer.writeResource(location.asResource(), null, null);
                         }
                         currentLocationId = locationId;
                         location = newLocationFormInstance(rs);
@@ -58,13 +64,13 @@ public class LocationTable extends ResourceMigrator {
 
                         int adminUnitId = rs.getInt("AdminEntityId");
                         if(!rs.wasNull()) {
-                            adminUnits.add(resourceId(ADMIN_ENTITY_DOMAIN, adminUnitId));
+                            adminUnits.add(context.resourceId(ADMIN_ENTITY_DOMAIN, adminUnitId));
                         }
                     }
                 }
                 if(location != null) {
                     location.set(field(location.getClassId(), ADMIN_FIELD), normalize(parentMap, adminUnits));
-                    writer.writeResource(location.asResource());
+                    writer.writeResource(location.asResource(), null, null);
                 }
             }
         }
@@ -103,8 +109,8 @@ public class LocationTable extends ResourceMigrator {
                 while(rs.next()) {
                     int parentId = rs.getInt("AdminEntityParentId");
                     if(!rs.wasNull()) {
-                        ResourceId entityId = resourceId(ADMIN_ENTITY_DOMAIN, rs.getInt("AdminEntityId"));
-                        parents.put(entityId, resourceId(ADMIN_ENTITY_DOMAIN, parentId));
+                        ResourceId entityId = context.resourceId(ADMIN_ENTITY_DOMAIN, rs.getInt("AdminEntityId"));
+                        parents.put(entityId, context.resourceId(ADMIN_ENTITY_DOMAIN, parentId));
                     }
                 }
             }
@@ -113,8 +119,8 @@ public class LocationTable extends ResourceMigrator {
     }
 
     protected FormInstance newLocationFormInstance(ResultSet rs) throws SQLException {
-        ResourceId locationTypeId = resourceId(LOCATION_TYPE_DOMAIN, rs.getInt("LocationTypeId"));
-        ResourceId locationId = resourceId(LOCATION_DOMAIN, rs.getInt("LocationId"));
+        ResourceId locationTypeId = context.resourceId(LOCATION_TYPE_DOMAIN, rs.getInt("LocationTypeId"));
+        ResourceId locationId = context.resourceId(LOCATION_DOMAIN, rs.getInt("LocationId"));
 
         FormInstance instance = new FormInstance(locationId, locationTypeId);
         instance.set(field(locationTypeId, NAME_FIELD), rs.getString("name"));

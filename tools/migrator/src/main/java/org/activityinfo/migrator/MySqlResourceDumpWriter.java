@@ -11,6 +11,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -40,7 +41,7 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
 
 
     @Override
-    public void writeResource(Resource resource) throws IOException {
+    public void writeResource(Resource resource, Date dateCreated, Date dateDeleted) throws IOException {
 
         if(writtenCount > 0) {
             append(',');

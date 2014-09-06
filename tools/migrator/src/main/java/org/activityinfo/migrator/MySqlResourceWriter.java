@@ -11,9 +11,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.Map;
 
-class MySqlResourceWriter implements ResourceWriter {
+public class MySqlResourceWriter implements ResourceWriter {
 
     private long version = 1;
 
@@ -51,7 +52,7 @@ class MySqlResourceWriter implements ResourceWriter {
 
 
     @Override
-    public void writeResource(Resource resource) throws SQLException, JsonProcessingException {
+    public void writeResource(Resource resource, Date dateCreated, Date dateDeleted) throws SQLException, JsonProcessingException {
 
         if(resource == null) {
             throw new NullPointerException("resource");
@@ -74,8 +75,6 @@ class MySqlResourceWriter implements ResourceWriter {
             System.out.println("..." + count + " resources committed...");
         }
     }
-
-
 
     @Override
     public void endResources() throws Exception {

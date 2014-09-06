@@ -4,7 +4,6 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -35,7 +34,7 @@ public class TestingEnvironment extends TestWatcher {
         helper.tearDown();
     }
 
-    public ResourceStore getStore() {
+    public HrdResourceStore getStore() {
         return store;
     }
 

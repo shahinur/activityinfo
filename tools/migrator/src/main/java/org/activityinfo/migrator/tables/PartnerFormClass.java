@@ -1,5 +1,6 @@
 package org.activityinfo.migrator.tables;
 
+import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -13,18 +14,22 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class PartnerFormClass extends SimpleTableMigrator {
 
+    public PartnerFormClass(MigrationContext context) {
+        super(context);
+    }
+
     @Override
     protected String query() {
-        return "SELECT * FROM userdatabase";
+        return "SELECT * FROM userdatabase WHERE " + filter.databaseFilter();
     }
 
     @Override
     protected Resource toResource(ResultSet rs) throws SQLException {
         int databaseId = rs.getInt("databaseId");
 
-        ResourceId classId = partnerFormClass(databaseId);
+        ResourceId classId = context.resourceId(PARTNER_FORM_CLASS_DOMAIN, databaseId);
         FormClass form = new FormClass(classId)
-        .setOwnerId(databaseId(databaseId))
+        .setOwnerId(context.resourceId(DATABASE_DOMAIN, databaseId))
         .setLabel("Partners");
 
         form.addField(field(classId, NAME_FIELD))

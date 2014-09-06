@@ -1,5 +1,7 @@
 package org.activityinfo.migrator;
 
+import org.activityinfo.migrator.filter.MigrationContext;
+import org.activityinfo.migrator.filter.NullFilter;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.LowerCaseDataSet;
@@ -72,14 +74,15 @@ public class DbUnitMigrator {
         String fileName = file.getName().replace(".db.xml", ".json");
         File migratedFile = new File(resourcesDir, fileName);
 
+        MigrationContext context = new MigrationContext(new NullFilter());
+
         JsonTestUnitWriter writer = new JsonTestUnitWriter(migratedFile);
-        new MySqlMigrator().migrate(jdbcConnection, writer);
+        new MySqlMigrator(context).migrate(jdbcConnection, writer);
         writer.finish();
     }
 
     private void loadDataset(Connection connection, File file) throws Exception {
         removeAllRows(connection);
-
 
         IDataSet dataSet;
         try(FileReader reader = new FileReader(file)) {

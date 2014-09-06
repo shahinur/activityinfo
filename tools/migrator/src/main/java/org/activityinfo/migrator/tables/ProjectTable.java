@@ -3,6 +3,7 @@ package org.activityinfo.migrator.tables;
 import com.google.common.collect.Sets;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
+import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
@@ -21,13 +22,18 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class ProjectTable extends ResourceMigrator {
 
+    private MigrationContext context;
+
+    public ProjectTable(MigrationContext context) {
+        this.context = context;
+    }
 
     @Override
     public void getResources(Connection connection, ResourceWriter writer) throws Exception {
 
         String sql = "SELECT P.* " +
                      "FROM project P " +
-                     "WHERE P.dateDeleted is null ";
+                     "WHERE P.dateDeleted is null AND " + context.filter().projectFilter();
 
         Set<Integer> databases = Sets.newHashSet();
 
@@ -37,18 +43,18 @@ public class ProjectTable extends ResourceMigrator {
                 while(rs.next()) {
                     int databaseId = rs.getInt("DatabaseId");
                     if(!databases.contains(databaseId)) {
-                        writer.writeResource(projectForm(databaseId));
+                        writer.writeResource(projectForm(databaseId), null, null);
                         databases.add(databaseId);
                     }
 
-                    ResourceId id = CuidAdapter.resourceId(PROJECT_DOMAIN, rs.getInt("ProjectId"));
+                    ResourceId id = context.resourceId(PROJECT_DOMAIN, rs.getInt("ProjectId"));
                     ResourceId classId = projectFormClass(databaseId);
 
                     FormInstance instance = new FormInstance(id, classId);
                     instance.set(field(classId, NAME_FIELD), rs.getString("name"));
                     instance.set(field(classId, FULL_NAME_FIELD), rs.getString("description"));
 
-                    writer.writeResource(instance.asResource());
+                    writer.writeResource(instance.asResource(), null, null);
                 }
             }
         }
