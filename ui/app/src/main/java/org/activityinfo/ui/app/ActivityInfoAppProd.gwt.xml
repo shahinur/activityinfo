@@ -26,7 +26,6 @@
 
   <inherits name="org.activityinfo.ui.vdom.VDomOverlays"/>
 
-  <entry-point class="org.activityinfo.ui.app.client.AppEntryPoint"/>
 
   <set-property name="locale" value="en"/>
 
