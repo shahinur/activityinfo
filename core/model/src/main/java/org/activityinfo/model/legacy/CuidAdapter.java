@@ -67,7 +67,6 @@ public class CuidAdapter {
     public static final int BLOCK_SIZE = 10;
     public static final String CLASS_FIELD = "_class";
 
-    public static final ResourceId GEODB_ID = ResourceId.valueOf("_geodb");
 
 
     /**
@@ -81,7 +80,7 @@ public class CuidAdapter {
             final int newId = new KeyGenerator().generateInt();
             switch (formClassId.getDomain()) {
                 case ACTIVITY_DOMAIN:
-                    return cuid(SITE_DOMAIN, newId);
+                    return resourceId(SITE_DOMAIN, newId);
                 case LOCATION_TYPE_DOMAIN:
                     return locationInstanceId(newId);
                 case ATTRIBUTE_GROUP_DOMAIN:
@@ -91,30 +90,9 @@ public class CuidAdapter {
         return Resources.generateId();
     }
 
-    public static final int getLegacyIdFromCuid(String cuid) {
-        return Integer.parseInt(cuid.substring(1), Resources.RADIX);
-    }
-
-    public static final ResourceId cuid(char domain, int id) {
-        return ResourceId.valueOf(domain + Integer.toString(id));
-    }
-
     public static final ResourceId resourceId(char domain, int id) {
         assert id != 0 : "resourceId for domain " + domain + " has id = 0";
-        return cuid(domain, id);
-    }
-
-    public static int getLegacyIdFromCuid(ResourceId id) {
-        if(id.getDomain() == '_') {
-            return 0;
-        } else {
-            return getLegacyIdFromCuid(id.asString());
-        }
-    }
-
-    @Deprecated
-    public static ResourceId partnerInstanceId(int partnerId) {
-        return cuid(PARTNER_DOMAIN, partnerId);
+        return ResourceId.valueOf(domain + Integer.toString(id));
     }
 
     public static ResourceId partnerInstanceId(int databaseId, int partnerId) {
@@ -133,20 +111,20 @@ public class CuidAdapter {
      * @return the {@code FormClass} ResourceId for a given LocationType
      */
     public static ResourceId locationFormClass(int locationTypeId) {
-        return cuid(LOCATION_TYPE_DOMAIN, locationTypeId);
+        return resourceId(LOCATION_TYPE_DOMAIN, locationTypeId);
     }
 
     public static ResourceId locationInstanceId(int locationId) {
-        return cuid(LOCATION_DOMAIN, locationId);
+        return resourceId(LOCATION_DOMAIN, locationId);
     }
 
     public static ResourceId adminLevelFormClass(int adminLevelId) {
-        return cuid(ADMIN_LEVEL_DOMAIN, adminLevelId);
+        return resourceId(ADMIN_LEVEL_DOMAIN, adminLevelId);
     }
 
 
     public static ResourceId entity(int adminEntityId) {
-        return cuid(ADMIN_ENTITY_DOMAIN, adminEntityId);
+        return resourceId(ADMIN_ENTITY_DOMAIN, adminEntityId);
 
     }
 
@@ -182,7 +160,7 @@ public class CuidAdapter {
      * Activity {@code FormClass}
      */
     public static ResourceId indicatorField(int indicatorId) {
-        return cuid(INDICATOR_DOMAIN, indicatorId);
+        return resourceId(INDICATOR_DOMAIN, indicatorId);
     }
 
     /**
@@ -190,7 +168,7 @@ public class CuidAdapter {
      * references the given AttributeGroup FormClass
      */
     public static ResourceId attributeGroupField(int attributeGroupId) {
-        return cuid(ATTRIBUTE_GROUP_FIELD_DOMAIN, attributeGroupId);
+        return resourceId(ATTRIBUTE_GROUP_FIELD_DOMAIN, attributeGroupId);
     }
 
     public static ResourceId activityCategoryFolderId(int dbId, String category) {
@@ -199,11 +177,11 @@ public class CuidAdapter {
     }
 
     public static ResourceId userId(int userId) {
-        return cuid(USER_DOMAIN, userId);
+        return resourceId(USER_DOMAIN, userId);
     }
 
     public static ResourceId attributeId(int attributeId) {
-        return cuid(ATTRIBUTE_DOMAIN, attributeId);
+        return resourceId(ATTRIBUTE_DOMAIN, attributeId);
     }
 
     /**
@@ -211,7 +189,7 @@ public class CuidAdapter {
      * @return the {@code FormClass} ResourceId for a given database's list of partners.
      */
     public static ResourceId partnerFormClass(int databaseId) {
-        return cuid(PARTNER_FORM_CLASS_DOMAIN, databaseId);
+        return resourceId(PARTNER_FORM_CLASS_DOMAIN, databaseId);
     }
 
     /**
@@ -219,7 +197,7 @@ public class CuidAdapter {
      * @return the {@code FormClass} ResourceId for a given database's list of projects.
      */
     public static ResourceId projectFormClass(int databaseId) {
-        return cuid(PROJECT_CLASS_DOMAIN, databaseId);
+        return resourceId(PROJECT_CLASS_DOMAIN, databaseId);
     }
 
     /**
@@ -241,11 +219,7 @@ public class CuidAdapter {
     }
 
     public static ResourceId databaseId(int databaseId) {
-        return cuid(DATABASE_DOMAIN, databaseId);
-    }
-
-    public static ResourceId generateLocationCuid() {
-        return locationInstanceId(new KeyGenerator().generateInt());
+        return resourceId(DATABASE_DOMAIN, databaseId);
     }
 
     public static ResourceId getAxeFieldId(ResourceId classId) {
