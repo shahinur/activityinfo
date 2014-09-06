@@ -37,8 +37,13 @@ public class ResourceGroup {
     }
 
     public void update(DatastoreService datastore, Transaction tx, AuthenticatedUser user, Resource resource) {
-        datastore.put(tx, getLatestContent(resource.getId()).createEntity(resource));
-        datastore.put(tx, getSnapshot(resource.getId(), resource.getVersion()).createEntity(user, resource));
+        Entity contentEntity = getLatestContent(resource.getId()).createEntity(resource);
+        Entity snapshot = getSnapshot(resource.getId(), resource.getVersion()).createEntity(user, resource);
+
+        System.out.println(contentEntity.getKey());
+
+        datastore.put(tx, contentEntity);
+        datastore.put(tx, snapshot);
 
         if(FolderIndex.isFolderItem(resource)) {
             datastore.put(tx, FolderIndex.createEntities(resource));
@@ -50,6 +55,7 @@ public class ResourceGroup {
             return false;
         }
         Key key = getLatestContent(resourceId).getKey();
+        System.out.println("looking for " + key);
         try {
             datastore.get(key);
             return true;
