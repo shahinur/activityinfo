@@ -21,6 +21,12 @@
 
     <dependency>
       <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-migrator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-services</artifactId>
       <version>${project.version}</version>
     </dependency>
