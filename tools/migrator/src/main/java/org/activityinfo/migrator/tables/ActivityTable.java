@@ -239,7 +239,7 @@ public class ActivityTable extends ResourceMigrator {
 
         FormField field = new FormField(fieldId)
                 .setLabel(rs.getString("Name"))
-                .setRequired(rs.getInt("Mandatory") == 1)
+                .setRequired(rs.getBoolean("Mandatory"))
                 .setDescription(rs.getString("Description"))
                 .setCode(rs.getString("Code"));
 
