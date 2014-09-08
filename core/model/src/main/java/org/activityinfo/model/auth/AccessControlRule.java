@@ -31,7 +31,7 @@ public class AccessControlRule implements IsResource {
 
 
     public AccessControlRule(ResourceId resourceId, ResourceId principalId) {
-        this.id = ResourceId.valueOf("_acr:" + resourceId.asString() + ":" + principalId);
+        this.id = ResourceId.valueOf("_acr-" + resourceId.asString() + "-" + principalId);
         this.resourceId = resourceId;
         this.principalId = principalId;
     }

@@ -200,8 +200,9 @@ public class ActivityTable extends ResourceMigrator {
 
         String sql = "SELECT * " +
                      "FROM attribute A " +
-                     "WHERE A.dateDeleted is null " +
-                     "ORDER BY sortOrder";
+                     "WHERE A.dateDeleted is null AND " +
+                           context.filter().attributeFilter("A")  +
+                     " ORDER BY sortOrder";
 
         Map<Integer, List<EnumValue>> groupMap = Maps.newHashMap();
 

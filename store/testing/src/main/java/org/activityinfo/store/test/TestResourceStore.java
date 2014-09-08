@@ -37,6 +37,11 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     private Resource lastUpdated;
 
+    @Override
+    public long generateClientId(AuthenticatedUser user) {
+        return 1;
+    }
+
     /**
      * Loads a set of resources from a json resource on the classpath
      * @param resourceName the name of the class path resource to load

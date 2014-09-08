@@ -1,11 +1,12 @@
 package org.activityinfo.migrator.tables;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.activityinfo.migrator.filter.MigrationContext;
-import org.activityinfo.migrator.filter.MigrationFilter;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
+import org.activityinfo.migrator.filter.MigrationContext;
+import org.activityinfo.migrator.filter.MigrationFilter;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.ReferenceValue;
@@ -16,6 +17,7 @@ import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.model.type.time.LocalDateInterval;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +36,23 @@ public class SiteTable extends ResourceMigrator {
     @Override
     public void getResources(Connection connection, ResourceWriter writer) throws Exception {
 
+        List<Integer> activities = Lists.newArrayList();
+
+        try(Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select activityid from activity A WHERE " +
+                    context.filter().activityFilter("A"))) {
+
+            while(rs.next()) {
+                activities.add(rs.getInt(1));
+            }
+        }
+
+        for(Integer activityId : activities) {
+            writeActivity(connection, writer, activityId);
+        }
+    }
+
+    private void writeActivity(Connection connection, ResourceWriter writer, int activityId) throws Exception {
         String sql = "SELECT S.*, " +
                         "LT.boundAdminLevelId, " +
                         "A.ReportingFrequency, " +
@@ -46,7 +65,7 @@ public class SiteTable extends ResourceMigrator {
                         " A.dateDeleted is null and " +
                         " db.dateDeleted is null and" +
                         " date1 is not null and date2 is not null AND " +
-                        filter.siteFilter("S");
+                        " S.activityId = " + activityId;
 
 
         Map<Integer, FormInstance> sites = Maps.newHashMap();
@@ -82,15 +101,14 @@ public class SiteTable extends ResourceMigrator {
             }
         }
 
-        populateAttributes(connection, sites, filter);
+        populateAttributes(connection, sites, activityId);
 
-        populateIndicators(connection, sites, filter);
-        populateBoundAdminLevels(connection, sites, filter);
+        populateIndicators(connection, sites, activityId);
+        populateBoundAdminLevels(connection, sites, activityId);
 
         for(FormInstance site : sites.values()) {
             writer.writeResource(site.asResource(), null, null);
         }
-
     }
 
     private LocalDateInterval dateInterval(ResultSet rs) throws SQLException {
@@ -99,17 +117,18 @@ public class SiteTable extends ResourceMigrator {
         return new LocalDateInterval(new LocalDate(startDate), new LocalDate(endDate));
     }
 
-    private void populateAttributes(Connection connection, Map<Integer, FormInstance> sites, MigrationFilter filter)
+    private void populateAttributes(Connection connection, Map<Integer, FormInstance> sites, int activityId)
         throws SQLException {
 
         String sql =
                 "SELECT V.siteId, V.attributeid, V.Value, A.attributeGroupId " +
-                "FROM attributevalue V " +
+                "FROM site S " +
+                "INNER JOIN attributevalue V ON (S.siteId=V.attributeId) " +
                 "INNER JOIN attribute A ON (A.attributeId=V.attributeID) " +
                 "INNER JOIN attributegroup G on (A.attributeGroupId=G.attributeGroupId) " +
                 "WHERE V.value IS NOT NULL and A.dateDeleted is null and G.dateDeleted is null AND " +
-                    filter.attributeFilter("G") +
-                " ORDER BY V.siteId, A.AttributeGroupId";
+                    "S.activityId = " + activityId +
+                " ORDER BY S.siteId, A.AttributeGroupId";
 
         int currentSiteId = -1;
         int currentGroupId = -1;
@@ -149,7 +168,7 @@ public class SiteTable extends ResourceMigrator {
         }
     }
 
-    private void populateIndicators(Connection connection, Map<Integer, FormInstance> sites, MigrationFilter filter) throws SQLException {
+    private void populateIndicators(Connection connection, Map<Integer, FormInstance> sites, Integer activityId) throws SQLException {
 
         String sql = "SELECT V.*, I.Type, I.Units, RP.SiteId " +
                      "FROM indicatorvalue V " +
@@ -158,7 +177,7 @@ public class SiteTable extends ResourceMigrator {
                      "LEFT JOIN indicator I ON (V.IndicatorId = I.IndicatorId) " +
                      "LEFT JOIN activity A ON (S.ActivityId = A.ActivityId) " +
                      "WHERE A.ReportingFrequency = 0 AND " +
-                            filter.indicatorFilter("I");
+                            "S.activityId = " + activityId;
 
         try(Statement statement = connection.createStatement()) {
             try(ResultSet rs = statement.executeQuery(sql)) {
@@ -193,7 +212,7 @@ public class SiteTable extends ResourceMigrator {
 
 
     private void populateBoundAdminLevels(Connection connection, Map<Integer, FormInstance> sites,
-                                          MigrationFilter filter) throws SQLException {
+                                          int activityId) throws SQLException {
 
         String sql = "SELECT S.SiteId, E.AdminEntityId " +
                      "FROM site S " +
@@ -202,7 +221,8 @@ public class SiteTable extends ResourceMigrator {
                      "LEFT JOIN locationadminlink LK ON (L.LocationId=LK.LocationId) " +
                      "LEFT JOIN adminentity E ON (LK.AdminEntityId=E.AdminEntityId) " +
                      "WHERE E.AdminLevelId = LT.BoundAdminLevelId " +
-                        " AND " + filter.locationTypeFilter("LT");
+                        " AND " + filter.locationTypeFilter("LT") +
+                        " AND S.activityId = " + activityId;
 
         try(Statement statement = connection.createStatement()) {
             try(ResultSet rs = statement.executeQuery(sql)) {

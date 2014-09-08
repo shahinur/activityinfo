@@ -1,4 +1,4 @@
-package org.activityinfo.store.cloudsql;
+package org.activityinfo.store.hrd;
 
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.Resources;

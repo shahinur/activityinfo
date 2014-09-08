@@ -34,6 +34,13 @@ public class ResourceStoreStub implements ResourceStore {
     public static final ResourceId NEW_RESOURCE_ID_TO_COMMIT = ResourceId.valueOf("newid1");
     public static final int NEW_VERSION = 21;
 
+    private int nextClientId = 1;
+
+    @Override
+    public long generateClientId(AuthenticatedUser user) {
+        return nextClientId++;
+    }
+
     @Override
     public Resource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
 

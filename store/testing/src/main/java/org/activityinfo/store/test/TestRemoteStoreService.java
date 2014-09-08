@@ -55,6 +55,6 @@ public class TestRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<FolderProjection> getFolder(ResourceId rootId) {
         return Promise.resolved(store.queryTree(
-                AuthenticatedUser.getAnonymous(), new FolderRequest(rootId)));
+            AuthenticatedUser.getAnonymous(), new FolderRequest(rootId)));
     }
 }
