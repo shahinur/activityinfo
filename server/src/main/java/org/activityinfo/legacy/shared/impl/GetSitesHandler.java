@@ -114,12 +114,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             @Override
             public void onSuccess(SqlTransaction tx, SqlResultSet results) {
 
-                if (command.getLimit() <= 0) {
-                    result.setTotalLength(results.getRows().size());
-                } else {
-                    queryTotalLength(tx, command, context, result);
-                }
-
                 Log.trace("Primary query returned, starting to add to map");
 
                 for (SqlResultSetRow row : results.getRows()) {
@@ -132,6 +126,13 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
                 List<Promise<Void>> queries = Lists.newArrayList();
 
+                if (command.getLimit() <= 0) {
+                    result.setTotalLength(results.getRows().size());
+                } else {
+                    queries.add(queryTotalLength(tx, command, context, result));
+                }
+
+
                 if (!sites.isEmpty()) {
                     if (command.isFetchAdminEntities()) {
                         queries.add(joinEntities(tx, siteMap));
@@ -143,7 +144,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                         queries.add(joinAttributeValues(command, tx, siteMap));
                     }
                 }
-                Promise.waitAll(queries).then(Functions.constant(new SiteResult(sites))).then(callback);
+                Promise.waitAll(queries).then(Functions.constant(result)).then(callback);
             }
         });
     }
@@ -472,17 +473,19 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         query.where("site.SiteId").in(subQuery);
     }
 
-    private void queryTotalLength(SqlTransaction tx,
+    private Promise<Void> queryTotalLength(SqlTransaction tx,
                                   GetSites command,
                                   ExecutionContext context,
                                   final SiteResult result) {
 
+        final Promise<Void> promise = new Promise<>();
         if (isMySql()) {
             tx.executeSql("SELECT FOUND_ROWS() site_count", new SqlResultCallback() {
 
                 @Override
                 public void onSuccess(SqlTransaction tx, SqlResultSet results) {
                     result.setTotalLength(results.getRow(0).getInt("site_count"));
+                    promise.resolve(null);
                 }
             });
         } else {
@@ -493,9 +496,11 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 @Override
                 public void onSuccess(SqlTransaction tx, SqlResultSet results) {
                     result.setTotalLength(results.getRow(0).getInt("site_count"));
+                    promise.resolve(null);
                 }
             });
         }
+        return promise;
     }
 
     private SqlQuery countQuery(GetSites command, ExecutionContext context) {

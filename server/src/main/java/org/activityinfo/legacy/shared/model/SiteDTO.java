@@ -49,6 +49,8 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
     // ensure that serializer/deserializer is generated for LocalDate
     private LocalDate date;
 
+    private Date dateCreated;
+
     private Map<String, List<String>> attributeDisplayMap;
 
     public SiteDTO() {
@@ -165,16 +167,12 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         set("date2", date2);
     }
 
-    public LocalDate getDateCreated() {
-        return get("dateCreated");
+    public Date getDateCreated() {
+        return dateCreated;
     }
 
     public void setDateCreated(Date dateCreated) {
-        if (dateCreated == null) {
-            set("dateCreated", null);
-        } else {
-            set("dateCreated", new LocalDate(dateCreated));
-        }
+        this.dateCreated = dateCreated;
     }
 
     public long getTimeEdited() {
