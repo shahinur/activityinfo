@@ -5,8 +5,6 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.activityinfo.store.cloudsql.ConnectionProvider;
-import org.activityinfo.store.hrd.HrdResourceStore;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -20,7 +18,7 @@ public class MigrateService {
     public Response startMigration(@InjectParam AuthenticatedUser user,
                                    @PathParam("id") int databaseId) {
 
-        QueueFactory.getDefaultQueue().add(TaskOptions.Builder.withUrl("/service/migrate/run")
+        QueueFactory.getQueue("migrate").add(TaskOptions.Builder.withUrl("/service/migrate/run")
             .param("databaseId", Integer.toString(databaseId))
             .param("userId", Integer.toString(user.getId())));
 
