@@ -22,8 +22,6 @@
     <include path="/AI/**.css" expiration="365d"/>
     <include path="/AI/**.cache.html" expiration="365d"/>
     <include path="/**.nocache.html" expiration="0s"/>
-    <include path="/Login/**.css" expiration="365d"/>
-    <include path="/Login/**.cache.html" expiration="365d"/>
     <include path="/static/**.png" expiration="365d"/>
     <include path="/assets/**.cache.*" expiration="365d"/>
     <include path="/error.html"/>

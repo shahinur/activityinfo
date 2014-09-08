@@ -100,7 +100,8 @@ public class LocationTable extends ResourceMigrator {
 
     private Map<ResourceId, ResourceId> queryParents(Connection connection) throws SQLException {
 
-        String sql = "SELECT * FROM adminentity WHERE deleted = 0";
+        String sql = "SELECT AdminEntityId, AdminentityParentId FROM adminentity WHERE deleted = 0 AND " +
+            context.filter().adminEntityFilter();
 
         Map<ResourceId, ResourceId> parents = Maps.newHashMap();
 

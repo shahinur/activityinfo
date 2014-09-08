@@ -28,6 +28,14 @@ public final class ResourceId {
         this.text = text;
     }
 
+    public ResourceId getWorkspaceId() {
+        int index = text.indexOf('-');
+        if(index < 0) {
+            throw new IllegalArgumentException("malformed argument");
+        }
+        return ResourceId.valueOf(text.substring(0, index));
+    }
+
     @JsonValue
     public String asString() {
         return this.text;

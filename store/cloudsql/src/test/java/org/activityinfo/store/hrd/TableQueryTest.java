@@ -1,4 +1,4 @@
-package org.activityinfo.store.cloudsql;
+package org.activityinfo.store.hrd;
 
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -6,6 +6,7 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
@@ -44,16 +45,26 @@ public class TableQueryTest {
     private ResourceId gender;
     private EnumFieldValue male;
     private EnumFieldValue female;
+    private ResourceId workspaceId;
 
 
     @Before
     public void createFormClass() {
-        formClassId = Resources.generateId();
+
+        workspaceId = environment.generateWorkspaceId();
+
+        formClassId = environment.generateId();
         name = Resources.generateId();
         age = Resources.generateId();
         dogYears = Resources.generateId();
         barcode = Resources.generateId();
         gender = Resources.generateId();
+
+
+        FormInstance instance = new FormInstance(workspaceId, FolderClass.CLASS_ID);
+        instance.setOwnerId(Resources.ROOT_ID);
+        instance.set(FolderClass.LABEL_FIELD_ID, "Workspace");
+        create(instance);
         
         FormClass formClass = new FormClass(formClassId);
         formClass.setParentId(Resources.ROOT_ID);
@@ -71,16 +82,17 @@ public class TableQueryTest {
                 new EnumValue(female.getValueId(), "Female")));
 
         formClass.addElement(new FormField(gender).setLabel("Gender").setType(genderType));
-        put(formClass);
+        create(formClass);
     }
+
 
 
     @Test
     public void basicTable() {
 
-        put(newInstance().set(name, "Bob").set(age, years(42)).set(gender, male));
-        put(newInstance().set(name, "Francine").set(age, years(10)).set(gender, female));
-        put(newInstance().set(name, "Doug").set(age, years(18)).set(gender, male));
+        create(newInstance().set(name, "Bob").set(age, years(42)).set(gender, male));
+        create(newInstance().set(name, "Francine").set(age, years(10)).set(gender, female));
+        create(newInstance().set(name, "Doug").set(age, years(18)).set(gender, male));
 
         TableModel tableModel = new TableModel(formClassId);
         tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
@@ -98,9 +110,9 @@ public class TableQueryTest {
     @Test
     public void calculatedColumn() {
 
-        put(newInstance().set(name, "Bob").set(age, years(42)));
-        put(newInstance().set(name, "Francine").set(age, years(10)));
-        put(newInstance().set(name, "Doug").set(age, years(18)));
+        create(newInstance().set(name, "Bob").set(age, years(42)));
+        create(newInstance().set(name, "Francine").set(age, years(10)));
+        create(newInstance().set(name, "Doug").set(age, years(18)));
 
 
         TableModel tableModel = new TableModel(formClassId);
@@ -119,8 +131,8 @@ public class TableQueryTest {
     @Test
     public void missingEnumValues() {
 
-        put(newInstance().set(name, "Bob").set(age, years(42)));
-        put(newInstance().set(name, "Francine").set(age, years(10)).set(gender, female));
+        create(newInstance().set(name, "Bob").set(age, years(42)));
+        create(newInstance().set(name, "Francine").set(age, years(10)).set(gender, female));
 
         TableModel tableModel = new TableModel(formClassId);
         tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
@@ -138,9 +150,9 @@ public class TableQueryTest {
     @Test
     public void calculatedWithMissingColumn() {
 
-        put(newInstance().set(name, "Bob").set(age, years(42)));
-        put(newInstance().set(name, "Francine"));
-        put(newInstance().set(name, "Doug").set(age, years(18)));
+        create(newInstance().set(name, "Bob").set(age, years(42)));
+        create(newInstance().set(name, "Francine"));
+        create(newInstance().set(name, "Doug").set(age, years(18)));
 
 
         TableModel tableModel = new TableModel(formClassId);
@@ -156,10 +168,10 @@ public class TableQueryTest {
 
     @Test
     public void barcodeAsString() {
-        put(newInstance().set(name, "Bob").set(barcode, BarcodeValue.valueOf("01010101")));
-        put(newInstance().set(name, "Francine").set(barcode, BarcodeValue.valueOf("XYZ123")));
-        put(newInstance().set(name, "Doug").set(barcode, BarcodeValue.valueOf("XOXOXO")));
-        put(newInstance().set(age, years(44)));
+        create(newInstance().set(name, "Bob").set(barcode, BarcodeValue.valueOf("01010101")));
+        create(newInstance().set(name, "Francine").set(barcode, BarcodeValue.valueOf("XYZ123")));
+        create(newInstance().set(name, "Doug").set(barcode, BarcodeValue.valueOf("XOXOXO")));
+        create(newInstance().set(age, years(44)));
 
 
         TableModel tableModel = new TableModel(formClassId);
@@ -170,21 +182,21 @@ public class TableQueryTest {
 
         assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug", null));
         assertThat(data.getColumnView("C2"), hasValues("01010101", "XYZ123", "XOXOXO", null));
-
     }
-
 
     private Quantity years(int i) {
         return new Quantity(i, "years");
     }
 
     private FormInstance newInstance() {
-        return new FormInstance(Resources.generateId(), formClassId);
+        return new FormInstance(environment.generateId(), formClassId);
     }
 
-    private void put(IsResource resource) {
-        environment.getStore().put(environment.getUser(), resource.asResource());
+    private void create(IsResource resource) {
+        environment.getStore().create(environment.getUser(), resource.asResource());
+        System.out.println(resource.getId() + " = " + resource);
     }
+
 
     private TypeSafeMatcher<ColumnView> hasValues(final String... values) {
         return new TypeSafeMatcher<ColumnView>() {

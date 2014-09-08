@@ -560,7 +560,7 @@
               <logLevel>INFO</logLevel>
               <compileReport>false</compileReport>
               <modules>
-                <module>org.activityinfo.ui.app.ActivityInfoAppProd</module>
+                <module>org.activityinfo.server.ActivityInfoAppProd</module>
               </modules>
             </configuration>
           </execution>

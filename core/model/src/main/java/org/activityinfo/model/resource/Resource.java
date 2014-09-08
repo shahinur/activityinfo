@@ -26,6 +26,7 @@ public final class Resource extends PropertyBag<Resource> {
 
     private ResourceId id;
     private ResourceId ownerId;
+    private ResourceId workspaceId;
     private long version;
 
     Resource() {

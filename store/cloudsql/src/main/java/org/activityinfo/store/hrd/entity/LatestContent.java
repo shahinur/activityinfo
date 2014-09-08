@@ -1,15 +1,16 @@
 package org.activityinfo.store.hrd.entity;
 
-
 import com.google.appengine.api.datastore.*;
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.service.store.ResourceNotFound;
 
 import java.util.Iterator;
+
+import static org.activityinfo.store.hrd.entity.Content.*;
 
 /**
  * An entity within the {@code ResourceGroup} which contains the
@@ -21,18 +22,32 @@ public class LatestContent {
 
     public static final String KIND = "C";
 
-    public static final String NAME = "C";
+    /**
+     * We need an index to match the ResourceId to its workspace
+     */
+    public static final String RESOURCE_ID_PROPERTY = "ID";
 
-    public static final String OWNER_PROPERTY = "o";
+    public static final String ROW_INDEX_PROPERTY = "R";
 
-    public static final String VERSION_PROPERTY = "v";
 
-    public static final String LABEL_PROPERTY = "L";
-
+    private final Key rootKey;
+    private final ResourceId resourceId;
     private final Key key;
 
     public LatestContent(Key rootKey, ResourceId id) {
+        this.rootKey = rootKey;
+        this.resourceId = id;
         this.key = KeyFactory.createKey(rootKey, KIND, id.asString());
+    }
+
+    public Resource get(WorkspaceTransaction tx) throws EntityNotFoundException {
+        Entity entity = tx.get(key);
+        return deserializeResource(entity);
+    }
+
+    public Resource get(DatastoreService datastore) throws EntityNotFoundException {
+        Entity entity = datastore.get(key);
+        return deserializeResource(entity);
     }
 
     public Resource get(DatastoreService datastore, Transaction tx) throws EntityNotFoundException {
@@ -40,42 +55,77 @@ public class LatestContent {
         return deserializeResource(entity);
     }
 
-    public Resource get(DatastoreService datastore) throws EntityNotFoundException {
-        return get(datastore, (Transaction)null);
+    public ResourceNode getAsNode(WorkspaceTransaction tx) throws EntityNotFoundException {
+        Entity entity = tx.get(key);
+        return deserializeResourceNode(entity);
     }
 
-    private static Resource deserializeResource(Entity entity) {
-        Resource resource = Resources.createResource();
-        resource.setId(ResourceId.valueOf(entity.getKey().getParent().getName()));
-        resource.setVersion((Long)entity.getProperty(VERSION_PROPERTY));
-        resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
-        Content.readProperties(entity, resource);
-        return resource;
-    }
-
-    public Entity createEntity(Resource resource) {
+    /**
+     * Updates the LatestContent entity to reflect the content of {@code resource}
+     * @param tx the transaction in which this change is to be effected
+     * @param resource the latest version of the resource
+     */
+    public void create(WorkspaceTransaction tx, Resource resource) {
         Entity entity = new Entity(key);
-        entity.setUnindexedProperty(VERSION_PROPERTY, resource.getVersion());
+        entity.setProperty(VERSION_PROPERTY, resource.getVersion());
         entity.setProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
-
-        Optional<String> label = ResourceLabels.getLabel(resource);
-        if(label.isPresent()) {
-            entity.setProperty(LABEL_PROPERTY, label.get());
-        }
+        entity.setProperty(CLASS_PROPERTY, resource.isString("classId"));
         Content.writeProperties(resource, entity);
 
-        return entity;
+        if(FolderIndex.isFolderItem(resource)) {
+            entity.setProperty(LABEL_PROPERTY, FolderIndex.getLabelAndAssertNonEmpty(resource));
+        }
+
+        if(FormMetadata.isFormInstance(resource)) {
+            FormMetadata metadata = new FormMetadata(rootKey, resource);
+            long rowIndex = metadata.addInstance(tx, resource.getVersion());
+
+            entity.setProperty(ROW_INDEX_PROPERTY, rowIndex);
+        }
+
+        tx.put(entity);
     }
 
-    public static Iterator<Resource> queryInstances(DatastoreService datastore, ResourceId formClassId) {
+
+    public void update(WorkspaceTransaction tx, Resource resource) {
+        Entity entity;
+        try {
+            entity = tx.get(key);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFound(resource.getId());
+        }
+        entity.setProperty(VERSION_PROPERTY, resource.getVersion());
+        entity.setProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
+        entity.setProperty(CLASS_PROPERTY, resource.isString("classId"));
+        Content.writeProperties(resource, entity);
+
+        if(FolderIndex.isFolderItem(resource)) {
+            entity.setProperty(LABEL_PROPERTY, FolderIndex.getLabelAndAssertNonEmpty(resource));
+        }
+
+        if(FormMetadata.isFormInstance(resource)) {
+            FormMetadata metadata = new FormMetadata(rootKey, resource);
+            metadata.updateLatestVersion(tx, resource.getVersion());
+        }
+    }
+
+
+    /**
+     * Returns a list of resources, ordered by their row index to ensure
+     * that row order is stable over time.
+     */
+    public Iterator<Resource> queryFormInstances(WorkspaceTransaction tx) {
 
         Query.Filter classFilter = new Query.FilterPredicate(OWNER_PROPERTY,
                 Query.FilterOperator.EQUAL,
-                formClassId.asString());
+                resourceId.asString());
 
-        Query query = new Query(KIND).setFilter(classFilter);
+        Query query = new Query(KIND)
+            .setFilter(classFilter)
+            .addSort(ROW_INDEX_PROPERTY)
+            .setAncestor(rootKey);
 
-        Iterator<Entity> entityIterator = datastore.prepare(query).asIterator();
+        Iterator<Entity> entityIterator = tx.prepare(query).asIterator();
 
         return Iterators.transform(entityIterator, new Function<Entity, Resource>() {
             @Override
@@ -85,11 +135,12 @@ public class LatestContent {
         });
     }
 
-    public static Resource get(DatastoreService datastoreService, ResourceId resourceId) throws EntityNotFoundException {
-        return new ResourceGroup(resourceId).getLatestContent(resourceId).get(datastoreService);
-    }
-
     public Key getKey() {
         return key;
     }
+
+    public static ResourceId workspaceFromKey(Key key) {
+        return ResourceId.valueOf(key.getParent().getName());
+    }
+
 }

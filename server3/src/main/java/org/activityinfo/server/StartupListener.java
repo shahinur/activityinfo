@@ -42,7 +42,7 @@ import org.activityinfo.server.util.locale.LocaleModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.service.ServiceModule;
 import org.activityinfo.service.blob.GcsBlobFieldStorageServiceModule;
-import org.activityinfo.store.cloudsql.MySqlStoreModule;
+import org.activityinfo.store.hrd.HrdResourceStoreModule;
 
 import javax.servlet.ServletContextEvent;
 import java.util.Arrays;
@@ -69,7 +69,7 @@ public class StartupListener extends GuiceServletContextListener {
 
         List<Module> modules = Lists.newArrayList();
         modules.addAll(Arrays.asList(
-                new MySqlStoreModule(),
+                new HrdResourceStoreModule(),
                 new HibernateModule(),
                 new ConfigModule(),
                 new LoggingModule(),
