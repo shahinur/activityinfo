@@ -7,16 +7,22 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.json.RecordSerialization;
-import org.activityinfo.model.resource.PropertyBag;
-import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.*;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
 public class Content {
 
+    public static final String OWNER_PROPERTY = "O";
 
-    public static final String CONTENTS_PROPERTY = "c";
+    public static final String VERSION_PROPERTY = "V";
+
+    public static final String LABEL_PROPERTY = "L";
+
+    public static final String CLASS_PROPERTY = "C";
+
+    public static final String CONTENTS_PROPERTY = "P";
 
     private static String writePropertiesAsString(PropertyBag bag) {
         try {
@@ -49,5 +55,27 @@ public class Content {
 
     public static void writeProperties(Resource resource, Entity entity) {
         entity.setProperty(CONTENTS_PROPERTY, new Text(writePropertiesAsString(resource)));
+    }
+
+    public static Resource deserializeResource(Entity entity) {
+        Resource resource = Resources.createResource();
+        resource.setId(ResourceId.valueOf(entity.getKey().getParent().getName()));
+        resource.setVersion((Long)entity.getProperty(VERSION_PROPERTY));
+        resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
+        readProperties(entity, resource);
+        return resource;
+    }
+
+    public static ResourceNode deserializeResourceNode(Entity entity) {
+        ResourceId id = ResourceId.valueOf(entity.getKey().getParent().getName());
+        ResourceNode resource = new ResourceNode(id);
+        resource.setId(id);
+        resource.setVersion((Long) entity.getProperty(VERSION_PROPERTY));
+        resource.setLabel((String)entity.getProperty(LABEL_PROPERTY));
+        resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
+        if(entity.getProperty(CLASS_PROPERTY) instanceof String) {
+            resource.setClassId(ResourceId.valueOf((String) entity.getProperty(CLASS_PROPERTY)));
+        }
+        return resource;
     }
 }
