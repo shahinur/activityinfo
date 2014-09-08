@@ -17,6 +17,13 @@ public interface ResourceStore {
 
 
     /**
+     * Generates a 31-bit client id for the given user, encoded as
+     * @param user
+     * @return
+     */
+    long generateClientId(AuthenticatedUser user);
+
+    /**
      * Fetches the latest version of the resource from the store.
      */
     @GET
@@ -74,6 +81,7 @@ public interface ResourceStore {
     @Path("query/tree")
     @Produces("application/json")
     FolderProjection queryTree(@InjectParam AuthenticatedUser user, FolderRequest request);
+
 
     /**
      * Fetches an outline of Resources, returning only their id and label.

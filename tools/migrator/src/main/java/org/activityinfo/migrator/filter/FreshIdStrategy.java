@@ -1,9 +1,9 @@
 package org.activityinfo.migrator.filter;
 
 import com.google.common.collect.Maps;
+import org.activityinfo.model.resource.CuidGenerator;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 
 import java.util.Map;
 
@@ -13,6 +13,12 @@ import java.util.Map;
 public class FreshIdStrategy implements IdStrategy {
 
     private Map<String, ResourceId> map = Maps.newHashMap();
+
+    private CuidGenerator cuidGenerator;
+
+    public FreshIdStrategy(CuidGenerator cuidGenerator) {
+        this.cuidGenerator = cuidGenerator;
+    }
 
     @Override
     public ResourceId resourceId(char domain, int id) {
@@ -42,7 +48,7 @@ public class FreshIdStrategy implements IdStrategy {
     private ResourceId getOrCreateId(String key) {
         ResourceId resourceId = map.get(key);
         if(resourceId == null) {
-            resourceId = Resources.generateId();
+            resourceId = cuidGenerator.generateResourceId();
             map.put(key, resourceId);
         }
         return resourceId;

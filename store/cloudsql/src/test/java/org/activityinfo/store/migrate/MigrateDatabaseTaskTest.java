@@ -1,13 +1,12 @@
 package org.activityinfo.store.migrate;
 
-import org.activityinfo.store.cloudsql.TestingEnvironment;
+import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.store.hrd.TestingEnvironment;
 import org.junit.Rule;
 import org.junit.Test;
 
-import javax.inject.Provider;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.Properties;
 
 public class MigrateDatabaseTaskTest {
 
@@ -15,24 +14,18 @@ public class MigrateDatabaseTaskTest {
     public TestingEnvironment environment = new TestingEnvironment();
 
     @Test
+    //@Ignore("requires local setup")
     public void test() throws Exception {
 
-        Provider<Connection> connectionProvider = new Provider<Connection>() {
+        Properties properties = new Properties();
+        properties.setProperty(MigrateDatabaseTask.MIGRATION_SOURCE_URL, "jdbc:mysql://127.0.0.1:3306/activityinfo");
+        properties.setProperty(MigrateDatabaseTask.MIGRATION_USER, "root");
+        properties.setProperty(MigrateDatabaseTask.MIGRATION_PASS, "root");
+        properties.setProperty(MigrateDatabaseTask.MIGRATION_DRIVER_CLASS, "com.mysql.jdbc.Driver");
 
-            @Override
-            public Connection get() {
-                try {
-                    return DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/activityinfo", "root", "root");
-                } catch (SQLException e) {
-                    throw new AssertionError(e);
-                }
-            }
-        };
+        DeploymentConfiguration config = new DeploymentConfiguration(properties);
 
-        MigrateDatabaseTask migrator = new MigrateDatabaseTask(environment.getUser(), environment.getStore(),
-            connectionProvider);
+        MigrateDatabaseTask migrator = new MigrateDatabaseTask(config, new AuthenticatedUser("", 1, ""));
         migrator.migrate(1350);
-
     }
-
 }

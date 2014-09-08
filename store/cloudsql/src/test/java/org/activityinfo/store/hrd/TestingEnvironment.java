@@ -1,14 +1,12 @@
-package org.activityinfo.store.cloudsql;
+package org.activityinfo.store.hrd;
 
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.store.hrd.HrdResourceStore;
+import org.activityinfo.model.resource.CuidGenerator;
+import org.activityinfo.model.resource.ResourceId;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
-
-import java.sql.SQLException;
 
 public class TestingEnvironment extends TestWatcher {
 
@@ -19,14 +17,15 @@ public class TestingEnvironment extends TestWatcher {
 
     private HrdResourceStore store;
     private AuthenticatedUser user;
-    private TestingConnectionProvider connectionProvider;
+    private CuidGenerator cuidGenerator;
 
     @Override
     protected void starting(Description description) {
         helper.setUp();
-        store = new HrdResourceStore(DatastoreServiceFactory.getDatastoreService());
+        store = new HrdResourceStore();
 
         user = new AuthenticatedUser("XYZ", 1, "test@test.org");
+        cuidGenerator = new CuidGenerator(store.generateClientId(user), System.currentTimeMillis());
     }
 
     @Override
@@ -42,7 +41,13 @@ public class TestingEnvironment extends TestWatcher {
         return user;
     }
 
-    public void assertThatAllConnectionsHaveBeenClosed() throws SQLException {
-       // connectionProvider.assertThatAllConnectionsHaveBeenClosed();
+
+    public ResourceId generateId() {
+        return cuidGenerator.generateResourceId();
     }
+
+    public ResourceId generateWorkspaceId() {
+        return cuidGenerator.generateResourceId();
+    }
+
 }

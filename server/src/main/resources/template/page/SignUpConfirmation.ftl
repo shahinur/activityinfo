@@ -37,7 +37,7 @@
             <p class="well">${label.signUpConfirmationDetail}</p>
 
             <form action="" method="post" id="confirmForm">
-                <input type="hidden" name="key" value="${key}"/>
+                <input type="hidden" name="key" value="${snapshotKey}"/>
 
                 <div class="control-group" id="passwordGroup">
                     <label class="control-label" for="passwordInput">${label.choosePassword}:</label>

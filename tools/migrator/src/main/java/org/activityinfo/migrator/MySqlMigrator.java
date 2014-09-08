@@ -108,6 +108,7 @@ public class MySqlMigrator {
 
     public void migrate(Connection connection, ResourceWriter writer) throws Exception {
         for(ResourceMigrator migrator : migrators) {
+            System.out.println("Running migrator " + migrator.getClass().getSimpleName());
             migrator.getResources(connection, writer);
         }
     }
