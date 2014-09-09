@@ -91,7 +91,7 @@ public class MigrateDatabaseTask {
                 QueueFactory.getDefaultQueue().add(TaskOptions.Builder
                     .withTaskName(workspaceId.asString())
                     .countdownMillis(20 * 1000)
-                    .url("/service/migrate/cleanup")
+                    .url("/service/migrate/tasks/cleanup")
                     .param("workspaceId", workspaceId.asString()));
             }
         }
