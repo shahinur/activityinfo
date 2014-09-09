@@ -7,6 +7,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreAccessor;
+import org.activityinfo.store.hrd.entity.UpdateTransaction;
 import org.activityinfo.store.hrd.entity.Workspace;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
@@ -36,7 +37,7 @@ public class HrdStoreAccessor implements StoreAccessor {
         Workspace workspaceId = workspaceLookup.lookup(formClassId);
         WorkspaceTransaction tx = transactions.get(workspaceId);
         if(tx == null) {
-            tx = new WorkspaceTransaction(workspaceId, datastore, user);
+            tx = new UpdateTransaction(workspaceId, datastore, user);
             transactions.put(workspaceId.getWorkspaceId(), tx);
         }
         return tx;
