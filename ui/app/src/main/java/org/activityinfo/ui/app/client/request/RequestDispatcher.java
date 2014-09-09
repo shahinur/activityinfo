@@ -2,9 +2,12 @@ package org.activityinfo.ui.app.client.request;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.InvocationException;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.ui.app.client.action.RemoteUpdate;
+import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityState;
+import org.activityinfo.ui.app.client.chrome.connectivity.UpdateConnectivityAction;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 
 import java.util.Map;
@@ -57,16 +60,28 @@ public class RequestDispatcher {
     private void fireSuccessAction(Request<?> request, Object result) {
         deque(request);
         dispatcher.dispatch(new RemoteUpdate(request, result));
+        dispatcher.dispatch(new UpdateConnectivityAction(ConnectivityState.ONLINE));
     }
 
     private void fireFailureAction(Request<?> request, Throwable caught) {
-        deque(request);
+        try {
+            deque(request);
+        } finally {
+            if (caught instanceof InvocationException) {
+                // the call didn't complete cleanly
+                // It may means that there no internet connection but also there may be some other reason.
+                // (We may fall down to StatusCodeException but it may not work in all cases.)
+                // Need better way to handle internet connectivity check...
+                dispatcher.dispatch(new UpdateConnectivityAction(ConnectivityState.OFFLINE));
+            }
+        }
     }
 
     private void deque(Request<?> request) {
-        if(pendingRequests.get(request).isSettled()) {
+        if (pendingRequests.get(request).isSettled()) {
             pendingRequests.remove(request);
         }
+
     }
 
 }
