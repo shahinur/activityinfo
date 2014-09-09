@@ -3,8 +3,6 @@ package org.activityinfo.store.migrate;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
@@ -31,7 +29,7 @@ public class MigrateService {
     public Response startMigration(@InjectParam AuthenticatedUser user,
                                    @PathParam("id") int databaseId) {
 
-        QueueFactory.getQueue("migrate").add(TaskOptions.Builder.withUrl("/service/migrate/run")
+        QueueFactory.getQueue("migrate").add(TaskOptions.Builder.withUrl("/service/migrate/tasks/run")
             .param("databaseId", Integer.toString(databaseId))
             .param("userId", Integer.toString(user.getId())));
 
@@ -39,28 +37,17 @@ public class MigrateService {
     }
 
     @POST
-    @Path("run")
+    @Path("tasks/run")
     public void runMigration(@InjectParam AuthenticatedUser user,
                              @FormParam("databaseId") int databaseId,
                              @FormParam("userId") int userId) throws Exception {
-
-        UserService userService = UserServiceFactory.getUserService();
-        if(!userService.isUserAdmin()) {
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
 
         new MigrateDatabaseTask(config, new AuthenticatedUser("", userId, "")).migrate(databaseId);
     }
 
     @POST
-    @Path("cleanup")
+    @Path("/tasks/cleanup")
     public void cleanupFailedMigration(ResourceId workspaceId) throws Exception {
-
-        UserService userService = UserServiceFactory.getUserService();
-        if(!userService.isUserAdmin()) {
-            throw new WebApplicationException(Response.Status.FORBIDDEN);
-        }
-
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Workspace workspace = new Workspace(workspaceId);
 
