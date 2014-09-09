@@ -23,21 +23,16 @@
 
   <security-constraint>
     <web-resource-collection>
+      <web-resource-name>tasks</web-resource-name>
+      <url-pattern>/admin</url-pattern>
       <url-pattern>/tasks/*</url-pattern>
+      <url-pattern>/service/migrate/tasks/</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
     </auth-constraint>
   </security-constraint>
 
-  <security-constraint>
-    <web-resource-collection>
-      <url-pattern>/admin/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>admin</role-name>
-    </auth-constraint>
-  </security-constraint>
 
   <!--  Require SSL for login at least -->
   <security-constraint>
