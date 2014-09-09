@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datastore-indexes autoGenerate="false">
+  <datastore-index kind="C" ancestor="true" source="manual">
+    <property name="O" direction="asc"/>
+    <property name="C" direction="asc"/>
+    <property name="L" direction="asc"/>
+    <property name="V" direction="asc"/>
+  </datastore-index>
+</datastore-indexes>

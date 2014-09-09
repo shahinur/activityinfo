@@ -34,10 +34,14 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class ActivityTable extends ResourceMigrator {
+
+    private static final Logger LOGGER = Logger.getLogger(ActivityTable.class.getName());
 
     public static final int ONCE = 0;
     public static final int MONTHLY = 1;
@@ -75,6 +79,9 @@ public class ActivityTable extends ResourceMigrator {
             try(ResultSet rs = statement.executeQuery(sql)) {
 
                 while(rs.next()) {
+
+                    LOGGER.info("Migrating Activity " + rs.getObject("activityId"));
+
                     int databaseId = rs.getInt("databaseId");
                     ResourceId databaseResourceId = context.resourceId(DATABASE_DOMAIN, databaseId);
 
@@ -126,6 +133,9 @@ public class ActivityTable extends ResourceMigrator {
     private Map<Integer, List<FormElement>> queryFields(
             Connection connection, Map<Integer, List<EnumValue>> attributes, MigrationFilter filter) throws SQLException {
 
+        LOGGER.info("Querying fields...");
+
+
         String indicatorQuery = "(SELECT " +
                                         "ActivityId, " +
                                         "IndicatorId as Id, " +
@@ -170,6 +180,7 @@ public class ActivityTable extends ResourceMigrator {
         try(Statement statement = connection.createStatement()) {
             try(ResultSet rs = statement.executeQuery(indicatorQuery)) {
                 while(rs.next()) {
+
                     int activityId = rs.getInt("ActivityId");
                     List<FormElement> list = activityMap.get(activityId);
                     if(list == null) {
@@ -239,11 +250,11 @@ public class ActivityTable extends ResourceMigrator {
 
         FormField field = new FormField(fieldId)
                 .setLabel(rs.getString("Name"))
-                .setRequired(rs.getBoolean("Mandatory"))
+                .setRequired(getMandatory(rs))
                 .setDescription(rs.getString("Description"))
                 .setCode(rs.getString("Code"));
 
-        if(rs.getInt("ca") == 1) {
+        if(rs.getBoolean("ca")) {
             field.setType(new CalculatedFieldType(rs.getString("expr")));
 
         } else {
@@ -263,7 +274,32 @@ public class ActivityTable extends ResourceMigrator {
                     break;
             }
         }
+
+
         return field;
+    }
+
+    private boolean getMandatory(ResultSet rs) throws SQLException {
+        try {
+            return rs.getBoolean("Mandatory");
+        } catch(Exception e) {
+            LOGGER.log(Level.SEVERE, "Exception while accessing mandatory flag (value = [" +
+                toDebugString(rs) + "]");
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object toDebugString(ResultSet rs) throws SQLException {
+        try {
+            Object object = rs.getObject("Mandatory");
+            if(object == null) {
+                return "null";
+            } else {
+                return object.toString() + ", class = " + object.getClass().getName();
+            }
+        } catch(Exception e) {
+            return "Exception: " + e.getMessage();
+        }
     }
 
     private EnumType createEnumType(ResultSet rs, Map<Integer, List<EnumValue>> attributes) throws SQLException {

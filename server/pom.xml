@@ -595,9 +595,9 @@
       <properties>
         <gae.version>1.9.3</gae.version>
         <appengine.target.version>1.9.3</appengine.target.version>
-        <display.version>Build ${BUILD_NUMBER}</display.version>
+        <display.version>Test</display.version>
         <gae.application>ai-dev</gae.application>
-        <gae.application.version>ci-dev</gae.application.version>
+        <gae.application.version>migrate-test</gae.application.version>
         <gae.instance.class>F1</gae.instance.class>
         <gae.min.idle.instances>automatic</gae.min.idle.instances>
       </properties>

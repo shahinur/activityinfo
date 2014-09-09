@@ -16,12 +16,15 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Migrates data from the legacy MySQL table structure
  */
 public class MySqlMigrator {
 
+    private static final Logger LOGGER = Logger.getLogger(MySqlMigrator.class.getName());
 
     private List<ResourceMigrator> migrators = Lists.newArrayList();
 
@@ -60,8 +63,12 @@ public class MySqlMigrator {
         ResourceWriter writer = createWriter(connection);
         writer.beginResources();
         for(final ResourceMigrator migrator : migrators) {
-            System.out.println("Running " + migrator.getClass().getSimpleName() + " migrator...");
-            migrator.getResources(connection, writer);
+            LOGGER.info("Running " + migrator.getClass().getSimpleName() + " migrator...");
+            try {
+                migrator.getResources(connection, writer);
+            } catch(Exception e) {
+                throw new RuntimeException("Exception thrown while running migrator " + migrator.getClass().getSimpleName(), e);
+            }
         }
         writer.endResources();
 
@@ -107,9 +114,11 @@ public class MySqlMigrator {
     }
 
     public void migrate(Connection connection, ResourceWriter writer) throws Exception {
+        writer.beginResources();
         for(ResourceMigrator migrator : migrators) {
-            System.out.println("Running migrator " + migrator.getClass().getSimpleName());
+            LOGGER.log(Level.INFO, "Running migrator " + migrator.getClass().getSimpleName());
             migrator.getResources(connection, writer);
         }
+        writer.endResources();
     }
 }

@@ -2,6 +2,8 @@ package org.activityinfo.store.migrate;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import org.activityinfo.migrator.MySqlMigrator;
@@ -70,21 +72,32 @@ public class MigrateDatabaseTask {
             ResourceId workspaceId = idStrategy.resourceId(CuidAdapter.DATABASE_DOMAIN, databaseId);
             Workspace workspace = new Workspace(workspaceId);
 
+            LOGGER.info("Workspace id = " + workspaceId);
+
             MigrationContext context = new MigrationContext(idStrategy, filter);
             context.setRootId(Resources.ROOT_ID);
             context.setGeoDbOwnerId(workspaceId);
 
-            try(WorkspaceTransaction tx = new WorkspaceTransaction(workspace, datastore, user)) {
+            MigrateTransaction tx = new MigrateTransaction(datastore, workspace, user);
+
+            try {
                 MySqlMigrator migrator = new MySqlMigrator(context);
                 migrator.migrate(connection, new HrdWriter(tx));
-                tx.commit();
+                tx.flush();
+            } catch(Exception e) {
+                LOGGER.log(Level.SEVERE, "Exception whilst migrating database " + databaseName +
+                    " [" + databaseId + "]", e);
+
+                QueueFactory.getDefaultQueue().add(TaskOptions.Builder
+                    .withTaskName(workspaceId.asString())
+                    .countdownMillis(20 * 1000)
+                    .url("/service/migrate/cleanup")
+                    .param("workspaceId", workspaceId.asString()));
             }
         }
     }
 
     private Connection openConnection()  {
-
-
         String connectionUrl = Preconditions.checkNotNull(config.getProperty(MIGRATION_SOURCE_URL), MIGRATION_SOURCE_URL);
         String driverClass = Preconditions.checkNotNull(config.getProperty(MIGRATION_DRIVER_CLASS), MIGRATION_DRIVER_CLASS);
         String username =  Preconditions.checkNotNull(config.getProperty(MIGRATION_USER), MIGRATION_USER);
@@ -130,6 +143,8 @@ public class MigrateDatabaseTask {
         private final WorkspaceTransaction tx;
         private final Workspace workspace;
 
+        private Resource workspaceResource;
+
         public HrdWriter(WorkspaceTransaction tx) {
             this.tx = tx;
             this.workspace = tx.getWorkspace();
@@ -142,9 +157,10 @@ public class MigrateDatabaseTask {
 
         @Override
         public void writeResource(Resource resource, Date dateCreated, Date dateDeleted) throws Exception {
-            System.out.println(resource.getId() + " " + resource.isString("classId"));
+            // Wait until all the other writes are complete before we write the
+            // workspace and it becomes to the user
             if(resource.getId().equals(tx.getWorkspace().getWorkspaceId())) {
-                workspace.createWorkspace(tx, resource);
+                workspaceResource = resource;
             } else {
                 workspace.createResource(tx, resource);
             }
@@ -152,7 +168,9 @@ public class MigrateDatabaseTask {
 
         @Override
         public void endResources() throws Exception {
-
+            if(workspaceResource != null) {
+                workspace.createWorkspace(tx, workspaceResource);
+            }
         }
 
         @Override
