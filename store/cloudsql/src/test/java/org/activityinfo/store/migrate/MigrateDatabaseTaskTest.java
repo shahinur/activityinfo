@@ -18,9 +18,9 @@ public class MigrateDatabaseTaskTest {
     public void test() throws Exception {
 
         Properties properties = new Properties();
-        properties.setProperty(MigrateDatabaseTask.MIGRATION_SOURCE_URL, "jdbc:mysql://127.0.0.1:3306/activityinfo");
-        properties.setProperty(MigrateDatabaseTask.MIGRATION_USER, "root");
-        properties.setProperty(MigrateDatabaseTask.MIGRATION_PASS, "root");
+        properties.setProperty(MigrateDatabaseTask.MIGRATION_SOURCE_URL, "jdbc:mysql://173.194.241.81:3306/activityinfo");
+        properties.setProperty(MigrateDatabaseTask.MIGRATION_USER, "migrator");
+        properties.setProperty(MigrateDatabaseTask.MIGRATION_PASS, "migrate");
         properties.setProperty(MigrateDatabaseTask.MIGRATION_DRIVER_CLASS, "com.mysql.jdbc.Driver");
 
         DeploymentConfiguration config = new DeploymentConfiguration(properties);

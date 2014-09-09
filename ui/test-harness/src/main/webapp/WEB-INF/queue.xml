@@ -1,0 +1,8 @@
+<queue-entries>
+  <queue>
+    <name>migrate</name>
+    <rate>1/s</rate>
+    <bucket-size>100</bucket-size>
+    <max-concurrent-requests>1</max-concurrent-requests>
+  </queue>
+</queue-entries>
