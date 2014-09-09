@@ -15,6 +15,7 @@ import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
 import org.activityinfo.store.hrd.entity.Snapshot;
+import org.activityinfo.store.hrd.entity.UpdateTransaction;
 import org.activityinfo.store.hrd.entity.Workspace;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.AcrIndex;
@@ -45,7 +46,7 @@ public class HrdResourceStore implements ResourceStore {
 
 
     private WorkspaceTransaction begin(Workspace workspace, AuthenticatedUser user) {
-        return new WorkspaceTransaction(workspace, datastore, user);
+        return new UpdateTransaction(workspace, datastore, user);
     }
 
     @Override
