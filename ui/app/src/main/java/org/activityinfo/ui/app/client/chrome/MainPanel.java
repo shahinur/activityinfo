@@ -33,7 +33,7 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
     public MainPanel(Application application) {
         this.application = application;
 
-        headerBar = new HeaderBar();
+        headerBar = new HeaderBar(application);
 
         pageViews.add(new FolderPage(application));
         pageViews.add(new NewWorkspacePage(application));

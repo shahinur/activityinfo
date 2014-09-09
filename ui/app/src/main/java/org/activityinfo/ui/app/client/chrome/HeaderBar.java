@@ -1,5 +1,7 @@
 package org.activityinfo.ui.app.client.chrome;
 
+import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityWidget;
 import org.activityinfo.ui.style.Badges;
 import org.activityinfo.ui.style.Forms;
 import org.activityinfo.ui.style.icons.FontAwesome;
@@ -18,6 +20,12 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class HeaderBar extends VComponent<HeaderBar> {
 
+    private Application application;
+
+    public HeaderBar(Application application) {
+        this.application = application;
+    }
+
     @Override
     public VTree render() {
         return div(HEADERBAR, menuToggle(),
@@ -27,6 +35,7 @@ public class HeaderBar extends VComponent<HeaderBar> {
                         headerMenu(FontAwesome.USER),
                         headerMenu(FontAwesome.ENVELOPE),
                         headerMenu(GlyphIcons.GLOBE),
+                        connectivityMenu(),
                         userMenu())));
     }
 
@@ -41,6 +50,9 @@ public class HeaderBar extends VComponent<HeaderBar> {
                 input(Forms.InputType.TEXT, "keyword", "Search here"));
     }
 
+    private VNode connectivityMenu() {
+        return li(new ConnectivityWidget(application));
+    }
 
     private static VNode headerMenu(Icon icon) {
         return li(
