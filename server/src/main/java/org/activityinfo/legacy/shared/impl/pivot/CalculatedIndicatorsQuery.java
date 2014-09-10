@@ -138,6 +138,7 @@ public class CalculatedIndicatorsQuery implements WorkItem {
                 .appendColumn("g.name", "groupName")
                 .appendColumn("a.attributeId")
                 .appendColumn("a.name")
+                .appendColumn("a.sortOrder")
                 .from(Tables.ATTRIBUTE, "a")
                 .leftJoin(Tables.ATTRIBUTE_GROUP, "g").on("a.attributeGroupId=g.attributeGroupId")
                 .where("a.attributeGroupId").in(groupIds)
@@ -147,8 +148,9 @@ public class CalculatedIndicatorsQuery implements WorkItem {
                         for (SqlResultSetRow row : results.getRows()) {
                             int groupId = row.getInt("groupId");
                             int attributeId = row.getInt("attributeId");
+                            int sortOrder = row.getInt("sortOrder");
                             String attributeName = row.getString("name");
-                            attributes.put(groupId, new EntityCategory(attributeId, attributeName));
+                            attributes.put(groupId, new EntityCategory(attributeId, attributeName, sortOrder));
                         }
                         querySites();
                     }
@@ -213,7 +215,12 @@ public class CalculatedIndicatorsQuery implements WorkItem {
 
             @Override
             public void onSuccess(SiteResult result) {
-                aggregateSites(result);
+                try {
+                    aggregateSites(result);
+                    callback.onSuccess(null);
+                } catch(Throwable caught) {
+                    callback.onFailure(caught);
+                }
             }
         });
     }
@@ -295,7 +302,6 @@ public class CalculatedIndicatorsQuery implements WorkItem {
             }
         }
 
-        callback.onSuccess(null);
     }
 
 }

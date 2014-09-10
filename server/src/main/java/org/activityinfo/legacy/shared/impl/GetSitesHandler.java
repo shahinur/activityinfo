@@ -212,12 +212,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .appendColumn("location.y", "y");
 
         }
-        if(command.isFetchLocation() || command.getFilter().isRestricted(DimensionType.Location)) {
+        if(locationJoinRequired(command)) {
             query
-                .leftJoin(Tables.LOCATION)
-                .on("site.LocationId = location.LocationId")
-                .leftJoin(Tables.LOCATION_TYPE, "locationType")
-                .on("location.LocationTypeId = locationType.LocationTypeId");
+                .leftJoin(Tables.LOCATION).on("site.LocationId = location.LocationId")
+                .leftJoin(Tables.LOCATION_TYPE, "locationType").on("location.LocationTypeId = locationType.LocationTypeId");
         }
 
         applyPermissions(query, context);
@@ -230,6 +228,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         return query;
     }
 
+    private boolean locationJoinRequired(GetSites command) {
+        return command.isFetchLocation() || command.getFilter().isRestricted(DimensionType.Location);
+    }
+
     private SqlQuery linkedQuery(ExecutionContext context, GetSites command) {
         SqlQuery query = SqlQuery.select()
                 .appendColumn("DISTINCT site.SiteId", "SiteId")
@@ -240,20 +242,28 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .appendColumn("site.Date1", "Date1")
                 .appendColumn("site.Date2", "Date2")
                 .appendColumn("site.DateCreated", "DateCreated")
-                .appendColumn("partner.PartnerId", "PartnerId")
-                .appendColumn("partner.name", "PartnerName")
                 .appendColumn("site.projectId", "ProjectId")
                 .appendColumn("project.name", "ProjectName")
                 .appendColumn("project.dateDeleted", "ProjectDateDeleted")
-                .appendColumn("location.locationId", "LocationId")
-                .appendColumn("location.name", "LocationName")
-                .appendColumn("location.axe", "LocationAxe")
-                .appendColumn("locationType.name", "LocationTypeName")
                 .appendColumn("site.comments", "Comments")
-                .appendColumn("location.x", "x")
-                .appendColumn("location.y", "y")
                 .appendColumn("site.DateEdited")
                 .appendColumn("site.timeEdited", "TimeEdited");
+
+        if (command.isFetchPartner()) {
+            query
+            .appendColumn("partner.PartnerId", "PartnerId")
+            .appendColumn("partner.name", "PartnerName");
+        }
+
+        if (command.isFetchLocation()) {
+            query
+            .appendColumn("location.locationId", "LocationId")
+            .appendColumn("location.name", "LocationName")
+            .appendColumn("location.axe", "LocationAxe")
+            .appendColumn("locationType.name", "LocationTypeName")
+            .appendColumn("location.x", "x")
+            .appendColumn("location.y", "y");
+        }
 
         if (command.getFilter().isRestricted(DimensionType.Indicator)) {
             /*
@@ -286,15 +296,19 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         }
         query.leftJoin(Tables.USER_DATABASE, "db")
                 .on("activity.DatabaseId = db.DatabaseId")
-                .leftJoin(Tables.LOCATION)
-                .on("site.LocationId = location.LocationId")
-                .leftJoin(Tables.LOCATION_TYPE, "locationType")
-                .on("location.LocationTypeId = locationType.LocationTypeId")
                 .leftJoin(Tables.PARTNER)
                 .on("site.PartnerId = partner.PartnerId")
                 .leftJoin(Tables.PROJECT)
                 .on("site.ProjectId = project.ProjectId")
                 .whereTrue("site.dateDeleted is null");
+
+        if(locationJoinRequired(command)) {
+            query
+            .leftJoin(Tables.LOCATION)
+                .on("site.LocationId = location.LocationId")
+                .leftJoin(Tables.LOCATION_TYPE, "locationType")
+                .on("location.LocationTypeId = locationType.LocationTypeId");
+        }
 
         applyPermissions(query, context);
         applyFilter(query, command.getFilter());
@@ -709,7 +723,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             @Override
             public void onSuccess(SqlTransaction tx, final SqlResultSet results) {
                 Log.trace("Received results for join indicators");
-
                 for(int activityId : activityIds) {
                     IndicatorSymbolResolver symbolResolver = new IndicatorSymbolResolver(activityId, results);
                     for (SiteDTO site : siteMap.values()) {
