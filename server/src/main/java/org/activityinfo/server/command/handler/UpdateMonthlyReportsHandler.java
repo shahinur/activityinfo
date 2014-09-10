@@ -62,12 +62,6 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
         this.permissionOracle = new PermissionOracle(em);
     }
 
-    public static void main(String[] args) {
-        String o1 = "I123M2009-1";
-        System.out.println();
-        System.out.println(o1.substring(o1.indexOf('-') + 1));
-    }
-
     @Override
     public CommandResult execute(UpdateMonthlyReports cmd, User user) throws CommandException {
 

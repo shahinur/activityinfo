@@ -94,27 +94,9 @@
   <attributeGroup attributeGroupId="1" name="cause"
                   multipleAllowed="1" sortOrder="2" mandatory="0"/>
 
-  <attribute attributeGroupId="1" attributeId="1" sortOrder="2"
-             name="Catastrophe Naturelle"/>
-  <attribute attributeGroupId="1" attributeId="2" sortOrder="1"
-             name="Deplacement"/>
+  <attribute attributeGroupId="1" attributeId="1" sortOrder="2" name="B"/>
+  <attribute attributeGroupId="1" attributeId="2" sortOrder="1" name="A"/>
 
-  <!-- NFI Attribute 2: Contenu de Kit -->
-
-  <attributeGroup attributeGroupId="2" name="contenu du kit"
-                  multipleAllowed="1" sortOrder="1" mandatory="0"/>
-
-  <attribute attributeGroupId="2" attributeId="3" name="Casserole"
-             sortOrder="1"/>
-
-  <attribute attributeGroupId="2" attributeId="4" name="Soap"
-             sortOrder="2"/>
-
-  <attributeGroup attributeGroupId="3" name="Something about Kivu"
-                  multipleAllowed="1" sortOrder="1" mandatory="0"/>
-
-  <attributeGroup attributeGroupId="991" name="Deleted"
-                  dateDeleted="2011-1-1" multipleAllowed="1" sortOrder="1" mandatory="0"/>
 
   <!-- Database: PEAR -->
 
@@ -129,6 +111,7 @@
             published="0"/>
 
 
+
   <attributeGroupInActivity activityId="1"
                             attributeGroupId="1"/>
   <attributeGroupInActivity activityId="1"
@@ -140,14 +123,18 @@
 
   <!-- NFI Indicator 1: Beneficiaries -->
 
-  <indicator indicatorId="1" activityId="1" name="men" nameInExpression="A" units="individuals"
+  <indicator indicatorId="1" activityId="1" name="men" category="benefciaries" nameInExpression="A" units="individuals"
              calculatedAutomatically="false" aggregation="0" sortOrder="2" mandatory="0"/>
   <indicator indicatorId="2" activityId="1" name="women" nameInExpression="B" units="individuals"
              calculatedAutomatically="false" aggregation="0" sortOrder="2" mandatory="0"/>
-  <indicator indicatorId="3" activityId="1" name="total" units="individuals" aggregation="0" sortOrder="3"
+  <indicator indicatorId="3" activityId="1" name="total" units="individuals"
+             category="synthesis" aggregation="0" sortOrder="3"
              calculatedAutomatically="true" mandatory="false" expression="{A}+{B}"/>
 
 
+
+  <partner partnerId="1" name="NRC"/>
+  <partnerInDatabase partnerId="1" databaseId="1"/>
 
   <location locationId="1" name="Boga" locationTypeId="1" X="3.323" Y="27.232" timeEdited="500"/>
   <locationAdminLink locationId="1" adminEntityId="2"/>
@@ -190,8 +177,8 @@
 
   <site siteId="2" activityId="1" locationId="2" partnerId="1"
         DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3"/>
-  <attributeValue siteId="2" attributeId="1" value="2"/>
-  <attributeValue siteId="2" attributeId="2" value="0"/>
+  <attributeValue siteId="2" attributeId="1" value="0"/>
+  <attributeValue siteId="2" attributeId="2" value="1"/>
 
 
   <reportingPeriod siteId="2" reportingPeriodId="21"

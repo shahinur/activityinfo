@@ -62,7 +62,9 @@ public class CalculatedIndicatorsQuery implements WorkItem {
                 .appendColumn("i.indicatorId", "indicatorId")
                 .appendColumn("i.name", "indicatorName")
                 .appendColumn("i.activityId", "activityId")
+                .appendColumn("i.sortOrder", "indicatorOrder")
                 .appendColumn("a.name", "activityName")
+                .appendColumn("a.sortOrder", "activityOrder")
                 .appendColumn("db.DatabaseId", "databaseId")
                 .appendColumn("db.name", "databaseName")
                 .from(Tables.INDICATOR, "i")
@@ -107,10 +109,16 @@ public class CalculatedIndicatorsQuery implements WorkItem {
                         activityIds.add(activityId);
                         indicatorIds.add(indicatorId);
 
-                        activityMap.put(activityId, new EntityCategory(activityId, row.getString("activityName")));
+                        activityMap.put(activityId, new EntityCategory(activityId,
+                            row.getString("activityName"),
+                            row.getInt("activityOrder")));
+
                         activityToDatabaseMap.put(activityId,
                                 new EntityCategory(row.getInt("databaseId"), row.getString("databaseName")));
-                        indicatorMap.put(indicatorId, new EntityCategory(indicatorId, row.getString("indicatorName")));
+                        indicatorMap.put(indicatorId,
+                            new EntityCategory(indicatorId,
+                                row.getString("indicatorName"),
+                                row.getInt("indicatorOrder")));
                     }
 
                     if (queryContext.getCommand().isPivotedBy(DimensionType.AttributeGroup)) {

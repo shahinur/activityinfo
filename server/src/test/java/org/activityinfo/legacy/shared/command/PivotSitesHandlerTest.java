@@ -29,6 +29,7 @@ import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.shared.command.PivotSites.ValueType;
 import org.activityinfo.legacy.shared.command.result.Bucket;
 import org.activityinfo.legacy.shared.exception.CommandException;
+import org.activityinfo.legacy.shared.impl.pivot.PivotTableDataBuilder;
 import org.activityinfo.legacy.shared.reports.content.*;
 import org.activityinfo.legacy.shared.reports.model.*;
 import org.activityinfo.server.command.CommandTestCase2;
@@ -65,6 +66,8 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
     private static final int OWNER_USER_ID = 1;
     private static final int NB_BENEFICIARIES_ID = 1;
+    private DateDimension yearDim = new DateDimension(DateUnit.YEAR);
+    private DateDimension monthDim = new DateDimension(DateUnit.MONTH);
 
     @BeforeClass
     public static void setup() {
@@ -125,7 +128,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     @Test
     public void testYears() {
         forTotalSiteCounts();
-        filteringOnDatabases(1,2);
+        filteringOnDatabases(1, 2);
         dimensions.add(new DateDimension(DateUnit.YEAR));
 
         execute();
@@ -171,7 +174,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     @Test
     public void testMonths() {
         forTotalSiteCounts();
-        filteringOnDatabases(1,2);
+        filteringOnDatabases(1, 2);
         dimensions.add(new DateDimension(DateUnit.MONTH));
         filter.setDateRange(new DateUtilCalendarImpl().yearRange(2009));
 
@@ -342,7 +345,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         withPartnerAsDimension();
         forTotalSiteCounts();
         filter.addRestriction(DimensionType.Indicator,
-                Lists.newArrayList(1, 2, 3));
+            Lists.newArrayList(1, 2, 3));
 
         execute();
     }
@@ -472,11 +475,11 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
         assertEquals(3, buckets.size());
         assertEquals(1500, (int) findBucketByQuarter(buckets, 2009, 1)
-                .doubleValue());
+            .doubleValue());
         assertEquals(3600, (int) findBucketByQuarter(buckets, 2009, 2)
-                .doubleValue());
+            .doubleValue());
         assertEquals(10000, (int) findBucketByQuarter(buckets, 2008, 4)
-                .doubleValue());
+            .doubleValue());
     }
 
     @Test
@@ -503,7 +506,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     public void testLinkedPartnerSiteCount() {
         withPartnerAsDimension();
         forTotalSiteCounts();
-        filteringOnDatabases(1,2);
+        filteringOnDatabases(1, 2);
         execute();
         assertThat().thereAre(2).buckets();
         assertThat().forPartner(1).thereIsOneBucketWithValue(2).andItsPartnerLabelIs("NRC");
@@ -647,6 +650,30 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
     @Test
     @OnDataSet("/dbunit/monthly-calc-indicators.db.xml")
+    public void testMonthlyCalculatedIndicatorsWithPartnerAndYear() {
+
+        filteringOnDatabases(1);
+        withIndicatorAsDimension();
+        withPartnerAsDimension();
+        dimensions.add(yearDim);
+        dimensions.add(monthDim);
+
+        execute();
+        assertThat().thereAre(6).buckets();
+        assertThat().forMonth(2009, 1).forIndicator(3).thereIsOneBucketWithValue(537);
+        assertThat().forMonth(2009, 2).forIndicator(3).thereIsOneBucketWithValue(634);
+
+        PivotTableReportElement report = new PivotTableReportElement();
+        report.setColumnDimensions(Arrays.asList(indicatorDim, partnerDim));
+        report.setRowDimensions(Arrays.<Dimension>asList(yearDim, monthDim));
+
+        PivotTableDataBuilder tableDataBuilder = new PivotTableDataBuilder();
+        PivotTableData table = tableDataBuilder.build(report, report.getRowDimensions(), report.getColumnDimensions(),
+            buckets);
+    }
+
+    @Test
+    @OnDataSet("/dbunit/monthly-calc-indicators.db.xml")
     public void testMonthlyCalculatedIndicatorsByProvince() {
         withIndicatorAsDimension();
         filteringOnDatabases(1);
@@ -659,6 +686,31 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
         assertThat().forMonth(2009, 2).forIndicator(3).forProvince(2).thereIsOneBucketWithValue(480);
         assertThat().forMonth(2009, 2).forIndicator(3).forProvince(3).thereIsOneBucketWithValue(154);
+    }
+
+
+    @Test
+    @OnDataSet("/dbunit/monthly-calc-indicators.db.xml")
+    public void testMonthlyCalculatedIndicatorsByAttribute() {
+        withIndicatorAsDimension();
+        filteringOnDatabases(1);
+        withAttributeGroupDim(1);
+        dimensions.add(new DateDimension(DateUnit.MONTH));
+
+        execute();
+        assertThat().forMonth(2009, 1).forIndicator(3).forAttributeGroupLabeled(1, "B").thereIsOneBucketWithValue(500);
+        assertThat().forMonth(2009, 1).forIndicator(3).forAttributeGroupLabeled(1, "A").thereIsOneBucketWithValue(37);
+
+        assertThat().forMonth(2009, 2).forIndicator(3).forAttributeGroupLabeled(1, "B").thereIsOneBucketWithValue(480);
+        assertThat().forMonth(2009, 2).forIndicator(3).forAttributeGroupLabeled(1, "A").thereIsOneBucketWithValue(154);
+
+        PivotTableReportElement report = new PivotTableReportElement();
+        report.setColumnDimensions(Arrays.asList(indicatorDim, new AttributeGroupDimension(1)));
+        report.setRowDimensions(Arrays.<Dimension>asList(yearDim, monthDim));
+
+        PivotTableDataBuilder tableDataBuilder = new PivotTableDataBuilder();
+        PivotTableData table = tableDataBuilder.build(report, report.getRowDimensions(), report.getColumnDimensions(),
+            buckets);
     }
 
     @Test
