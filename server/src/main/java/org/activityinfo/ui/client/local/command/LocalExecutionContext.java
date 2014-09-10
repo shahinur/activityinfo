@@ -76,10 +76,15 @@ public class LocalExecutionContext implements ExecutionContext {
 
             @Override
             public void onSuccess(R result) {
-                if (command instanceof MutatingCommand) {
-                    commandQueue.queue(tx, command);
+                try {
+                    if (command instanceof MutatingCommand) {
+                        commandQueue.queue(tx, command);
+                    }
+                    callback.onSuccess(result);
+
+                } catch(Exception e) {
+                    callback.onFailure(e);
                 }
-                callback.onSuccess(result);
             }
         });
     }

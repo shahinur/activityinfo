@@ -35,11 +35,13 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
     @Inject
     public HandlerRegistryProvider(GetSchemaHandler schemaHandler,
                                    GetSitesHandler sitesHandler,
+                                   GetMonthlyReportsHandlerAsync getMonthlyReportsHandler,
                                    GetAdminEntitiesHandler adminHandler,
                                    GetPartnersDimensionHandler partnersDimensionHandler,
                                    GetAttributeGroupsDimensionHandler attributeGroupsDimensionHandler,
                                    CreateSiteHandler createSiteHandler,
                                    UpdateSiteHandler updateSiteHandler,
+                                   UpdateMonthlyReportsAsync updateMonthly,
                                    CreateLocationHandler createLocationHandler,
                                    SearchLocationsHandler searchLocationsHandler,
                                    // SearchHandler searchHandler,
@@ -58,12 +60,14 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
         registry.registerHandler(CreateSite.class, createSiteHandler);
         registry.registerHandler(UpdateSite.class, updateSiteHandler);
         registry.registerHandler(CreateLocation.class, createLocationHandler);
+        registry.registerHandler(UpdateMonthlyReports.class, updateMonthly);
         // registry.registerHandler(Search.class, searchHandler);
         registry.registerHandler(SearchLocations.class, searchLocationsHandler);
         registry.registerHandler(PivotSites.class, pivotSitesHandler);
         registry.registerHandler(GetLocations.class, getLocationsHandler);
         registry.registerHandler(DeleteSite.class, deleteSiteHandler);
         registry.registerHandler(GetSiteAttachments.class, getSiteAttachmentsHandler);
+        registry.registerHandler(GetMonthlyReports.class, getMonthlyReportsHandler);
 
         // new
         registry.registerHandler(GetFormViewModel.class, getFormViewModelHandler);

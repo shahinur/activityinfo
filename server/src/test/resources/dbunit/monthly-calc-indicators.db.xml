@@ -94,8 +94,8 @@
   <attributeGroup attributeGroupId="1" name="cause"
                   multipleAllowed="1" sortOrder="2" mandatory="0"/>
 
-  <attribute attributeGroupId="1" attributeId="1" sortOrder="2" name="B"/>
-  <attribute attributeGroupId="1" attributeId="2" sortOrder="1" name="A"/>
+  <attribute attributeGroupId="1" attributeId="601" sortOrder="2" name="B"/>
+  <attribute attributeGroupId="1" attributeId="602" sortOrder="1" name="A"/>
 
 
   <!-- Database: PEAR -->
@@ -106,28 +106,28 @@
 
   <!-- PEAR Activity 1 : NFI Distribution -->
 
-  <activity activityId="1" databaseId="1" name="NFI" category="NFI Cluster"
+  <activity activityId="901" databaseId="1" name="NFI" category="NFI Cluster"
             reportingFrequency="1" allowEdit="1" sortOrder="1" locationTypeId="1"
             published="0"/>
 
 
 
-  <attributeGroupInActivity activityId="1"
+  <attributeGroupInActivity activityId="901"
                             attributeGroupId="1"/>
-  <attributeGroupInActivity activityId="1"
+  <attributeGroupInActivity activityId="901"
                             attributeGroupId="2"/>
-  <attributeGroupInActivity activityId="1"
+  <attributeGroupInActivity activityId="901"
                             attributeGroupId="3"/>
-  <attributeGroupInActivity activityId="1"
+  <attributeGroupInActivity activityId="901"
                             attributeGroupId="991"/>
 
   <!-- NFI Indicator 1: Beneficiaries -->
 
-  <indicator indicatorId="1" activityId="1" name="men" category="benefciaries" nameInExpression="A" units="individuals"
+  <indicator indicatorId="7001" activityId="901" name="men" category="benefciaries" nameInExpression="A" units="individuals"
              calculatedAutomatically="false" aggregation="0" sortOrder="2" mandatory="0"/>
-  <indicator indicatorId="2" activityId="1" name="women" nameInExpression="B" units="individuals"
-             calculatedAutomatically="false" aggregation="0" sortOrder="2" mandatory="0"/>
-  <indicator indicatorId="3" activityId="1" name="total" units="individuals"
+  <indicator indicatorId="7002" activityId="901" name="women" nameInExpression="B" units="individuals"
+             calculatedAutomatically="false" aggregation="0" sortOrder="1" mandatory="0"/>
+  <indicator indicatorId="7003" activityId="901" name="total" units="individuals"
              category="synthesis" aggregation="0" sortOrder="3"
              calculatedAutomatically="true" mandatory="false" expression="{A}+{B}"/>
 
@@ -136,65 +136,65 @@
   <partner partnerId="1" name="NRC"/>
   <partnerInDatabase partnerId="1" databaseId="1"/>
 
-  <location locationId="1" name="Boga" locationTypeId="1" X="3.323" Y="27.232" timeEdited="500"/>
-  <locationAdminLink locationId="1" adminEntityId="2"/>
-  <locationAdminLink locationId="1" adminEntityId="10"/>
+  <location locationId="401" name="Boga" locationTypeId="1" X="3.323" Y="27.232" timeEdited="500"/>
+  <locationAdminLink locationId="401" adminEntityId="2"/>
+  <locationAdminLink locationId="401" adminEntityId="10"/>
 
-  <location locationId="2" name="Walungu" locationTypeId="1" timeEdited="550"/>
-  <locationAdminLink locationId="2" adminEntityId="3"/>
-  <locationAdminLink locationId="2" adminEntityId="11"/>
+  <location locationId="402" name="Walungu" locationTypeId="1" timeEdited="550"/>
+  <locationAdminLink locationId="402" adminEntityId="3"/>
+  <locationAdminLink locationId="402" adminEntityId="11"/>
 
-  <location locationId="3" name="Shabunda" locationTypeId="1" timeEdited="600"/>
-  <locationAdminLink locationId="3" adminEntityId="3"/>
-  <locationAdminLink locationId="3" adminEntityId="12"/>
+  <location locationId="403" name="Shabunda" locationTypeId="1" timeEdited="600"/>
+  <locationAdminLink locationId="403" adminEntityId="3"/>
+  <locationAdminLink locationId="403" adminEntityId="12"/>
 
 
-  <location locationId="4" name="Penekusu Kivu" locationTypeId="1" X="1.532" Y="27.323" timeEdited="1"/>
-  <locationAdminLink locationId="4" adminEntityId="2"/>
-  <locationAdminLink locationId="4" adminEntityId="12"/>
+  <location locationId="404" name="Penekusu Kivu" locationTypeId="1" X="1.532" Y="27.323" timeEdited="1"/>
+  <locationAdminLink locationId="404" adminEntityId="2"/>
+  <locationAdminLink locationId="404" adminEntityId="12"/>
 
-  <site siteId="1" activityId="1" locationId="1" partnerId="1"
+  <site siteId="1" activityId="901" locationId="401" partnerId="1"
         DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3"/>
-  <attributeValue siteId="1" attributeId="1" value="1"/>
-  <attributeValue siteId="1" attributeId="2" value="0"/>
+  <attributeValue siteId="1" attributeId="601" value="1"/>
+  <attributeValue siteId="1" attributeId="602" value="0"/>
 
 
   <reportingPeriod siteId="1" reportingPeriodId="11"
                    date1="2009-01-01" date2="2009-01-31"
                    DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
-  <indicatorValue reportingPeriodId="11" indicatorId="1" value="200"/>
-  <indicatorValue reportingPeriodId="11" indicatorId="2" value="300"/>
+  <indicatorValue reportingPeriodId="11" indicatorId="7001" value="200"/>
+  <indicatorValue reportingPeriodId="11" indicatorId="7002" value="300"/>
 
 
   <reportingPeriod siteId="1" reportingPeriodId="12"
-                   date1="2009-02-01" date2="2009-02-20"
+                   date1="2009-02-01" date2="2009-02-28"
                    DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
-  <indicatorValue reportingPeriodId="12" indicatorId="1" value="150"/>
-  <indicatorValue reportingPeriodId="12" indicatorId="2" value="330"/>
+  <indicatorValue reportingPeriodId="12" indicatorId="7001" value="150"/>
+  <indicatorValue reportingPeriodId="12" indicatorId="7002" value="330"/>
 
 
-  <site siteId="2" activityId="1" locationId="2" partnerId="1"
+  <site siteId="2" activityId="901" locationId="402" partnerId="1"
         DateCreated="2009-02-01" DateEdited="2009-02-01" timeEdited="3"/>
-  <attributeValue siteId="2" attributeId="1" value="0"/>
-  <attributeValue siteId="2" attributeId="2" value="1"/>
+  <attributeValue siteId="2" attributeId="601" value="0"/>
+  <attributeValue siteId="2" attributeId="602" value="1"/>
 
 
   <reportingPeriod siteId="2" reportingPeriodId="21"
                    date1="2009-01-01" date2="2009-01-31"
                    DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
-  <indicatorValue reportingPeriodId="21" indicatorId="1" value="11"/>
-  <indicatorValue reportingPeriodId="21" indicatorId="2" value="26"/>
+  <indicatorValue reportingPeriodId="21" indicatorId="7001" value="11"/>
+  <indicatorValue reportingPeriodId="21" indicatorId="7002" value="26"/>
 
 
   <reportingPeriod siteId="2" reportingPeriodId="22"
-                   date1="2009-02-01" date2="2009-02-20"
+                   date1="2009-02-01" date2="2009-02-28"
                    DateCreated="2009-02-01" DateEdited="2009-02-01"/>
 
-  <indicatorValue reportingPeriodId="22" indicatorId="1" value="99"/>
-  <indicatorValue reportingPeriodId="22" indicatorId="2" value="55"/>
+  <indicatorValue reportingPeriodId="22" indicatorId="7001" value="99"/>
+  <indicatorValue reportingPeriodId="22" indicatorId="7002" value="55"/>
 
 
 </dataset>

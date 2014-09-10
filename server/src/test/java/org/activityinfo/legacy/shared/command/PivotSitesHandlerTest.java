@@ -644,8 +644,8 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
         execute();
         assertThat().thereAre(6).buckets();
-        assertThat().forMonth(2009, 1).forIndicator(3).thereIsOneBucketWithValue(537);
-        assertThat().forMonth(2009, 2).forIndicator(3).thereIsOneBucketWithValue(634);
+        assertThat().forMonth(2009, 1).forIndicator(7003).thereIsOneBucketWithValue(537);
+        assertThat().forMonth(2009, 2).forIndicator(7003).thereIsOneBucketWithValue(634);
     }
 
     @Test
@@ -660,8 +660,8 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
 
         execute();
         assertThat().thereAre(6).buckets();
-        assertThat().forMonth(2009, 1).forIndicator(3).thereIsOneBucketWithValue(537);
-        assertThat().forMonth(2009, 2).forIndicator(3).thereIsOneBucketWithValue(634);
+        assertThat().forMonth(2009, 1).forIndicator(7003).thereIsOneBucketWithValue(537);
+        assertThat().forMonth(2009, 2).forIndicator(7003).thereIsOneBucketWithValue(634);
 
         PivotTableReportElement report = new PivotTableReportElement();
         report.setColumnDimensions(Arrays.asList(indicatorDim, partnerDim));
@@ -681,11 +681,11 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         dimensions.add(new DateDimension(DateUnit.MONTH));
 
         execute();
-        assertThat().forMonth(2009, 1).forIndicator(3).forProvince(2).thereIsOneBucketWithValue(500);
-        assertThat().forMonth(2009, 1).forIndicator(3).forProvince(3).thereIsOneBucketWithValue(37);
+        assertThat().forMonth(2009, 1).forIndicator(7003).forProvince(2).thereIsOneBucketWithValue(500);
+        assertThat().forMonth(2009, 1).forIndicator(7003).forProvince(3).thereIsOneBucketWithValue(37);
 
-        assertThat().forMonth(2009, 2).forIndicator(3).forProvince(2).thereIsOneBucketWithValue(480);
-        assertThat().forMonth(2009, 2).forIndicator(3).forProvince(3).thereIsOneBucketWithValue(154);
+        assertThat().forMonth(2009, 2).forIndicator(7003).forProvince(2).thereIsOneBucketWithValue(480);
+        assertThat().forMonth(2009, 2).forIndicator(7003).forProvince(3).thereIsOneBucketWithValue(154);
     }
 
 
@@ -698,11 +698,11 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         dimensions.add(new DateDimension(DateUnit.MONTH));
 
         execute();
-        assertThat().forMonth(2009, 1).forIndicator(3).forAttributeGroupLabeled(1, "B").thereIsOneBucketWithValue(500);
-        assertThat().forMonth(2009, 1).forIndicator(3).forAttributeGroupLabeled(1, "A").thereIsOneBucketWithValue(37);
+        assertThat().forMonth(2009, 1).forIndicator(7003).forAttributeGroupLabeled(1, "B").thereIsOneBucketWithValue(500);
+        assertThat().forMonth(2009, 1).forIndicator(7003).forAttributeGroupLabeled(1, "A").thereIsOneBucketWithValue(37);
 
-        assertThat().forMonth(2009, 2).forIndicator(3).forAttributeGroupLabeled(1, "B").thereIsOneBucketWithValue(480);
-        assertThat().forMonth(2009, 2).forIndicator(3).forAttributeGroupLabeled(1, "A").thereIsOneBucketWithValue(154);
+        assertThat().forMonth(2009, 2).forIndicator(7003).forAttributeGroupLabeled(1, "B").thereIsOneBucketWithValue(480);
+        assertThat().forMonth(2009, 2).forIndicator(7003).forAttributeGroupLabeled(1, "A").thereIsOneBucketWithValue(154);
 
         PivotTableReportElement report = new PivotTableReportElement();
         report.setColumnDimensions(Arrays.asList(indicatorDim, new AttributeGroupDimension(1)));
