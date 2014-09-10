@@ -25,36 +25,21 @@ package org.activityinfo.server.endpoint.export;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.GetFormViewModel;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.server.authentication.AuthenticationModule;
-import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.command.DispatcherSync;
-import org.activityinfo.server.database.ServerDatabaseModule;
-import org.activityinfo.server.database.hibernate.HibernateModule;
-import org.activityinfo.server.database.hibernate.HibernateSessionScope;
-import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
-import org.activityinfo.server.util.config.ConfigModule;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -107,6 +92,7 @@ public class SiteExporter {
     private List<Integer> indicators;
     private List<Integer> attributes;
     private List<Integer> levels;
+    private HSSFCellStyle dateTimeStyle;
 
     public SiteExporter(DispatcherSync dispatcher) {
         this.dispatcher = dispatcher;
@@ -122,6 +108,9 @@ public class SiteExporter {
     private void declareStyles() {
         dateStyle = book.createCellStyle();
         dateStyle.setDataFormat(creationHelper.createDataFormat().getFormat("m/d/yy"));
+
+        dateTimeStyle = book.createCellStyle();
+        dateTimeStyle.setDataFormat(creationHelper.createDataFormat().getFormat("yyyy-mm-dd HH:MM:SS"));
 
         coordStyle = book.createCellStyle();
         coordStyle.setDataFormat(creationHelper.createDataFormat().getFormat("0.000000"));
@@ -421,6 +410,16 @@ public class SiteExporter {
         cell.setCellStyle(dateStyle);
     }
 
+
+    private void createCell(Row row, int columnIndex, Date date) {
+        Cell cell = row.createCell(columnIndex);
+        if (date != null) {
+            cell.setCellValue(date);
+        }
+        cell.setCellStyle(dateStyle);
+    }
+
+
     private void createIndicatorValueCell(Row row, int columnIndex, Object value) {
         if (value != null) {
             Cell cell = row.createCell(columnIndex);
@@ -467,27 +466,4 @@ public class SiteExporter {
             sheet.createRow(0).createCell(0).setCellValue("No matching sites.");
         }
     }
-//
-//    public static void main(String[] args) throws IOException {
-//
-//        LocaleProxy.initialize();
-//
-//        Injector injector = Guice.createInjector(new AuthenticationModule(),
-//            new HibernateModule(), new ConfigModule(), new GwtRpcModule(), new ServerDatabaseModule());
-//
-//        HibernateSessionScope sessionScope = injector.getInstance(HibernateSessionScope.class);
-//        sessionScope.enter();
-//
-//        ServerSideAuthProvider authProvider = injector.getInstance(ServerSideAuthProvider.class);
-//        authProvider.set(new AuthenticatedUser("", 2195, ""));
-//
-//        DispatcherSync dispatcher = injector.getInstance(DispatcherSync.class);
-//
-//        ActivityDTO form = dispatcher.execute(new GetFormViewModel(6464));
-//        Preconditions.checkNotNull(form);
-//
-//        SiteExporter exporter = new SiteExporter(dispatcher);
-//        exporter.export(form, Filter.filter().onActivity(6464));
-//        exporter.getBook().write(new FileOutputStream("/tmp/book.xls"));
-//    }
 }
