@@ -41,15 +41,25 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 public class ConnectivityWidget extends VComponent<HeaderBar> {
 
     private final Application application;
+    private final StoreChangeListener storeChangeListener = new StoreChangeListener() {
+        @Override
+        public void onStoreChanged(Store store) {
+            refresh();
+        }
+    };
 
     public ConnectivityWidget(Application application) {
         this.application = application;
-        application.getConnectivityStore().addChangeListener(new StoreChangeListener() {
-            @Override
-            public void onStoreChanged(Store store) {
-                refresh();
-            }
-        });
+    }
+
+    @Override
+    protected void componentWillMount() {
+        application.getConnectivityStore().addChangeListener(storeChangeListener);
+    }
+
+    @Override
+    protected void componentWillUnmount() {
+        application.getConnectivityStore().removeChangeListener(storeChangeListener);
     }
 
     @Override
