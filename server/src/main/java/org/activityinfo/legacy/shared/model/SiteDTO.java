@@ -440,6 +440,9 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         if (getId() != siteModel.getId()) {
             return false;
         }
+        if (!Objects.equals(get("reportingPeriodId"), siteModel.get("reportingPeriodId"))) {
+            return false;
+        }
         return true;
     }
 

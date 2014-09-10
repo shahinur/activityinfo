@@ -29,10 +29,7 @@ import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.shared.command.PivotSites.ValueType;
 import org.activityinfo.legacy.shared.command.result.Bucket;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.reports.content.DimensionCategory;
-import org.activityinfo.legacy.shared.reports.content.EntityCategory;
-import org.activityinfo.legacy.shared.reports.content.QuarterCategory;
-import org.activityinfo.legacy.shared.reports.content.WeekCategory;
+import org.activityinfo.legacy.shared.reports.content.*;
 import org.activityinfo.legacy.shared.reports.model.*;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
@@ -636,6 +633,35 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     }
 
     @Test
+    @OnDataSet("/dbunit/monthly-calc-indicators.db.xml")
+    public void testMonthlyCalculatedIndicators() {
+        withIndicatorAsDimension();
+        filteringOnDatabases(1);
+        dimensions.add(new DateDimension(DateUnit.MONTH));
+
+        execute();
+        assertThat().thereAre(6).buckets();
+        assertThat().forMonth(2009, 1).forIndicator(3).thereIsOneBucketWithValue(537);
+        assertThat().forMonth(2009, 2).forIndicator(3).thereIsOneBucketWithValue(634);
+    }
+
+    @Test
+    @OnDataSet("/dbunit/monthly-calc-indicators.db.xml")
+    public void testMonthlyCalculatedIndicatorsByProvince() {
+        withIndicatorAsDimension();
+        filteringOnDatabases(1);
+        withAdminDimension(new AdminDimension(1));
+        dimensions.add(new DateDimension(DateUnit.MONTH));
+
+        execute();
+        assertThat().forMonth(2009, 1).forIndicator(3).forProvince(2).thereIsOneBucketWithValue(500);
+        assertThat().forMonth(2009, 1).forIndicator(3).forProvince(3).thereIsOneBucketWithValue(37);
+
+        assertThat().forMonth(2009, 2).forIndicator(3).forProvince(2).thereIsOneBucketWithValue(480);
+        assertThat().forMonth(2009, 2).forIndicator(3).forProvince(3).thereIsOneBucketWithValue(154);
+    }
+
+    @Test
     @OnDataSet("/dbunit/sites-points.db.xml")
     public void testPointsInferred() {
         dimensions.add(new Dimension(DimensionType.Location));
@@ -769,7 +795,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
             for (Dimension dim : bucket.dimensions()) {
                 DimensionCategory cat = bucket.getCategory(dim);
                 System.out.print("\n    " + dim.toString() + ": ");
-                System.out.print(cat.toString());
+                System.out.print("" + cat);
             }
             System.out.println("\n  }");
         }
@@ -795,6 +821,13 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         public AssertionBuilder forYear(int year) {
             criteria.append(" in year ").append(year);
             filter(new DateDimension(DateUnit.YEAR), Integer.toString(year));
+            return this;
+        }
+
+
+        public AssertionBuilder forMonth(int year, int monthOfYear) {
+            criteria.append(" in month ").append(new Month(year, monthOfYear));
+            filter(new DateDimension(DateUnit.MONTH), new MonthCategory(year, monthOfYear));
             return this;
         }
 
@@ -870,7 +903,16 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
                         ((EntityCategory) category).getId() != id) {
 
                     it.remove();
+                }
+            }
+        }
 
+        private void filter(Dimension dim, DimensionCategory expectedCategory) {
+            ListIterator<Bucket> it = matchingBuckets.listIterator();
+            while (it.hasNext()) {
+                Bucket bucket = it.next();
+                if (!Objects.equals(bucket.getCategory(dim), expectedCategory)) {
+                    it.remove();
                 }
             }
         }

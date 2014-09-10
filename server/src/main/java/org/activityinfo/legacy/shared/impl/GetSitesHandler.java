@@ -105,6 +105,9 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         final Multimap<Integer, SiteDTO> siteMap = HashMultimap.create();
         final List<SiteDTO> sites = new ArrayList<SiteDTO>();
 
+        final Map<Integer, SiteDTO> reportingPeriods = Maps.newHashMap();
+
+
         final SiteResult result = new SiteResult(sites);
         result.setOffset(command.getOffset());
 
@@ -120,6 +123,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                     SiteDTO site = toSite(command, row);
                     sites.add(site);
                     siteMap.put(site.getId(), site);
+
+                    if(command.isFetchAllReportingPeriods()) {
+                        reportingPeriods.put(row.getInt("PeriodId"), site);
+                    }
                 }
 
                 Log.trace("Finished adding to map");
@@ -137,11 +144,11 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                     if (command.isFetchAdminEntities()) {
                         queries.add(joinEntities(tx, siteMap));
                     }
-                    if (command.fetchAnyIndicators()) {
-                        queries.add(joinIndicatorValues(command, tx, siteMap));
-                    }
                     if (command.isFetchAttributes()) {
                         queries.add(joinAttributeValues(command, tx, siteMap));
+                    }
+                    if (command.fetchAnyIndicators()) {
+                        queries.add(joinIndicatorValues(command, tx, siteMap, reportingPeriods));
                     }
                 }
                 Promise.waitAll(queries).then(Functions.constant(result)).then(callback);
@@ -177,25 +184,40 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .appendColumn("activity.ActivityId")
                 .appendColumn("activity.name", "ActivityName")
                 .appendColumn("db.DatabaseId", "DatabaseId")
-                .appendColumn("site.Date1", "Date1")
-                .appendColumn("site.Date2", "Date2")
                 .appendColumn("site.DateCreated", "DateCreated")
                 .appendColumn("site.projectId", "ProjectId")
                 .appendColumn("project.name", "ProjectName")
                 .appendColumn("project.dateDeleted", "ProjectDateDeleted")
                 .appendColumn("site.comments", "Comments")
                 .appendColumn("site.DateEdited")
-                .appendColumn("site.timeEdited", "TimeEdited")
-                .from(Tables.SITE)
-                .whereTrue("site.dateDeleted is null")
-                .leftJoin(Tables.ACTIVITY)
-                .on("site.ActivityId = activity.ActivityId")
-                .leftJoin(Tables.USER_DATABASE, "db")
-                .on("activity.DatabaseId = db.DatabaseId")
-                .leftJoin(Tables.PARTNER)
-                .on("site.PartnerId = partner.PartnerId")
-                .leftJoin(Tables.PROJECT)
-                .on("site.ProjectId = project.ProjectId");
+                .appendColumn("site.timeEdited", "TimeEdited");
+
+
+        if(command.isFetchAllReportingPeriods()) {
+            query.appendColumn("period.Date1", "Date1")
+                 .appendColumn("period.Date2", "Date2")
+                 .appendColumn("period.ReportingPeriodId", "PeriodId");
+
+            query.from(Tables.REPORTING_PERIOD, "period")
+                .leftJoin(Tables.SITE, "site").on("site.SiteId=period.SiteId");
+
+
+        } else {
+            query.from(Tables.SITE);
+            query.appendColumn("site.Date1", "Date1")
+                 .appendColumn("site.Date2", "Date2");
+        }
+
+        query
+            .whereTrue("site.dateDeleted is null")
+            .leftJoin(Tables.ACTIVITY)
+            .on("site.ActivityId = activity.ActivityId")
+            .leftJoin(Tables.USER_DATABASE, "db")
+            .on("activity.DatabaseId = db.DatabaseId")
+            .leftJoin(Tables.PARTNER)
+            .on("site.PartnerId = partner.PartnerId")
+            .leftJoin(Tables.PROJECT)
+            .on("site.ProjectId = project.ProjectId");
 
 
         if(command.isFetchPartner()) {
@@ -239,15 +261,15 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .appendColumn("activity.ActivityId")
                 .appendColumn("activity.name", "ActivityName")
                 .appendColumn("db.DatabaseId", "DatabaseId")
-                .appendColumn("site.Date1", "Date1")
-                .appendColumn("site.Date2", "Date2")
                 .appendColumn("site.DateCreated", "DateCreated")
                 .appendColumn("site.projectId", "ProjectId")
                 .appendColumn("project.name", "ProjectName")
                 .appendColumn("project.dateDeleted", "ProjectDateDeleted")
                 .appendColumn("site.comments", "Comments")
                 .appendColumn("site.DateEdited")
-                .appendColumn("site.timeEdited", "TimeEdited");
+                .appendColumn("site.timeEdited", "TimeEdited")
+                .appendColumn("site.Date1", "Date1")
+                .appendColumn("site.Date2", "Date2");
 
         if (command.isFetchPartner()) {
             query
@@ -610,7 +632,9 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         return true;
     }
 
-    private Promise<Void> joinIndicatorValues(final GetSites command, SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
+    private Promise<Void> joinIndicatorValues(final GetSites command, SqlTransaction tx,
+                                              final Multimap<Integer, SiteDTO> siteMap,
+                                              final Map<Integer, SiteDTO> periodMap) {
 
         final Promise<Void> complete = new Promise<>();
 
@@ -627,6 +651,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .appendColumn("V.Value")
                 .appendColumn("V.TextValue")
                 .appendColumn("V.DateValue")
+                .appendColumn("P.ReportingPeriodId", "PeriodId")
                 .from(Tables.REPORTING_PERIOD, "P")
                 .innerJoin(Tables.INDICATOR_VALUE, "V")
                 .on("P.ReportingPeriodId = V.ReportingPeriodId")
@@ -673,15 +698,23 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
                     int sourceActivityId = row.getInt("SourceActivityId");
 
-                    for (SiteDTO site : siteMap.get(row.getInt("SiteId"))) {
-                        if (sourceActivityId == site.getActivityId()) {
-                            int indicatorId = row.getInt("SourceIndicatorId");
-                            site.setIndicatorValue(indicatorId, indicatorValue);
-                        } else if (!row.isNull("DestActivityId")) {
-                            int destActivityId = row.getInt("DestActivityId");
-                            if (site.getActivityId() == destActivityId) {
-                                int indicatorId = row.getInt("DestIndicatorId");
+                    if (command.isFetchAllReportingPeriods()) {
+                        SiteDTO site = periodMap.get(row.getInt("PeriodId"));
+                        if(site != null) {
+                            site.setIndicatorValue(row.getInt("SourceIndicatorId"), indicatorValue);
+                        }
+                    } else {
+
+                        for (SiteDTO site : siteMap.get(row.getInt("SiteId"))) {
+                            if (sourceActivityId == site.getActivityId()) {
+                                int indicatorId = row.getInt("SourceIndicatorId");
                                 site.setIndicatorValue(indicatorId, indicatorValue);
+                            } else if (!row.isNull("DestActivityId")) {
+                                int destActivityId = row.getInt("DestActivityId");
+                                if (site.getActivityId() == destActivityId) {
+                                    int indicatorId = row.getInt("DestIndicatorId");
+                                    site.setIndicatorValue(indicatorId, indicatorValue);
+                                }
                             }
                         }
                     }
@@ -825,6 +858,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             project.setId(row.getInt("ProjectId"));
             project.setName(row.getString("ProjectName"));
             model.setProject(project);
+        }
+
+        if (query.isFetchAllReportingPeriods()) {
+            model.set("reportingPeriodId", row.get("PeriodId"));
         }
 
 

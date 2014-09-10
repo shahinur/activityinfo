@@ -49,6 +49,9 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
     private boolean fetchComments = true;
     private boolean fetchDates = true;
 
+
+    private boolean fetchAllReportingPeriods = false;
+
     public GetSites() {
     }
 
@@ -99,6 +102,14 @@ public class GetSites extends PagingGetCommand<SiteResult> implements Cloneable 
         cmd.filter().onActivity(activityId);
 
         return cmd;
+    }
+
+    public boolean isFetchAllReportingPeriods() {
+        return fetchAllReportingPeriods;
+    }
+
+    public void setFetchAllReportingPeriods(boolean fetchAllReportingPeriods) {
+        this.fetchAllReportingPeriods = fetchAllReportingPeriods;
     }
 
     @Override

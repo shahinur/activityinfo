@@ -197,6 +197,7 @@ public class CalculatedIndicatorsQuery implements WorkItem {
         sitesQuery.setFetchComments(false);
         sitesQuery.setFetchDates(query.isPivotedBy(DimensionType.Date));
         sitesQuery.setFetchLinks(false);
+        sitesQuery.setFetchAllReportingPeriods(true);
 
         sitesQuery.setLimit(-1);
 
