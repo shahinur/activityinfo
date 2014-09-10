@@ -2,7 +2,6 @@ package org.activityinfo.ui.app.client.request;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.InvocationException;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.ui.app.client.action.RemoteUpdate;
@@ -67,11 +66,10 @@ public class RequestDispatcher {
         try {
             deque(request);
         } finally {
-            if (caught instanceof InvocationException) {
-                // the call didn't complete cleanly
-                // It may means that there no internet connection but also there may be some other reason.
-                // (We may fall down to StatusCodeException but it may not work in all cases.)
-                // Need better way to handle internet connectivity check...
+            if (caught instanceof org.activityinfo.ui.store.remote.client.StatusCodeException) {
+                // do nothing, application exception
+            } else {
+                // everything else is considered as connection problem
                 dispatcher.dispatch(new UpdateConnectivityAction(ConnectivityState.OFFLINE));
             }
         }
