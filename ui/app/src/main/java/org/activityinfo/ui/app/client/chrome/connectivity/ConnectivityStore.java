@@ -21,6 +21,7 @@ package org.activityinfo.ui.app.client.chrome.connectivity;
  * #L%
  */
 
+import com.google.gwt.core.shared.GWT;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
 
@@ -33,7 +34,26 @@ public class ConnectivityStore extends AbstractStore implements UpdateConnectivi
 
     public ConnectivityStore(Dispatcher dispatcher) {
         super(dispatcher);
+
+        if (GWT.isClient()) {
+            listenConnectivityEvents();
+        }
     }
+
+    public native void listenConnectivityEvents() /*-{
+
+        function onOnline(event) {
+            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStore::setOnline())
+        }
+
+        function onOffline(event) {
+            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStore::setOffline())
+        }
+
+        $wnd.addEventListener('online',  onOnline);
+        $wnd.addEventListener('offline', onOffline);
+
+    }-*/;
 
     public ConnectivityState getState() {
         return state;
@@ -47,5 +67,13 @@ public class ConnectivityStore extends AbstractStore implements UpdateConnectivi
     public void setState(ConnectivityState state) {
         this.state = state;
         fireChange();
+    }
+
+    public void setOnline() {
+        setState(ConnectivityState.ONLINE);
+    }
+
+    public void setOffline() {
+        setState(ConnectivityState.OFFLINE);
     }
 }
