@@ -29,12 +29,14 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
 
     private Set expanded = new HashSet();
 
-    private final Render<T> nodeRenderer = new Render<T>() {
+    private Render<T> nodeItemRenderer = new Render<T>() {
         @Override
         public VTree render(T node) {
-            return renderNode(node);
+            return nodeRenderer.renderNode(node, TreeComponent.this);
         }
     };
+
+    private TreeNodeRenderer<T> nodeRenderer = new DefaultTreeNodeRenderer<>();
 
     public TreeComponent(TreeModel<T> model) {
         this.model = model;
@@ -45,7 +47,6 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
         model.addChangeListener(this);
     }
 
-
     @Override
     public void onStoreChanged(Store store) {
         refresh();
@@ -55,7 +56,6 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
     protected void componentWillUnmount() {
         model.removeChangeListener(this);
     }
-
 
     public void onLabelClicked(T node) {
         if(model.isLeaf(node)) {
@@ -85,16 +85,15 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
         refresh();
     }
 
-    private boolean isExpanded(T node) {
+    public boolean isExpanded(T node) {
         return expanded.contains(model.getKey(node));
     }
-
 
     @Override
     protected VTree render() {
         Status<List<T>> rootNodes = model.getRootNodes();
         if(rootNodes.isAvailable()) {
-            return container(ul(CssClass.valueOf("tree"), map(rootNodes.get(), nodeRenderer)));
+            return container(ul(CssClass.valueOf("tree"), map(rootNodes.get(), nodeItemRenderer)));
         } else {
             return Spinners.spinner().render();
         }
@@ -105,35 +104,16 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
         return div(propMap, tree);
     }
 
-    public VTree renderNode(T node) {
-        boolean expanded = isExpanded(node);
-        boolean selected = model.isSelected(node);
-
-        TreeNodeIcon<T> icon = new TreeNodeIcon<>(this, node, model.getIcon(node, expanded));
-        TreeNode<T> label = new TreeNode<>(this, node, model.getLabel(node));
-
-        PropMap props = new PropMap();
-        if(selected) {
-            props.setClass(CssClass.valueOf("selected"));
-        }
-
-        return li(props,
-            background(),
-            new VNode(HtmlTag.SPAN, PropMap.withClasses("node-container"),
-                icon, label),
-            renderChildren(node, expanded));
-    }
-
     /**
      *
      * @return an absolutely positioned div that highlights the node and fills the
      *
      */
-    private VNode background() {
+    public VNode background() {
         return div(PropMap.withClasses("node-overlay"), t("\u00A0"));
     }
 
-    private VTree renderChildren(T node, boolean expanded) {
+    public VTree renderChildren(T node, boolean expanded) {
         if(!expanded) {
             return new VNode(HtmlTag.SPAN);
         } else {
@@ -142,12 +122,24 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
                 return nodeList(li(Spinners.spinner().render(), t(I18N.CONSTANTS.loading())));
 
             } else {
-                return nodeList(map(children.get(), nodeRenderer));
+                return nodeList(map(children.get(), nodeItemRenderer));
             }
         }
     }
 
     private VNode nodeList(VTree... listItems) {
         return new VNode(HtmlTag.UL, PropMap.withClasses("tree"), listItems);
+    }
+
+    public TreeModel<T> getModel() {
+        return model;
+    }
+
+    public TreeNodeRenderer<T> getNodeRenderer() {
+        return nodeRenderer;
+    }
+
+    public void setNodeRenderer(TreeNodeRenderer<T> nodeRenderer) {
+        this.nodeRenderer = nodeRenderer;
     }
 }
