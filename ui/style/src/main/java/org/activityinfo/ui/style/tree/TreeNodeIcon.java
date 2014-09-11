@@ -33,7 +33,12 @@ public class TreeNodeIcon<T> extends VComponent {
     @Override
     public void onBrowserEvent(Event event) {
         if(event.getTypeInt() == Event.ONCLICK) {
-            tree.onLabelClicked(node);
+            event.preventDefault();
+            onClick();
         }
+    }
+
+    public void onClick() {
+        tree.onLabelClicked(node);
     }
 }

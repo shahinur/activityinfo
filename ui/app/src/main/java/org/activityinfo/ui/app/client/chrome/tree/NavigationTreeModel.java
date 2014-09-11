@@ -53,6 +53,10 @@ public class NavigationTreeModel implements TreeModel<ResourceNode> {
         this.application = application;
     }
 
+    public Application getApplication() {
+        return application;
+    }
+
     @Override
     public boolean isLeaf(ResourceNode node) {
         return node.getClassId().equals(FormClass.CLASS_ID);
@@ -75,14 +79,10 @@ public class NavigationTreeModel implements TreeModel<ResourceNode> {
 
     @Override
     public Icon getIcon(ResourceNode node, boolean expanded) {
-        if(node.getClassId().equals(FormClass.CLASS_ID)) {
+        if (node.getClassId().equals(FormClass.CLASS_ID)) {
             return FontAwesome.CLIPBOARD;
         } else {
-            if(expanded) {
-                return FontAwesome.FOLDER_OPEN;
-            } else {
-                return FontAwesome.FOLDER;
-            }
+            return FontAwesome.TH_LARGE;
         }
     }
 
@@ -93,24 +93,24 @@ public class NavigationTreeModel implements TreeModel<ResourceNode> {
 
     @Override
     public void onExpanded(ResourceNode node) {
-        if(node.getClassId().equals(FolderClass.CLASS_ID)) {
+        if (node.getClassId().equals(FolderClass.CLASS_ID)) {
             application.getRequestDispatcher().execute(new FetchFolder(node.getId()));
 
-        } else if(node.getClassId().equals(FolderClass.CLASS_ID)) {
+        } else if (node.getClassId().equals(FolderClass.CLASS_ID)) {
             application.getRequestDispatcher().execute(new FetchResource(node.getId()));
         }
     }
 
     @Override
     public void select(ResourceNode node) {
-        if(!Objects.equals(selection, node.getId())) {
+        if (!Objects.equals(selection, node.getId())) {
             selection = node.getId();
             fireChange();
         }
     }
 
     private void fireChange() {
-        for(StoreChangeListener listener : listeners) {
+        for (StoreChangeListener listener : listeners) {
             listener.onStoreChanged(null);
         }
     }
