@@ -121,12 +121,12 @@ public class SiteTable extends ResourceMigrator {
         throws SQLException {
 
         String sql =
-                "SELECT V.siteId, V.attributeid, V.Value, A.attributeGroupId " +
+                "SELECT V.siteId, V.attributeid, A.attributeGroupId " +
                 "FROM site S " +
-                "INNER JOIN attributevalue V ON (S.siteId=V.attributeId) " +
+                "INNER JOIN attributevalue V ON (S.siteId=V.siteId) " +
                 "INNER JOIN attribute A ON (A.attributeId=V.attributeID) " +
                 "INNER JOIN attributegroup G on (A.attributeGroupId=G.attributeGroupId) " +
-                "WHERE V.value IS NOT NULL and A.dateDeleted is null and G.dateDeleted is null AND " +
+                "WHERE V.value IS NOT NULL and V.Value=1 and A.dateDeleted is null and G.dateDeleted is null AND " +
                     "S.activityId = " + activityId +
                 " ORDER BY S.siteId, A.AttributeGroupId";
 
@@ -161,7 +161,7 @@ public class SiteTable extends ResourceMigrator {
                 if(!currentValue.isEmpty()) {
                     FormInstance site = sites.get(currentSiteId);
                     if(site != null) {
-                        site.set(attributeGroupField(currentGroupId), new ReferenceValue(currentValue));
+                        site.set(attributeGroupField(currentGroupId), new EnumFieldValue(currentValue));
                     }
                 }
             }

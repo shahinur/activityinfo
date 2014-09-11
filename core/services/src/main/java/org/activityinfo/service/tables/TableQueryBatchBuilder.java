@@ -9,7 +9,7 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.model.table.CalcFieldSource;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.service.store.StoreAccessor;
@@ -132,7 +132,10 @@ public class TableQueryBatchBuilder {
         return getTable(node).fetchColumn(node, columnType);
     }
 
+    public Supplier<ColumnView> addColumn(ColumnType type, FormClass formClass, CalcFieldSource source) {
+        return getTable(formClass).calculate(source.getExpression());
 
+    }
 
     private TableScan getTable(FormTree.Node node) {
         return getTable(node.getDefiningFormClass());

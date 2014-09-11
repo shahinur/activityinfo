@@ -5,8 +5,8 @@ import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import org.activityinfo.migrator.filter.DatabaseFilter;
 import org.activityinfo.migrator.filter.MigrationContext;
-import org.activityinfo.migrator.filter.NullFilter;
 import org.activityinfo.migrator.tables.*;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
@@ -46,11 +46,12 @@ public class MySqlMigrator {
 
     public static void main(String[] args) throws Exception {
         Class.forName("com.mysql.jdbc.Driver");
+
         try(Connection connection = DriverManager.getConnection(
                 "jdbc:mysql://" + args[0] + ":3306/activityinfo?zeroDateTimeBehavior=convertToNull", args[1],
                 args.length < 3 ? "" : args[2])) {
 
-            MigrationContext context = new MigrationContext(new NullFilter());
+            MigrationContext context = new MigrationContext(new DatabaseFilter(1350, 317));
             context.setGeoDbOwnerId(context.getIdStrategy().geoDbId());
             context.setRootId(Resources.ROOT_ID);
 
@@ -97,16 +98,14 @@ public class MySqlMigrator {
 
                 index.put(CuidAdapter.userId(userId), CuidAdapter.databaseId(databaseId));
             }
-
             return index;
         }
-
     }
 
     private ResourceWriter createWriter(Connection connection) throws SQLException, IOException {
         if(!Strings.isNullOrEmpty(System.getProperty("dumpFile"))) {
             File dumpFile = new File(System.getProperty("dumpFile"));
-            return new MySqlResourceDumpWriter(dumpFile);
+            return new JsonTestUnitWriter(dumpFile);
 
         } else {
             return new MySqlResourceWriter(connection);
@@ -120,5 +119,6 @@ public class MySqlMigrator {
             migrator.getResources(connection, writer);
         }
         writer.endResources();
+        writer.close();
     }
 }

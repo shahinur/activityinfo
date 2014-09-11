@@ -2,7 +2,9 @@ package org.activityinfo.ui.style;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.ui.vdom.shared.html.Children;
+import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
+import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.List;
@@ -91,7 +93,7 @@ public class Panel extends VComponent {
     private VTree heading() {
         List<VTree> headerElements = Lists.newArrayList();
         if(title != null) {
-            headerElements.add(h4(className(PANEL_TITLE), title));
+            headerElements.add(new VNode(HtmlTag.H5, className(PANEL_TITLE), title));
         }
         if(introParagraph != null) {
             headerElements.add(introParagraph);

@@ -42,6 +42,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.*;
 import java.util.HashMap;
 
+import static org.activityinfo.ui.style.PagePreLoader.preLoader;
+
 @Path(HostController.ENDPOINT)
 public class HostController {
     public static final String ENDPOINT = "/";
@@ -80,7 +82,7 @@ public class HostController {
 
         Application application = new Application(null);
 
-        VTree tree = Chrome.renderPage(new HostPageContext(style), application);
+        VTree tree = Chrome.renderPage(new HostPageContext(style), preLoader());
 
         HtmlRenderer renderer = new HtmlRenderer();
         renderer.writeDocTypeDeclaration();

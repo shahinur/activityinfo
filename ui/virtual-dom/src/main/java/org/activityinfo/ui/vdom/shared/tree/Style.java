@@ -32,6 +32,10 @@ public class Style {
         return setPixels("height", height);
     }
 
+    public Style display(com.google.gwt.dom.client.Style.Display display) {
+        return set("display", display.getCssName());
+    }
+
     private Style setPixels(String propName, int pixels) {
         if(pixels == 0) {
             return set(propName, Integer.toString(pixels));

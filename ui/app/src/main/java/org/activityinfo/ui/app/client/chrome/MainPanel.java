@@ -7,6 +7,7 @@ import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.create.NewWorkspacePage;
 import org.activityinfo.ui.app.client.page.folder.FolderPage;
 import org.activityinfo.ui.app.client.page.home.HomePage;
+import org.activityinfo.ui.app.client.page.pivot.PivotPage;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
@@ -37,6 +38,7 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
 
         pageViews.add(new FolderPage(application));
         pageViews.add(new NewWorkspacePage(application));
+        pageViews.add(new PivotPage(application));
         pageViews.add(new HomePage());
 
         pageView = pageViewForCurrentPlace();

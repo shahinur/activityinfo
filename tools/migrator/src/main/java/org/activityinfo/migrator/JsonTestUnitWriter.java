@@ -44,11 +44,12 @@ public class JsonTestUnitWriter implements ResourceWriter {
     }
 
     @Override
-    public void close()  {
-
+    public void close() throws IOException {
+        System.out.println("Writing " + resources.size() + " to " + file.getAbsolutePath());
+        objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, resources);
     }
 
     public void finish() throws IOException {
-        objectMapper.writeValue(file, resources);
+
     }
 }

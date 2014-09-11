@@ -4,6 +4,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.expr.ExprNode;
+import org.activityinfo.model.expr.ExprParser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.formTree.FormTree;
@@ -92,6 +94,20 @@ public class TableScan {
 
     }
 
+    public Supplier<ColumnView> calculate(String expression) {
+        CalcColumnBuilder builder = (CalcColumnBuilder) columnMap.get(expression);
+        if (builder == null) {
+            try {
+                ExprNode expr = ExprParser.parse(expression);
+                builder = new CalcColumnBuilder(expr);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            columnMap.put(expression, builder);
+        }
+        return builder;
+    }
+
     public Supplier<ForeignKeyColumn> fetchForeignKey(String fieldName) {
 
         // create the key builder if it doesn't exist
@@ -145,4 +161,5 @@ public class TableScan {
 
         return Iterables.toArray(sinks, FormSink.class);
     }
+
 }

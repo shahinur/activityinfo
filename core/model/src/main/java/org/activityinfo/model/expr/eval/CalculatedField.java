@@ -9,10 +9,16 @@ import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class CalculatedField implements ValueSource {
 
+    private static final Logger LOGGER = Logger.getLogger(CalculatedField.class.getName());
+
     private final FormField field;
-    private final ExprNode expr;
+    private ExprNode expr;
+
 
     /**
      * True if this expression is being evaluated. Used to trap circular
@@ -23,7 +29,12 @@ public class CalculatedField implements ValueSource {
     public CalculatedField(FormField field) {
         this.field = field;
         CalculatedFieldType type = (CalculatedFieldType) field.getType();
-        expr = ExprParser.parse(type.getExpression());
+        try {
+            expr = ExprParser.parse(type.getExpression());
+        } catch(Exception e) {
+            LOGGER.log(Level.WARNING, "Expression failed to parse: " + type.getExpression());
+            expr = null;
+        }
     }
 
     @Override

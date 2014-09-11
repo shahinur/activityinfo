@@ -67,7 +67,7 @@ public class Content {
     }
 
     public static ResourceNode deserializeResourceNode(Entity entity) {
-        ResourceId id = ResourceId.valueOf(entity.getKey().getParent().getName());
+        ResourceId id = ResourceId.valueOf(entity.getKey().getName());
         ResourceNode resource = new ResourceNode(id);
         resource.setId(id);
         resource.setVersion((Long) entity.getProperty(VERSION_PROPERTY));

@@ -106,7 +106,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
         List<ResourceNode> nodes = Lists.newArrayList();
         for(Resource resource : all()) {
-            if(resource.getOwnerId().asString().startsWith("U")) {
+            if(resource.getOwnerId().equals(org.activityinfo.model.resource.Resources.ROOT_ID)) {
                 nodes.add(newNode(resource));
             }
         }
@@ -116,6 +116,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     private ResourceNode newNode(Resource resource) {
         ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
         ResourceNode node = new ResourceNode(resource.getId(), classId);
+        node.setOwnerId(resource.getOwnerId());
 
         if(classId.equals(FormClass.CLASS_ID)) {
             node.setLabel(resource.isString(FormClass.LABEL_FIELD_ID));
