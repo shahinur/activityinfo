@@ -21,27 +21,32 @@ package org.activityinfo.ui.app.client.chrome.tree;
  * #L%
  */
 
+import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.ui.style.tree.TreeComponent;
 import org.activityinfo.ui.style.tree.TreeModel;
 import org.activityinfo.ui.vdom.shared.Stylesheet;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
+import static org.activityinfo.ui.style.BaseStyles.*;
+import static org.activityinfo.ui.vdom.shared.html.H.classNames;
+import static org.activityinfo.ui.vdom.shared.html.H.ul;
+
 /**
  * @author yuriyz on 9/11/14.
  */
 @Stylesheet("NavigationTree.less")
-public class NavigationTree<T> extends VComponent {
+public class NavigationTree extends VComponent {
 
-    private final TreeComponent<T> tree;
+    private final TreeComponent<ResourceNode> tree;
 
-    public NavigationTree(TreeModel<T> model) {
+    public NavigationTree(TreeModel<ResourceNode> model) {
         this.tree = new TreeComponent<>(model);
-        this.tree.setNodeRenderer(new NavigationNodeRenderer<T>());
+        this.tree.setNodeRenderer(new NavigationNodeRenderer());
     }
 
     @Override
     protected VTree render() {
-        return tree;
+        return ul(classNames(NAV, NAV_PILLS, NAV_STACKED, NAV_BRACKET), tree);
     }
 }

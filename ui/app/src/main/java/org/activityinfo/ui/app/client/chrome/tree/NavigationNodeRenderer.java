@@ -21,34 +21,44 @@ package org.activityinfo.ui.app.client.chrome.tree;
  * #L%
  */
 
-import com.google.gwt.safehtml.shared.UriUtils;
-import org.activityinfo.ui.style.BaseStyles;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.ui.app.client.chrome.nav.NavLink;
+import org.activityinfo.ui.app.client.page.folder.FolderPlace;
+import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.style.tree.TreeComponent;
-import org.activityinfo.ui.style.tree.TreeModel;
+import org.activityinfo.ui.style.tree.TreeNodeIcon;
 import org.activityinfo.ui.style.tree.TreeNodeRenderer;
+import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.html.Icon;
-import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
-
-import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 /**
  * @author yuriyz on 9/11/14.
  */
-public class NavigationNodeRenderer<T> implements TreeNodeRenderer<T> {
+public class NavigationNodeRenderer implements TreeNodeRenderer<ResourceNode> {
 
     @Override
-    public VTree renderNode(T node, TreeComponent<T> tree) {
-        TreeModel<T> model = tree.getModel();
-        Icon icon = model.getIcon(node, tree.isExpanded(node));
-        return li(listItemStyle(model.isSelected(node)), link(UriUtils.fromString(""), icon.render(), space(), span(model.getLabel(node))));
+    public VTree renderNode(final ResourceNode node, final TreeComponent<ResourceNode> tree) {
+        final NavigationTreeModel model = (NavigationTreeModel) tree.getModel();
+
+        boolean expanded = tree.isExpanded(node);
+
+        TreeNodeIcon<ResourceNode> stateIcon = new TreeNodeIcon<>(tree, node, stateIcon(expanded));
+
+        NavLink label = new NavLink(model.getApplication().getRouter());
+        label.setRenderer(new DivNavLinkRenderer());
+        label.setLabel(model.getLabel(node));
+        label.setTarget(new FolderPlace(node.getId()));
+        label.setIcon(model.getIcon(node, expanded));
+
+        return H.div("", stateIcon, label);
     }
 
-    private PropMap listItemStyle(boolean isSelected) {
-        if(isSelected) {
-            return PropMap.withClasses(BaseStyles.NAV_ACTIVE, BaseStyles.ACTIVE);
+    private Icon stateIcon(boolean expanded) {
+        if (expanded) {
+            return FontAwesome.ANGLE_DOWN;
         } else {
-            return PropMap.EMPTY;
+            return FontAwesome.ANGLE_RIGHT;
         }
     }
 }
