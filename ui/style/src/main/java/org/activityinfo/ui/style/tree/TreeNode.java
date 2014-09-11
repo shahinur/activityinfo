@@ -23,8 +23,7 @@ public class TreeNode<T> extends VComponent {
 
     @Override
     protected VTree render() {
-        return
-            new VNode(HtmlTag.A, new PropMap().set("href", "#"), t(label));
+        return new VNode(HtmlTag.A, new PropMap().set("href", "#"), t(label));
     }
 
     @Override
@@ -34,9 +33,13 @@ public class TreeNode<T> extends VComponent {
 
     @Override
     public void onBrowserEvent(Event event) {
-        if(event.getTypeInt() == Event.ONCLICK) {
+        if (event.getTypeInt() == Event.ONCLICK) {
             event.preventDefault();
-            tree.onLabelClicked(node);
+            onClick();
         }
+    }
+
+    public void onClick() {
+        tree.onLabelClicked(node);
     }
 }

@@ -36,12 +36,12 @@ public class NavigationComponent extends VComponent implements StoreChangeListen
 
     private final Application application;
     private final TreeModel<ResourceNode> treeModel;
-    private NavigationTree<ResourceNode> treeComponent;
+    private NavigationTree treeComponent;
 
     public NavigationComponent(Application application) {
         this.application = application;
         this.treeModel = new NavigationTreeModel(application);
-        this.treeComponent = new NavigationTree<>(treeModel);
+        this.treeComponent = new NavigationTree(treeModel);
     }
 
     @Override
