@@ -43,6 +43,10 @@ public class TableModel implements IsRecord {
         return column;
     }
 
+    public void addColumn(ColumnModel criteriaColumn) {
+        columns.add(criteriaColumn);
+    }
+
     public void addColumns(List<ColumnModel> requiredColumns) {
         columns.addAll(requiredColumns);
     }

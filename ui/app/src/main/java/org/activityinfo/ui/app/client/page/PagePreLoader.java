@@ -1,6 +1,6 @@
 package org.activityinfo.ui.app.client.page;
 
-import org.activityinfo.ui.app.client.store.Status;
+import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 

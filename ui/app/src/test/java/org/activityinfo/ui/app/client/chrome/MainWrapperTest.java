@@ -1,6 +1,7 @@
 package org.activityinfo.ui.app.client.chrome;
 
 import org.activityinfo.store.test.TestResourceStore;
+import org.activityinfo.ui.app.client.request.TestRemoteStoreService;
 import org.activityinfo.ui.style.BaseStyleResources;
 import org.junit.Before;
 import org.junit.Test;

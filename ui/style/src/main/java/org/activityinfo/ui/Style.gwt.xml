@@ -25,6 +25,8 @@
   <!-- Inherit the core Web Toolkit stuff.                        -->
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="org.activityinfo.ui.vdom.VDom"/>
+  <inherits name="org.activityinfo.ui.Flux"/>
+  <inherits name="org.activityinfo.i18n.I18n"/>
 
   <source path="style"/>
 

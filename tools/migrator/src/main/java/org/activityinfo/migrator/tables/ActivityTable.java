@@ -149,7 +149,7 @@ public class ActivityTable extends ResourceMigrator {
                                         "SortOrder, " +
                                         "nameinexpression code, " +
                                         "calculatedautomatically ca, " +
-                                        "expression expr " +
+                                        "Expression expr " +
                                     "FROM indicator " +
                                     "WHERE dateDeleted IS NULL AND " +
                                         filter.indicatorFilter("indicator") +
@@ -254,7 +254,7 @@ public class ActivityTable extends ResourceMigrator {
                 .setDescription(rs.getString("Description"))
                 .setCode(rs.getString("Code"));
 
-        if(rs.getBoolean("ca")) {
+        if(rs.getBoolean("ca") && rs.getString("expr") != null) {
             field.setType(new CalculatedFieldType(rs.getString("expr")));
 
         } else {

@@ -9,6 +9,7 @@ import org.activityinfo.ui.app.client.action.DraftHandler;
 import org.activityinfo.ui.app.client.draft.Draft;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
+import org.activityinfo.ui.flux.store.Status;
 
 import java.util.Map;
 

@@ -17,4 +17,9 @@ public class ErrorValue implements FieldValue {
         return MissingTypeClass.INSTANCE;
     }
 
+
+    @Override
+    public String toString() {
+        return "#ERR";
+    }
 }
