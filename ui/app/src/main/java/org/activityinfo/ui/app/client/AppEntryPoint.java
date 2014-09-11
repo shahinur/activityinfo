@@ -4,6 +4,7 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.activityinfo.ui.app.client.chrome.Chrome;
+import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView;
 import org.activityinfo.ui.app.client.effects.Effects;
 import org.activityinfo.ui.app.client.page.WindowLocationHash;
 import org.activityinfo.ui.app.client.request.FetchWorkspaces;
@@ -31,6 +32,9 @@ public class AppEntryPoint implements EntryPoint {
         // Create a "view" on the location.hash
         WindowLocationHash location = new WindowLocationHash(app);
         location.start();
+
+        // view to track online/offline state from browser
+        new ConnectivityStateView(app);
 
         // Ensure that GWTs event system gets initialized
         RootPanel rootPanel = RootPanel.get();
