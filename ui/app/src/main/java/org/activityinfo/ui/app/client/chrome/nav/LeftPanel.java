@@ -2,9 +2,10 @@ package org.activityinfo.ui.app.client.chrome.nav;
 
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.chrome.tree.NavigationComponent;
 import org.activityinfo.ui.vdom.shared.html.H;
-import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
+import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import static org.activityinfo.ui.style.BaseStyles.*;
@@ -30,6 +31,7 @@ public class LeftPanel extends VComponent<LeftPanel> {
     private static VTree innerPanel(Application application) {
          return H.div(LEFTPANELINNER,
              new SidebarTitle(I18N.CONSTANTS.workspaces()),
-             new WorkspaceSelector(application));
+             new WorkspaceSelector(application),
+             new NavigationComponent(application));
     }
 }
