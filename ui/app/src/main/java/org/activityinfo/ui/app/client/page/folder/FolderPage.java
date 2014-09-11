@@ -14,7 +14,7 @@ import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
 import org.activityinfo.ui.app.client.store.Router;
-import org.activityinfo.ui.app.client.store.Status;
+import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.BaseStyles;

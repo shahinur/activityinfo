@@ -40,14 +40,20 @@ public class TableBuilder {
                 FieldSource source = (FieldSource) column.getSource();
                 List<FormTree.Node> sourceNodes = source.select(tree);
                 ColumnType type = column.getType();
-                if(type == null) {
+                if (type == null) {
                     type = detectType(sourceNodes);
                 }
-                if(sourceNodes.isEmpty()) {
+                if (sourceNodes.isEmpty()) {
                     columnViews.put(column.getId(), batch.addEmptyColumn(type, formClass));
                 } else {
                     columnViews.put(column.getId(), batch.addColumn(type, sourceNodes));
                 }
+            } else if(column.getSource() instanceof CalcFieldSource) {
+                assert formClass.getId().equals(((CalcFieldSource) column.getSource()).getFormClassId());
+
+                columnViews.put(column.getId(), batch.addColumn(column.getType(), formClass,
+                        (CalcFieldSource)column.getSource()));
+
             } else if(column.getSource() instanceof ResourceIdSource) {
                 columnViews.put(column.getId(), batch.getIdColumn(formClass));
             } else {

@@ -2,7 +2,6 @@ package org.activityinfo.model.table;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
@@ -47,6 +46,8 @@ public class FieldSource extends ColumnSource {
         return this;
     }
 
+
+
     public List<FormTree.Node> select(FormTree tree) {
         List<FormTree.Node> nodes = Lists.newArrayList();
         for(FieldSelector selector : selectors) {
@@ -72,4 +73,5 @@ public class FieldSource extends ColumnSource {
         }
         return source;
     }
+
 }

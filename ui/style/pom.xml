@@ -24,6 +24,18 @@
       <artifactId>activityinfo-virtual-dom</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-flux</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-i18n</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

@@ -16,6 +16,10 @@ public class Grid {
         return div(BaseStyles.ROW, div(BaseStyles.COL_XS_12, singleColumn));
     }
 
+    public static VNode row(VTree... columns) {
+        return div(BaseStyles.ROW, columns);
+    }
+
     public static VTree column(int span, VTree... children) {
         return div(className("col-md-" + span), children);
     }

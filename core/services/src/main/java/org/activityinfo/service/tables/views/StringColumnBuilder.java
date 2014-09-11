@@ -55,8 +55,10 @@ public class StringColumnBuilder implements ColumnViewBuilder {
     private ColumnView build() {
         if(stats.isEmpty()) {
             return new EmptyColumnView(values.size(), ColumnType.STRING);
+
         } else if(stats.isConstant()) {
             return new ConstantColumnView(values.size(), values.get(0));
+
         } else {
             return new StringArrayColumnView(values);
         }

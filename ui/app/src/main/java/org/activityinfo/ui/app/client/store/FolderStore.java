@@ -1,5 +1,6 @@
 package org.activityinfo.ui.app.client.store;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.FolderProjection;
@@ -14,7 +15,9 @@ import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
+import org.activityinfo.ui.flux.store.Status;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -75,6 +78,15 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
         folders.put(response.getRootNode().getId(), Status.cache(response));
         loading.remove(response.getRootNode().getId());
         fireChange();
+    }
+
+    public Status<List<ResourceNode>> getFolderItems(ResourceId folderId) {
+        return get(folderId).join(new Function<FolderProjection, List<ResourceNode>>() {
+            @Override
+            public List<ResourceNode> apply(FolderProjection input) {
+                return input.getRootNode().getChildren();
+            }
+        });
     }
 
     public Status<FolderProjection> get(ResourceId resourceId) {

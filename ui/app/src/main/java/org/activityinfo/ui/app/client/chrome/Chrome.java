@@ -8,7 +8,6 @@ import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 
-import static org.activityinfo.ui.style.PagePreLoader.preLoader;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class Chrome {
@@ -18,7 +17,7 @@ public class Chrome {
     /**
      * Renders the page skeleton
      */
-    public static VNode renderPage(PageContext pageContext, Application app) {
+    public static VNode renderPage(PageContext pageContext, VNode vNode) {
 
         return html(
                 head(
@@ -28,7 +27,7 @@ public class Chrome {
                         link(stylesheet(pageContext.getStylesheetUrl())),
                         script(pageContext.getBootstrapScriptUrl())),
                 body(
-                    preLoader(),
+                    vNode,
                     historyIFrame()
                 ));
     }
@@ -36,12 +35,11 @@ public class Chrome {
     public static VNode mainSection(Application app) {
         return section(id(ROOT_ID),
             new LeftPanel(app),
-            new MainPanel(app),
-            rightPanel()
+            new MainPanel(app)
         );
     }
 
-    private static VNode historyIFrame() {
+    public static VNode historyIFrame() {
         PropMap map = new PropMap();
         map.set("src", "javascript:''");
         map.setId("__gwt_historyFrame");
