@@ -23,6 +23,10 @@ public class FormSelectionTree implements TreeModel<ResourceNode> {
         this.application = application;
     }
 
+    public Application getApplication() {
+        return application;
+    }
+
     @Override
     public boolean isLeaf(ResourceNode node) {
         return node.getClassId().equals(FormClass.CLASS_ID);
