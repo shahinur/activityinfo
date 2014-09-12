@@ -5,6 +5,7 @@ import org.activityinfo.ui.vdom.shared.VDomLogger;
 import org.activityinfo.ui.vdom.shared.dom.DomElement;
 import org.activityinfo.ui.vdom.shared.dom.DomNode;
 import org.activityinfo.ui.vdom.shared.dom.DomText;
+import org.activityinfo.ui.vdom.shared.dom.TestRenderContext;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 import org.junit.Before;
 import org.junit.Test;

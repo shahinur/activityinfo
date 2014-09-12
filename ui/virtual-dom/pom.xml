@@ -35,6 +35,16 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- The Test fixtures should probably be put in a seperate module -->
+    <!-- But for now if you want to use the TestRenderContext, then -->
+    <!-- You need to add a dependency for easymock as well -->
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>3.2</version>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.activityinfo</groupId>
       <artifactId>unit-testing-tools</artifactId>

@@ -42,8 +42,14 @@ public abstract class AbstractStore implements Store {
     }
 
     protected final void fireChange() {
+
+        LOGGER.fine(getClass().getSimpleName() + ".fireChange()");
+
         if(listeners != null) {
             for(StoreChangeListener listener : listeners) {
+                LOGGER.fine(getClass().getSimpleName() + " notifying " +
+                    listener.getClass().getSimpleName() + " of change");
+
                 try {
                     listener.onStoreChanged(this);
                 } catch(Throwable caught) {

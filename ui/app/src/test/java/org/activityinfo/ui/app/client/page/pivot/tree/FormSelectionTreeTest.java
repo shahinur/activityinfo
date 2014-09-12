@@ -22,8 +22,6 @@ public class FormSelectionTreeTest {
         TestFolder workspace = scenario.createWorkspace("Workspace A");
         TestFormClass form = workspace.newFormClass("Test Form").addTextField("Field").create();
 
-        scenario.fetchWorkspaces();
-
         FormSelectionTree tree = new FormSelectionTree(scenario.application());
         Status<List<ResourceNode>> rootNodes = tree.getRootNodes();
 

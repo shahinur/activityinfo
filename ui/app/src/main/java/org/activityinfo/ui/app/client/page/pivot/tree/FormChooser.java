@@ -12,6 +12,7 @@ import org.activityinfo.ui.style.Button;
 import org.activityinfo.ui.style.ButtonStyle;
 import org.activityinfo.ui.style.ClickHandler;
 import org.activityinfo.ui.style.Modal;
+import org.activityinfo.ui.style.tree.SingleSelectionModel;
 import org.activityinfo.ui.style.tree.TreeComponent;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
@@ -31,6 +32,8 @@ public class FormChooser extends VComponent implements StoreChangeListener {
     private final TreeComponent<ResourceNode> tree;
     private final FormSelectionTree treeModel;
 
+    private final SingleSelectionModel selectionModel = new SingleSelectionModel();
+
     private AcceptHandler<ResourceId> acceptHandler;
 
     public FormChooser(Application application) {
@@ -39,7 +42,7 @@ public class FormChooser extends VComponent implements StoreChangeListener {
         this.folderStore = application.getFolderStore();
 
         treeModel = new FormSelectionTree(application);
-        this.tree = new TreeComponent<>(treeModel);
+        this.tree = new TreeComponent<>(treeModel, selectionModel);
 
         this.modal = new Modal();
         this.modal.setTitle(t("Choose source"));
@@ -80,7 +83,7 @@ public class FormChooser extends VComponent implements StoreChangeListener {
 
     @Override
     public void onStoreChanged(Store store) {
-        addButton.setEnabled(treeModel.getSelection().isPresent());
+        addButton.setEnabled(selectionModel.hasSelection());
     }
 
     public void setVisible(boolean visible) {
@@ -89,7 +92,7 @@ public class FormChooser extends VComponent implements StoreChangeListener {
 
     private void onAccepted() {
         if(acceptHandler != null) {
-            acceptHandler.onAccepted(treeModel.getSelection().get());
+            acceptHandler.onAccepted(ResourceId.valueOf(selectionModel.getSelectedKey()));
         }
         modal.setVisible(false);
     }

@@ -6,17 +6,12 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ComplexPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.vdom.shared.dom.BrowserDomDocument;
-import org.activityinfo.ui.vdom.shared.dom.BrowserDomElement;
-import org.activityinfo.ui.vdom.shared.dom.BrowserDomNode;
 import org.activityinfo.ui.vdom.client.render.DomBuilder;
 import org.activityinfo.ui.vdom.client.render.DomPatcher;
 import org.activityinfo.ui.vdom.client.render.RenderContext;
 import org.activityinfo.ui.vdom.shared.diff.Diff;
 import org.activityinfo.ui.vdom.shared.diff.VPatchSet;
-import org.activityinfo.ui.vdom.shared.dom.DomDocument;
-import org.activityinfo.ui.vdom.shared.dom.DomElement;
-import org.activityinfo.ui.vdom.shared.dom.DomNode;
+import org.activityinfo.ui.vdom.shared.dom.*;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
@@ -153,7 +148,7 @@ public class VDomWidget extends ComplexPanel implements RenderContext {
 
 
     @Override
-    public void registerEventListener(DomNode node, VComponent thunk) {
+    public void registerEventListener(VComponent thunk, DomNode node) {
         componentMap.put(node, thunk);
 //        sinkEvents(thunk.getEventMask());
     }
@@ -168,12 +163,16 @@ public class VDomWidget extends ComplexPanel implements RenderContext {
             }
             VComponent component = componentMap.get(domNode);
             if(component != null) {
-                component.onBrowserEvent(event);
+                component.onBrowserEvent(BrowserDomEvent.cast(event));
             }
             domNode = domNode.getParentElement();
         }
     }
 
+    @Override
+    public void componentUnmounted(VComponent component, DomNode domNode) {
+        componentMap.remove(domNode);
+    }
 
     private void completeDetachments() {
         for(Widget widget : pendingDetachments) {

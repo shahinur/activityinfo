@@ -2,6 +2,7 @@ package org.activityinfo.ui.app.client;
 
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.primitive.TextType;
 
@@ -27,4 +28,7 @@ public class TestFormClass {
         return this;
     }
 
+    public ResourceId getId() {
+        return formClass.getId();
+    }
 }

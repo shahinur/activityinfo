@@ -5,6 +5,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ListFieldValue;
 import org.activityinfo.ui.widget.validation.ValidationMessage;
 import org.activityinfo.ui.widget.validation.ValidationSeverity;
 
@@ -18,7 +19,7 @@ public class FieldState {
 
     public FieldState(FormField field, FieldValue fieldValue) {
         this.field = field;
-        this.value = value;
+        this.value = fieldValue;
     }
 
     public FormField getField() {
@@ -63,6 +64,15 @@ public class FieldState {
 
 
     public void clearValue() {
+        this.value = null;
+    }
 
+    public void appendValue(FieldValue newElement) {
+        assert field.getType() instanceof ListFieldValue;
+        if(value instanceof ListFieldValue) {
+            value = ((ListFieldValue) value).withAppended(newElement);
+        } else {
+            value = ListFieldValue.valueOf(newElement);
+        }
     }
 }

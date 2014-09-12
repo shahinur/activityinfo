@@ -3,6 +3,7 @@ package org.activityinfo.store.migrate;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.store.hrd.TestingEnvironment;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ public class MigrateDatabaseTaskTest {
     public TestingEnvironment environment = new TestingEnvironment();
 
     @Test
-    //@Ignore("requires local setup")
+    @Ignore("requires local setup")
     public void test() throws Exception {
 
         Properties properties = new Properties();

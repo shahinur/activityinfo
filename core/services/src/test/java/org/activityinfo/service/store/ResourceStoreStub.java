@@ -41,8 +41,8 @@ public class ResourceStoreStub implements ResourceStore {
         return nextClientId++;
     }
 
-    @Override
-    public Resource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+
+    public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
 
         if(!resourceId.equals(MY_RESOURCE_ID)) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);

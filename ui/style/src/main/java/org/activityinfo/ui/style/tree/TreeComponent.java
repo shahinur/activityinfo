@@ -26,8 +26,9 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 public class TreeComponent<T> extends VComponent implements StoreChangeListener {
 
     private final TreeModel<T> model;
+    private final SelectionModel selectionModel;
 
-    private Set expanded = new HashSet();
+    private final Set<String> expanded = new HashSet<>();
 
     private Render<T> nodeItemRenderer = new Render<T>() {
         @Override
@@ -38,13 +39,16 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
 
     private TreeNodeRenderer<T> nodeRenderer = new DefaultTreeNodeRenderer<>();
 
-    public TreeComponent(TreeModel<T> model) {
+    public TreeComponent(TreeModel<T> model, SelectionModel selectionModel) {
         this.model = model;
+        this.selectionModel = selectionModel;
     }
 
     @Override
     protected void componentDidMount() {
         model.addChangeListener(this);
+        model.requestRootNodes();
+        selectionModel.addChangeListener(this);
     }
 
     @Override
@@ -52,14 +56,24 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
         refresh();
     }
 
+
+    @Override
+    public void onSelectionChanged(SelectionModel selectionModel) {
+        refresh();
+    }
+
     @Override
     protected void componentWillUnmount() {
         model.removeChangeListener(this);
+        selectionModel.removeChangeListener(this);
     }
 
     public void onLabelClicked(T node) {
+
+        VDomLogger.event(this, "onLabelClicked");
+
         if(model.isLeaf(node)) {
-            model.select(node);
+            selectionModel.select(model.getKey(node));
         } else {
             toggleNode(node);
         }
@@ -75,7 +89,7 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
 
     private void expand(T node) {
         expanded.add(model.getKey(node));
-        model.onExpanded(node);
+        model.requestChildren(node);
 
         refresh();
     }
@@ -102,6 +116,25 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
     private VTree container(VNode tree) {
         PropMap propMap = PropMap.withClasses("tree-container");
         return div(propMap, tree);
+    }
+
+    public VTree renderNode(T node) {
+        boolean expanded = isExpanded(node);
+        boolean selected = selectionModel.isSelected(model.getKey(node));
+
+        TreeNodeIcon<T> icon = new TreeNodeIcon<>(this, node, model.getIcon(node, expanded));
+        TreeNode<T> label = new TreeNode<>(this, node, model.getLabel(node));
+
+        PropMap props = new PropMap();
+        if(selected) {
+            props.setClass(CssClass.valueOf("selected"));
+        }
+
+        return li(props,
+            background(),
+            new VNode(HtmlTag.SPAN, PropMap.withClasses("node-container"),
+                icon, label),
+            renderChildren(node, expanded));
     }
 
     /**
@@ -143,7 +176,7 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
         this.nodeRenderer = nodeRenderer;
     }
 
-    public Render<T> getNodeItemRenderer() {
-        return nodeItemRenderer;
+    public boolean isSelected(T node) {
+        return selectionModel.isSelected(model.getKey(node));
     }
 }
