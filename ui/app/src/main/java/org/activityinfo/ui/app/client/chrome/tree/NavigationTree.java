@@ -22,33 +22,43 @@ package org.activityinfo.ui.app.client.chrome.tree;
  */
 
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.flux.store.Status;
+import org.activityinfo.ui.style.Spinners;
 import org.activityinfo.ui.style.tree.SingleSelectionModel;
 import org.activityinfo.ui.style.tree.TreeComponent;
-import org.activityinfo.ui.style.tree.TreeModel;
-import org.activityinfo.ui.vdom.shared.Stylesheet;
-import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
+import java.util.List;
+
 import static org.activityinfo.ui.style.BaseStyles.*;
-import static org.activityinfo.ui.vdom.shared.html.H.classNames;
-import static org.activityinfo.ui.vdom.shared.html.H.ul;
+import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 /**
  * @author yuriyz on 9/11/14.
  */
-@Stylesheet("NavigationTree.less")
-public class NavigationTree extends VComponent {
+public class NavigationTree extends TreeComponent<ResourceNode> {
 
-    private final TreeComponent<ResourceNode> tree;
-    private final SingleSelectionModel selectionModel = new SingleSelectionModel();
+    private final NavigationTreeModel model;
 
-    public NavigationTree(TreeModel<ResourceNode> model) {
-        this.tree = new TreeComponent<>(model, selectionModel);
-        this.tree.setNodeRenderer(new NavigationNodeRenderer());
+    public NavigationTree(Application application) {
+        super(new NavigationTreeModel(application), new SingleSelectionModel());
+        this.model = (NavigationTreeModel) getModel();
     }
 
     @Override
     protected VTree render() {
-        return ul(classNames(NAV, NAV_PILLS, NAV_STACKED, NAV_BRACKET), tree);
+        Status<List<ResourceNode>> rootNodes = model.getRootNodes();
+        if(rootNodes.isAvailable()) {
+            return ul(classNames(NAV, NAV_PILLS, NAV_STACKED, NAV_BRACKET), map(rootNodes.get(), getNodeItemRenderer()));
+        } else {
+            return Spinners.spinner().render();
+        }
+    }
+
+    @Override
+    public VTree renderChildren(ResourceNode node, boolean expanded) {
+        // todo ?
+        return super.renderChildren(node, expanded);
     }
 }
