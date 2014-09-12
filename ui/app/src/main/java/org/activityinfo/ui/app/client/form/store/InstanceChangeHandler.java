@@ -1,6 +1,8 @@
 package org.activityinfo.ui.app.client.form.store;
 
-public interface UpdateFieldHandler {
+public interface InstanceChangeHandler {
 
     void updateField(UpdateFieldAction action);
+
+    void appendListItem(AddListItemAction action);
 }

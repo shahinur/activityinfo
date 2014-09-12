@@ -3,10 +3,7 @@ package org.activityinfo.model.type.time;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.RecordFieldTypeClass;
+import org.activityinfo.model.type.*;
 
 /**
  * Value type that represents a date in the ISO-8601 calendar.
@@ -66,5 +63,10 @@ public class LocalDateType implements FieldType {
     @Override
     public String toString() {
         return "LocalDateType";
+    }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
     }
 }

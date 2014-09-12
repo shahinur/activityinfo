@@ -34,7 +34,7 @@ public class NarrativeValue implements FieldValue, IsRecord, HasStringValue {
         return text;
     }
 
-    public static FieldValue fromRecord(Record record) {
+    public static NarrativeValue fromRecord(Record record) {
         return new NarrativeValue(record.getString("text"));
     }
 

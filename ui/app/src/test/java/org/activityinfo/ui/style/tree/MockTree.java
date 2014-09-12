@@ -42,22 +42,17 @@ public class MockTree implements TreeModel<String> {
     }
 
     @Override
-    public Object getKey(String node) {
+    public String getKey(String node) {
         return node;
     }
 
     @Override
-    public void onExpanded(String node) {
+    public void requestRootNodes() {
 
     }
 
     @Override
-    public boolean isSelected(String node) {
-        return false;
-    }
-
-    @Override
-    public void select(String node) {
+    public void requestChildren(String node) {
 
     }
 

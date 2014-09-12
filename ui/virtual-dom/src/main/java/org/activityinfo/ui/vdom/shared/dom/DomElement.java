@@ -1,5 +1,15 @@
 package org.activityinfo.ui.vdom.shared.dom;
 
+import com.google.gwt.core.client.SingleJsoImpl;
+
+/**
+ * Interface to a DOM Document that decouples the
+ * virtual dom rendering and diffing mechanism from GWTs JSNI objects,
+ * which complicate testing.
+ *
+ * @see com.google.gwt.dom.client.Element
+ */
+@SingleJsoImpl(BrowserDomElement.class)
 public interface DomElement extends DomNode {
 
     void removeAttribute(String attrName);
@@ -18,4 +28,5 @@ public interface DomElement extends DomNode {
 
     String getTagName();
 
+    String getInputValue();
 }

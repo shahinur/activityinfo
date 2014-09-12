@@ -172,6 +172,9 @@ public class DomPatcher implements PatchOpExecutor {
         rootDomNode = replaceRoot(rootDomNode, newNode);
 
         if(!replacement.isMounted()) {
+            if(replacement.getEventMask() != 0) {
+                context.registerEventListener(replacement, rootDomNode);
+            }
             replacement.fireMounted(context, rootDomNode);
         }
         return rootDomNode;

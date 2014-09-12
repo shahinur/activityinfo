@@ -70,6 +70,7 @@ public class LatestContent {
         entity.setProperty(VERSION_PROPERTY, resource.getVersion());
         entity.setProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
         entity.setProperty(CLASS_PROPERTY, resource.isString("classId"));
+        entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
         Content.writeProperties(resource, entity);
 
         if(FolderIndex.isFolderItem(resource)) {

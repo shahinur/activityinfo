@@ -1,6 +1,7 @@
 package org.activityinfo.ui.vdom.shared.dom;
 
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.InputElement;
 
 public class BrowserDomElement extends BrowserDomNode implements DomElement {
 
@@ -51,5 +52,11 @@ public class BrowserDomElement extends BrowserDomNode implements DomElement {
 
     public static Element cast(DomElement element) {
         return ((BrowserDomElement)element).cast();
+    }
+
+    @Override
+    public final String getInputValue() {
+        InputElement input = this.cast();
+        return input.getValue();
     }
 }

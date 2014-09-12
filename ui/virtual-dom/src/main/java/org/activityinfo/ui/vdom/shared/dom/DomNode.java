@@ -1,5 +1,15 @@
 package org.activityinfo.ui.vdom.shared.dom;
 
+import com.google.gwt.core.client.SingleJsoImpl;
+
+/**
+ * Interface to a DOM Document that decouples the
+ * virtual dom rendering and diffing mechanism from GWTs JSNI objects,
+ * which complicate testing.
+ *
+ * @see com.google.gwt.dom.client.Node
+ */
+@SingleJsoImpl(BrowserDomNode.class)
 public interface DomNode {
 
     short ELEMENT_NODE = 1;

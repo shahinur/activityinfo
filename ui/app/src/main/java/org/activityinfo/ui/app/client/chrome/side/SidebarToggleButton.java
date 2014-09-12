@@ -4,6 +4,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.user.client.Event;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.icons.FontAwesome;
+import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
@@ -30,7 +31,7 @@ public class SidebarToggleButton extends VComponent {
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(DomEvent event) {
         if(event.getTypeInt() == Event.ONCLICK) {
             collapsed = !collapsed;
             if(collapsed) {

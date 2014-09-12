@@ -1,6 +1,8 @@
 package org.activityinfo.ui.style.tree;
 
 import com.google.gwt.user.client.Event;
+import org.activityinfo.ui.vdom.shared.VDomLogger;
+import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
@@ -32,14 +34,22 @@ public class TreeNode<T> extends VComponent {
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
-        if (event.getTypeInt() == Event.ONCLICK) {
+    public void onBrowserEvent(DomEvent event) {
+        if(event.getTypeInt() == Event.ONCLICK) {
+
+            VDomLogger.event(this, "ONCLICK => " + getPropertiesForDebugging());
+
             event.preventDefault();
-            onClick();
+            tree.onLabelClicked(node);
         }
     }
 
-    public void onClick() {
-        tree.onLabelClicked(node);
+    @Override
+    public String getPropertiesForDebugging() {
+        if(tree == null) {
+            return "tree == null";
+        } else {
+            return "tree = " + (tree.isMounted() ? " m " : " u ") + tree.getDebugIndex();
+        }
     }
 }

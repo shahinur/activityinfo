@@ -2,13 +2,13 @@ package org.activityinfo.model.analysis;
 
 import org.activityinfo.model.resource.ResourceId;
 
-public class SourceModel {
+public class DimensionSource {
 
     private ResourceId sourceId;
     private String expression;
     private String criteria;
 
-    public SourceModel(ResourceId sourceId, ResourceId fieldId) {
+    public DimensionSource(ResourceId sourceId, ResourceId fieldId) {
         this.sourceId = sourceId;
         this.expression = fieldId.asString();
     }

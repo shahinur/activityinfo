@@ -3,15 +3,19 @@ package org.activityinfo.model.type.barcode;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.RecordFieldTypeClass;
+import org.activityinfo.model.type.TypeFieldType;
 
 /**
  * A value types that describes a real-valued barcode and its units.
  */
 public class BarcodeType implements FieldType {
 
+    public interface TypeClass extends RecordFieldTypeClass<BarcodeValue> {};
 
-    public static final FieldTypeClass TYPE_CLASS = new RecordFieldTypeClass() {
+    public static final TypeClass TYPE_CLASS = new TypeClass() {
 
         public static final String TYPE_ID = "BARCODE";
 
@@ -31,7 +35,7 @@ public class BarcodeType implements FieldType {
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public BarcodeValue deserialize(Record record) {
             return BarcodeValue.fromRecord(record);
         }
     };
@@ -55,4 +59,10 @@ public class BarcodeType implements FieldType {
     public String toString() {
         return "BarcodeType";
     }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
+    }
+
 }

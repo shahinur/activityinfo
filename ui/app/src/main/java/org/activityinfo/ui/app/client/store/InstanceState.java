@@ -6,10 +6,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.ui.app.client.form.store.FieldState;
-import org.activityinfo.ui.app.client.form.store.PersistHandler;
-import org.activityinfo.ui.app.client.form.store.UpdateFieldAction;
-import org.activityinfo.ui.app.client.form.store.UpdateFieldHandler;
+import org.activityinfo.ui.app.client.form.store.*;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
 
@@ -17,7 +14,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class InstanceState extends AbstractStore implements PersistHandler, UpdateFieldHandler {
+public class InstanceState extends AbstractStore implements PersistHandler, InstanceChangeHandler {
 
     private static final Logger LOGGER = Logger.getLogger(InstanceState.class.getName());
 
@@ -75,6 +72,11 @@ public class InstanceState extends AbstractStore implements PersistHandler, Upda
         fields.get(action.getFieldId()).updateValue(action.getValue());
         validate();
         fireChange();
+    }
+
+    @Override
+    public void appendListItem(AddListItemAction action) {
+        fields.get(action.getFieldId()).appendValue(action.getFieldValue());
     }
 
     public Resource getUpdatedResource() {

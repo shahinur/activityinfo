@@ -5,9 +5,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.analysis.DimensionModel;
+import org.activityinfo.model.analysis.DimensionSource;
 import org.activityinfo.model.analysis.MeasureModel;
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.analysis.SourceModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -67,28 +67,36 @@ public class PivotTest {
     @Test
     public void testCalculations() {
         dumpIndicators();
-
-        FormClass costs = findForm("Documented Cost Information");
-        FormClass system = findForm("System Identification per design (aggregated)");
-
-
-        PivotTableModel model = new PivotTableModel();
-        model.getSources().add(costs.getId());
-        model.getDimensions().add(dim("Year",
-            source(costs, "Year of expediture"),
-            source(system, "Year")));
-        model.getDimensions().add(dim("Typology",
-            source(costs, "Cost typology"),
-            source(system, "Budgeted / Build")));
-
-        MeasureModel iniCost = new MeasureModel("IniCost", "Value Initial Cost",
-            source(costs, "Value Initial Cost - Cap Hard", "{System Identifier}"));
-        model.getMeasures().add(iniCost);
-
-        model.getMeasures().add(new MeasureModel("NumberOfTaps", "Number of individual collection points",
-            source(system, "Number individual collection points")));
-
-        aggregate(model);
+//
+//        FormClass costs = findForm("Documented Cost Information");
+//        FormClass system = findForm("System Identification per design (aggregated)");
+//
+//
+//        PivotTableModel model = new PivotTableModel();
+//        model.getDimensions().add(dim("Year",
+//            source(costs, "Year of expediture"),
+//            source(system, "Year")));
+//        model.getDimensions().add(dim("Typology",
+//            source(costs, "Cost typology"),
+//            source(system, "Budgeted / Build")));
+//
+//        MeasureModel iniCost = new MeasureModel();
+//        iniCost.setId("iniCosts");
+//        iniCost.setValueExpression("{")
+//
+//            source(costs, "Value Initial Cost - Cap Hard", "{System Identifier}"));
+//        model.getMeasures().add(iniCost);
+//
+//        model.getMeasures().add(
+//            new MeasureModel("NumberOfTaps", "Number of individual collection points",
+//            source(system, "Number individual collection points")));
+//
+//        String sourceId = "[Documented Cost Information]";
+//        String modelExpr = "[Value initial cost]";
+//        String criteriaExpr = "[
+//
+//
+//        aggregate(model);
 
 //
 //        DimensionModel dimensionModel = new
@@ -102,20 +110,19 @@ public class PivotTest {
 
         // calculate all of our measures
         for(MeasureModel measure : model.getMeasures()) {
-            SourceModel source = measure.getSource();
-            TableModel table = new TableModel(source.getSourceId());
-            table.addColumn("measure").select(ColumnType.STRING).fieldPath(ResourceId.valueOf(source.getExpression()));
+            TableModel table = new TableModel(measure.getSourceId());
+            table.addColumn("measure").select(ColumnType.STRING).fieldPath(ResourceId.valueOf(measure.getValueExpression()));
 
             ColumnModel criteriaColumn = new ColumnModel();
             criteriaColumn.setId("criteria");
             criteriaColumn.setType(ColumnType.NUMBER);
-            criteriaColumn.setSource(new CalcFieldSource(source.getSourceId(), source.getCriteria()));
+            criteriaColumn.setSource(new CalcFieldSource(measure.getSourceId(), measure.getCriteriaExpression()));
            // table.addColumn(criteriaColumn);
 
             for (DimensionModel dim : model.getDimensions()) {
-                for(SourceModel dimSource : dim.getSources()) {
+                for(DimensionSource dimSource : dim.getSources()) {
                     ResourceId sourceId = Preconditions.checkNotNull(dimSource.getSourceId());
-                    if(sourceId.equals(measure.getSource().getSourceId())) {
+                    if(sourceId.equals(measure.getSourceId())) {
                         table.addColumn(dim.getId()).select(ColumnType.STRING).fieldPath(ResourceId.valueOf(dimSource.getExpression()));
                     }
                 }
@@ -123,6 +130,8 @@ public class PivotTest {
 
             TableData tableData = store.queryTable(user, table);
             dumpTable(tableData);
+
+
         }
 
     }
@@ -142,19 +151,19 @@ public class PivotTest {
         }
     }
 
-    private SourceModel source(FormClass form, String fieldName) {
-        return new SourceModel(form.getId(), findField(form, fieldName).getId());
+    private DimensionSource source(FormClass form, String fieldName) {
+        return new DimensionSource(form.getId(), findField(form, fieldName).getId());
     }
 
-    private SourceModel source(FormClass form, String fieldName, String criteria) {
+    private DimensionSource source(FormClass form, String fieldName, String criteria) {
         ResourceId fieldId = findField(form, fieldName).getId();
-        SourceModel sourceModel = new SourceModel(form.getId(), fieldId);
-        sourceModel.setCriteria(criteria);
-        return sourceModel;
+        DimensionSource dimensionSource = new DimensionSource(form.getId(), fieldId);
+        dimensionSource.setCriteria(criteria);
+        return dimensionSource;
     }
 
 
-    private DimensionModel dim(String label, SourceModel... models) {
+    private DimensionModel dim(String label, DimensionSource... models) {
         DimensionModel dimModel = new DimensionModel();
         dimModel.setId(Resources.generateId().asString());
         dimModel.setLabel(label);

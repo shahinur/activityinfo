@@ -50,6 +50,11 @@ public class TestElement extends TestNode implements DomElement {
     }
 
     @Override
+    public String getInputValue() {
+        return null;
+    }
+
+    @Override
     public int getNodeType() {
         return ELEMENT_NODE;
     }
@@ -67,5 +72,30 @@ public class TestElement extends TestNode implements DomElement {
             html.append("</" + tagName + ">");
             return html.toString();
         }
+    }
+
+    @Override
+    public void writeTo(StringBuilder html, String indent) {
+
+        html.append(indent).append("<").append(tagName);
+
+        if(properties.containsKey("className")) {
+            html.append(" class=\"").append(properties.get("className")).append("\"");
+        }
+
+        html.append(">");
+
+        if(children.size() == 1 && children.get(0) instanceof TestTextNode) {
+            html.append(((TestTextNode) children.get(0)).getData());
+
+        } else if(children.size() >= 1) {
+            html.append("\n");
+            for (TestNode node : children) {
+                node.writeTo(html, indent + "  ");
+            }
+            html.append(indent);
+        }
+
+        html.append("</").append(tagName).append(">").append("\n");
     }
 }
