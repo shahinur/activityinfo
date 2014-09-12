@@ -13,6 +13,8 @@ import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.time.MonthType;
+import org.activityinfo.model.type.time.YearType;
 
 import java.util.Map;
 
@@ -42,6 +44,8 @@ public class TypeRegistry {
         register(ExprFieldType.TYPE_CLASS);
         register(LocalDateType.TYPE_CLASS);
         register(LocalDateIntervalType.TYPE_CLASS);
+        register(MonthType.TYPE_CLASS);
+        register(YearType.TYPE_CLASS);
         register(GeoPointType.TYPE_CLASS);
         register(BooleanType.TYPE_CLASS);
         register(BarcodeType.TYPE_CLASS);

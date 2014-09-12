@@ -4,16 +4,14 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.analysis.DimensionModel;
-import org.activityinfo.model.analysis.DimensionSource;
-import org.activityinfo.model.analysis.MeasureModel;
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.*;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.*;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.store.test.TestResourceStore;
@@ -67,24 +65,32 @@ public class PivotTest {
     @Test
     public void testCalculations() {
         dumpIndicators();
+
+        FormClass costs = findForm("Documented Cost Information");
+        FormClass wp = findForm("Water Collection Point information over time - Monthly Reports");
+
+        PivotTableModel model = new PivotTableModel();
+        model.getDimensions().add(
+            dim("Year", dimSource(costs, "Year of expediture"),
+                        dimSource(wp, "Year")));
+
+        model.getDimensions().add(
+            dim("Typology", dimSource(costs, "Cost typology")));
+
+
+        MeasureModel iniCost = new MeasureModel();
+        iniCost.setId("iniCosts");
+        iniCost.setSource(costs.getId());
+        iniCost.setValueExpression("V_InCostHrd");
+        iniCost.setType(MeasurementType.FLOW);
+        iniCost.setCriteriaExpression("{System Identifier}=={Hand Dug Wells (All)}");
+
+        MeasureModel wellCount = new MeasureModel();
+        wellCount.setId("wellCount");
+        wellCount.setSource(wp.getId());
+ //       wellCount.setValueExpression("")
+
 //
-//        FormClass costs = findForm("Documented Cost Information");
-//        FormClass system = findForm("System Identification per design (aggregated)");
-//
-//
-//        PivotTableModel model = new PivotTableModel();
-//        model.getDimensions().add(dim("Year",
-//            source(costs, "Year of expediture"),
-//            source(system, "Year")));
-//        model.getDimensions().add(dim("Typology",
-//            source(costs, "Cost typology"),
-//            source(system, "Budgeted / Build")));
-//
-//        MeasureModel iniCost = new MeasureModel();
-//        iniCost.setId("iniCosts");
-//        iniCost.setValueExpression("{")
-//
-//            source(costs, "Value Initial Cost - Cap Hard", "{System Identifier}"));
 //        model.getMeasures().add(iniCost);
 //
 //        model.getMeasures().add(
@@ -104,6 +110,10 @@ public class PivotTest {
 ////
 ////        PivotTableModel model = new PivotTableModel(Resources.generateId(), null);
 ////
+    }
+
+    private DimensionSource dimSource(FormClass costs, String valueExpr) {
+        return new DimensionSource(costs.getId(), valueExpr);
     }
 
     private void aggregate(PivotTableModel model) {
@@ -217,6 +227,8 @@ public class PivotTest {
 
         if(type instanceof CalculatedFieldType) {
             return ((CalculatedFieldType) type).getExpression();
+        } else if(type instanceof EnumType) {
+            return "Enum: " + Joiner.on(", ").join(((EnumType) type).getValues());
         } else {
             return type.getTypeClass().getId();
         }

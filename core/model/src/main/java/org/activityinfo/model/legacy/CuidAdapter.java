@@ -31,7 +31,10 @@ public class CuidAdapter {
 
     public static final char ATTRIBUTE_GROUP_FIELD_DOMAIN = 'Q';
 
-    public static final char MONTHLY_REPORT = 'm';
+    public static final char MONTHLY_REPORT_CLASS_DOMAIN = 'm';
+
+
+    public static final char MONTHLY_REPORT_INSTANCE_DOMAIN = 'M';
 
     public static final char ATTRIBUTE_DOMAIN = 't';
 
@@ -49,6 +52,7 @@ public class CuidAdapter {
 
     public static final char USER_DOMAIN = 'U';
 
+
     public static final int NAME_FIELD = 1;
     public static final int ADMIN_PARENT_FIELD = 2;
     public static final int CODE_FIELD = 3;
@@ -63,6 +67,12 @@ public class CuidAdapter {
     public static final int START_DATE_FIELD = 12;
     public static final int END_DATE_FIELD = 13;
     public static final int COMMENT_FIELD = 14;
+
+    public static final int YEAR_FIELD = 15;
+
+    public static final int REPORTING_PERIODS_FIELD = 15;
+
+    public static final int SITE_FIELD = 16;
 
     public static final int BLOCK_SIZE = 10;
     public static final String CLASS_FIELD = "_class";
