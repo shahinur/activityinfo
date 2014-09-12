@@ -27,6 +27,7 @@ public class FormField extends FormElement {
     private boolean visible = true;
     private Set<ResourceId> superProperties = Sets.newHashSet();
     private boolean required;
+    private boolean primaryKey;
 
     public FormField(ResourceId id) {
         checkNotNull(id);
@@ -145,6 +146,19 @@ public class FormField extends FormElement {
 
     public FormField setVisible(boolean visible) {
         this.visible = visible;
+        return this;
+    }
+
+    /**
+     *
+     * @return true if this field forms part of its form's primary key
+     */
+    public boolean isPrimaryKey() {
+        return primaryKey;
+    }
+
+    public FormField setPrimaryKey(boolean primaryKey) {
+        this.primaryKey = primaryKey;
         return this;
     }
 

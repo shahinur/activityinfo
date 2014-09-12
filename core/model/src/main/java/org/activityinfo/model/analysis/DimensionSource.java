@@ -13,6 +13,12 @@ public class DimensionSource {
         this.expression = fieldId.asString();
     }
 
+    public DimensionSource(ResourceId sourceId, String expr) {
+        this.sourceId = sourceId;
+        this.expression = expr;
+    }
+
+
     public ResourceId getSourceId() {
         return sourceId;
     }

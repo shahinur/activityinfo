@@ -13,6 +13,8 @@ import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.time.MonthType;
+import org.activityinfo.model.type.time.YearType;
 
 public interface FormClassVisitor<T> {
 
@@ -41,4 +43,8 @@ public interface FormClassVisitor<T> {
     T visitLocalDateField(FormField field, LocalDateType localDateType);
 
     T visitNarrativeField(FormField field, NarrativeType narrativeType);
+
+    T visitMonthField(FormField field, MonthType monthType);
+
+    T visitYearField(FormField field, YearType yearType);
 }

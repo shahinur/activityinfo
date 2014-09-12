@@ -174,6 +174,13 @@ public class ReferenceType implements ParametrizedFieldType {
         return type;
     }
 
+    public static FieldType multiple(ResourceId formClassId) {
+        ReferenceType type = new ReferenceType();
+        type.setCardinality(Cardinality.MULTIPLE);
+        type.setRange(Sets.newHashSet(formClassId));
+        return type;
+    }
+
     public static FieldType multiple(Collection<ResourceId> formClassIds) {
         ReferenceType type = new ReferenceType();
         type.setCardinality(Cardinality.MULTIPLE);
