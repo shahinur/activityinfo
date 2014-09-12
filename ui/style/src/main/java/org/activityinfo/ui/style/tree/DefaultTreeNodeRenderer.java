@@ -39,7 +39,7 @@ public class DefaultTreeNodeRenderer<T> implements TreeNodeRenderer<T> {
 
         TreeModel<T> model = tree.getModel();
         boolean expanded = tree.isExpanded(node);
-        boolean selected = model.isSelected(node);
+        boolean selected = tree.isSelected(node);
 
         TreeNodeIcon<T> icon = new TreeNodeIcon<>(tree, node, model.getIcon(node, expanded));
         TreeNode<T> label = new TreeNode<>(tree, node, model.getLabel(node));
