@@ -56,10 +56,4 @@ public class NavigationTree extends TreeComponent<ResourceNode> {
             return Spinners.spinner().render();
         }
     }
-
-    @Override
-    public VTree renderChildren(ResourceNode node, boolean expanded) {
-        // todo ?
-        return super.renderChildren(node, expanded);
-    }
 }
