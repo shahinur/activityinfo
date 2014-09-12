@@ -4,10 +4,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.activityinfo.migrator.filter.MigrationContext;
-import org.activityinfo.migrator.filter.MigrationFilter;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
+import org.activityinfo.migrator.filter.MigrationContext;
+import org.activityinfo.migrator.filter.MigrationFilter;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
@@ -25,7 +25,9 @@ import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.time.LocalDateIntervalType;
+import org.activityinfo.model.type.time.MonthType;
+import org.activityinfo.model.type.time.YearType;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -101,6 +103,10 @@ public class ActivityTable extends ResourceMigrator {
                     }
 
                     writeSiteForm(ownerId, rs, fields.get(activityId), databasesWithProjects, writer);
+
+                    if(rs.getInt("reportingFrequency")==1) {
+                        writePeriodForm(ownerId, rs, fields.get(activityId), writer);
+                    }
                 }
             }
         }
@@ -329,10 +335,11 @@ public class ActivityTable extends ResourceMigrator {
 
     private void writeSiteForm(ResourceId ownerId,
                                ResultSet rs,
-                               List<FormElement> indicators,
+                               List<FormElement> fields,
                                Set<Integer> databasesWithProjects,
                                ResourceWriter writer) throws Exception {
 
+        int reportingFrequency = rs.getInt("ReportingFrequency");
 
         int activityId = rs.getInt("activityId");
         int databaseId = rs.getInt("databaseId");
@@ -355,24 +362,13 @@ public class ActivityTable extends ResourceMigrator {
             siteForm.addElement(projectField);
         }
 
-//        FormField dateField = new FormField(DATE_FIELD)
-//                .setLabel("Date")
-//                .setType(LocalDateIntervalType.INSTANCE)
-//                .setRequired(true);
-//        siteForm.addElement(dateField);
-
-        siteForm.addElement(
-            new FormField(field(classId, START_DATE_FIELD))
-                .setLabel("Start Date")
-                .setType(LocalDateType.INSTANCE)
-                .setRequired(true));
-
-        siteForm.addElement(
-            new FormField(field(classId, END_DATE_FIELD))
-                .setLabel("End Date")
-                .setType(LocalDateType.INSTANCE)
-                .setRequired(true));
-
+        if(reportingFrequency == ONCE) {
+            siteForm.addElement(
+                new FormField(field(classId, START_DATE_FIELD))
+                    .setLabel("Date")
+                    .setType(LocalDateIntervalType.INSTANCE)
+                    .setRequired(true));
+        }
 
         FormField locationField = new FormField(field(classId, LOCATION_FIELD))
                 .setLabel(rs.getString("locationTypeName"))
@@ -380,9 +376,19 @@ public class ActivityTable extends ResourceMigrator {
                 .setRequired(true);
         siteForm.addElement(locationField);
 
-
-        if(indicators != null) {
-            siteForm.getElements().addAll(indicators);
+        if(fields != null) {
+            if(reportingFrequency == ONCE) {
+                siteForm.getElements().addAll(fields);
+            } else {
+                // in AI2.0, attributes (=enum types) were associated
+                // with sites, and indicators with reporting periods
+                for(FormElement field : fields) {
+                    if(isAttribute(field)) {
+                        siteForm.addElement(field);
+                    }
+                }
+            }
+            siteForm.getElements().addAll(fields);
         }
 
         FormField commentsField = new FormField(field(classId, COMMENT_FIELD));
@@ -390,7 +396,66 @@ public class ActivityTable extends ResourceMigrator {
         commentsField.setLabel("Comments");
         siteForm.addElement(commentsField);
 
+//        if(reportingFrequency == MONTHLY) {
+//            siteForm.addElement(
+//                new FormField(field(classId, REPORTING_PERIODS_FIELD))
+//                    .setLabel("Monthly reports")
+//                    .setType(ReferenceType.multiple(context.resourceId(MONTHLY_REPORT_CLASS_DOMAIN, activityId))));
+//        }
+
         writer.writeResource(siteForm.asResource(), null, null);
+    }
+
+
+    private void writePeriodForm(ResourceId ownerId,
+                                 ResultSet rs,
+                                 List<FormElement> fields,
+                                 ResourceWriter writer) throws Exception {
+
+
+        int activityId = rs.getInt("activityId");
+        ResourceId parentClassId = context.resourceId(ACTIVITY_DOMAIN, activityId);
+        ResourceId classId = context.resourceId(MONTHLY_REPORT_CLASS_DOMAIN, activityId);
+
+        FormClass periodForm = new FormClass(classId);
+        periodForm.setOwnerId(parentClassId);
+        periodForm.setLabel(rs.getString("name") + " - Monthly Reports");
+        periodForm.setParentId(ownerId);
+
+
+        periodForm.addElement(new FormField(field(classId, SITE_FIELD))
+            .setLabel("Site")
+            .setType(ReferenceType.single(parentClassId))
+            .setRequired(true)
+            .setPrimaryKey(true));
+
+        periodForm.addElement(new FormField(field(classId, DATE_FIELD))
+            .setLabel("Month")
+            .setType(MonthType.INSTANCE)
+            .setRequired(true)
+            .setPrimaryKey(true));
+
+
+        // temporary hack for LCCA analysis
+        periodForm.addElement(new FormField(field(classId, YEAR_FIELD))
+            .setLabel("Year")
+            .setType(YearType.INSTANCE)
+            .setRequired(true)
+            .setPrimaryKey(true));
+
+        if(fields != null) {
+            for (FormElement element : fields) {
+                if (!isAttribute(element)) {
+                    periodForm.addElement(element);
+                }
+            }
+        }
+
+        writer.writeResource(periodForm.asResource(), null, null);
+    }
+
+    private boolean isAttribute(FormElement field) {
+        return field instanceof FormField && ((FormField) field).getType() instanceof EnumType;
     }
 
     private ResourceId locationRange(ResultSet rs) throws SQLException {

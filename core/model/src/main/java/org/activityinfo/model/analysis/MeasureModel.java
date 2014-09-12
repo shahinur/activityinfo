@@ -13,7 +13,7 @@ public class MeasureModel extends AbstractModel<MeasureModel> {
     public static final ResourceId CLASS_ID = ResourceId.valueOf("_measure");
 
     private AggregationFunction aggregationFunction;
-
+    private MeasurementType type;
 
 
     public String getId() {
@@ -30,6 +30,14 @@ public class MeasureModel extends AbstractModel<MeasureModel> {
 
     public void setAggregationFunction(AggregationFunction aggregationFunction) {
         this.aggregationFunction = aggregationFunction;
+    }
+
+    public MeasurementType getType() {
+        return type;
+    }
+
+    public void setType(MeasurementType type) {
+        this.type = type;
     }
 
     /**

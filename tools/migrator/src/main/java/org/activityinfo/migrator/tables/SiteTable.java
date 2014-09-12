@@ -86,10 +86,7 @@ public class SiteTable extends ResourceMigrator {
 
                     int reportingFrequency = rs.getInt("ReportingFrequency");
                     if(reportingFrequency == ActivityTable.ONCE) {
-                       // resource.set(CuidAdapter.DATE_FIELD, dateInterval(rs));
-
-                        resource.set(field(classId, START_DATE_FIELD), new LocalDate(rs.getDate("date1")));
-                        resource.set(field(classId, END_DATE_FIELD), new LocalDate(rs.getDate("date2")));
+                        resource.set(field(classId, DATE_FIELD), dateInterval(rs));
                     }
 
                     if(!isAdminBound(rs)) {

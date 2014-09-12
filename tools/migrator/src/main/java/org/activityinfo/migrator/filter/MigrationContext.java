@@ -39,8 +39,8 @@ public class MigrationContext {
         return filter;
     }
 
-    public ResourceId resourceId(char domain, int databaseId) {
-        return idStrategy.resourceId(domain, databaseId);
+    public ResourceId resourceId(char domain, int legacyId) {
+        return idStrategy.resourceId(domain, legacyId);
     }
 
     public IdStrategy getIdStrategy() {

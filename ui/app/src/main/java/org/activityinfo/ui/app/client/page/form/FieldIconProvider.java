@@ -15,6 +15,8 @@ import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.time.MonthType;
+import org.activityinfo.model.type.time.YearType;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 
@@ -94,5 +96,15 @@ public class FieldIconProvider implements FormClassVisitor<Icon> {
     @Override
     public Icon visitNarrativeField(FormField field, NarrativeType narrativeType) {
         return DEFAULT;
+    }
+
+    @Override
+    public Icon visitMonthField(FormField field, MonthType monthType) {
+        return FontAwesome.CALENDAR;
+    }
+
+    @Override
+    public Icon visitYearField(FormField field, YearType yearType) {
+        return FontAwesome.CALENDAR;
     }
 }

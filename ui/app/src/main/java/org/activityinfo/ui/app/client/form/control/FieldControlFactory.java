@@ -15,6 +15,8 @@ import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.time.MonthType;
+import org.activityinfo.model.type.time.YearType;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 
@@ -92,6 +94,16 @@ public class FieldControlFactory implements FormClassVisitor<VComponent> {
 
     @Override
     public VComponent visitNarrativeField(FormField field, NarrativeType narrativeType) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public VComponent visitMonthField(FormField field, MonthType monthType) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public VComponent visitYearField(FormField field, YearType yearType) {
         throw new UnsupportedOperationException();
     }
 }
