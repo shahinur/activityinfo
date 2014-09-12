@@ -26,7 +26,6 @@ import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -74,7 +73,7 @@ public class ImageType implements ParametrizedFieldType {
             cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("single"), "Single"));
             cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("multiple"), "Multiple"));
 
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("image"));
+            FormClass formClass = new FormClass(Types.parameterFormClassId(this));
             formClass.addElement(new FormField(ResourceId.valueOf("cardinality"))
                     .setType(cardinalityType)
                     .setLabel("Cardinality")
@@ -122,4 +121,10 @@ public class ImageType implements ParametrizedFieldType {
     public String toString() {
         return "ImageType";
     }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
+    }
+
 }

@@ -16,6 +16,7 @@ public interface RenderContext {
 
     void fireUpdate(VComponent thunk);
 
-    void registerEventListener(DomNode node, VComponent thunk);
+    void registerEventListener(VComponent thunk, DomNode node);
 
+    void componentUnmounted(VComponent component, DomNode domNode);
 }

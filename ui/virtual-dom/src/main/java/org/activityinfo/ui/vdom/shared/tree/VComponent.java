@@ -1,8 +1,8 @@
 package org.activityinfo.ui.vdom.shared.tree;
 
-import com.google.gwt.user.client.Event;
 import org.activityinfo.ui.vdom.client.render.RenderContext;
 import org.activityinfo.ui.vdom.shared.VDomLogger;
+import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.dom.DomNode;
 
 public abstract class VComponent<T> extends VTree {
@@ -32,6 +32,8 @@ public abstract class VComponent<T> extends VTree {
         assert this.context != null : this.getDebugId() +  " must be mounted first";
 
         VDomLogger.event(this, "willUnmount");
+
+        context.componentUnmounted(this, domNode);
 
         componentWillUnmount();
 
@@ -129,9 +131,7 @@ public abstract class VComponent<T> extends VTree {
         return 0;
     }
 
-
-
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(DomEvent event) {
 
     }
 
@@ -175,5 +175,9 @@ public abstract class VComponent<T> extends VTree {
     @Override
     public String toString() {
         return getDebugId();
+    }
+
+    public int getDebugIndex() {
+        return debugIndex;
     }
 }

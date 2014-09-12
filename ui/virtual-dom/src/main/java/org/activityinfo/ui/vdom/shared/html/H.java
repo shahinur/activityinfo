@@ -272,7 +272,7 @@ public class H {
         VTree render(T item);
     }
 
-    public static <T> VTree[] map(List<T> items, Render<T> render) {
+    public static <T> VTree[] map(List<? extends T> items, Render<T> render) {
         VTree[] nodes = new VTree[items.size()];
         for(int i=0;i!=items.size();++i) {
             nodes[i] = render.render(items.get(i));

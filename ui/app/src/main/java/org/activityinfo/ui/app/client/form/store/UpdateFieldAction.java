@@ -5,7 +5,7 @@ import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.ui.flux.action.Action;
 import org.activityinfo.ui.flux.store.Store;
 
-public class UpdateFieldAction implements Action<UpdateFieldHandler> {
+public class UpdateFieldAction implements Action<InstanceChangeHandler> {
     private ResourceId fieldValue;
     private FieldValue value;
 
@@ -16,8 +16,8 @@ public class UpdateFieldAction implements Action<UpdateFieldHandler> {
 
     @Override
     public void accept(Store store) {
-        if(store instanceof UpdateFieldHandler) {
-            ((UpdateFieldHandler) store).updateField(this);
+        if(store instanceof InstanceChangeHandler) {
+            ((InstanceChangeHandler) store).updateField(this);
         }
     }
 

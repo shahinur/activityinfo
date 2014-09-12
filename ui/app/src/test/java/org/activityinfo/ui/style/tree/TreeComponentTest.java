@@ -11,7 +11,7 @@ public class TreeComponentTest {
         tree.setRootNodes("A", "B", "C");
         tree.setChildren("A", "1", "2", "3");
 
-        TreeComponent component = new TreeComponent<String>(tree);
+        TreeComponent component = new TreeComponent<String>(tree, new SingleSelectionModel());
         component.render();
 
     }

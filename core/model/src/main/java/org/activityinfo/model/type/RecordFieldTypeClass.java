@@ -6,11 +6,11 @@ import org.activityinfo.model.resource.Record;
  * Marker interface for {@code FieldTypeClass}es whose values are stored as
  * records.
  */
-public interface RecordFieldTypeClass extends FieldTypeClass {
+public interface RecordFieldTypeClass<V extends FieldValue> extends FieldTypeClass {
 
     /**
      * Creates a new {@code FieldValue} from the given serialization {@code Record}
      */
-    FieldValue deserialize(Record record);
+    V deserialize(Record record);
 
 }

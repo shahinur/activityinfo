@@ -1,6 +1,7 @@
 package org.activityinfo.ui.style.tree;
 
 import com.google.gwt.user.client.Event;
+import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
@@ -31,7 +32,7 @@ public class TreeNodeIcon<T> extends VComponent {
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(DomEvent event) {
         if(event.getTypeInt() == Event.ONCLICK) {
             event.preventDefault();
             onClick();

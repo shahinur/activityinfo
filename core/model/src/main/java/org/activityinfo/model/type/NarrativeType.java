@@ -13,7 +13,9 @@ public class NarrativeType implements FieldType {
 
     public static final NarrativeType INSTANCE = new NarrativeType();
 
-    public static final FieldTypeClass TYPE_CLASS = new RecordFieldTypeClass() {
+    public interface TypeClass extends RecordFieldTypeClass<NarrativeValue> {}
+
+    public static final TypeClass TYPE_CLASS = new TypeClass() {
         @Override
         public String getId() {
             return "NARRATIVE";
@@ -30,7 +32,7 @@ public class NarrativeType implements FieldType {
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public NarrativeValue deserialize(Record record) {
             return NarrativeValue.fromRecord(record);
         }
     };
@@ -46,6 +48,11 @@ public class NarrativeType implements FieldType {
     @Override
     public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
         return visitor.visitNarrativeField(field, this);
+    }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
     }
 
 }

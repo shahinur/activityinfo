@@ -1,6 +1,7 @@
 package org.activityinfo.ui.style;
 
 import com.google.gwt.user.client.Event;
+import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
@@ -58,7 +59,7 @@ public class Button extends VComponent {
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(DomEvent event) {
         if(clickHandler != null && event.getTypeInt() == Event.ONCLICK) {
             clickHandler.onClicked();
         }

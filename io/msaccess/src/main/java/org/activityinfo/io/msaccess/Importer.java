@@ -13,11 +13,11 @@ public class Importer {
             Table table = db.getTable(tableName);
             System.out.println(tableName);
 
-            dumpPropertyMap(table.getProperties(), "  ");
+          //  dumpPropertyMap(table.getProperties(), "  ");
             System.out.println("  Columns:");
             for(Column column : table.getColumns()) {
                 System.out.println("    " + column.getName());
-                dumpPropertyMap(table.getProperties(), "      ");
+                //dumpPropertyMap(table.getProperties(), "      ");
 
             }
         }
