@@ -1,20 +1,26 @@
 package org.activityinfo.ui.app.client.chrome.nav;
 
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.safehtml.shared.UriUtils;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
+import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.vdom.shared.html.Icon;
+import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.Objects;
 
+import static org.activityinfo.ui.vdom.shared.html.H.*;
+
 public class NavLink extends VComponent implements StoreChangeListener {
 
-    private final Router router;
+    public static SafeUri DEFAULT_URL = UriUtils.fromSafeConstant("#");
 
-    private NavLinkRenderer renderer = new DefaultNavLinkRenderer();
+    private final Router router;
 
     private String label;
     private Icon icon;
@@ -58,21 +64,23 @@ public class NavLink extends VComponent implements StoreChangeListener {
         this.target = target;
     }
 
-    public NavLinkRenderer getRenderer() {
-        return renderer;
-    }
-
-    public void setRenderer(NavLinkRenderer renderer) {
-        this.renderer = renderer;
-    }
-
     public boolean isActive() {
         return Objects.equals(router.getCurrentPlace(), target);
     }
 
     @Override
     protected VTree render() {
-        return renderer.render(this);
+        SafeUri uri = getTarget() == null ? DEFAULT_URL : Router.uri(getTarget());
+
+        return li(style(isActive()), link(uri, getIcon().render(), space(), span(getLabel())));
+    }
+
+    private PropMap style(boolean isActive) {
+        if (isActive) {
+            return PropMap.withClasses(BaseStyles.NAV_ACTIVE, BaseStyles.ACTIVE);
+        } else {
+            return PropMap.EMPTY;
+        }
     }
 
     @Override
