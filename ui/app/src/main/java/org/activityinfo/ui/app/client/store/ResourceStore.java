@@ -50,7 +50,7 @@ public class ResourceStore extends AbstractStore implements RemoteUpdateHandler 
         fireChange();
     }
 
-    public Status get(ResourceId id) {
+    public Status<Resource> get(ResourceId id) {
         Status<Resource> resource = resources.get(id);
         if(resource == null) {
             return Status.unavailable();

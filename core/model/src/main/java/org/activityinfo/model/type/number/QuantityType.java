@@ -5,7 +5,6 @@ import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
 
 /**
@@ -14,7 +13,7 @@ import org.activityinfo.model.type.*;
 public class QuantityType implements ParametrizedFieldType {
 
 
-    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
+    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass<Quantity> {
 
         private TypeClass() {}
 
@@ -42,7 +41,7 @@ public class QuantityType implements ParametrizedFieldType {
 
         @Override
         public FormClass getParameterFormClass() {
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("quantity"));
+            FormClass formClass = new FormClass(Types.parameterFormClassId(this));
             formClass.addElement(new FormField(ResourceId.valueOf("units"))
                     .setType(FREE_TEXT.createType())
                     .setLabel("Units")
@@ -52,7 +51,7 @@ public class QuantityType implements ParametrizedFieldType {
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public Quantity deserialize(Record record) {
             return Quantity.fromRecord(record);
         }
     };
@@ -99,4 +98,10 @@ public class QuantityType implements ParametrizedFieldType {
     public String toString() {
         return "QuantityType";
     }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
+    }
+
 }

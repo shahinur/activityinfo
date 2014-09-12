@@ -2,6 +2,7 @@ package org.activityinfo.ui.style;
 
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
+import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.Style;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
@@ -74,7 +75,10 @@ public class Modal extends VComponent {
     }
 
     public void setBody(VTree body) {
-        this.body = body;
+        if(this.body != body) {
+            this.body = body;
+            refresh();
+        }
     }
 
     @Override
@@ -108,7 +112,7 @@ public class Modal extends VComponent {
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(DomEvent event) {
         if(event.getTypeInt() == Event.ONKEYPRESS) {
             if(event.getKeyCode() == KeyCodes.KEY_ESCAPE) {
                 visible = false;

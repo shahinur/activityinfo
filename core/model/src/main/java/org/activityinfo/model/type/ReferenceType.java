@@ -19,7 +19,8 @@ import java.util.Set;
 public class ReferenceType implements ParametrizedFieldType {
 
 
-    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
+    public static class TypeClass implements ParametrizedFieldTypeClass,
+        RecordFieldTypeClass<ReferenceValue> {
 
         private TypeClass() {
         }
@@ -62,7 +63,7 @@ public class ReferenceType implements ParametrizedFieldType {
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public ReferenceValue deserialize(Record record) {
             return ReferenceValue.fromRecord(record);
         }
 
@@ -199,6 +200,11 @@ public class ReferenceType implements ParametrizedFieldType {
         }
 
         return true;
+    }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
     }
 
     @Override

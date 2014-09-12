@@ -1,6 +1,9 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
@@ -57,7 +60,14 @@ public class WorkspaceLookup {
                                     Query.FilterOperator.EQUAL, key.asString()));
 
         Entity entity = datastore.prepare(query).asSingleEntity();
+
+        if(entity == null) {
+            throw new IllegalStateException(
+                "Failed to retrieve resource [" + key.asString() + "] entity using 'ID' index");
+        }
+
         ResourceId workspaceId = LatestContent.workspaceFromKey(entity.getKey());
+
 
         // ...and cache in memcache
         memcache(key, workspaceId);
@@ -74,14 +84,10 @@ public class WorkspaceLookup {
     }
 
     public Workspace lookup(ResourceId resourceId) {
-        if(resourceId.asString().contains("-")) {
-            try {
-                return new Workspace(cache.get(resourceId));
-            } catch (ExecutionException e) {
-                return new Workspace(lookupWorkspace(resourceId));
-            }
-        } else {
-            return new Workspace(resourceId);
+        try {
+            return new Workspace(cache.get(resourceId));
+        } catch (ExecutionException e) {
+            return new Workspace(lookupWorkspace(resourceId));
         }
     }
 

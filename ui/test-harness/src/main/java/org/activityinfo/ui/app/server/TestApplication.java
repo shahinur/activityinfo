@@ -4,7 +4,6 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.Sets;
 import com.mysql.jdbc.Driver;
 import com.sun.jersey.api.core.DefaultResourceConfig;
-import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.store.hrd.HrdResourceStore;
@@ -26,8 +25,8 @@ public class TestApplication extends DefaultResourceConfig {
     public Set<Object> getSingletons() {
         JacksonJsonProvider jsonProvider = new JacksonJsonProvider(ObjectMapperFactory.get());
         MigrateService migrateService = migrateService();
-        AuthenticatedUser user = new AuthenticatedUser("XYZ", 1, "test@test.org");
-        return Sets.newHashSet(jsonProvider, migrateService, user);
+       // AuthenticatedUser user = new AuthenticatedUser("XYZ", 1, "test@test.org");
+        return Sets.newHashSet(jsonProvider, migrateService);
     }
 
     private MigrateService migrateService() {
@@ -41,7 +40,6 @@ public class TestApplication extends DefaultResourceConfig {
 
     @Override
     public Set<Class<?>> getClasses() {
-        return Sets.newHashSet(HostPage.class,
-            HrdResourceStore.class);
+        return Sets.newHashSet(HrdResourceStore.class, HostPage.class);
     }
 }

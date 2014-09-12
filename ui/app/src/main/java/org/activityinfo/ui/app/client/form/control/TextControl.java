@@ -1,12 +1,13 @@
 package org.activityinfo.ui.app.client.form.control;
 
-import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.user.client.Event;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.ui.app.client.form.store.UpdateFieldAction;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.style.BaseStyles;
+import org.activityinfo.ui.vdom.shared.dom.DomElement;
+import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
@@ -34,10 +35,10 @@ public class TextControl extends VComponent<TextControl> {
     }
 
     @Override
-    public void onBrowserEvent(Event event) {
+    public void onBrowserEvent(DomEvent event) {
         if(event.getTypeInt() == Event.ONCHANGE) {
-            InputElement element = event.getEventTarget().cast();
-            String value = element.getValue();
+            DomElement element = (DomElement)event.getEventTarget();
+            String value = element.getInputValue();
             dispatcher.dispatch(new UpdateFieldAction(field.getId(), TextValue.valueOf(value)));
         }
     }

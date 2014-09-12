@@ -41,6 +41,7 @@
   <source path="type"/>
   <source path="system"/>
   <source path="legacy"/>
+  <source path="analysis"/>
   <source path="hierarchy"/>
 
   <super-source path="translatable" />

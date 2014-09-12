@@ -87,8 +87,8 @@ public class DomBuilder {
         VTree virtualNode = thunk.ensureRendered();
         DomNode domNode = render(virtualNode);
 
-        if(thunk.getEventMask() > 0) {
-            context.registerEventListener(domNode, thunk);
+        if(thunk.getEventMask() != 0) {
+            context.registerEventListener(thunk, domNode);
         }
 
         thunk.fireMounted(context, domNode);
