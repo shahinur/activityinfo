@@ -6,6 +6,7 @@ import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.Spinners;
 import org.activityinfo.ui.vdom.shared.Stylesheet;
+import org.activityinfo.ui.vdom.shared.VDomLogger;
 import org.activityinfo.ui.vdom.shared.html.CssClass;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
@@ -23,7 +24,7 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
  * A tree component
  */
 @Stylesheet("Tree.less")
-public class TreeComponent<T> extends VComponent implements StoreChangeListener {
+public class TreeComponent<T> extends VComponent implements StoreChangeListener, SelectionChangeListener {
 
     private final TreeModel<T> model;
     private final SelectionModel selectionModel;
@@ -131,10 +132,10 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
         }
 
         return li(props,
-            background(),
-            new VNode(HtmlTag.SPAN, PropMap.withClasses("node-container"),
-                icon, label),
-            renderChildren(node, expanded));
+                background(),
+                new VNode(HtmlTag.SPAN, PropMap.withClasses("node-container"),
+                        icon, label),
+                renderChildren(node, expanded));
     }
 
     /**
@@ -178,5 +179,9 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
 
     public boolean isSelected(T node) {
         return selectionModel.isSelected(model.getKey(node));
+    }
+
+    public Render<T> getNodeItemRenderer() {
+        return nodeItemRenderer;
     }
 }

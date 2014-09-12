@@ -25,6 +25,7 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.style.Spinners;
+import org.activityinfo.ui.style.tree.SingleSelectionModel;
 import org.activityinfo.ui.style.tree.TreeComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
@@ -41,7 +42,7 @@ public class NavigationTree extends TreeComponent<ResourceNode> {
     private final NavigationTreeModel model;
 
     public NavigationTree(Application application) {
-        super(new NavigationTreeModel(application));
+        super(new NavigationTreeModel(application), new SingleSelectionModel());
         this.model = (NavigationTreeModel) getModel();
     }
 
