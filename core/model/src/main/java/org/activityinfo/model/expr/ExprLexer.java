@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class ExprLexer extends UnmodifiableIterator<Token> {
 
+    public static final char DOUBLE_QUOTE = '"';
     private String string;
     private int currentCharIndex;
     private int currentTokenStart = 0;
-    private boolean startedStringLiteral = false;
 
     private static final String OPERATOR_CHARS = "+-/*&|=!";
 
@@ -40,8 +40,11 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
     }
 
     private Token finishToken(TokenType type) {
-        Token token = new Token(type, currentTokenStart,
-                string.substring(currentTokenStart, currentCharIndex));
+        return finishToken(type, string.substring(currentTokenStart, currentCharIndex));
+    }
+
+    private Token finishToken(TokenType type, String text) {
+        Token token = new Token(type, currentTokenStart, text);
         currentTokenStart = currentCharIndex;
         return token;
     }
@@ -73,24 +76,16 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
             return finishToken(TokenType.PAREN_END);
 
         } else if (c == '{') {
-            return finishToken(TokenType.BRACE_START);
+            return readQuotedToken(TokenType.SYMBOL, '}');
 
-        } else if (c == '}') {
-            return finishToken(TokenType.BRACE_END);
+        } else if (c == '[') {
+            return readQuotedToken(TokenType.SYMBOL, ']');
 
         }  else if (c == ',') {
             return finishToken(TokenType.COMMA);
 
-        } else if (c == '"') {
-            if (!startedStringLiteral) {
-                startedStringLiteral = true;
-                return finishToken(TokenType.STRING_START);
-            } else {
-                startedStringLiteral = false;
-                return finishToken(TokenType.STRING_END);
-            }
-        } else if (startedStringLiteral && (isSymbolStart(c) || isNumberPart(c))) {
-            return readSymbol(TokenType.STRING_LITERAL);
+        } else if (c == DOUBLE_QUOTE) {
+            return readQuotedToken(TokenType.STRING_LITERAL, DOUBLE_QUOTE);
 
         }else if (StringUtil.isWhitespace(c)) {
             return readWhitespace();
@@ -168,6 +163,17 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
             consumeChar();
         }
         return finishToken(tokenType);
+    }
+
+    private Token readQuotedToken(TokenType type, char closingQuote) throws ExprSyntaxException {
+        while(true) {
+            if (isEndOfInput()) {
+                throw new ExprSyntaxException("End of input reached while looking for closing '" + closingQuote + "");
+            }
+            if (nextChar() == closingQuote) {
+                return finishToken(type, string.substring(currentTokenStart+1, currentCharIndex-1));
+            }
+        }
     }
 
     private Token readBooleanLiteral(char c) {

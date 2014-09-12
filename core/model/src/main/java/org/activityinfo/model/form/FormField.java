@@ -225,6 +225,7 @@ public class FormField extends FormElement {
         record.set("type", toRecord(type));
         record.set("required", required);
         record.set("visible", visible);
+        record.set("primaryKey", primaryKey);
         record.set("relevanceConditionExpression", relevanceConditionExpression);
 
         if(!superProperties.isEmpty()) {
@@ -249,6 +250,7 @@ public class FormField extends FormElement {
             .setLabel(Strings.nullToEmpty(record.isString("label")))
             .setType(typeFromRecord(record.getRecord("type")))
             .setVisible(record.getBoolean("visible", true))
+            .setPrimaryKey(record.getBoolean("primaryKey", false))
             .setRequired(record.getBoolean("required", false));
 
         if (record.has("relevanceConditionExpression")) {

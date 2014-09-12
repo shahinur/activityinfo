@@ -12,7 +12,7 @@ import org.activityinfo.model.type.TypeFieldType;
  * Value type that represents a calendar year in the ISO-8601 calendar.
  * There is no representation of time-of-day or time-zone.
  */
-public class YearType implements FieldType {
+public class YearType implements FieldType, TemporalType {
 
     public interface TypeClass extends RecordFieldTypeClass<YearValue> {}
 

@@ -74,7 +74,7 @@ public class TableQueryBatchBuilder {
 
         if(node.isRoot()) {
             // simple root column
-            return getDataColumn(columnType, node);
+            return getDataColumn(columnType, node, node.getFieldId());
 
         } else {
             // requires join
@@ -108,7 +108,7 @@ public class TableQueryBatchBuilder {
         }
 
         // Schedule the actual column to be joined
-        Supplier<ColumnView> column = getDataColumn(columnType, node);
+        Supplier<ColumnView> column = getDataColumn(columnType, node, node.getFieldId());
 
         return new Join(links, column);
     }
@@ -128,11 +128,20 @@ public class TableQueryBatchBuilder {
         return getTable(classId).fetchPrimaryKeyColumn();
     }
 
-    private Supplier<ColumnView> getDataColumn(ColumnType columnType, FormTree.Node node) {
-        return getTable(node).fetchColumn(node, columnType);
+    public Supplier<ColumnView> getDataColumn(ColumnType columnType, FormTree.Node node, ResourceId fieldId) {
+        return getTable(node).fetchColumn(fieldId, columnType);
     }
 
-    public Supplier<ColumnView> addColumn(ColumnType type, FormClass formClass, CalcFieldSource source) {
+    public Supplier<ColumnView> getDataColumn(ColumnType columnType, FormClass formClass, ResourceId fieldId) {
+        return getTable(formClass).fetchColumn(fieldId, columnType);
+    }
+
+    public Supplier<ColumnView> addExpression(FormClass formClass, ColumnType columnType, String expression) {
+        return getTable(formClass).fetchExpression(expression, columnType);
+    }
+
+
+    public Supplier<ColumnView> addColumn(FormClass formClass, ColumnType type, CalcFieldSource source) {
         return getTable(formClass).calculate(source.getExpression());
 
     }

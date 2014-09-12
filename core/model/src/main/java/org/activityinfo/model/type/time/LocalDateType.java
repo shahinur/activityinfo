@@ -19,7 +19,7 @@ import org.activityinfo.model.type.*;
  * </blockquote>
  *
  */
-public class LocalDateType implements FieldType {
+public class LocalDateType implements FieldType, TemporalType {
 
     public static final String TYPE_ID = "LOCAL_DATE";
 

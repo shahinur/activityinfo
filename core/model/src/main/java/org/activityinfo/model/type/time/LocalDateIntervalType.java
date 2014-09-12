@@ -11,7 +11,7 @@ import org.activityinfo.model.type.TypeFieldType;
  * Value type that represents a continuous interval between two {@link org.activityinfo.model.type.time.LocalDate}s,
  * starting on {@code startDate}, inclusive, and ending on {@code endDate}, inclusive.
  */
-public class LocalDateIntervalType implements FieldType {
+public class LocalDateIntervalType implements FieldType, TemporalType {
 
     public static final FieldTypeClass TYPE_CLASS = new FieldTypeClass() {
         @Override

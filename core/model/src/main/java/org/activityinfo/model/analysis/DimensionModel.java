@@ -1,5 +1,8 @@
 package org.activityinfo.model.analysis;
 
+import com.google.common.base.Optional;
+import org.activityinfo.model.resource.ResourceId;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +39,15 @@ public class DimensionModel {
 
     public List<DimensionSource> getSources() {
         return sources;
+    }
+
+
+    public Optional<DimensionSource> getSource(ResourceId sourceId) {
+        for(DimensionSource source : sources) {
+            if(source.getSourceId().equals(sourceId)) {
+                return Optional.of(source);
+            }
+        }
+        return Optional.absent();
     }
 }

@@ -45,4 +45,8 @@ public class PivotTableModel implements IsRecord {
     public Record asRecord() {
         throw new UnsupportedOperationException();
     }
+
+    public void addMeasure(MeasureModel measure) {
+        measures.add(measure);
+    }
 }
