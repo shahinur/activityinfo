@@ -22,6 +22,7 @@ package org.activityinfo.ui.app.client.chrome.tree;
  */
 
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.ui.style.tree.SingleSelectionModel;
 import org.activityinfo.ui.style.tree.TreeComponent;
 import org.activityinfo.ui.style.tree.TreeModel;
 import org.activityinfo.ui.vdom.shared.Stylesheet;
@@ -39,9 +40,10 @@ import static org.activityinfo.ui.vdom.shared.html.H.ul;
 public class NavigationTree extends VComponent {
 
     private final TreeComponent<ResourceNode> tree;
+    private final SingleSelectionModel selectionModel = new SingleSelectionModel();
 
     public NavigationTree(TreeModel<ResourceNode> model) {
-        this.tree = new TreeComponent<>(model);
+        this.tree = new TreeComponent<>(model, selectionModel);
         this.tree.setNodeRenderer(new NavigationNodeRenderer());
     }
 

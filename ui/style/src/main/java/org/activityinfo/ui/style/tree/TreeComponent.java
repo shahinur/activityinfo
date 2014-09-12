@@ -177,4 +177,7 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener,
         this.nodeRenderer = nodeRenderer;
     }
 
+    public boolean isSelected(T node) {
+        return selectionModel.isSelected(model.getKey(node));
+    }
 }
