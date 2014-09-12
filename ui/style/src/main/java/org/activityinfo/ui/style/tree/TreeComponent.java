@@ -132,10 +132,10 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener,
         }
 
         return li(props,
-            background(),
-            new VNode(HtmlTag.SPAN, PropMap.withClasses("node-container"),
-                icon, label),
-            renderChildren(node, expanded));
+                background(),
+                new VNode(HtmlTag.SPAN, PropMap.withClasses("node-container"),
+                        icon, label),
+                renderChildren(node, expanded));
     }
 
     /**
@@ -179,5 +179,9 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener,
 
     public boolean isSelected(T node) {
         return selectionModel.isSelected(model.getKey(node));
+    }
+
+    public Render<T> getNodeItemRenderer() {
+        return nodeItemRenderer;
     }
 }
