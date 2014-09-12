@@ -26,10 +26,11 @@ import org.activityinfo.ui.app.client.chrome.nav.NavLink;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.style.tree.TreeComponent;
-import org.activityinfo.ui.style.tree.TreeNodeIcon;
 import org.activityinfo.ui.style.tree.TreeNodeRenderer;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
+
+import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 /**
  * @author yuriyz on 9/11/14.
@@ -40,23 +41,20 @@ public class NavigationNodeRenderer implements TreeNodeRenderer<ResourceNode> {
     public VTree renderNode(final ResourceNode node, final TreeComponent<ResourceNode> tree) {
         final NavigationTreeModel model = (NavigationTreeModel) tree.getModel();
 
-        boolean expanded = tree.isExpanded(node);
+        final boolean expanded = tree.isExpanded(node);
 
-        TreeNodeIcon<ResourceNode> stateIcon = new TreeNodeIcon<>(tree, node, stateIcon(expanded));
-
-        NavLink label = new NavLink(model.getApplication().getRouter());
+        NavLink label = new NavLink(model.getApplication().getRouter()) {
+                @Override
+                protected VTree render() {
+                    Icon icon = expanded ? FontAwesome.MINUS : FontAwesome.PLUS;;
+                    return li(style(isActive()),
+                            link(getTargetSafeUri(), getIcon().render(), space(), span(getLabel()), icon.pullRight().render()));
+                }
+        };
         label.setLabel(model.getLabel(node));
         label.setTarget(new FolderPlace(node.getId()));
         label.setIcon(model.getIcon(node, expanded));
 
         return label;
-    }
-
-    private Icon stateIcon(boolean expanded) {
-        if (expanded) {
-            return FontAwesome.ANGLE_DOWN;
-        } else {
-            return FontAwesome.ANGLE_RIGHT;
-        }
     }
 }

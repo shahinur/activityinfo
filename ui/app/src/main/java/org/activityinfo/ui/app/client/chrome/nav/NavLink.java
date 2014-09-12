@@ -68,14 +68,16 @@ public class NavLink extends VComponent implements StoreChangeListener {
         return Objects.equals(router.getCurrentPlace(), target);
     }
 
-    @Override
-    protected VTree render() {
-        SafeUri uri = getTarget() == null ? DEFAULT_URL : Router.uri(getTarget());
-
-        return li(style(isActive()), link(uri, getIcon().render(), space(), span(getLabel())));
+    public SafeUri getTargetSafeUri() {
+        return getTarget() == null ? DEFAULT_URL : Router.uri(getTarget());
     }
 
-    private PropMap style(boolean isActive) {
+    @Override
+    protected VTree render() {
+        return li(style(isActive()), link(getTargetSafeUri(), getIcon().render(), space(), span(getLabel())));
+    }
+
+    protected PropMap style(boolean isActive) {
         if (isActive) {
             return PropMap.withClasses(BaseStyles.NAV_ACTIVE, BaseStyles.ACTIVE);
         } else {
