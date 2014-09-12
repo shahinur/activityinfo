@@ -142,4 +142,8 @@ public class TreeComponent<T> extends VComponent implements StoreChangeListener 
     public void setNodeRenderer(TreeNodeRenderer<T> nodeRenderer) {
         this.nodeRenderer = nodeRenderer;
     }
+
+    public Render<T> getNodeItemRenderer() {
+        return nodeItemRenderer;
+    }
 }
