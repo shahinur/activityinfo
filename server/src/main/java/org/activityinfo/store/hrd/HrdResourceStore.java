@@ -14,15 +14,15 @@ import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
-import org.activityinfo.store.hrd.entity.Snapshot;
-import org.activityinfo.store.hrd.entity.UpdateTransaction;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.entity.*;
 import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import java.util.List;
 import java.util.Map;
 
@@ -49,11 +49,20 @@ public class HrdResourceStore implements ResourceStore {
         return new UpdateTransaction(workspace, datastore, user);
     }
 
+
+    private WorkspaceTransaction beginRead(Workspace workspace, AuthenticatedUser user) {
+        return new ReadTransaction(workspace, datastore, user);
+    }
+
+
+    @GET
+    @Path("resource/{id}")
+    @Produces("application/json")
     @Override
-    public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+    public Resource get(AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
-            try(WorkspaceTransaction tx = begin(workspace, user)) {
+            try(WorkspaceTransaction tx = beginRead(workspace, user)) {
 
                 return workspace.getLatestContent(resourceId).get(tx);
 
@@ -62,6 +71,7 @@ public class HrdResourceStore implements ResourceStore {
             throw new ResourceNotFound(resourceId);
         }
     }
+
 
 
     @Override
@@ -141,7 +151,7 @@ public class HrdResourceStore implements ResourceStore {
 
         Workspace workspace = workspaceLookup.lookup(request.getRootId());
 
-        try(WorkspaceTransaction tx = begin(workspace, user)) {
+        try(WorkspaceTransaction tx = beginRead(workspace, user)) {
 
             ResourceNode rootNode = workspace.getLatestContent(request.getRootId()).getAsNode(tx);
             rootNode.getChildren().addAll(workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId()));
