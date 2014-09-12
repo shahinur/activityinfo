@@ -18,6 +18,16 @@ public final class Icon {
         return new VNode(HtmlTag.SPAN, PropMap.withClasses(classNames));
     }
 
+    public Icon appendClass(String classToAppend) {
+        classNames += " " + classToAppend;
+        return this;
+    }
+
+    public Icon pullRight() {
+        appendClass("pull-right");
+        return this;
+    }
+
     public String getClassNames() {
         return classNames;
     }

@@ -44,6 +44,7 @@ public class NavigationTree extends TreeComponent<ResourceNode> {
     public NavigationTree(Application application) {
         super(new NavigationTreeModel(application), new SingleSelectionModel());
         this.model = (NavigationTreeModel) getModel();
+        setNodeRenderer(new NavigationNodeRenderer());
     }
 
     @Override
