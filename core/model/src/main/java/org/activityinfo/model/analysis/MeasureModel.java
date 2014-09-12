@@ -32,11 +32,11 @@ public class MeasureModel extends AbstractModel<MeasureModel> {
         this.aggregationFunction = aggregationFunction;
     }
 
-    public MeasurementType getType() {
+    public MeasurementType getMeasurementType() {
         return type;
     }
 
-    public void setType(MeasurementType type) {
+    public void setMeasurementType(MeasurementType type) {
         this.type = type;
     }
 

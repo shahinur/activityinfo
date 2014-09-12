@@ -51,8 +51,8 @@ public class TableBuilder {
             } else if(column.getSource() instanceof CalcFieldSource) {
                 assert formClass.getId().equals(((CalcFieldSource) column.getSource()).getFormClassId());
 
-                columnViews.put(column.getId(), batch.addColumn(column.getType(), formClass,
-                        (CalcFieldSource)column.getSource()));
+                columnViews.put(column.getId(), batch.addColumn(formClass, column.getType(),
+                    (CalcFieldSource)column.getSource()));
 
             } else if(column.getSource() instanceof ResourceIdSource) {
                 columnViews.put(column.getId(), batch.getIdColumn(formClass));

@@ -81,6 +81,11 @@ public class ExprParserTest {
     }
 
     @Test
+    public void parseQuotedSymbol() {
+        expect("[Year of expenditure]", new SymbolExpr("Year of expenditure"));
+    }
+
+    @Test
     public void parseFunctions() {
         expect("containsAll({f1},{v1})", new FunctionCallNode(ContainsAllFunction.INSTANCE,
                 new SymbolExpr("f1"),

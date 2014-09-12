@@ -12,7 +12,7 @@ import org.activityinfo.model.type.TypeFieldType;
  * Value type that represents a calendar month in the ISO-8601 calendar.
  * There is no representation of time-of-day or time-zone.
  */
-public class MonthType implements FieldType {
+public class MonthType implements FieldType, TemporalType {
 
     public interface TypeClass extends RecordFieldTypeClass<MonthValue> {}
 

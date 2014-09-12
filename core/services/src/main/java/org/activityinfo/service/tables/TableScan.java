@@ -6,9 +6,10 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.expr.ExprNode;
 import org.activityinfo.model.expr.ExprParser;
+import org.activityinfo.model.expr.SymbolExpr;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormEvalContext;
-import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
@@ -29,6 +30,7 @@ public class TableScan {
 
     private ResourceId classId;
     private StoreAccessor store;
+    private FormClass formClass;
 
     private Optional<PrimaryKeyMapBuilder> primaryKeyMapBuilder = Optional.absent();
     private Map<String, ColumnViewBuilder> columnMap = Maps.newHashMap();
@@ -40,21 +42,43 @@ public class TableScan {
 
     public TableScan(StoreAccessor resourceStore, FormClass formClass) {
         this.store = resourceStore;
+        this.formClass = formClass;
         this.classId = formClass.getId();
         this.formEvalContext = new FormEvalContext(formClass);
     }
 
-    public Supplier<ColumnView> fetchColumn(FormTree.Node node, @Nonnull ColumnType columnType) {
+
+    public Supplier<ColumnView> fetchExpression(String expression, ColumnType columnType) {
+        ExprNode expr = ExprParser.parse(expression);
+        if(expr instanceof SymbolExpr) {
+            return fetchColumn(findField((SymbolExpr) expr), columnType);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private ResourceId findField(SymbolExpr expr) {
+        String symbol = expr.getName();
+        for(FormField field : formClass.getFields()) {
+            if(symbol.equals(field.getLabel()) ||
+               symbol.equals(field.getCode())) {
+                return field.getId();
+            }
+        }
+        throw new UnsupportedOperationException("Could not find symbol [" + expr.getName() + "] in form [" + formClass.getLabel() + "]");
+    }
+
+    public Supplier<ColumnView> fetchColumn(ResourceId fieldId, @Nonnull ColumnType columnType) {
 
         // compose a unique key for this column (we don't want to fetch twice!)
-        String columnKey = columnKey(node, columnType);
+        String columnKey = columnKey(fieldId, columnType);
 
         // create the column builder if it doesn't exist
         if(columnMap.containsKey(columnKey)) {
             return columnMap.get(columnKey);
         } else {
-            FieldType fieldType = formEvalContext.resolveFieldType(node.getFieldId());
-            Optional<ColumnViewBuilder> builder = ViewBuilders.createBuilder(node.getFieldId(), fieldType, columnType);
+            FieldType fieldType = formEvalContext.resolveFieldType(fieldId);
+            Optional<ColumnViewBuilder> builder = ViewBuilders.createBuilder(fieldId, fieldType, columnType);
             if(builder.isPresent()) {
                 columnMap.put(columnKey, builder.get());
                 return builder.get();
@@ -120,8 +144,8 @@ public class TableScan {
         return builder;
     }
 
-    private String columnKey(FormTree.Node node, ColumnType columnType) {
-        return node.getField().getId().asString() + "_" + columnType.name();
+    private String columnKey(ResourceId fieldId, ColumnType columnType) {
+        return fieldId.asString() + "_" + columnType.name();
     }
 
 
