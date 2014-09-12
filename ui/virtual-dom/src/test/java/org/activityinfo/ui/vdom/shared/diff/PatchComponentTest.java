@@ -2,6 +2,7 @@ package org.activityinfo.ui.vdom.shared.diff;
 
 import org.activityinfo.ui.vdom.shared.VDomLogger;
 import org.activityinfo.ui.vdom.shared.diff.component.*;
+import org.activityinfo.ui.vdom.shared.dom.TestRenderContext;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class PatchComponentTest {
         // update our state object, which should result in the FormComponent forcing an update
         VDomLogger.event("state updated B -> X ");
         state.update(1, "X");
-        assertThat("dirty", context.dirty, equalTo(true));
+        assertThat("dirty", context.isDirty(), equalTo(true));
         context.updateDirty();
         assertThat(context.getDomRoot().toString(), equalTo("<ol><li>A</li><li>X</li><li>C</li></ol>"));
 

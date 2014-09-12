@@ -80,6 +80,13 @@ public class HrdResourceTest {
 
         assertThat(formCreationResult.getStatus(), Matchers.equalTo(CommitStatus.COMMITTED));
 
+        // Read the form class back and verify
+        FormClass reformClass = FormClass.fromResource(
+            environment.getStore().get(environment.getUser(), formClass.getId()));
+
+        assertThat(reformClass.getId(), Matchers.equalTo(formClass.getId()));
+        assertThat(reformClass.getOwnerId(), Matchers.equalTo(formClass.getOwnerId()));
+
         // Verify that the subtree version gets updated
 
         FolderProjection tree = environment.getStore().queryTree(

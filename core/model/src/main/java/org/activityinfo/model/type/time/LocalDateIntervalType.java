@@ -2,8 +2,10 @@ package org.activityinfo.model.type.time;
 
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.TypeFieldType;
 
 /**
  * Value type that represents a continuous interval between two {@link org.activityinfo.model.type.time.LocalDate}s,
@@ -43,5 +45,9 @@ public class LocalDateIntervalType implements FieldType {
         return visitor.visitLocalDateIntervalField(field, this);
     }
 
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
+    }
 
 }

@@ -23,6 +23,7 @@ package org.activityinfo.model.type;
 
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.Record;
 
 /**
  * @author yuriyz on 8/14/14.
@@ -56,8 +57,15 @@ public class NullFieldValue implements FieldValue {
                     public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
                         throw new UnsupportedOperationException();
                     }
+
+                    @Override
+                    public Record asRecord() {
+                        throw new UnsupportedOperationException();
+                    }
                 };
             }
         };
     }
+
+
 }

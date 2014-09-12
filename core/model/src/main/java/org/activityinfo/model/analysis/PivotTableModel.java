@@ -1,51 +1,48 @@
 package org.activityinfo.model.analysis;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.IsResource;
-import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.IsRecord;
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.ListFieldType;
+import org.activityinfo.model.type.SubFormType;
 
 import java.util.List;
 
-public class PivotTableModel implements IsResource {
+public class PivotTableModel implements IsRecord {
 
-    private ResourceId resourceId;
-    private ResourceId ownerId;
+    public static final ResourceId CLASS_ID = ResourceId.valueOf("_pivot");
 
-    private List<ResourceId> sources = Lists.newArrayList();
-
-    private List<DimensionModel> dimensions = Lists.newArrayList();
     private List<MeasureModel> measures = Lists.newArrayList();
 
-    public PivotTableModel(ResourceId id, ResourceId ownerId) {
-        this.resourceId = id;
-        this.ownerId = ownerId;
-    }
+    private List<DimensionModel> dimensions = Lists.newArrayList();
 
     public PivotTableModel() {
-    }
 
-    public List<ResourceId> getSources() {
-        return sources;
-    }
-
-    public List<DimensionModel> getDimensions() {
-        return dimensions;
     }
 
     public List<MeasureModel> getMeasures() {
         return measures;
     }
 
-    @Override
-    public ResourceId getId() {
-        return resourceId;
+    public List<DimensionModel> getDimensions() {
+        return dimensions;
+    }
+
+    public static FormClass getFormClass() {
+        FormClass formClass = new FormClass(CLASS_ID);
+        formClass.addElement(new FormField(ResourceId.valueOf("measure"))
+        .setLabel("Measures")
+        .setRequired(true)
+        .setType(new ListFieldType(new SubFormType(MeasureModel.CLASS_ID))));
+
+        return formClass;
     }
 
     @Override
-    public Resource asResource() {
+    public Record asRecord() {
         throw new UnsupportedOperationException();
     }
-
-
 }

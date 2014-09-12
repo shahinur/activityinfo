@@ -5,7 +5,6 @@ import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
 
 /**
@@ -43,7 +42,7 @@ public class CalculatedFieldType implements ParametrizedFieldType {
             exprField.setDescription("Set expression if you would like to calculate field value dynamically (otherwise leave blank). Example: {A}+{B}+({C}/{D})");
             exprField.setType(ExprFieldType.INSTANCE);
 
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id(getId()));
+            FormClass formClass = new FormClass(Types.parameterFormClassId(this));
             formClass.addElement(exprField);
 
             return formClass;
@@ -88,4 +87,10 @@ public class CalculatedFieldType implements ParametrizedFieldType {
     public boolean isValid() {
         return true;
     }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
+    }
+
 }

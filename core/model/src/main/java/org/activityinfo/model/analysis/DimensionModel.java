@@ -8,8 +8,7 @@ public class DimensionModel {
     private String id;
     private String label;
     private String description;
-    private final List<SourceModel> sources = new ArrayList<>();
-
+    private final List<DimensionSource> sources = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -35,7 +34,7 @@ public class DimensionModel {
         this.description = description;
     }
 
-    public List<SourceModel> getSources() {
+    public List<DimensionSource> getSources() {
         return sources;
     }
 }

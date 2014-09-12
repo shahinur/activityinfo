@@ -46,6 +46,9 @@ public class TypeRegistry {
         register(BooleanType.TYPE_CLASS);
         register(BarcodeType.TYPE_CLASS);
         register(ImageType.TYPE_CLASS);
+        register(TypeFieldType.TYPE_CLASS);
+        register(SubFormType.TYPE_CLASS);
+        register(ListFieldType.TYPE_CLASS);
     }
 
     private void register(FieldTypeClass typeClass) {

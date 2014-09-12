@@ -59,7 +59,7 @@ public class Content {
 
     public static Resource deserializeResource(Entity entity) {
         Resource resource = Resources.createResource();
-        resource.setId(ResourceId.valueOf(entity.getKey().getParent().getName()));
+        resource.setId(ResourceId.valueOf(entity.getKey().getName()));
         resource.setVersion((Long)entity.getProperty(VERSION_PROPERTY));
         resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
         readProperties(entity, resource);

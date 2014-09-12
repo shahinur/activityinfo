@@ -10,6 +10,7 @@ import org.activityinfo.ui.app.client.chrome.connectivity.UpdateConnectivityActi
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -66,6 +67,9 @@ public class RequestDispatcher {
         try {
             deque(request);
         } finally {
+
+            LOGGER.log(Level.SEVERE, "Request failed:"  + caught.getMessage(), caught);
+
             if (caught instanceof org.activityinfo.ui.store.remote.client.StatusCodeException) {
                 // do nothing, application exception
             } else {
@@ -79,7 +83,5 @@ public class RequestDispatcher {
         if (pendingRequests.get(request).isSettled()) {
             pendingRequests.remove(request);
         }
-
     }
-
 }

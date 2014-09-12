@@ -8,22 +8,28 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.store.test.TestResourceStore;
 import org.activityinfo.ui.app.client.request.FetchWorkspaces;
+import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.app.client.request.TestRemoteStoreService;
+import org.activityinfo.ui.vdom.shared.dom.TestRenderContext;
 
 public class TestScenario {
 
     private final TestRemoteStoreService remoteService;
     private final Application application;
     private final TestResourceStore store;
-    private AuthenticatedUser user = new AuthenticatedUser("", 1, "");
+    private final AuthenticatedUser user = new AuthenticatedUser("", 1, "");
+
+    private final TestRenderContext renderContext;
 
     public TestScenario() {
 
         LocaleProxy.initialize();
 
-        store = new TestResourceStore();
+        this.store = new TestResourceStore();
         this.remoteService = new TestRemoteStoreService(store);
         this.application = new Application(remoteService);
+
+        this.renderContext = new TestRenderContext();
     }
 
     public TestFolder createWorkspace(String label) {
@@ -47,4 +53,11 @@ public class TestScenario {
         return this;
     }
 
+    public TestRenderContext page() {
+        return renderContext;
+    }
+
+    public void request(Request request) {
+        application.getRequestDispatcher().execute(request);
+    }
 }
