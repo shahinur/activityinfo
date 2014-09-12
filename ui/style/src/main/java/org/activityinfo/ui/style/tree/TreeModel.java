@@ -8,6 +8,10 @@ import java.util.List;
 
 public interface TreeModel<T> {
 
+    void requestRootNodes();
+
+    void requestChildren(T node);
+
     boolean isLeaf(T node);
 
     Status<List<T>> getRootNodes();
@@ -21,13 +25,7 @@ public interface TreeModel<T> {
     /**
      * Returns an object which can serve as this node's unique key.
      */
-    Object getKey(T node);
-
-    void onExpanded(T node);
-
-    boolean isSelected(T node);
-
-    void select(T node);
+    String getKey(T node);
 
     void addChangeListener(StoreChangeListener listener);
 

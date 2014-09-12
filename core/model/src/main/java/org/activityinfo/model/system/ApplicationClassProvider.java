@@ -1,6 +1,8 @@
 package org.activityinfo.model.system;
 
 import com.google.common.collect.Maps;
+import org.activityinfo.model.analysis.MeasureModel;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
@@ -21,6 +23,8 @@ public class ApplicationClassProvider {
 
         classMap.put(FormClass.CLASS_ID, createFormClassClass());
         classMap.put(FolderClass.CLASS_ID, FolderClass.get());
+        classMap.put(PivotTableModel.CLASS_ID, PivotTableModel.getFormClass());
+        classMap.put(MeasureModel.CLASS_ID, MeasureModel.getFormClass());
 
         for (FieldTypeClass fieldTypeClass : TypeRegistry.get().getTypeClasses()) {
             if(fieldTypeClass instanceof ParametrizedFieldTypeClass) {

@@ -23,8 +23,10 @@ package org.activityinfo.model.type.primitive;
 
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.TypeFieldType;
 
 /**
  * Value type that represents a boolean value, either true or false.
@@ -59,5 +61,11 @@ public class BooleanType implements FieldType {
     public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
         return visitor.visitBooleanField(field, this);
     }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
+    }
+
 
 }

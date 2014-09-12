@@ -67,7 +67,7 @@ public class Quantity implements FieldValue, IsRecord {
         return ((int) (temp ^ (temp >>> 32))) ^ (units != null ? units.hashCode() : 0);
     }
 
-    public static FieldValue fromRecord(Record record) {
+    public static Quantity fromRecord(Record record) {
         return new Quantity(record.getDouble("value"), record.isString("units"));
     }
 

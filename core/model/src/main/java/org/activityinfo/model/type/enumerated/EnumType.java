@@ -5,7 +5,6 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
 
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class EnumType implements ParametrizedFieldType {
 
-    public interface EnumTypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass { }
+    public interface EnumTypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass<EnumFieldValue> { }
 
     public static final EnumTypeClass TYPE_CLASS = new EnumTypeClass() {
 
@@ -47,7 +46,7 @@ public class EnumType implements ParametrizedFieldType {
 
         @Override
         public FormClass getParameterFormClass() {
-            return new FormClass(ResourceIdPrefixType.TYPE.id("enum"));
+            return new FormClass(Types.parameterFormClassId(this));
         }
 
         @Override
@@ -110,4 +109,10 @@ public class EnumType implements ParametrizedFieldType {
     public boolean isValid() {
         return values.size() > 0;
     }
+
+    @Override
+    public Record asRecord() {
+        return TypeFieldType.asRecord(this);
+    }
+
 }

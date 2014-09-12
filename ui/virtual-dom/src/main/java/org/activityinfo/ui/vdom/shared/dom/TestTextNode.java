@@ -27,4 +27,9 @@ public class TestTextNode extends TestNode implements DomText {
     public String toString() {
         return text;
     }
+
+    @Override
+    public void writeTo(StringBuilder html, String indent) {
+        html.append(indent).append(text);
+    }
 }

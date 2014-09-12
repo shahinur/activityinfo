@@ -88,9 +88,10 @@ public class MigrateDatabaseTask {
                 LOGGER.log(Level.SEVERE, "Exception whilst migrating database " + databaseName +
                     " [" + databaseId + "]", e);
 
+                // Clean up the entities we've already created, after
+                // a suitable delay to make sure indices are caught up
                 QueueFactory.getDefaultQueue().add(TaskOptions.Builder
-                    .withTaskName(workspaceId.asString())
-                    .countdownMillis(20 * 1000)
+                    .withCountdownMillis(20 * 1000)
                     .url("/service/migrate/tasks/cleanup")
                     .param("workspaceId", workspaceId.asString()));
             }

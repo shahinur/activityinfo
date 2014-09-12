@@ -5,6 +5,7 @@
   <version>1</version>
   <system-properties>
     <property name="user.name" value="ActivityInfo"/>
+    <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
   </system-properties>
 
   <sessions-enabled>false</sessions-enabled>

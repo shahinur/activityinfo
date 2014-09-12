@@ -60,4 +60,6 @@ public abstract class TestNode implements DomNode {
         oldTestNode.parent = null;
         newTestNode.parent = this;
     }
+
+    public abstract void writeTo(StringBuilder html, String indent);
 }
