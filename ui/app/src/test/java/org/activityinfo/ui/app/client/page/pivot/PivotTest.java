@@ -1,7 +1,6 @@
 package org.activityinfo.ui.app.client.page.pivot;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.analysis.*;
@@ -9,18 +8,14 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.*;
-import org.activityinfo.model.table.*;
+import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.store.test.TestResourceStore;
-import org.activityinfo.ui.app.client.PreviewRule;
-import org.activityinfo.ui.app.client.action.RemoteUpdate;
-import org.activityinfo.ui.app.client.request.FetchWorkspaces;
-import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -30,13 +25,9 @@ import java.util.List;
 
 public class PivotTest {
 
-    @Rule
-    public PreviewRule preview = new PreviewRule();
     private TestResourceStore store;
 
     private List<FormClass> forms = Lists.newArrayList();
-    private AuthenticatedUser user;
-
 
     @Before
     public void loadData() throws IOException {
@@ -50,100 +41,44 @@ public class PivotTest {
         }
     }
 
-    @Test
-    public void selectionPalette() throws IOException {
-
-        user = new AuthenticatedUser("", 1, "");
-
-        Dispatcher dispatcher = preview.getApplication().getDispatcher();
-        dispatcher.dispatch(new RemoteUpdate(new FetchWorkspaces(), store.getOwnedOrSharedWorkspaces(user)));
-
-        preview.render(new PivotPage(preview.getApplication()));
-
-    }
 
     @Test
-    public void testCalculations() {
+    public void testCalculations() throws Exception {
         dumpIndicators();
 
         FormClass costs = findForm("Documented Cost Information");
         FormClass wp = findForm("Water Collection Point information over time - Monthly Reports");
 
         PivotTableModel model = new PivotTableModel();
-        model.getDimensions().add(
-            dim("Year", dimSource(costs, "Year of expediture"),
-                        dimSource(wp, "Year")));
-
-        model.getDimensions().add(
-            dim("Typology", dimSource(costs, "Cost typology")));
+        model.getDimensions().add(dim("Year", dimSource(costs, "[Year of expediture]"), dimSource(wp, "Year")));
+        model.getDimensions().add(dim("Typology", dimSource(costs, "[Cost typology]")));
 
 
         MeasureModel iniCost = new MeasureModel();
         iniCost.setId("iniCosts");
+        iniCost.setLabel("Initial Costs");
         iniCost.setSource(costs.getId());
         iniCost.setValueExpression("V_InCostHrd");
-        iniCost.setType(MeasurementType.FLOW);
+        iniCost.setMeasurementType(MeasurementType.FLOW);
         iniCost.setCriteriaExpression("{System Identifier}=={Hand Dug Wells (All)}");
+        model.addMeasure(iniCost);
 
         MeasureModel wellCount = new MeasureModel();
         wellCount.setId("wellCount");
+        wellCount.setLabel("HDW Count");
         wellCount.setSource(wp.getId());
- //       wellCount.setValueExpression("")
+        wellCount.setValueExpression("TPSfnct");
+        wellCount.setMeasurementType(MeasurementType.STOCK);
+        model.addMeasure(wellCount);
 
-//
-//        model.getMeasures().add(iniCost);
-//
-//        model.getMeasures().add(
-//            new MeasureModel("NumberOfTaps", "Number of individual collection points",
-//            source(system, "Number individual collection points")));
-//
-//        String sourceId = "[Documented Cost Information]";
-//        String modelExpr = "[Value initial cost]";
-//        String criteriaExpr = "[
-//
-//
-//        aggregate(model);
+        CubeBuilder cubeBuilder = new CubeBuilder(store);
+        Cube cube = cubeBuilder.buildCube(model);
 
-//
-//        DimensionModel dimensionModel = new
-//
-////
-////        PivotTableModel model = new PivotTableModel(Resources.generateId(), null);
-////
+        cube.dump();
     }
 
     private DimensionSource dimSource(FormClass costs, String valueExpr) {
         return new DimensionSource(costs.getId(), valueExpr);
-    }
-
-    private void aggregate(PivotTableModel model) {
-
-        // calculate all of our measures
-        for(MeasureModel measure : model.getMeasures()) {
-            TableModel table = new TableModel(measure.getSourceId());
-            table.addColumn("measure").select(ColumnType.STRING).fieldPath(ResourceId.valueOf(measure.getValueExpression()));
-
-            ColumnModel criteriaColumn = new ColumnModel();
-            criteriaColumn.setId("criteria");
-            criteriaColumn.setType(ColumnType.NUMBER);
-            criteriaColumn.setSource(new CalcFieldSource(measure.getSourceId(), measure.getCriteriaExpression()));
-           // table.addColumn(criteriaColumn);
-
-            for (DimensionModel dim : model.getDimensions()) {
-                for(DimensionSource dimSource : dim.getSources()) {
-                    ResourceId sourceId = Preconditions.checkNotNull(dimSource.getSourceId());
-                    if(sourceId.equals(measure.getSourceId())) {
-                        table.addColumn(dim.getId()).select(ColumnType.STRING).fieldPath(ResourceId.valueOf(dimSource.getExpression()));
-                    }
-                }
-            }
-
-            TableData tableData = store.queryTable(user, table);
-            dumpTable(tableData);
-
-
-        }
-
     }
 
     private void dumpTable(TableData tableData) {

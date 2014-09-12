@@ -31,7 +31,7 @@ public class FormEvalContextTest {
         FormEvalContext context = new FormEvalContext(formClass);
         context.setInstance(new FormInstance(Resources.generateId(), formClass.getId()));
 
-        context.getFieldValue(a.getId());
+        System.out.println(context.getFieldValue(a.getId()));
 
     }
 

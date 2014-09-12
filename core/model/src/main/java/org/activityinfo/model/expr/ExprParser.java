@@ -32,7 +32,7 @@ public class ExprParser {
 
             @Override
             public boolean apply(Token token) {
-                return token.getType() != TokenType.WHITESPACE && token.getType() != TokenType.STRING_START;
+                return token.getType() != TokenType.WHITESPACE;
             }
         }));
     }
@@ -65,8 +65,12 @@ public class ExprParser {
         if (token.getType() == TokenType.PAREN_START) {
             return parseGroup();
 
-        } else if (token.getType() == TokenType.BRACE_START) {
-            return parsePlaceholder();
+        } else if (token.getType() == TokenType.SYMBOL) {
+            if(isFunction(token)) {
+                return parseFunctionCall(token);
+            } else {
+                return new SymbolExpr(token.getString());
+            }
 
         } else if (token.getType() == TokenType.NUMBER) {
             return new ConstantExpr(Double.parseDouble(token.getString()));
@@ -79,29 +83,6 @@ public class ExprParser {
             ExprNode right = parse();
             return new FunctionCallNode(function, right);
 
-        } else if (isFunction(token)) {
-            ExprFunction function = ExprFunctions.get(token.getString());
-            List<ExprNode> arguments = Lists.newArrayList();
-            while(lexer.hasNext()) {
-                Token next = lexer.next();
-
-                if (next.getType() == TokenType.COMMA || next.getType() == TokenType.PAREN_START) {
-                    continue;
-
-                } else if (next.getType() == TokenType.PAREN_END) {
-                    break;
-
-                } else if (next.getType() == TokenType.SYMBOL) {
-                    arguments.add(new SymbolExpr(token.getString()));
-
-                } else if (next.getType() == TokenType.BRACE_START) {
-                    arguments.add(parsePlaceholder());
-
-                } else {
-                    throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");
-                }
-            }
-            return new FunctionCallNode(function, arguments);
         } else if (token.getType() == TokenType.STRING_LITERAL) {
             return new ConstantExpr(token.getString());
 
@@ -113,6 +94,28 @@ public class ExprParser {
         }
     }
 
+    private ExprNode parseFunctionCall(Token token) {
+        ExprFunction function = ExprFunctions.get(token.getString());
+        List<ExprNode> arguments = Lists.newArrayList();
+        while(lexer.hasNext()) {
+            Token next = lexer.next();
+
+            if (next.getType() == TokenType.COMMA || next.getType() == TokenType.PAREN_START) {
+                continue;
+
+            } else if (next.getType() == TokenType.PAREN_END) {
+                break;
+
+            } else if (next.getType() == TokenType.SYMBOL) {
+                arguments.add(new SymbolExpr(next.getString()));
+
+            } else {
+                throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");
+            }
+        }
+        return new FunctionCallNode(function, arguments);
+    }
+
     private boolean prefixOperator(Token token) {
         return token.getType() == TokenType.OPERATOR && PREFIX_OPERATORS.contains(token.getString());
     }
@@ -121,17 +124,10 @@ public class ExprParser {
         return token.getType() == TokenType.SYMBOL && FUNCTIONS.contains(token.getString()) && lexer.peek().getType() == TokenType.PAREN_START;
     }
 
-
     private ExprNode parseGroup() {
         ExprNode expr = parse();
         expectNext(TokenType.PAREN_END, "')'");
         return new GroupExpr(expr);
-    }
-
-    private ExprNode parsePlaceholder() {
-        Token token = lexer.next();
-        expectNext(TokenType.BRACE_END, "'}'");
-        return new SymbolExpr(token.getString());
     }
 
     /**

@@ -27,7 +27,6 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.MonthType;
-import org.activityinfo.model.type.time.YearType;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -436,10 +435,10 @@ public class ActivityTable extends ResourceMigrator {
             .setPrimaryKey(true));
 
 
-        // temporary hack for LCCA analysis
+        // temporary hack for LCCA anal
         periodForm.addElement(new FormField(field(classId, YEAR_FIELD))
             .setLabel("Year")
-            .setType(YearType.INSTANCE)
+            .setType(TextType.INSTANCE)
             .setRequired(true)
             .setPrimaryKey(true));
 

@@ -27,7 +27,7 @@ public class AbstractModel<T> implements IsRecord {
         if(reference == null) {
             propertyBag.remove(name);
         } else {
-            propertyBag.set(name, new ReferenceValue(reference));
+            propertyBag.set(name, new ReferenceValue(reference).asRecord());
         }
         return (T) this;
     }
