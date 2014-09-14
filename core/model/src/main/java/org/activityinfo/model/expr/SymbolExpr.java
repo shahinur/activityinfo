@@ -76,6 +76,11 @@ public class SymbolExpr extends ExprNode {
     }
 
     @Override
+    public <T> T accept(ExprVisitor<T> visitor) {
+        return visitor.visitSymbol(this);
+    }
+
+    @Override
     public String toString() {
         return asExpression();
     }

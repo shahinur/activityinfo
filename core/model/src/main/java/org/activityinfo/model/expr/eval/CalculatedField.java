@@ -5,14 +5,14 @@ import org.activityinfo.model.expr.ExprParser;
 import org.activityinfo.model.expr.diagnostic.CircularReferenceException;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CalculatedField implements ValueSource {
+public class CalculatedField implements FieldValueSource {
 
     private static final Logger LOGGER = Logger.getLogger(CalculatedField.class.getName());
 
@@ -53,5 +53,10 @@ public class CalculatedField implements ValueSource {
     @Override
     public FieldType resolveType(EvalContext context) {
         return expr.resolveType(context);
+    }
+
+    @Override
+    public FormField getField() {
+        return field;
     }
 }

@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.columns.ConstantColumnView;
-import org.activityinfo.model.table.columns.EmptyColumnView;
+import org.activityinfo.model.table.views.ConstantColumnView;
+import org.activityinfo.model.table.views.EmptyColumnView;
 
 import java.io.IOException;
 import java.util.Map;

@@ -9,7 +9,6 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.table.CalcFieldSource;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.service.store.StoreAccessor;
@@ -17,6 +16,7 @@ import org.activityinfo.service.tables.join.Join;
 import org.activityinfo.service.tables.join.JoinLink;
 import org.activityinfo.service.tables.views.ForeignKeyColumn;
 import org.activityinfo.service.tables.views.PrimaryKeyMap;
+import org.activityinfo.service.tree.FormTreeBuilder;
 
 import java.util.List;
 import java.util.Map;
@@ -52,13 +52,21 @@ public class TableQueryBatchBuilder {
         Preconditions.checkArgument(!nodes.isEmpty(), "nodes cannot be empty");
 
         if(nodes.size() == 1) {
-            return addColumn(columnType, Iterables.getOnlyElement(nodes));
+            return addColumn(Iterables.getOnlyElement(nodes));
         } else {
             List<Supplier<ColumnView>> sources = Lists.newArrayList();
             for(FormTree.Node node : nodes) {
-                sources.add(addColumn(columnType, node));
+                sources.add(addColumn(node));
             }
             return new ColumnCombiner(columnType, sources);
+        }
+    }
+
+    public FormTree getFormTree(ResourceId resourceId) {
+        try {
+            return new FormTreeBuilder(store).queryTree(resourceId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -70,15 +78,15 @@ public class TableQueryBatchBuilder {
      * @return a ColumnView Supplier that can be used to retrieve the result after the batch
      * has finished executing.
      */
-    private Supplier<ColumnView> addColumn(ColumnType columnType, FormTree.Node node) {
+    public Supplier<ColumnView> addColumn(FormTree.Node node) {
 
         if(node.isRoot()) {
             // simple root column
-            return getDataColumn(columnType, node, node.getFieldId());
+            return getDataColumn(node, node.getFieldId());
 
         } else {
             // requires join
-            return getNestedColumn(columnType, node);
+            return getNestedColumn(node);
         }
     }
 
@@ -96,7 +104,7 @@ public class TableQueryBatchBuilder {
      * @return a ColumnView Supplier that can be used to retrieve the result after the batch
      * has finished executing.
      */
-    private Supplier<ColumnView> getNestedColumn(ColumnType columnType, FormTree.Node node) {
+    private Supplier<ColumnView> getNestedColumn(FormTree.Node node) {
 
         // Schedule the links we need to join the node to the base form
         List<FormTree.Node> path = node.getSelfAndAncestors();
@@ -108,7 +116,7 @@ public class TableQueryBatchBuilder {
         }
 
         // Schedule the actual column to be joined
-        Supplier<ColumnView> column = getDataColumn(columnType, node, node.getFieldId());
+        Supplier<ColumnView> column = getDataColumn(node, node.getFieldId());
 
         return new Join(links, column);
     }
@@ -128,22 +136,12 @@ public class TableQueryBatchBuilder {
         return getTable(classId).fetchPrimaryKeyColumn();
     }
 
-    public Supplier<ColumnView> getDataColumn(ColumnType columnType, FormTree.Node node, ResourceId fieldId) {
-        return getTable(node).fetchColumn(fieldId, columnType);
+    public Supplier<ColumnView> getDataColumn(FormTree.Node node, ResourceId fieldId) {
+        return getTable(node).fetchColumn(fieldId);
     }
 
-    public Supplier<ColumnView> getDataColumn(ColumnType columnType, FormClass formClass, ResourceId fieldId) {
-        return getTable(formClass).fetchColumn(fieldId, columnType);
-    }
-
-    public Supplier<ColumnView> addExpression(FormClass formClass, ColumnType columnType, String expression) {
-        return getTable(formClass).fetchExpression(expression, columnType);
-    }
-
-
-    public Supplier<ColumnView> addColumn(FormClass formClass, ColumnType type, CalcFieldSource source) {
-        return getTable(formClass).calculate(source.getExpression());
-
+    public Supplier<ColumnView> getDataColumn(FormClass formClass, ResourceId fieldId) {
+        return getTable(formClass).fetchColumn(fieldId);
     }
 
     private TableScan getTable(FormTree.Node node) {
@@ -168,4 +166,7 @@ public class TableQueryBatchBuilder {
         }
     }
 
+    public Supplier<ColumnView> addConstantColumn(FormClass rootFormClass, Object value) {
+        return getTable(rootFormClass).fetchConstantColumn(value);
+    }
 }

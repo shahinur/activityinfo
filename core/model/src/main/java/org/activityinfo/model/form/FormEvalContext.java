@@ -4,7 +4,10 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.expr.eval.*;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.ErrorValue;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -20,14 +23,14 @@ public class FormEvalContext implements EvalContext {
      */
     private final Map<String, ValueSource> symbolMap = Maps.newHashMap();
 
-    private final Map<String, ValueSource> fieldMap = Maps.newHashMap();
+    private final Map<String, FieldValueSource> fieldMap = Maps.newHashMap();
 
 
     private Resource formInstance;
 
     public FormEvalContext(FormClass formClass) {
         for (FormField field : formClass.getFields()) {
-            ValueSource source = createValueSource(field);
+            FieldValueSource source = createValueSource(field);
             if (field.hasCode()) {
                 symbolMap.put(field.getCode(), source);
             }
@@ -82,13 +85,17 @@ public class FormEvalContext implements EvalContext {
         return getFieldValue(fieldId.asString());
     }
 
-    private ValueSource createValueSource(FormField field) {
+    private FieldValueSource createValueSource(FormField field) {
 
         if (field.getType() instanceof CalculatedFieldType) {
             return new CalculatedField(field);
         } else {
             return new StaticField(field);
         }
+    }
+
+    public FormField getField(ResourceId id) {
+        return fieldMap.get(id.asString()).getField();
     }
 
     public FieldType resolveFieldType(ResourceId fieldId) {

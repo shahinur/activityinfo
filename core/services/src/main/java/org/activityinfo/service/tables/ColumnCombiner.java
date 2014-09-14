@@ -2,10 +2,10 @@ package org.activityinfo.service.tables;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
-import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.ColumnType;
-import org.activityinfo.model.table.columns.DoubleArrayColumnView;
-import org.activityinfo.model.table.columns.StringArrayColumnView;
+import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.model.table.views.DoubleArrayColumnView;
+import org.activityinfo.model.table.views.StringArrayColumnView;
 
 import java.util.List;
 

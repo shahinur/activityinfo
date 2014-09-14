@@ -54,6 +54,11 @@ public class ConstantExpr extends ExprNode {
     }
 
     @Override
+    public <T> T accept(ExprVisitor<T> visitor) {
+        return visitor.visitConstant(this);
+    }
+
+    @Override
     public FieldType resolveType(EvalContext context) {
         return value.getTypeClass().createType();
     }

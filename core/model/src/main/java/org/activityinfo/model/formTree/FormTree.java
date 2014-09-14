@@ -2,7 +2,6 @@ package org.activityinfo.model.formTree;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
@@ -200,6 +199,10 @@ public class FormTree {
 
     public FormTree() {
 
+    }
+
+    public Iterable<Node> nodes() {
+        return nodeMap.values();
     }
 
     public Node addRootField(FormClass declaringClass, FormField field) {

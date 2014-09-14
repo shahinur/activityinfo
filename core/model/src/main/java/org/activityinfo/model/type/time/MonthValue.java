@@ -8,7 +8,7 @@ import org.activityinfo.model.type.FieldValue;
 /**
  * Represents a specific calendar month in the ISO-8601 calendar.
  */
-public class MonthValue implements FieldValue, IsRecord {
+public class MonthValue implements FieldValue, IsRecord, TemporalValue {
 
 
     private final int year;
@@ -23,6 +23,14 @@ public class MonthValue implements FieldValue, IsRecord {
         assert monthOfYear >= 1 && monthOfYear <= 12;
         this.year = year;
         this.monthOfYear = monthOfYear;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonthOfYear() {
+        return monthOfYear;
     }
 
     @Override
@@ -55,4 +63,10 @@ public class MonthValue implements FieldValue, IsRecord {
         result = 31 * result + monthOfYear;
         return result;
     }
+
+    @Override
+    public LocalDateInterval asInterval() {
+        return new LocalDateInterval(new LocalDate(year, monthOfYear, 1), TimeUtils.getLastDayOfMonth(this));
+    }
+
 }
