@@ -10,13 +10,27 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>activityinfo-security</artifactId>
+  <artifactId>activityinfo-model-processor</artifactId>
+  <packaging>jar</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgument>-proc:none</compilerArgument>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+  </build>
 
   <dependencies>
     <dependency>
-      <groupId>org.owasp.esapi</groupId>
-      <artifactId>esapi</artifactId>
-      <version>2.1.0</version>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-model</artifactId>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 
