@@ -40,6 +40,11 @@ public enum TokenType {
     COMMA,
 
     /**
+     * Dot '.'
+     */
+    DOT,
+
+    /**
      * Numeric Literal: 1, 3 ...
      */
     NUMBER,

@@ -11,6 +11,7 @@ public class ColumnModel implements IsRecord {
     private String id;
     private ColumnType type;
     private ColumnSource source;
+    private String expression;
 
     /**
      *
@@ -40,6 +41,14 @@ public class ColumnModel implements IsRecord {
 
     public void setSource(ColumnSource source) {
         this.source = source;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression(String expression) {
+        this.expression = expression;
     }
 
     /**

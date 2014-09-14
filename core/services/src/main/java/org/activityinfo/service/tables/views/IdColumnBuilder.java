@@ -3,7 +3,7 @@ package org.activityinfo.service.tables.views;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.columns.StringArrayColumnView;
+import org.activityinfo.model.table.views.StringArrayColumnView;
 
 import java.util.List;
 

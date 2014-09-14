@@ -6,8 +6,8 @@ import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.columns.ConstantColumnView;
-import org.activityinfo.model.table.columns.EmptyColumnView;
+import org.activityinfo.model.table.views.ConstantColumnView;
+import org.activityinfo.model.table.views.EmptyColumnView;
 
 import java.util.HashMap;
 import java.util.Map;

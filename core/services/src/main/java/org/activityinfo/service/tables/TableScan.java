@@ -6,7 +6,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.expr.ExprNode;
 import org.activityinfo.model.expr.ExprParser;
-import org.activityinfo.model.expr.SymbolExpr;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.form.FormField;
@@ -14,12 +13,12 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.columns.EmptyColumnView;
+import org.activityinfo.model.table.views.ConstantColumnView;
+import org.activityinfo.model.table.views.EmptyColumnView;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.tables.views.*;
 
-import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -47,43 +46,23 @@ public class TableScan {
         this.formEvalContext = new FormEvalContext(formClass);
     }
 
-
-    public Supplier<ColumnView> fetchExpression(String expression, ColumnType columnType) {
-        ExprNode expr = ExprParser.parse(expression);
-        if(expr instanceof SymbolExpr) {
-            return fetchColumn(findField((SymbolExpr) expr), columnType);
-        } else {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-    private ResourceId findField(SymbolExpr expr) {
-        String symbol = expr.getName();
-        for(FormField field : formClass.getFields()) {
-            if(symbol.equals(field.getLabel()) ||
-               symbol.equals(field.getCode())) {
-                return field.getId();
-            }
-        }
-        throw new UnsupportedOperationException("Could not find symbol [" + expr.getName() + "] in form [" + formClass.getLabel() + "]");
-    }
-
-    public Supplier<ColumnView> fetchColumn(ResourceId fieldId, @Nonnull ColumnType columnType) {
+    public Supplier<ColumnView> fetchColumn(ResourceId fieldId) {
 
         // compose a unique key for this column (we don't want to fetch twice!)
-        String columnKey = columnKey(fieldId, columnType);
+        String columnKey = columnKey(fieldId);
 
         // create the column builder if it doesn't exist
         if(columnMap.containsKey(columnKey)) {
             return columnMap.get(columnKey);
         } else {
+            FormField field = formEvalContext.getField(fieldId);
             FieldType fieldType = formEvalContext.resolveFieldType(fieldId);
-            Optional<ColumnViewBuilder> builder = ViewBuilders.createBuilder(fieldId, fieldType, columnType);
-            if(builder.isPresent()) {
-                columnMap.put(columnKey, builder.get());
-                return builder.get();
+            ColumnViewBuilder builder = ViewBuilderFactory.get(field, fieldType);
+            if(builder != null) {
+                columnMap.put(columnKey, builder);
+                return builder;
             } else {
-                return fetchEmptyColumn(columnType);
+                throw new UnsupportedOperationException("Unsupported type for column: " + fieldType);
             }
         }
     }
@@ -106,6 +85,15 @@ public class TableScan {
             @Override
             public ColumnView get() {
                 return new EmptyColumnView(rowCount.get(), type);
+            }
+        };
+    }
+
+    public Supplier<ColumnView> fetchConstantColumn(final Object constantValue) {
+        return new Supplier<ColumnView>() {
+            @Override
+            public ColumnView get() {
+                return ConstantColumnView.create(rowCount.get(), constantValue);
             }
         };
     }
@@ -144,8 +132,8 @@ public class TableScan {
         return builder;
     }
 
-    private String columnKey(ResourceId fieldId, ColumnType columnType) {
-        return fieldId.asString() + "_" + columnType.name();
+    private String columnKey(ResourceId fieldId) {
+        return fieldId.asString();
     }
 
 

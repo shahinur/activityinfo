@@ -26,6 +26,11 @@ public class GroupExpr extends ExprNode {
     }
 
     @Override
+    public <T> T accept(ExprVisitor<T> visitor) {
+        return visitor.visitGroup(this);
+    }
+
+    @Override
     public FieldValue evaluate(EvalContext context) {
         return expr.evaluate(context);
     }

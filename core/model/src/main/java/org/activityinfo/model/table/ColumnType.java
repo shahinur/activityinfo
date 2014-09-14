@@ -9,5 +9,5 @@ package org.activityinfo.model.table;
 public enum ColumnType {
     STRING,
     NUMBER,
-    DATE
+    BOOLEAN, DATE
 }

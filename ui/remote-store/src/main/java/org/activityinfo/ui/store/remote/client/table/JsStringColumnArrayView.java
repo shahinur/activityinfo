@@ -45,4 +45,9 @@ public class JsStringColumnArrayView implements ColumnView {
     public Date getDate(int row) {
         return null;
     }
+
+    @Override
+    public int getBoolean(int row) {
+        return NA;
+    }
 }

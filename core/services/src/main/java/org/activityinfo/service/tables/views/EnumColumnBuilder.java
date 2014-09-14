@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.columns.DiscreteStringColumnView;
+import org.activityinfo.model.table.views.DiscreteStringColumnView;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;

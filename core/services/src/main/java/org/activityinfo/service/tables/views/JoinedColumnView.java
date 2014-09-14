@@ -57,6 +57,11 @@ public class JoinedColumnView implements ColumnView {
     }
 
     @Override
+    public int getBoolean(int row) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[");

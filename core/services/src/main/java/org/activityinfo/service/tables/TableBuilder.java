@@ -2,6 +2,8 @@ package org.activityinfo.service.tables;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.expr.ExprNode;
+import org.activityinfo.model.expr.ExprParser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
@@ -28,11 +30,19 @@ public class TableBuilder {
 
         ResourceId classId = table.getRowSources().get(0).getRootFormClass();
         FormTree tree = formTreeService.queryTree(classId);
+
         FormClass formClass = tree.getRootFormClasses().get(classId);
 
         // We want to make at most one pass over every row set we need to scan,
         // so first queue up all necessary work before executing
         TableQueryBatchBuilder batch = new TableQueryBatchBuilder(resourceStore);
+
+//
+//        RowSetBuilder rowSetBuilder = new RowSetBuilder(formClass.getId(), batch);
+//        rowSetBuilder.fetch(batch);
+
+
+
         Map<String, Supplier<ColumnView>> columnViews = Maps.newHashMap();
 
         for(ColumnModel column : table.getColumns()) {
@@ -51,8 +61,7 @@ public class TableBuilder {
             } else if(column.getSource() instanceof CalcFieldSource) {
                 assert formClass.getId().equals(((CalcFieldSource) column.getSource()).getFormClassId());
 
-                columnViews.put(column.getId(), batch.addColumn(formClass, column.getType(),
-                    (CalcFieldSource)column.getSource()));
+                columnViews.put(column.getId(), buildColumn(tree, (CalcFieldSource)column.getSource()));
 
             } else if(column.getSource() instanceof ResourceIdSource) {
                 columnViews.put(column.getId(), batch.getIdColumn(formClass));
@@ -78,6 +87,13 @@ public class TableBuilder {
         }
 
         return new TableData(numRows, dataMap);
+    }
+
+    private Supplier<ColumnView> buildColumn(FormTree formTree, CalcFieldSource source) {
+        ExprNode expr = ExprParser.parse(source.getExpression());
+
+        throw new UnsupportedOperationException();
+
     }
 
     private ColumnType detectType(List<FormTree.Node> sourceNodes) {

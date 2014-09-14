@@ -8,7 +8,7 @@ import org.activityinfo.model.type.FieldValue;
 /**
  * Represents a specific calendar year in the ISO-8601 calendar.
  */
-public class YearValue implements FieldValue, IsRecord {
+public class YearValue implements FieldValue, IsRecord, TemporalValue {
 
     private final int year;
 
@@ -41,5 +41,14 @@ public class YearValue implements FieldValue, IsRecord {
     @Override
     public Record asRecord() {
         return new Record().set("year", year);
+    }
+
+    @Override
+    public LocalDateInterval asInterval() {
+        return new LocalDateInterval(new LocalDate(year, 1, 1), new LocalDate(year, 12, 31));
+    }
+
+    public int getYear() {
+        return year;
     }
 }
