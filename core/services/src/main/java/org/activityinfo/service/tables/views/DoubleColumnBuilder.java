@@ -4,9 +4,8 @@ import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.columns.DoubleArrayColumnView;
+import org.activityinfo.model.table.views.DoubleArrayColumnView;
 import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.number.Quantity;
 
 import java.util.List;
 
@@ -16,20 +15,17 @@ public class DoubleColumnBuilder implements ColumnViewBuilder {
     private final List<Double> values = Lists.newArrayList();
 
     private DoubleArrayColumnView result = null;
+    private DoubleReader reader;
 
-    public DoubleColumnBuilder(ResourceId fieldId) {
+    public DoubleColumnBuilder(ResourceId fieldId, DoubleReader reader) {
+        this.reader = reader;
         this.fieldName = fieldId.asString();
     }
 
     @Override
     public void accept(FormEvalContext resource) {
-        double value = Double.NaN;
         FieldValue fieldValue = resource.getFieldValue(fieldName);
-        if(fieldValue instanceof Quantity) {
-            Quantity quantity = (Quantity) fieldValue;
-            value = quantity.getValue();
-        }
-        values.add(value);
+        values.add(reader.read(fieldValue));
     }
 
     @Override

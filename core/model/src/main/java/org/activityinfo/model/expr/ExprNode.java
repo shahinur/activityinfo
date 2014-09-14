@@ -29,4 +29,6 @@ public abstract class ExprNode {
         FieldValue fieldValue = evaluate(context);
         return Casting.toBoolean(fieldValue);
     }
+
+    public abstract <T> T accept(ExprVisitor<T> visitor);
 }

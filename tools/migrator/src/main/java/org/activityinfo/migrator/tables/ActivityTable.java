@@ -387,7 +387,6 @@ public class ActivityTable extends ResourceMigrator {
                     }
                 }
             }
-            siteForm.getElements().addAll(fields);
         }
 
         FormField commentsField = new FormField(field(classId, COMMENT_FIELD));

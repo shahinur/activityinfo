@@ -41,7 +41,6 @@ public class PivotTest {
         }
     }
 
-
     @Test
     public void testCalculations() throws Exception {
         dumpIndicators();
@@ -51,6 +50,7 @@ public class PivotTest {
 
         PivotTableModel model = new PivotTableModel();
         model.getDimensions().add(dim("Year", dimSource(costs, "[Year of expediture]"), dimSource(wp, "Year")));
+        model.getDimensions().add(dim("System", dimSource(costs, "[System Identifier]")));
         model.getDimensions().add(dim("Typology", dimSource(costs, "[Cost typology]")));
 
 
@@ -60,7 +60,7 @@ public class PivotTest {
         iniCost.setSource(costs.getId());
         iniCost.setValueExpression("V_InCostHrd");
         iniCost.setMeasurementType(MeasurementType.FLOW);
-        iniCost.setCriteriaExpression("{System Identifier}=={Hand Dug Wells (All)}");
+       // iniCost.setCriteriaExpression("[System Identifier]=='Hand Dug Wells (All)'");
         model.addMeasure(iniCost);
 
         MeasureModel wellCount = new MeasureModel();

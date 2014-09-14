@@ -12,10 +12,10 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.columns.ConstantColumnView;
-import org.activityinfo.model.table.columns.DoubleArrayColumnView;
-import org.activityinfo.model.table.columns.EmptyColumnView;
-import org.activityinfo.model.table.columns.StringArrayColumnView;
+import org.activityinfo.model.table.views.ConstantColumnView;
+import org.activityinfo.model.table.views.DoubleArrayColumnView;
+import org.activityinfo.model.table.views.EmptyColumnView;
+import org.activityinfo.model.table.views.StringArrayColumnView;
 
 import java.io.IOException;
 import java.util.Iterator;

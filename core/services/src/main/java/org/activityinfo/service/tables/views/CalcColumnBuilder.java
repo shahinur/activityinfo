@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import org.activityinfo.model.expr.ExprNode;
 import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.columns.DoubleArrayColumnView;
+import org.activityinfo.model.table.views.DoubleArrayColumnView;
 
 import java.util.List;
 

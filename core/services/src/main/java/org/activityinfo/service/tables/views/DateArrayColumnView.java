@@ -43,4 +43,9 @@ public class DateArrayColumnView implements ColumnView {
     public Date getDate(int row) {
         return values.get(row);
     }
+
+    @Override
+    public int getBoolean(int row) {
+        return NA;
+    }
 }

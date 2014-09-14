@@ -11,6 +11,8 @@ import java.util.List;
 public class ExprLexer extends UnmodifiableIterator<Token> {
 
     public static final char DOUBLE_QUOTE = '"';
+    public static final char SINGLE_QUOTE = '\'';
+
     private String string;
     private int currentCharIndex;
     private int currentTokenStart = 0;
@@ -18,6 +20,7 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
     private static final String OPERATOR_CHARS = "+-/*&|=!";
 
     public ExprLexer(String string) {
+        assert string != null : "expr cannot be null";
         this.string = string;
     }
 
@@ -81,13 +84,19 @@ public class ExprLexer extends UnmodifiableIterator<Token> {
         } else if (c == '[') {
             return readQuotedToken(TokenType.SYMBOL, ']');
 
-        }  else if (c == ',') {
+        } else if (c == ',') {
             return finishToken(TokenType.COMMA);
+
+        } else if (c == '.') {
+            return finishToken(TokenType.DOT);
 
         } else if (c == DOUBLE_QUOTE) {
             return readQuotedToken(TokenType.STRING_LITERAL, DOUBLE_QUOTE);
 
-        }else if (StringUtil.isWhitespace(c)) {
+        } else if (c == SINGLE_QUOTE) {
+            return readQuotedToken(TokenType.STRING_LITERAL, SINGLE_QUOTE);
+
+        } else if (StringUtil.isWhitespace(c)) {
             return readWhitespace();
 
         } else if (isNumberPart(c)) {

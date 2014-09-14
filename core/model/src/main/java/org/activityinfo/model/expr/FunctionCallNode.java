@@ -78,6 +78,11 @@ public class FunctionCallNode extends ExprNode {
     }
 
     @Override
+    public <T> T accept(ExprVisitor<T> visitor) {
+        return visitor.visitFunctionCall(this);
+    }
+
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
