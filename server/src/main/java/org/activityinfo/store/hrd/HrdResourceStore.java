@@ -176,7 +176,7 @@ public class HrdResourceStore implements ResourceStore {
 
         Workspace workspace = new Workspace(workspaceId);
 
-        try(WorkspaceTransaction tx = begin(workspace, user)) {
+        try(WorkspaceTransaction tx = beginRead(workspace, user)) {
 
             for (Snapshot snapshot : Snapshot.getSnapshotsAfter(tx, version)) {
 
