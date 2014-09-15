@@ -26,6 +26,7 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.ui.app.client.chrome.nav.NavLink;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
+import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.style.tree.TreeComponent;
 import org.activityinfo.ui.vdom.shared.VDomLogger;
@@ -56,7 +57,7 @@ public class NavNode extends NavLink {
     @Override
     protected VTree render() {
         return li(style(isActive()),
-                link(getTargetSafeUri(), getIcon().render(), space(), span(getLabel()), icon().pullRight().render()));
+                link(getTargetSafeUri(), getIcon().render(), space(), span(getLabel()), div(BaseStyles.PULL_RIGHT, icon().render())));
     }
 
     private Icon icon() {
