@@ -186,11 +186,12 @@ public class HrdResourceStore implements ResourceStore {
 
         Workspace workspace = new Workspace(workspaceId);
 
-        try(WorkspaceTransaction tx = begin(workspace, user)) {
+        try(WorkspaceTransaction tx = beginRead(workspace, user)) {
 
             for (Snapshot snapshot : Snapshot.getSnapshotsAfter(tx, version)) {
 
                 // We want the linked list to be sorted based on the most recent insertion of a resource
+                snapshots.remove(snapshot.getResourceId());
                 snapshots.put(snapshot.getResourceId(), snapshot);
 
                 if (environment.getRemainingMillis() < TIME_LIMIT_MILLISECONDS) {
