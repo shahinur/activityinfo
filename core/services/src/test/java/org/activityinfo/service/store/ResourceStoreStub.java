@@ -3,14 +3,12 @@ package org.activityinfo.service.store;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.model.table.ColumnModel;
-import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.TableModel;
+import org.activityinfo.model.table.*;
 import org.activityinfo.model.table.views.ConstantColumnView;
 import org.activityinfo.model.table.views.DoubleArrayColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
@@ -116,6 +114,11 @@ public class ResourceStoreStub implements ResourceStore {
         }
 
         return new TableData(numRows, columns);
+    }
+
+    @Override
+    public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
+        throw new UnsupportedOperationException();
     }
 
     private ColumnView createView(ColumnModel model, int numRows) {

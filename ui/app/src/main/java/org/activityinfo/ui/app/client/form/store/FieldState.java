@@ -5,6 +5,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ListFieldType;
 import org.activityinfo.model.type.ListFieldValue;
 import org.activityinfo.ui.widget.validation.ValidationMessage;
 import org.activityinfo.ui.widget.validation.ValidationSeverity;
@@ -13,11 +14,13 @@ import java.util.List;
 
 public class FieldState {
 
+    private ResourceId instanceId;
     private final FormField field;
     private FieldValue value;
     private List<ValidationMessage> validationMessages = Lists.newArrayList();
 
-    public FieldState(FormField field, FieldValue fieldValue) {
+    public FieldState(ResourceId instanceId, FormField field, FieldValue fieldValue) {
+        this.instanceId = instanceId;
         this.field = field;
         this.value = fieldValue;
     }
@@ -47,6 +50,10 @@ public class FieldState {
         validate();
     }
 
+    public ResourceId getInstanceId() {
+        return instanceId;
+    }
+
     public ResourceId getFieldId() {
         return field.getId();
     }
@@ -68,7 +75,8 @@ public class FieldState {
     }
 
     public void appendValue(FieldValue newElement) {
-        assert field.getType() instanceof ListFieldValue;
+        assert field.getType() instanceof ListFieldType;
+
         if(value instanceof ListFieldValue) {
             value = ((ListFieldValue) value).withAppended(newElement);
         } else {

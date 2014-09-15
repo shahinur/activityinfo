@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
@@ -13,8 +14,10 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.store.*;
 import org.activityinfo.service.tables.TableBuilder;
 
@@ -130,6 +133,15 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         TableBuilder builder = new TableBuilder(this);
         try {
             return builder.buildTable(tableModel);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
+        try {
+            return new CubeBuilder(this).buildCube(tableModel);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

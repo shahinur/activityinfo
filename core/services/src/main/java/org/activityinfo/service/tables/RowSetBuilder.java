@@ -7,6 +7,7 @@ import org.activityinfo.model.expr.*;
 import org.activityinfo.model.expr.diagnostic.EvalException;
 import org.activityinfo.model.expr.diagnostic.SymbolNotFoundException;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnModel;
@@ -52,13 +53,23 @@ public class RowSetBuilder {
         return expr.accept(columnVisitor);
     }
 
+    public Supplier<ColumnView> fetch(FormField field) {
+        return batchBuilder.addColumn(tree.getRootField(field.getId()));
+    }
+
+
+
     private Supplier<ColumnView> constant(Object value) {
         return batchBuilder.addConstantColumn(rootFormClass, value);
     }
 
     private FormTree.Node resolveSymbol(String name) {
+        return resolveSymbol(tree.getRootFields(), name);
+    }
+
+    private FormTree.Node resolveSymbol(List<FormTree.Node> fields, String name) {
         // first try to resolve by id.
-        for(FormTree.Node rootField : tree.getRootFields()) {
+        for(FormTree.Node rootField : fields) {
             if(rootField.getFieldId().asString().equals(name)) {
                 return rootField;
             }
@@ -66,7 +77,7 @@ public class RowSetBuilder {
 
         // then try to resolve the field by the code or label
         List<FormTree.Node> matching = Lists.newArrayList();
-        for(FormTree.Node rootField : tree.getRootFields()) {
+        for(FormTree.Node rootField : fields) {
             if(name.equalsIgnoreCase(rootField.getField().getCode())) {
                 matching.add(rootField);
             } else if(name.equalsIgnoreCase(rootField.getField().getLabel())) {
@@ -83,6 +94,20 @@ public class RowSetBuilder {
                 Joiner.on(", ").join(matching));
         }
     }
+
+    private FormTree.Node resolveCompoundExpr(List<FormTree.Node> fields, CompoundExpr expr) {
+        if(expr.getValue() instanceof SymbolExpr) {
+            FormTree.Node parentField = resolveSymbol(fields, ((SymbolExpr) expr.getValue()).getName());
+            return resolveSymbol(parentField.getChildren(), expr.getField().getName());
+
+        } else if(expr.getValue() instanceof CompoundExpr) {
+            return resolveCompoundExpr(fields, (CompoundExpr) expr.getValue());
+        } else {
+            throw new UnsupportedOperationException("Unexpected value of compound expr: " + expr.getValue());
+        }
+    }
+
+
 
     private class ColumnExprVisitor implements ExprVisitor<Supplier<ColumnView>> {
 
@@ -104,19 +129,17 @@ public class RowSetBuilder {
 
         @Override
         public Supplier<ColumnView> visitSymbol(SymbolExpr symbolExpr) {
-            FormTree.Node fieldNode = resolveSymbol(symbolExpr.getName());
-
-            return batchBuilder.addColumn(fieldNode);
+            return batchBuilder.addColumn(resolveSymbol(symbolExpr.getName()));
         }
 
         @Override
-        public Supplier<ColumnView> visitGroup(GroupExpr expr) {
-            return expr.accept(this);
+        public Supplier<ColumnView> visitGroup(GroupExpr group) {
+            return group.getExpr().accept(this);
         }
 
         @Override
         public Supplier<ColumnView> visitCompoundExpr(CompoundExpr compoundExpr) {
-            throw new UnsupportedOperationException();
+            return batchBuilder.addColumn(resolveCompoundExpr(tree.getRootFields(), compoundExpr));
         }
 
         @Override
