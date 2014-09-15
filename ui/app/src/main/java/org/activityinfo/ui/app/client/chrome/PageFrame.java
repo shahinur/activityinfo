@@ -53,15 +53,15 @@ public class PageFrame extends VComponent<PageFrame> {
     }
 
     private VTree addButton() {
-        Button button = new Button(ButtonStyle.DEFAULT, ButtonSize.XS, FontAwesome.PLUS.render()).addCssClass(BaseStyles.PULL_RIGHT);
-        button.setClickHandler(new ClickHandler() {
+        Button createWorkspace = new Button(ButtonStyle.DEFAULT, ButtonSize.XS, FontAwesome.PLUS.render()).addCssClass(BaseStyles.PULL_RIGHT);
+        createWorkspace.setClickHandler(new ClickHandler() {
             @Override
             public void onClicked() {
-                //todo
+
                 application.getRouter().navigate(NewWorkspacePlace.INSTANCE);
             }
         });
-        return button;
+        return new DropdownButton(ButtonStyle.DEFAULT, ButtonSize.XS, new VTree[]{FontAwesome.PLUS.render(), t("Create")}, createWorkspace);
     }
 
     private static VNode pageIcon(Icon home) {
