@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.KeyFactory;
  * Datastore entity which holds the current version of the Workspace
  */
 public class WorkspaceVersion {
+    private static final long INITIAL_VERSION = 0L;
 
     private static final String KIND = "WV";
 
@@ -29,10 +30,10 @@ public class WorkspaceVersion {
             if (property instanceof Long) {
                 return (Long)property;
             } else {
-                return 0;
+                return INITIAL_VERSION;
             }
         } catch(EntityNotFoundException e) {
-            return 0;
+            return INITIAL_VERSION;
         }
     }
 
