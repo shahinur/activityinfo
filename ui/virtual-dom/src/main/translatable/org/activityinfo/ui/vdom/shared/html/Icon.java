@@ -16,15 +16,6 @@ public final class Icon extends JavaScriptObject {
         return new VNode(HtmlTag.SPAN, PropMap.withClasses(getClassNames()));
     }
 
-//    public native Icon appendClass(String classToAppend)  /*-{
-//        return this + " " + classToAppend;
-//    }-*/;
-//
-//    public Icon pullRight() {
-//        appendClass("pull-right");
-//        return this;
-//    }
-
     public native String getClassNames() /*-{
         return this;
     }-*/;
