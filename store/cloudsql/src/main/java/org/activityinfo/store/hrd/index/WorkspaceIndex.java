@@ -49,7 +49,7 @@ public class WorkspaceIndex {
     }
 
 
-    public static List<ResourceNode> queryUserWorkspaces(DatastoreService datastore, AuthenticatedUser user) {
+    public static List<ResourceNode> queryUserWorkspaces(DatastoreService datastore, AuthenticatedUser user, WorkspaceLookup workspaceLookup) {
 
         Query query = new Query(INDEX_KIND)
             .setAncestor(parentKey(user))
@@ -63,6 +63,7 @@ public class WorkspaceIndex {
             ResourceId workspaceId = ResourceId.valueOf(entity.getKey().getName());
             Workspace workspace = new Workspace(workspaceId);
             workspaceKeys.add(workspace.getLatestContent(workspaceId).getKey());
+            workspaceLookup.cache(workspaceId, workspace);
         }
 
 
