@@ -25,7 +25,8 @@ public class DraftStoreTest {
     public void test() {
         Application application = new Application(new MockRemoteStoreService());
         InstanceState workspaceDraft = application.getDraftStore().getWorkspaceDraft();
-        workspaceDraft.updateField(new UpdateFieldAction(FolderClass.LABEL_FIELD_ID, TextValue.valueOf("label")));
+        workspaceDraft.updateField(new UpdateFieldAction(workspaceDraft.getInstanceId(),
+            FolderClass.LABEL_FIELD_ID, TextValue.valueOf("label")));
 
         Resource updatedResource = workspaceDraft.getUpdatedResource();
         assertThat(updatedResource.getOwnerId(), equalTo(Resources.ROOT_ID));

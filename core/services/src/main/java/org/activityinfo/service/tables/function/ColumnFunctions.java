@@ -11,9 +11,20 @@ public class ColumnFunctions {
 
     public static ColumnView create(ExprFunction fn, List<ColumnView> arguments) {
         if(fn.getId().equals("==")) {
-            if(argsMatch(arguments, ColumnType.STRING, ColumnType.STRING)) {
+            if (argsMatch(arguments, ColumnType.STRING, ColumnType.STRING)) {
                 return new StringComparisonView(arguments.get(0), arguments.get(1), ComparisonOp.EQUALS);
-
+            }
+        }else if(fn.getId().equals("!=")) {
+            if(argsMatch(arguments, ColumnType.STRING, ColumnType.STRING)) {
+                return new StringComparisonView(arguments.get(0), arguments.get(1), ComparisonOp.NOT_EQUALS);
+            }
+        } else if(fn.getId().equals("+")) {
+            if(argsMatch(arguments, ColumnType.NUMBER, ColumnType.NUMBER)) {
+                return new DoubleBinaryOpView(arguments.get(0), arguments.get(1));
+            }
+        } else if(fn.getId().equals("&&")) {
+            if(argsMatch(arguments, ColumnType.BOOLEAN, ColumnType.BOOLEAN)) {
+                return new BooleanBinaryOp(arguments.get(0), arguments.get(1));
             }
         }
         throw new UnsupportedOperationException("Unimplemented function: " + fn.getId());

@@ -29,7 +29,8 @@ public class NewWorkspacePageTest {
         assertThat(app.getDispatcher(), not(nullValue()));
 
         app.getDispatcher().dispatch(
-            new UpdateFieldAction(FolderClass.LABEL_FIELD_ID, TextValue.valueOf("MyWorkspace")));
+            new UpdateFieldAction(app.getDraftStore().getWorkspaceDraft().getInstanceId(),
+                FolderClass.LABEL_FIELD_ID, TextValue.valueOf("MyWorkspace")));
 
 //        app.getDispatcher().dispatch(
 //            new PersistAction(page.getWorkingDraft().getInstanceId()));

@@ -25,7 +25,7 @@ public class StringComparisonView implements ColumnView {
 
     @Override
     public ColumnType getType() {
-        return ColumnType.STRING;
+        return ColumnType.BOOLEAN;
     }
 
     @Override

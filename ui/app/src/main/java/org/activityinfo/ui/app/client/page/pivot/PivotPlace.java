@@ -35,6 +35,4 @@ public class PivotPlace implements Place {
             }
         }
     }
-
-
 }

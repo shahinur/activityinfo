@@ -37,7 +37,8 @@ public class FolderStoreTest {
 
         // Create a new workspace
         InstanceState workspaceDraft = scenario.application().getDraftStore().getWorkspaceDraft();
-        workspaceDraft.updateField(new UpdateFieldAction(FolderClass.LABEL_FIELD_ID, TextValue.valueOf("My Workspace")));
+        workspaceDraft.updateField(new UpdateFieldAction(workspaceDraft.getInstanceId(), FolderClass.LABEL_FIELD_ID,
+            TextValue.valueOf("My Workspace")));
         scenario.application().getRequestDispatcher().execute(new SaveRequest(workspaceDraft.getUpdatedResource()));
 
         // Verify that the folder store is updated

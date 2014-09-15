@@ -125,6 +125,14 @@ public class FieldChooser extends VComponent implements StoreChangeListener {
         }
     }
 
+    public AcceptHandler<FormField> getAcceptHandler() {
+        return acceptHandler;
+    }
+
+    public void setAcceptHandler(AcceptHandler<FormField> acceptHandler) {
+        this.acceptHandler = acceptHandler;
+    }
+
     private void fireSelected() {
         FormClass formClass = application.getResourceStore().getFormClass(
             ResourceId.valueOf(formSelection.getSelectedKey())).get();
