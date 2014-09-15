@@ -22,13 +22,9 @@ package org.activityinfo.ui.app.client.chrome.tree;
  */
 
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.ui.app.client.chrome.nav.NavLink;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
-import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.style.tree.TreeComponent;
-import org.activityinfo.ui.style.tree.TreeNodeIcon;
 import org.activityinfo.ui.style.tree.TreeNodeRenderer;
-import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 /**
@@ -38,25 +34,11 @@ public class NavigationNodeRenderer implements TreeNodeRenderer<ResourceNode> {
 
     @Override
     public VTree renderNode(final ResourceNode node, final TreeComponent<ResourceNode> tree) {
-        final NavigationTreeModel model = (NavigationTreeModel) tree.getModel();
-
-        boolean expanded = tree.isExpanded(node);
-
-        TreeNodeIcon<ResourceNode> stateIcon = new TreeNodeIcon<>(tree, node, stateIcon(expanded));
-
-        NavLink label = new NavLink(model.getApplication().getRouter());
-        label.setLabel(model.getLabel(node));
-        label.setTarget(new FolderPlace(node.getId()));
-        label.setIcon(model.getIcon(node, expanded));
-
-        return label;
-    }
-
-    private Icon stateIcon(boolean expanded) {
-        if (expanded) {
-            return FontAwesome.ANGLE_DOWN;
-        } else {
-            return FontAwesome.ANGLE_RIGHT;
-        }
+        NavigationTreeModel model = (NavigationTreeModel) tree.getModel();
+        NavNode navNode = new NavNode(model.getApplication().getRouter(), node, tree);
+        navNode.setLabel(model.getLabel(node));
+        navNode.setTarget(new FolderPlace(node.getId()));
+        navNode.setIcon(model.getIcon(node, tree.isExpanded(node)));
+        return navNode;
     }
 }
