@@ -5,10 +5,13 @@ import com.google.apphosting.api.ApiProxy;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
+import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
@@ -19,10 +22,7 @@ import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +59,7 @@ public class HrdResourceStore implements ResourceStore {
     @Path("resource/{id}")
     @Produces("application/json")
     @Override
-    public Resource get(AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+    public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
             try(WorkspaceTransaction tx = beginRead(workspace, user)) {
@@ -172,6 +172,20 @@ public class HrdResourceStore implements ResourceStore {
             throw new RuntimeException(e);
         }
     }
+
+    @POST
+    @Path("query/cube")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
+        CubeBuilder builder = new CubeBuilder(new HrdStoreAccessor(datastore, workspaceLookup, user));
+        try {
+            return builder.buildCube(tableModel);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
