@@ -6,10 +6,12 @@ import org.activityinfo.ui.flux.action.Action;
 import org.activityinfo.ui.flux.store.Store;
 
 public class UpdateFieldAction implements Action<InstanceChangeHandler> {
+    private ResourceId instanceId;
     private ResourceId fieldValue;
     private FieldValue value;
 
-    public UpdateFieldAction(ResourceId fieldValue, FieldValue value) {
+    public UpdateFieldAction(ResourceId instanceId, ResourceId fieldValue, FieldValue value) {
+        this.instanceId = instanceId;
         this.fieldValue = fieldValue;
         this.value = value;
     }
@@ -21,6 +23,10 @@ public class UpdateFieldAction implements Action<InstanceChangeHandler> {
         }
     }
 
+    public ResourceId getInstanceId() {
+        return instanceId;
+    }
+
     public ResourceId getFieldId() {
         return fieldValue;
     }
@@ -28,4 +34,6 @@ public class UpdateFieldAction implements Action<InstanceChangeHandler> {
     public FieldValue getValue() {
         return value;
     }
+
+
 }

@@ -64,7 +64,6 @@ public class SiteTable extends ResourceMigrator {
                      "WHERE S.dateDeleted is null and " +
                         " A.dateDeleted is null and " +
                         " db.dateDeleted is null and" +
-                        " date1 is not null and date2 is not null AND " +
                         " S.activityId = " + activityId;
 
 
@@ -86,7 +85,11 @@ public class SiteTable extends ResourceMigrator {
 
                     int reportingFrequency = rs.getInt("ReportingFrequency");
                     if(reportingFrequency == ActivityTable.ONCE) {
-                        resource.set(field(classId, DATE_FIELD), dateInterval(rs));
+                        LocalDateInterval date = dateInterval(rs);
+                        if(date == null) {
+                            continue;
+                        }
+                        resource.set(field(classId, DATE_FIELD), date);
                     }
 
                     if(!isAdminBound(rs)) {
@@ -110,7 +113,13 @@ public class SiteTable extends ResourceMigrator {
 
     private LocalDateInterval dateInterval(ResultSet rs) throws SQLException {
         Date startDate = rs.getDate("date1");
+        if(rs.wasNull()) {
+            return null;
+        }
         Date endDate = rs.getDate("date2");
+        if(rs.wasNull()) {
+            return null;
+        }
         return new LocalDateInterval(new LocalDate(startDate), new LocalDate(endDate));
     }
 

@@ -1,11 +1,13 @@
 package org.activityinfo.service.store;
 
 import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 
@@ -91,6 +93,12 @@ public interface ResourceStore {
     @Consumes("application/json")
     @Produces("application/json")
     TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel);
+
+    @POST
+    @Path("query/cube")
+    @Consumes("application/json")
+    @Produces("application/json")
+    List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel);
 
 
     /**

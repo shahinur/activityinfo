@@ -2,6 +2,7 @@ package org.activityinfo.ui.app.client.form.control;
 
 import com.google.gwt.user.client.Event;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.ui.app.client.form.store.UpdateFieldAction;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
@@ -17,10 +18,12 @@ import org.activityinfo.ui.vdom.shared.tree.VTree;
 public class TextControl extends VComponent<TextControl> {
 
     private final Dispatcher dispatcher;
+    private ResourceId instanceId;
     private final FormField field;
 
-    public TextControl(Dispatcher dispatcher, FormField field) {
+    public TextControl(Dispatcher dispatcher, ResourceId instanceId, FormField field) {
         this.dispatcher = dispatcher;
+        this.instanceId = instanceId;
         this.field = field;
     }
 
@@ -39,7 +42,7 @@ public class TextControl extends VComponent<TextControl> {
         if(event.getTypeInt() == Event.ONCHANGE) {
             DomElement element = (DomElement)event.getEventTarget();
             String value = element.getInputValue();
-            dispatcher.dispatch(new UpdateFieldAction(field.getId(), TextValue.valueOf(value)));
+            dispatcher.dispatch(new UpdateFieldAction(instanceId, field.getId(), TextValue.valueOf(value)));
         }
     }
 }

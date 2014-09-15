@@ -15,7 +15,7 @@ public class ListFieldValue implements FieldValue, IsRecord {
     }
 
     public static FieldValue valueOf(FieldValue newElement) {
-        return ListFieldValue.valueOf(newElement);
+        return new ListFieldValue(ImmutableList.of(newElement));
     }
 
     public static ListFieldValue valueOf(List<? extends FieldValue> values) {

@@ -50,6 +50,9 @@ public class ExprParser {
 
             return new FunctionCallNode(function, expr, right);
 
+        } else if(token.getType() == TokenType.DOT) {
+            lexer.next();
+            return new CompoundExpr(expr, new SymbolExpr(expectNext(TokenType.SYMBOL, "Field name").getString()));
         } else {
             return expr;
         }

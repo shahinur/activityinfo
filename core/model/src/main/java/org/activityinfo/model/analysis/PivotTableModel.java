@@ -33,7 +33,7 @@ public class PivotTableModel implements IsRecord {
 
     public static FormClass getFormClass() {
         FormClass formClass = new FormClass(CLASS_ID);
-        formClass.addElement(new FormField(ResourceId.valueOf("measure"))
+        formClass.addElement(new FormField(ResourceId.valueOf("measures"))
         .setLabel("Measures")
         .setRequired(true)
         .setType(new ListFieldType(new SubFormType(MeasureModel.CLASS_ID))));
