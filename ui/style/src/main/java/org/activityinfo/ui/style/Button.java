@@ -1,12 +1,16 @@
 package org.activityinfo.ui.style;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.client.Event;
 import org.activityinfo.ui.vdom.shared.dom.DomEvent;
+import org.activityinfo.ui.vdom.shared.html.CssClass;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
+
+import java.util.List;
 
 public class Button extends VComponent {
 
@@ -14,6 +18,7 @@ public class Button extends VComponent {
     private ButtonSize size;
     private VTree[] content;
     private boolean enabled = true;
+    private List<CssClass> cssClasses = Lists.newArrayList();
 
     private ClickHandler clickHandler;
 
@@ -53,6 +58,11 @@ public class Button extends VComponent {
         this.clickHandler = clickHandler;
     }
 
+    public Button addCssClass(CssClass cssClass) {
+        cssClasses.add(cssClass);
+        return this;
+    }
+
     @Override
     public int getEventMask() {
         return clickHandler == null ? 0 : Event.ONCLICK;
@@ -74,6 +84,7 @@ public class Button extends VComponent {
         if(!enabled) {
             properties.set("disabled", "disabled");
         }
+        properties.addClassNames(cssClasses);
 
         return new VNode(HtmlTag.BUTTON, properties, content);
     }

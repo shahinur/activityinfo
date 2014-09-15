@@ -82,10 +82,8 @@ public class NavNode extends NavLink {
     @Override
     public void onBrowserEvent(DomEvent event) {
         if (event.getTypeInt() == Event.ONCLICK) {
-
             VDomLogger.event(this, "ONCLICK => " + getPropertiesForDebugging());
 
-            event.preventDefault();
             tree.onLabelClicked(node);
         }
     }

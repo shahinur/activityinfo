@@ -87,7 +87,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
             return new PageFrame(PAGE_ICON,
                 folder.get().getRootNode().getLabel(),
-                renderContents(folder.get().getRootNode()));
+                renderContents(folder.get().getRootNode()), application);
         }
     }
 

@@ -39,7 +39,7 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
         pageViews.add(new FolderPage(application));
         pageViews.add(new NewWorkspacePage(application));
         pageViews.add(new PivotPage(application));
-        pageViews.add(new HomePage());
+        pageViews.add(new HomePage(application));
 
         pageView = pageViewForCurrentPlace();
     }

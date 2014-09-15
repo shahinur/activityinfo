@@ -5,6 +5,7 @@ import org.activityinfo.ui.vdom.shared.html.CssClass;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -48,7 +49,13 @@ public class PropMap {
         if(classNameValue == null) {
             set("className", newClass.getClassNames());
         } else {
-            set("classNames", classNameValue + " " + newClass);
+            set("className", classNameValue + " " + newClass.getClassNames());
+        }
+    }
+
+    public void addClassNames(List<CssClass> newClass) {
+        for (CssClass cssClass : newClass) {
+            addClassName(cssClass);
         }
     }
 

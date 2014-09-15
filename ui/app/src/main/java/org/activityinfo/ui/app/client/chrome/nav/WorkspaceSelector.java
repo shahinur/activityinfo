@@ -6,6 +6,7 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.page.create.NewWorkspacePlace;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
+import org.activityinfo.ui.app.client.page.folder.FolderPlaceType;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.icons.FontAwesome;
@@ -50,7 +51,7 @@ public class WorkspaceSelector extends VComponent implements StoreChangeListener
         for (ResourceNode node : application.getWorkspaceStore().get()) {
             NavLink link = new NavLink(application.getRouter());
             link.setLabel(node.getLabel());
-            link.setTarget(new FolderPlace(node.getId()));
+            link.setTarget(new FolderPlace(node.getId(), FolderPlaceType.WORKSPACE));
             link.setIcon(FontAwesome.TH_LARGE);
             items.add(link);
         }
