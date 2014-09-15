@@ -124,9 +124,13 @@ public class AccessControlRule implements IsResource {
 
         AccessControlRule rule = new AccessControlRule(resourceId, principal.getResourceId());
         rule.setResourceId(resource.getOwnerId());
-        rule.setOwner(resource.getBoolean("owner"));
-        rule.setViewCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getRecord("view")));
-        rule.setEditCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getRecord("edit")));
+        if (resource.getBoolean("owner")) {
+            rule.setOwner(true);
+        } else {
+            rule.setOwner(false);
+            rule.setViewCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getRecord("view")));
+            rule.setEditCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getRecord("edit")));
+        }
         return rule;
     }
 }
