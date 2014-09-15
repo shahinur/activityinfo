@@ -1,8 +1,11 @@
 package org.activityinfo.ui.vdom.shared.tree;
 
+import org.activityinfo.ui.vdom.shared.html.Children;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class VNode extends VTree {
@@ -45,6 +48,10 @@ public class VNode extends VTree {
 
     public VNode(Tag tag, PropMap properties, VTree... children) {
         this(tag, properties, children, null, null);
+    }
+
+    public VNode(Tag tag, PropMap properties, List<VTree> children) {
+        this(tag, properties, Children.toArray(children), null, null);
     }
 
     public VNode(@Nonnull Tag tag,

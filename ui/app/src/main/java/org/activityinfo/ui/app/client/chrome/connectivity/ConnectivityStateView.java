@@ -34,24 +34,24 @@ public class ConnectivityStateView {
     public ConnectivityStateView(Application application) {
         this.application = application;
         if (GWT.isClient()) {
-            listenConnectivityEvents();
+//            listenConnectivityEvents();
         }
     }
 
-    public native void listenConnectivityEvents() /*-{
-
-        function onOnline(event) {
-            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView::setOnline())
-        }
-
-        function onOffline(event) {
-            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView::setOffline())
-        }
-
-        $wnd.addEventListener('online',  onOnline);
-        $wnd.addEventListener('offline', onOffline);
-
-    }-*/;
+//    public native void listenConnectivityEvents() /*-{
+//
+//        function onOnline(event) {
+//            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView::setOnline())
+//        }
+//
+//        function onOffline(event) {
+//            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView::setOffline())
+//        }
+//
+//        $wnd.addEventListener('online',  onOnline);
+//        $wnd.addEventListener('offline', onOffline);
+//
+//    }-*/;
 
     public void setOnline() {
         application.getDispatcher().dispatch(new UpdateConnectivityAction(ConnectivityState.ONLINE));
