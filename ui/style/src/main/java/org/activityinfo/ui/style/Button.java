@@ -19,6 +19,7 @@ public class Button extends VComponent {
     private VTree[] content;
     private boolean enabled = true;
     private List<CssClass> cssClasses = Lists.newArrayList();
+    private PropMap propMap;
 
     private ClickHandler clickHandler;
 
@@ -35,6 +36,11 @@ public class Button extends VComponent {
 
     public Button(ButtonStyle style, VTree... content) {
         this.style = style;
+        this.content = content;
+    }
+
+    public Button(PropMap propMap, VTree[] content) {
+        this.propMap = propMap;
         this.content = content;
     }
 
@@ -58,6 +64,14 @@ public class Button extends VComponent {
         this.clickHandler = clickHandler;
     }
 
+    public PropMap getPropMap() {
+        return propMap;
+    }
+
+    public void setPropMap(PropMap propMap) {
+        this.propMap = propMap;
+    }
+
     public Button addCssClass(CssClass cssClass) {
         cssClasses.add(cssClass);
         return this;
@@ -77,7 +91,7 @@ public class Button extends VComponent {
 
     @Override
     protected VTree render() {
-        PropMap properties = PropMap.withClasses(style.getClassNames());
+        PropMap properties = propMap != null ? propMap : PropMap.withClasses(style.getClassNames());
         if(size != null) {
             properties.addClassName(size.getClassNames());
         }
