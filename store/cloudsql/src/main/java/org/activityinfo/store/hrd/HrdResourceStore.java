@@ -175,7 +175,7 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
-        return WorkspaceIndex.queryUserWorkspaces(datastore, user);
+        return WorkspaceIndex.queryUserWorkspaces(datastore, user, workspaceLookup);
     }
 
 
