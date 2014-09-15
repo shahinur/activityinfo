@@ -13,14 +13,26 @@ public class FolderPlace implements Place {
 
     @Nonnull
     private final ResourceId resourceId;
+    @Nonnull
+    private final FolderPlaceType type;
 
     public FolderPlace(@Nonnull ResourceId resourceId) {
+        this(resourceId, FolderPlaceType.FOLDER);
+    }
+
+    public FolderPlace(@Nonnull ResourceId resourceId, FolderPlaceType type) {
         this.resourceId = resourceId;
+        this.type = type;
+    }
+
+    @Nonnull
+    public FolderPlaceType getType() {
+        return type;
     }
 
     @Override
     public String[] getPath() {
-        return new String[] { "folder", resourceId.asString() };
+        return new String[] {type.getValue(), resourceId.asString() };
     }
 
     public ResourceId getResourceId() {
@@ -39,8 +51,8 @@ public class FolderPlace implements Place {
 
         @Override
         public Place tryParse(String[] path) {
-            if(path.length >= 2 && "folder".equals(path[0])) {
-                return new FolderPlace(ResourceId.valueOf(path[1]));
+            if(path.length >= 2 && ("folder".equals(path[0]) || "workspace".equals(path[0]))) {
+                return new FolderPlace(ResourceId.valueOf(path[1]), FolderPlaceType.fromValue(path[0]));
             }
             return null;
         }
@@ -50,6 +62,7 @@ public class FolderPlace implements Place {
     public String toString() {
         return "FolderPlace{" +
             "resourceId=" + resourceId +
+            "type=" + type +
             '}';
     }
 
@@ -61,13 +74,15 @@ public class FolderPlace implements Place {
 
         FolderPlace that = (FolderPlace) o;
 
-        if (!resourceId.equals(that.resourceId)) return false;
+        if (resourceId != null ? !resourceId.equals(that.resourceId) : that.resourceId != null) return false;
+        return type == that.type;
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        return resourceId.hashCode();
+        int result = resourceId != null ? resourceId.hashCode() : 0;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        return result;
     }
 }

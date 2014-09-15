@@ -39,7 +39,7 @@ public class PivotPage extends PageView {
             Grid.row(
                 Grid.column(3, measureList),
                 Grid.column(3, previewPanel)
-            ));
+            ), application);
     }
 
     @Override

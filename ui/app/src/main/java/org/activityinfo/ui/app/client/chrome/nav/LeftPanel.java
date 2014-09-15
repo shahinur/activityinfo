@@ -31,7 +31,6 @@ public class LeftPanel extends VComponent<LeftPanel> {
     private static VTree innerPanel(Application application) {
          return H.div(LEFTPANELINNER,
              new SidebarTitle(I18N.CONSTANTS.workspaces()),
-             new WorkspaceSelector(application),
              new NavigationTree(application));
     }
 }
