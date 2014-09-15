@@ -59,7 +59,7 @@ public class HrdResourceStore implements ResourceStore {
     @Path("resource/{id}")
     @Produces("application/json")
     @Override
-    public Resource get(AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+    public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
             try(WorkspaceTransaction tx = beginRead(workspace, user)) {
