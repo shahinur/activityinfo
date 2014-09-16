@@ -5,7 +5,6 @@ import org.activityinfo.ui.app.client.page.create.NewWorkspacePlace;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.home.HomePlace;
-import org.activityinfo.ui.app.client.page.pivot.PivotPlace;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class PlaceMapper {
         parsers.add(new FormPlace.Parser());
         parsers.add(new FolderPlace.Parser());
         parsers.add(new NewWorkspacePlace.Parser());
-        parsers.add(new PivotPlace.Parser());
+        parsers.add(new ResourcePlace.Parser());
     }
 
     public Place parse(String url) {

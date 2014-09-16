@@ -345,6 +345,7 @@ public class ActivityTable extends ResourceMigrator {
         ResourceId classId = context.resourceId(ACTIVITY_DOMAIN, activityId);
 
         FormClass siteForm = new FormClass(classId);
+        siteForm.setOwnerId(ownerId);
         siteForm.setLabel(rs.getString("name"));
         siteForm.setParentId(ownerId);
 

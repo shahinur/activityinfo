@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
 
@@ -47,6 +48,17 @@ public class ListFieldValue implements FieldValue, IsRecord {
             elements.add(((IsRecord) value).asRecord());
         }
 
-        return new Record().set("elements", elements);
+        return new Record()
+            .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
+            .set("elements", elements);
+    }
+
+    public static ListFieldValue ofSubForms(List<? extends IsRecord> subForms) {
+        ImmutableList.Builder<SubFormValue> listBuilder = new ImmutableList.Builder<>();
+        for(IsRecord subForm : subForms) {
+            Record record = subForm.asRecord();
+            listBuilder.add(new SubFormValue(ResourceId.valueOf(record.isString("classId")), record));
+        }
+        return new ListFieldValue(listBuilder.build());
     }
 }

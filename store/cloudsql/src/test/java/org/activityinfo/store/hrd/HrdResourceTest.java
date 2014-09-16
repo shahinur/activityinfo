@@ -95,7 +95,7 @@ public class HrdResourceTest {
         assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
         assertThat(tree.getRootNode().getId(), Matchers.equalTo(divA.getId()));
         assertThat(tree.getRootNode().getChildren().get(0).getId(), Matchers.equalTo(formClass.getId()));
-
+        assertThat(tree.getRootNode().getChildren().get(0).getOwnerId(), Matchers.equalTo(divA.getId()));
     }
 
     @Test
