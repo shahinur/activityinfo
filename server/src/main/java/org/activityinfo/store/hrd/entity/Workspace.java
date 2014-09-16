@@ -2,7 +2,7 @@ package org.activityinfo.store.hrd.entity;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.search.checkers.Preconditions;
+import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -107,6 +107,9 @@ public class Workspace {
      * @return the new version of the resource
      */
     public long createResource(WorkspaceTransaction tx, Resource resource) {
+
+        Preconditions.checkNotNull(resource.getOwnerId());
+
         resource = resource.copy();
         resource.setVersion(tx.incrementVersion());
 
