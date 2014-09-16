@@ -125,7 +125,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
         if(node.getClassId().equals(FormClass.CLASS_ID)) {
             return Router.uri(new FormPlace(node.getId(), FormViewType.TABLE));
         } else if(node.getClassId().equals(FolderClass.CLASS_ID)) {
-            return Router.uri(new FolderPlace(node.getClassId()));
+            return Router.uri(new FolderPlace(node.getClassId(), FolderPlaceType.FOLDER));
         } else {
             return UriUtils.fromTrustedString("#");
         }
