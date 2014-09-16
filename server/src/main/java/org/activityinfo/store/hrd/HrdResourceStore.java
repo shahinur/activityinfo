@@ -110,13 +110,8 @@ public class HrdResourceStore implements ResourceStore {
         Workspace workspace = workspaceLookup.lookup(resource.getId());
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
-
-            workspace.getLatestContent(resource.getId()).get(tx);
             newVersion = workspace.createResource(tx, resource);
             tx.commit();
-
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFound(resource.getId());
         }
 
         return UpdateResult.committed(resource.getId(), newVersion);
@@ -135,18 +130,16 @@ public class HrdResourceStore implements ResourceStore {
 
         } else {
 
-            Workspace workspace;
-            if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
-                workspace = new Workspace(resource.getId());
-            } else {
-                workspace = workspaceLookup.lookup(resource.getOwnerId());
-            }
+            Workspace workspace = workspaceLookup.lookup(resource.getOwnerId());
 
             try (WorkspaceTransaction tx = begin(workspace, user)) {
-
-                newVersion = workspace.createResource(tx, resource);
-                tx.commit();
-
+                try {
+                    workspace.getLatestContent(resource.getId()).get(tx);
+                    return UpdateResult.rejected();
+                } catch (EntityNotFoundException e) {
+                    newVersion = workspace.createResource(tx, resource);
+                    tx.commit();
+                }
             }
 
             // Cache immediately so that subsequent will be able to find the resource
