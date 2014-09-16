@@ -7,9 +7,14 @@ import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.home.HomePlace;
 import org.activityinfo.ui.app.client.page.pivot.PivotPlace;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PlaceMapper {
+
+    private static final Logger LOGGER = Logger.getLogger(PlaceMapper.class.getName());
 
     private final List<PlaceParser> parsers = Lists.newArrayList();
 
@@ -23,9 +28,13 @@ public class PlaceMapper {
     public Place parse(String url) {
         String tokens[] = parseToken(url);
         for(PlaceParser tokenizer : parsers) {
-            Place place = tokenizer.tryParse(tokens);
-            if(place != null) {
-                return place;
+            try {
+                Place place = tokenizer.tryParse(tokens);
+                if (place != null) {
+                    return place;
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.FINE, "Failed to parse tokens: " + Arrays.toString(tokens) + ". " + e.getMessage());
             }
         }
         return HomePlace.INSTANCE;
