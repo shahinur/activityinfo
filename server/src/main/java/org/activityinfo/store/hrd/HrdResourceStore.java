@@ -148,6 +148,7 @@ public class HrdResourceStore implements ResourceStore {
             try(WorkspaceTransaction tx = begin(workspace, user)) {
                 newVersion = workspace.createWorkspace(tx, resource);
                 tx.commit();
+                return UpdateResult.committed(resource.getId(), newVersion);
             }
 
         } else {
@@ -155,21 +156,32 @@ public class HrdResourceStore implements ResourceStore {
             Workspace workspace = workspaceLookup.lookup(resource.getOwnerId());
 
             try (WorkspaceTransaction tx = begin(workspace, user)) {
-                try {
-                    workspace.getLatestContent(resource.getId()).get(tx);
-                    return UpdateResult.rejected();
-                } catch (EntityNotFoundException e) {
-                    newVersion = workspace.createResource(tx, resource);
-                    tx.commit();
+                for (AccessControlRule acr : AcrIndex.queryRules(tx, resource.getId())) {
+                    final Boolean access = hasAccess(acr, user, resource.getId());
+                    if (access != null) {
+                        if (access) {
+                            try {
+                                workspace.getLatestContent(resource.getId()).get(tx);
+                                return UpdateResult.rejected();
+                            } catch (EntityNotFoundException e) {
+                                newVersion = workspace.createResource(tx, resource);
+                                tx.commit();
+
+                                // Cache immediately so that subsequent will be able to find the resource
+                                // if it takes a while for the indices to catch up
+                                workspaceLookup.cache(resource.getId(), workspace);
+
+                                return UpdateResult.committed(resource.getId(), newVersion);
+                            }
+                        } else {
+                            throw new WebApplicationException(UNAUTHORIZED);
+                        }
+                    }
                 }
             }
 
-            // Cache immediately so that subsequent will be able to find the resource
-            // if it takes a while for the indices to catch up
-            workspaceLookup.cache(resource.getId(), workspace);
+            throw new WebApplicationException(UNAUTHORIZED);
         }
-
-        return UpdateResult.committed(resource.getId(), newVersion);
     }
 
 
