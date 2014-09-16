@@ -11,6 +11,7 @@ import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
 import org.activityinfo.ui.app.client.store.Router;
@@ -78,7 +79,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
         Status<FolderProjection> folder = getFolder();
 
         if(!folder.isAvailable()) {
-            return new PagePreLoader(folder);
+            return new PagePreLoader();
 
         } else {
 
@@ -96,7 +97,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
             div(BaseStyles.ROW,
                 listColumn(folder),
                 timelineColumn(),
-                helpColumn()));
+                helpColumn(folder)));
     }
 
     private static VTree listColumn(ResourceNode page) {
@@ -125,7 +126,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
         if(node.getClassId().equals(FormClass.CLASS_ID)) {
             return Router.uri(new FormPlace(node.getId(), FormViewType.TABLE));
         } else if(node.getClassId().equals(FolderClass.CLASS_ID)) {
-            return Router.uri(new FolderPlace(node.getClassId()));
+            return Router.uri(new FolderPlace(node.getId()));
         } else {
             return UriUtils.fromTrustedString("#");
         }
@@ -159,10 +160,9 @@ public class FolderPage extends PageView implements StoreChangeListener {
         return Grid.column(4, new Panel("Recent Activity", p("Todo...")));
     }
 
-    private static VTree helpColumn() {
+    private VTree helpColumn(ResourceNode folder) {
         return Grid.column(3,
-            new Panel("Common Tasks", p("Todo...")),
-            new Panel("Administration", p("Todo..."))
-        );
+            new TasksPanel(application, folder.getId()),
+            new Panel("Administration", p("Todo...")));
     }
 }

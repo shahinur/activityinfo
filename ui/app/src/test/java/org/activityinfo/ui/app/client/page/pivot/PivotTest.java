@@ -68,6 +68,26 @@ public class PivotTest {
 //
 
 
+
+    @Test
+    public void serialization() throws Exception {
+
+        PivotTableModel model = new PivotTableModel();
+
+        MeasureModel iniCost = new MeasureModel();
+        iniCost.setId("HP_1_IN_HDW");
+        iniCost.setLabel("HP1 Capital cost hand-dug wells as designed: Initial");
+        iniCost.setSource(costs.getId());
+        iniCost.setValueExpression("V_InCostAgg");
+        iniCost.setMeasurementType(MeasurementType.FLOW);
+        iniCost.setCriteriaExpression("[System Identifier]=='Hand Dug Wells (All)'");
+        model.addMeasure(iniCost);
+
+        Record record = model.asRecord();
+
+        execute(PivotTableModel.fromRecord(record));
+    }
+
     @Test
     public void hp1() throws Exception {
         dumpIndicators();
@@ -130,7 +150,6 @@ public class PivotTest {
         population.setValueExpression("[Camp Population]");
         population.setCriteriaExpression("[Year]=='2012'");
         population.setMeasurementType(MeasurementType.STOCK);
-        population.setAggregationFunction(AggregationFunction.MEAN);
         model.addMeasure(population);
 
         MeasureModel points = new MeasureModel();
@@ -138,7 +157,7 @@ public class PivotTest {
         points.setValueExpression("[TPSfnct]");
         points.setCriteriaExpression("[Site].[Water Collection Point Identifier]=='Water trucking' && [Year]=='2012'");
         points.setMeasurementType(MeasurementType.STOCK);
-        points.setAggregationFunction(AggregationFunction.MEAN);
+        //points.setAggregationFunction(AggregationFunction.MEAN);
         model.addMeasure(points);
 
         execute(model);
@@ -162,7 +181,7 @@ public class PivotTest {
             cost.setValueExpression(name);
             cost.setCriteriaExpression("[System Identifier]=='Emergency (Trucking/prov. PS)'");
             cost.setMeasurementType(MeasurementType.FLOW);
-            cost.setAggregationFunction(AggregationFunction.SUM);
+            //cost.setAggregationFunction(AggregationFunction.SUM);
             model.addMeasure(cost);
         }
 

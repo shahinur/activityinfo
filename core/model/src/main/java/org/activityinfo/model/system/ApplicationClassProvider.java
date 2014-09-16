@@ -50,4 +50,8 @@ public class ApplicationClassProvider {
         }
         return formClass;
     }
+
+    public boolean isApplicationFormClass(ResourceId id) {
+        return id.asString().startsWith("_");
+    }
 }

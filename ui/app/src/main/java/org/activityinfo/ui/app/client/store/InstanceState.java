@@ -25,6 +25,7 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
     private Map<ResourceId, FieldState> fields = Maps.newHashMap();
 
     private boolean valid;
+    private boolean dirty;
 
     public InstanceState(@Nonnull Dispatcher dispatcher, @Nonnull FormClass formClass,
                          @Nonnull FormInstance instance) {
@@ -72,6 +73,10 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
         }
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
     @Override
     public void appendListItem(AddListItemAction action) {
         if(action.getInstanceId().equals(instance.getId())) {
@@ -103,7 +108,6 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
     public boolean isValid() {
         return validate();
     }
-
 
 
 }

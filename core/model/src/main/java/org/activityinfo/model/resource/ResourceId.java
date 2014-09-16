@@ -21,6 +21,7 @@ public final class ResourceId {
      * used as a Jersey {@code @PathParam}
      */
     public static ResourceId valueOf(@Nonnull String string) {
+        assert string != null;
         return new ResourceId(string);
     }
 

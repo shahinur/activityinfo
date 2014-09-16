@@ -1,37 +1,49 @@
 package org.activityinfo.ui.app.client.page.pivot;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.ResourcePlace;
+import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.InstanceState;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
+import org.activityinfo.ui.style.ClickHandler;
 import org.activityinfo.ui.style.Grid;
 import org.activityinfo.ui.style.Panel;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-import static org.activityinfo.ui.vdom.shared.html.H.p;
-
 public class PivotPage extends PageView implements StoreChangeListener {
 
     private final Application application;
-    private final MeasureList measureList;
+    private final PivotSideBar pivotSideBar;
 
     private final InstanceState workingDraft;
 
-    public PivotPage(Application application) {
-        this.application = application;
-        this.workingDraft = new InstanceState(application.getDispatcher(), PivotTableModel.getFormClass(),
-            new FormInstance(Resources.generateId(), PivotTableModel.CLASS_ID));
+    private final PivotTablePreview preview;
 
-        this.measureList = new MeasureList(application, workingDraft.getState(ResourceId.valueOf("measures")));
+    public PivotPage(Application application, FormClass formClass, Resource resource) {
+        this.application = application;
+
+        this.workingDraft = new InstanceState(application.getDispatcher(), formClass,
+            FormInstance.fromResource(resource));
+
+        this.pivotSideBar = new PivotSideBar(application, workingDraft.getState(ResourceId.valueOf("measures")));
+        this.pivotSideBar.getSaveButton().setClickHandler(new ClickHandler() {
+            @Override
+            public void onClicked() {
+                save();
+            }
+        });
+
+        this.preview = new PivotTablePreview(application, workingDraft);
     }
 
 
@@ -41,8 +53,8 @@ public class PivotPage extends PageView implements StoreChangeListener {
     }
 
     @VisibleForTesting
-    MeasureList getMeasureList() {
-        return measureList;
+    PivotSideBar getPivotSideBar() {
+        return pivotSideBar;
     }
 
     @Override
@@ -52,7 +64,7 @@ public class PivotPage extends PageView implements StoreChangeListener {
 
     @Override
     public void onStoreChanged(Store store) {
-        this.measureList.refresh();
+        this.pivotSideBar.refresh();
     }
 
     @Override
@@ -63,18 +75,21 @@ public class PivotPage extends PageView implements StoreChangeListener {
     @Override
     protected VTree render() {
 
-        Panel previewPanel = new Panel("Preview", p("hello world!"));
-
         return new PageFrame(FontAwesome.TABLE, "Pivot Table",
             Grid.row(
-                Grid.column(3, measureList),
-                Grid.column(3, previewPanel)
+                Grid.column(3, pivotSideBar),
+                Grid.column(9, new Panel(preview))
             ));
     }
 
+    private void save() {
+        application.getRequestDispatcher().execute(new SaveRequest(workingDraft.getUpdatedResource()));
+    }
+
+
     @Override
     public boolean accepts(Place place) {
-        return place instanceof PivotPlace;
+        return place instanceof ResourcePlace;
     }
 
 }

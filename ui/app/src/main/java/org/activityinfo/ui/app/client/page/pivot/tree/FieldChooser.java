@@ -42,7 +42,7 @@ public class FieldChooser extends VComponent implements StoreChangeListener {
 
     private Step currentStep;
 
-    private AcceptHandler<FormField> acceptHandler;
+    private FieldSelectHandler acceptHandler;
 
     public FieldChooser(Application application) {
         this.application = application;
@@ -125,11 +125,11 @@ public class FieldChooser extends VComponent implements StoreChangeListener {
         }
     }
 
-    public AcceptHandler<FormField> getAcceptHandler() {
+    public FieldSelectHandler getAcceptHandler() {
         return acceptHandler;
     }
 
-    public void setAcceptHandler(AcceptHandler<FormField> acceptHandler) {
+    public void setAcceptHandler(FieldSelectHandler acceptHandler) {
         this.acceptHandler = acceptHandler;
     }
 
@@ -139,7 +139,7 @@ public class FieldChooser extends VComponent implements StoreChangeListener {
 
         FormField field = formClass.getField(ResourceId.valueOf(fieldSelection.getSelectedKey()));
         if(acceptHandler != null) {
-            acceptHandler.onAccepted(field);
+            acceptHandler.onAccepted(formClass, field);
         }
         setVisible(false);
     }

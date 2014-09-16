@@ -2,10 +2,12 @@ package org.activityinfo.ui.app.client.page.create;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
@@ -50,6 +52,11 @@ public class MockRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<TableData> queryTable(TableModel tableModel) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Promise<List<Bucket>> queryCube(PivotTableModel cubeModel) {
+        return Promise.rejected(new UnsupportedOperationException());
     }
 
     @Override
