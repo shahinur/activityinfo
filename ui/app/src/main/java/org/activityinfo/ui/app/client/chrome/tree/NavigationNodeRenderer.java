@@ -37,7 +37,7 @@ public class NavigationNodeRenderer implements TreeNodeRenderer<ResourceNode> {
     @Override
     public VTree renderNode(final ResourceNode node, final TreeComponent<ResourceNode> tree) {
         NavigationTreeModel model = (NavigationTreeModel) tree.getModel();
-        FolderPlaceType placeType = node.getOwnerId().equals(Resources.ROOT_ID) ? FolderPlaceType.WORKSPACE : FolderPlaceType.FOLDER;
+        FolderPlaceType placeType = Resources.ROOT_ID.equals(node.getOwnerId()) ? FolderPlaceType.WORKSPACE : FolderPlaceType.FOLDER;
 
         NavNode navNode = new NavNode(model.getApplication().getRouter(), node, tree);
         navNode.setLabel(model.getLabel(node));
