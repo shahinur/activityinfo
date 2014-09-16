@@ -48,7 +48,7 @@ public class PropMap {
         if(classNameValue == null) {
             set("className", newClass.getClassNames());
         } else {
-            set("classNames", classNameValue + " " + newClass);
+            set("className", classNameValue + " " + newClass);
         }
     }
 

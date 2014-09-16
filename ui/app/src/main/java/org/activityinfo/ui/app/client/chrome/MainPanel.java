@@ -4,10 +4,10 @@ import com.google.common.collect.Lists;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.ResourcePageView;
 import org.activityinfo.ui.app.client.page.create.NewWorkspacePage;
 import org.activityinfo.ui.app.client.page.folder.FolderPage;
 import org.activityinfo.ui.app.client.page.home.HomePage;
-import org.activityinfo.ui.app.client.page.pivot.PivotPage;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
@@ -29,7 +29,7 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
 
     private final HeaderBar headerBar;
 
-   private PageView pageView;
+    private PageView pageView;
 
     public MainPanel(Application application) {
         this.application = application;
@@ -38,7 +38,7 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
 
         pageViews.add(new FolderPage(application));
         pageViews.add(new NewWorkspacePage(application));
-        pageViews.add(new PivotPage(application));
+        pageViews.add(new ResourcePageView(application));
         pageViews.add(new HomePage());
 
         pageView = pageViewForCurrentPlace();

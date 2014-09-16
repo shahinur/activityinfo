@@ -29,6 +29,10 @@ public class TestFormClass {
         return this;
     }
 
+    public FormClass get() {
+        return formClass;
+    }
+
     public ResourceId getId() {
         return formClass.getId();
     }
@@ -39,5 +43,9 @@ public class TestFormClass {
         field.setType(new QuantityType().setUnits(units));
         formClass.addElement(field);
         return field;
+    }
+
+    public TestInstance newInstance() {
+        return new TestInstance(scenario, formClass);
     }
 }

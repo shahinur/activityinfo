@@ -1,53 +1,58 @@
 package org.activityinfo.ui.app.client.page.pivot;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.activityinfo.model.analysis.AggregationFunction;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.analysis.MeasureModel;
 import org.activityinfo.model.analysis.MeasurementType;
 import org.activityinfo.model.expr.SymbolExpr;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ListFieldValue;
 import org.activityinfo.model.type.SubFormValue;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.form.store.AddListItemAction;
 import org.activityinfo.ui.app.client.form.store.FieldState;
-import org.activityinfo.ui.app.client.page.pivot.tree.AcceptHandler;
 import org.activityinfo.ui.app.client.page.pivot.tree.FieldChooser;
+import org.activityinfo.ui.app.client.page.pivot.tree.FieldSelectHandler;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.Button;
 import org.activityinfo.ui.style.ButtonStyle;
 import org.activityinfo.ui.style.ClickHandler;
-import org.activityinfo.ui.style.icons.FontAwesome;
-import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.VComponent;
-import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VTree;
+import org.activityinfo.ui.vdom.shared.html.HtmlTag;
+import org.activityinfo.ui.vdom.shared.tree.*;
 
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
-public class MeasureList extends VComponent {
+public class PivotSideBar extends VComponent {
 
     private FieldChooser fieldChooser;
-    private final Button addButton;
+    private final AddLink addButton;
     private Application application;
+
+    private Button saveButton;
+
     private FieldState state;
 
-    public MeasureList(Application application, FieldState state) {
+    public PivotSideBar(Application application, FieldState state) {
         assert state != null;
         this.application = application;
         this.state = state;
         fieldChooser = new FieldChooser(application);
-        addButton = new Button(ButtonStyle.PRIMARY, FontAwesome.PLUS.render(), t(" "), t("Add Measure"));
-        addButton.setClickHandler(new ClickHandler() {
+
+        saveButton = new Button(ButtonStyle.PRIMARY, t(I18N.CONSTANTS.save()));
+        saveButton.setBlock(true);
+
+        addButton = new AddLink(I18N.CONSTANTS.addIndicator(), new ClickHandler() {
             @Override
             public void onClicked() {
                 fieldChooser.showFormSelection();
                 fieldChooser.setVisible(true);
-                fieldChooser.setAcceptHandler(new AcceptHandler<FormField>() {
+                fieldChooser.setAcceptHandler(new FieldSelectHandler() {
                     @Override
-                    public void onAccepted(FormField value) {
-                        onMeasureSelected(value);
+                    public void onAccepted(FormClass formClass, FormField value) {
+                        onMeasureSelected(formClass, value);
                     }
                 });
             }
@@ -56,10 +61,10 @@ public class MeasureList extends VComponent {
 
     @Override
     protected VTree render() {
-        return div(PropMap.EMPTY,
+        return div(BaseStyles.FM_SIDEBAR,
+            saveButton,
             subtitle(),
-            ul(measureList()),
-            addButton,
+            ul(BaseStyles.FOLDER_LIST, measureList()),
             fieldChooser);
     }
 
@@ -77,9 +82,17 @@ public class MeasureList extends VComponent {
         }
     }
 
+    public Button getSaveButton() {
+        return saveButton;
+    }
 
     private VNode subtitle() {
-        return h4(PropMap.withClasses(BaseStyles.SUBTITLE), t("Measures"));
+        return new VNode(HtmlTag.H5, PropMap
+            .withClasses(BaseStyles.SUBTITLE)
+            .setStyle(new Style().set("marginTop", "30px")),
+            t(I18N.CONSTANTS.indicators()),
+            addButton
+            );
     }
 
     private VTree renderMeasure(FieldValue item) {
@@ -92,12 +105,13 @@ public class MeasureList extends VComponent {
     }
 
     @VisibleForTesting
-    void onMeasureSelected(FormField value) {
+    void onMeasureSelected(FormClass formClass, FormField value) {
 
         MeasureModel measure = new MeasureModel();
+        measure.setId(Resources.generateId().asString());
+        measure.setSource(formClass.getId());
         measure.setLabel(value.getLabel());
         measure.setValueExpression(new SymbolExpr(value.getId()).asExpression());
-        measure.setAggregationFunction(AggregationFunction.SUM);
         measure.setMeasurementType(MeasurementType.FLOW);
 
         SubFormValue fieldValue = new SubFormValue(MeasureModel.CLASS_ID, measure.asRecord());

@@ -5,6 +5,7 @@ import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceIdPrefixType;
 
 public class SubFormType implements FieldType {
 
@@ -24,7 +25,7 @@ public class SubFormType implements FieldType {
 
         @Override
         public FormClass getParameterFormClass() {
-            throw new UnsupportedOperationException("todo");
+            return new FormClass(ResourceIdPrefixType.TYPE.id(getId()));
         }
 
         @Override

@@ -10,6 +10,7 @@ import org.activityinfo.model.resource.ResourceNode;
 public class ResourceTreeParser implements Function<Response, FolderProjection> {
     @Override
     public FolderProjection apply(Response input) {
+        System.out.println(input.getText());
         ResourceTreeOverlay overlay = JsonUtils.safeEval(input.getText());
         ResourceNode root = parse(overlay.getRootNode());
         return new FolderProjection(root);

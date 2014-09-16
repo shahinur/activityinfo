@@ -6,6 +6,7 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.store.test.TestResourceStore;
 import org.activityinfo.ui.app.client.request.FetchWorkspaces;
 import org.activityinfo.ui.app.client.request.Request;
@@ -57,7 +58,7 @@ public class TestScenario {
         return renderContext;
     }
 
-    public void request(Request request) {
-        application.getRequestDispatcher().execute(request);
+    public <T> Promise<T> request(Request<T> request) {
+        return application.getRequestDispatcher().execute(request);
     }
 }
