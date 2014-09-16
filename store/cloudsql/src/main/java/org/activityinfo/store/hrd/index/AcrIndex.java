@@ -35,12 +35,14 @@ public class AcrIndex {
         return new Workspace(resourceId).getRootKey();
     }
 
-    public Entity put(AccessControlRule rule) {
+    public static void put(WorkspaceTransaction workspaceTransaction, AccessControlRule rule) {
         Entity entity = new Entity(key(rule.getResourceId(), rule.getPrincipalId()));
         entity.setUnindexedProperty("owner", rule.isOwner());
         entity.setUnindexedProperty("view", toString(rule.getViewCondition()));
         entity.setUnindexedProperty("edit", toString(rule.getEditCondition()));
-        return entity;
+
+        workspaceTransaction.put(entity);
+        workspaceTransaction.getWorkspace().createResource(workspaceTransaction, rule.asResource());
     }
 
     public static AccessControlRule get(WorkspaceTransaction versionedTransaction,
@@ -70,6 +72,16 @@ public class AcrIndex {
         return rule;
     }
 
+    public static Iterable<AccessControlRule> queryRules(WorkspaceTransaction tx, ResourceId resourceId) {
+        Query query = new Query(KIND, parentKey(resourceId));
+        return Iterables.transform(tx.prepare(query).asIterable(), new Function<Entity, AccessControlRule>() {
+            @Override
+            public AccessControlRule apply(Entity input) {
+                return fromEntity(input);
+            }
+        });
+    }
+
     public static Iterable<Resource> queryRules(DatastoreService datastore, ResourceId resourceId) {
         Query query = new Query(KIND, parentKey(resourceId));
         return Iterables.transform(datastore.prepare(query).asIterable(), new Function<Entity, Resource>() {
@@ -80,11 +92,11 @@ public class AcrIndex {
         });
     }
 
-    private Object toString(ExprValue viewCondition) {
-        if(viewCondition == null) {
+    private static Object toString(ExprValue condition) {
+        if(condition == null) {
             return null;
         } else {
-            return viewCondition.getExpression();
+            return condition.getExpression();
         }
     }
 }
