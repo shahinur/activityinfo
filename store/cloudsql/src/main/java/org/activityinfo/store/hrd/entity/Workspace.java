@@ -7,6 +7,7 @@ import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 
 /**
@@ -89,9 +90,7 @@ public class Workspace {
 
         AccessControlRule acr = new AccessControlRule(resource.getId(), tx.getUser().getUserResourceId());
         acr.setOwner(true);
-        Resource acrResource = acr.asResource();
-        acrResource.setVersion(newVersion);
-        createResource(tx, acrResource);
+        AcrIndex.put(tx, acr);
 
         // add to the index
         WorkspaceIndex.addOwnerIndexEntry(tx, this);
