@@ -1,20 +1,30 @@
 package org.activityinfo.store.hrd;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.ImplicitTransactionManagementPolicy;
 import com.google.apphosting.api.ApiProxy;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
+import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.store.hrd.entity.*;
+import org.activityinfo.store.hrd.entity.ReadTransaction;
+import org.activityinfo.store.hrd.entity.Snapshot;
+import org.activityinfo.store.hrd.entity.UpdateTransaction;
+import org.activityinfo.store.hrd.entity.Workspace;
+import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
@@ -193,7 +203,18 @@ public class HrdResourceStore implements ResourceStore {
                 List<Resource> resources = Lists.newArrayListWithCapacity(snapshots.size());
 
                 for (Snapshot snapshot : snapshots.values()) {
-                    resources.add(snapshot.get(tx));
+                    Resource resource = snapshot.get(tx);
+                    if (AccessControlRule.CLASS_ID.toString().equals(resource.get("classId"))) {
+                        final Boolean access = hasAccess(null, user, resource);
+                        if (access != null && access) resources.add(resource);
+                    } else {
+                        for (AccessControlRule acr : AcrIndex.queryRules(tx, resource.getId())) {
+                            final Boolean access = hasAccess(acr, user, resource);
+                            if (access == null) continue;
+                            else if (access) resources.add(resource);
+                            else break;
+                        }
+                    }
                 }
 
                 return resources;
@@ -201,5 +222,17 @@ public class HrdResourceStore implements ResourceStore {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    private static Boolean hasAccess(AccessControlRule acr, AuthenticatedUser user, Resource resource) {
+        if (acr == null) {
+            acr = AccessControlRule.fromResource(resource);
+        } else {
+            if (!acr.getResourceId().equals(resource.getId())) return null;
+        }
+
+        if (!acr.getPrincipalId().equals(user.getUserResourceId())) return null;
+
+        return acr.isOwner() || "true".equals(acr.getViewCondition());
     }
 }
