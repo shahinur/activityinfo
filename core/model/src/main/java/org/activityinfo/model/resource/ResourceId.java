@@ -55,6 +55,8 @@ public final class ResourceId {
         }
 
         ResourceId resourceId = (ResourceId) o;
+
+        if (text == null) return resourceId.text == null;
         return text.equals(resourceId.text);
     }
 
