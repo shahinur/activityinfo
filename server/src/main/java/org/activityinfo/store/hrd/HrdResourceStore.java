@@ -119,11 +119,21 @@ public class HrdResourceStore implements ResourceStore {
         Workspace workspace = workspaceLookup.lookup(resource.getId());
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
-            newVersion = workspace.createResource(tx, resource);
-            tx.commit();
-        }
+            for (AccessControlRule acr : AcrIndex.queryRules(tx, resource.getId())) {
+                final Boolean access = hasAccess(acr, user, resource.getId());
+                if (access != null) {
+                    if (access) {
+                        newVersion = workspace.createResource(tx, resource);
+                        tx.commit();
+                        return UpdateResult.committed(resource.getId(), newVersion);
+                    } else {
+                        throw new WebApplicationException(UNAUTHORIZED);
+                    }
+                }
+            }
 
-        return UpdateResult.committed(resource.getId(), newVersion);
+            throw new WebApplicationException(UNAUTHORIZED);
+        }
     }
 
     @Override
