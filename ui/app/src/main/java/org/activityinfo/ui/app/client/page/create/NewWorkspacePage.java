@@ -11,6 +11,7 @@ import org.activityinfo.ui.app.client.form.control.HorizontalFormView;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
+import org.activityinfo.ui.app.client.page.folder.FolderPlaceType;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.InstanceState;
 import org.activityinfo.ui.style.*;
@@ -120,7 +121,7 @@ public class NewWorkspacePage extends PageView {
 
                 @Override
                 public void onSuccess(UpdateResult result) {
-                    new FolderPlace(workspaceDraft.getInstanceId()).navigateTo(application);
+                    new FolderPlace(workspaceDraft.getInstanceId(), FolderPlaceType.WORKSPACE).navigateTo(application);
                 }
             });
         }
