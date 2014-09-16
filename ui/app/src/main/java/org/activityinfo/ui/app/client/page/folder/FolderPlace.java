@@ -47,7 +47,7 @@ public class FolderPlace implements Place {
 
         @Override
         public Place tryParse(String[] path) {
-            if(path.length >= 2 && ("folder".equals(path[0]) || "workspace".equals(path[0]))) {
+            if(path.length >= 2 && ("folder".equalsIgnoreCase(path[0]) || "workspace".equalsIgnoreCase(path[0]))) {
                 return new FolderPlace(ResourceId.valueOf(path[1]), FolderPlaceType.fromValue(path[0]));
             }
             return null;
