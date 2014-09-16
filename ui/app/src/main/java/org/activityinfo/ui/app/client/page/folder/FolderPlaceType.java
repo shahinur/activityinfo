@@ -36,11 +36,11 @@ public enum FolderPlaceType {
 
     public static FolderPlaceType fromValue(String value) {
         for (FolderPlaceType type : values()) {
-            if (type.getValue().equals(value)) {
+            if (type.getValue().equalsIgnoreCase(value)) {
                 return type;
             }
         }
-        throw new IllegalArgumentException(value);
+        return WORKSPACE; // be on safe side and return workspace as default type
     }
 
     public String getValue() {
