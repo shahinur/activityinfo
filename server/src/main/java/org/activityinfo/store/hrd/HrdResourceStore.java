@@ -33,8 +33,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import java.util.List;
 import java.util.Map;
+
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 public class HrdResourceStore implements ResourceStore {
     private final static long TIME_LIMIT_MILLISECONDS = 10 * 1000L;
@@ -73,9 +76,18 @@ public class HrdResourceStore implements ResourceStore {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
             try(WorkspaceTransaction tx = beginRead(workspace, user)) {
+                for (AccessControlRule acr : AcrIndex.queryRules(tx, resourceId)) {
+                    final Boolean access = hasAccess(acr, user, resourceId);
+                    if (access != null) {
+                        if (access) {
+                            return workspace.getLatestContent(resourceId).get(tx);
+                        } else {
+                            throw new WebApplicationException(UNAUTHORIZED);
+                        }
+                    }
+                }
 
-                return workspace.getLatestContent(resourceId).get(tx);
-
+                throw new WebApplicationException(UNAUTHORIZED);
             }
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(resourceId);
@@ -217,15 +229,22 @@ public class HrdResourceStore implements ResourceStore {
         }
     }
 
+    private static Boolean hasAccess(AccessControlRule acr, AuthenticatedUser user, ResourceId resourceId) {
+        if (!acr.getResourceId().equals(resourceId)) return null;
+        if (!acr.getPrincipalId().equals(user.getUserResourceId())) return null;
+        return acr.isOwner() || "true".equals(acr.getViewCondition());
+    }
+
     private static Boolean hasAccess(AccessControlRule acr, AuthenticatedUser user, Resource resource) {
+        final ResourceId resourceId;
+
         if (acr == null) {
             acr = AccessControlRule.fromResource(resource);
+            resourceId = acr.getResourceId();
         } else {
-            if (!acr.getResourceId().equals(resource.getId())) return null;
+            resourceId = resource.getId();
         }
 
-        if (!acr.getPrincipalId().equals(user.getUserResourceId())) return null;
-
-        return acr.isOwner() || "true".equals(acr.getViewCondition());
+        return hasAccess(acr, user, resourceId);
     }
 }
