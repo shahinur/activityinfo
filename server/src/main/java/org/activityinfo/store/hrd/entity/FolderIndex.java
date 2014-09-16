@@ -1,6 +1,9 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.PropertyProjection;
+import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
@@ -59,7 +62,15 @@ public class FolderIndex {
 
         List<ResourceNode> nodes = Lists.newArrayList();
         for (Entity entity : tx.prepare(query).asIterable()) {
-            nodes.add(Content.deserializeResourceNode(entity));
+            ResourceId id = ResourceId.valueOf(entity.getKey().getName());
+            ResourceNode node = new ResourceNode(id);
+            node.setVersion((Long) entity.getProperty(Content.VERSION_PROPERTY));
+            node.setLabel((String) entity.getProperty(Content.LABEL_PROPERTY));
+            node.setOwnerId(folderId);
+            if(entity.getProperty(Content.CLASS_PROPERTY) instanceof String) {
+                node.setClassId(ResourceId.valueOf((String) entity.getProperty(Content.CLASS_PROPERTY)));
+            }
+            nodes.add(node);
         }
 
         return nodes;
