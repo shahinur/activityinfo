@@ -16,10 +16,6 @@ public class FolderPlace implements Place {
     @Nonnull
     private final FolderPlaceType type;
 
-    public FolderPlace(@Nonnull ResourceId resourceId) {
-        this(resourceId, FolderPlaceType.FOLDER);
-    }
-
     public FolderPlace(@Nonnull ResourceId resourceId, FolderPlaceType type) {
         this.resourceId = resourceId;
         this.type = type;
