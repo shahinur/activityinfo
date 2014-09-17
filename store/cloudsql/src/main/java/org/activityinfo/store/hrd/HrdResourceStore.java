@@ -210,16 +210,22 @@ public class HrdResourceStore implements ResourceStore {
     public List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceId workspaceId, long version) {
         ApiProxy.Environment environment = ApiProxy.getCurrentEnvironment();
         Map<ResourceId, Snapshot> snapshots = Maps.newLinkedHashMap();
+        Map<ResourceId, Authorization> authorizations = Maps.newHashMap();
 
         Workspace workspace = new Workspace(workspaceId);
 
         try(WorkspaceTransaction tx = beginRead(workspace, user)) {
 
             for (Snapshot snapshot : Snapshot.getSnapshotsAfter(tx, version)) {
+                ResourceId resourceId = snapshot.getResourceId();
 
                 // We want the linked list to be sorted based on the most recent insertion of a resource
-                snapshots.remove(snapshot.getResourceId());
-                snapshots.put(snapshot.getResourceId(), snapshot);
+                snapshots.remove(resourceId);
+                snapshots.put(resourceId, snapshot);
+
+                if (authorizations.get(resourceId) == null) {
+                    authorizations.put(snapshot.getResourceId(), new Authorization(user, resourceId, tx));
+                }
 
                 if (environment.getRemainingMillis() < TIME_LIMIT_MILLISECONDS) {
                     break;
@@ -236,7 +242,7 @@ public class HrdResourceStore implements ResourceStore {
                     if (AccessControlRule.CLASS_ID.toString().equals(resource.get("classId"))) {
                         authorization = new Authorization(user, resource);
                     } else {
-                        authorization = new Authorization(user, resource.getId(), tx);
+                        authorization = authorizations.get(resource.getId());
                     }
 
                     if (authorization.canView()) resources.add(resource);
