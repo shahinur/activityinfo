@@ -2,16 +2,26 @@ package org.activityinfo.model.analysis;
 
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
 
-public class AbstractModel<T> implements IsRecord {
+public abstract class AbstractModel<T> implements IsRecord {
 
     private PropertyBag propertyBag = new PropertyBag();
 
+    protected AbstractModel() {
+    }
+
+    protected AbstractModel(PropertyBag propertyBag) {
+        this.propertyBag.setAll(propertyBag);
+    }
+
+    public abstract ResourceId getClassId();
 
     protected final <V extends FieldValue & IsRecord> T set(String name, V fieldValue) {
         propertyBag.set(name, fieldValue.asRecord());
@@ -96,6 +106,24 @@ public class AbstractModel<T> implements IsRecord {
         }
     }
 
+    protected final <E extends Enum<E>> E get(String name, Class<E> enumClass) {
+        EnumFieldValue value = get(name, EnumType.TYPE_CLASS);
+        if(value == null) {
+            return null;
+        } else {
+            return Enum.valueOf(enumClass, value.getValueId().asString());
+        }
+    }
+
+
+    protected final <E extends Enum<E>> void set(String name, Enum<E> enumValue) {
+        if(enumValue == null) {
+            propertyBag.remove(name);
+        } else {
+            propertyBag.set(name, new EnumFieldValue(ResourceId.valueOf(enumValue.name())).asRecord());
+        }
+    }
+
     protected final Resource createRecord(ResourceId id, ResourceId owner) {
         Resource resource = Resources.createResource();
         resource.setId(id);
@@ -108,6 +136,8 @@ public class AbstractModel<T> implements IsRecord {
     public Record asRecord() {
         Record record = new Record();
         record.setAll(propertyBag);
+        record.set("classId", getClassId().asString());
         return record;
     }
+
 }

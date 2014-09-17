@@ -49,7 +49,7 @@ public class HorizontalFormView extends VComponent<HorizontalFormView> implement
     protected VTree render() {
 
         HorizontalForm form = new HorizontalForm();
-        FieldControlFactory factory = new FieldControlFactory(dispatcher);
+        FieldControlFactory factory = new FieldControlFactory(dispatcher, instanceState.getInstanceId());
 
         for (FormField field : instanceState.getFormClass().getFields()) {
             form.addGroup(new HorizontalFieldGroup(instanceState.getState(field.getId()), factory.create(field)));

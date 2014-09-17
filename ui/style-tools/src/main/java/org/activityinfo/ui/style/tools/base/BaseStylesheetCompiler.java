@@ -63,7 +63,7 @@ public class BaseStylesheetCompiler {
 
     public void compileLess() throws IOException, LessException {
 
-        File lessInput = new File(baseDir, "src/main/less/base.less");
+        File lessInput = new File(baseDir, "src/main/resources/org/activityinfo/ui/style/base.less");
         if (!lessInput.exists()) {
             throw new FileNotFoundException(lessInput.getAbsolutePath());
         }
@@ -131,7 +131,7 @@ public class BaseStylesheetCompiler {
         private final List<File> sourceDirs = Lists.newArrayList();
 
         private BaseSourceResolver() {
-            sourceDirs.add(new File(baseDir, "src/main/font"));
+            sourceDirs.add(new File(baseDir, "src/main/resources/org/activityinfo/ui/style/font"));
         }
 
         private File resolveFile(String relativePath) throws IOException {

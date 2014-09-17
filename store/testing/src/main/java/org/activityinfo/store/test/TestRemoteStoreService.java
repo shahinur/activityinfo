@@ -1,17 +1,19 @@
 package org.activityinfo.store.test;
 
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.FolderRequest;
+import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.service.store.RemoteStoreService;
 
 import java.util.List;
 
@@ -30,6 +32,11 @@ public class TestRemoteStoreService implements RemoteStoreService {
         } catch(Exception e) {
             return Promise.rejected(e);
         }
+    }
+
+    @Override
+    public Promise<List<Bucket>> queryCube(PivotTableModel cubeModel) {
+        return Promise.rejected(new UnsupportedOperationException());
     }
 
     @Override

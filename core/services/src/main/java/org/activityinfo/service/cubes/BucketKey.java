@@ -35,4 +35,13 @@ public class BucketKey {
     public String[] getDimensionValues() {
         return dim;
     }
+
+    public String getDimensionValue(int i) {
+        return dim[i];
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(dim);
+    }
 }

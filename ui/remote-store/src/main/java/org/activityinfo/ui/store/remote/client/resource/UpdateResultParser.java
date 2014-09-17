@@ -19,7 +19,7 @@ public class UpdateResultParser implements Function<Response, UpdateResult> {
         switch(status) {
             case "COMMITTED":
                 return UpdateResult.committed(
-                        ResourceId.valueOf(getString(object, "id")),
+                        ResourceId.valueOf(getString(object, "resourceId")),
                     (int)getInt(object, "newVersion"));
             case "PENDING":
                 return UpdateResult.pending();

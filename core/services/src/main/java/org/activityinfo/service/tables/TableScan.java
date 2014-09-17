@@ -62,7 +62,7 @@ public class TableScan {
                 columnMap.put(columnKey, builder);
                 return builder;
             } else {
-                throw new UnsupportedOperationException("Unsupported type for column: " + fieldType);
+                throw new UnsupportedOperationException("Unsupported type for column " + field.getLabel() + ": " + fieldType);
             }
         }
     }

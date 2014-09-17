@@ -199,20 +199,26 @@ public class PropertyBag<T extends PropertyBag> {
 
     public PropertyBag<T> set(@NotNull ResourceId fieldId, FieldValue fieldValue) {
         Preconditions.checkNotNull(fieldId);
+        return set(fieldId.asString(), fieldValue);
+    }
+
+    public PropertyBag<T> set(String propertyName, FieldValue fieldValue) {
+        Preconditions.checkNotNull(propertyName);
+
         if (fieldValue == null) {
-            remove(fieldId.asString());
+            remove(propertyName);
 
         } else if (fieldValue instanceof TextValue) {
-            set(fieldId.asString(), ((TextValue) fieldValue).toString());
+            set(propertyName, ((TextValue) fieldValue).toString());
 
         } else if (fieldValue instanceof BooleanFieldValue) {
-            set(fieldId.asString(), fieldValue == BooleanFieldValue.TRUE);
+            set(propertyName, fieldValue == BooleanFieldValue.TRUE);
 
         } else if(fieldValue instanceof IsRecord) {
-            set(fieldId.asString(), ((IsRecord) fieldValue).asRecord());
+            set(propertyName, ((IsRecord) fieldValue).asRecord());
 
         } else {
-            throw new UnsupportedOperationException(fieldId + " = " + fieldValue);
+            throw new UnsupportedOperationException(propertyName + " = " + fieldValue);
         }
         return this;
     }
@@ -317,7 +323,7 @@ public class PropertyBag<T extends PropertyBag> {
 
         } else {
             assert validPropertyValue(value) : "Invalid " + propertyName + " = " + value +
-                                               " (" + value.getClass().getName() + ")";
+                " (" + value.getClass().getName() + ")";
 
             properties.put(propertyName, value);
 
@@ -336,9 +342,9 @@ public class PropertyBag<T extends PropertyBag> {
 
         } else {
             return value instanceof String ||
-                   value instanceof Number ||
-                   value instanceof Record ||
-                   value instanceof Boolean;
+                value instanceof Number ||
+                value instanceof Record ||
+                value instanceof Boolean;
         }
     }
 

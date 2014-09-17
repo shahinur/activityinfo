@@ -41,7 +41,10 @@ public class MonthValue implements FieldValue, IsRecord, TemporalValue {
 
     @Override
     public Record asRecord() {
-        return new Record().set("year", year).set("month", monthOfYear);
+        return new Record()
+            .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
+            .set("year", year)
+            .set("month", monthOfYear);
     }
 
     @Override

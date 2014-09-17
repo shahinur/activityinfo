@@ -18,6 +18,7 @@ public class Button extends VComponent {
     private ButtonSize size;
     private VTree[] content;
     private boolean enabled = true;
+    private boolean block = false;
     private List<CssClass> cssClasses = Lists.newArrayList();
     private PropMap propMap;
 
@@ -60,6 +61,14 @@ public class Button extends VComponent {
         this.enabled = enabled;
     }
 
+    public boolean isBlock() {
+        return block;
+    }
+
+    public void setBlock(boolean block) {
+        this.block = block;
+    }
+
     public void setClickHandler(ClickHandler clickHandler) {
         this.clickHandler = clickHandler;
     }
@@ -98,9 +107,11 @@ public class Button extends VComponent {
         if(!enabled) {
             properties.set("disabled", "disabled");
         }
+        if(block) {
+            properties.addClassName(BaseStyles.BTN_BLOCK);
+        }
         properties.addClassNames(cssClasses);
 
         return new VNode(HtmlTag.BUTTON, properties, content);
     }
-
 }

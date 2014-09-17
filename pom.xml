@@ -118,6 +118,7 @@
     <module>tools/unit-testing</module>
     <module>clients/java</module>
     <module>tests/api</module>
+    <module>io/excel-loader</module>
   </modules>
 
   <dependencies>

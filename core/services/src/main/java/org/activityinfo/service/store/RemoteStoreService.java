@@ -1,9 +1,11 @@
 package org.activityinfo.service.store;
 
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
@@ -35,6 +37,8 @@ public interface RemoteStoreService {
     Promise<List<ResourceNode>> getWorkspaces();
 
     Promise<TableData> queryTable(TableModel tableModel);
+
+    Promise<List<Bucket>> queryCube(PivotTableModel cubeModel);
 
     Promise<FolderProjection> getFolder(ResourceId rootId);
 }

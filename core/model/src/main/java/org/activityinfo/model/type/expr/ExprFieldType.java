@@ -13,11 +13,11 @@ import org.activityinfo.model.type.TypeFieldType;
  */
 public class ExprFieldType implements FieldType {
 
-    public interface ExprTypeClass extends RecordFieldTypeClass<ExprValue> {
+    public interface TypeClass extends RecordFieldTypeClass<ExprValue> {
         ExprValue deserialize(Record record);
     }
 
-    public static final ExprTypeClass TYPE_CLASS = new ExprTypeClass() {
+    public static final TypeClass TYPE_CLASS = new TypeClass() {
         @Override
         public String getId() {
             return "expr";

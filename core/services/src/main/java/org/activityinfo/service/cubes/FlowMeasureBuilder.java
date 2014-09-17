@@ -8,11 +8,12 @@ import org.activityinfo.model.analysis.DimensionModel;
 import org.activityinfo.model.analysis.DimensionSource;
 import org.activityinfo.model.analysis.MeasureModel;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.model.table.HashMapBucket;
 import org.activityinfo.service.tables.RowSetBuilder;
 import org.activityinfo.service.tables.TableQueryBatchBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,6 @@ import java.util.Map;
 public class FlowMeasureBuilder implements MeasureBuilder {
 
     private final MeasureModel model;
-    private int measureIndex;
     private FormClass formClass;
 
     private Supplier<ColumnView> value;
@@ -33,9 +33,8 @@ public class FlowMeasureBuilder implements MeasureBuilder {
     private final List<DimensionModel> dimensions;
     private final List<Supplier<ColumnView>> dimensionViews;
 
-    public FlowMeasureBuilder(MeasureModel measureModel, int measureIndex, List<DimensionModel> dimensions, FormClass formClass) {
+    public FlowMeasureBuilder(MeasureModel measureModel, List<DimensionModel> dimensions, FormClass formClass) {
         this.model = measureModel;
-        this.measureIndex = measureIndex;
         this.formClass = formClass;
         this.dimensions = dimensions;
         this.dimensionViews = Lists.newArrayList();
@@ -68,7 +67,7 @@ public class FlowMeasureBuilder implements MeasureBuilder {
     }
 
     @Override
-    public void aggregate(Map<BucketKey, Bucket> bucketMap) {
+    public List<HashMapBucket> aggregate() {
         int numRows = value.get().numRows();
 
         ColumnView measureView = value.get();
@@ -95,15 +94,19 @@ public class FlowMeasureBuilder implements MeasureBuilder {
         }
 
         // Now insert result into the global result set
+        List<HashMapBucket> buckets = new ArrayList<>();
         for (Map.Entry<BucketKey, SumAggregator> entry : aggregateMap.entrySet()) {
             BucketKey key = entry.getKey();
-            Bucket bucket = bucketMap.get(key);
-            if(bucket == null) {
-                bucket = new Bucket(key.getDimensionValues());
-                bucketMap.put(key, bucket);
+            HashMapBucket bucket = new HashMapBucket(model.getId(), entry.getValue().getResult());
+            for(int i=0;i!=dimensions.size();++i) {
+                bucket.setDimensionValue(dimensions.get(i).getId(), key.getDimensionValue(i));
             }
-            bucket.setMeasure(measureIndex, entry.getValue().getResult());
+            for (Map.Entry<String, String> tag : model.getDimensionTags().entrySet()) {
+                bucket.setDimensionValue(tag.getKey(), tag.getValue());
+            }
+            buckets.add(bucket);
         }
+        return buckets;
     }
 
     private ColumnView[] buildDimensionViewArray() {

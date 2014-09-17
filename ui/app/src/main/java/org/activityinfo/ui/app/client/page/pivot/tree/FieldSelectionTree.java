@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormSection;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.app.client.Application;
@@ -79,6 +80,9 @@ public class FieldSelectionTree implements TreeModel<FormElement> {
     public Status<List<FormElement>> getChildren(FormElement parent) {
         if(parent instanceof RootElement) {
             return Status.cache(((RootElement) parent).formClass.getElements());
+        } else if(parent instanceof FormSection) {
+            FormSection section = (FormSection) parent;
+            return Status.cache(section.getElements());
         }
         return Status.cache(Collections.<FormElement>emptyList());
     }
@@ -92,6 +96,12 @@ public class FieldSelectionTree implements TreeModel<FormElement> {
     public Icon getIcon(FormElement node, boolean expanded) {
         if(node instanceof FormField) {
             return FieldIconProvider.get((FormField)node);
+        } else if(node instanceof FormSection) {
+            if(expanded) {
+                return FontAwesome.FOLDER;
+            } else {
+                return FontAwesome.FOLDER_OPEN;
+            }
         } else {
             return FontAwesome.QUESTION;
         }
