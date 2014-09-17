@@ -206,7 +206,7 @@ public class HrdResourceStore implements ResourceStore {
         return WorkspaceIndex.queryUserWorkspaces(datastore, user, workspaceLookup);
     }
 
-
+    @Override
     // TODO Authorization must be added, the requested ResourceGroup must be respected, etc.
     public List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceId workspaceId, long version) {
         ApiProxy.Environment environment = ApiProxy.getCurrentEnvironment();
