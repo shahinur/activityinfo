@@ -238,7 +238,7 @@ public class HrdResourceStore implements ResourceStore {
                 snapshots.put(resourceId, snapshot);
 
                 if (authorizations.get(resourceId) == null) {
-                    authorizations.put(snapshot.getResourceId(), new Authorization(user, resourceId, tx));
+                    authorizations.put(resourceId, new Authorization(user, resourceId, tx));
                 }
 
                 if (environment.getRemainingMillis() < TIME_LIMIT_MILLISECONDS) {
@@ -246,26 +246,24 @@ public class HrdResourceStore implements ResourceStore {
                 }
             }
 
-            try {
-                List<Resource> resources = Lists.newArrayListWithCapacity(snapshots.size());
+            List<Resource> resources = Lists.newArrayListWithCapacity(snapshots.size());
 
-                for (Snapshot snapshot : snapshots.values()) {
-                    final Authorization authorization;
-                    Resource resource = snapshot.get(tx);
+            for (Snapshot snapshot : snapshots.values()) {
+                final Authorization authorization;
+                Resource resource = snapshot.get(tx);
 
-                    if (AccessControlRule.CLASS_ID.toString().equals(resource.get("classId"))) {
-                        authorization = new Authorization(user, resource);
-                    } else {
-                        authorization = authorizations.get(resource.getId());
-                    }
-
-                    if (authorization.canView()) resources.add(resource);
+                if (AccessControlRule.CLASS_ID.toString().equals(resource.get("classId"))) {
+                    authorization = new Authorization(user, resource);
+                } else {
+                    authorization = authorizations.get(resource.getId());
                 }
 
-                return resources;
-            } catch (EntityNotFoundException e) {
-                throw new RuntimeException(e);
+                if (authorization.canView()) resources.add(resource);
             }
+
+            return resources;
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }
