@@ -78,19 +78,15 @@ public class HrdResourceStore implements ResourceStore {
     public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
-            try(WorkspaceTransaction tx = beginRead(workspace, user)) {
-                for (AccessControlRule acr : AcrIndex.queryRules(tx, resourceId)) {
-                    final Boolean access = hasAccess(acr, user, resourceId);
-                    if (access != null) {
-                        if (access) {
-                            return workspace.getLatestContent(resourceId).get(tx);
-                        } else {
-                            throw new WebApplicationException(UNAUTHORIZED);
-                        }
-                    }
-                }
 
-                throw new WebApplicationException(UNAUTHORIZED);
+            try(WorkspaceTransaction tx = beginRead(workspace, user)) {
+                Authorization authorization = new Authorization(user, resourceId, tx);
+
+                if (authorization.canView()) {
+                    return workspace.getLatestContent(resourceId).get(tx);
+                } else {
+                    throw new WebApplicationException(UNAUTHORIZED);
+                }
             }
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(resourceId);
@@ -117,69 +113,60 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
-        long newVersion;
-
         Workspace workspace = workspaceLookup.lookup(resource.getId());
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
-            for (AccessControlRule acr : AcrIndex.queryRules(tx, resource.getId())) {
-                final Boolean access = hasAccess(acr, user, resource.getId());
-                if (access != null) {
-                    if (access) {
-                        newVersion = workspace.createResource(tx, resource);
-                        tx.commit();
-                        return UpdateResult.committed(resource.getId(), newVersion);
-                    } else {
-                        throw new WebApplicationException(UNAUTHORIZED);
-                    }
-                }
-            }
+            Authorization authorization = new Authorization(user, resource.getId(), tx);
 
-            throw new WebApplicationException(UNAUTHORIZED);
+            if (authorization.canEdit()) {
+                long newVersion = workspace.createResource(tx, resource);
+                tx.commit();
+
+                return UpdateResult.committed(resource.getId(), newVersion);
+            } else {
+                return create(tx, user, resource);
+            }
         }
     }
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-        long newVersion;
-
         if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
             Workspace workspace = new Workspace(resource.getId());
             try(WorkspaceTransaction tx = begin(workspace, user)) {
-                newVersion = workspace.createWorkspace(tx, resource);
+                long newVersion = workspace.createWorkspace(tx, resource);
                 tx.commit();
                 return UpdateResult.committed(resource.getId(), newVersion);
             }
 
         } else {
-
             Workspace workspace = workspaceLookup.lookup(resource.getOwnerId());
 
             try (WorkspaceTransaction tx = begin(workspace, user)) {
-                for (AccessControlRule acr : AcrIndex.queryRules(tx, resource.getId())) {
-                    final Boolean access = hasAccess(acr, user, resource.getId());
-                    if (access != null) {
-                        if (access) {
-                            try {
-                                workspace.getLatestContent(resource.getId()).get(tx);
-                                return UpdateResult.rejected();
-                            } catch (EntityNotFoundException e) {
-                                newVersion = workspace.createResource(tx, resource);
-                                tx.commit();
-
-                                // Cache immediately so that subsequent will be able to find the resource
-                                // if it takes a while for the indices to catch up
-                                workspaceLookup.cache(resource.getId(), workspace);
-
-                                return UpdateResult.committed(resource.getId(), newVersion);
-                            }
-                        } else {
-                            throw new WebApplicationException(UNAUTHORIZED);
-                        }
-                    }
-                }
+                return create(tx, user, resource);
             }
+        }
+    }
 
+    private UpdateResult create(WorkspaceTransaction tx, AuthenticatedUser user, Resource resource) {
+        Authorization authorization = new Authorization(user, resource.getOwnerId(), tx);
+        Workspace workspace = tx.getWorkspace();
+
+        if (authorization.canEdit()) {
+            try {
+                workspace.getLatestContent(resource.getId()).get(tx);
+                return UpdateResult.rejected();
+            } catch (EntityNotFoundException e) {
+                long newVersion = workspace.createResource(tx, resource);
+                tx.commit();
+
+                // Cache immediately so that subsequent reads will be able to find the resource
+                // if it takes a while for the indices to catch up
+                workspaceLookup.cache(resource.getId(), workspace);
+
+                return UpdateResult.committed(resource.getId(), newVersion);
+            }
+        } else {
             throw new WebApplicationException(UNAUTHORIZED);
         }
     }
@@ -257,18 +244,16 @@ public class HrdResourceStore implements ResourceStore {
                 List<Resource> resources = Lists.newArrayListWithCapacity(snapshots.size());
 
                 for (Snapshot snapshot : snapshots.values()) {
+                    final Authorization authorization;
                     Resource resource = snapshot.get(tx);
+
                     if (AccessControlRule.CLASS_ID.toString().equals(resource.get("classId"))) {
-                        final Boolean access = hasAccess(null, user, resource);
-                        if (access != null && access) resources.add(resource);
+                        authorization = new Authorization(user, resource);
                     } else {
-                        for (AccessControlRule acr : AcrIndex.queryRules(tx, resource.getId())) {
-                            final Boolean access = hasAccess(acr, user, resource);
-                            if (access == null) continue;
-                            else if (access) resources.add(resource);
-                            else break;
-                        }
+                        authorization = new Authorization(user, resource.getId(), tx);
                     }
+
+                    if (authorization.canView()) resources.add(resource);
                 }
 
                 return resources;
@@ -276,24 +261,5 @@ public class HrdResourceStore implements ResourceStore {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    private static Boolean hasAccess(AccessControlRule acr, AuthenticatedUser user, ResourceId resourceId) {
-        if (!acr.getResourceId().equals(resourceId)) return null;
-        if (!acr.getPrincipalId().equals(user.getUserResourceId())) return null;
-        return acr.isOwner() || "true".equals(acr.getViewCondition());
-    }
-
-    private static Boolean hasAccess(AccessControlRule acr, AuthenticatedUser user, Resource resource) {
-        final ResourceId resourceId;
-
-        if (acr == null) {
-            acr = AccessControlRule.fromResource(resource);
-            resourceId = acr.getResourceId();
-        } else {
-            resourceId = resource.getId();
-        }
-
-        return hasAccess(acr, user, resourceId);
     }
 }
