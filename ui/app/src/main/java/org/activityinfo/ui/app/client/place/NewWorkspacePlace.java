@@ -1,4 +1,4 @@
-package org.activityinfo.ui.app.client.page.create;
+package org.activityinfo.ui.app.client.place;
 
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.action.UpdatePlace;
@@ -7,15 +7,12 @@ import org.activityinfo.ui.app.client.page.PlaceParser;
 
 import java.util.Arrays;
 
-public enum NewWorkspacePlace implements Place {
+public class NewWorkspacePlace implements Place {
 
-    INSTANCE;
-
-    public static final String[] PATH = new String[]{"create", "workspace"};
 
     @Override
     public String[] getPath() {
-        return PATH;
+        return new String[] { "create", "workspace"};
     }
 
     @Override
@@ -23,22 +20,22 @@ public enum NewWorkspacePlace implements Place {
         application.getDispatcher().dispatch(new UpdatePlace(this));
     }
 
-
     @Override
     public String toString() {
-        return "/create/workspace";
+        return Arrays.toString(getPath());
     }
 
     public static class Parser implements PlaceParser {
 
         @Override
         public Place tryParse(String[] path) {
-            if(Arrays.equals(PATH, path)) {
-                return INSTANCE;
+            if(path != null && path.length >= 2 &&
+                "create".equalsIgnoreCase(path[0]) &&
+                "workspace".equalsIgnoreCase(path[1])) {
+                return new NewWorkspacePlace();
+            } else {
+                return null;
             }
-            return null;
         }
     }
-
-
 }
