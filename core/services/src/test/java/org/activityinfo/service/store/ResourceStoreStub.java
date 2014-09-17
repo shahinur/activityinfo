@@ -187,4 +187,9 @@ public class ResourceStoreStub implements ResourceStore {
                                                 @PathParam("id") ResourceId resourceId) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceId workspaceId, long version) {
+        throw new UnsupportedOperationException();
+    }
 }
