@@ -36,6 +36,7 @@ public final class Resource extends PropertyBag<Resource> {
         Resource copy = new Resource();
         copy.id = this.id;
         copy.ownerId = this.ownerId;
+        copy.version = this.version;
         copy.getProperties().putAll(this.getProperties());
         return copy;
     }

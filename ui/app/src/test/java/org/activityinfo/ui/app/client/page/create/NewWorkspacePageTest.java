@@ -7,6 +7,8 @@ import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.form.store.UpdateFieldAction;
+import org.activityinfo.ui.app.client.request.SaveRequest;
+import org.activityinfo.ui.app.client.store.InstanceState;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.*;
@@ -24,16 +26,16 @@ public class NewWorkspacePageTest {
         NewWorkspacePage page = new NewWorkspacePage(app);
         page.componentDidMount();
 
-        assertThat(app.getDraftStore().getWorkspaceDraft(), is(notNullValue()));
+        InstanceState draft = app.getDraftStore().getWorkspaceDraft();
+        assertThat(draft, is(notNullValue()));
 
         assertThat(app.getDispatcher(), not(nullValue()));
 
         app.getDispatcher().dispatch(
-            new UpdateFieldAction(app.getDraftStore().getWorkspaceDraft().getInstanceId(),
+            new UpdateFieldAction(draft.getInstanceId(),
                 FolderClass.LABEL_FIELD_ID, TextValue.valueOf("MyWorkspace")));
 
-//        app.getDispatcher().dispatch(
-//            new PersistAction(page.getWorkingDraft().getInstanceId()));
+        app.getRequestDispatcher().execute(new SaveRequest(draft.getUpdatedResource()));
 
         Resource created = store.getOnlyCreatedResource();
         assertThat(created.getOwnerId(), equalTo(Resources.ROOT_ID));

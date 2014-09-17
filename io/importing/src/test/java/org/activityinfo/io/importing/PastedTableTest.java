@@ -23,11 +23,11 @@ package org.activityinfo.io.importing;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import org.activityinfo.model.type.converter.JvmConverterFactory;
-import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.io.importing.data.PastedTable;
 import org.activityinfo.io.importing.source.SourceColumn;
 import org.activityinfo.io.importing.source.SourceRow;
-import org.activityinfo.io.importing.data.PastedTable;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.converter.JvmConverterFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public class PastedTableTest {
         pastedTable.parseAllRows();
         pastedTable.guessColumnsType(JvmConverterFactory.get());
 
-        Assert.assertEquals(column(pastedTable, "Partner").getGuessedType(), FieldTypeClass.FREE_TEXT);
+        Assert.assertEquals(column(pastedTable, "Partners").getGuessedType(), FieldTypeClass.FREE_TEXT);
 //        Assert.assertEquals(column(pastedTable, "_CREATION_DATE").getGuessedType(), FormFieldType.LOCAL_DATE);
         Assert.assertEquals(column(pastedTable, "_MODEL_VERSION").getGuessedType(), FieldTypeClass.QUANTITY);
     }

@@ -56,7 +56,7 @@ public class ListFieldType implements ParametrizedFieldType {
 
         @Override
         public FieldType createType() {
-            throw new UnsupportedOperationException();
+            return new ListFieldType(MissingTypeClass.INSTANCE.createType());
         }
     };
 
@@ -68,7 +68,9 @@ public class ListFieldType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record().set("elementType", elementType.asRecord());
+        return new Record()
+            .set("classId", Types.parameterFormClassId(TYPE_CLASS))
+            .set("elementType", elementType.asRecord());
     }
 
     @Override

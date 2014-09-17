@@ -71,7 +71,7 @@ public class ImportSimpleTest extends AbstractImporterTest {
         importModel.setColumnAction(columnIndex("_SUBMISSION_DATE"), target("End Date"));
         importModel.setColumnAction(columnIndex("district"), target("District Name"));
         importModel.setColumnAction(columnIndex("upazila"), target("Upzilla Name"));
-        importModel.setColumnAction(columnIndex("Partner"), target("Partner Name"));
+        importModel.setColumnAction(columnIndex("Partners"), target("Partners Name"));
 
 
         // Step 3: Validate for user
@@ -141,7 +141,7 @@ public class ImportSimpleTest extends AbstractImporterTest {
         final ColumnMappingGuesser guesser = new ColumnMappingGuesser(importModel, importer.getImportTargets());
         guesser.guess();
 
-        assertMapping("Partner", "Partner Name");
+        assertMapping("Partners", "Partners Name");
        // assertMapping("district", "District Name");
         //assertMapping("upazila", "Upzilla Name");
     }

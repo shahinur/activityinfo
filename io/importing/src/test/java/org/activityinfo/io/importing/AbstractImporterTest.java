@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.testing.StubScheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.io.importing.model.ColumnAction;
 import org.activityinfo.io.importing.model.ImportModel;
 import org.activityinfo.io.importing.model.MapExistingAction;
@@ -28,6 +29,11 @@ public class AbstractImporterTest  {
     protected StubScheduler scheduler;
     protected List<ImportTarget> targets;
     protected Importer importer;
+
+    @Before
+    public final void setupLocale() {
+        LocaleProxy.initialize();
+    }
 
     @Before
     public final void setupAdapters() {
