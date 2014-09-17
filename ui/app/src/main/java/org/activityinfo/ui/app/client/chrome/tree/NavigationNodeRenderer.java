@@ -22,7 +22,9 @@ package org.activityinfo.ui.app.client.chrome.tree;
  */
 
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
+import org.activityinfo.ui.app.client.page.folder.FolderPlaceType;
 import org.activityinfo.ui.style.tree.TreeComponent;
 import org.activityinfo.ui.style.tree.TreeNodeRenderer;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
@@ -35,9 +37,11 @@ public class NavigationNodeRenderer implements TreeNodeRenderer<ResourceNode> {
     @Override
     public VTree renderNode(final ResourceNode node, final TreeComponent<ResourceNode> tree) {
         NavigationTreeModel model = (NavigationTreeModel) tree.getModel();
+        FolderPlaceType placeType = Resources.ROOT_ID.equals(node.getOwnerId()) ? FolderPlaceType.WORKSPACE : FolderPlaceType.FOLDER;
+
         NavNode navNode = new NavNode(model.getApplication().getRouter(), node, tree);
         navNode.setLabel(model.getLabel(node));
-        navNode.setTarget(new FolderPlace(node.getId()));
+        navNode.setTarget(new FolderPlace(node.getId(), placeType));
         navNode.setIcon(model.getIcon(node, tree.isExpanded(node)));
         return navNode;
     }

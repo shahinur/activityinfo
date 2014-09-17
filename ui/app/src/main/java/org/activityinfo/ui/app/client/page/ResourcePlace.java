@@ -45,7 +45,7 @@ public class ResourcePlace implements Place {
         @Override
         public Place tryParse(String[] path) {
             if(path.length >= 2 && "resource".equals(path[0])) {
-                return new FolderPlace(ResourceId.valueOf(path[1]));
+                return new ResourcePlace(ResourceId.valueOf(path[1]));
             }
             return null;
         }
