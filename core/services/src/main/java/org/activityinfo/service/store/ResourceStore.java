@@ -112,7 +112,8 @@ public interface ResourceStore {
     List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user);
 
     @GET
-    @Path("query/updates")
+    @Path("query/updates/{workspaceId}")
     @Produces("application/json")
-    List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceId workspaceId, long version);
+    List<Resource> getUpdates(@InjectParam AuthenticatedUser user, @PathParam("workspaceId") ResourceId workspaceId,
+                              @QueryParam("version") long version);
 }
