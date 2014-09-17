@@ -5,7 +5,12 @@ import org.activityinfo.ui.vdom.shared.VDomLogger;
 import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.dom.DomNode;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public abstract class VComponent<T> extends VTree {
+
+    private static final Logger LOGGER = Logger.getLogger(VComponent.class.getName());
 
     private int debugIndex = VDomLogger.nextDebugId();
 
@@ -146,7 +151,11 @@ public abstract class VComponent<T> extends VTree {
             VDomLogger.event(this, "willMount");
             componentWillMount();
 
-            vNode = render();
+            try {
+                vNode = render();
+            } catch(Throwable caught) {
+                LOGGER.log(Level.SEVERE, "Exception thrown while rendering " + getDebugId(), caught);
+            }
             assert vNode != null;
         }
         return vNode;

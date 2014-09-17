@@ -4,6 +4,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.PageViewFactory;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.style.Alert;
 import org.activityinfo.ui.style.AlertStyle;
@@ -16,6 +17,29 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class HomePage extends PageView {
 
+    public static class Factory implements PageViewFactory<HomePlace> {
+
+        private final Application application;
+        private HomePage instance;
+
+        public Factory(Application application) {
+            this.application = application;
+        }
+
+        @Override
+        public boolean accepts(Place place) {
+            return place instanceof HomePlace;
+        }
+
+        @Override
+        public PageView create(HomePlace place) {
+            if(instance == null) {
+                instance = new HomePage(application);
+            }
+            return instance;
+        }
+    }
+
     private final Application application;
 
     public HomePage(Application application) {
@@ -24,13 +48,10 @@ public class HomePage extends PageView {
 
     @Override
     protected VTree render() {
-        return new PageFrame(FontAwesome.HOME, I18N.CONSTANTS.home(),
-            div(BaseStyles.CONTENTPANEL, Grid.row(announcement())), application);
-    }
-
-    @Override
-    public boolean accepts(Place place) {
-        return place instanceof HomePlace;
+        return new PageFrame(
+            application,
+            FontAwesome.HOME, I18N.CONSTANTS.home(),
+            div(BaseStyles.CONTENTPANEL, Grid.row(announcement())));
     }
 
     public static VTree announcement() {

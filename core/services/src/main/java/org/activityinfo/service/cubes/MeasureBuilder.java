@@ -1,14 +1,14 @@
 package org.activityinfo.service.cubes;
 
-import org.activityinfo.model.table.Bucket;
+import org.activityinfo.model.table.HashMapBucket;
 import org.activityinfo.service.tables.TableQueryBatchBuilder;
 
-import java.util.Map;
+import java.util.List;
 
 public interface MeasureBuilder {
 
 
     void scheduleRequests(TableQueryBatchBuilder batch);
 
-    void aggregate(Map<BucketKey, Bucket> bucketMap);
+    List<HashMapBucket> aggregate();
 }

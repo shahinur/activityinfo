@@ -28,6 +28,7 @@ public class FormField extends FormElement {
     private Set<ResourceId> superProperties = Sets.newHashSet();
     private boolean required;
     private boolean primaryKey;
+    private FieldValue defaultValue;
 
     public FormField(ResourceId id) {
         checkNotNull(id);
@@ -106,6 +107,19 @@ public class FormField extends FormElement {
 
     public FormField setType(FieldType type) {
         this.type = type;
+        return this;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public FieldValue getDefaultValue() {
+        return defaultValue;
+    }
+
+    public FormField setDefaultValue(FieldValue defaultValue) {
+        this.defaultValue = defaultValue;
         return this;
     }
 
@@ -228,6 +242,10 @@ public class FormField extends FormElement {
         record.set("primaryKey", primaryKey);
         record.set("relevanceConditionExpression", relevanceConditionExpression);
 
+        if(defaultValue != null) {
+            record.set("defaultValue", defaultValue);
+        }
+
         if(!superProperties.isEmpty()) {
             record.set("superProperties", new ReferenceValue(superProperties).asRecord());
         }
@@ -251,7 +269,8 @@ public class FormField extends FormElement {
             .setType(typeFromRecord(record.getRecord("type")))
             .setVisible(record.getBoolean("visible", true))
             .setPrimaryKey(record.getBoolean("primaryKey", false))
-            .setRequired(record.getBoolean("required", false));
+            .setRequired(record.getBoolean("required", false))
+            .setDefaultValue(Types.read(record, "defaultValue"));
 
         if (record.has("relevanceConditionExpression")) {
             formField.setRelevanceConditionExpression(record.getString("relevanceConditionExpression"));

@@ -25,6 +25,7 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
     private Map<ResourceId, FieldState> fields = Maps.newHashMap();
 
     private boolean valid;
+    private boolean dirty;
 
     public InstanceState(@Nonnull Dispatcher dispatcher, @Nonnull FormClass formClass,
                          @Nonnull FormInstance instance) {
@@ -33,7 +34,7 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
         this.instance = instance;
 
         for(FormField field : formClass.getFields()) {
-            fields.put(field.getId(), new FieldState(field, instance.get(field.getId())));
+            fields.put(field.getId(), new FieldState(instance.getId(), field, instance.get(field.getId())));
         }
     }
 
@@ -60,23 +61,31 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
             this.valid = valid;
             fireChange();
         }
-        if(this.valid != valid) {
-            this.valid = valid;
-            fireChange();
-        }
         return valid;
     }
 
     @Override
     public void updateField(UpdateFieldAction action) {
-        fields.get(action.getFieldId()).updateValue(action.getValue());
-        validate();
-        fireChange();
+        if(action.getInstanceId().equals(instance.getId())) {
+            fields.get(action.getFieldId()).updateValue(action.getValue());
+            validate();
+            fireChange();
+        }
+    }
+
+    public boolean isDirty() {
+        return dirty;
     }
 
     @Override
     public void appendListItem(AddListItemAction action) {
-        fields.get(action.getFieldId()).appendValue(action.getFieldValue());
+        if(action.getInstanceId().equals(instance.getId())) {
+            FieldState fieldState = fields.get(action.getFieldId());
+            fieldState.appendValue(action.getFieldValue());
+
+            validate();
+            fireChange();
+        }
     }
 
     public Resource getUpdatedResource() {
@@ -99,7 +108,6 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
     public boolean isValid() {
         return validate();
     }
-
 
 
 }

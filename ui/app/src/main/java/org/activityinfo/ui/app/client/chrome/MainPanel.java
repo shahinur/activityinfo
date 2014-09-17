@@ -2,12 +2,13 @@ package org.activityinfo.ui.app.client.chrome;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.page.NotFoundPageView;
 import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.PageViewFactory;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.create.NewWorkspacePage;
 import org.activityinfo.ui.app.client.page.folder.FolderPage;
 import org.activityinfo.ui.app.client.page.home.HomePage;
-import org.activityinfo.ui.app.client.page.pivot.PivotPage;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
@@ -25,21 +26,20 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
     /**
      * Page views are singletons
      */
-    private final List<PageView> pageViews = Lists.newArrayList();
+    private final List<PageViewFactory<?>> pageFactories = Lists.newArrayList();
 
     private final HeaderBar headerBar;
 
-   private PageView pageView;
+    private PageView pageView;
 
     public MainPanel(Application application) {
         this.application = application;
 
         headerBar = new HeaderBar(application);
 
-        pageViews.add(new FolderPage(application));
-        pageViews.add(new NewWorkspacePage(application));
-        pageViews.add(new PivotPage(application));
-        pageViews.add(new HomePage(application));
+        pageFactories.add(new NewWorkspacePage.Factory(application));
+        pageFactories.add(new FolderPage.Factory(application));
+        pageFactories.add(new HomePage.Factory(application));
 
         pageView = pageViewForCurrentPlace();
     }
@@ -67,12 +67,12 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
 
         Place place = application.getRouter().getCurrentPlace();
 
-        for(PageView pageView : pageViews) {
-            if(pageView.accepts(place)) {
-                return pageView;
+        for(PageViewFactory factory : pageFactories) {
+            if(factory.accepts(place)) {
+                return factory.create(place);
             }
         }
-        throw new IllegalStateException(place.toString());
+        return new NotFoundPageView();
     }
 
 }

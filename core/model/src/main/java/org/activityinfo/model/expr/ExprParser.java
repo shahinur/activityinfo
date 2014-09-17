@@ -50,6 +50,9 @@ public class ExprParser {
 
             return new FunctionCallNode(function, expr, right);
 
+        } else if(token.getType() == TokenType.DOT) {
+            lexer.next();
+            return new CompoundExpr(expr, new SymbolExpr(expectNext(TokenType.SYMBOL, "Field name").getString()));
         } else {
             return expr;
         }
@@ -135,6 +138,10 @@ public class ExprParser {
      * the expected type.
      */
     private Token expectNext(TokenType expectedType, String description) {
+        if(!lexer.hasNext()) {
+            throw new ExprSyntaxException("Syntax error: expected " + description + " but found end of input.");
+
+        }
         Token token = lexer.next();
         if (token.getType() != expectedType) {
             throw new ExprSyntaxException("Syntax error at " + token.getTokenStart() + ": expected " + description + " but found '" + token.getString() + "'");
@@ -143,7 +150,11 @@ public class ExprParser {
     }
 
     public static ExprNode parse(String expression) {
-        ExprParser parser = new ExprParser(new ExprLexer(expression));
-        return parser.parse();
+        try {
+            ExprParser parser = new ExprParser(new ExprLexer(expression));
+            return parser.parse();
+        } catch(Exception e) {
+            throw new RuntimeException("Failed to parse expression: " + expression, e);
+        }
     }
 }

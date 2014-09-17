@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
 import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
@@ -20,11 +21,13 @@ import java.util.Map;
  */
 public class ResourceStore extends AbstractStore implements RemoteUpdateHandler {
 
+    private ApplicationClassProvider classProvider;
     private Map<ResourceId, Status<Resource>> resources = Maps.newHashMap();
 
 
     public ResourceStore(Dispatcher dispatcher) {
         super(dispatcher);
+        classProvider = new ApplicationClassProvider();
     }
 
 
@@ -60,6 +63,11 @@ public class ResourceStore extends AbstractStore implements RemoteUpdateHandler 
     }
 
     public Status<FormClass> getFormClass(ResourceId id) {
+
+        if(classProvider.isApplicationFormClass(id)) {
+            return Status.cache(classProvider.get(id));
+        }
+
         return get(id).join(new Function<Resource, FormClass>() {
             @Override
             public FormClass apply(Resource input) {

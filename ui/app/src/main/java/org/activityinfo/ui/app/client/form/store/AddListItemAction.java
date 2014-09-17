@@ -7,12 +7,18 @@ import org.activityinfo.ui.flux.store.Store;
 
 public class AddListItemAction implements Action {
 
+    private ResourceId instanceId;
     private ResourceId fieldId;
     private FieldValue fieldValue;
 
-    public AddListItemAction(ResourceId fieldId, FieldValue fieldValue) {
+    public AddListItemAction(ResourceId instanceId, ResourceId fieldId, FieldValue fieldValue) {
+        this.instanceId = instanceId;
         this.fieldId = fieldId;
         this.fieldValue = fieldValue;
+    }
+
+    public ResourceId getInstanceId() {
+        return instanceId;
     }
 
     public ResourceId getFieldId() {

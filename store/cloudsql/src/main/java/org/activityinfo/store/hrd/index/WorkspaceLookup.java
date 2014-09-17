@@ -11,6 +11,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.store.hrd.entity.LatestContent;
 import org.activityinfo.store.hrd.entity.Workspace;
 
@@ -62,8 +63,7 @@ public class WorkspaceLookup {
         Entity entity = datastore.prepare(query).asSingleEntity();
 
         if(entity == null) {
-            throw new IllegalStateException(
-                "Failed to retrieve resource [" + key.asString() + "] entity using 'ID' index");
+            throw new ResourceNotFound(key);
         }
 
         ResourceId workspaceId = LatestContent.workspaceFromKey(entity.getKey());

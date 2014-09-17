@@ -5,6 +5,7 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.ui.app.client.action.CreateDraft;
 import org.activityinfo.ui.app.client.action.DraftHandler;
 import org.activityinfo.ui.app.client.draft.Draft;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
@@ -41,6 +42,11 @@ public class DraftStore extends AbstractStore implements DraftHandler {
         return Status.unavailable();
     }
 
+    public boolean hasDraft(ResourceId resourceId) {
+        return newDrafts.containsKey(resourceId);
+    }
+
+
     public InstanceState getWorkspaceDraft() {
         if(newWorkspaceDraft == null) {
             FormInstance instance = new FormInstance(Resources.generateId(), FolderClass.CLASS_ID);
@@ -49,6 +55,11 @@ public class DraftStore extends AbstractStore implements DraftHandler {
             newWorkspaceDraft = new InstanceState(dispatcher, FolderClass.get(), instance);
         }
         return newWorkspaceDraft;
+    }
+
+    @Override
+    public void newDraft(CreateDraft draft) {
+        newDrafts.put(draft.getResource().getId(), Draft.create(draft.getResource()));
     }
 
     @Override

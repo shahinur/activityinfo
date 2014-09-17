@@ -3,12 +3,12 @@ package org.activityinfo.ui.style.tools.base;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.common.io.Files;
 import org.activityinfo.ui.style.tools.rebind.ClassNames;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -67,9 +67,9 @@ public class IconEnumWriter {
 
     private List<String> extractIconNames(String sourceFile, String regex) throws IOException {
         Pattern pattern = Pattern.compile(regex);
-        File file = new File(baseDir + File.separator + "src" + File.separator +
-                             "main" + File.separator + "less" + File.separator + sourceFile);
-        List<String> lines = Files.readLines(file, Charsets.UTF_8);
+        Path sourcePath = baseDir.toPath().resolve("src").resolve("main").resolve("resources").resolve("org")
+            .resolve("activityinfo").resolve("ui").resolve("style").resolve(sourceFile);
+        List<String> lines = java.nio.file.Files.readAllLines(sourcePath, Charsets.UTF_8);
         Set<String> classNames = Sets.newHashSet();
         for(String line : lines) {
             Matcher matcher = pattern.matcher(line);

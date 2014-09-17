@@ -3524,4 +3524,14 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Create a workspace from a template")
     String createWorkspaceFromTemplate();
+
+    @DefaultStringValue("New Folder")
+    String newFolder();
+
+    @DefaultStringValue("New Pivot Table")
+    String newPivotTable();
+
+    @DefaultStringValue("Add Indicator")
+    String addIndicator();
+
 }

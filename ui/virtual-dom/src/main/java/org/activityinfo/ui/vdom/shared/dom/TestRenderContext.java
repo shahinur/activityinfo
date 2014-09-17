@@ -179,6 +179,9 @@ public class TestRenderContext implements RenderContext {
     }
 
     public void dumpDom() {
+
+        updateDirty();
+
         StringBuilder sb = new StringBuilder();
         ((TestNode)domRoot).writeTo(sb, "");
         System.out.println(sb.toString());
@@ -195,6 +198,7 @@ public class TestRenderContext implements RenderContext {
             dumpDom();
             System.out.println("------------------------------------------");
 
+            throw new AssertionError("Couldn't find text [" + text + "]");
 
         }
     }
