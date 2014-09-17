@@ -39,17 +39,14 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
  */
 public class NavigationTree extends TreeComponent<ResourceNode> {
 
-    private final NavigationTreeModel model;
-
     public NavigationTree(Application application) {
         super(new NavigationTreeModel(application), new SingleSelectionModel());
-        this.model = (NavigationTreeModel) getModel();
         setNodeRenderer(new NavigationNodeRenderer());
     }
 
     @Override
     protected VTree render() {
-        Status<List<ResourceNode>> rootNodes = model.getRootNodes();
+        Status<List<ResourceNode>> rootNodes = getModel().getRootNodes();
         if(rootNodes.isAvailable()) {
             return ul(classNames(NAV, NAV_PILLS, NAV_STACKED, NAV_BRACKET), map(rootNodes.get(), getNodeItemRenderer()));
         } else {

@@ -24,9 +24,8 @@
 
   <inherits name='org.activityinfo.ui.app.ActivityInfoApp'/>
 
-  <inherits name="org.activityinfo.ui.vdom.VDomOverlays"/>
-
-
+  <!--<inherits name="org.activityinfo.ui.vdom.VDomOverlays"/>-->
+   
   <set-property name="locale" value="en"/>
 
 </module>

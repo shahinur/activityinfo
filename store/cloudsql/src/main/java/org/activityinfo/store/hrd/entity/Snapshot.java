@@ -1,15 +1,21 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 
+import static com.google.appengine.api.datastore.Entity.KEY_RESERVED_PROPERTY;
 import static com.google.appengine.api.datastore.Query.FilterOperator.GREATER_THAN;
 import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
 import static org.activityinfo.store.hrd.entity.Content.deserializeResource;
+import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
 
 /**
  * Datastore entity that stores the properties and author of a given version of a resource.
@@ -26,7 +32,7 @@ public class Snapshot {
     public static final String USER_PROPERTY = "u";
 
     final private Key snapshotKey;
-    private Key workspaceKey;
+    final private Key workspaceKey;
 
     public Snapshot(Key workspaceKey, ResourceId id, long version) {
         // Compose the key for the snapshot entity as
@@ -50,8 +56,11 @@ public class Snapshot {
             throw new IllegalArgumentException("Key is not a snapshot key");
         } else if (!PARENT_KIND.equals(snapshotKey.getParent().getKind())) {
             throw new IllegalArgumentException("Key's parent is not a snapshot parent key");
+        } else if (!ROOT_KIND.equals(snapshotKey.getParent().getParent().getKind())) {
+            throw new IllegalArgumentException("Key's parent's parent is not a workspace key");
         }
         this.snapshotKey = snapshotKey;
+        this.workspaceKey = snapshotKey.getParent().getParent();
     }
 
     /**
@@ -83,8 +92,8 @@ public class Snapshot {
 
         Query query = new Query(SNAPSHOT_KIND)
             .setAncestor(tx.getWorkspace().getRootKey())
-            .setFilter(new FilterPredicate(Entity.KEY_RESERVED_PROPERTY, GREATER_THAN, startKey))
-            .addSort(Entity.KEY_RESERVED_PROPERTY)
+            .setFilter(new FilterPredicate(KEY_RESERVED_PROPERTY, GREATER_THAN, startKey))
+            .addSort(KEY_RESERVED_PROPERTY)
             .setKeysOnly();
 
         Iterable<Entity> iterable = tx.prepare(query).asIterable();
@@ -95,5 +104,4 @@ public class Snapshot {
             }
         });
     }
-
 }

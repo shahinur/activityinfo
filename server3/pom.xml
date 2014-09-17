@@ -520,7 +520,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
-          <packagingExcludes>ActivityInfo/compile-report,*.log,**/*.symbolMap</packagingExcludes>
+          <!--<packagingExcludes>ActivityInfo/compile-report,*.log,**/*.symbolMap</packagingExcludes>-->
+          <packagingExcludes>ActivityInfo/compile-report,*.log</packagingExcludes>
           <webResources>
             <resource>
               <directory>${basedir}/src/main/deploy</directory>
@@ -580,6 +581,15 @@
             <testDatabaseUsername>${testDatabaseUsername}</testDatabaseUsername>
             <testDatabasePassword>${testDatabasePassword}</testDatabasePassword>
           </systemPropertyVariables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.appengine</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>${gae.version}</version>
+        <configuration>
+          <port>8181</port>
+          <enableJarClasses>false</enableJarClasses>
         </configuration>
       </plugin>
     </plugins>

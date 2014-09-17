@@ -4,6 +4,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.draft.Draft;
 import org.activityinfo.ui.app.client.page.pivot.PivotPage;
@@ -91,6 +92,9 @@ public class ResourcePageView extends PageView implements StoreChangeListener {
     private VTree createPageView(Resource resource) {
         ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
 
+        if(classId.equals(FolderClass.CLASS_ID)) {
+
+        }
         if(classId.equals(PivotTableModel.CLASS_ID)) {
             Status<FormClass> formClass = application.getResourceStore().getFormClass(classId);
             if(formClass.isAvailable()) {
@@ -101,5 +105,4 @@ public class ResourcePageView extends PageView implements StoreChangeListener {
             return p("class = " + classId);
         }
     }
-
 }

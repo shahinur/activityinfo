@@ -3,12 +3,14 @@ package org.activityinfo.store.hrd;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import static org.activityinfo.model.resource.Resources.ROOT_ID;
+import static org.activityinfo.model.resource.Resources.createResource;
+import static org.activityinfo.model.resource.Resources.generateId;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -23,28 +25,23 @@ public class SyncTest {
 
     @Before
     public void setUp() {
-        hrdResourceStore = (HrdResourceStore) testingEnvironment.getStore();
+        hrdResourceStore = testingEnvironment.getStore();
         user = testingEnvironment.getUser();
     }
 
     @Test
     public void testGetUpdates() {
-        // The datastore should be empty when this test is loaded
+        ResourceId workspaceId = generateId();
 
-        ResourceId workspaceId = Resources.generateId();
-        Resource resource = Resources.createResource();
+        // The datastore should be empty when this test is loaded
+        assertEquals(0, hrdResourceStore.getUpdates(user, workspaceId, 0).size());
+
+        Resource resource = createResource();
         resource.setId(workspaceId);
         resource.set(FolderClass.LABEL_FIELD_ID.asString(), "SyncWorkspace");
         resource.set("classId", FolderClass.CLASS_ID.asString());
-        resource.setOwnerId(Resources.ROOT_ID);
-        hrdResourceStore.create(testingEnvironment.getUser(), resource);
-//
-//        assertEquals(0, hrdResourceStore.getUpdates(user, workspaceId, 0).size());
-//
-//        Resource resource = new FormInstance(ResourceId.valueOf("AAAAAAAA"), FolderClass.CLASS_ID)
-//            .set(FolderClass.LABEL_FIELD_ID, "AAAAAAAA")
-//            .setOwnerId(workspaceId)
-//            .asResource();
+        resource.setOwnerId(ROOT_ID);
+        hrdResourceStore.create(user, resource);
 
         // The first object to be retrieved is the resource we just created, the second object is its ACR
         assertEquals(resource, hrdResourceStore.getUpdates(user, workspaceId, 0).get(0));
@@ -62,8 +59,8 @@ public class SyncTest {
         assertEquals(1, hrdResourceStore.getUpdates(user, workspaceId, 2).size());
         assertEquals(2, hrdResourceStore.getUpdates(user, workspaceId, 1).size());
         assertEquals(2, hrdResourceStore.getUpdates(user, workspaceId, 0).size());
-        assertEquals(resource, hrdResourceStore.getUpdates(user, workspaceId, 0).get(0));
-        assertNotEquals(resource, hrdResourceStore.getUpdates(user, workspaceId, 0).get(1));
+        assertEquals(resource, hrdResourceStore.getUpdates(user, workspaceId, 0).get(1));
+        assertNotEquals(resource, hrdResourceStore.getUpdates(user, workspaceId, 0).get(0));
         // Updating the resource we created ourselves means that is now the most recent one, so it will be returned last
     }
 }

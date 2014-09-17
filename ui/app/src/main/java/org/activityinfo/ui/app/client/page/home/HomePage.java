@@ -1,6 +1,7 @@
 package org.activityinfo.ui.app.client.page.home;
 
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.Place;
@@ -15,9 +16,17 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class HomePage extends PageView {
 
+    private final Application application;
+
+    public HomePage(Application application) {
+        this.application = application;
+    }
+
     @Override
     protected VTree render() {
-        return new PageFrame(FontAwesome.HOME, I18N.CONSTANTS.home(),
+        return new PageFrame(
+            application,
+            FontAwesome.HOME, I18N.CONSTANTS.home(),
             div(BaseStyles.CONTENTPANEL, Grid.row(announcement())));
     }
 

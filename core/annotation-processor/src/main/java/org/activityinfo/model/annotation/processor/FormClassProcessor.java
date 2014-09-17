@@ -16,7 +16,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Set;
 
-@SupportedAnnotationTypes("org.activityinfo.model.form.annotation.Form")
+@SupportedAnnotationTypes("org.activityinfo.model.annotation.Form")
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class FormClassProcessor extends AbstractProcessor {
     @Override
