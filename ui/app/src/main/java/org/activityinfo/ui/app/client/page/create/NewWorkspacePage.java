@@ -12,6 +12,8 @@ import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.app.client.page.folder.FolderPlaceType;
+import org.activityinfo.ui.app.client.place.NewResourcePlace;
+import org.activityinfo.ui.app.client.place.ResourceType;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.InstanceState;
 import org.activityinfo.ui.style.*;
@@ -40,7 +42,11 @@ public class NewWorkspacePage extends PageView {
 
     @Override
     public boolean accepts(Place place) {
-        return place == NewWorkspacePlace.INSTANCE;
+        if (place instanceof NewResourcePlace) {
+            NewResourcePlace newResourcePlace = (NewResourcePlace) place;
+            return newResourcePlace.getResourceType() == ResourceType.WORKSPACE;
+        }
+        return false;
     }
 
     @Override

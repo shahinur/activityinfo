@@ -11,6 +11,10 @@ public class Children {
         return children.toArray(new VTree[children.size()]);
     }
 
+    public static VTree[] toArray(VTree... childs) {
+        return childs;
+    }
+
     public static VTree[] toArraySkipNull(List<VTree> children) {
         List<VTree> nonNull = new ArrayList<>();
         for(VTree child : children) {

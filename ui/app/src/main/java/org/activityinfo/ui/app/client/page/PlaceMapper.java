@@ -1,7 +1,7 @@
 package org.activityinfo.ui.app.client.page;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.ui.app.client.page.create.NewWorkspacePlace;
+import org.activityinfo.ui.app.client.place.NewResourcePlace;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.home.HomePlace;
@@ -21,7 +21,7 @@ public class PlaceMapper {
     public PlaceMapper() {
         parsers.add(new FormPlace.Parser());
         parsers.add(new FolderPlace.Parser());
-        parsers.add(new NewWorkspacePlace.Parser());
+        parsers.add(new NewResourcePlace.Parser());
         parsers.add(new PivotPlace.Parser());
     }
 
