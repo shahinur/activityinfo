@@ -1,4 +1,4 @@
-package org.activityinfo.ui.app.client.page.folder;
+package org.activityinfo.ui.app.client.place;
 /*
  * #%L
  * ActivityInfo Server
@@ -22,28 +22,40 @@ package org.activityinfo.ui.app.client.page.folder;
  */
 
 /**
- * @author yuriyz on 9/15/14.
+ * @author yuriyz on 9/17/14.
  */
-public enum FolderPlaceType {
+public enum ResourceType {
+
+    WORKSPACE("workspace"),
     FOLDER("folder"),
-    WORKSPACE("workspace");
+    FORM("form");
 
     private final String value;
 
-    FolderPlaceType(String value) {
+    ResourceType(String value) {
         this.value = value;
-    }
-
-    public static FolderPlaceType fromValue(String value) {
-        for (FolderPlaceType type : values()) {
-            if (type.getValue().equalsIgnoreCase(value)) {
-                return type;
-            }
-        }
-        throw new IllegalArgumentException("Unknown value: " + value);
     }
 
     public String getValue() {
         return value;
     }
+
+    public static ResourceType fromValue(String value) {
+        ResourceType resourceType = fromValueSilently(value);
+        if (resourceType == null) {
+            throw new IllegalArgumentException("Unknown value: " + value);
+        }
+        return resourceType;
+    }
+
+    public static ResourceType fromValueSilently(String value) {
+        for (ResourceType type : values()) {
+            if (type.getValue().equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+
 }
