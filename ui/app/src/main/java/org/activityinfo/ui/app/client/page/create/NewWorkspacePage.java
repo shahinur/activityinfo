@@ -12,6 +12,7 @@ import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.PageViewFactory;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
+import org.activityinfo.ui.app.client.place.NewWorkspacePlace;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.InstanceState;
 import org.activityinfo.ui.style.*;

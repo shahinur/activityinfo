@@ -1,10 +1,10 @@
 package org.activityinfo.ui.app.client.page;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.ui.app.client.page.create.NewWorkspacePlace;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.home.HomePlace;
+import org.activityinfo.ui.app.client.place.NewWorkspacePlace;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,8 +20,8 @@ public class PlaceMapper {
     public PlaceMapper() {
         parsers.add(new FormPlace.Parser());
         parsers.add(new FolderPlace.Parser());
-        parsers.add(new NewWorkspacePlace.Parser());
         parsers.add(new ResourcePlace.Parser());
+        parsers.add(new NewWorkspacePlace.Parser());
     }
 
     public Place parse(String url) {
