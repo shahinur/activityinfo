@@ -4,9 +4,10 @@ import com.google.common.collect.Lists;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.ui.app.client.Application;
-import org.activityinfo.ui.app.client.page.create.NewWorkspacePlace;
+import org.activityinfo.ui.app.client.place.NewResourcePlace;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.app.client.page.folder.FolderPlaceType;
+import org.activityinfo.ui.app.client.place.ResourceType;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.icons.FontAwesome;
@@ -58,7 +59,7 @@ public class WorkspaceSelector extends VComponent implements StoreChangeListener
 
         NavLink addLink = new NavLink(application.getRouter());
         addLink.setLabel(I18N.CONSTANTS.newWorkspace());
-        addLink.setTarget(NewWorkspacePlace.INSTANCE);
+        addLink.setTarget(new NewResourcePlace(ResourceType.WORKSPACE));
         addLink.setIcon(FontAwesome.PLUS_SQUARE);
         items.add(addLink);
 
