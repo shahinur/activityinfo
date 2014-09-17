@@ -8,14 +8,13 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
-import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.ResourcePlace;
 import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
 import org.activityinfo.ui.app.client.store.Router;
-import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.BaseStyles;
@@ -41,14 +40,11 @@ public class FolderPage extends PageView implements StoreChangeListener {
     public static final Icon PAGE_ICON = FontAwesome.FOLDER_OPEN_O;
 
     private final Application application;
+    private final FolderProjection folder;
 
-    public FolderPage(Application application) {
+    public FolderPage(Application application, FolderProjection folder) {
         this.application = application;
-    }
-
-    private Status<FolderProjection> getFolder() {
-        FolderPlace place = application.getRouter().getCurrentPlace();
-        return application.getFolderStore().get(place.getResourceId());
+        this.folder = folder;
     }
 
     @Override
@@ -76,20 +72,14 @@ public class FolderPage extends PageView implements StoreChangeListener {
     @Override
     protected VTree render() {
 
-        Status<FolderProjection> folder = getFolder();
+        LOGGER.info("Folder id = " + folder.getRootNode().getId() +
+            ", label = " + folder.getRootNode().getLabel());
 
-        if(!folder.isAvailable()) {
-            return new PagePreLoader();
-
-        } else {
-
-            LOGGER.info("Folder id = " + folder.get().getRootNode().getId() +
-                ", label = " + folder.get().getRootNode().getLabel());
-
-            return new PageFrame(PAGE_ICON,
-                folder.get().getRootNode().getLabel(),
-                renderContents(folder.get().getRootNode()));
-        }
+        return new PageFrame(
+            application,
+            PAGE_ICON,
+            folder.getRootNode().getLabel(),
+            renderContents(folder.getRootNode()));
     }
 
     private VTree renderContents(ResourceNode folder) {
@@ -126,7 +116,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
         if(node.getClassId().equals(FormClass.CLASS_ID)) {
             return Router.uri(new FormPlace(node.getId(), FormViewType.TABLE));
         } else if(node.getClassId().equals(FolderClass.CLASS_ID)) {
-            return Router.uri(new FolderPlace(node.getId()));
+            return Router.uri(new ResourcePlace(node.getId()));
         } else {
             return UriUtils.fromTrustedString("#");
         }

@@ -326,6 +326,29 @@ public class PivotTest {
     }
 
 
+    public void dumpModel(PivotTableModel model) {
+
+        for(MeasureModel measure : model.getMeasures()) {
+
+            System.out.println("AGGREGATE " + measure.getLabel() + ": " + measure.getValueExpression());
+            System.out.println("\tFROM [" + getFormLabel(measure.getSourceId()) + "]");
+
+            if(!Strings.isNullOrEmpty(measure.getCriteriaExpression())) {
+                System.out.println("\tWHERE " + measure.getCriteriaExpression());
+            }
+
+            System.out.println("\tBY");
+            for(DimensionModel dim : model.getDimensions()) {
+                System.out.println("\t\t" + dim.getId() + " = " + dim.getSource(measure.getSourceId()));
+            }
+
+//            System.out.println("\tWITH");
+//            measure.ge
+
+        }
+
+    }
+
 
     public void dump(PivotTableModel model, List<Bucket> buckets) {
 
@@ -346,5 +369,9 @@ public class PivotTest {
             cells.add(Double.toString(bucket.getValue()));
             System.out.println(Joiner.on("\t").join(cells));
         }
+    }
+
+    private String getFormLabel(ResourceId sourceId) {
+        return store.get(sourceId).getString(FormClass.LABEL_FIELD_ID);
     }
 }

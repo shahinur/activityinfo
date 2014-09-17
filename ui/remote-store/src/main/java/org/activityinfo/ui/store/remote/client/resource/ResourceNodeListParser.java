@@ -13,13 +13,18 @@ import java.util.List;
 public class ResourceNodeListParser implements Function<Response, List<ResourceNode>> {
     @Override
     public List<ResourceNode> apply(Response input) {
-        GWT.log("Received node list");
-        JsArray<ResourceNodeOverlay> array = JsonUtils.safeEval(input.getText());
-        GWT.log("Received node list size = " + array.length());
-        List<ResourceNode> nodes = Lists.newArrayList();
-        for(int i=0;i!=array.length();++i) {
-            nodes.add(ResourceTreeParser.parse(array.get(i)));
+        try {
+            GWT.log("Received node list");
+            JsArray<ResourceNodeOverlay> array = JsonUtils.safeEval(input.getText());
+            GWT.log("Received node list size = " + array.length());
+            List<ResourceNode> nodes = Lists.newArrayList();
+            for (int i = 0; i != array.length(); ++i) {
+                nodes.add(ResourceTreeParser.parse(array.get(i)));
+            }
+            return nodes;
+        } catch (Throwable e) {
+            GWT.log("Failed to parse resource nodes.", e);
+            return Lists.newArrayList();
         }
-        return nodes;
     }
 }
