@@ -3,6 +3,7 @@ package org.activityinfo.ui.app.client.page.pivot;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ListFieldValue;
@@ -35,6 +36,8 @@ public class MeasureListTest {
         form.newInstance().set("My Measure #1", 5).save();
 
         PivotTableModel pivotTableModel = new PivotTableModel();
+        pivotTableModel.setId(Resources.generateId());
+        pivotTableModel.setOwnerId(Resources.generateId());
 
         PivotPage pivotPage = new PivotPage(scenario.application(), PivotTableModel.getFormClass(),
             pivotTableModel.asResource());

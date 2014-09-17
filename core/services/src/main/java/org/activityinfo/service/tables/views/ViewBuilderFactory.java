@@ -115,7 +115,15 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitLocalDateIntervalField(FormField field, LocalDateIntervalType type) {
-        return null;
+        return new DateColumnBuilder(field.getId(), new DateReader() {
+            @Override
+            public Date readDate(FieldValue value) {
+                if(value instanceof LocalDateInterval) {
+                    return ((LocalDateInterval) value).getEndDate().atMidnightInMyTimezone();
+                }
+                return null;
+            }
+        });
     }
 
     @Override
@@ -125,7 +133,15 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitLocalDateField(FormField field, LocalDateType localDateType) {
-        return null;
+        return new DateColumnBuilder(field.getId(), new DateReader() {
+            @Override
+            public Date readDate(FieldValue value) {
+                if(value instanceof LocalDate) {
+                    return ((LocalDate) value).atMidnightInMyTimezone();
+                }
+                return null;
+            }
+        });
     }
 
     @Override
