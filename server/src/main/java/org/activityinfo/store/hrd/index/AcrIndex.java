@@ -1,12 +1,8 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.resource.Resource;
@@ -70,6 +66,14 @@ public class AcrIndex {
         rule.setViewCondition(ExprValue.valueOf((String) entity.getProperty("view")));
         rule.setEditCondition(ExprValue.valueOf((String) entity.getProperty("edit")));
         return rule;
+    }
+
+    public static Optional<AccessControlRule> getRule(WorkspaceTransaction tx, ResourceId resourceId, ResourceId subjectId) {
+        try {
+            return Optional.of(fromEntity(tx.get(key(resourceId, subjectId))));
+        } catch (EntityNotFoundException e) {
+            return Optional.absent();
+        }
     }
 
     public static Iterable<AccessControlRule> queryRules(WorkspaceTransaction tx, ResourceId resourceId) {
