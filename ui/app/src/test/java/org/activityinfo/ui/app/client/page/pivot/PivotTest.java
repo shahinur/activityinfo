@@ -597,6 +597,14 @@ public class PivotTest {
 
     public void dumpModel(PivotTableModel model) {
 
+        System.out.println("CUBE [LCCA Ethiopia]");
+
+        System.out.println("\tDIMENSIONS");
+        for(DimensionModel dim : model.getDimensions()) {
+            System.out.println("\t\t" + dim.getId() + ": " + dim.getDescription());
+        }
+        System.out.println("\tMEASURES");
+
         for(MeasureModel measure : model.getMeasures()) {
 
             System.out.println("AGGREGATE " + measure.getLabel() + ": " + measure.getValueExpression());
@@ -607,9 +615,9 @@ public class PivotTest {
             }
 
             System.out.println("\tBY");
-            for(DimensionModel dim : model.getDimensions()) {
-                System.out.println("\t\t" + dim.getId() + " = " + dim.getSource(measure.getSourceId()));
-            }
+//            for(DimensionModel dim : model.getDimensions()) {
+//                System.out.println("\t\t" + dim.getId() + " = " + dim.getSource(measure.getSourceId()));
+//            }
 
 //            System.out.println("\tWITH");
 //            measure.ge
