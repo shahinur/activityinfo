@@ -40,7 +40,7 @@ public enum FolderPlaceType {
                 return type;
             }
         }
-        return WORKSPACE; // be on safe side and return workspace as default type
+        throw new IllegalArgumentException("Unknown value: " + value);
     }
 
     public String getValue() {
