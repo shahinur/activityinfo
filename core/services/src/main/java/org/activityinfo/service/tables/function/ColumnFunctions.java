@@ -23,8 +23,12 @@ public class ColumnFunctions {
                 return new DoubleBinaryOpView(arguments.get(0), arguments.get(1));
             }
         } else if(fn.getId().equals("&&")) {
-            if(argsMatch(arguments, ColumnType.BOOLEAN, ColumnType.BOOLEAN)) {
-                return new BooleanBinaryOp(arguments.get(0), arguments.get(1));
+            if (argsMatch(arguments, ColumnType.BOOLEAN, ColumnType.BOOLEAN)) {
+                return new BooleanBinaryOp(BooleanBinaryOp.Operator.AND, arguments.get(0), arguments.get(1));
+            }
+        } else if(fn.getId().equals("||")) {
+            if (argsMatch(arguments, ColumnType.BOOLEAN, ColumnType.BOOLEAN)) {
+                return new BooleanBinaryOp(BooleanBinaryOp.Operator.OR, arguments.get(0), arguments.get(1));
             }
         }
         throw new UnsupportedOperationException("Unimplemented function: " + fn.getId());

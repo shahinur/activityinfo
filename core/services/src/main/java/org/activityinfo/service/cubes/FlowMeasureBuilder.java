@@ -101,6 +101,9 @@ public class FlowMeasureBuilder implements MeasureBuilder {
             for(int i=0;i!=dimensions.size();++i) {
                 bucket.setDimensionValue(dimensions.get(i).getId(), key.getDimensionValue(i));
             }
+            for (Map.Entry<String, String> tag : model.getDimensionTags().entrySet()) {
+                bucket.setDimensionValue(tag.getKey(), tag.getValue());
+            }
             buckets.add(bucket);
         }
         return buckets;

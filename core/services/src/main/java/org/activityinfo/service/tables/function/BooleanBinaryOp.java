@@ -7,12 +7,42 @@ import java.util.Date;
 
 public class BooleanBinaryOp implements ColumnView {
 
+    public enum Operator {
+        AND {
+            @Override
+            public int apply(int x, int y) {
+                if(x == NA || y == NA) {
+                    return NA;
+                } else if(x == TRUE && y == TRUE) {
+                    return TRUE;
+                } else {
+                    return FALSE;
+                }
+            }
+        }, OR {
+            @Override
+            public int apply(int x, int y) {
+                if(x == TRUE || y == TRUE) {
+                    return TRUE;
+                } else if(x == NA || y == NA) {
+                    return NA;
+                } else {
+                    return FALSE;
+                }
+            }
+        };
+
+        public abstract int apply(int x, int y);
+    }
+
     private ColumnView x;
     private ColumnView y;
+    private Operator operator;
 
-    public BooleanBinaryOp(ColumnView x, ColumnView y) {
+    public BooleanBinaryOp(Operator operator, ColumnView x, ColumnView y) {
         this.x = x;
         this.y = y;
+        this.operator = operator;
     }
 
     @Override
@@ -49,12 +79,6 @@ public class BooleanBinaryOp implements ColumnView {
     public int getBoolean(int row) {
         int bx = x.getBoolean(row);
         int by = y.getBoolean(row);
-        if(bx == NA || by == NA) {
-            return NA;
-        } else if(bx == TRUE && by == TRUE) {
-            return TRUE;
-        } else {
-            return FALSE;
-        }
+        return operator.apply(bx, by);
     }
 }

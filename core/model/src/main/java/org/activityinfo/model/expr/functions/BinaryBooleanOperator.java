@@ -41,5 +41,5 @@ public abstract class BinaryBooleanOperator extends ExprFunction {
         return BooleanType.INSTANCE;
     }
 
-    protected abstract boolean apply(boolean a, boolean b);
+    public abstract boolean apply(boolean a, boolean b);
 }
