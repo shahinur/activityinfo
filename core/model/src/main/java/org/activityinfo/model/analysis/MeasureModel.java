@@ -1,6 +1,7 @@
 package org.activityinfo.model.analysis;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.PropertyBag;
@@ -13,10 +14,14 @@ import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.expr.ExprValue;
 
+import java.util.Map;
+
 public class MeasureModel extends AbstractModel<MeasureModel> {
 
 
     public static final ResourceId CLASS_ID = ResourceId.valueOf("_measure");
+
+    private Map<String, String> dimensionTags = Maps.newHashMap();
 
     public MeasureModel() {
     }
@@ -45,6 +50,14 @@ public class MeasureModel extends AbstractModel<MeasureModel> {
 
     public void setMeasurementType(MeasurementType type) {
         set("measurementType", type);
+    }
+
+    public void setDimensionTag(String dimensionId, String dimensionValue) {
+        dimensionTags.put(dimensionId, dimensionValue);
+    }
+
+    public Map<String, String> getDimensionTags() {
+        return dimensionTags;
     }
 
     /**

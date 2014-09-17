@@ -23,6 +23,7 @@ import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
@@ -267,6 +268,9 @@ public class ActivityTable extends ResourceMigrator {
                 default:
                 case "QUANTITY":
                     field.setType(new QuantityType().setUnits(rs.getString("units")));
+                    if(rs.getInt("ActivityId") == 6240) {
+                        field.setDefaultValue(new Quantity(0, rs.getString("units")));
+                    }
                     break;
                 case "FREE_TEXT":
                     field.setType(TextType.INSTANCE);

@@ -23,6 +23,8 @@ public class StaticField implements FieldValueSource {
                 field.getType().getTypeClass());
         if (fieldValue != null) {
             return fieldValue;
+        } else if(field.getDefaultValue() != null) {
+            return field.getDefaultValue();
         } else {
             // we don't want to get NPE in ComparisonOperator
             return NullFieldValue.INSTANCE;
