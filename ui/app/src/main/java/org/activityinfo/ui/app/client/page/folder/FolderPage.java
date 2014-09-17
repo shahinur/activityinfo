@@ -69,7 +69,6 @@ public class FolderPage extends PageView implements StoreChangeListener {
         this.folderId = folderId;
     }
 
-
     @Override
     public void componentDidMount() {
         application.getFolderStore().addChangeListener(this);
@@ -176,7 +175,8 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private static VTree timelineColumn() {
-        return new Panel("Recent Activity", p("Todo..."));
+        return Grid.column(3,
+            new Panel("Recent Activity", p("Todo...")));
     }
 
     private VTree helpColumn(ResourceNode folder) {
