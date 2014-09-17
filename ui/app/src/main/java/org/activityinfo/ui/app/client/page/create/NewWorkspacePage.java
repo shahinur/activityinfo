@@ -9,9 +9,9 @@ import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.form.control.HorizontalFormView;
 import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.PageViewFactory;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.folder.FolderPlace;
-import org.activityinfo.ui.app.client.page.folder.FolderPlaceType;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.InstanceState;
 import org.activityinfo.ui.style.*;
@@ -21,6 +21,30 @@ import org.activityinfo.ui.vdom.shared.tree.VTree;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class NewWorkspacePage extends PageView {
+
+
+    public static class Factory implements PageViewFactory<NewWorkspacePlace> {
+
+        private NewWorkspacePage instance;
+        private Application application;
+
+        public Factory(Application application) {
+            this.application = application;
+        }
+
+        @Override
+        public boolean accepts(Place place) {
+            return place instanceof NewWorkspacePlace;
+        }
+
+        @Override
+        public PageView create(NewWorkspacePlace place) {
+            if(instance == null) {
+                instance = new NewWorkspacePage(application);
+            }
+            return instance;
+        }
+    }
 
     private final Application application;
     private final SavePanel savePanel;
@@ -36,11 +60,6 @@ public class NewWorkspacePage extends PageView {
                 createWorkspace();
             }
         });
-    }
-
-    @Override
-    public boolean accepts(Place place) {
-        return place == NewWorkspacePlace.INSTANCE;
     }
 
     @Override
@@ -121,7 +140,7 @@ public class NewWorkspacePage extends PageView {
 
                 @Override
                 public void onSuccess(UpdateResult result) {
-                    new FolderPlace(workspaceDraft.getInstanceId(), FolderPlaceType.WORKSPACE).navigateTo(application);
+                    new FolderPlace(workspaceDraft.getInstanceId()).navigateTo(application);
                 }
             });
         }
