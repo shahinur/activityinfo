@@ -13,6 +13,7 @@ import org.activityinfo.model.resource.ResourceId;
 
 import static com.google.appengine.api.datastore.Entity.KEY_RESERVED_PROPERTY;
 import static com.google.appengine.api.datastore.Query.FilterOperator.GREATER_THAN;
+import static org.activityinfo.store.hrd.entity.Content.OWNER_PROPERTY;
 import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
 import static org.activityinfo.store.hrd.entity.Content.deserializeResource;
 import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
@@ -72,6 +73,7 @@ public class Snapshot {
         entity.setProperty(VERSION_PROPERTY, resource.getVersion());
         entity.setUnindexedProperty(TIMESTAMP_PROPERTY, System.currentTimeMillis());
         entity.setUnindexedProperty(USER_PROPERTY, tx.getUser().getId());
+        entity.setUnindexedProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
 
         Content.writeProperties(resource, entity);
 
