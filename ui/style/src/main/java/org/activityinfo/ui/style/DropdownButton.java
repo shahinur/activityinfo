@@ -38,6 +38,8 @@ import java.util.List;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 /**
+ * ATTENTION : not finished !
+ *
  * @author yuriyz on 9/15/14.
  */
 public class DropdownButton extends VComponent {
