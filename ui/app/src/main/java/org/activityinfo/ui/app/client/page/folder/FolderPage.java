@@ -9,7 +9,10 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
-import org.activityinfo.ui.app.client.page.*;
+import org.activityinfo.ui.app.client.page.PagePreLoader;
+import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.PageViewFactory;
+import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
@@ -66,6 +69,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
         this.folderId = folderId;
     }
 
+
     @Override
     public void componentDidMount() {
         application.getFolderStore().addChangeListener(this);
@@ -93,19 +97,17 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
         Status<FolderProjection> folder = getFolder();
 
-        if(folder.isAvailable()) {
+        if (!folder.isAvailable()) {
+            return new PagePreLoader();
+
+        } else {
 
             LOGGER.info("Folder id = " + folder.get().getRootNode().getId() +
                 ", label = " + folder.get().getRootNode().getLabel());
 
-            return new PageFrame(
-                application,
-                PAGE_ICON,
+            return new PageFrame(application, PAGE_ICON,
                 folder.get().getRootNode().getLabel(),
                 renderContents(folder.get().getRootNode()));
-
-        } else {
-            return new PagePreLoader();
         }
     }
 
@@ -140,10 +142,10 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private static SafeUri link(ResourceNode node) {
-        if(node.getClassId().equals(FormClass.CLASS_ID)) {
+        if (node.getClassId().equals(FormClass.CLASS_ID)) {
             return Router.uri(new FormPlace(node.getId(), FormViewType.TABLE));
-        } else if(node.getClassId().equals(FolderClass.CLASS_ID)) {
-            return Router.uri(new ResourcePlace(node.getId()));
+        } else if (node.getClassId().equals(FolderClass.CLASS_ID)) {
+            return Router.uri(new FolderPlace(node.getClassId()));
         } else {
             return UriUtils.fromTrustedString("#");
         }
@@ -155,7 +157,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
     private static VTree childIcon(ResourceNode child) {
         Icon icon;
-        if(FormClass.CLASS_ID.equals(child.getClassId())) {
+        if (FormClass.CLASS_ID.equals(child.getClassId())) {
             icon = FontAwesome.EDIT;
         } else {
             icon = FontAwesome.FOLDER_OPEN_O;
@@ -174,7 +176,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private static VTree timelineColumn() {
-        return Grid.column(4, new Panel("Recent Activity", p("Todo...")));
+        return new Panel("Recent Activity", p("Todo..."));
     }
 
     private VTree helpColumn(ResourceNode folder) {
