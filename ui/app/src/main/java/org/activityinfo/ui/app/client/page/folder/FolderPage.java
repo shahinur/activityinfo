@@ -4,17 +4,17 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
-import org.activityinfo.ui.app.client.page.PageView;
-import org.activityinfo.ui.app.client.page.Place;
-import org.activityinfo.ui.app.client.page.ResourcePlace;
+import org.activityinfo.ui.app.client.page.*;
 import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
 import org.activityinfo.ui.app.client.store.Router;
+import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.BaseStyles;
@@ -35,21 +35,35 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class FolderPage extends PageView implements StoreChangeListener {
 
+    public static class Factory implements PageViewFactory<FolderPlace> {
+
+        private final Application application;
+
+        public Factory(Application application) {
+            this.application = application;
+        }
+
+        @Override
+        public boolean accepts(Place place) {
+            return place instanceof FolderPlace;
+        }
+
+        @Override
+        public PageView create(FolderPlace place) {
+            return new FolderPage(application, place.getResourceId());
+        }
+    }
+
     private static final Logger LOGGER = Logger.getLogger(FolderPage.class.getName());
 
     public static final Icon PAGE_ICON = FontAwesome.FOLDER_OPEN_O;
 
     private final Application application;
-    private final FolderProjection folder;
+    private final ResourceId folderId;
 
-    public FolderPage(Application application, FolderProjection folder) {
+    public FolderPage(Application application, ResourceId folderId) {
         this.application = application;
-        this.folder = folder;
-    }
-
-    @Override
-    public boolean accepts(Place place) {
-        return place instanceof FolderPlace;
+        this.folderId = folderId;
     }
 
     @Override
@@ -69,17 +83,30 @@ public class FolderPage extends PageView implements StoreChangeListener {
         application.getRouter().removeChangeListener(this);
     }
 
+
+    private Status<FolderProjection> getFolder() {
+        return application.getFolderStore().get(folderId);
+    }
+
     @Override
     protected VTree render() {
 
-        LOGGER.info("Folder id = " + folder.getRootNode().getId() +
-            ", label = " + folder.getRootNode().getLabel());
+        Status<FolderProjection> folder = getFolder();
 
-        return new PageFrame(
-            application,
-            PAGE_ICON,
-            folder.getRootNode().getLabel(),
-            renderContents(folder.getRootNode()));
+        if(folder.isAvailable()) {
+
+            LOGGER.info("Folder id = " + folder.get().getRootNode().getId() +
+                ", label = " + folder.get().getRootNode().getLabel());
+
+            return new PageFrame(
+                application,
+                PAGE_ICON,
+                folder.get().getRootNode().getLabel(),
+                renderContents(folder.get().getRootNode()));
+
+        } else {
+            return new PagePreLoader();
+        }
     }
 
     private VTree renderContents(ResourceNode folder) {

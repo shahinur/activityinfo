@@ -8,8 +8,6 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.page.PageView;
-import org.activityinfo.ui.app.client.page.Place;
-import org.activityinfo.ui.app.client.page.ResourcePlace;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.InstanceState;
 import org.activityinfo.ui.flux.store.Store;
@@ -88,10 +86,5 @@ public class PivotPage extends PageView implements StoreChangeListener {
         application.getRequestDispatcher().execute(new SaveRequest(workingDraft.getUpdatedResource()));
     }
 
-
-    @Override
-    public boolean accepts(Place place) {
-        return place instanceof ResourcePlace;
-    }
 
 }
