@@ -1,7 +1,6 @@
 package org.activityinfo.ui.app.client.page.pivot.tree;
 
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.store.FolderStore;
@@ -34,7 +33,7 @@ public class FormChooser extends VComponent implements StoreChangeListener {
 
     private final SingleSelectionModel selectionModel = new SingleSelectionModel();
 
-    private AcceptHandler<ResourceId> acceptHandler;
+    private FieldSelectHandler acceptHandler;
 
     public FormChooser(Application application) {
         this.application = application;
@@ -55,12 +54,6 @@ public class FormChooser extends VComponent implements StoreChangeListener {
             }
         });
         this.addButton = new Button(ButtonStyle.PRIMARY, t(I18N.CONSTANTS.add()));
-        this.addButton.setClickHandler(new ClickHandler() {
-            @Override
-            public void onClicked() {
-                onAccepted();
-            }
-        });
         this.modal.setBody(tree);
         this.modal.setFooter(cancelButton, addButton);
     }
@@ -90,10 +83,4 @@ public class FormChooser extends VComponent implements StoreChangeListener {
         modal.setVisible(visible);
     }
 
-    private void onAccepted() {
-        if(acceptHandler != null) {
-            acceptHandler.onAccepted(ResourceId.valueOf(selectionModel.getSelectedKey()));
-        }
-        modal.setVisible(false);
-    }
 }

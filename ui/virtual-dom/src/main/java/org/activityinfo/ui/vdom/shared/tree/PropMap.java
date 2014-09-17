@@ -54,8 +54,10 @@ public class PropMap {
     }
 
     public void addClassNames(List<CssClass> newClass) {
+        String classNameValue = (String) propMap.get("className");
         for (CssClass cssClass : newClass) {
             addClassName(cssClass);
+            set("className", classNameValue + " " + newClass);
         }
     }
 

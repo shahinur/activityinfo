@@ -1,8 +1,6 @@
 package org.activityinfo.service.cubes;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import org.activityinfo.model.analysis.Cube;
 import org.activityinfo.model.analysis.MeasureModel;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
@@ -11,7 +9,6 @@ import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.tables.TableQueryBatchBuilder;
 
 import java.util.List;
-import java.util.Map;
 
 public class CubeBuilder {
 
@@ -21,7 +18,7 @@ public class CubeBuilder {
         this.resourceStore = resourceStore;
     }
 
-    public Cube buildCube(PivotTableModel model) throws Exception {
+    public List<Bucket> buildCube(PivotTableModel model) throws Exception {
 
 
         // Create the builders for each metric
@@ -30,7 +27,14 @@ public class CubeBuilder {
             MeasureModel measureModel = model.getMeasures().get(i);
             FormClass formClass = FormClass.fromResource(resourceStore.get(measureModel.getSourceId()));
 
-            measureBuilders.add(new FlowMeasureBuilder(measureModel, i, model.getDimensions(), formClass));
+            switch(measureModel.getMeasurementType()) {
+                case STOCK:
+                    measureBuilders.add(new StockMeasureBuilder(measureModel, model.getDimensions(), formClass));
+                    break;
+                case FLOW:
+                    measureBuilders.add(new FlowMeasureBuilder(measureModel, model.getDimensions(), formClass));
+                    break;
+            }
         }
 
         // Queue requests for columns
@@ -43,11 +47,11 @@ public class CubeBuilder {
         batch.execute();
 
         // compute the metrics
-        Map<BucketKey, Bucket>  buckets = Maps.newHashMap();
+        List<Bucket> buckets = Lists.newArrayList();
         for (MeasureBuilder builder : measureBuilders) {
-            builder.aggregate(buckets);
+            buckets.addAll(builder.aggregate());
         }
 
-        return new Cube(model, buckets.values());
+        return buckets;
     }
 }

@@ -4,23 +4,26 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
-import org.activityinfo.ui.app.client.chrome.nav.NavLink;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.PageViewFactory;
 import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
-import org.activityinfo.ui.app.client.place.NewResourcePlace;
-import org.activityinfo.ui.app.client.place.ResourceType;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
-import org.activityinfo.ui.style.*;
+import org.activityinfo.ui.style.BaseStyles;
+import org.activityinfo.ui.style.Grid;
+import org.activityinfo.ui.style.Media;
+import org.activityinfo.ui.style.Panel;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.html.Icon;
@@ -35,24 +38,35 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class FolderPage extends PageView implements StoreChangeListener {
 
+    public static class Factory implements PageViewFactory<FolderPlace> {
+
+        private final Application application;
+
+        public Factory(Application application) {
+            this.application = application;
+        }
+
+        @Override
+        public boolean accepts(Place place) {
+            return place instanceof FolderPlace;
+        }
+
+        @Override
+        public PageView create(FolderPlace place) {
+            return new FolderPage(application, place.getResourceId());
+        }
+    }
+
     private static final Logger LOGGER = Logger.getLogger(FolderPage.class.getName());
 
     public static final Icon PAGE_ICON = FontAwesome.FOLDER_OPEN_O;
 
     private final Application application;
+    private final ResourceId folderId;
 
-    public FolderPage(Application application) {
+    public FolderPage(Application application, ResourceId folderId) {
         this.application = application;
-    }
-
-    private Status<FolderProjection> getFolder() {
-        FolderPlace place = application.getRouter().getCurrentPlace();
-        return application.getFolderStore().get(place.getResourceId());
-    }
-
-    @Override
-    public boolean accepts(Place place) {
-        return place instanceof FolderPlace;
+        this.folderId = folderId;
     }
 
     @Override
@@ -72,79 +86,65 @@ public class FolderPage extends PageView implements StoreChangeListener {
         application.getRouter().removeChangeListener(this);
     }
 
+
+    private Status<FolderProjection> getFolder() {
+        return application.getFolderStore().get(folderId);
+    }
+
     @Override
     protected VTree render() {
 
         Status<FolderProjection> folder = getFolder();
 
         if (!folder.isAvailable()) {
-            return new PagePreLoader(folder);
+            return new PagePreLoader();
 
         } else {
 
             LOGGER.info("Folder id = " + folder.get().getRootNode().getId() +
-                    ", label = " + folder.get().getRootNode().getLabel());
+                ", label = " + folder.get().getRootNode().getLabel());
 
-            return new PageFrame(PAGE_ICON,
-                    folder.get().getRootNode().getLabel(),
-                    renderContents(folder.get().getRootNode()), application);
+            return new PageFrame(application, PAGE_ICON,
+                folder.get().getRootNode().getLabel(),
+                renderContents(folder.get().getRootNode()));
         }
     }
 
     private VTree renderContents(ResourceNode folder) {
         return div(BaseStyles.CONTENTPANEL,
-                div(BaseStyles.ROW,
-                        Grid.column(4, listColumn(folder)),
-                        Grid.column(3, timelineColumn()),
-                        Grid.column(3, helpColumn()),
-                        Grid.column(2, actions())
-                ));
-    }
-
-    private VTree actions() {
-        NavLink newForm = new NavLink(application.getRouter());
-        newForm.setLabel("New Form");
-        newForm.setIcon(FontAwesome.PLUS);
-        newForm.setTarget(new NewResourcePlace(ResourceType.FORM));
-
-        NavLink newFolder = new NavLink(application.getRouter());
-        newFolder.setLabel("New Folder");
-        newFolder.setIcon(FontAwesome.PLUS);
-        newFolder.setTarget(new NewResourcePlace(ResourceType.FOLDER));
-
-        return new Panel("Actions", ul(
-                li(newForm),
-                li(newFolder)
-        ));
+            div(BaseStyles.ROW,
+                listColumn(folder),
+                timelineColumn(),
+                helpColumn(folder)));
     }
 
     private static VTree listColumn(ResourceNode page) {
-        return childTable(page);
+        return Grid.column(5, childTable(page));
     }
 
     private static VTree childTable(ResourceNode page) {
         return new Panel(
-                div(className(BaseStyles.WIDGET_BLOGLIST), map(page.getChildren(),
-                        new H.Render<ResourceNode>() {
+            div(className(BaseStyles.WIDGET_BLOGLIST), map(page.getChildren(),
+                new H.Render<ResourceNode>() {
 
-                            @Override
-                            public VTree render(ResourceNode item) {
-                                return media(item);
-                            }
-                        })));
+                @Override
+                public VTree render(ResourceNode item) {
+                    return media(item);
+                }
+            })));
     }
 
     private static VTree media(ResourceNode child) {
         return Media.media(childIcon(child),
-                link(child),
-                t(child.getLabel()), description(child));
+            link(child),
+            t(child.getLabel()), description(child));
     }
 
     private static SafeUri link(ResourceNode node) {
         if (node.getClassId().equals(FormClass.CLASS_ID)) {
             return Router.uri(new FormPlace(node.getId(), FormViewType.TABLE));
         } else if (node.getClassId().equals(FolderClass.CLASS_ID)) {
-            return Router.uri(new FolderPlace(node.getClassId(), FolderPlaceType.FOLDER));
+            return Router.uri(new FolderPlace(node.getClassId()));
         } else {
             return UriUtils.fromTrustedString("#");
         }
@@ -175,13 +175,13 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private static VTree timelineColumn() {
-        return new Panel("Recent Activity", p("Todo..."));
+        return Grid.column(3,
+            new Panel("Recent Activity", p("Todo...")));
     }
 
-    private static VTree[] helpColumn() {
-        return new VTree[]{
-                new Panel("Common Tasks", p("Todo...")),
-                new Panel("Administration", p("Todo..."))
-        };
+    private VTree helpColumn(ResourceNode folder) {
+        return Grid.column(3,
+            new TasksPanel(application, folder.getId()),
+            new Panel("Administration", p("Todo...")));
     }
 }

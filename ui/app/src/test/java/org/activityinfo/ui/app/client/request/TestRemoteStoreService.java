@@ -1,10 +1,12 @@
 package org.activityinfo.ui.app.client.request;
 
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
@@ -47,6 +49,11 @@ public class TestRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<TableData> queryTable(TableModel tableModel) {
         return Promise.resolved(store.queryTable(user, tableModel));
+    }
+
+    @Override
+    public Promise<List<Bucket>> queryCube(PivotTableModel cubeModel) {
+        return Promise.resolved(store.queryCube(user, cubeModel));
     }
 
     @Override

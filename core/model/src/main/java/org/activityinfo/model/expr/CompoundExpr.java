@@ -4,14 +4,19 @@ import org.activityinfo.model.expr.eval.EvalContext;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
 
+import javax.annotation.Nonnull;
+
 /**
  * symbol.symbol
  */
 public class CompoundExpr extends ExprNode {
-    private SymbolExpr value;
-    private ExprNode field;
+    @Nonnull
+    private final ExprNode value;
 
-    public CompoundExpr(SymbolExpr value, SymbolExpr field) {
+    @Nonnull
+    private final SymbolExpr field;
+
+    public CompoundExpr(@Nonnull ExprNode value, @Nonnull SymbolExpr field) {
         this.value = value;
         this.field = field;
     }
@@ -26,13 +31,44 @@ public class CompoundExpr extends ExprNode {
         return null;
     }
 
+
+    @Nonnull
+    public ExprNode getValue() {
+        return value;
+    }
+
+    @Nonnull
+    public SymbolExpr getField() {
+        return field;
+    }
+
     @Override
     public String asExpression() {
-        return null;
+        return value.asExpression() + "." + field.asExpression();
     }
 
     @Override
     public <T> T accept(ExprVisitor<T> visitor) {
         return visitor.visitCompoundExpr(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CompoundExpr that = (CompoundExpr) o;
+
+        if (!field.equals(that.field)) return false;
+        if (!value.equals(that.value)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = value.hashCode();
+        result = 31 * result + field.hashCode();
+        return result;
     }
 }

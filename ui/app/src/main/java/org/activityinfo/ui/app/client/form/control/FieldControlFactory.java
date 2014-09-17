@@ -2,6 +2,7 @@ package org.activityinfo.ui.app.client.form.control;
 
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
@@ -23,9 +24,11 @@ import org.activityinfo.ui.vdom.shared.tree.VComponent;
 public class FieldControlFactory implements FormClassVisitor<VComponent> {
 
     private final Dispatcher dispatcher;
+    private ResourceId instanceId;
 
-    public FieldControlFactory(Dispatcher dispatcher) {
+    public FieldControlFactory(Dispatcher dispatcher, ResourceId instanceId) {
         this.dispatcher = dispatcher;
+        this.instanceId = instanceId;
     }
 
     public VComponent create(FormField field) {
@@ -34,7 +37,7 @@ public class FieldControlFactory implements FormClassVisitor<VComponent> {
 
     @Override
     public VComponent visitTextField(FormField field, TextType type) {
-        return new TextControl(dispatcher, field);
+        return new TextControl(dispatcher, instanceId, field);
     }
 
     @Override

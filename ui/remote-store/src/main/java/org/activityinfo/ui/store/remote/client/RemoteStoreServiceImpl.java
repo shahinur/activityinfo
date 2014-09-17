@@ -4,15 +4,18 @@ import com.google.common.base.Function;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.ui.store.remote.client.cube.BucketOverlay;
 import org.activityinfo.ui.store.remote.client.resource.*;
 import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
@@ -45,6 +48,18 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
         return store.resolve("query").resolve("table")
                 .postJson(ResourceSerializer.toJson(tableModel.asRecord()))
                 .then(new JsTableDataBuilder());
+    }
+
+    @Override
+    public Promise<List<Bucket>> queryCube(PivotTableModel cubeModel) {
+        return store.resolve("query").resolve("cube")
+            .postJson(ResourceSerializer.toJson(cubeModel.asRecord()))
+            .then(new Function<Response, List<Bucket>>() {
+                @Override
+                public List<Bucket> apply(Response input) {
+                    return BucketOverlay.parse(input.getText());
+                }
+            });
     }
 
     @Override

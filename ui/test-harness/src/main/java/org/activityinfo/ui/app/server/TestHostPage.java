@@ -48,7 +48,7 @@ public class TestHostPage {
         PropMap propMap = new PropMap();
         propMap.set("rel", "stylesheet/less");
         propMap.set("type", "text/css");
-        propMap.set("href", "/style/" + clazz.getName());
+        propMap.set("href", "/style/" + clazz.getName().replace('.', '/'));
         return link(propMap);
     }
 

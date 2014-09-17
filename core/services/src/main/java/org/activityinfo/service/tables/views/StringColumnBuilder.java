@@ -11,7 +11,6 @@ import org.activityinfo.model.table.views.EmptyColumnView;
 import org.activityinfo.model.table.views.StringArrayColumnView;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.NullFieldValue;
-import org.activityinfo.model.type.primitive.HasStringValue;
 import org.activityinfo.service.tables.stats.StringStatistics;
 
 import java.util.List;
@@ -26,8 +25,10 @@ public class StringColumnBuilder implements ColumnViewBuilder {
     private Optional<ColumnView> result = Optional.absent();
 
     private String fieldName;
+    private StringReader reader;
 
-    public StringColumnBuilder(ResourceId fieldId) {
+    public StringColumnBuilder(ResourceId fieldId, StringReader reader) {
+        this.reader = reader;
         this.fieldName = fieldId.asString();
     }
 
@@ -35,10 +36,8 @@ public class StringColumnBuilder implements ColumnViewBuilder {
     public void accept(FormEvalContext instance) {
         FieldValue fieldValue = instance.getFieldValue(fieldName);
         String string = null;
-        if(fieldValue instanceof HasStringValue) {
-            string = ((HasStringValue) fieldValue).asString();
-        } else if(fieldValue != null && fieldValue != NullFieldValue.INSTANCE) {
-            string = fieldValue.toString();
+        if(fieldValue != null && fieldValue != NullFieldValue.INSTANCE) {
+            string = reader.readString(fieldValue);
         }
         stats.update(string);
         values.add(string);

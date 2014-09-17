@@ -1,5 +1,6 @@
 package org.activityinfo.ui.app.client.request;
 
+import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
@@ -12,6 +13,10 @@ public class SaveRequest implements Request<UpdateResult> {
 
     public SaveRequest(Resource resource) {
         this.resource = resource;
+    }
+
+    public SaveRequest(IsResource resource) {
+        this.resource = resource.asResource();
     }
 
     public ResourceId getResourceId() {

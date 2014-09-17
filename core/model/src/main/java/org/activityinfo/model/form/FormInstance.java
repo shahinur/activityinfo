@@ -24,13 +24,8 @@ package org.activityinfo.model.form;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.*;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.number.Quantity;
-import org.activityinfo.model.type.primitive.BooleanFieldValue;
-import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.model.type.time.LocalDate;
 
 import javax.annotation.Nonnull;
@@ -170,22 +165,7 @@ public class FormInstance implements IsResource {
     }
 
     public FieldValue get(ResourceId fieldId) {
-        Object value = propertyBag.get(fieldId.asString());
-        if(value == null) {
-            return null;
-        } else if(value instanceof String) {
-            return TextValue.valueOf((String) value);
-        } else if(value instanceof Boolean) {
-            Boolean booleanValue = (Boolean) value;
-            return BooleanFieldValue.valueOf(booleanValue);
-        } else if(value instanceof Record) {
-            Record record = (Record)value;
-            return TypeRegistry.get().deserializeFieldValue(record);
-        }else if(value instanceof Double) {
-            return new Quantity((Double) value);
-        } else {
-            throw new UnsupportedOperationException(fieldId.asString() + " = " + value);
-        }
+        return Types.read(propertyBag, fieldId.asString());
     }
 
     /**

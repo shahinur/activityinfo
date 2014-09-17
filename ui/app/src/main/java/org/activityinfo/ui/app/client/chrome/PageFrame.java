@@ -16,10 +16,10 @@ public class PageFrame extends VComponent<PageFrame> {
 
     private Icon pageIcon;
     private String pageTitle;
-    private VTree content;
+    private VTree[] content;
     private Application application;
 
-    public PageFrame(Icon pageIcon, String pageTitle, VTree content, Application application) {
+    public PageFrame(Application application, Icon pageIcon, String pageTitle, VTree... content) {
         this.pageIcon = pageIcon;
         this.pageTitle = pageTitle;
         this.content = content;

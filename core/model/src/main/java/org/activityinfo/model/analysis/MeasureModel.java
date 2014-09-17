@@ -1,20 +1,39 @@
 package org.activityinfo.model.analysis;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.PropertyBag;
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.expr.ExprValue;
+
+import java.util.Map;
 
 public class MeasureModel extends AbstractModel<MeasureModel> {
 
 
     public static final ResourceId CLASS_ID = ResourceId.valueOf("_measure");
 
-    private AggregationFunction aggregationFunction;
-    private MeasurementType type;
+    private Map<String, String> dimensionTags = Maps.newHashMap();
 
+    public MeasureModel() {
+    }
+
+    public MeasureModel(PropertyBag propertyBag) {
+        super(propertyBag);
+    }
+
+    @Override
+    public ResourceId getClassId() {
+        return CLASS_ID;
+    }
 
     public String getId() {
         return getString("id");
@@ -24,20 +43,21 @@ public class MeasureModel extends AbstractModel<MeasureModel> {
         return set("id", id);
     }
 
-    public AggregationFunction getAggregationFunction() {
-        return aggregationFunction;
-    }
-
-    public void setAggregationFunction(AggregationFunction aggregationFunction) {
-        this.aggregationFunction = aggregationFunction;
-    }
 
     public MeasurementType getMeasurementType() {
-        return type;
+        return get("measurementType", MeasurementType.class);
     }
 
     public void setMeasurementType(MeasurementType type) {
-        this.type = type;
+        set("measurementType", type);
+    }
+
+    public void setDimensionTag(String dimensionId, String dimensionValue) {
+        dimensionTags.put(dimensionId, dimensionValue);
+    }
+
+    public Map<String, String> getDimensionTags() {
+        return dimensionTags;
     }
 
     /**
@@ -77,6 +97,10 @@ public class MeasureModel extends AbstractModel<MeasureModel> {
         return set("criteria", new ExprValue(value));
     }
 
+    public static MeasureModel fromRecord(Record record) {
+        return new MeasureModel(record);
+    }
+
     public static FormClass getFormClass() {
         FormClass formClass = new FormClass(ResourceId.valueOf("_measure"));
 
@@ -96,6 +120,14 @@ public class MeasureModel extends AbstractModel<MeasureModel> {
             new FormField(ResourceId.valueOf("value"))
                 .setLabel("Value")
                 .setType(ExprFieldType.INSTANCE)
+                .setRequired(true));
+
+        formClass.addElement(
+            new FormField(ResourceId.valueOf("measurementType"))
+                .setLabel("Value")
+                .setType(new EnumType(Cardinality.SINGLE, Lists.newArrayList(
+                    new EnumValue(ResourceId.valueOf("FLOW"), "Flow"),
+                    new EnumValue(ResourceId.valueOf("STOCK"), "Stock"))))
                 .setRequired(true));
 
         formClass.addElement(
