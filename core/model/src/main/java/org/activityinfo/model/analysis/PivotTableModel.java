@@ -26,6 +26,18 @@ public class PivotTableModel implements IsRecord, IsResource {
         return id;
     }
 
+    public void setId(ResourceId id) {
+        this.id = id;
+    }
+
+    public ResourceId getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(ResourceId ownerId) {
+        this.ownerId = ownerId;
+    }
+
     public List<MeasureModel> getMeasures() {
         return measures;
     }

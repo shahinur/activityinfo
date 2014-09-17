@@ -97,11 +97,10 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     @Override
     public UpdateResult put(AuthenticatedUser user, ResourceId id, Resource resource) {
-        int version = currentVersion++;
-        resource.setVersion(version);
         lastUpdated = resource.copy();
+        lastUpdated.setVersion(currentVersion++);
         put(lastUpdated);
-        return UpdateResult.committed(id, version);
+        return UpdateResult.committed(id, lastUpdated.getVersion());
     }
 
     @Override
