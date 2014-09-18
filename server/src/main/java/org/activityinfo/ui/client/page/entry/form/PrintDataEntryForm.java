@@ -144,12 +144,21 @@ public class PrintDataEntryForm extends Window {
         contents = contents.replace("{$activityName}", activity.getName())
                            .replace("{$databaseName}", activity.getDatabaseName())
                            .replace("{$activityName}", activity.getName())
+                           .replace("{$projectName}", addProjects(activity))
                            .replace("{$indicators}", addIndicators(activity))
                            .replace("{$attributes}", addAttributes(activity));
 
         html = new StringBuilder();
         html.append(contents);
         return html.toString();
+    }
+
+    private String addProjects(ActivityDTO activity) {
+        String result = "";
+        for (ProjectDTO projectDTO : activity.getProjects()) {
+            result += projectDTO.getName() + ",";
+        }
+        return result;
     }
 
     private String getFormContents() {
