@@ -3,7 +3,6 @@ package org.activityinfo.ui.app.server;
 import com.google.common.collect.Lists;
 import org.activityinfo.ui.app.client.chrome.Chrome;
 import org.activityinfo.ui.app.client.chrome.PageContext;
-import org.activityinfo.ui.style.tree.TreeComponent;
 import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
@@ -36,7 +35,6 @@ public class TestHostPage {
         decls.add(meta(viewport(DEVICE_WIDTH, 1.0, 1.0)));
         decls.add(title(pageContext.getApplicationTitle()));
         decls.add(link(stylesheet(pageContext.getStylesheetUrl())));
-        decls.add(classStylesheet(TreeComponent.class));
         decls.add(script("/less-1.7.4.min.js"));
         decls.add(script(pageContext.getBootstrapScriptUrl()));
 
