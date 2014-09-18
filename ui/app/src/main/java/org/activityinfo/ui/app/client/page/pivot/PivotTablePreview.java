@@ -83,7 +83,7 @@ public class PivotTablePreview extends VComponent implements StoreChangeListener
 
             @Override
             public VTree render(Bucket item) {
-                return li("Value = " + item.getValue());
+                return li("Error rendering table, values = " + item.getValue());
             }
         }));
     }
