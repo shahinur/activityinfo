@@ -40,7 +40,7 @@ public class PivotPage extends PageView implements StoreChangeListener {
         this.workingDraft = new InstanceState(application.getDispatcher(), formClass,
             FormInstance.fromResource(resource));
 
-        this.pivotSideBar = new PivotSideBar(application, workingDraft.getState(ResourceId.valueOf("measures")));
+        this.pivotSideBar = new PivotSideBar(application, workingDraft);
         this.pivotSideBar.getSaveButton().setClickHandler(new ClickHandler() {
             @Override
             public void onClicked() {

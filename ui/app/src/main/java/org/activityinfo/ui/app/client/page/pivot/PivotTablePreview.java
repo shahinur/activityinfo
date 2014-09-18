@@ -87,6 +87,4 @@ public class PivotTablePreview extends VComponent implements StoreChangeListener
             }
         }));
     }
-
-
 }

@@ -1,5 +1,6 @@
 package org.activityinfo.ui.vdom.client.render;
 
+import com.google.gwt.core.client.GWT;
 import org.activityinfo.ui.vdom.shared.dom.DomDocument;
 import org.activityinfo.ui.vdom.shared.dom.DomElement;
 import org.activityinfo.ui.vdom.shared.dom.DomNode;
@@ -68,7 +69,11 @@ public class DomBuilder {
 
         PropMap props = vnode.properties;
         if(props != null) {
-            Properties.applyProperties(domElement, props, null);
+            try {
+                Properties.applyProperties(domElement, props, null);
+            } catch(Exception e) {
+                GWT.log("Exception thrown while setting properties of " + vnode + ": " + e.getMessage(), e);
+            }
         }
 
         return appendChildren(domElement, vnode);

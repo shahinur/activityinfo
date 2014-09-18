@@ -19,6 +19,7 @@ public class DimensionModel implements IsRecord {
     private final List<DimensionSource> sources = new ArrayList<>();
     private final List<CategoryMapping> categoryMappings = Lists.newArrayList();
 
+
     public String getId() {
         return id;
     }
@@ -66,10 +67,18 @@ public class DimensionModel implements IsRecord {
 
     @Override
     public Record asRecord() {
-        throw new UnsupportedOperationException();
-//        return new Record().set("id", id)
-//            .set("label", label)
-//            .set("description", description)
-//            .set("sources", SubFormValue.toSubFormList(sources));
+        return new Record()
+            .set("id", id)
+            .set("classId", DimensionModel.CLASS_ID.asString())
+            .set("label", label)
+            .set("description", description);
+    }
+
+    public static DimensionModel fromRecord(Record record) {
+        DimensionModel dim = new DimensionModel();
+        dim.setId(record.isString("id"));
+        dim.setLabel(record.isString("label"));
+        dim.setDescription(record.isString("description"));
+        return dim;
     }
 }

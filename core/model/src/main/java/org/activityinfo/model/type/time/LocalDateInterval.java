@@ -50,6 +50,12 @@ public class LocalDateInterval implements FieldValue, IsRecord {
             .set("end", getEndDate().toString());
     }
 
+    public static LocalDateInterval fromRecord(Record record) {
+        return new LocalDateInterval(
+            LocalDate.fromRecord(record.getRecord("start")),
+            LocalDate.fromRecord(record.getRecord("end")));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
