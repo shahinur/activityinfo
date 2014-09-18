@@ -5,6 +5,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
 
 
@@ -19,8 +20,9 @@ public class ForeignKeyBuilder implements FormSink, Supplier<ForeignKeyColumn> {
     }
 
     public void accept(FormEvalContext resource) {
-        ReferenceValue referenceValue = (ReferenceValue) resource.getFieldValue(fieldName);
-        if(referenceValue != null) {
+        FieldValue fieldValue = resource.getFieldValue(fieldName);
+        if(fieldValue instanceof ReferenceValue) {
+            ReferenceValue referenceValue = (ReferenceValue) fieldValue;
             for (ResourceId id : referenceValue.getResourceIds()) {
                 keys.put(rowIndex, id);
             }
