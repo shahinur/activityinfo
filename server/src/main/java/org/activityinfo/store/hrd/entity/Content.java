@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Text;
+import com.google.common.annotations.VisibleForTesting;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.json.RecordSerialization;
 import org.activityinfo.model.resource.*;
@@ -24,7 +25,8 @@ public class Content {
 
     public static final String CONTENTS_PROPERTY = "P";
 
-    private static String writePropertiesAsString(PropertyBag bag) {
+    @VisibleForTesting
+    static String writePropertiesAsString(PropertyBag bag) {
         try {
             StringWriter writer = new StringWriter();
             JsonGenerator json = ObjectMapperFactory.get().getFactory().createGenerator(writer);
