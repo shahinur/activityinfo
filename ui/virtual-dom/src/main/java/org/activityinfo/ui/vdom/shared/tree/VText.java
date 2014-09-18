@@ -5,7 +5,11 @@ public class VText extends VTree {
     private final String text;
 
     public VText(String text) {
-        this.text = text;
+        if(text == null) {
+            this.text = "";
+        } else {
+            this.text = text;
+        }
     }
 
     @Override

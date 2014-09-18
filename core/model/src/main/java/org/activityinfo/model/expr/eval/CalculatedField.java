@@ -5,9 +5,11 @@ import org.activityinfo.model.expr.ExprParser;
 import org.activityinfo.model.expr.diagnostic.CircularReferenceException;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.type.ErrorValue;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.time.MissingFieldType;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +20,7 @@ public class CalculatedField implements FieldValueSource {
 
     private final FormField field;
     private ExprNode expr;
+    private ErrorValue errorValue;
 
 
     /**
@@ -32,13 +35,17 @@ public class CalculatedField implements FieldValueSource {
         try {
             expr = ExprParser.parse(type.getExpression());
         } catch(Exception e) {
-            LOGGER.log(Level.WARNING, "Expression failed to parse: " + type.getExpression());
+            LOGGER.log(Level.WARNING, "Expression failed to parse: " + type.getExpression(), e);
             expr = null;
+            errorValue = new ErrorValue(e);
         }
     }
 
     @Override
     public FieldValue getValue(Resource instance, EvalContext context) {
+        if(errorValue != null) {
+            return errorValue;
+        }
         if(evaluating) {
             throw new CircularReferenceException(field.getCode());
         }
@@ -52,7 +59,15 @@ public class CalculatedField implements FieldValueSource {
 
     @Override
     public FieldType resolveType(EvalContext context) {
-        return expr.resolveType(context);
+        if(errorValue != null) {
+            return MissingFieldType.INSTANCE;
+        }
+        try {
+            return expr.resolveType(context);
+
+        } catch(Exception e) {
+            return MissingFieldType.INSTANCE;
+        }
     }
 
     @Override

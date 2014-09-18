@@ -1,5 +1,6 @@
 package org.activityinfo.ui.app.client.page.pivot.tree;
 
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
@@ -56,6 +57,10 @@ public class FormSelectionTree implements TreeModel<ResourceNode> {
     public Icon getIcon(ResourceNode node, boolean expanded) {
         if(node.getClassId().equals(FormClass.CLASS_ID)) {
             return FontAwesome.CLIPBOARD;
+
+        } else if(node.getClassId().equals(PivotTableModel.CLASS_ID)) {
+            return FontAwesome.TABLE;
+
         } else {
             if(expanded) {
                 return FontAwesome.FOLDER_OPEN;

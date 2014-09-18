@@ -21,8 +21,10 @@ package org.activityinfo.model.type;
  * #L%
  */
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author yuriyz on 8/13/14.
@@ -42,9 +44,9 @@ public class TypeRegistryTest {
                 parametrizedFieldTypeClass.deserializeType(parametrizedFieldType.getParameters());
 
                 // it's important to have "classId" specified for all parametrized types. Otherwise SimpleFormPanel will fail to load FormClass
-                String classId = parametrizedFieldType.getParameters().getString("classId");
-                Assert.assertNotNull(classId);
-                Assert.assertTrue(classId.startsWith("_"));
+                String classId = parametrizedFieldType.getParameters().isString("classId");
+                assertThat(typeClass.getId(), classId, not(nullValue()));
+                assertThat(typeClass.getId(), classId, startsWith("_"));
             }
         }
     }

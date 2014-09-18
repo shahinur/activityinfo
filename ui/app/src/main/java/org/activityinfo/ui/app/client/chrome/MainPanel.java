@@ -2,12 +2,10 @@ package org.activityinfo.ui.app.client.chrome;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.ui.app.client.Application;
-import org.activityinfo.ui.app.client.page.NotFoundPageView;
-import org.activityinfo.ui.app.client.page.PageView;
-import org.activityinfo.ui.app.client.page.PageViewFactory;
-import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.*;
 import org.activityinfo.ui.app.client.page.create.NewWorkspacePage;
 import org.activityinfo.ui.app.client.page.folder.FolderPage;
+import org.activityinfo.ui.app.client.page.form.FormPage;
 import org.activityinfo.ui.app.client.page.home.HomePage;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
@@ -39,7 +37,9 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
 
         pageFactories.add(new NewWorkspacePage.Factory(application));
         pageFactories.add(new FolderPage.Factory(application));
+        pageFactories.add(new ResourcePageView.Factory(application));
         pageFactories.add(new HomePage.Factory(application));
+        pageFactories.add(new FormPage.Factory(application));
 
         pageView = pageViewForCurrentPlace();
     }

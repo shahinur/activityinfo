@@ -23,13 +23,14 @@ package org.activityinfo.server.login;
  */
 
 import com.sun.jersey.api.view.Viewable;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
-import org.activityinfo.server.login.model.HostPageModel;
 import org.activityinfo.server.login.model.RootPageModel;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.ui.style.BaseStyleResources;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static org.easymock.EasyMock.*;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
@@ -49,6 +51,11 @@ public class HostControllerTest extends ControllerTestCase {
 
     private HostController resource;
     private ServerSideAuthProvider authProvider;
+
+    @BeforeClass
+    public static final void setupLocale() {
+        LocaleProxy.initialize();
+    }
 
     @Before
     public void setup() throws IOException {
@@ -92,9 +99,7 @@ public class HostControllerTest extends ControllerTestCase {
         Response response = resource.getHostPage(
                 RestMockUtils.mockUriInfo("http://www.activityinfo.org"), req, NO_REDIRECT);
 
-        assertThat(response.getEntity(), instanceOf(Viewable.class));
-        assertThat(((Viewable) response.getEntity()).getModel(),
-                instanceOf(HostPageModel.class));
+        assertThat((String) response.getEntity(), containsString("AI/AI.nocache.js"));
     }
 
 }

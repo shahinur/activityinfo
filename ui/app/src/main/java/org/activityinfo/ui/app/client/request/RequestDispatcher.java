@@ -80,7 +80,8 @@ public class RequestDispatcher {
     }
 
     private void deque(Request<?> request) {
-        if (pendingRequests.get(request).isSettled()) {
+        Promise<?> promise = pendingRequests.get(request);
+        if (promise != null && promise.isSettled()) {
             pendingRequests.remove(request);
         }
     }

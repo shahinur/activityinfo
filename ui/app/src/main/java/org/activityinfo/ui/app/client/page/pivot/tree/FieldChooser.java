@@ -58,6 +58,7 @@ public class FieldChooser extends VComponent implements StoreChangeListener {
                 modal.setVisible(false);
             }
         });
+
         this.addButton = new Button(ButtonStyle.PRIMARY, t(I18N.CONSTANTS.add()));
         this.addButton.setClickHandler(new ClickHandler() {
             @Override
