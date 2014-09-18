@@ -55,7 +55,7 @@ public class CreateForm implements Task {
 
     @Override
     public void onClicked() {
-        FormState formDraft = application.getDraftStore().getFormDraft(ownerId);
+        FormState formDraft = application.getDraftStore().createFormDraft(ownerId);
         application.getRouter().navigate(new FormPlace(formDraft.getFormClass().getId(), FormViewType.DESIGN));
     }
 }
