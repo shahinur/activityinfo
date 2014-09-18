@@ -1,12 +1,20 @@
 package org.activityinfo.store.hrd;
 
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.AcrIndex;
+
+import javax.ws.rs.WebApplicationException;
+
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 public class Authorization {
     final private AccessControlRule accessControlRule;
@@ -18,21 +26,35 @@ public class Authorization {
      * @param transaction The {@link WorkspaceTransaction} that should be used to extract the {@link AccessControlRule}.
      */
     public Authorization(AuthenticatedUser authenticatedUser, ResourceId resourceId, WorkspaceTransaction transaction) {
-        if (authenticatedUser != null && resourceId != null && transaction != null) {
-            ResourceId userResourceId = authenticatedUser.getUserResourceId();
-            assert userResourceId != null;
+        Preconditions.checkNotNull(authenticatedUser);
+        Preconditions.checkNotNull(resourceId);
+        Preconditions.checkNotNull(transaction);
 
-            for (AccessControlRule accessControlRule : AcrIndex.queryRules(transaction, resourceId)) {
-                if (resourceId.equals(accessControlRule.getResourceId())) {
-                    if (userResourceId.equals(accessControlRule.getPrincipalId())) {
-                        this.accessControlRule = accessControlRule;
-                        return;
-                    }
-                }
+       // accessControlRule = findRule(transaction, resourceId, authenticatedUser);
+        accessControlRule = new AccessControlRule(resourceId, authenticatedUser.getUserResourceId());
+        accessControlRule.setOwner(true);
+        accessControlRule.setViewCondition(new ExprValue("true"));
+        accessControlRule.setEditCondition(new ExprValue("true"));
+    }
+
+    private AccessControlRule findRule(WorkspaceTransaction transaction, ResourceId resourceId, AuthenticatedUser authenticatedUser) {
+        ResourceId userResourceId = Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
+
+        while(!resourceId.equals(Resources.ROOT_ID)) {
+            Optional<AccessControlRule> rule = AcrIndex.getRule(transaction, resourceId, userResourceId);
+            if(rule.isPresent()) {
+                return rule.get();
+            }
+
+            // ACRs are inherited from the owner, so if we don't find an ACR here,
+            // ascend to this resource's owner in search of an applicable rule.
+            try {
+                resourceId = transaction.getWorkspace().getLatestContent(resourceId).getAsNode(transaction).getOwnerId();
+            } catch (EntityNotFoundException e) {
+                throw new IllegalStateException("Missing resource/owner: " + resourceId);
             }
         }
-
-        accessControlRule = null;
+        return null;
     }
 
     /**
@@ -68,6 +90,13 @@ public class Authorization {
     public boolean canEdit() {
         return isOwner() || evaluate(getEditCondition());
     }
+
+    public void assertCanEdit() {
+        if(!canEdit()) {
+            throw new WebApplicationException(UNAUTHORIZED);
+        }
+    }
+
 
     private static boolean evaluate(ExprValue exprValue) {
         return exprValue != null && "true".equals(exprValue.getExpression());

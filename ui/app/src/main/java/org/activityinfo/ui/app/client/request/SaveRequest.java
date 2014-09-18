@@ -24,7 +24,7 @@ public class SaveRequest implements Request<UpdateResult> {
     }
 
     public Resource getUpdatedResource() {
-        return resource;
+        return resource.copy();
     }
 
     @Override

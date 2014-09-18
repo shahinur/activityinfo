@@ -5,7 +5,6 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormSection;
-import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.page.form.FieldIconProvider;
@@ -26,35 +25,6 @@ public class FieldSelectionTree implements TreeModel<FormElement> {
     private final ResourceStore resourceStore;
     private final ResourceId formClassId;
 
-
-    /**
-     * Fake FormElement that serves as the root of the tree
-     */
-    private class RootElement extends FormElement {
-
-        private final FormClass formClass;
-
-        private RootElement(FormClass formClass) {
-            this.formClass = formClass;
-        }
-
-        @Override
-        public ResourceId getId() {
-            return formClass.getId();
-        }
-
-        @Override
-        public String getLabel() {
-            return formClass.getLabel();
-        }
-
-        @Override
-        public Record asRecord() {
-            throw new UnsupportedOperationException();
-        }
-    }
-
-
     public FieldSelectionTree(Application application, ResourceId formClassId) {
         this.application = application;
         this.formClassId = formClassId;
@@ -71,16 +41,14 @@ public class FieldSelectionTree implements TreeModel<FormElement> {
         return resourceStore.getFormClass(formClassId).join(new Function<FormClass, List<FormElement>>() {
             @Override
             public List<FormElement> apply(FormClass input) {
-                return Collections.<FormElement>singletonList(new RootElement(input));
+                return input.getElements();
             }
         });
     }
 
     @Override
     public Status<List<FormElement>> getChildren(FormElement parent) {
-        if(parent instanceof RootElement) {
-            return Status.cache(((RootElement) parent).formClass.getElements());
-        } else if(parent instanceof FormSection) {
+        if(parent instanceof FormSection) {
             FormSection section = (FormSection) parent;
             return Status.cache(section.getElements());
         }

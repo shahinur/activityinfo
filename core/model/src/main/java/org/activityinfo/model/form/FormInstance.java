@@ -48,6 +48,7 @@ public class FormInstance implements IsResource {
     private ResourceId id;
     private ResourceId classId;
     private ResourceId ownerId;
+    private long version;
     private PropertyBag propertyBag;
 
     /**
@@ -72,6 +73,7 @@ public class FormInstance implements IsResource {
 
     public static FormInstance fromResource(Resource resource) {
         FormInstance instance = new FormInstance(resource.getId(), resource.getResourceId("classId"));
+        instance.setVersion(resource.getVersion());
         if (resource.getOwnerId() != null) { // owner may be null for FieldTypes
             instance.setOwnerId(resource.getOwnerId());
         }
@@ -84,6 +86,7 @@ public class FormInstance implements IsResource {
         Resource resource = Resources.createResource();
         resource.setId(id);
         resource.setOwnerId(ownerId);
+        resource.setVersion(version);
         resource.set("classId", classId);
         resource.setAll(propertyBag);
         return resource;
@@ -120,6 +123,14 @@ public class FormInstance implements IsResource {
             }
         }
         return Collections.unmodifiableMap(valueMap);
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 
     public Map<ResourceId, FieldValue> getFieldValueMap() {

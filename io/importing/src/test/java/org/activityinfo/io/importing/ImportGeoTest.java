@@ -2,7 +2,6 @@ package org.activityinfo.io.importing;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.io.importing.data.PastedTable;
 import org.activityinfo.io.importing.model.ImportModel;
 import org.activityinfo.io.importing.strategy.FieldImportStrategies;
@@ -11,8 +10,8 @@ import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.formTree.FormTreePrettyPrinter;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.converter.JvmConverterFactory;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.service.store.AsyncFormTreeBuilder;
+import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.store.test.TestResourceStore;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -30,11 +29,6 @@ public class ImportGeoTest extends AbstractImporterTest {
 
     private ResourceLocator resourceLocator;
     private AsyncFormTreeBuilder formTreeBuilder;
-
-    @Before
-    public void setupLocale() {
-        LocaleProxy.initialize();
-    }
 
 
     @Before

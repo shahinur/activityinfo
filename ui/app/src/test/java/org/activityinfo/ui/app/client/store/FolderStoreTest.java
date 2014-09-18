@@ -9,6 +9,7 @@ import org.activityinfo.ui.app.client.TestFolder;
 import org.activityinfo.ui.app.client.TestFormClass;
 import org.activityinfo.ui.app.client.TestScenario;
 import org.activityinfo.ui.app.client.form.store.UpdateFieldAction;
+import org.activityinfo.ui.app.client.request.FetchFolder;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.flux.store.Status;
 import org.hamcrest.CoreMatchers;
@@ -70,7 +71,30 @@ public class FolderStoreTest {
         Status<List<ResourceNode>> folderItems = scenario.application().getFolderStore().getFolderItems(folder.getId());
         assertTrue(folderItems.isAvailable());
         assertThat(folderItems.get().get(0).getLabel(), CoreMatchers.equalTo("Form 1"));
+    }
 
+    @Test
+    public void testUpdateItem() {
+        TestScenario scenario = new TestScenario();
+        TestFolder workspace = scenario.createWorkspace("Workspace A");
+        TestFolder folder = workspace.createFolder("Folder 1");
+        TestFormClass form = folder.newFormClass("Form 1").create();
+
+        // do the initial fetch
+        scenario.application().getRequestDispatcher().execute(new FetchFolder(folder.getId()));
+
+        assertThat(scenario.application().getFolderStore().getFolderItems(folder.getId()).get(), hasSize(1));
+
+
+        // now add a form in this folder
+        CountingStoreListener storeListener = new CountingStoreListener();
+        scenario.application().getFolderStore().addChangeListener(storeListener);
+
+        TestFormClass newForm = folder.newFormClass("Form 2").create();
+        scenario.application().getRequestDispatcher().execute(new SaveRequest(newForm.get()));
+
+        assertThat(storeListener.getChangeCount(), equalTo(1));
+        assertThat(scenario.application().getFolderStore().getFolderItems(folder.getId()).get(), hasSize(2));
     }
 
 }

@@ -37,6 +37,7 @@ public class CreatePivotTableTask implements Task {
         resource.setId(Resources.generateId());
         resource.setOwnerId(ownerId);
         resource.set("classId", PivotTableModel.CLASS_ID.asString());
+        resource.set(PivotTableModel.LABEL_FIELD_ID, "New Pivot Table");
 
         application.getDispatcher().dispatch(new CreateDraft(resource));
         new ResourcePlace(resource.getId()).navigateTo(application);

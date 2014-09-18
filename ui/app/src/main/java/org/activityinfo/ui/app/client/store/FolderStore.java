@@ -60,7 +60,39 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
             if(save.getUpdatedResource().getString("classId").equals(FolderClass.CLASS_ID.asString())) {
                 cacheNewFolder(save, result);
             }
+
+            if(isFolderItem(save.getUpdatedResource())) {
+                ResourceId ownerId = save.getUpdatedResource().getOwnerId();
+                Status<FolderProjection> folder = get(ownerId);
+                if(folder.isAvailable()) {
+                    updateChildren(folder.get(), save.getUpdatedResource());
+                }
+            }
         }
+    }
+
+    private boolean isFolderItem(Resource updatedResource) {
+        return updatedResource.getString("classId").startsWith("_");
+    }
+
+    private void updateChildren(FolderProjection folder, Resource updatedResource) {
+        List<ResourceNode> children = folder.getRootNode().getChildren();
+        int index = getItemIndexById(children, updatedResource.getId());
+        if(index >= 0) {
+            children.set(index, new ResourceNode(updatedResource));
+        } else {
+            children.add(new ResourceNode(updatedResource));
+        }
+        fireChange();
+    }
+
+    private int getItemIndexById(List<ResourceNode> items, ResourceId id) {
+        for(int i=0;i!=items.size();++i) {
+            if(items.get(i).getId().equals(id)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void cacheNewFolder(SaveRequest request, UpdateResult result) {
