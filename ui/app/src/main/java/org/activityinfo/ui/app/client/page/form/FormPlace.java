@@ -5,6 +5,7 @@ import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.action.UpdatePlace;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.PlaceParser;
+import org.activityinfo.ui.app.client.request.FetchResource;
 
 import javax.annotation.Nonnull;
 
@@ -33,6 +34,7 @@ public class FormPlace implements Place {
 
     @Override
     public void navigateTo(Application application) {
+        application.getRequestDispatcher().execute(new FetchResource(resourceId));
         application.getDispatcher().dispatch(new UpdatePlace(this));
     }
 
