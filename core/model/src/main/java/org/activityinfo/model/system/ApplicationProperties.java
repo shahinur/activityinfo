@@ -1,5 +1,7 @@
 package org.activityinfo.model.system;
 
+import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
 
 /**
@@ -32,4 +34,28 @@ public class ApplicationProperties {
 
     public static final ResourceId COUNTRY_CLASS = ResourceId.valueOf("_country");
 
+
+    public static String getLabelPropertyName(String classId) {
+        if (FormClass.CLASS_ID.asString().equals(classId)) {
+            return FormClass.LABEL_FIELD_ID;
+
+        } else if (FolderClass.CLASS_ID.asString().equals(classId)) {
+            return FolderClass.LABEL_FIELD_ID.asString();
+
+        } else if (PivotTableModel.CLASS_ID.asString().equals(classId)) {
+            return PivotTableModel.LABEL_FIELD_ID;
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @return {@code true} if resources with class {@code formClassId} should be
+     * displayed within a folder
+     */
+    public static boolean isFolderItem(ResourceId formClassId) {
+        return formClassId.equals(FormClass.CLASS_ID) ||
+            formClassId.equals(FolderClass.CLASS_ID) ||
+            formClassId.equals(PivotTableModel.CLASS_ID);
+    }
 }

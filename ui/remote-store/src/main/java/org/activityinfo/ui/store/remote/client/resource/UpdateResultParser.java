@@ -23,6 +23,9 @@ public class UpdateResultParser implements Function<Response, UpdateResult> {
                     (int)getInt(object, "newVersion"));
             case "PENDING":
                 return UpdateResult.pending();
+
+            case "REJECTED":
+                return UpdateResult.rejected();
         }
         throw new IllegalArgumentException("unknown status: " + status);
     }

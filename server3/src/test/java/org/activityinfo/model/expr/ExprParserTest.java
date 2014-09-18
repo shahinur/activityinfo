@@ -2,6 +2,7 @@ package org.activityinfo.model.expr;
 
 
 import org.activityinfo.model.expr.functions.*;
+import org.activityinfo.model.type.number.Quantity;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -101,6 +102,17 @@ public class ExprParserTest {
                         new SymbolExpr("f1"),
                         new SymbolExpr("v1"))
         ));
+    }
+
+    @Test
+    public void parseCalc() {
+        expect("{Exp}*{Alloc}*{InCostUnsp}/10000",
+          new FunctionCallNode(ExprFunctions.get("/"),
+              new FunctionCallNode(ExprFunctions.get("*"),
+                  new FunctionCallNode(ExprFunctions.get("*"), new SymbolExpr("Exp"), new SymbolExpr("Alloc")),
+                  new SymbolExpr("InCostUnsp")),
+              new ConstantExpr(new Quantity(10000))));
+
     }
 
 

@@ -175,4 +175,9 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
             }
         });
     }
+
+    @Override
+    public ColumnViewBuilder visitMissingField(FormField field, MissingFieldType missingFieldType) {
+        return null;
+    }
 }

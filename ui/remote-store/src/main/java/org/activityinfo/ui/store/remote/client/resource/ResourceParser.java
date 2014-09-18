@@ -56,11 +56,10 @@ public class ResourceParser implements Function<Response, Resource> {
                         @org.activityinfo.model.resource.ResourceId::valueOf(Ljava/lang/String;)(object['@owner']));
 
                 } else if(key === '@version') {
-                    // TODO
-                     //  resource.@org.activityinfo.model.resource.Resource::setVersion(J)()
+                    resource.@org.activityinfo.model.resource.Resource::setVersionInt(I)(object['@version'])
 
                 } else {
-                    @org.activityinfo.ui.store.remote.client.resource.ResourceParser::setProperty(Lorg/activityinfo/model/resource/PropertyBag;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(resource, key, object[key]);
+                    @org.activityinfo.ui.store.remote.client.resource.ResourceParser::setProperty(Lorg/activityinfo/model/resource/PropertyBag;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(resource, key, object);
                 }
             }
         }
@@ -69,12 +68,13 @@ public class ResourceParser implements Function<Response, Resource> {
     private static native void parseRecordProperties(PropertyBag bag, JavaScriptObject object) /*-{
         for(var key in object) {
             if (object.hasOwnProperty(key)) {  // 64 = @
-                @org.activityinfo.ui.store.remote.client.resource.ResourceParser::setProperty(Lorg/activityinfo/model/resource/PropertyBag;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(bag, key, object[key]);
+                @org.activityinfo.ui.store.remote.client.resource.ResourceParser::setProperty(Lorg/activityinfo/model/resource/PropertyBag;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(bag, key, object);
             }
         }
     }-*/;
 
-    private static native void setProperty(PropertyBag bag, String key, JavaScriptObject value) /*-{
+    private static native void setProperty(PropertyBag bag, String key, JavaScriptObject object) /*-{
+        var value = object[key];
         if(typeof value === "string") {
             bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Ljava/lang/String;)(key, value);
         } else if(typeof value === "number") {

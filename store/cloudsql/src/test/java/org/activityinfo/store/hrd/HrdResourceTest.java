@@ -98,6 +98,28 @@ public class HrdResourceTest {
         assertThat(tree.getRootNode().getChildren().get(0).getOwnerId(), Matchers.equalTo(divA.getId()));
     }
 
+
+    @Test
+    public void update() throws IOException, SQLException {
+
+        // Create a root folder
+
+        FormInstance workspace = createWorkspace("Workspace A");
+        UpdateResult creationResult = environment.getStore()
+            .create(environment.getUser(), workspace.asResource());
+
+        assertThat(creationResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
+
+        workspace.set(FolderClass.LABEL_FIELD_ID, "Workspace B");
+        UpdateResult updateResult = environment.getStore()
+            .create(environment.getUser(), workspace.asResource());
+
+        assertThat(updateResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
+
+        Resource newlyFetched = environment.getStore().get(environment.getUser(), workspace.getId());
+        assertThat(newlyFetched.getString(FolderClass.LABEL_FIELD_ID.asString()), Matchers.equalTo("Workspace B"));
+    }
+
     @Test
     public void getWorkspace() {
 
