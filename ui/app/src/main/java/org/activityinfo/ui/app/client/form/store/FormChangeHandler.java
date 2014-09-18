@@ -1,4 +1,4 @@
-package org.activityinfo.ui.app.client.form.create;
+package org.activityinfo.ui.app.client.form.store;
 /*
  * #%L
  * ActivityInfo Server
@@ -22,7 +22,7 @@ package org.activityinfo.ui.app.client.form.create;
  */
 
 /**
- * @author yuriyz on 9/17/14.
+ * @author yuriyz on 9/18/14.
  */
-public class NewFormPage {
+public interface FormChangeHandler {
 }
