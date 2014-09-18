@@ -34,7 +34,7 @@ public abstract class VWidget extends VComponent {
 
     @Override
     protected final void componentWillUnmount() {
-        assert widget == null : "component/widget has not been mounted";
+        assert widget != null : "component/widget has not been mounted";
 
         getContext().detachWidget(widget);
         widget = null;
