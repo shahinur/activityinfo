@@ -59,7 +59,7 @@ public class DraftStore extends AbstractStore implements DraftHandler {
         return newWorkspaceDraft;
     }
 
-    public FormState getFormDraft(ResourceId ownerId) {
+    public FormState createFormDraft(ResourceId ownerId) {
         if (newFormDraft == null) {
             FormClass newFormClass = new FormClass(Resources.generateId());
             newFormClass.setLabel("New form");
@@ -67,6 +67,10 @@ public class DraftStore extends AbstractStore implements DraftHandler {
 
             newFormDraft = new FormState(dispatcher, newFormClass);
         }
+        return newFormDraft;
+    }
+
+    public FormState getFormDraft() {
         return newFormDraft;
     }
 
