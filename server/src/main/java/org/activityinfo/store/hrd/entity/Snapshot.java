@@ -5,14 +5,26 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 
+import java.util.Iterator;
+import java.util.List;
+
 import static com.google.appengine.api.datastore.Entity.KEY_RESERVED_PROPERTY;
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+import static com.google.appengine.api.datastore.Query.CompositeFilterOperator.AND;
+import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static com.google.appengine.api.datastore.Query.FilterOperator.GREATER_THAN;
+import static com.google.appengine.api.datastore.Query.FilterOperator.LESS_THAN_OR_EQUAL;
+import static com.google.appengine.api.datastore.Query.SortDirection.DESCENDING;
 import static org.activityinfo.store.hrd.entity.Content.OWNER_PROPERTY;
 import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
 import static org.activityinfo.store.hrd.entity.Content.deserializeResource;
@@ -27,6 +39,8 @@ public class Snapshot {
     public static final String SNAPSHOT_KIND = "S";
 
     public static final String PARENT_KIND = "V";
+
+    public static final String RESOURCE_ID_PROPERTY = "r";
 
     public static final String TIMESTAMP_PROPERTY = "t";
 
@@ -71,6 +85,7 @@ public class Snapshot {
     public void put(WorkspaceTransaction tx, Resource resource) {
         Entity entity = new Entity(snapshotKey);
         entity.setProperty(VERSION_PROPERTY, resource.getVersion());
+        entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
         entity.setUnindexedProperty(TIMESTAMP_PROPERTY, System.currentTimeMillis());
         entity.setUnindexedProperty(USER_PROPERTY, tx.getUser().getId());
         entity.setUnindexedProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
@@ -86,6 +101,28 @@ public class Snapshot {
 
     public Key getParentKey() {
         return snapshotKey.getParent();
+    }
+
+    public static Optional<Snapshot> getSnapshotAsOf(WorkspaceTransaction tx, ResourceId resourceId, long version) {
+        if (version > 0) {
+            List<Filter> filters = Lists.<Filter>newArrayList(
+                    new FilterPredicate(VERSION_PROPERTY, LESS_THAN_OR_EQUAL, version),
+                    new FilterPredicate(RESOURCE_ID_PROPERTY, EQUAL, resourceId.asString()));
+            CompositeFilter compositeFilter = new CompositeFilter(AND, filters);
+
+            Query query = new Query(SNAPSHOT_KIND)
+                .setFilter(compositeFilter)
+                .addSort(VERSION_PROPERTY, DESCENDING)
+                .setKeysOnly();
+
+            Iterator<Entity> iterator = tx.prepare(query).asIterator(withLimit(1));
+
+            if (iterator.hasNext()) {
+                return Optional.of(new Snapshot(iterator.next().getKey()));
+            }
+        }
+
+        return Optional.absent();
     }
 
     public static Iterable<Snapshot> getSnapshotsAfter(WorkspaceTransaction tx, long version) {
