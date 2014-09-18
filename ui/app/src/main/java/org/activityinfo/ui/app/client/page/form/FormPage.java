@@ -7,11 +7,13 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.nav.NavLink;
+import org.activityinfo.ui.app.client.draft.Draft;
+import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.PageViewFactory;
 import org.activityinfo.ui.app.client.page.Place;
-import org.activityinfo.ui.app.client.store.FormState;
 import org.activityinfo.ui.app.client.store.Router;
+import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.flux.store.StoreEventBus;
@@ -49,17 +51,15 @@ public class FormPage extends PageView implements StoreChangeListener {
     }
 
     private Application application;
-
-    private FormState formDraft;
-
     private FormViewType viewType = FormViewType.OVERVIEW;
+    private ResourceId resourceId;
 
     private StoreEventBus eventBus;
     private Promise<FormTree> formTree;
 
     public FormPage(Application application, ResourceId resourceId) {
         this.application = application;
-        this.formDraft = application.getDraftStore().getFormDraft();
+        this.resourceId = resourceId;
 
         FormPlace currentPlace = application.getRouter().getCurrentPlace();
         this.viewType = currentPlace.getFormViewType();
@@ -68,6 +68,7 @@ public class FormPage extends PageView implements StoreChangeListener {
     @Override
     public void componentDidMount() {
         application.getDraftStore().addChangeListener(this);
+        application.getResourceStore().addChangeListener(this);
         application.getRouter().addChangeListener(this);
     }
 
@@ -79,11 +80,12 @@ public class FormPage extends PageView implements StoreChangeListener {
     @Override
     protected void componentWillUnmount() {
         application.getDraftStore().removeChangeListener(this);
+        application.getResourceStore().removeChangeListener(this);
         application.getRouter().removeChangeListener(this);
     }
 
     public ResourceId getResourceId() {
-        return formDraft.getFormClass().getId();
+        return resourceId;
     }
 
     public FormViewType getViewType() {
@@ -111,13 +113,22 @@ public class FormPage extends PageView implements StoreChangeListener {
     }
 
     public FormClass getFormClass() {
-        return formDraft.getFormClass();
+        Status<Draft> draftStatus = application.getDraftStore().get(getResourceId());
+        if (draftStatus.isAvailable()) {
+            return FormClass.fromResource(draftStatus.get().getResource());
+        }
+        Status<FormClass> formClassStatus = application.getResourceStore().getFormClass(getResourceId());
+        if (formClassStatus.isAvailable()) {
+            return formClassStatus.get();
+        }
+        return null;
     }
 
     @Override
     protected VTree render() {
-        // todo ???
-        //        new FormDesignerPanel(resourceLocator, formClass)
+        if (getFormClass() == null) { // still loading
+            return new PagePreLoader();
+        }
         return new VNode(HtmlTag.DIV,
                 div(PAGEHEADER, formHeading()),
                 div(CONTENTPANEL, navTabs(), tabPane()));
@@ -140,13 +151,8 @@ public class FormPage extends PageView implements StoreChangeListener {
         tableTab.setTarget(new FormPlace(getResourceId(), FormViewType.TABLE));
 
         return ul(classNames(BaseStyles.NAV, BaseStyles.NAV_TABS, BaseStyles.NAV_DARK),
-                li(PropMap.withClasses(activeCss(FormViewType.TABLE)), tableTab),
-                li(PropMap.withClasses(activeCss(FormViewType.DESIGN)), designTab)
+                tableTab, designTab
         );
-    }
-
-    private String activeCss(FormViewType viewType) {
-        return getViewType() == viewType ? BaseStyles.ACTIVE.getClassNames() : "";
     }
 
     private VTree formHeading() {
