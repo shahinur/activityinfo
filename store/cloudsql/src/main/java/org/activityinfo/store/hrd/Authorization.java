@@ -91,6 +91,20 @@ public class Authorization {
         return isOwner() || evaluate(getEditCondition());
     }
 
+    /**
+     * @return the id of the {@link AccessControlRule}
+     */
+    public ResourceId getId() {
+        return accessControlRule != null ? accessControlRule.getId() : null;
+    }
+
+    /**
+     * @return the id of the resource to which the {@link AccessControlRule} applies
+     */
+    public ResourceId getResourceId() {
+        return accessControlRule != null ? accessControlRule.getResourceId() : null;
+    }
+
     public void assertCanEdit() {
         if(!canEdit()) {
             throw new WebApplicationException(UNAUTHORIZED);
