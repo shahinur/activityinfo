@@ -6,11 +6,10 @@ import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.store.cloudsql.BadRequestException;
 
 import java.util.List;
@@ -27,9 +26,7 @@ public class FolderIndex {
         String classId = resource.isString("classId");
         if (classId != null) {
             ResourceId id = ResourceId.valueOf(classId);
-            if (id.equals(FormClass.CLASS_ID) ||
-                id.equals(FolderClass.CLASS_ID)) {
-
+            if (ApplicationProperties.isFolderItem(id)) {
                 return true;
             }
         }
@@ -42,7 +39,7 @@ public class FolderIndex {
         // and strand them in the middle of some refugee camp fighting with a form submission,
         // but for some basic classes like folders and forms, we need to enforce basic rules
         String classId = resource.getString("classId");
-        String labelFieldName = getLabelPropertyName(classId);
+        String labelFieldName = ApplicationProperties.getLabelPropertyName(classId);
         String label = resource.isString(labelFieldName);
         if (Strings.isNullOrEmpty(label)) {
             throw new BadRequestException(String.format("Resources of class %s must have a label property " +
@@ -76,13 +73,4 @@ public class FolderIndex {
         return nodes;
     }
 
-    private static String getLabelPropertyName(String classId) {
-        if (FormClass.CLASS_ID.asString().equals(classId)) {
-            return FormClass.LABEL_FIELD_ID;
-
-        } else if (FolderClass.CLASS_ID.asString().equals(classId)) {
-            return FolderClass.LABEL_FIELD_ID.asString();
-        }
-        return null;
-    }
 }

@@ -1,6 +1,7 @@
 package org.activityinfo.ui.app.client.page.folder;
 
 import com.google.gwt.safehtml.shared.SafeUri;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.ResourceId;
@@ -151,13 +152,17 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private static VTree description(ResourceNode child) {
-        return t("Something descriptive here");
+        return t("Data Entry Form");
     }
 
     private static VTree childIcon(ResourceNode child) {
         Icon icon;
         if (FormClass.CLASS_ID.equals(child.getClassId())) {
             icon = FontAwesome.EDIT;
+
+        } else if(PivotTableModel.CLASS_ID.equals(child.getClassId())) {
+            icon = FontAwesome.TABLE;
+
         } else {
             icon = FontAwesome.FOLDER_OPEN_O;
         }

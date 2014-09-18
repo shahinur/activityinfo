@@ -22,8 +22,7 @@ public class MissingFieldType implements FieldType {
 
     @Override
     public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
-        // can't have a field of type missing
-        throw new UnsupportedOperationException();
+        return visitor.visitMissingField(field, this);
     }
 
     @Override

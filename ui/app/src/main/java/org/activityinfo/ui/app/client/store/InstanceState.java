@@ -6,7 +6,14 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.ui.app.client.form.store.*;
+import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
+import org.activityinfo.ui.app.client.form.store.AddListItemAction;
+import org.activityinfo.ui.app.client.form.store.FieldState;
+import org.activityinfo.ui.app.client.form.store.InstanceChangeHandler;
+import org.activityinfo.ui.app.client.form.store.UpdateFieldAction;
+import org.activityinfo.ui.app.client.request.Request;
+import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
 
@@ -14,7 +21,7 @@ import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class InstanceState extends AbstractStore implements PersistHandler, InstanceChangeHandler {
+public class InstanceState extends AbstractStore implements InstanceChangeHandler, RemoteUpdateHandler {
 
     private static final Logger LOGGER = Logger.getLogger(InstanceState.class.getName());
 
@@ -27,11 +34,14 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
     private boolean valid;
     private boolean dirty;
 
+    private long currentVersion;
+
     public InstanceState(@Nonnull Dispatcher dispatcher, @Nonnull FormClass formClass,
                          @Nonnull FormInstance instance) {
         super(dispatcher);
         this.formClass = formClass;
         this.instance = instance;
+        this.currentVersion = instance.getVersion();
 
         for(FormField field : formClass.getFields()) {
             fields.put(field.getId(), new FieldState(instance.getId(), field, instance.get(field.getId())));
@@ -67,6 +77,7 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
     @Override
     public void updateField(UpdateFieldAction action) {
         if(action.getInstanceId().equals(instance.getId())) {
+            dirty = true;
             fields.get(action.getFieldId()).updateValue(action.getValue());
             validate();
             fireChange();
@@ -80,6 +91,8 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
     @Override
     public void appendListItem(AddListItemAction action) {
         if(action.getInstanceId().equals(instance.getId())) {
+            dirty = true;
+
             FieldState fieldState = fields.get(action.getFieldId());
             fieldState.appendValue(action.getFieldValue());
 
@@ -90,15 +103,11 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
 
     public Resource getUpdatedResource() {
         FormInstance updatedInstance = instance.copy();
+        updatedInstance.setVersion(currentVersion);
         for(FieldState state : fields.values()) {
             updatedInstance.set(state.getFieldId(), state.getValue());
         }
         return updatedInstance.asResource();
-    }
-
-    @Override
-    public void persistInstance(ResourceId resourceId) {
-        throw new UnsupportedOperationException();
     }
 
     /**
@@ -110,4 +119,26 @@ public class InstanceState extends AbstractStore implements PersistHandler, Inst
     }
 
 
+    @Override
+    public void requestStarted(Request request) {
+
+    }
+
+    @Override
+    public void requestFailed(Request request, Exception e) {
+
+    }
+
+    @Override
+    public <R> void processUpdate(Request<R> request, R response) {
+        if(request instanceof SaveRequest) {
+            SaveRequest saveRequest = (SaveRequest) request;
+            UpdateResult updateResult = (UpdateResult) response;
+            if(saveRequest.getResourceId().equals(instance.getId())) {
+                dirty = false;
+                this.currentVersion = updateResult.getNewVersion();
+                fireChange();
+            }
+        }
+    }
 }

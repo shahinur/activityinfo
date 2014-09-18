@@ -87,6 +87,10 @@ public final class Resource extends PropertyBag<Resource> {
         this.version = version;
     }
 
+    public void setVersionInt(int version) {
+        this.version = version;
+    }
+
     @Override
     public String toString() {
         return "{" + id.asString() + ": " + Joiner.on(", ").withKeyValueSeparator("=").join(getProperties()) + "}";
