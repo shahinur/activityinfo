@@ -21,11 +21,15 @@ import org.activityinfo.service.tables.views.*;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Constructs a set of ColumnViews with a single pass over a set of FormInstances
  */
 public class TableScan {
+
+    private static final Logger LOGGER = Logger.getLogger(TableScan.class.getName());
 
     private ResourceId classId;
     private StoreAccessor store;
@@ -62,7 +66,9 @@ public class TableScan {
                 columnMap.put(columnKey, builder);
                 return builder;
             } else {
-                throw new UnsupportedOperationException("Unsupported type for column " + field.getLabel() + ": " + fieldType);
+                LOGGER.log(Level.SEVERE, "Column " + fieldId + " has unsupported type: " + fieldType);
+                //throw new UnsupportedOperationException("Unsupported type for column " + field.getLabel() + ": " + fieldType);
+                return fetchEmptyColumn(ColumnType.STRING);
             }
         }
     }

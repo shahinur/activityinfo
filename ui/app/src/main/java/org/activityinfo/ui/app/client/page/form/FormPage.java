@@ -19,7 +19,6 @@ import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.flux.store.StoreEventBus;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.icons.FontAwesome;
-import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
@@ -93,18 +92,15 @@ public class FormPage extends PageView implements StoreChangeListener {
     }
 
     private VTree getComponent() {
+        switch (getViewType()) {
+            case DESIGN:
+                return new FormDesignerWidget(this);
 
-        // TODO : RESOLVE : get "component has not been mounted!"
-        return H.div("under construction");
-//        switch (getViewType()) {
-//            case DESIGN:
-//                return new FormDesignerWidget(this);
-//
-//            default:
-//            case OVERVIEW:
-//            case TABLE:
-//                return new FormTableWidget(this);
-//        }
+            default:
+            case OVERVIEW:
+            case TABLE:
+                return new FormTableWidget(this);
+        }
     }
 
 
