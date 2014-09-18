@@ -298,7 +298,7 @@ public class HrdResourceStore implements ResourceStore {
                 try {
                     return Collections.singleton(tx.getWorkspace().getLatestContent(resourceId).get(tx));
                 } catch (EntityNotFoundException e) {
-                    // TODO Determine if this is an error or expected (possible) behavior, then act appropriately
+                    throw new RuntimeException(e);
                 }
             }
         }
