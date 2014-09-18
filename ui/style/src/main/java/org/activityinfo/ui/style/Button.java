@@ -45,6 +45,22 @@ public class Button extends VComponent {
         this.content = content;
     }
 
+    public ButtonStyle getStyle() {
+        return style;
+    }
+
+    public void setStyle(ButtonStyle style) {
+        this.style = style;
+    }
+
+    public ButtonSize getSize() {
+        return size;
+    }
+
+    public void setSize(ButtonSize size) {
+        this.size = size;
+    }
+
     public VTree[] getContent() {
         return content;
     }

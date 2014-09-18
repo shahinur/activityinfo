@@ -13,10 +13,7 @@ import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.LocalDateIntervalType;
-import org.activityinfo.model.type.time.LocalDateType;
-import org.activityinfo.model.type.time.MonthType;
-import org.activityinfo.model.type.time.YearType;
+import org.activityinfo.model.type.time.*;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 
@@ -106,5 +103,10 @@ public class FieldIconProvider implements FormClassVisitor<Icon> {
     @Override
     public Icon visitYearField(FormField field, YearType yearType) {
         return FontAwesome.CALENDAR;
+    }
+
+    @Override
+    public Icon visitMissingField(FormField field, MissingFieldType missingFieldType) {
+        return DEFAULT;
     }
 }

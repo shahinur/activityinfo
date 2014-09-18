@@ -108,6 +108,8 @@ public class LatestContent {
             FormMetadata metadata = new FormMetadata(rootKey, resource);
             metadata.updateLatestVersion(tx, resource.getVersion());
         }
+
+        tx.put(entity);
     }
 
 
