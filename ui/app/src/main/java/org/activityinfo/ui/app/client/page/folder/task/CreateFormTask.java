@@ -21,26 +21,31 @@ package org.activityinfo.ui.app.client.page.folder.task;
  * #L%
  */
 
+import com.google.common.base.Function;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.action.CreateDraft;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
+import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Icon;
+
+import javax.annotation.Nullable;
 
 /**
  * @author yuriyz on 9/18/14.
  */
-public class CreateForm implements Task {
+public class CreateFormTask implements Task {
 
     private Application application;
     private ResourceId ownerId;
 
-    public CreateForm(Application application, ResourceId ownerId) {
+    public CreateFormTask(Application application, ResourceId ownerId) {
         this.application = application;
         this.ownerId = ownerId;
     }
@@ -57,11 +62,19 @@ public class CreateForm implements Task {
 
     @Override
     public void onClicked() {
-        FormClass newFormClass = new FormClass(Resources.generateId());
+        final FormClass newFormClass = new FormClass(Resources.generateId());
         newFormClass.setLabel("New form");
         newFormClass.setOwnerId(ownerId);
 
-        application.getDispatcher().dispatch(new CreateDraft(newFormClass.asResource()));
-        application.getRouter().navigate(new FormPlace(newFormClass.getId(), FormViewType.DESIGN));
+        application.getRequestDispatcher().execute(new SaveRequest(newFormClass.asResource())).then(new Function<UpdateResult, Object>() {
+            @Nullable
+            @Override
+            public Object apply(@Nullable UpdateResult input) {
+                application.getDispatcher().dispatch(new CreateDraft(newFormClass.asResource()));
+                new FormPlace(newFormClass.getId(), FormViewType.DESIGN).navigateTo(application);
+                return null;
+            }
+        });
+
     }
 }
