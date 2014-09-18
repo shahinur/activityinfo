@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -22,6 +23,9 @@ public class ObjectMapperFactory {
             ObjectMapper mapper = new ObjectMapper();
             SimpleModule module = new SimpleModule();
             module.addSerializer(Resource.class, new ResourceSerializer());
+            module.addSerializer(Resource.class, new ResourceSerializer());
+            module.addSerializer(Record.class, new RecordSerializer());
+            module.addDeserializer(Record.class, new RecordDeserializer());
             module.addSerializer(IsResource.class, new IsResourceSerializer());
             module.addSerializer(IsRecord.class, new IsRecordSerializer());
             module.addDeserializer(Resource.class, new ResourceDeserializer());

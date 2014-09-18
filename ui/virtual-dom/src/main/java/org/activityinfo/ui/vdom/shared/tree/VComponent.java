@@ -4,6 +4,7 @@ import org.activityinfo.ui.vdom.client.render.RenderContext;
 import org.activityinfo.ui.vdom.shared.VDomLogger;
 import org.activityinfo.ui.vdom.shared.dom.DomEvent;
 import org.activityinfo.ui.vdom.shared.dom.DomNode;
+import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -151,11 +152,7 @@ public abstract class VComponent<T> extends VTree {
             VDomLogger.event(this, "willMount");
             componentWillMount();
 
-            try {
-                vNode = render();
-            } catch(Throwable caught) {
-                LOGGER.log(Level.SEVERE, "Exception thrown while rendering " + getDebugId(), caught);
-            }
+            vNode = invokeRender();
             assert vNode != null;
         }
         return vNode;
@@ -168,9 +165,18 @@ public abstract class VComponent<T> extends VTree {
             VDomLogger.event(this, "willMount");
             componentWillMount();
         }
-        vNode = render();
+        vNode = invokeRender();
         dirty = false;
         return vNode;
+    }
+
+    private VTree invokeRender() {
+        try {
+            return render();
+        } catch(Throwable caught) {
+            LOGGER.log(Level.SEVERE, "Exception thrown while rendering " + getDebugId(), caught);
+            return new VNode(HtmlTag.NOSCRIPT);
+        }
     }
 
     public String getPropertiesForDebugging() {
