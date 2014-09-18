@@ -1,7 +1,6 @@
 package org.activityinfo.ui.app.client.store;
 
 import com.google.common.collect.Maps;
-import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
@@ -30,7 +29,6 @@ public class DraftStore extends AbstractStore implements DraftHandler {
     private final Map<ResourceId, InstanceState> openDrafts = Maps.newHashMap();
 
     private InstanceState newWorkspaceDraft;
-    private FormState newFormDraft;
 
     public DraftStore(Dispatcher dispatcher) {
         super(dispatcher);
@@ -57,21 +55,6 @@ public class DraftStore extends AbstractStore implements DraftHandler {
             newWorkspaceDraft = new InstanceState(dispatcher, FolderClass.get(), instance);
         }
         return newWorkspaceDraft;
-    }
-
-    public FormState createFormDraft(ResourceId ownerId) {
-        if (newFormDraft == null) {
-            FormClass newFormClass = new FormClass(Resources.generateId());
-            newFormClass.setLabel("New form");
-            newFormClass.setOwnerId(ownerId);
-
-            newFormDraft = new FormState(dispatcher, newFormClass);
-        }
-        return newFormDraft;
-    }
-
-    public FormState getFormDraft() {
-        return newFormDraft;
     }
 
     @Override
