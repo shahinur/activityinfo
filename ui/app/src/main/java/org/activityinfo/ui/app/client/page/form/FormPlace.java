@@ -18,6 +18,10 @@ public class FormPlace implements Place {
         this.formViewType = formViewType;
     }
 
+    public ResourceId getResourceId() {
+        return resourceId;
+    }
+
     @Override
     public String[] getPath() {
         return new String[]{"form", resourceId.asString(), formViewType.name().toLowerCase()};

@@ -3,18 +3,39 @@ package org.activityinfo.ui.app.client.page.form;
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.PageViewFactory;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.store.FormState;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.StoreEventBus;
-import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-public class FormPage extends VComponent<FormPage> {
+public class FormPage extends PageView {
 
-    private FormClass formClass;
+    public static class Factory implements PageViewFactory<FormPlace> {
+
+        private final Application application;
+
+        public Factory(Application application) {
+            this.application = application;
+        }
+
+        @Override
+        public boolean accepts(Place place) {
+            return place instanceof FormPlace;
+        }
+
+        @Override
+        public PageView create(FormPlace place) {
+            return new FormPage(application, place.getResourceId());
+        }
+    }
+
+    private FormState formDraft;
 
     private FormViewType viewType = FormViewType.OVERVIEW;
 
@@ -22,12 +43,12 @@ public class FormPage extends VComponent<FormPage> {
 
     private Promise<FormTree> formTree;
 
-    public FormPage(Application application, Resource node) {
-        this.formClass = FormClass.fromResource(node);
+    public FormPage(Application application, ResourceId resourceId) {
+        this.formDraft = application.getDraftStore().getFormDraft();
     }
 
     public ResourceId getResourceId() {
-        return formClass.getId();
+        return formDraft.getFormClass().getId();
     }
 
 
@@ -53,7 +74,7 @@ public class FormPage extends VComponent<FormPage> {
     }
 
     public FormClass getFormClass() {
-        return formClass;
+        return formDraft.getFormClass();
     }
 
     @Override
