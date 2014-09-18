@@ -1,5 +1,6 @@
 package org.activityinfo.model.expr;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.expr.eval.EvalContext;
 import org.activityinfo.model.expr.functions.ExprFunction;
@@ -58,7 +59,7 @@ public class FunctionCallNode extends ExprNode {
 
     @Override
     public String toString() {
-        return asExpression();
+        return "(" + function.getId() + " " + Joiner.on(" ").join(arguments) + ")";
     }
 
     @Override

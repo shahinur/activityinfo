@@ -11,17 +11,21 @@ public class Types {
 
     public static FieldValue read(PropertyBag bag, String name) {
         Object value = bag.get(name);
-        if(value == null) {
+        if (value == null) {
             return null;
-        } else if(value instanceof String) {
+        } else if (value instanceof String) {
             return TextValue.valueOf((String) value);
-        } else if(value instanceof Boolean) {
+        } else if (value instanceof Boolean) {
             Boolean booleanValue = (Boolean) value;
             return BooleanFieldValue.valueOf(booleanValue);
-        } else if(value instanceof Record) {
-            Record record = (Record)value;
-            return TypeRegistry.get().deserializeFieldValue(record);
-        }else if(value instanceof Double) {
+        } else if (value instanceof Record) {
+            Record record = (Record) value;
+            try {
+                return TypeRegistry.get().deserializeFieldValue(record);
+            } catch (Exception e) {
+                throw new RuntimeException("Exception thrown while reading property '" + name + "' from " + value);
+            }
+        } else if (value instanceof Double) {
             return new Quantity((Double) value);
         } else {
             throw new UnsupportedOperationException(name + " = " + value);

@@ -1,7 +1,7 @@
 package org.activityinfo.ui.app.client.page.folder;
 
 import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.safehtml.shared.UriUtils;
+import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.ResourceId;
@@ -9,10 +9,7 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
-import org.activityinfo.ui.app.client.page.PagePreLoader;
-import org.activityinfo.ui.app.client.page.PageView;
-import org.activityinfo.ui.app.client.page.PageViewFactory;
-import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.*;
 import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
@@ -29,7 +26,6 @@ import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.Style;
-import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import java.util.logging.Logger;
@@ -37,6 +33,7 @@ import java.util.logging.Logger;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class FolderPage extends PageView implements StoreChangeListener {
+
 
     public static class Factory implements PageViewFactory<FolderPlace> {
 
@@ -64,9 +61,13 @@ public class FolderPage extends PageView implements StoreChangeListener {
     private final Application application;
     private final ResourceId folderId;
 
+    private final TasksPanel tasksPanel;
+
+
     public FolderPage(Application application, ResourceId folderId) {
         this.application = application;
         this.folderId = folderId;
+        this.tasksPanel = new TasksPanel(application, folderId);
     }
 
     @Override
@@ -111,11 +112,11 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private VTree renderContents(ResourceNode folder) {
-        return div(BaseStyles.CONTENTPANEL,
+        return
             div(BaseStyles.ROW,
                 listColumn(folder),
                 timelineColumn(),
-                helpColumn(folder)));
+                helpColumn(folder));
     }
 
     private static VTree listColumn(ResourceNode page) {
@@ -144,20 +145,24 @@ public class FolderPage extends PageView implements StoreChangeListener {
         if (node.getClassId().equals(FormClass.CLASS_ID)) {
             return Router.uri(new FormPlace(node.getId(), FormViewType.TABLE));
         } else if (node.getClassId().equals(FolderClass.CLASS_ID)) {
-            return Router.uri(new FolderPlace(node.getClassId()));
+            return Router.uri(new FolderPlace(node.getId()));
         } else {
-            return UriUtils.fromTrustedString("#");
+            return Router.uri(new ResourcePlace(node.getId()));
         }
     }
 
     private static VTree description(ResourceNode child) {
-        return t("Something descriptive here");
+        return t("Data Entry Form");
     }
 
     private static VTree childIcon(ResourceNode child) {
         Icon icon;
         if (FormClass.CLASS_ID.equals(child.getClassId())) {
             icon = FontAwesome.EDIT;
+
+        } else if(PivotTableModel.CLASS_ID.equals(child.getClassId())) {
+            icon = FontAwesome.TABLE;
+
         } else {
             icon = FontAwesome.FOLDER_OPEN_O;
         }
@@ -170,10 +175,6 @@ public class FolderPage extends PageView implements StoreChangeListener {
         return div(className(BaseStyles.MEDIA_OBJECT), span(iconProps));
     }
 
-    private static VNode childIcon() {
-        return FontAwesome.FOLDER_OPEN_O.render();
-    }
-
     private static VTree timelineColumn() {
         return Grid.column(3,
             new Panel("Recent Activity", p("Todo...")));
@@ -181,7 +182,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
     private VTree helpColumn(ResourceNode folder) {
         return Grid.column(3,
-            new TasksPanel(application, folder.getId()),
+            tasksPanel,
             new Panel("Administration", p("Todo...")));
     }
 }

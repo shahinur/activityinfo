@@ -16,9 +16,11 @@ public class FieldChooserTest {
         // Setup data
         TestScenario scenario = new TestScenario();
         TestFolder workspace = scenario.createWorkspace("Workspace A");
-        TestFormClass form = workspace.newFormClass("Test Form")
-            .addTextField("Field 1").create()
-            .addTextField("Field 2").create();
+        TestFormClass form = workspace
+            .newFormClass("Test Form")
+            .addTextField("Field 1")
+            .addTextField("Field 2")
+            .create();
 
 
         TestRenderContext page = scenario.page();

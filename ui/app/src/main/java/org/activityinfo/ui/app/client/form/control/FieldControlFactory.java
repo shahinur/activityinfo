@@ -14,10 +14,7 @@ import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.LocalDateIntervalType;
-import org.activityinfo.model.type.time.LocalDateType;
-import org.activityinfo.model.type.time.MonthType;
-import org.activityinfo.model.type.time.YearType;
+import org.activityinfo.model.type.time.*;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 
@@ -107,6 +104,11 @@ public class FieldControlFactory implements FormClassVisitor<VComponent> {
 
     @Override
     public VComponent visitYearField(FormField field, YearType yearType) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public VComponent visitMissingField(FormField field, MissingFieldType missingFieldType) {
         throw new UnsupportedOperationException();
     }
 }

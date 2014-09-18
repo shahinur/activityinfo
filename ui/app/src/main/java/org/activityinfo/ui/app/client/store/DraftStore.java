@@ -66,5 +66,4 @@ public class DraftStore extends AbstractStore implements DraftHandler {
     public void publishDraft(ResourceId resourceId) {
 
     }
-
 }

@@ -7,6 +7,7 @@ import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.server.command.DispatcherSync;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -16,6 +17,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 public class SiteExporterTest {
+
+    @BeforeClass
+    public static final void setupLocale() {
+        LocaleProxy.initialize();
+    }
 
     @Test
     public void sheetNameTest() {

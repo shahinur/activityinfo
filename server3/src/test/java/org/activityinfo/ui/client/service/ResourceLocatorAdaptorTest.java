@@ -1,8 +1,10 @@
 package org.activityinfo.ui.client.service;
 
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.legacy.InstanceQuery;
@@ -13,14 +15,13 @@ import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.promise.PromiseMatchers;
 import org.activityinfo.service.store.ResourceLocator;
-import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.activityinfo.model.legacy.CuidAdapter.*;
@@ -55,38 +56,16 @@ public class ResourceLocatorAdaptorTest {
 
     private ResourceLocator resourceLocator;
 
+    @BeforeClass
+    public static final void setupLocale() {
+        LocaleProxy.initialize();
+    }
+
     @Before
     public final void setup() throws IOException {
         resourceLocator = createLocator("sites-simple1.json");
     }
 
-    @Test
-    public void simpleAdminEntityQuery() {
-
-        assertThat(queryByClass(adminLevelFormClass(PROVINCE_ADMIN_LEVEL_ID)), Matchers.hasSize(4));
-    }
-
-    @Test
-    public void simplePartnerQuery() {
-        assertThat(queryByClass(partnerFormClass(PEAR_DATABASE_ID)), Matchers.hasSize(3));
-    }
-
-    @Test
-    public void simpleLocationQuery() {
-        assertThat(queryByClass(locationFormClass(HEALTH_CENTER_LOCATION_TYPE)), Matchers.hasSize(4));
-    }
-
-    @Test
-    public void getLocation() throws IOException {
-
-        ResourceLocator jordanLocator = createLocator("jordan-locations.json");
-
-        ResourceId classId = locationFormClass(50512);
-        FormInstance instance = PromiseMatchers.assertResolves(jordanLocator.getFormInstance(locationInstanceId(
-                1590565828)));
-        Set<ResourceId> adminUnits = instance.getReferences(field(classId, ADMIN_FIELD));
-        System.out.println(adminUnits);
-    }
 
 
     @Test
@@ -238,7 +217,7 @@ public class ResourceLocatorAdaptorTest {
         assertThat(firstProjection.getValue(startDate), is(nullValue()));
         assertThat(firstProjection.getValue(indicator1), is(not(nullValue())));
     //    assertThat(firstProjection.getValue(endDate), equalTo((Object) new LocalDate(2009, 1, 2)));
-        assertThat(firstProjection.getValue(endDate), equalTo((Object)"2008-10-06"));
+        assertThat(firstProjection.getValue(endDate), equalTo((Object)new LocalDate(2008, 10, 6).atMidnightInMyTimezone()));
     }
 
 }

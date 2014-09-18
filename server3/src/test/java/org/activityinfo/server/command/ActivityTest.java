@@ -23,6 +23,7 @@ package org.activityinfo.server.command;
  */
 
 import com.google.common.base.Joiner;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
@@ -39,6 +40,7 @@ import org.activityinfo.service.store.ResourceLocator;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -61,6 +63,10 @@ public class ActivityTest {
 
     private ResourceLocator resourceLocator;
 
+    @BeforeClass
+    public static final void setupLocale() {
+        LocaleProxy.initialize();
+    }
 
     @Before
     public void setUser() throws IOException {

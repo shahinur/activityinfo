@@ -24,7 +24,6 @@ package org.activityinfo.io.importing;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
-import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.io.importing.data.PastedTable;
 import org.activityinfo.io.importing.model.ImportModel;
 import org.activityinfo.io.importing.source.SourceRow;
@@ -39,8 +38,8 @@ import org.activityinfo.model.legacy.criteria.ClassCriteria;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.converter.JvmConverterFactory;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.service.store.AsyncFormTreeBuilder;
+import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,12 +61,8 @@ public class InstanceScoreTest extends AbstractImporterTest {
     private ResourceLocator resourceLocator;
     private AsyncFormTreeBuilder formTreeBuilder;
 
-
     @Before
     public void setUp() throws IOException {
-
-        LocaleProxy.initialize();
-
         resourceLocator = new TestResourceStore().load("nfi-import.json").createLocator();
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
     }

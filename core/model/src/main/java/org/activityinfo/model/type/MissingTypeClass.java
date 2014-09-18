@@ -1,5 +1,7 @@
 package org.activityinfo.model.type;
 
+import org.activityinfo.model.type.time.MissingFieldType;
+
 public class MissingTypeClass implements FieldTypeClass {
 
     public static final String TYPE_ID = "MISSING";
@@ -21,7 +23,7 @@ public class MissingTypeClass implements FieldTypeClass {
 
     @Override
     public FieldType createType() {
-        throw new UnsupportedOperationException();
+        return MissingFieldType.INSTANCE;
     }
 
 }

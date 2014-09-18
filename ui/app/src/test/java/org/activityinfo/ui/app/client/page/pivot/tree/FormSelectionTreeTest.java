@@ -23,6 +23,7 @@ public class FormSelectionTreeTest {
         TestFormClass form = workspace.newFormClass("Test Form").addTextField("Field").create();
 
         FormSelectionTree tree = new FormSelectionTree(scenario.application());
+        tree.requestRootNodes();
         Status<List<ResourceNode>> rootNodes = tree.getRootNodes();
 
         assertThat(rootNodes.isAvailable(), equalTo(true));
