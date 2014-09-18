@@ -1,0 +1,26 @@
+{
+   "classId":"_class",
+   "_class_label":"My Form",
+   "elements":[
+      {
+         "id":"ci07lcztd1",
+         "visible":true,
+         "primaryKey":false,
+         "label":"Default Field",
+         "code":"ABC",
+         "defaultValue":{
+            "@type":"QUANTITY",
+            "value":41.0,
+            "units":"%"
+         },
+         "required":false,
+         "type":{
+            "parameters":{
+               "classId":"_type:QUANTITY",
+               "units":"%"
+            },
+            "typeClass":"QUANTITY"
+         }
+      }
+   ]
+}

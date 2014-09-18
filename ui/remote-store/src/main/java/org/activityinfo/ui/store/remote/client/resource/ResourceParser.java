@@ -8,6 +8,7 @@ import com.google.gwt.http.client.Response;
 import org.activityinfo.model.resource.PropertyBag;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.Resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,21 +25,15 @@ public class ResourceParser implements Function<Response, Resource> {
         return parseResource(object);
     }
 
-    public static native Resource parseResource(JavaScriptObject object) /*-{
-      var resource = @org.activityinfo.model.resource.Resources::createResource()();
-      resource.@org.activityinfo.model.resource.Resource::setId(Lorg/activityinfo/model/resource/ResourceId;)(
-          @org.activityinfo.model.resource.ResourceId::valueOf(Ljava/lang/String;)(object['@id']));
-      resource.@org.activityinfo.model.resource.Resource::setOwnerId(Lorg/activityinfo/model/resource/ResourceId;)(
-          @org.activityinfo.model.resource.ResourceId::valueOf(Ljava/lang/String;)(object['@owner']));
-
-      @org.activityinfo.ui.store.remote.client.resource.ResourceParser::parseProperties(Lorg/activityinfo/model/resource/PropertyBag;Lcom/google/gwt/core/client/JavaScriptObject;)(resource, object);
-
-      return resource;
-    }-*/;
+    public static Resource parseResource(JavaScriptObject object) {
+        Resource resource = Resources.createResource();
+        parseResourceProperties(resource, object);
+        return resource;
+    }
 
     private static Record parseRecord(JavaScriptObject object) {
         Record record = new Record();
-        parseProperties(record, object);
+        parseRecordProperties(record, object);
         return record;
     }
 
@@ -50,28 +45,53 @@ public class ResourceParser implements Function<Response, Resource> {
         return list;
     }
 
-    private static native void parseProperties(PropertyBag bag, JavaScriptObject object) /*-{
-      for(var key in object) {
-        if(object.hasOwnProperty(key) && key.charCodeAt(0) != 64) {  // 64 = @
-          var value = object[key];
-          if(typeof value === "string") {
-            bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Ljava/lang/String;)(key, value);
-          } else if(typeof value === "number") {
-            bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;D)(key, value);
-          } else if(typeof value === "boolean") {
-            bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Z)(key, value);
-          } else if(typeof value === "object") {
-            if(value instanceof Array || value instanceof $wnd.Array) {
-              var list = @org.activityinfo.ui.store.remote.client.resource.ResourceParser::parseArray(Lcom/google/gwt/core/client/JsArray;)(value);
-              bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Ljava/util/List;)(key, list);
-            } else {
-              var record = @org.activityinfo.ui.store.remote.client.resource.ResourceParser::parseRecord(Lcom/google/gwt/core/client/JavaScriptObject;)(value);
-              bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Lorg/activityinfo/model/resource/Record;)(key, record);
-            }
-          }
-        }
-      }
+    private static native void parseResourceProperties(Resource resource, JavaScriptObject object) /*-{
+        for(var key in object) {
+            if(object.hasOwnProperty(key)) {
+                if(key === '@id') {
+                    resource.@org.activityinfo.model.resource.Resource::setId(Lorg/activityinfo/model/resource/ResourceId;)(
+                        @org.activityinfo.model.resource.ResourceId::valueOf(Ljava/lang/String;)(object['@id']));
+                } else if(key === '@owner') {
+                    resource.@org.activityinfo.model.resource.Resource::setOwnerId(Lorg/activityinfo/model/resource/ResourceId;)(
+                        @org.activityinfo.model.resource.ResourceId::valueOf(Ljava/lang/String;)(object['@owner']));
 
+                } else if(key === '@version') {
+                    // TODO
+                     //  resource.@org.activityinfo.model.resource.Resource::setVersion(J)()
+
+                } else {
+                    @org.activityinfo.ui.store.remote.client.resource.ResourceParser::setProperty(Lorg/activityinfo/model/resource/PropertyBag;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(resource, key, object[key]);
+                }
+            }
+        }
     }-*/;
+
+    private static native void parseRecordProperties(PropertyBag bag, JavaScriptObject object) /*-{
+        for(var key in object) {
+            if (object.hasOwnProperty(key)) {  // 64 = @
+                @org.activityinfo.ui.store.remote.client.resource.ResourceParser::setProperty(Lorg/activityinfo/model/resource/PropertyBag;Ljava/lang/String;Lcom/google/gwt/core/client/JavaScriptObject;)(bag, key, object[key]);
+            }
+        }
+    }-*/;
+
+    private static native void setProperty(PropertyBag bag, String key, JavaScriptObject value) /*-{
+        if(typeof value === "string") {
+            bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Ljava/lang/String;)(key, value);
+        } else if(typeof value === "number") {
+            bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;D)(key, value);
+        } else if(typeof value === "boolean") {
+            bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Z)(key, value);
+        } else if(typeof value === "object") {
+            if(value instanceof Array || value instanceof $wnd.Array) {
+                var list = @org.activityinfo.ui.store.remote.client.resource.ResourceParser::parseArray(Lcom/google/gwt/core/client/JsArray;)(value);
+                bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Ljava/util/List;)(key, list);
+            } else {
+                var record = @org.activityinfo.ui.store.remote.client.resource.ResourceParser::parseRecord(Lcom/google/gwt/core/client/JavaScriptObject;)(value);
+                bag.@org.activityinfo.model.resource.PropertyBag::set(Ljava/lang/String;Lorg/activityinfo/model/resource/Record;)(key, record);
+            }
+        }
+    }-*/;
+
+
 
 }
