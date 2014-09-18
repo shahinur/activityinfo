@@ -27,6 +27,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.action.CreateDraft;
+import org.activityinfo.ui.app.client.page.form.FormPlace;
+import org.activityinfo.ui.app.client.page.form.FormViewType;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 
@@ -60,5 +62,6 @@ public class CreateForm implements Task {
         newFormClass.setOwnerId(ownerId);
 
         application.getDispatcher().dispatch(new CreateDraft(newFormClass.asResource()));
+        application.getRouter().navigate(new FormPlace(newFormClass.getId(), FormViewType.DESIGN));
     }
 }
