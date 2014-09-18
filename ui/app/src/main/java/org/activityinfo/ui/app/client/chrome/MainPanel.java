@@ -5,6 +5,7 @@ import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.page.*;
 import org.activityinfo.ui.app.client.page.create.NewWorkspacePage;
 import org.activityinfo.ui.app.client.page.folder.FolderPage;
+import org.activityinfo.ui.app.client.page.form.FormPage;
 import org.activityinfo.ui.app.client.page.home.HomePage;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
@@ -38,6 +39,7 @@ public class MainPanel extends VComponent<MainPanel> implements StoreChangeListe
         pageFactories.add(new FolderPage.Factory(application));
         pageFactories.add(new ResourcePageView.Factory(application));
         pageFactories.add(new HomePage.Factory(application));
+        pageFactories.add(new FormPage.Factory(application));
 
         pageView = pageViewForCurrentPlace();
     }

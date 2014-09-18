@@ -3534,4 +3534,6 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Add Indicator")
     String addIndicator();
 
+    @DefaultStringValue("New Form")
+    String newForm();
 }
