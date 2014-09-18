@@ -98,14 +98,13 @@ public class HrdResourceStore implements ResourceStore {
          return Lists.newArrayList(AcrIndex.queryRules(datastore, resourceId));
     }
 
-    @Override
-    public UpdateResult put(@InjectParam AuthenticatedUser user,
-                            @PathParam("id") ResourceId resourceId,
-                            Resource resource) {
-
+    @PUT
+    @Path("resource/{id}")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public UpdateResult put(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId, Resource resource) {
        return put(user, resource);
     }
-
 
     @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
@@ -114,14 +113,12 @@ public class HrdResourceStore implements ResourceStore {
         try (WorkspaceTransaction tx = begin(workspace, user)) {
             Authorization authorization = new Authorization(user, resource.getId(), tx);
 
-            if (authorization.canEdit()) {
-                long newVersion = workspace.createResource(tx, resource);
-                tx.commit();
+            authorization.assertCanEdit();
 
-                return UpdateResult.committed(resource.getId(), newVersion);
-            } else {
-                return create(tx, user, resource);
-            }
+            long newVersion = workspace.updateResource(tx, resource);
+            tx.commit();
+
+            return UpdateResult.committed(resource.getId(), newVersion);
         }
     }
 
@@ -148,23 +145,22 @@ public class HrdResourceStore implements ResourceStore {
         Authorization authorization = new Authorization(user, resource.getOwnerId(), tx);
         Workspace workspace = tx.getWorkspace();
 
-        if (authorization.canEdit()) {
-            try {
-                workspace.getLatestContent(resource.getId()).get(tx);
-                return UpdateResult.rejected();
-            } catch (EntityNotFoundException e) {
-                long newVersion = workspace.createResource(tx, resource);
-                tx.commit();
+        authorization.assertCanEdit();
 
-                // Cache immediately so that subsequent reads will be able to find the resource
-                // if it takes a while for the indices to catch up
-                workspaceLookup.cache(resource.getId(), workspace);
+        try {
+            workspace.getLatestContent(resource.getId()).get(tx);
+            return UpdateResult.rejected();
+        } catch (EntityNotFoundException e) {
+            long newVersion = workspace.createResource(tx, resource);
+            tx.commit();
 
-                return UpdateResult.committed(resource.getId(), newVersion);
-            }
-        } else {
-            throw new WebApplicationException(UNAUTHORIZED);
+            // Cache immediately so that subsequent reads will be able to find the resource
+            // if it takes a while for the indices to catch up
+            workspaceLookup.cache(resource.getId(), workspace);
+
+            return UpdateResult.committed(resource.getId(), newVersion);
         }
+
     }
 
 
