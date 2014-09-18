@@ -1,4 +1,4 @@
-package org.activityinfo.ui.app.client.form.create;
+package org.activityinfo.ui.app.client.store;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,8 +21,26 @@ package org.activityinfo.ui.app.client.form.create;
  * #L%
  */
 
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.ui.app.client.form.store.FormChangeHandler;
+import org.activityinfo.ui.flux.dispatcher.Dispatcher;
+import org.activityinfo.ui.flux.store.AbstractStore;
+
+import javax.annotation.Nonnull;
+
 /**
- * @author yuriyz on 9/17/14.
+ * @author yuriyz on 9/18/14.
  */
-public class NewFormPlace {
+public class FormState extends AbstractStore implements FormChangeHandler {
+
+    private FormClass formClass;
+
+    public FormState(@Nonnull Dispatcher dispatcher, @Nonnull FormClass formClass) {
+        super(dispatcher);
+        this.formClass = formClass;
+    }
+
+    public FormClass getFormClass() {
+        return formClass;
+    }
 }
