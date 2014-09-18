@@ -5,6 +5,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.RecordFieldTypeClass;
 import org.activityinfo.model.type.TypeFieldType;
 
 /**
@@ -13,7 +14,7 @@ import org.activityinfo.model.type.TypeFieldType;
  */
 public class LocalDateIntervalType implements FieldType, TemporalType {
 
-    public static final FieldTypeClass TYPE_CLASS = new FieldTypeClass() {
+    public static final FieldTypeClass TYPE_CLASS = new RecordFieldTypeClass<LocalDateInterval>() {
         @Override
         public String getId() {
             return "localDateInterval";
@@ -27,6 +28,11 @@ public class LocalDateIntervalType implements FieldType, TemporalType {
         @Override
         public FieldType createType() {
             return LocalDateIntervalType.INSTANCE;
+        }
+
+        @Override
+        public LocalDateInterval deserialize(Record record) {
+            return LocalDateInterval.fromRecord(record);
         }
     };
 

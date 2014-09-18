@@ -95,12 +95,19 @@ public class TableDataSerializer extends JsonSerializer<TableData> {
 
     private void writeDoubleValues(JsonGenerator json, ColumnView view) throws IOException {
         for(int i=0;i<view.numRows();++i) {
-            json.writeNumber(view.getDouble(i));
+            double x = view.getDouble(i);
+            if(Double.isNaN(x)) {
+                json.writeNull();
+            } else {
+                json.writeNumber(x);
+            }
         }
     }
 
-    private void writeDateValues(JsonGenerator json, ColumnView view) {
-        throw new UnsupportedOperationException("todo");
+    private void writeDateValues(JsonGenerator json, ColumnView view) throws IOException {
+        for(int i=0;i<view.numRows();++i) {
+            json.writeObject(view.getDate(i));
+        }
     }
 
 }
