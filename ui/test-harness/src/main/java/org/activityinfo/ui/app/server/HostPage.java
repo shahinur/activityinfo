@@ -85,7 +85,4 @@ public class HostPage {
             return MediaType.APPLICATION_OCTET_STREAM_TYPE;
         }
     }
-
-
-
 }
