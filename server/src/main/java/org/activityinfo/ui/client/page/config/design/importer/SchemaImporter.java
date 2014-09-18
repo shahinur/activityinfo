@@ -1,8 +1,9 @@
 package org.activityinfo.ui.client.page.config.design.importer;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -59,9 +60,9 @@ public class SchemaImporter {
     private Map<String, Integer> locationTypeMap = Maps.newHashMap();
 
     private List<ActivityDTO> newActivities = Lists.newArrayList();
-    private List<IndicatorDTO> newIndicators = Lists.newArrayList();
-    private List<AttributeGroupDTO> newAttributeGroups = Lists.newArrayList();
-    private List<AttributeDTO> newAttributes = Lists.newArrayList();
+    private Map<IndicatorKey, IndicatorDTO> newIndicators = Maps.newHashMap();
+    private Map<AttributeGroupKey, AttributeGroupDTO> newAttributeGroups = Maps.newHashMap();
+    private Map<AttributeKey, AttributeDTO> newAttributes = Maps.newHashMap();
 
     private Set<SafeHtml> warnings = Sets.newHashSet();
 
@@ -179,21 +180,26 @@ public class SchemaImporter {
             ActivityDTO activity = getActivity(row);
             String fieldType = formFieldType.get(row);
             if ("Indicator".equals(fieldType)) {
-                IndicatorDTO indicator = new IndicatorDTO();
-                indicator.setName(fieldName.get(row));
-                indicator.setCategory(fieldCategory.get(row));
-                indicator.setDescription(fieldDescription.get(row));
-                indicator.setUnits(fieldUnits.get(row));
-                indicator.set("activityId", activity);
-                if (isTruthy(fieldMandatory.get(row))) {
-                    indicator.setMandatory(true);
+                IndicatorKey indicatorKey = new IndicatorKey(activity.getName(), fieldName.get(row));
+                if (!newIndicators.containsKey(indicatorKey)) {
+                    IndicatorDTO indicator = new IndicatorDTO();
+                    indicator.setName(fieldName.get(row));
+                    indicator.setCategory(fieldCategory.get(row));
+                    indicator.setDescription(fieldDescription.get(row));
+                    indicator.setUnits(fieldUnits.get(row));
+                    indicator.set("activityId", activity);
+                    if (isTruthy(fieldMandatory.get(row))) {
+                        indicator.setMandatory(true);
+                    }
+                    newIndicators.put(indicatorKey, indicator);
                 }
-                newIndicators.add(indicator);
             } else if ("AttributeGroup".equals(fieldType)) {
                 String name = fieldName.get(row);
                 AttributeGroupDTO group = activity.getAttributeGroupByName(name);
-                if (group == null) {
+                AttributeGroupKey attributeGroupKey = new AttributeGroupKey(activity.getName(), name);
+                if (group == null && !newAttributeGroups.containsKey(attributeGroupKey)) {
                     group = new AttributeGroupDTO();
+                    group.setId(-1);
                     group.setName(name);
                     group.set("activityId", activity);
 
@@ -204,15 +210,18 @@ public class SchemaImporter {
                         group.setMandatory(true);
                     }
                     activity.getAttributeGroups().add(group);
-                    newAttributeGroups.add(group);
+                    newAttributeGroups.put(attributeGroupKey, group);
                 }
+
                 String attribName = attributeValue.get(row);
                 AttributeDTO attrib = findAttrib(group, attribName);
-                if (attrib == null) {
+                AttributeKey attributeKey = new AttributeKey(attributeGroupKey, attribName);
+                if (attrib == null && !newAttributes.containsKey(attributeKey)) {
                     attrib = new AttributeDTO();
+                    attrib.setId(-1);
                     attrib.setName(attribName);
                     attrib.set("attributeGroupId", group);
-                    newAttributes.add(attrib);
+                    newAttributes.put(attributeKey, attrib);
                 }
             }
         }
@@ -336,9 +345,9 @@ public class SchemaImporter {
 
         List<List<? extends EntityDTO>> batches = Lists.newArrayList();
         batches.add(newActivities);
-        batches.add(newIndicators);
-        batches.add(newAttributeGroups);
-        batches.add(newAttributes);
+        batches.add(Lists.newArrayList(newIndicators.values()));
+        batches.add(Lists.newArrayList(newAttributeGroups.values()));
+        batches.add(Lists.newArrayList(newAttributes.values()));
 
         batchCount = batches.size();
         batchNumber = 1;
@@ -392,5 +401,21 @@ public class SchemaImporter {
     public void clearWarnings() {
         warnings.clear();
         fatalError = false;
+    }
+
+    public List<ActivityDTO> getNewActivities() {
+        return newActivities;
+    }
+
+    public Map<IndicatorKey, IndicatorDTO> getNewIndicators() {
+        return newIndicators;
+    }
+
+    public Map<AttributeGroupKey, AttributeGroupDTO> getNewAttributeGroups() {
+        return newAttributeGroups;
+    }
+
+    public Map<AttributeKey, AttributeDTO> getNewAttributes() {
+        return newAttributes;
     }
 }

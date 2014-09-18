@@ -1,0 +1,30 @@
+multipleAllowed	LocationType	Mandatory	ReportingFrequency	DatabaseId	DatabaseName	ActivityId	ActivityCategory	ActivityName	FormFieldType	AttributeGroup/IndicatorId	Category	Name	Description	Units	AttributeId	AttributeValue
+	Country		once		Test		Outcome 1	Output 3	AttributeGroup			Area of Operation				Akkar
+	Country		once		Test		Outcome 1	Output 3	AttributeGroup			Area of Operation				T5
+	Country		once		Test		Outcome 1	Output 3	AttributeGroup			Area of Operation				Bekaa
+	Country		once		Test		Outcome 1	Output 3	AttributeGroup			Area of Operation				Beirut/Mt Lebanon
+	Country		once		Test		Outcome 1	Output 3	AttributeGroup			Area of Operation				South
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 1	USD required		USD
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 1	Target # kits distributed		Syrian
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 1	Target # kits distributed		PRS
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 1	Target # kits distributed		Leb Returnees
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 1	Target # kits distributed		Leb Affected
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 1	Target # kits distributed		PRL
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 2	USD required		USD
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 2	Target $ amount distributed		Syrian
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 2	Target $ amount distributed		PRS
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 2	Target $ amount distributed		Leb Returnees
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 2	Target $ amount distributed		Leb Affected
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 2	Target $ amount distributed		PRL
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 3	USD required		USD
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 3	Target # blankets distributed		Syrian
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 3	Target # blankets distributed		PRS
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 3	Target # blankets distributed		Leb Returnees
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 3	Target # blankets distributed		Leb Affected
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 3	Target # blankets distributed		PRL
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 4	USD required		USD
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 4	Target # jerry can distributed		Syrian
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 4	Target # jerry can distributed		PRS
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 4	Target # jerry can distributed		Leb Returnees
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 4	Target # jerry can distributed		Leb Affected
+	Country		once		Test		Outcome 1	Output 3	Indicator		Activity 4	Target # jerry can distributed		PRL
