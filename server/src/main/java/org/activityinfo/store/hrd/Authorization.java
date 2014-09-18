@@ -105,6 +105,19 @@ public class Authorization {
         return accessControlRule != null ? accessControlRule.getResourceId() : null;
     }
 
+    /**
+     * This method is determines if a change in authorization has made a resource newly visible.
+     * @param oldAuthorization the old authorization object to compare this one to
+     * @return whether the user can now view the resource, but could not view it previously
+     */
+    public boolean canViewNowButNotAsOf(Optional<Authorization> oldAuthorization) {
+        if (oldAuthorization.isPresent()) {
+            return canView() && !oldAuthorization.get().canView();
+        } else {
+            return false;   // If the object was newly created, its previous visibility is undefined, so nothing changed
+        }
+    }
+
     public void assertCanEdit() {
         if(!canEdit()) {
             throw new WebApplicationException(UNAUTHORIZED);

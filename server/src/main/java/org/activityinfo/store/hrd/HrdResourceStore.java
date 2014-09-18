@@ -261,10 +261,10 @@ public class HrdResourceStore implements ResourceStore {
     // TODO Apply authorization transitively
     private static Collection<Resource> applyAuthorization(Optional<Authorization> oldAuthorization,
                                                            Authorization newAuthorization, WorkspaceTransaction tx) {
-        if (oldAuthorization.isPresent() && !oldAuthorization.get().canView()) {
+        if (newAuthorization.canViewNowButNotAsOf(oldAuthorization)) {
             ResourceId resourceId = newAuthorization.getResourceId();
 
-            if (resourceId != null && newAuthorization.canView()) {
+            if (resourceId != null) {
                 try {
                     return Collections.singleton(tx.getWorkspace().getLatestContent(resourceId).get(tx));
                 } catch (EntityNotFoundException e) {
