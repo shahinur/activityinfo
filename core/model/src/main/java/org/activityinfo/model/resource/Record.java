@@ -1,6 +1,7 @@
 package org.activityinfo.model.resource;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import org.activityinfo.model.type.ReferenceValue;
 
 import java.util.Map;
 
@@ -24,6 +25,11 @@ public final class Record extends PropertyBag<Record> {
         // Overriden in order to apply the @JsonValue annotation
         // specifically for Records
         return super.getProperties();
+    }
+
+    public Record set(String propertyName, ResourceId id) {
+        set(propertyName, new ReferenceValue(id));
+        return this;
     }
 
     @Override

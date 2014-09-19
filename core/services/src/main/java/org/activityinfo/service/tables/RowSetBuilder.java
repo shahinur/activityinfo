@@ -13,6 +13,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnModel;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
@@ -63,11 +65,11 @@ public class RowSetBuilder {
         return batchBuilder.addConstantColumn(rootFormClass, value);
     }
 
-    private FormTree.Node resolveSymbol(String name) {
+    private Object resolveSymbol(String name) {
         return resolveSymbol(tree.getRootFields(), name);
     }
 
-    private FormTree.Node resolveSymbol(List<FormTree.Node> fields, String name) {
+    private Object resolveSymbol(List<FormTree.Node> fields, String name) {
         // first try to resolve by id.
         for(FormTree.Node rootField : fields) {
             if(rootField.getFieldId().asString().equals(name)) {
@@ -83,7 +85,16 @@ public class RowSetBuilder {
             } else if(name.equalsIgnoreCase(rootField.getField().getLabel())) {
                 matching.add(rootField);
             }
+            if(rootField.getType() instanceof EnumType) {
+                EnumType enumType = (EnumType) rootField.getType();
+                for(EnumValue value : enumType.getValues()) {
+                    if(value.getLabel().equalsIgnoreCase(name)) {
+                        return value;
+                    }
+                }
+            }
         }
+
 
         if(matching.size() == 1) {
             return matching.get(0);
@@ -95,10 +106,15 @@ public class RowSetBuilder {
         }
     }
 
-    private FormTree.Node resolveCompoundExpr(List<FormTree.Node> fields, CompoundExpr expr) {
+    private Object resolveCompoundExpr(List<FormTree.Node> fields, CompoundExpr expr) {
         if(expr.getValue() instanceof SymbolExpr) {
-            FormTree.Node parentField = resolveSymbol(fields, ((SymbolExpr) expr.getValue()).getName());
-            return resolveSymbol(parentField.getChildren(), expr.getField().getName());
+            Object object = resolveSymbol(fields, ((SymbolExpr) expr.getValue()).getName());
+            if(object instanceof FormTree.Node) {
+                FormTree.Node parentField = (FormTree.Node) object;
+                return resolveSymbol(parentField.getChildren(), expr.getField().getName());
+            } else {
+                throw new UnsupportedOperationException("Cannot reference field on " + object);
+            }
 
         } else if(expr.getValue() instanceof CompoundExpr) {
             return resolveCompoundExpr(fields, (CompoundExpr) expr.getValue());
@@ -129,7 +145,7 @@ public class RowSetBuilder {
 
         @Override
         public Supplier<ColumnView> visitSymbol(SymbolExpr symbolExpr) {
-            return batchBuilder.addColumn(resolveSymbol(symbolExpr.getName()));
+            return resolveSymbolToColumn(RowSetBuilder.this.resolveSymbol(symbolExpr.getName()));
         }
 
         @Override
@@ -139,7 +155,7 @@ public class RowSetBuilder {
 
         @Override
         public Supplier<ColumnView> visitCompoundExpr(CompoundExpr compoundExpr) {
-            return batchBuilder.addColumn(resolveCompoundExpr(tree.getRootFields(), compoundExpr));
+            return resolveSymbolToColumn(resolveCompoundExpr(tree.getRootFields(), compoundExpr));
         }
 
         @Override
@@ -158,6 +174,17 @@ public class RowSetBuilder {
                     return ColumnFunctions.create(call.getFunction(), columns);
                 }
             };
+        }
+    }
+
+    private Supplier<ColumnView> resolveSymbolToColumn(Object object) {
+        Object o = object;
+        if(o instanceof FormTree.Node) {
+            return batchBuilder.addColumn((FormTree.Node) o);
+        } else if(o instanceof EnumValue) {
+            return batchBuilder.addConstantColumn(rootFormClass, ((EnumValue) o).getLabel());
+        } else {
+            throw new UnsupportedOperationException("type: " + o);
         }
     }
 

@@ -1,6 +1,7 @@
 package org.activityinfo.service.cubes;
 
 import com.google.common.base.Supplier;
+import com.google.common.collect.Multimap;
 
 import java.util.*;
 
@@ -15,14 +16,15 @@ public class StockAggregator {
 
     private SortedMap<Date, Double> measurements = new TreeMap<>();
 
-    private String[] dimValues;
+    private Multimap<Integer, String> dimValues;
 
-    public void insert(Date measurementDate, double value, String[] dimValues) {
+    public void insert(Date measurementDate, double value, Multimap<Integer, String> dimValues) {
         measurements.put(measurementDate, value);
         if(this.dimValues == null) {
-            this.dimValues = Arrays.copyOf(dimValues, dimValues.length);
+            this.dimValues = dimValues;
         } else {
-            if(!Arrays.equals(this.dimValues, dimValues)) {
+            if(!this.dimValues.equals(dimValues)) {
+                System.out.println(dimValues + " vs " + this.dimValues);
                 throw new IllegalStateException("primary key / dimensions mismatch");
             }
         }
@@ -30,14 +32,14 @@ public class StockAggregator {
 
     @Override
     public String toString() {
-        String reports = Arrays.toString(dimValues);
+        String reports = dimValues.toString();
         for (Map.Entry<Date, Double> entry : measurements.entrySet()) {
             reports += ", " + entry.getKey().getMonth() + " = " + entry.getValue();
         }
         return reports;
     }
 
-    public String[] getDimKey() {
+    public Multimap<Integer, String> getDimKey() {
         return dimValues;
     }
 

@@ -70,6 +70,14 @@ public class TableQueryBatchBuilder {
         }
     }
 
+    public FormClass getForm(ResourceId resourceId) {
+        try {
+            return FormClass.fromResource(store.get(resourceId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     /**
      * Adds a query to the batch for a column derived from a single node within the FormTree, along
      * with any necessary join structures required to join this column to the base table, if the column

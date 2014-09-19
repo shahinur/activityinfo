@@ -17,7 +17,6 @@ import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.store.*;
 import org.activityinfo.service.tables.TableBuilder;
 
@@ -139,11 +138,12 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     @Override
     public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
-        try {
-            return new CubeBuilder(this).buildCube(tableModel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            return new CubeBuilder(this).buildCube(tableModel);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+        throw new UnsupportedOperationException();
     }
 
     @Override

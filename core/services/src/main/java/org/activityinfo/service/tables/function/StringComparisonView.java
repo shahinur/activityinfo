@@ -13,7 +13,7 @@ public class StringComparisonView implements ColumnView {
     private final ComparisonOp function;
     private final int numRows;
 
-    public StringComparisonView(ColumnView x, ColumnView y, ComparisonOp function) {
+    public StringComparisonView(ComparisonOp function, ColumnView x, ColumnView y) {
         this.x = x;
         this.y = y;
         this.function = function;

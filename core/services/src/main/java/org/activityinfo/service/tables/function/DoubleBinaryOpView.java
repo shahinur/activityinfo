@@ -7,10 +7,12 @@ import java.util.Date;
 
 public class DoubleBinaryOpView implements ColumnView {
 
+    private DoubleBinaryOp op;
     private ColumnView x;
     private ColumnView y;
 
-    public DoubleBinaryOpView(ColumnView x, ColumnView y) {
+    public DoubleBinaryOpView(DoubleBinaryOp op, ColumnView x, ColumnView y) {
+        this.op = op;
         this.x = x;
         this.y = y;
     }
@@ -32,7 +34,7 @@ public class DoubleBinaryOpView implements ColumnView {
 
     @Override
     public double getDouble(int row) {
-        return x.getDouble(row) + y.getDouble(row);
+        return op.apply(x.getDouble(row), y.getDouble(row));
     }
 
     @Override

@@ -1,21 +1,16 @@
 package org.activityinfo.service.cubes;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.analysis.DimensionModel;
-import org.activityinfo.model.analysis.DimensionSource;
-import org.activityinfo.model.analysis.MeasureModel;
+import org.activityinfo.model.analysis.cube.MeasureMapping;
+import org.activityinfo.model.analysis.cube.SourceMapping;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.HashMapBucket;
 import org.activityinfo.model.type.time.TemporalType;
 import org.activityinfo.service.tables.RowSetBuilder;
 import org.activityinfo.service.tables.TableQueryBatchBuilder;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -27,40 +22,29 @@ import java.util.Map;
  */
 public class StockMeasureBuilder implements MeasureBuilder {
 
-    private final MeasureModel model;
-    private FormClass formClass;
+    private final AttributeReaderSet attributeReaders;
 
     private Supplier<ColumnView> value;
     private Supplier<ColumnView> measurementTime;
-    private Supplier<ColumnView> criteria;
 
-    private final List<DimensionModel> dimensions;
-    private final List<Supplier<ColumnView>> dimensionViews = Lists.newArrayList();
     private final List<Supplier<ColumnView>> primaryKeyViews = Lists.newArrayList();
+    private SourceMapping source;
+    private MeasureMapping mapping;
 
-    public StockMeasureBuilder(MeasureModel measureModel, List<DimensionModel> dimensions, FormClass formClass) {
-        this.model = measureModel;
-        this.formClass = formClass;
-        this.dimensions = dimensions;
+    public StockMeasureBuilder(CubeContext context, SourceMapping source, MeasureMapping mapping) {
+        this.source = source;
+        this.mapping = mapping;
+        this.attributeReaders = new AttributeReaderSet(context, source, mapping);
     }
 
     @Override
     public void scheduleRequests(TableQueryBatchBuilder batch) {
 
-        RowSetBuilder rowSetBuilder = new RowSetBuilder(formClass.getId(), batch);
+        RowSetBuilder rowSetBuilder = new RowSetBuilder(source.getSourceId(), batch);
+        FormClass formClass = batch.getForm(source.getSourceId());
 
-        this.value = rowSetBuilder.fetch(model.getValueExpression());
-        this.criteria = rowSetBuilder.fetch(resolveCriteria());
-
-        // Dimensions
-        for (int i = 0; i < dimensions.size(); i++) {
-            Optional<DimensionSource> source = dimensions.get(i).getSource(model.getSourceId());
-            if(source.isPresent()) {
-                dimensionViews.add(rowSetBuilder.fetch(source.get().getExpression()));
-            } else {
-                dimensionViews.add(null);
-            }
-        }
+        this.value = rowSetBuilder.fetch(mapping.getValueExpression());
+        attributeReaders.scheduleRequests(rowSetBuilder);
 
         // To the dimension, we have to add the primary keys in the first round
         // to ensure we don't double count multiple measurements of the same indicator at different times.
@@ -78,23 +62,15 @@ public class StockMeasureBuilder implements MeasureBuilder {
         }
     }
 
-    private String resolveCriteria() {
-        if(Strings.isNullOrEmpty(model.getCriteriaExpression())) {
-            return "true";
-        } else {
-            return model.getCriteriaExpression();
-        }
-    }
-
     private java.util.Collection<StockAggregator> resolve() {
         int numRows = value.get().numRows();
         ColumnView measureView = value.get();
         ColumnView timeView = measurementTime.get();
         ColumnView[] keyViews = viewArray(primaryKeyViews);
-        ColumnView[] dimViews = viewArray(dimensionViews);
 
         String[] keys = new String[keyViews.length];
-        String[] dimValues = new String[dimViews.length];
+
+        attributeReaders.start();
 
         // First we have to aggregate our measure to the dimensions
         BucketMap<StockAggregator> aggregateMap = new BucketMap<>(StockAggregator.SUPPLIER);
@@ -103,9 +79,9 @@ public class StockMeasureBuilder implements MeasureBuilder {
             double value = measureView.getDouble(i);
             if (!Double.isNaN(value)) {
                 fillRow(keyViews, keys, i);
-                fillRow(dimViews, dimValues, i);
+
                 // update bucket
-                aggregateMap.get(keys).insert(measurementDate, value, dimValues);
+                aggregateMap.get(keys).insert(measurementDate, value, attributeReaders.read(i));
             }
         }
 
@@ -124,30 +100,12 @@ public class StockMeasureBuilder implements MeasureBuilder {
         }
     }
 
-
     @Override
-    public List<HashMapBucket> aggregate() {
-
-        BucketMap<SumAggregator> aggregateMap = new BucketMap<>(SumAggregator.SUPPLIER);
+    public void aggregate(TupleCollector collector) {
 
         for(StockAggregator period : resolve()) {
-            aggregateMap.get(period.getDimKey()).update(period.getAverage());
+            collector.add(period.getAverage(), mapping.getMeasureId(), period.getDimKey());
         }
-
-        // Now insert result into the global result set
-        List<HashMapBucket> buckets = new ArrayList<>();
-        for (Map.Entry<BucketKey, SumAggregator> entry : aggregateMap.entrySet()) {
-            BucketKey key = entry.getKey();
-            HashMapBucket bucket = new HashMapBucket(model.getId(), entry.getValue().getResult());
-            for(int i=0;i!=dimensions.size();++i) {
-                bucket.setDimensionValue(dimensions.get(i).getId(), key.getDimensionValue(i));
-            }
-            for (Map.Entry<String, String> tag : model.getDimensionTags().entrySet()) {
-                bucket.setDimensionValue(tag.getKey(), tag.getValue());
-            }
-            buckets.add(bucket);
-        }
-        return buckets;
     }
 
     private ColumnView[] viewArray(List<Supplier<ColumnView>> views) {

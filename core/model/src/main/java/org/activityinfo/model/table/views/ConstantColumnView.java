@@ -14,7 +14,7 @@ public class ConstantColumnView implements ColumnView {
     private final int numRows;
 
     public ConstantColumnView(int numRows, double doubleValue) {
-        this.type = ColumnType.STRING;
+        this.type = ColumnType.NUMBER;
         this.doubleValue = doubleValue;
         this.stringValue = null;
         this.booleanValue = (doubleValue != 0);
@@ -82,5 +82,10 @@ public class ConstantColumnView implements ColumnView {
     @Override
     public int getBoolean(int row) {
         return booleanValue ? 1 : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "ConstantColumnView(" + get(0) + " = " + type + ")";
     }
 }

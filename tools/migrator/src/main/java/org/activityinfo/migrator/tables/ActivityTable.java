@@ -28,6 +28,7 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.MonthType;
+import org.activityinfo.model.type.time.YearType;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -282,6 +283,11 @@ public class ActivityTable extends ResourceMigrator {
                     field.setType(createEnumType(rs, attributes));
                     break;
             }
+            if(rs.getInt("ActivityId") == 6240) {
+                if(rs.getString("Name").equals("Year of Expediture")) {
+                    field.setType(YearType.INSTANCE);
+                }
+            }
         }
 
 
@@ -367,6 +373,7 @@ public class ActivityTable extends ResourceMigrator {
         }
 
         if(reportingFrequency == ONCE) {
+
             siteForm.addElement(
                 new FormField(field(classId, START_DATE_FIELD))
                     .setLabel("Date")

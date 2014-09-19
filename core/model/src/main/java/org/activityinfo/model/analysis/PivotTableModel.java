@@ -8,6 +8,7 @@ import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.primitive.TextType;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class PivotTableModel implements IsRecord, IsResource {
@@ -19,8 +20,8 @@ public class PivotTableModel implements IsRecord, IsResource {
     private ResourceId id;
     private ResourceId ownerId;
     private String label;
-    private List<MeasureModel> measures = Lists.newArrayList();
-    private List<DimensionModel> dimensions = Lists.newArrayList();
+    private List<ResourceId> measures = Lists.newArrayList();
+    private List<ResourceId> dimensions = Lists.newArrayList();
 
     public PivotTableModel() {
 
@@ -51,16 +52,20 @@ public class PivotTableModel implements IsRecord, IsResource {
         this.label = label;
     }
 
-    public List<MeasureModel> getMeasures() {
+    public List<ResourceId> getMeasures() {
         return measures;
     }
 
-    public void addMeasure(MeasureModel measure) {
-        measures.add(measure);
+    public List<ResourceId> getDimensions() {
+        return dimensions;
     }
 
-    public List<DimensionModel> getDimensions() {
-        return dimensions;
+    public void addMeasures(ResourceId... measures) {
+        this.measures.addAll(Arrays.asList(measures));
+    }
+
+    public void addDimension(ResourceId... dimensionIds) {
+        this.dimensions.addAll(Arrays.asList(dimensionIds));
     }
 
     public static FormClass getFormClass() {
@@ -82,19 +87,21 @@ public class PivotTableModel implements IsRecord, IsResource {
 
     @Override
     public Record asRecord() {
-        return new Record().set("measures", ListFieldValue.ofSubForms(measures).asRecord());
+     // return new Record().set("measures", ListFieldValue.ofSubForms(measures).asRecord());
+        throw new UnsupportedOperationException();
     }
 
 
     @Override
     public Resource asResource() {
-        Resource resource = Resources.createResource();
-        resource.setId(id);
-        resource.set("classId", CLASS_ID.asString());
-        resource.set(LABEL_FIELD_ID, label);
-        resource.setOwnerId(ownerId);
-        resource.set("measures", ListFieldValue.ofSubForms(measures).asRecord());
-        return resource;
+//        Resource resource = Resources.createResource();
+//        resource.setId(id);
+//        resource.set("classId", CLASS_ID.asString());
+//        resource.set(LABEL_FIELD_ID, label);
+//        resource.setOwnerId(ownerId);
+//        resource.set("measures", ListFieldValue.ofSubForms(measures).asRecord());
+//        return resource;
+        throw new UnsupportedOperationException();
     }
 
     public static PivotTableModel fromRecord(Record record) {
@@ -106,14 +113,15 @@ public class PivotTableModel implements IsRecord, IsResource {
     }
 
     private static PivotTableModel fromProperties(PropertyBag resource) {
-        PivotTableModel model = new PivotTableModel();
-        model.setLabel(resource.isString(LABEL_FIELD_ID));
-        ListFieldValue measureList = Types.read(resource, "measures", ListFieldType.TYPE_CLASS);
-        for(FieldValue value : measureList.getElements()) {
-            if(value instanceof SubFormValue) {
-                model.addMeasure(new MeasureModel(((SubFormValue) value).getFields()));
-            }
-        }
-        return model;
+//        PivotTableModel model = new PivotTableModel();
+//        model.setLabel(resource.isString(LABEL_FIELD_ID));
+//        ListFieldValue measureList = Types.read(resource, "measures", ListFieldType.TYPE_CLASS);
+//        for(FieldValue value : measureList.getElements()) {
+//            if(value instanceof SubFormValue) {
+//                model.addMeasure(new MeasureModel(((SubFormValue) value).getFields()));
+//            }
+//        }
+//        return model;
+        throw new UnsupportedOperationException();
     }
 }
