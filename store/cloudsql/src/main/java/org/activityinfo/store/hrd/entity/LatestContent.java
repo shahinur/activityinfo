@@ -1,7 +1,14 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -10,7 +17,12 @@ import org.activityinfo.service.store.ResourceNotFound;
 
 import java.util.Iterator;
 
-import static org.activityinfo.store.hrd.entity.Content.*;
+import static org.activityinfo.store.hrd.entity.Content.CLASS_PROPERTY;
+import static org.activityinfo.store.hrd.entity.Content.LABEL_PROPERTY;
+import static org.activityinfo.store.hrd.entity.Content.OWNER_PROPERTY;
+import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
+import static org.activityinfo.store.hrd.entity.Content.deserializeResource;
+import static org.activityinfo.store.hrd.entity.Content.deserializeResourceNode;
 
 /**
  * An entity within the {@code ResourceGroup} which contains the
@@ -58,6 +70,15 @@ public class LatestContent {
     public ResourceNode getAsNode(WorkspaceTransaction tx) throws EntityNotFoundException {
         Entity entity = tx.get(key);
         return deserializeResourceNode(entity);
+    }
+
+    public Iterable<ResourceId> getChildIds(WorkspaceTransaction tx) throws EntityNotFoundException {
+        return Iterables.transform(getAsNode(tx).getChildren(), new Function<ResourceNode, ResourceId>() {
+            @Override
+            public ResourceId apply(ResourceNode resourceNode) {
+                return resourceNode.getId();
+            }
+        });
     }
 
     /**
