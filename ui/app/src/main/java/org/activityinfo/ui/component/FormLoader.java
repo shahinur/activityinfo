@@ -27,7 +27,6 @@ public class FormLoader {
                 try {
                     ResourceLocator adapter = new ResourceLocatorAdaptor(AppEntryPoint.service);
                     FormDesignerPanel formDesignerPanel = new FormDesignerPanel(adapter, formClass);
-                    FormDesigner designer = new FormDesigner(formDesignerPanel, adapter, formClass);
                     panel = formDesignerPanel.asWidget();
                 } catch(Throwable caught) {
                     widget.reject(caught);
