@@ -258,21 +258,51 @@ public class HrdResourceStore implements ResourceStore {
         }
     }
 
-    // TODO Apply authorization transitively
     private static Collection<Resource> applyAuthorization(Optional<Authorization> oldAuthorization,
                                                            Authorization newAuthorization, WorkspaceTransaction tx) {
         if (newAuthorization.canViewNowButNotAsOf(oldAuthorization)) {
             ResourceId resourceId = newAuthorization.getResourceId();
 
             if (resourceId != null) {
+                final Collection<Resource> result = Lists.newArrayList();
+
+                for (ResourceId element : descendIdTree(newAuthorization, resourceId, tx)) {
+                    try {
+                        result.add(tx.getWorkspace().getLatestContent(element).get(tx));
+                    } catch (EntityNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                return result;
+            }
+        }
+
+        return Collections.emptySet();
+    }
+
+    // This method recursively descends the ID tree of a resource node, including only nodes with the same authorization
+    private static List<ResourceId> descendIdTree(Authorization authorization, ResourceId id, WorkspaceTransaction tx) {
+        final List<ResourceId> result = Lists.newArrayList(id);
+
+        if (authorization != null && id != null && tx != null) {
+            ResourceId authorizationId = authorization.getId();
+            AuthenticatedUser authenticatedUser = tx.getUser();
+            Workspace workspace = tx.getWorkspace();
+
+            if (authorizationId != null && authenticatedUser != null && workspace != null) {
                 try {
-                    return Collections.singleton(tx.getWorkspace().getLatestContent(resourceId).get(tx));
+                    for (ResourceId child : workspace.getLatestContent(id).getChildIds(tx)) {
+                        if (authorizationId.equals(new Authorization(authenticatedUser, child, tx).getId())) {
+                            result.addAll(descendIdTree(authorization, child, tx));
+                        }
+                    }
                 } catch (EntityNotFoundException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
 
-        return Collections.emptySet();
+        return result;
     }
 }
