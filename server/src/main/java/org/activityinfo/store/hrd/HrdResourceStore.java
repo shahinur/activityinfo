@@ -1,10 +1,6 @@
 package org.activityinfo.store.hrd;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceConfig;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.ImplicitTransactionManagementPolicy;
+import com.google.appengine.api.datastore.*;
 import com.google.apphosting.api.ApiProxy;
 import com.google.apphosting.api.ApiProxy.Environment;
 import com.google.common.base.Optional;
@@ -21,18 +17,13 @@ import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.store.hrd.entity.ReadTransaction;
-import org.activityinfo.store.hrd.entity.Snapshot;
-import org.activityinfo.store.hrd.entity.UpdateTransaction;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.entity.*;
 import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -170,7 +161,7 @@ public class HrdResourceStore implements ResourceStore {
             workspace.getLatestContent(resource.getId()).get(tx);
             return UpdateResult.rejected();
         } catch (EntityNotFoundException e) {
-            long newVersion = workspace.createResource(tx, resource);
+            long newVersion = workspace.createResource(tx, resource, Optional.<Long>absent());
             tx.commit();
 
             // Cache immediately so that subsequent reads will be able to find the resource
@@ -316,4 +307,5 @@ public class HrdResourceStore implements ResourceStore {
 
         return result;
     }
+
 }

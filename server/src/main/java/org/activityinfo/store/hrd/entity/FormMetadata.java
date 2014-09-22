@@ -83,14 +83,20 @@ public class FormMetadata {
     public long addInstance(WorkspaceTransaction tx, long instanceVersion) {
         Entity entity = getOrCreateEntity(tx);
         long count = (long) entity.getProperty(COUNT_PROPERTY);
+        count = count + 1;
 
-        entity.setProperty(COUNT_PROPERTY, count+1);
+        entity.setProperty(COUNT_PROPERTY, count);
         entity.setProperty(VERSION_PROPERTY, instanceVersion);
         tx.put(entity);
 
-        return count+1;
+        return count;
     }
 
+    public void put(long instanceVersion, long count) {
+        Entity entity = new Entity(key);
+        entity.setProperty(VERSION_PROPERTY, instanceVersion);
+        entity.setProperty(COUNT_PROPERTY, count);
+    }
 
     private Entity getOrCreateEntity(WorkspaceTransaction tx)  {
         try {
