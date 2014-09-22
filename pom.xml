@@ -106,6 +106,7 @@
     <module>server</module>
     <module>tools/migrator</module>
     <module>io/importing</module>
+    <module>io/excel-loader</module>
     <module>ui/remote-store</module>
     <module>ui/test-harness</module>
     <module>ui/barcode-scanner</module>
@@ -118,7 +119,6 @@
     <module>tools/unit-testing</module>
     <module>clients/java</module>
     <module>tests/api</module>
-    <module>io/excel-loader</module>
   </modules>
 
   <dependencies>
