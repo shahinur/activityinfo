@@ -64,8 +64,6 @@ public interface ResourceStore {
     /**
      * Creates a {@code Resource} within the store.
      *
-     * <p>Non Jax-rs convenience method
-     *
      * @param user
      * @param resource
      * @return
