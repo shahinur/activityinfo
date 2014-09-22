@@ -17,14 +17,6 @@ import java.util.List;
 @Path("/service/store")
 public interface ResourceStore {
 
-
-    /**
-     * Generates a 31-bit client id for the given user, encoded as
-     * @param user
-     * @return
-     */
-    long generateClientId(AuthenticatedUser user);
-
     /**
      * Fetches the latest version of the resource from the store.
      */
@@ -63,8 +55,6 @@ public interface ResourceStore {
 
     /**
      * Creates a {@code Resource} within the store.
-     *
-     * <p>Non Jax-rs convenience method
      *
      * @param user
      * @param resource

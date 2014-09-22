@@ -20,7 +20,7 @@ public class ClientIdProvider {
 
         // atomically update the next id within this shard.
         Transaction tx = datastore.beginTransaction();
-        long nextId = incrementNextId(shard);
+        long nextId = incrementNextId(shard, tx);
         updateNextId(shard, tx, nextId + 1);
         tx.commit();
 
@@ -35,9 +35,8 @@ public class ClientIdProvider {
         datastore.put(tx, entity);
     }
 
-    private long incrementNextId(long shard) {
+    private long incrementNextId(long shard, Transaction tx) {
         Key key = shardKey(shard);
-        Transaction tx = datastore.beginTransaction();
         Entity entity;
         long nextVersion;
         try {

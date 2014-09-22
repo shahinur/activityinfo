@@ -38,6 +38,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-excel-loader</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.inject.extensions</groupId>
       <artifactId>guice-servlet</artifactId>
       <version>3.0</version>
