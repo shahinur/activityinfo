@@ -16,7 +16,6 @@ import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
-import org.activityinfo.ui.flux.store.StoreEventBus;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
@@ -53,7 +52,6 @@ public class FormPage extends PageView implements StoreChangeListener {
     private FormViewType viewType = FormViewType.OVERVIEW;
     private ResourceId resourceId;
 
-    private StoreEventBus eventBus;
     private Promise<FormTree> formTree;
 
     public FormPage(Application application, ResourceId resourceId) {
@@ -62,6 +60,10 @@ public class FormPage extends PageView implements StoreChangeListener {
 
         FormPlace currentPlace = application.getRouter().getCurrentPlace();
         this.viewType = currentPlace.getFormViewType();
+    }
+
+    public Application getApplication() {
+        return application;
     }
 
     @Override

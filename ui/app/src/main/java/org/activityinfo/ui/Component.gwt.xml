@@ -37,6 +37,7 @@
   <inherits name="org.activityinfo.ui.Widget"/>
 
   <inherits name="org.activityinfo.io.Importing"/>
+  <inherits name="org.activityinfo.ui.app.ActivityInfoApp"/>
 
   <!-- Include generated sources -->
   <source path='component'/>

@@ -11,6 +11,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.AsyncFormTreeBuilder;
 import org.activityinfo.service.store.ResourceLocator;
+import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.widget.loading.DisplayWidget;
 
 import java.util.List;
@@ -24,9 +25,9 @@ public class TablePage implements DisplayWidget<ResourceId> {
     private List<FieldColumn> columns;
     private ResourceLocator resourceLocator;
 
-    public TablePage(ResourceLocator resourceLocator) {
+    public TablePage(ResourceLocator resourceLocator, Application application) {
         this.resourceLocator = resourceLocator;
-        this.tableView = new InstanceTableView(resourceLocator);
+        this.tableView = new InstanceTableView(resourceLocator, application);
     }
 
     @Override

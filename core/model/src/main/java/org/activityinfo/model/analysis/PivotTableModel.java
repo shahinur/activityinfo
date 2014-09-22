@@ -63,6 +63,11 @@ public class PivotTableModel implements IsRecord, IsResource {
         return dimensions;
     }
 
+
+    public void addDimension(DimensionModel dimensionModel) {
+        dimensions.add(dimensionModel);
+    }
+
     public static FormClass getFormClass() {
         FormClass formClass = new FormClass(CLASS_ID);
         formClass.addElement(new FormField(ResourceId.valueOf(LABEL_FIELD_ID))
@@ -76,6 +81,9 @@ public class PivotTableModel implements IsRecord, IsResource {
             .setRequired(true)
             .setType(new ListFieldType(new SubFormType(MeasureModel.CLASS_ID))));
 
+        formClass.addElement(new FormField(ResourceId.valueOf("dimensions"))
+            .setLabel("Dimensions")
+            .setType(new ListFieldType(new SubFormType(DimensionModel.CLASS_ID))));
 
         return formClass;
     }
@@ -85,7 +93,6 @@ public class PivotTableModel implements IsRecord, IsResource {
         return new Record().set("measures", ListFieldValue.ofSubForms(measures).asRecord());
     }
 
-
     @Override
     public Resource asResource() {
         Resource resource = Resources.createResource();
@@ -94,6 +101,7 @@ public class PivotTableModel implements IsRecord, IsResource {
         resource.set(LABEL_FIELD_ID, label);
         resource.setOwnerId(ownerId);
         resource.set("measures", ListFieldValue.ofSubForms(measures).asRecord());
+        resource.set("dimensions", ListFieldValue.ofSubForms(dimensions).asRecord());
         return resource;
     }
 
@@ -112,6 +120,12 @@ public class PivotTableModel implements IsRecord, IsResource {
         for(FieldValue value : measureList.getElements()) {
             if(value instanceof SubFormValue) {
                 model.addMeasure(new MeasureModel(((SubFormValue) value).getFields()));
+            }
+        }
+        ListFieldValue dimensionList = Types.read(resource, "measures", ListFieldType.TYPE_CLASS);
+        for(FieldValue value : dimensionList.getElements()) {
+            if(value instanceof SubFormValue) {
+                model.addDimension(DimensionModel.fromRecord(((SubFormValue) value).getFields()));
             }
         }
         return model;

@@ -30,6 +30,9 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.ResourceLocator;
+import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.widget.loading.ExceptionOracle;
@@ -50,14 +53,16 @@ public class FormDialog {
 
     private FormDialogCallback callback;
 
+    private final Application application;
     private final ResourceLocator resourceLocator;
 
     private final ModalDialog dialog;
     private final SimpleFormPanel formPanel;
     private final LoadingPanel<FormInstance> loadingPanel;
 
-    public FormDialog(ResourceLocator resourceLocator) {
+    public FormDialog(ResourceLocator resourceLocator, Application application) {
         this.resourceLocator = resourceLocator;
+        this.application = application;
 
         //ModalStylesheet.INSTANCE.ensureInjected();
 
@@ -112,17 +117,17 @@ public class FormDialog {
     public void save() {
         dialog.getStatusLabel().setText(I18N.CONSTANTS.saving());
         dialog.getPrimaryButton().setEnabled(false);
-        resourceLocator.persist(formPanel.getInstance()).then(new AsyncCallback<Void>() {
 
+        application.getRequestDispatcher().execute(new SaveRequest(formPanel.getInstance())).then(new AsyncCallback<UpdateResult>() {
             @Override
             public void onFailure(Throwable caught) {
                 LOGGER.log(Level.SEVERE, "Save failed", caught);
                 dialog.getStatusLabel().setText(ExceptionOracle.getExplanation(caught));
-                        dialog.getPrimaryButton().setEnabled(true);
+                dialog.getPrimaryButton().setEnabled(true);
             }
 
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(UpdateResult result) {
                 dialog.hide();
                 callback.onPersisted(formPanel.getInstance());
             }
