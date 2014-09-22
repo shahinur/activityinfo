@@ -56,7 +56,7 @@ public class GwtTestRemoteStore extends GWTTestCase {
     }
 
     private RemoteStoreService getStore() {
-        return new RemoteStoreServiceImpl(new RestEndpoint(GWT.getModuleBaseURL() + "store"));
+        return new RemoteStoreServiceImpl(new RestEndpoint(GWT.getModuleBaseURL()));
     }
 
     public void testQueryRoots() throws Exception {

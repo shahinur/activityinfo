@@ -7,8 +7,10 @@ import com.sun.jersey.api.core.DefaultResourceConfig;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.store.hrd.HrdResourceStore;
+import org.activityinfo.store.load.LoadService;
 import org.activityinfo.store.migrate.MigrateDatabaseTask;
 import org.activityinfo.store.migrate.MigrateService;
+import org.activityinfo.store.tasks.HrdUserTaskService;
 
 import java.util.Properties;
 import java.util.Set;
@@ -25,8 +27,11 @@ public class TestApplication extends DefaultResourceConfig {
     public Set<Object> getSingletons() {
         JacksonJsonProvider jsonProvider = new JacksonJsonProvider(ObjectMapperFactory.get());
         MigrateService migrateService = migrateService();
+        HrdUserTaskService taskService = new HrdUserTaskService();
+        TestBlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
+        LoadService loadService = new LoadService(taskService, blobFieldStorageService);
        // AuthenticatedUser user = new AuthenticatedUser("XYZ", 1, "test@test.org");
-        return Sets.newHashSet(jsonProvider, migrateService);
+        return Sets.newHashSet(jsonProvider, migrateService, taskService, blobFieldStorageService, loadService);
     }
 
     private MigrateService migrateService() {

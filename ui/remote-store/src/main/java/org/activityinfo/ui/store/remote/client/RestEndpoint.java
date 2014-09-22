@@ -10,6 +10,7 @@ public class RestEndpoint {
     public static final String CONTENT_TYPE = "Content-Type";
 
     public static final String APPLICATION_JSON = "application/json";
+    private static final String FORM_URL_ENCODED = "application/x-www-form-urlencoded";
 
     private String uri;
 
@@ -45,6 +46,10 @@ public class RestEndpoint {
         return sendJson(RequestBuilder.POST, body);
     }
 
+    public Promise<Response> postUrlEncoded(String queryString) {
+        return send(RequestBuilder.POST, FORM_URL_ENCODED, queryString);
+    }
+
     public Promise<Response> putJson(String body) {
         return sendJson(RequestBuilder.PUT, body);
     }
@@ -55,12 +60,22 @@ public class RestEndpoint {
      * @return a Promise to the Response
      */
     private Promise<Response> sendJson(RequestBuilder.Method method, String body) {
+        return send(method, APPLICATION_JSON, body);
+    }
+
+    /**
+     * Posts the given body as JSON to this endpoint.
+     * @param contentType
+     * @param body the entity encoded as JSON
+     * @return a Promise to the Response
+     */
+    private Promise<Response> send(RequestBuilder.Method method, String contentType, String body) {
 
         assert method == RequestBuilder.POST || method == RequestBuilder.PUT;
 
         RequestBuilder request = new RequestBuilder(method, uri);
         request.setHeader(ACCEPT, APPLICATION_JSON);
-        request.setHeader(CONTENT_TYPE, APPLICATION_JSON);
+        request.setHeader(CONTENT_TYPE, contentType);
         request.setRequestData(body);
         return send(request);
     }

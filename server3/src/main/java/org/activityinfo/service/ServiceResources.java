@@ -2,7 +2,7 @@ package org.activityinfo.service;
 
 import com.google.inject.Inject;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.service.blob.GcsBlobFieldStorageService;
+import org.activityinfo.store.blob.GcsBlobFieldStorageService;
 
 import javax.inject.Provider;
 import javax.ws.rs.Path;

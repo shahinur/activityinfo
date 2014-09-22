@@ -19,8 +19,10 @@ public class TasksPanel extends VComponent {
 
     public TasksPanel(Application application, ResourceId ownerId) {
         tasks.add(new TaskButton(new CreateFolderTask(application, ownerId)));
-        tasks.add(new TaskButton(new CreatePivotTableTask(application, ownerId)));
         tasks.add(new TaskButton(new CreateFormTask(application, ownerId)));
+        tasks.add(new TaskButton(new ImportFileTask(application, ownerId)));
+        tasks.add(new TaskButton(new CreatePivotTableTask(application, ownerId)));
+
     }
 
     @Override

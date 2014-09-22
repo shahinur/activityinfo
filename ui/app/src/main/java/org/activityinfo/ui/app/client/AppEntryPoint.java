@@ -50,7 +50,7 @@ public class AppEntryPoint implements EntryPoint {
         VDomLogger.STD_OUT = true;
 
         service = new RemoteStoreServiceImpl(
-                new RestEndpoint("/service/store"));
+                new RestEndpoint("/service"));
 
         app = new Application(service);
 

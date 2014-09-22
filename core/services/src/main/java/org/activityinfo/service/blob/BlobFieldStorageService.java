@@ -5,11 +5,8 @@ import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.net.URI;
@@ -60,6 +57,10 @@ public interface BlobFieldStorageService {
 
     @POST
     @Path("credentials/{blobId}")
-    Response getUploadCredentials(@InjectParam AuthenticatedUser user,
-                                  @PathParam("blobId") BlobId blobId);
+    @Produces(MediaType.APPLICATION_JSON)
+    UploadCredentials getUploadCredentials(@InjectParam AuthenticatedUser user,
+                                           @PathParam("blobId") BlobId blobId);
+
+
+    ByteSource getContent(BlobId blobId);
 }

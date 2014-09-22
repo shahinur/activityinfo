@@ -28,5 +28,6 @@
 
   <source path="store"/>
   <source path="blob"/>
+  <source path="tasks"/>
 
 </module>

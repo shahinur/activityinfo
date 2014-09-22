@@ -2,6 +2,7 @@ package org.activityinfo.ui.app.client;
 
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStore;
+import org.activityinfo.ui.app.client.chrome.tasks.TaskStore;
 import org.activityinfo.ui.app.client.request.RequestDispatcher;
 import org.activityinfo.ui.app.client.store.*;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
@@ -17,6 +18,7 @@ public class Application {
     private final WorkspaceStore workspaceStore;
     private final DraftStore draftStore;
     private final ConnectivityStore connectivityStore;
+    private final TaskStore taskStore;
 
     private final RemoteStoreService remoteService;
     private final RequestDispatcher requestDispatcher;
@@ -31,6 +33,7 @@ public class Application {
         draftStore = new DraftStore(dispatcher);
         resourceStore = new ResourceStore(dispatcher);
         connectivityStore = new ConnectivityStore(dispatcher);
+        taskStore = new TaskStore(dispatcher);
 
         remoteService = remoteStoreService;
         requestDispatcher = new RequestDispatcher(dispatcher, remoteService);
@@ -70,5 +73,9 @@ public class Application {
 
     public Dispatcher getDispatcher() {
         return dispatcher;
+    }
+
+    public TaskStore getTaskStore() {
+        return taskStore;
     }
 }

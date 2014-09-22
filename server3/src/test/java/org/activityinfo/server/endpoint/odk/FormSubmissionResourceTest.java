@@ -5,7 +5,7 @@ import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.service.blob.BlobFieldStorageService;
-import org.activityinfo.service.blob.TestBlobFieldStorageService;
+import org.activityinfo.store.blob.TestBlobFieldStorageService;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +18,7 @@ import static com.google.common.io.Resources.asByteSource;
 import static com.google.common.io.Resources.getResource;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class FormSubmissionResourceTest {
     private FormSubmissionResource resource;

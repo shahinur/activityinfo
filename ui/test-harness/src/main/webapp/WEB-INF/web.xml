@@ -31,4 +31,12 @@
     <filter-name>Jersey Web Application</filter-name>
     <url-pattern>/service/*</url-pattern>
   </filter-mapping>
+  <servlet>
+    <servlet-name>UploadHandler</servlet-name>
+    <servlet-class>org.activityinfo.ui.app.server.UploadHandlerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UploadHandler</servlet-name>
+    <url-pattern>/uploadComplete</url-pattern>
+  </servlet-mapping>
 </web-app>

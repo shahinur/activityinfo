@@ -19,7 +19,6 @@ import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.service.blob.OdkFormSubmissionBackupService;
 import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

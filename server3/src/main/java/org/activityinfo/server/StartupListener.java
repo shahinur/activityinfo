@@ -41,7 +41,7 @@ import org.activityinfo.server.util.jaxrs.JaxRsModule;
 import org.activityinfo.server.util.locale.LocaleModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.service.ServiceModule;
-import org.activityinfo.service.blob.GcsBlobFieldStorageServiceModule;
+import org.activityinfo.store.blob.GcsBlobFieldStorageServiceModule;
 import org.activityinfo.store.hrd.HrdResourceStoreModule;
 
 import javax.servlet.ServletContextEvent;

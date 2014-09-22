@@ -58,12 +58,7 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-client</artifactId>
-      <version>${jersey.version}</version>
-      <scope>test</scope>
-    </dependency>
+
     <dependency>
       <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-importing</artifactId>
@@ -142,12 +137,6 @@
       <groupId>com.bedatadriven.appengine.export</groupId>
       <artifactId>appengine-emf</artifactId>
       <version>${appengine.export.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.appengine.tools</groupId>
-      <artifactId>appengine-gcs-client</artifactId>
-      <version>RELEASE</version>
     </dependency>
 
     <!-- Database dependencies -->
