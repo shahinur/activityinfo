@@ -58,19 +58,12 @@ public class HrdResourceStore implements ResourceStore {
 
 
     private final DatastoreService datastore;
-    private final ClientIdProvider clientIdProvider = new ClientIdProvider();
     private final WorkspaceLookup workspaceLookup = new WorkspaceLookup();
 
     public HrdResourceStore() {
         this.datastore = DatastoreServiceFactory.getDatastoreService(DatastoreServiceConfig.Builder
             .withImplicitTransactionManagementPolicy(ImplicitTransactionManagementPolicy.NONE));
     }
-
-    @Override
-    public long generateClientId(AuthenticatedUser user) {
-        return clientIdProvider.getNext();
-    }
-
 
     private WorkspaceTransaction begin(Workspace workspace, AuthenticatedUser user) {
         return new UpdateTransaction(workspace, datastore, user);
