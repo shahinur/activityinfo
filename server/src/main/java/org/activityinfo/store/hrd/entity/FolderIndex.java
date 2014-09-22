@@ -10,7 +10,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.store.cloudsql.BadRequestException;
+import org.activityinfo.store.BadRequestException;
 
 import java.util.List;
 
