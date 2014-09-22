@@ -34,12 +34,6 @@ public class ResourceStoreStub implements ResourceStore {
 
     private int nextClientId = 1;
 
-    @Override
-    public long generateClientId(AuthenticatedUser user) {
-        return nextClientId++;
-    }
-
-
     public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
 
         if(!resourceId.equals(MY_RESOURCE_ID)) {

@@ -25,7 +25,7 @@ public class TestingEnvironment extends TestWatcher {
         store = new HrdResourceStore();
 
         user = new AuthenticatedUser("XYZ", 1, "test@test.org");
-        cuidGenerator = new CuidGenerator(store.generateClientId(user), System.currentTimeMillis());
+        cuidGenerator = new CuidGenerator(1, System.currentTimeMillis());
     }
 
     @Override
