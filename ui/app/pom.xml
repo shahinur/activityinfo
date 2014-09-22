@@ -95,6 +95,15 @@
           <include>**/*.css</include>
         </includes>
       </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.less</include>
+          <include>**/*.css</include>
+          <include>**/*.png</include>
+          <include>**/*.gif</include>
+        </includes>
+      </resource>
     </resources>
     <plugins>
       <plugin>
