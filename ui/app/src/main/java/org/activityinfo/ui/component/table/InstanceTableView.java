@@ -14,6 +14,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.criteria.Criteria;
 import org.activityinfo.service.store.ResourceLocator;
+import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.widget.AlertPanel;
 import org.activityinfo.ui.widget.Templates;
 
@@ -30,6 +31,7 @@ public class InstanceTableView implements IsWidget, RequiresResize {
     private static final int DEFAULT_MAX_COLUMN_COUNT = 5;
     private static final Logger LOGGER = Logger.getLogger(InstanceTableView.class.getName());
 
+    private final Application application;
     private final ResourceLocator resourceLocator;
     private final HTMLPanel panel;
     private List<FieldColumn> columns;
@@ -53,10 +55,11 @@ public class InstanceTableView implements IsWidget, RequiresResize {
 
     private static InstanceTableViewUiBinder ourUiBinder = GWT.create(InstanceTableViewUiBinder.class);
 
-    public InstanceTableView(ResourceLocator resourceLocator) {
+    public InstanceTableView(ResourceLocator resourceLocator, Application application) {
         this.resourceLocator = resourceLocator;
         this.table = new InstanceTable(this);
         this.panel = ourUiBinder.createAndBindUi(this);
+        this.application = application;
 
         addLoadMoreButtonHandler();
     }
@@ -185,6 +188,10 @@ public class InstanceTableView implements IsWidget, RequiresResize {
 
     public ResourceLocator getResourceLocator() {
         return resourceLocator;
+    }
+
+    public Application getApplication() {
+        return application;
     }
 
     public void setRootFormClasses(Collection<FormClass> rootFormClasses) {
