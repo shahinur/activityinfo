@@ -120,8 +120,8 @@ public class Workspace {
     }
 
 
-    public void createResource(WorkspaceTransaction tx, Resource resource) {
-        createResource(tx, resource, Optional.<Long>absent());
+    public long createResource(WorkspaceTransaction tx, Resource resource) {
+        return createResource(tx, resource, Optional.<Long>absent());
     }
 
     /**
