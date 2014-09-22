@@ -29,4 +29,6 @@ public interface DomElement extends DomNode {
     String getTagName();
 
     String getInputValue();
+
+    void setInputValue(String value);
 }

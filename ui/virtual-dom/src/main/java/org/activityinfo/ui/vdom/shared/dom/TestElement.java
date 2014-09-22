@@ -55,6 +55,11 @@ public class TestElement extends TestNode implements DomElement {
     }
 
     @Override
+    public void setInputValue(String value) {
+
+    }
+
+    @Override
     public int getNodeType() {
         return ELEMENT_NODE;
     }

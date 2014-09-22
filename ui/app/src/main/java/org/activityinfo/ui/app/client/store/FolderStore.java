@@ -58,13 +58,17 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
             UpdateResult result = (UpdateResult) response;
 
             if(save.getUpdatedResource().getString("classId").equals(FolderClass.CLASS_ID.asString())) {
-                cacheNewFolder(save, result);
+                cacheFolder(save, result);
             }
 
             if(isFolderItem(save.getUpdatedResource())) {
                 ResourceId ownerId = save.getUpdatedResource().getOwnerId();
                 Status<FolderProjection> folder = get(ownerId);
                 if(folder.isAvailable()) {
+                    // update folder root
+                    folder.get().getRootNode().setLabel(save.getUpdatedResource().getString(FolderClass.LABEL_FIELD_ID.asString()));
+
+                    // update childs
                     updateChildren(folder.get(), save.getUpdatedResource());
                 }
             }
@@ -95,15 +99,21 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
         return -1;
     }
 
-    private void cacheNewFolder(SaveRequest request, UpdateResult result) {
-        if(request.isNewResource()) {
-            // New Folder, so no children yet
-            Resource resource = request.getUpdatedResource();
+    private void cacheFolder(SaveRequest request, UpdateResult result) {
+        Resource resource = request.getUpdatedResource();
+
+        if(request.isNewResource()) { // New Folder, so no children yet
             ResourceNode node = new ResourceNode(resource);
             node.setVersion(result.getNewVersion());
             folders.put(node.getId(), Status.cache(new FolderProjection(node)));
-            fireChange();
+
+        } else {
+            if (folders.containsKey(resource.getId())) {
+                FolderProjection folder = folders.get(resource.getId()).get();
+                folder.getRootNode().setLabel(resource.getString(FolderClass.LABEL_FIELD_ID.asString()));
+            }
         }
+        fireChange();
     }
 
     private <R> void cache(FolderProjection response) {
