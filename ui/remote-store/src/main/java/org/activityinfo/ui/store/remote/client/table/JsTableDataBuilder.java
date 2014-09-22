@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
+import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.views.ConstantColumnView;
@@ -53,8 +54,9 @@ public class JsTableDataBuilder implements Function<Response, TableData> {
                 return new ConstantColumnView(numRows, overlay.getStringValue());
             case NUMBER:
                 return new ConstantColumnView(numRows, overlay.getDoubleValue());
-            default:
             case DATE:
+                return createDateColumn(numRows);
+            default:
                 throw new UnsupportedOperationException(overlay.getTypeName());
         }
     }
@@ -65,9 +67,14 @@ public class JsTableDataBuilder implements Function<Response, TableData> {
                 return new JsStringColumnArrayView(numRows, overlay.getArray().<JsArrayString>cast());
             case NUMBER:
                 return new JsDoubleArrayColumnView(numRows, overlay.getArray().<JsArrayString>cast());
-            default:
             case DATE:
+                return createDateColumn(numRows);
+            default:
                 throw new UnsupportedOperationException();
         }
+    }
+
+    private ColumnView createDateColumn(int numRows) {
+        return new EmptyColumnView(numRows, ColumnType.DATE);
     }
 }

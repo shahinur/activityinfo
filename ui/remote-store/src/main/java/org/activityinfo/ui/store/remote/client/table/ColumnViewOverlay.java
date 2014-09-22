@@ -1,9 +1,14 @@
 package org.activityinfo.ui.store.remote.client.table;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import org.activityinfo.model.table.ColumnType;
 
 public final class ColumnViewOverlay extends JavaScriptObject {
+
+    private static final DateTimeFormat DATE_FORMAT =
+        DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.ISO_8601);
+
     protected ColumnViewOverlay() {
     }
 

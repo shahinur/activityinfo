@@ -1,6 +1,7 @@
 package org.activityinfo.ui.app.client.page.pivot;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.analysis.*;
@@ -10,8 +11,10 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.cubes.PivotTableData;
@@ -22,7 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PivotTest {
 
@@ -76,13 +81,7 @@ public class PivotTest {
         iniCost.setMeasurementType(MeasurementType.FLOW);
         iniCost.setCriteriaExpression("[System Identifier]=='Hand Dug Wells (All)'");
         model.addMeasure(iniCost);
-
-
-
     }
-
-
-
 
     @Test
     public void serialization() throws Exception {
@@ -109,7 +108,7 @@ public class PivotTest {
         dumpIndicators();
 
         PivotTableModel model = new PivotTableModel();
-        model.getDimensions().add(dim("Typology", dimSource(costs, "[Cost typology]")));
+        model.getDimensions().add(dim("Typology", "Budgeted/Spent", dimSource(costs, "[Cost typology]")));
 
         for(FormField field : costs.getFields()) {
             if(field.getCode() != null && field.getCode().startsWith("V_")) {
@@ -132,94 +131,102 @@ public class PivotTest {
         dump(pivotTable);
     }
 
+    private void updateCampAttribute() {
+
+        EnumValue hdw = new EnumValue(Resources.generateId(), "Hand dug wells");
+        EnumValue ips = new EnumValue(Resources.generateId(), "Initial Piped Scheme");
+        EnumValue extRefugees = new EnumValue(Resources.generateId(), "Piped Scheme Extension Refugees");
+        EnumValue extHost = new EnumValue(Resources.generateId(), "Piped Scheme Extension Host Community");
+
+        FormField systemField = new FormField(Resources.generateId());
+        systemField.setLabel("System");
+        systemField.setCode("System");
+        systemField.setType(new EnumType(Cardinality.MULTIPLE, Lists.newArrayList(hdw, ips, extRefugees, extHost)));
+
+        costs.addElement(systemField);
+        store.put(costs.asResource());
+
+//        ResourceCursor resourceCursor = store.openCursor(costs.getId());
+//        while(resourceCursor.hasNext()) {
+//            Resource resource = resourceCursor.next();
+//            Types.get
+//        }
+
+//
+//        systemCriteria.put("Hand Dug Wells", "[System Identifier] == 'Hand Dug Wells (All)'");
+//        systemCriteria.put("Initial Piped Scheme",
+//            "([System Identifier] == 'Whole Area (Including Host Community)') || " +
+//                "([System Identifier] == 'Initial Piped Scheme') || " +
+//                "([System Identifier] == 'Extended Piped Scheme EXCL. Host Comm.') || " +
+//                "([System Identifier] == 'Extended Piped Scheme INCL. Host Comm') || " +
+//                "([System Identifier] == 'Whole Camp (Excluding Host Community)')");
+//
+//        systemCriteria.put("Piped Scheme Extension Refugees",
+//            "([System Identifier] == 'Whole Area (Including Host Community)') || " +
+//                "([System Identifier] == 'Piped Scheme Extension Refugees') || " +
+//                "([System Identifier] == 'Extended Piped Scheme EXCL. Host Comm.') || " +
+//                "([System Identifier] == 'Extended Piped Scheme INCL. Host Comm') || " +
+//                "([System Identifier] == 'Whole Camp (Excluding Host Community)')");
+//
+//
+//        systemCriteria.put("Piped Scheme Extension Host Community",
+//            "([System Identifier] == 'Whole Area (Including Host Community)') || " +
+//                "([System Identifier] == 'Piped Scheme Extension Host Community') || " +
+//                "([System Identifier] == 'Whole Camp (Excluding Host Community)')");
+//        EnumValue
+
+
+    }
+
     @Test
     public void yellowTable() throws Exception {
 
         dumpIndicators();
 
         PivotTableModel model = new PivotTableModel();
-        model.getDimensions().add(dim("Typology", dimSource(costs, "[Cost typology]")));
-      //  model.getDimensions().add(dim("System Id", dimSource(costs, "[System Identifier]")));
-
-
-        DimensionModel system = dim("System", dimSource(wp, "[Site].[Water Collection Point Identifier]"));
-
-        model.getDimensions().add(system);
-
-
-        model.getDimensions().add(dim("Indicator"));
-        model.getDimensions().add(dim("Year",
+        model.addDimension(dim("Typology", "Budgeted/Spent", dimSource(costs, "[Cost typology]")));
+        model.addDimension(dim("Year", "Year",
             dimSource(costs, "[Year of Expediture]"),
             dimSource(wp, "Year"),
             dimSource(camp, "Year")));
+        model.addDimension(dim("System",
+            dimSource(costs, "[System Identifier]"),
+            dimSource(wp, "[Site].[Water Collection Point Identifier]")));
 
 
-        Map<String, String> systemCriteria = new HashMap<>();
-        systemCriteria.put("Hand Dug Wells", "[System Identifier] == 'Hand Dug Wells (All)'");
-        systemCriteria.put("Initial Piped Scheme",
-            "([System Identifier] == 'Whole Area (Including Host Community)') || " +
-            "([System Identifier] == 'Initial Piped Scheme') || " +
-            "([System Identifier] == 'Extended Piped Scheme EXCL. Host Comm.') || " +
-            "([System Identifier] == 'Extended Piped Scheme INCL. Host Comm') || " +
-            "([System Identifier] == 'Whole Camp (Excluding Host Community)')");
+        MeasureModel investmentCost = new MeasureModel();
+        investmentCost.setId("investment");
+        investmentCost.setSource(costs.getId());
+        investmentCost.setLabel("Investment cost");
+        investmentCost.setMeasurementType(MeasurementType.FLOW);
+        investmentCost.setValueExpression("V_InCostAgg+V_ExtCostAgg");
+        investmentCost.setDimensionTag("Indicator", "Investment Cost");
+        model.addMeasure(investmentCost);
 
-        systemCriteria.put("Piped Scheme Extension Refugees",
-            "([System Identifier] == 'Whole Area (Including Host Community)') || " +
-            "([System Identifier] == 'Piped Scheme Extension Refugees') || " +
-            "([System Identifier] == 'Extended Piped Scheme EXCL. Host Comm.') || " +
-            "([System Identifier] == 'Extended Piped Scheme INCL. Host Comm') || " +
-            "([System Identifier] == 'Whole Camp (Excluding Host Community)')");
-
-
-        systemCriteria.put("Piped Scheme Extension Host Community",
-            "([System Identifier] == 'Whole Area (Including Host Community)') || " +
-            "([System Identifier] == 'Piped Scheme Extension Host Community') || " +
-            "([System Identifier] == 'Whole Camp (Excluding Host Community)')");
-
-        systemCriteria.put("Water trucking/pumping", "[System Identifier] == 'Emergency (Trucking/prov. PS)'");
-
-        for (String systemDim : systemCriteria.keySet()) {
-
-            MeasureModel investmentCost = new MeasureModel();
-            investmentCost.setId("investment_" + systemDim);
-            investmentCost.setSource(costs.getId());
-            investmentCost.setLabel("Investment cost " + systemDim);
-            investmentCost.setMeasurementType(MeasurementType.FLOW);
-            investmentCost.setValueExpression("V_InCostAgg+V_ExtCostAgg");
-            investmentCost.setCriteriaExpression(systemCriteria.get(systemDim));
-            investmentCost.setDimensionTag("System", systemDim);
-            investmentCost.setDimensionTag("Indicator", "Investment Cost");
-            model.addMeasure(investmentCost);
-
-            MeasureModel capMaint = new MeasureModel();
-            capMaint.setId("capmaint_" + systemDim);
-            capMaint.setSource(costs.getId());
-            capMaint.setLabel("Capital maintenance cost " + systemDim);
-            capMaint.setMeasurementType(MeasurementType.FLOW);
-            capMaint.setValueExpression("V_CapMaInSys+V_CapMaSysExt");
-            capMaint.setCriteriaExpression(systemCriteria.get(systemDim));
-            capMaint.setDimensionTag("System", systemDim);
-            capMaint.setDimensionTag("Indicator", "Capital maintenance cost");
-            model.addMeasure(capMaint);
+        MeasureModel capMaint = new MeasureModel();
+        capMaint.setId("capmaint_");
+        capMaint.setSource(costs.getId());
+        capMaint.setLabel("Capital maintenance cost");
+        capMaint.setMeasurementType(MeasurementType.FLOW);
+        capMaint.setValueExpression("V_CapMaInSys+V_CapMaSysExt");
+        capMaint.setDimensionTag("Indicator", "Capital maintenance cost");
+        model.addMeasure(capMaint);
 
 
-            MeasureModel dirSupp = new MeasureModel();
-            dirSupp.setId("dirSupp" + systemDim);
-            dirSupp.setSource(costs.getId());
-            dirSupp.setLabel("Capital maintenance cost " + systemDim);
-            dirSupp.setMeasurementType(MeasurementType.FLOW);
-            dirSupp.setValueExpression("V_DirSupAgg");
-            dirSupp.setCriteriaExpression(systemCriteria.get(systemDim));
-            dirSupp.setDimensionTag("System", systemDim);
-            dirSupp.setDimensionTag("Indicator", "Direct support");
-            model.addMeasure(dirSupp);
-        }
+        MeasureModel dirSupp = new MeasureModel();
+        dirSupp.setId("dirSupp");
+        dirSupp.setSource(costs.getId());
+        dirSupp.setLabel("Direct support");
+        dirSupp.setMeasurementType(MeasurementType.FLOW);
+        dirSupp.setValueExpression("V_DirSupAgg");
+        dirSupp.setDimensionTag("Indicator", "Direct support");
+        model.addMeasure(dirSupp);
 
 
         MeasureModel hdwPlanned = new MeasureModel();
         hdwPlanned.setId("Nr planned HDW");
         hdwPlanned.setSource(wp.getId());
-        hdwPlanned.setLabel("Nr planned HDW");
+        hdwPlanned.setLabel("Number of planned HDW");
         hdwPlanned.setMeasurementType(MeasurementType.STOCK);
         hdwPlanned.setValueExpression("[Nr planned HDW]");
         hdwPlanned.setDimensionTag("Typology", "Budgeted");
@@ -231,7 +238,7 @@ public class PivotTest {
         MeasureModel hdwActual = new MeasureModel();
         hdwActual.setId("Nbr functunal HDW");
         hdwActual.setSource(wp.getId());
-        hdwActual.setLabel("Nbr functunal HDW");
+        hdwActual.setLabel("Number of functional wells");
         hdwActual.setMeasurementType(MeasurementType.STOCK);
         hdwActual.setValueExpression("[Nbr functunal HDW]");
         hdwActual.setDimensionTag("Typology", "Spent");
@@ -243,7 +250,7 @@ public class PivotTest {
         MeasureModel tpsPlanned = new MeasureModel();
         tpsPlanned.setId("Nbr Planned taps");
         tpsPlanned.setSource(wp.getId());
-        tpsPlanned.setLabel("Nbr Planned taps");
+        tpsPlanned.setLabel("Number of planned taps");
         tpsPlanned.setMeasurementType(MeasurementType.STOCK);
         tpsPlanned.setValueExpression("[Nbr Planned taps]");
         tpsPlanned.setDimensionTag("Typology", "Budgeted");
@@ -253,28 +260,20 @@ public class PivotTest {
         MeasureModel tpsFunctional = new MeasureModel();
         tpsFunctional.setId("Nbr functioning taps");
         tpsFunctional.setSource(wp.getId());
-        tpsFunctional.setLabel("Nbr functioning taps");
+        tpsFunctional.setLabel("Number of functioning taps");
         tpsFunctional.setMeasurementType(MeasurementType.STOCK);
         tpsFunctional.setValueExpression("[Nbr functioning taps]");
         tpsFunctional.setDimensionTag("Typology", "Spent");
-        tpsFunctional.setDimensionTag("Indicator", "Number of (planned/functioning) taps");
         model.addMeasure(tpsFunctional);
 
-        for(String systemId : Arrays.asList("Hand Dug Wells", "Piped Scheme Extension Refugees", "Water trucking/pumping")) {
-            for(String typology : Arrays.asList("Budgeted", "Spent")) {
-                MeasureModel population = new MeasureModel();
-                population.setId("population_" + systemId + "_" + typology);
-                population.setLabel(typology + " Population " + systemId);
-                population.setSource(camp.getId());
-                population.setValueExpression("[Camp Population]");
-                population.setMeasurementType(MeasurementType.STOCK);
-                population.setDimensionTag("Indicator", "Refugee population");
-                population.setDimensionTag("System", systemId);
-                population.setDimensionTag("Typology", typology);
-                model.addMeasure(population);
-            }
-        }
-
+        MeasureModel population = new MeasureModel();
+        population.setId("population");
+        population.setLabel("Refugee Population");
+        population.setSource(camp.getId());
+        population.setValueExpression("[Camp Population]");
+        population.setMeasurementType(MeasurementType.STOCK);
+        population.setDimensionTag("Indicator", "Refugee population");
+        model.addMeasure(population);
 
         List<Bucket> buckets = execute(model);
 
@@ -283,6 +282,8 @@ public class PivotTest {
             Arrays.<String>asList("Year", "Typology"), buckets);
 
         dump(pivotTable);
+
+        dumpModel(model);
     }
 
     @Test
@@ -302,7 +303,6 @@ public class PivotTest {
         model.addMeasure(wellCount);
 
         List<Bucket> buckets = execute(model);
-
 
         PivotTableData pivotTable = new PivotTableDataBuilder().build(
             Arrays.asList("System Identifier"),
@@ -362,10 +362,10 @@ public class PivotTest {
 
         PivotTableModel model = new PivotTableModel();
         model.getDimensions().add(dim("Year", dimSource(costs, "[Year of expediture]"), dimSource(wp, "Year")));
-        model.getDimensions().add(dim("System",
+        model.getDimensions().add(dim("System", "System",
             dimSource(costs, "[System Identifier]"),
             dimSource(wp, "[Site].[Water Collection Point Identifier]")));
-        model.getDimensions().add(dim("Typology", dimSource(costs, "[Cost typology]")));
+        model.getDimensions().add(dim("Typology", "Budgeted/Spent", dimSource(costs, "[Cost typology]")));
 
 
         MeasureModel iniCost = new MeasureModel();
@@ -407,101 +407,6 @@ public class PivotTest {
         return buckets;
     }
 
-
-    @Test
-    public void hp3() throws Exception {
-        dumpIndicators();
-
-        PivotTableModel model = new PivotTableModel();
-
-        MeasureModel population = new MeasureModel();
-        population.setSource(camp.getId());
-        population.setValueExpression("[Camp Population]");
-        population.setCriteriaExpression("[Year]=='2012'");
-        population.setMeasurementType(MeasurementType.STOCK);
-        model.addMeasure(population);
-
-        MeasureModel points = new MeasureModel();
-        points.setSource(wp.getId());
-        points.setValueExpression("[TPSfnct]");
-        points.setCriteriaExpression("[Site].[Water Collection Point Identifier]=='Water trucking' && [Year]=='2012'");
-        points.setMeasurementType(MeasurementType.STOCK);
-        //points.setAggregationFunction(AggregationFunction.MEAN);
-        model.addMeasure(points);
-
-        execute(model);
-    }
-
-
-    @Test
-    public void hp3_ops() throws Exception {
-        dumpIndicators();
-
-        PivotTableModel model = new PivotTableModel();
-        model.getDimensions().add(dim("Year", dimSource(costs, "[Year of expediture]")));
-        model.getDimensions().add(dim("Typology", dimSource(costs, "[Cost typology]")));
-        model.getDimensions().add(dim("System Identifier", dimSource(costs, "[System Identifier]")));
-
-        for(String name : Arrays.asList("V_OperCost", "V_MainCost", "V_OpMaCost", "V_OpMaAgg")) {
-
-            MeasureModel cost = new MeasureModel();
-            cost.setSource(costs.getId());
-            cost.setId(name);
-            cost.setValueExpression(name);
-            cost.setCriteriaExpression("[System Identifier]=='Emergency (Trucking/prov. PS)'");
-            cost.setMeasurementType(MeasurementType.FLOW);
-            //cost.setAggregationFunction(AggregationFunction.SUM);
-            model.addMeasure(cost);
-        }
-
-        execute(model);
-    }
-
-
-
-    @Test
-    public void ps34() throws Exception {
-        dumpIndicators();
-
-        PivotTableModel model = new PivotTableModel();
-        model.getDimensions().add(dim("Year", dimSource(costs, "[Year of expediture]")));
-        model.getDimensions().add(dim("Typology", dimSource(costs, "[Cost typology]")));
-        model.getDimensions().add(dim("System Identifier", dimSource(costs, "[System Identifier]")));
-
-        MeasureModel numerator = new MeasureModel();
-        numerator.setSource(costs.getId());
-        numerator.setId("numerator");
-        numerator.setMeasurementType(MeasurementType.FLOW);
-        numerator.setValueExpression("V_CapMaInSys+V_CapMaSysExt");
-        model.addMeasure(numerator);
-
-        execute(model);
-    }
-
-
-    @Test
-    public void s10() throws Exception {
-        dumpIndicators();
-
-        PivotTableModel model = new PivotTableModel();
-        model.getDimensions().add(dim("Year", dimSource(costs, "[Year of expediture]")));
-        model.getDimensions().add(dim("Typology", dimSource(costs, "[Cost typology]")));
-        model.getDimensions().add(dim("System Identifier", dimSource(costs, "[System Identifier]")));
-
-        MeasureModel numerator = new MeasureModel();
-        numerator.setSource(costs.getId());
-        numerator.setId("numerator");
-        numerator.setLabel("Budgeted - Extension");
-        numerator.setMeasurementType(MeasurementType.FLOW);
-        numerator.setValueExpression("V_DirSupAgg");
-//        numerator.setCriteriaExpression("[Cost typology]=='Budgeted' && ([System Identifier] != 'Hand Dug Wells (All)') && " +
-//            "([System Identifier] != 'Emergency (Trucking/prov. PS)')");
-        model.addMeasure(numerator);
-
-        execute(model);
-    }
-
-
     private DimensionSource dimSource(FormClass costs, String valueExpr) {
         return new DimensionSource(costs.getId(), valueExpr);
     }
@@ -533,9 +438,13 @@ public class PivotTest {
     }
 
 
-    private DimensionModel dim(String label, DimensionSource... models) {
+    private DimensionModel dim(String id, DimensionSource... models) {
+        return dim(id, id, models);
+    }
+
+    private DimensionModel dim(String id, String label, DimensionSource... models) {
         DimensionModel dimModel = new DimensionModel();
-        dimModel.setId(label);
+        dimModel.setId(id);
         dimModel.setLabel(label);
         dimModel.getSources().addAll(Arrays.asList(models));
         return dimModel;
@@ -601,23 +510,31 @@ public class PivotTest {
 
         System.out.println("\tDIMENSIONS");
         for(DimensionModel dim : model.getDimensions()) {
-            System.out.println("\t\t" + dim.getId() + ": " + dim.getDescription());
+            System.out.println("\t\t" + dim.getId());
         }
         System.out.println("\tMEASURES");
 
         for(MeasureModel measure : model.getMeasures()) {
 
-            System.out.println("AGGREGATE " + measure.getLabel() + ": " + measure.getValueExpression());
-            System.out.println("\tFROM [" + getFormLabel(measure.getSourceId()) + "]");
-
+            System.out.println("\t\t" + measure.getLabel() + ": " + measure.getValueExpression() + " FROM [" +
+                getFormLabel(measure.getSourceId()) + "]");
             if(!Strings.isNullOrEmpty(measure.getCriteriaExpression())) {
-                System.out.println("\tWHERE " + measure.getCriteriaExpression());
+                System.out.println("\t\t\tWHERE " + measure.getCriteriaExpression());
+            }
+            if(measure.getMeasurementType() == MeasurementType.STOCK) {
+                System.out.println("\t\t\tAVERAGE WITHIN TIME PERIOD");
             }
 
-            System.out.println("\tBY");
-//            for(DimensionModel dim : model.getDimensions()) {
-//                System.out.println("\t\t" + dim.getId() + " = " + dim.getSource(measure.getSourceId()));
-//            }
+            List<String> dims = Lists.newArrayList();
+            for(DimensionModel dim : model.getDimensions()) {
+                Optional<DimensionSource> source = dim.getSource(measure.getSourceId());
+                if(source.isPresent()) {
+                    dims.add(dim.getLabel());
+                }
+            }
+            if(!dims.isEmpty()) {
+                System.out.println("\t\t\tSUM BY " + Joiner.on(", ").join(dims));
+            }
 
 //            System.out.println("\tWITH");
 //            measure.ge

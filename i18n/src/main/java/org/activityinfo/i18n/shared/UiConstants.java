@@ -3536,4 +3536,8 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("New Form")
     String newForm();
+
+    @DefaultStringValue("+ Add Dimension")
+    String addDimension();
+
 }

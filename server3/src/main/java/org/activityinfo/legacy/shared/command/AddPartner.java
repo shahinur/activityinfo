@@ -40,7 +40,6 @@ public class AddPartner implements MutatingCommand<CreateResult> {
     private PartnerDTO partner;
 
     public AddPartner() {
-
     }
 
     public AddPartner(int databaseId, PartnerDTO partner) {
