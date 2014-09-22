@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.page.config.design.importer;
+package org.activityinfo.ui.client.page.config.design.importer.wrapper;
 /*
  * #%L
  * ActivityInfo Server
@@ -24,16 +24,14 @@ package org.activityinfo.ui.client.page.config.design.importer;
 /**
  * @author yuriyz on 9/18/14.
  */
-public class IndicatorKey {
+public class AttributeGroupKey implements WrapperKey {
 
     private String activityLabel;
-    private String indicatorLabel;
-    private String category;
+    private String attributeGroupLabel;
 
-    public IndicatorKey(String activityLabel, String indicatorLabel, String category) {
+    public AttributeGroupKey(String activityLabel, String attributeGroupLabel) {
         this.activityLabel = activityLabel;
-        this.indicatorLabel = indicatorLabel;
-        this.category = category;
+        this.attributeGroupLabel = attributeGroupLabel;
     }
 
     @Override
@@ -41,12 +39,11 @@ public class IndicatorKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        IndicatorKey that = (IndicatorKey) o;
+        AttributeGroupKey that = (AttributeGroupKey) o;
 
         if (activityLabel != null ? !activityLabel.equals(that.activityLabel) : that.activityLabel != null)
             return false;
-        if (category != null ? !category.equals(that.category) : that.category != null) return false;
-        if (indicatorLabel != null ? !indicatorLabel.equals(that.indicatorLabel) : that.indicatorLabel != null)
+        if (attributeGroupLabel != null ? !attributeGroupLabel.equals(that.attributeGroupLabel) : that.attributeGroupLabel != null)
             return false;
 
         return true;
@@ -55,17 +52,16 @@ public class IndicatorKey {
     @Override
     public int hashCode() {
         int result = activityLabel != null ? activityLabel.hashCode() : 0;
-        result = 31 * result + (indicatorLabel != null ? indicatorLabel.hashCode() : 0);
-        result = 31 * result + (category != null ? category.hashCode() : 0);
+        result = 31 * result + (attributeGroupLabel != null ? attributeGroupLabel.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "IndicatorKey{" +
+        return "AttributeGroupKey{" +
                 "activityLabel='" + activityLabel + '\'' +
-                ", indicatorLabel='" + indicatorLabel + '\'' +
-                ", category='" + category + '\'' +
+                ", attributeGroupLabel='" + attributeGroupLabel + '\'' +
                 '}';
     }
 }
+

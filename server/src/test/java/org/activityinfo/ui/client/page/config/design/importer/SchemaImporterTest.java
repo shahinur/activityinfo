@@ -71,9 +71,9 @@ public class SchemaImporterTest extends CommandTestCase2 {
         schemaImporter.parseColumns(source("schema_ai_678.txt"));
         schemaImporter.processRows();
 
-        assertNoDuplicates(schemaImporter.getNewIndicators().values());
-        assertNoDuplicates(schemaImporter.getNewAttributeGroups().values());
-        assertNoDuplicates(schemaImporter.getNewAttributes().values());
+        assertNoDuplicates(schemaImporter.getNewIndicators());
+        assertNoDuplicates(schemaImporter.getNewAttributeGroups());
+        assertNoDuplicates(schemaImporter.getNewAttributes());
     }
 
     private static void assertNoDuplicates(Collection<?> list) {

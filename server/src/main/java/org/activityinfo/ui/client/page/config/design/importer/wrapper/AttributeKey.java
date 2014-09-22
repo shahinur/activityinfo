@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.page.config.design.importer;
+package org.activityinfo.ui.client.page.config.design.importer.wrapper;
 /*
  * #%L
  * ActivityInfo Server
@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.page.config.design.importer;
 /**
  * @author yuriyz on 9/18/14.
  */
-public class AttributeKey {
+public class AttributeKey implements WrapperKey {
     private AttributeGroupKey groupKey;
     private String attributeLabel;
 

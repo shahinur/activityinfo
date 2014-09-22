@@ -18,6 +18,7 @@ import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.result.BatchResult;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.ui.client.page.config.design.importer.wrapper.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -60,9 +61,9 @@ public class SchemaImporter {
     private Map<String, Integer> locationTypeMap = Maps.newHashMap();
 
     private List<ActivityDTO> newActivities = Lists.newArrayList();
-    private Map<IndicatorKey, IndicatorDTO> newIndicators = Maps.newHashMap();
-    private Map<AttributeGroupKey, AttributeGroupDTO> newAttributeGroups = Maps.newHashMap();
-    private Map<AttributeKey, AttributeDTO> newAttributes = Maps.newHashMap();
+    private List<DtoWrapper> newIndicators = Lists.newArrayList();
+    private List<DtoWrapper> newAttributeGroups = Lists.newArrayList();
+    private List<DtoWrapper> newAttributes = Lists.newArrayList();
 
     private Set<SafeHtml> warnings = Sets.newHashSet();
 
@@ -180,8 +181,8 @@ public class SchemaImporter {
             ActivityDTO activity = getActivity(row);
             String fieldType = formFieldType.get(row);
             if ("Indicator".equals(fieldType)) {
-                IndicatorKey indicatorKey = new IndicatorKey(activity.getName(), fieldName.get(row), fieldCategory.get(row));
-                if (!newIndicators.containsKey(indicatorKey)) {
+                DtoWrapper indicatorWrapper = new DtoWrapper(new IndicatorKey(activity.getName(), fieldName.get(row), fieldCategory.get(row)));
+                if (!newIndicators.contains(indicatorWrapper)) {
                     IndicatorDTO indicator = new IndicatorDTO();
                     indicator.setName(fieldName.get(row));
                     indicator.setCategory(fieldCategory.get(row));
@@ -191,13 +192,14 @@ public class SchemaImporter {
                     if (isTruthy(fieldMandatory.get(row))) {
                         indicator.setMandatory(true);
                     }
-                    newIndicators.put(indicatorKey, indicator);
+                    indicatorWrapper.setDto(indicator);
+                    newIndicators.add(indicatorWrapper);
                 }
             } else if ("AttributeGroup".equals(fieldType)) {
                 String name = fieldName.get(row);
                 AttributeGroupDTO group = activity.getAttributeGroupByName(name);
-                AttributeGroupKey attributeGroupKey = new AttributeGroupKey(activity.getName(), name);
-                if (group == null && !newAttributeGroups.containsKey(attributeGroupKey)) {
+                DtoWrapper attributeGroupWrapper = new DtoWrapper(new AttributeGroupKey(activity.getName(), name));
+                if (group == null && !newAttributeGroups.contains(attributeGroupWrapper)) {
                     group = new AttributeGroupDTO();
                     group.setId(-1);
                     group.setName(name);
@@ -210,18 +212,20 @@ public class SchemaImporter {
                         group.setMandatory(true);
                     }
                     activity.getAttributeGroups().add(group);
-                    newAttributeGroups.put(attributeGroupKey, group);
+                    attributeGroupWrapper.setDto(group);
+                    newAttributeGroups.add(attributeGroupWrapper);
                 }
 
                 String attribName = attributeValue.get(row);
                 AttributeDTO attrib = findAttrib(group, attribName);
-                AttributeKey attributeKey = new AttributeKey(attributeGroupKey, attribName);
-                if (attrib == null && !newAttributes.containsKey(attributeKey)) {
+                DtoWrapper attributeWrapper = new DtoWrapper(new AttributeKey((AttributeGroupKey) attributeGroupWrapper.getKey(), attribName));
+                if (attrib == null && !newAttributes.contains(attributeWrapper)) {
                     attrib = new AttributeDTO();
                     attrib.setId(-1);
                     attrib.setName(attribName);
                     attrib.set("attributeGroupId", group);
-                    newAttributes.put(attributeKey, attrib);
+                    attributeWrapper.setDto(attrib);
+                    newAttributes.add(attributeWrapper);
                 }
             }
         }
@@ -345,9 +349,9 @@ public class SchemaImporter {
 
         List<List<? extends EntityDTO>> batches = Lists.newArrayList();
         batches.add(newActivities);
-        batches.add(Lists.newArrayList(newIndicators.values()));
-        batches.add(Lists.newArrayList(newAttributeGroups.values()));
-        batches.add(Lists.newArrayList(newAttributes.values()));
+        batches.add(getNewIndicators());
+        batches.add(getNewAttributeGroups());
+        batches.add(getNewAttributes());
 
         batchCount = batches.size();
         batchNumber = 1;
@@ -407,15 +411,15 @@ public class SchemaImporter {
         return newActivities;
     }
 
-    public Map<IndicatorKey, IndicatorDTO> getNewIndicators() {
-        return newIndicators;
+    public List<EntityDTO> getNewIndicators() {
+        return Wrappers.asDto(newIndicators);
     }
 
-    public Map<AttributeGroupKey, AttributeGroupDTO> getNewAttributeGroups() {
-        return newAttributeGroups;
+    public List<EntityDTO> getNewAttributeGroups() {
+        return Wrappers.asDto(newAttributeGroups);
     }
 
-    public Map<AttributeKey, AttributeDTO> getNewAttributes() {
-        return newAttributes;
+    public List<EntityDTO> getNewAttributes() {
+        return Wrappers.asDto(newAttributes);
     }
 }
