@@ -33,8 +33,9 @@ class FormTableWidget extends VWidget {
             @Override
             public void onSuccess() {
                 ResourceLocator adapter = new ResourceLocatorAdaptor(AppEntryPoint.service);
-                TablePage tablePage = new TablePage(adapter);
+                TablePage tablePage = new TablePage(adapter, formPage.getApplication());
                 tablePage.show(formPage.getResourceId());
+                flowPanel.clear();
                 flowPanel.add(tablePage);
             }
         });
