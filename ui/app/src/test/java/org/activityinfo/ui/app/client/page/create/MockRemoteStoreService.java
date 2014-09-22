@@ -2,6 +2,7 @@ package org.activityinfo.ui.app.client.page.create;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
@@ -16,6 +17,7 @@ import org.activityinfo.service.store.UpdateResult;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
@@ -64,6 +66,23 @@ public class MockRemoteStoreService implements RemoteStoreService {
         Promise<FolderProjection> promise = new Promise<FolderProjection>();
         folders.put(rootId, promise);
         return promise;
+    }
+
+    @Override
+    public Promise<Void> remove(Set<ResourceId> resources) {
+        for (ResourceId resourceId : resources) {
+            folders.remove(resourceId);
+        }
+
+        Set<Resource> toRemove = Sets.newHashSet();
+        for (Resource resource : createdResources) {
+            if (resources.contains(resource.getId())) {
+                toRemove.add(resource);
+            }
+        }
+        createdResources.removeAll(toRemove);
+
+        return Promise.done();
     }
 
     public Resource getOnlyCreatedResource() {

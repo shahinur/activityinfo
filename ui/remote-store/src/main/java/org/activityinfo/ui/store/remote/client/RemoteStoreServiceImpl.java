@@ -21,6 +21,7 @@ import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class RemoteStoreServiceImpl implements RemoteStoreService {
@@ -100,5 +101,10 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
                 .resolve("tree")
                 .postJson(request.toString())
                 .then(new ResourceTreeParser());
+    }
+
+    @Override
+    public Promise<Void> remove(Set<ResourceId> resources) {
+        return Promise.rejected(new UnsupportedOperationException("todo"));
     }
 }
