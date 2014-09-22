@@ -54,9 +54,15 @@ public class BrowserDomElement extends BrowserDomNode implements DomElement {
         return ((BrowserDomElement)element).cast();
     }
 
-    @Override
+    @Override // must be called only when mounted
     public final String getInputValue() {
         InputElement input = this.cast();
         return input.getValue();
+    }
+
+    @Override
+    public final void setInputValue(String value) {
+        InputElement input = this.cast();
+        input.setValue(value);
     }
 }
