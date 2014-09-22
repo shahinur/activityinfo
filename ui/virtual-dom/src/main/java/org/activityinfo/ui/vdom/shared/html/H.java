@@ -248,12 +248,20 @@ public class H {
         return new VNode(HtmlTag.FORM, propMap, children);
     }
 
+    public static VNode form(CssClass className, VTree... children) {
+        return form(PropMap.withClasses(className), children);
+    }
+
     public static VNode form(VTree... children) {
         return new VNode(HtmlTag.FORM, children);
     }
 
     public static VNode label(CssClass className, VTree... children) {
         return new VNode(HtmlTag.LABEL, PropMap.withClasses(className), children);
+    }
+
+    public static VNode label(PropMap propMap, VTree... children) {
+        return new VNode(HtmlTag.LABEL, propMap, children);
     }
 
     public static PropMap className(CssClass className) {

@@ -6,6 +6,7 @@ import org.activityinfo.ui.app.client.action.UpdatePlace;
 import org.activityinfo.ui.app.client.page.Place;
 import org.activityinfo.ui.app.client.page.PlaceParser;
 import org.activityinfo.ui.app.client.request.FetchFolder;
+import org.activityinfo.ui.app.client.request.FetchResource;
 
 import javax.annotation.Nonnull;
 
@@ -31,6 +32,9 @@ public class FolderPlace implements Place {
     public void navigateTo(Application application) {
         if(application.getFolderStore().get(resourceId).requiresFetch()) {
             application.getRequestDispatcher().execute(new FetchFolder(resourceId));
+        }
+        if (application.getResourceStore().get(resourceId).requiresFetch()) {
+            application.getRequestDispatcher().execute(new FetchResource(resourceId));
         }
         application.getDispatcher().dispatch(new UpdatePlace(this));
     }

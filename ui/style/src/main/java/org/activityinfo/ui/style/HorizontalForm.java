@@ -26,6 +26,11 @@ public class HorizontalForm extends VComponent {
         return this;
     }
 
+    public HorizontalForm addGroup(VTree label, VTree control) {
+        addGroup(new FormGroup(label, control));
+        return this;
+    }
+
     @Override
     public VTree render() {
         return new VNode(HtmlTag.FORM,
