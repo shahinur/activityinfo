@@ -130,7 +130,11 @@ public class VDomWidget extends ComplexPanel implements RenderContext {
 
     @Override
     public void detachWidget(Widget child) {
-        pendingDetachments.add(child);
+//        pendingDetachments.add(child);
+        boolean wasChild = remove(child);// detach directly
+        if (!wasChild) {
+            throw new IllegalArgumentException("Widget is not child of this component.");
+        }
     }
 
     @Override
