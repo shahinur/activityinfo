@@ -28,10 +28,12 @@ public class IndicatorKey {
 
     private String activityLabel;
     private String indicatorLabel;
+    private String category;
 
-    public IndicatorKey(String activityLabel, String indicatorLabel) {
+    public IndicatorKey(String activityLabel, String indicatorLabel, String category) {
         this.activityLabel = activityLabel;
         this.indicatorLabel = indicatorLabel;
+        this.category = category;
     }
 
     @Override
@@ -43,6 +45,7 @@ public class IndicatorKey {
 
         if (activityLabel != null ? !activityLabel.equals(that.activityLabel) : that.activityLabel != null)
             return false;
+        if (category != null ? !category.equals(that.category) : that.category != null) return false;
         if (indicatorLabel != null ? !indicatorLabel.equals(that.indicatorLabel) : that.indicatorLabel != null)
             return false;
 
@@ -53,6 +56,7 @@ public class IndicatorKey {
     public int hashCode() {
         int result = activityLabel != null ? activityLabel.hashCode() : 0;
         result = 31 * result + (indicatorLabel != null ? indicatorLabel.hashCode() : 0);
+        result = 31 * result + (category != null ? category.hashCode() : 0);
         return result;
     }
 
@@ -61,6 +65,7 @@ public class IndicatorKey {
         return "IndicatorKey{" +
                 "activityLabel='" + activityLabel + '\'' +
                 ", indicatorLabel='" + indicatorLabel + '\'' +
+                ", category='" + category + '\'' +
                 '}';
     }
 }

@@ -180,7 +180,7 @@ public class SchemaImporter {
             ActivityDTO activity = getActivity(row);
             String fieldType = formFieldType.get(row);
             if ("Indicator".equals(fieldType)) {
-                IndicatorKey indicatorKey = new IndicatorKey(activity.getName(), fieldName.get(row));
+                IndicatorKey indicatorKey = new IndicatorKey(activity.getName(), fieldName.get(row), fieldCategory.get(row));
                 if (!newIndicators.containsKey(indicatorKey)) {
                     IndicatorDTO indicator = new IndicatorDTO();
                     indicator.setName(fieldName.get(row));
