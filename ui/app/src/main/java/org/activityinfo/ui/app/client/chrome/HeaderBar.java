@@ -3,7 +3,7 @@ package org.activityinfo.ui.app.client.chrome;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityWidget;
 import org.activityinfo.ui.style.Badges;
-import org.activityinfo.ui.style.Forms;
+import org.activityinfo.ui.style.InputControlType;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.style.icons.GlyphIcons;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
@@ -47,7 +47,7 @@ public class HeaderBar extends VComponent<HeaderBar> {
 
     private static VNode searchForm() {
         return form(className(SEARCHFORM),
-                input(Forms.InputType.TEXT, "keyword", "Search here"));
+                input(InputControlType.TEXT, "keyword", "Search here"));
     }
 
     private VNode connectivityMenu() {

@@ -1,26 +1,29 @@
 package org.activityinfo.ui.app.client.page.folder;
 
 import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.chrome.EditLabelDialog;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
+import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.*;
 import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
+import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
-import org.activityinfo.ui.style.BaseStyles;
-import org.activityinfo.ui.style.Grid;
-import org.activityinfo.ui.style.Media;
-import org.activityinfo.ui.style.Panel;
+import org.activityinfo.ui.style.*;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.html.Icon;
@@ -62,12 +65,37 @@ public class FolderPage extends PageView implements StoreChangeListener {
     private final ResourceId folderId;
 
     private final TasksPanel tasksPanel;
-
+    private final EditLabelDialog editLabelDialog = new EditLabelDialog();
 
     public FolderPage(Application application, ResourceId folderId) {
         this.application = application;
         this.folderId = folderId;
         this.tasksPanel = new TasksPanel(application, folderId);
+        this.editLabelDialog.setOkClickHandler(new ClickHandler() {
+            @Override
+            public void onClicked() {
+                String newName = editLabelDialog.getInputControl().getValueAsString();
+                onRename(newName);
+            }
+        });
+    }
+
+    private void onRename(String newName) {
+        ResourceId id = getFolder().get().getRootNode().getId();
+        Resource resource = application.getResourceStore().get(id).get();
+        resource.set(FolderClass.LABEL_FIELD_ID.asString(), newName);
+
+        application.getRequestDispatcher().execute(new SaveRequest(resource)).then(new AsyncCallback<UpdateResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                editLabelDialog.failedToEditLabel();
+            }
+
+            @Override
+            public void onSuccess(UpdateResult result) {
+                editLabelDialog.setVisible(false);
+            }
+        });
     }
 
     @Override
@@ -106,7 +134,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
                 ", label = " + folder.get().getRootNode().getLabel());
 
             return new PageFrame(application, PAGE_ICON,
-                folder.get().getRootNode().getLabel(),
+                folder.get().getRootNode().getLabel(), editLabelDialog,
                 renderContents(folder.get().getRootNode()));
         }
     }
@@ -114,9 +142,9 @@ public class FolderPage extends PageView implements StoreChangeListener {
     private VTree renderContents(ResourceNode folder) {
         return
             div(BaseStyles.ROW,
-                listColumn(folder),
-                timelineColumn(),
-                helpColumn(folder));
+                    listColumn(folder),
+                    timelineColumn(),
+                    helpColumn(folder));
     }
 
     private static VTree listColumn(ResourceNode page) {
