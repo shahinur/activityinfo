@@ -17,7 +17,6 @@ import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
@@ -44,7 +43,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static org.activityinfo.model.resource.Resources.ROOT_ID;
 
 public class HrdResourceStore implements ResourceStore {
     private final static long TIME_LIMIT_MILLISECONDS = 10 * 1000L;
@@ -111,7 +112,11 @@ public class HrdResourceStore implements ResourceStore {
     @Consumes("application/json")
     @Produces("application/json")
     public UpdateResult put(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId, Resource resource) {
-       return put(user, resource);
+       if (resourceId.equals(resource.getId())) {
+           return put(user, resource);
+       } else {
+           throw new WebApplicationException(BAD_REQUEST);
+       }
     }
 
     @Override
@@ -119,6 +124,12 @@ public class HrdResourceStore implements ResourceStore {
         Workspace workspace = workspaceLookup.lookup(resource.getId());
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
+            try {
+                workspace.getLatestContent(resource.getId()).get(tx);
+            } catch (EntityNotFoundException e) {
+                return create(tx, user, resource);
+            }
+
             Authorization authorization = new Authorization(user, resource.getId(), tx);
 
             authorization.assertCanEdit();
@@ -132,7 +143,7 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-        if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
+        if(ROOT_ID.equals(resource.getOwnerId())) {
             Workspace workspace = new Workspace(resource.getId());
             try(WorkspaceTransaction tx = begin(workspace, user)) {
                 long newVersion = workspace.createWorkspace(tx, resource);
