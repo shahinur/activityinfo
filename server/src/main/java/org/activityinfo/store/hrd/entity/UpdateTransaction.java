@@ -54,11 +54,16 @@ public class UpdateTransaction implements WorkspaceTransaction {
      */
     @Override
     public long incrementVersion() {
+        currentVersion = getCurrentVersion() + 1;
+        return currentVersion;
+    }
+
+    public long getCurrentVersion() {
         if(currentVersion < 0) {
             initialVersion = workspace.getVersion().get(this);
             currentVersion = initialVersion;
         }
-        return ++currentVersion;
+        return currentVersion;
     }
 
     @Override
