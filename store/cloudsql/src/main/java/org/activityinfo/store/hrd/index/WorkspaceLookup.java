@@ -15,7 +15,6 @@ import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.store.hrd.entity.LatestContent;
 import org.activityinfo.store.hrd.entity.Workspace;
 
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -86,7 +85,7 @@ public class WorkspaceLookup {
     public Workspace lookup(ResourceId resourceId) {
         try {
             return new Workspace(cache.get(resourceId));
-        } catch (ExecutionException e) {
+        } catch (Exception e) {
             return new Workspace(lookupWorkspace(resourceId));
         }
     }
