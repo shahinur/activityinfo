@@ -16,6 +16,7 @@ import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 
 import java.util.List;
+import java.util.Set;
 
 public class TestRemoteStoreService implements RemoteStoreService {
 
@@ -60,5 +61,11 @@ public class TestRemoteStoreService implements RemoteStoreService {
     public Promise<FolderProjection> getFolder(ResourceId rootId) {
         return Promise.resolved(store.queryTree(user, new FolderRequest(rootId)));
     }
+
+    @Override
+    public Promise<Void> remove(Set<ResourceId> resources) {
+        return Promise.rejected(new UnsupportedOperationException());
+    }
+
 
 }

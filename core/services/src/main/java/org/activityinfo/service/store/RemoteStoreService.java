@@ -11,6 +11,7 @@ import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 
 import java.util.List;
+import java.util.Set;
 
 public interface RemoteStoreService {
 
@@ -41,4 +42,6 @@ public interface RemoteStoreService {
     Promise<List<Bucket>> queryCube(PivotTableModel cubeModel);
 
     Promise<FolderProjection> getFolder(ResourceId rootId);
+
+    Promise<Void> remove(Set<ResourceId> resources);
 }
