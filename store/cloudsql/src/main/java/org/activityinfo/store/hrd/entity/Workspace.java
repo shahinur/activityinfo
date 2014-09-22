@@ -2,6 +2,7 @@ package org.activityinfo.store.hrd.entity;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.resource.Resource;
@@ -86,7 +87,7 @@ public class Workspace {
         Preconditions.checkArgument(resource.getId().equals(workspaceId),
             "resource id does not match workspace id");
 
-        long newVersion = createResource(tx, resource);
+        long newVersion = createResource(tx, resource, Optional.<Long>absent());
 
         AccessControlRule acr = new AccessControlRule(resource.getId(), tx.getUser().getUserResourceId());
         acr.setOwner(true);
@@ -105,17 +106,22 @@ public class Workspace {
      * @param resource the updated version
      * @return the new version of the resource
      */
-    public long createResource(WorkspaceTransaction tx, Resource resource) {
-
+    public long createResource(WorkspaceTransaction tx, Resource resource, Optional<Long> rowIndex) {
+        Preconditions.checkNotNull(tx);
         Preconditions.checkNotNull(resource.getOwnerId());
 
         resource = resource.copy();
         resource.setVersion(tx.incrementVersion());
 
-        getLatestContent(resource.getId()).create(tx, resource);
+        getLatestContent(resource.getId()).create(tx, resource, rowIndex);
         getSnapshot(resource.getId(), resource.getVersion()).put(tx, resource);
 
         return resource.getVersion();
+    }
+
+
+    public void createResource(WorkspaceTransaction tx, Resource resource) {
+        createResource(tx, resource, Optional.<Long>absent());
     }
 
     /**
@@ -133,4 +139,9 @@ public class Workspace {
 
         return resource.getVersion();
     }
+
+    public FormMetadata getFormMetadata(ResourceId formClassId) {
+        return new FormMetadata(rootKey, formClassId);
+    }
+
 }
