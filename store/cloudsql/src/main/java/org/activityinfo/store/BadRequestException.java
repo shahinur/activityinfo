@@ -1,4 +1,4 @@
-package org.activityinfo.store.cloudsql;
+package org.activityinfo.store;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;

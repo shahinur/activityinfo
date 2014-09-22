@@ -1,4 +1,4 @@
-package org.activityinfo.store.hrd.load;
+package org.activityinfo.store.load;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;

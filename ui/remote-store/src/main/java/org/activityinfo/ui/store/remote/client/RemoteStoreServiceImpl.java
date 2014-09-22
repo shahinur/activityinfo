@@ -1,6 +1,10 @@
 package org.activityinfo.ui.store.remote.client;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
@@ -13,8 +17,10 @@ import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.ui.store.remote.client.cube.BucketOverlay;
 import org.activityinfo.ui.store.remote.client.resource.*;
 import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
@@ -28,10 +34,12 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
 
     private static final Logger LOGGER = Logger.getLogger(RemoteStoreServiceImpl.class.getName());
 
-    private RestEndpoint store;
+    private final RestEndpoint service;
+    private final RestEndpoint store;
 
-    public RemoteStoreServiceImpl(RestEndpoint store) {
-        this.store = store;
+    public RemoteStoreServiceImpl(RestEndpoint service) {
+        this.service = service;
+        this.store = this.service.resolve("store");
     }
 
     @Override
@@ -75,6 +83,36 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
                         return UpdateResultParser.parse(input);
                     }
                 });
+    }
+
+    @Override
+    public Promise<UserTask> startImport(ResourceId ownerId, BlobId blobId) {
+        return service
+                .resolve("load")
+                .postUrlEncoded("ownerId=" + ownerId.asString() + "&blobId=" + blobId)
+                .then(new Function<Response, UserTask>() {
+                    @Override
+                    public UserTask apply(Response input) {
+                        return UserTask.fromRecord(ResourceParser.parseRecord(input.getText()));
+                    }
+                });
+    }
+
+    @Override
+    public Promise<List<UserTask>> getTasks() {
+        return service
+                .resolve("load")
+                .getJson().then(new Function<Response, List<UserTask>>() {
+                @Override
+                public List<UserTask> apply(Response input) {
+                    List<UserTask> tasks = Lists.newArrayList();
+                    JsArray<JavaScriptObject> array = JsonUtils.safeEval(input.getText());
+                    for(int i=0;i!=array.length();++i) {
+                        tasks.add(UserTask.fromRecord(ResourceParser.parseRecord(array.get(i))));
+                    }
+                    return tasks;
+                }
+            });
     }
 
     public Promise<UpdateResult> put(final Resource resource) {

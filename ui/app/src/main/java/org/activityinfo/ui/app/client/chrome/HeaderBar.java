@@ -2,15 +2,15 @@ package org.activityinfo.ui.app.client.chrome;
 
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityWidget;
+import org.activityinfo.ui.app.client.chrome.tasks.TaskIcon;
 import org.activityinfo.ui.style.Badges;
 import org.activityinfo.ui.style.InputControlType;
 import org.activityinfo.ui.style.icons.FontAwesome;
-import org.activityinfo.ui.style.icons.GlyphIcons;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
+import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
 import static org.activityinfo.ui.style.BaseStyles.*;
@@ -34,8 +34,8 @@ public class HeaderBar extends VComponent<HeaderBar> {
                     ul(HEADERMENU,
                         headerMenu(FontAwesome.USER),
                         headerMenu(FontAwesome.ENVELOPE),
-                        headerMenu(GlyphIcons.GLOBE),
-                        connectivityMenu(),
+                        li(new TaskIcon(application)),
+                        li(new ConnectivityWidget(application)),
                         userMenu())));
     }
 
@@ -48,10 +48,6 @@ public class HeaderBar extends VComponent<HeaderBar> {
     private static VNode searchForm() {
         return form(className(SEARCHFORM),
                 input(InputControlType.TEXT, "keyword", "Search here"));
-    }
-
-    private VNode connectivityMenu() {
-        return li(new ConnectivityWidget(application));
     }
 
     private static VNode headerMenu(Icon icon) {

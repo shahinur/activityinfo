@@ -25,13 +25,18 @@ public class ResourceParser implements Function<Response, Resource> {
         return parseResource(object);
     }
 
+    public static Record parseRecord(String json) {
+        JavaScriptObject object = JsonUtils.safeEval(json);
+        return parseRecord(object);
+    }
+
     public static Resource parseResource(JavaScriptObject object) {
         Resource resource = Resources.createResource();
         parseResourceProperties(resource, object);
         return resource;
     }
 
-    private static Record parseRecord(JavaScriptObject object) {
+    public static Record parseRecord(JavaScriptObject object) {
         Record record = new Record();
         parseRecordProperties(record, object);
         return record;

@@ -12,8 +12,10 @@ import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.service.tasks.UserTask;
 
 import java.util.List;
 import java.util.Map;
@@ -44,6 +46,16 @@ public class MockRemoteStoreService implements RemoteStoreService {
     public Promise<UpdateResult> create(Resource resource) {
         createdResources.add(resource);
         return Promise.resolved(UpdateResult.committed(resource.getId(), 1));
+    }
+
+    @Override
+    public Promise<UserTask> startImport(ResourceId ownerId, BlobId blobId) {
+        return Promise.rejected(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Promise<List<UserTask>> getTasks() {
+        return null;
     }
 
     @Override

@@ -3540,4 +3540,6 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("+ Add Dimension")
     String addDimension();
 
+    @DefaultStringValue("Upload data")
+    String uploadData();
 }

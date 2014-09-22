@@ -1,4 +1,4 @@
-package org.activityinfo.store.hrd.load;
+package org.activityinfo.store.load;
 
 import com.google.appengine.api.datastore.*;
 import org.activityinfo.model.auth.AuthenticatedUser;
