@@ -1,13 +1,8 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.*;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import org.activityinfo.model.resource.Resource;
@@ -17,12 +12,7 @@ import org.activityinfo.service.store.ResourceNotFound;
 
 import java.util.Iterator;
 
-import static org.activityinfo.store.hrd.entity.Content.CLASS_PROPERTY;
-import static org.activityinfo.store.hrd.entity.Content.LABEL_PROPERTY;
-import static org.activityinfo.store.hrd.entity.Content.OWNER_PROPERTY;
-import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
-import static org.activityinfo.store.hrd.entity.Content.deserializeResource;
-import static org.activityinfo.store.hrd.entity.Content.deserializeResourceNode;
+import static org.activityinfo.store.hrd.entity.Content.*;
 
 /**
  * An entity within the {@code ResourceGroup} which contains the
@@ -85,8 +75,9 @@ public class LatestContent {
      * Updates the LatestContent entity to reflect the content of {@code resource}
      * @param tx the transaction in which this change is to be effected
      * @param resource the latest version of the resource
+     * @param rowIndex
      */
-    public void create(WorkspaceTransaction tx, Resource resource) {
+    public void create(WorkspaceTransaction tx, Resource resource, Optional<Long> rowIndex) {
         Entity entity = new Entity(key);
         entity.setProperty(VERSION_PROPERTY, resource.getVersion());
         entity.setProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
@@ -99,10 +90,14 @@ public class LatestContent {
         }
 
         if(FormMetadata.isFormInstance(resource)) {
-            FormMetadata metadata = new FormMetadata(rootKey, resource);
-            long rowIndex = metadata.addInstance(tx, resource.getVersion());
+            if(rowIndex.isPresent()) {
+                entity.setProperty(ROW_INDEX_PROPERTY, rowIndex.get());
+            } else {
+                FormMetadata metadata = new FormMetadata(rootKey, resource);
+                long nextRowIndex = metadata.addInstance(tx, resource.getVersion());
 
-            entity.setProperty(ROW_INDEX_PROPERTY, rowIndex);
+                entity.setProperty(ROW_INDEX_PROPERTY, nextRowIndex);
+            }
         }
 
         tx.put(entity);
