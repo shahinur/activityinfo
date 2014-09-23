@@ -20,8 +20,8 @@ public class BlobTest {
     public void test() throws IOException {
 
         ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI(),
-            "odk.test@mailinator.com",
-            "odk.test");
+            "akbertram@gmail.com",
+            "testing123");
 
 
         // Generate a new Blob id
@@ -34,7 +34,5 @@ public class BlobTest {
 
         // Ensure we can download again
         client.getBlob(blobId);
-
-
     }
 }

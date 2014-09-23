@@ -31,7 +31,7 @@ public interface BlobFieldStorageService {
     @POST
     public UploadCredentials startUpload(
         @InjectParam AuthenticatedUser user,
-        @PathParam("blobId") BlobId blobId,
+        @FormParam("blobId") BlobId blobId,
         @FormParam("filename") String fileName);
 
 

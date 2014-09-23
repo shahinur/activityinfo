@@ -3,11 +3,7 @@ package org.activityinfo.client;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.base.Preconditions;
 import com.google.common.io.ByteSource;
-import com.sun.jersey.api.client.AsyncWebResource;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.*;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
@@ -146,9 +142,11 @@ public class ActivityInfoClient {
         // First retrieve the upload URL
         UploadCredentials credentials = root.path("service")
             .path("blob")
+            .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
             .accept(MediaType.APPLICATION_JSON)
             .post(UploadCredentials.class, form);
 
+        System.out.println(credentials);
 
         // Create a multipart body that include the credentials
         // we just received
@@ -173,6 +171,7 @@ public class ActivityInfoClient {
         // AI credentials. (authorization is included the params received above)
         Client.create()
             .resource(credentials.getUrl())
+            .type(MediaType.MULTIPART_FORM_DATA_TYPE)
             .post(ClientResponse.class, entity);
     }
 
