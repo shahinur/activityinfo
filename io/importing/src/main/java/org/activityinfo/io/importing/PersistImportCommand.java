@@ -22,14 +22,14 @@ package org.activityinfo.io.importing;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.io.importing.model.ImportModel;
 import org.activityinfo.io.importing.source.SourceRow;
 import org.activityinfo.io.importing.strategy.FieldImporter;
 import org.activityinfo.io.importing.validation.ValidatedRow;
 import org.activityinfo.io.importing.validation.ValidatedRowTable;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
@@ -57,7 +57,7 @@ public class PersistImportCommand implements ImportCommand<Void> {
             ValidatedRow validatedRow = validatedRowTable.getRow(row);
             if (validatedRow.isValid()) { // persist instance only if it's valid
                 // new instance per row
-                FormInstance newInstance = new FormInstance(CuidAdapter.newLegacyFormInstanceId(formClassId), formClassId);
+                FormInstance newInstance = new FormInstance(Resources.generateId(), formClassId);
                 for (FieldImporter importer : commandExecutor.getImporters()) {
                     importer.updateInstance(row, newInstance);
                 }
