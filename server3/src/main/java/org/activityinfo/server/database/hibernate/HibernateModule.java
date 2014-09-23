@@ -65,7 +65,6 @@ public class HibernateModule extends ServletModule {
         bind(HibernateSessionScope.class).toInstance(sessionScope);
 
         filter("/*").through(HibernateSessionFilter.class);
-        serve(SchemaServlet.ENDPOINT).with(SchemaServlet.class);
 
         configureEmf();
         configureEm();

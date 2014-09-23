@@ -32,7 +32,6 @@ import org.activityinfo.server.branding.BrandingModule;
 import org.activityinfo.server.database.ServerDatabaseModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
 import org.activityinfo.server.endpoint.odk.OdkModule;
-import org.activityinfo.server.endpoint.rest.RestApiModule;
 import org.activityinfo.server.login.LoginModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.util.TemplateModule;
@@ -68,7 +67,7 @@ public class StartupListener extends GuiceServletContextListener {
     protected Injector getInjector() {
 
         List<Module> modules = Lists.newArrayList();
-        modules.addAll(Arrays.asList(
+        modules.addAll(Arrays.<Module>asList(
                 new HrdResourceStoreModule(),
                 new HibernateModule(),
                 new ConfigModule(),
@@ -81,7 +80,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new LocaleModule(),
                 new BrandingModule(),
                 new JaxRsModule(),
-                new RestApiModule(),
                 new OdkModule(),
                 new GcsBlobFieldStorageServiceModule(),
                 new ServiceModule()));
