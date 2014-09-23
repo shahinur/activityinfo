@@ -30,9 +30,7 @@ public class Authorization {
         Preconditions.checkNotNull(resourceId);
         Preconditions.checkNotNull(transaction);
 
-//        accessControlRule = findRule(transaction, resourceId, authenticatedUser);
-        accessControlRule = new AccessControlRule(resourceId, authenticatedUser.getUserResourceId());
-        accessControlRule.setOwner(true);
+        accessControlRule = findRule(transaction, resourceId, authenticatedUser);
     }
 
     private AccessControlRule findRule(WorkspaceTransaction transaction, ResourceId resourceId, AuthenticatedUser authenticatedUser) {
