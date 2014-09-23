@@ -6,6 +6,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.app.client.chrome.Chrome;
 import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView;
 import org.activityinfo.ui.app.client.effects.Effects;
@@ -48,6 +49,8 @@ public class AppEntryPoint implements EntryPoint {
     public void onModuleLoad2() {
 
         VDomLogger.STD_OUT = true;
+
+        I18N.init();
 
         service = new RemoteStoreServiceImpl(
                 new RestEndpoint("/service"));

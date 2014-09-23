@@ -1,4 +1,4 @@
-package org.activityinfo.ui.app.client.chrome;
+package org.activityinfo.ui.app.client.dialogs;
 /*
  * #%L
  * ActivityInfo Server
@@ -71,7 +71,7 @@ public class EditLabelDialog extends VComponent {
 
         modal.setTitle(t("Edit"));
         modal.setBody(form);
-        modal.setFooter(okButton, cancelButton);
+        modal.setFooter(cancelButton, okButton);
     }
 
     @Override

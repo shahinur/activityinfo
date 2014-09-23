@@ -65,7 +65,7 @@ public class NewWorkspacePage extends PageView {
 
     @Override
     protected VTree render() {
-        return new PageFrame(application, FontAwesome.TH_LARGE, I18N.CONSTANTS.newWorkspace(), content());
+        return new PageFrame(FontAwesome.TH_LARGE, I18N.CONSTANTS.newWorkspace(), content());
     }
 
     @Override
