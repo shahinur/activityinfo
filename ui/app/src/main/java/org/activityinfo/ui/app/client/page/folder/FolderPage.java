@@ -11,7 +11,9 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
-import org.activityinfo.ui.app.client.chrome.EditLabelDialog;
+import org.activityinfo.ui.app.client.chrome.PageFrameConfig;
+import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
+import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.*;
@@ -130,11 +132,15 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
         } else {
 
-            LOGGER.info("Folder id = " + folder.get().getRootNode().getId() +
-                ", label = " + folder.get().getRootNode().getLabel());
+            ResourceId resourceId = folder.get().getRootNode().getId();
+            String label = folder.get().getRootNode().getLabel();
+            LOGGER.info("Folder id = " + resourceId + ", label = " + label);
 
-            return new PageFrame(application, PAGE_ICON,
-                folder.get().getRootNode().getLabel(), editLabelDialog,
+            final PageFrameConfig config = new PageFrameConfig().
+                    setEnableRename(editLabelDialog).
+                    setDeleteResourceAction(new DeleteResourceAction(application, resourceId, label));
+            return new PageFrame(PAGE_ICON,
+                folder.get().getRootNode().getLabel(), config,
                 renderContents(folder.get().getRootNode()));
         }
     }
@@ -180,13 +186,15 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private static VTree description(ResourceNode child) {
-        return t("Data Entry Form");
+        return FormClass.CLASS_ID.equals(child.getClassId()) ?
+                t("Data Entry Form") :
+                t("Folder");
     }
 
     private static VTree childIcon(ResourceNode child) {
         Icon icon;
         if (FormClass.CLASS_ID.equals(child.getClassId())) {
-            icon = FontAwesome.EDIT;
+            icon = FontAwesome.FILE;
 
         } else if(PivotTableModel.CLASS_ID.equals(child.getClassId())) {
             icon = FontAwesome.TABLE;

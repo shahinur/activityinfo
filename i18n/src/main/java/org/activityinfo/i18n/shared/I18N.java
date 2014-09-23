@@ -33,10 +33,21 @@ public final class I18N {
     private I18N() {
     }
 
-    public static final UiConstants CONSTANTS;
-    public static final UiMessages MESSAGES;
+    public static UiConstants CONSTANTS;
+    public static UiMessages MESSAGES;
 
     static {
+        init();
+    }
+
+    /**
+     * Exposed initialization into separate method. Sometimes static initializer is called later then other
+     * initialization code (e.g. ApplicationClassProvider which leads to ExceptionInInitializerError).
+     */
+    public static void init() {
+        if (CONSTANTS != null && MESSAGES != null) {
+            return;
+        }
         if (GWT.isClient()) {
             CONSTANTS = GWT.create(UiConstants.class);
             MESSAGES = GWT.create(UiMessages.class);

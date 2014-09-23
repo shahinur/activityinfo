@@ -49,7 +49,6 @@ public class HomePage extends PageView {
     @Override
     protected VTree render() {
         return new PageFrame(
-            application,
             FontAwesome.HOME, I18N.CONSTANTS.home(),
             div(BaseStyles.CONTENTPANEL, Grid.row(announcement())));
     }

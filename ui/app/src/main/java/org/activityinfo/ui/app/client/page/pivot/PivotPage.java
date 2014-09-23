@@ -92,7 +92,6 @@ public class PivotPage extends PageView implements StoreChangeListener {
     protected VTree render() {
 
         return new PageFrame(
-            application,
             FontAwesome.TABLE, getLabel(),
             Grid.row(
                 Grid.column(3, pivotSideBar),

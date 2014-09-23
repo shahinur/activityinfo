@@ -1,7 +1,11 @@
 package org.activityinfo.ui.app.client.chrome;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.dialogs.ConfirmDialog;
+import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
+import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
+import org.activityinfo.ui.style.*;
+import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.html.Icon;
@@ -21,23 +25,17 @@ public class PageFrame extends VComponent<PageFrame> {
     private Icon pageIcon;
     private String pageTitle;
     private VTree[] content;
-    private Application application;
-    private EditLabelDialog editLabelDialog;
+    private PageFrameConfig config;
 
-    public PageFrame(Application application, Icon pageIcon, String pageTitle, VTree... content) {
-        this(application, pageIcon, pageTitle, null, content);
+    public PageFrame(Icon pageIcon, String pageTitle, VTree... content) {
+        this(pageIcon, pageTitle, new PageFrameConfig(), content);
     }
 
-    public PageFrame(Application application, Icon pageIcon, String pageTitle, EditLabelDialog editLabelDialog, VTree... content) {
+    public PageFrame(Icon pageIcon, String pageTitle, PageFrameConfig config, VTree... content) {
         this.pageIcon = pageIcon;
         this.pageTitle = pageTitle;
         this.content = content;
-        this.application = application;
-        this.editLabelDialog = editLabelDialog;
-
-        if (editLabelDialog != null) {
-            editLabelDialog.setLabel(pageTitle);
-        }
+        this.config = config;
     }
 
     @Override
@@ -50,12 +48,32 @@ public class PageFrame extends VComponent<PageFrame> {
     private VTree pageHeading() {
         List<VTree> h2Content = Lists.newArrayList(pageIcon(pageIcon), t(pageTitle));
 
-        if (editLabelDialog != null) { // edit label is not null then attach to component
-            h2Content.add(editLabelDialog.createLinkButton());
-            h2Content.add(editLabelDialog);
+        DeleteResourceAction enableDeletion = config.enableDeletion();
+        if (enableDeletion != null) {
+            ConfirmDialog confirmDialog = ConfirmDialog.confirm(enableDeletion);
+            h2Content.add(confirmDialog);
+            h2Content.add(div(BaseStyles.PULL_RIGHT, deleteButton(confirmDialog)));
+        }
+
+        EditLabelDialog enableRename = config.getEnableRename();
+        if (enableRename != null) {
+            enableRename.setLabel(pageTitle);
+            h2Content.add(enableRename);
+            h2Content.add(div(BaseStyles.PULL_RIGHT, enableRename.createLinkButton()));
         }
 
         return h2(Children.toArray(h2Content));
+    }
+
+    public Button deleteButton(final ConfirmDialog confirmDialog) {
+        Button button = new Button(ButtonStyle.LINK, FontAwesome.TRASH_O.render());
+        button.setClickHandler(new ClickHandler() {
+            @Override
+            public void onClicked() {
+                confirmDialog.setVisible(true);
+            }
+        });
+        return button;
     }
 
     private static VNode pageIcon(Icon home) {

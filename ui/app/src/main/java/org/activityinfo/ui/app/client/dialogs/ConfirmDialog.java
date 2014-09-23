@@ -1,4 +1,4 @@
-package org.activityinfo.ui.widget;
+package org.activityinfo.ui.app.client.dialogs;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,26 +21,21 @@ package org.activityinfo.ui.widget;
  * #L%
  */
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.app.client.chrome.FailureDescription;
-import org.activityinfo.ui.widget.modal.ModalDialog;
-import org.activityinfo.ui.style.ButtonStyle;
+import org.activityinfo.ui.style.*;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
+import org.activityinfo.ui.vdom.shared.tree.VTree;
+
+import static org.activityinfo.ui.vdom.shared.html.H.t;
 
 /**
- * @author yuriyz on 4/1/14.
+ * @author yuriyz on 9/23/14.
  */
-@Deprecated // we are trying to stick to react, please use: org.activityinfo.ui.app.client.dialogs.ConfirmDialog
-public class ConfirmDialog  {
-
-
+public class ConfirmDialog extends VComponent {
     /**
      * Maintain a single instance of this dialog, as there is by definition never more than one
      * modal dialog shown at a time.
@@ -99,48 +94,85 @@ public class ConfirmDialog  {
         void onComplete();
     }
 
-
     public static enum State {
         CONFIRM, PROGRESS, FAILED
     }
 
-    private final ModalDialog dialog;
-    private final HTML failedMessageContainer = new HTML();
-    private final HTML messageContainer = new HTML();
+    private final Modal dialog = new Modal();
 
+    // store
     private State state;
-
+    private Throwable throwable = null;
     private Action action;
 
     private ConfirmDialog() {
-        dialog = new ModalDialog();
-        dialog.getModalBody().add(failedMessageContainer);
-        dialog.getModalBody().add(messageContainer);
+    }
 
-        dialog.getPrimaryButton().addClickHandler(new ClickHandler() {
+    private Messages getMessages() {
+        switch (state) {
+            case CONFIRM:
+                return action.getConfirmationMessages();
+            case FAILED:
+                return action.getFailureMessages();
+            case PROGRESS:
+                return action.getProgressMessages();
+        }
+        throw new IllegalArgumentException("State is not supported, state: " + state);
+    }
+
+    @Override
+    protected VTree render() {
+        Messages messages = getMessages();
+        Button cancelButton = new Button(ButtonStyle.DEFAULT, t(I18N.CONSTANTS.cancel()));
+        cancelButton.setClickHandler(new org.activityinfo.ui.style.ClickHandler() {
             @Override
-            public void onClick(ClickEvent event) {
+            public void onClicked() {
+                dialog.setVisible(false);
+            }
+        });
+
+        Button okButton = new Button(action.getPrimaryButtonStyle(), t(messages.getPrimaryButtonText()));
+        okButton.setClickHandler(new org.activityinfo.ui.style.ClickHandler() {
+            @Override
+            public void onClicked() {
                 tryAction();
             }
         });
+
+        dialog.setTitle(t(messages.getTitleText()));
+        if (state == State.FAILED) {
+            String messageText = messages.getMessageText();
+            if (throwable != null) {
+                messageText += " " + FailureDescription.of(throwable).getDescription();
+            }
+            dialog.setBody(new Alert(AlertStyle.DANGER, t(messageText)));
+        } else {
+            dialog.setBody(t(messages.getMessageText()));
+        }
+        dialog.setFooter(cancelButton, okButton);
+        return dialog;
     }
 
     /**
      * Shows the confirmation dialog
      */
-    public static void confirm(Action action) {
+    public static ConfirmDialog confirm(Action action) {
         if(INSTANCE == null) {
             INSTANCE = new ConfirmDialog();
         }
         INSTANCE.action = action;
-        INSTANCE.dialog.getPrimaryButton().setStyleName("btn btn-" + action.getPrimaryButtonStyle().name().toLowerCase());
-        INSTANCE.updateState(State.CONFIRM, null);
-        INSTANCE.dialog.show();
+        INSTANCE.throwable = null;
+        INSTANCE.state = State.CONFIRM;
+        return INSTANCE;
     }
 
+    public void setVisible(boolean visible) {
+        dialog.setVisible(visible);
+    }
 
     private void tryAction() {
-        updateState(State.PROGRESS, null);
+        state = State.PROGRESS;
+        throwable = null;
         action.execute().then(new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -149,10 +181,11 @@ public class ConfirmDialog  {
 
             @Override
             public void onSuccess(Void result) {
-                ConfirmDialog.this.dialog.hide();
+                ConfirmDialog.this.dialog.setVisible(false);
                 action.onComplete();
             }
         });
+        refresh();
     }
 
     private void showFailureDelayed(final Throwable caught) {
@@ -162,68 +195,11 @@ public class ConfirmDialog  {
         Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
             @Override
             public boolean execute() {
-                updateState(State.FAILED, caught);
+                state = State.FAILED;
+                throwable = caught;
+                refresh();
                 return false;
             }
         }, 500);
-    }
-
-    private void updateState(State state, Throwable caught) {
-        this.state = state;
-
-        // Disable both ok and cancel button while we're waiting for the
-        // asynchronous action to complete. We have no reliable way of cancelling
-        // a delete action that has been sent to the server for example.
-
-        dialog.getPrimaryButton().setEnabled(state != State.PROGRESS);
-        dialog.getCancelButton().setEnabled(state != State.PROGRESS);
-
-        failedMessageContainer.setVisible(state == State.FAILED);
-
-        switch (state) {
-            case CONFIRM:
-                updateMessages(action.getConfirmationMessages());
-                break;
-
-            case FAILED:
-                updateMessages(action.getFailureMessages());
-                failedMessageContainer.setHTML(Templates.WARNING_MESSAGE_TEMPLATE.html(
-                        FailureDescription.of(caught).getDescription()));
-                break;
-
-            case PROGRESS:
-                updateMessages(action.getProgressMessages());
-                break;
-        }
-    }
-
-    private void updateMessages(Messages messages) {
-        dialog.setDialogTitle(messages.getTitleText());
-        messageContainer.setHTML(messages.getMessageText());
-
-        if(state == State.PROGRESS) {
-            dialog.getPrimaryButton().setHTML(Templates.OK_BTN_TEMPLATE.html(messages.getPrimaryButtonText()));
-        } else {
-            dialog.getPrimaryButton().setText(messages.getPrimaryButtonText());
-        }
-    }
-
-    /**
-     * @author yuriyz on 4/16/14.
-     */
-    public static class Templates {
-
-        public interface WarningMessageTemplate extends SafeHtmlTemplates {
-            @Template("<p class='text-warning'>{0}</p>")
-            SafeHtml html(String message);
-        }
-
-        public static interface OkButtonTemplate extends SafeHtmlTemplates {
-            @Template("<img src='ActivityInfo/gxt231/images/default/grid/loading.gif'/>{0}")
-            SafeHtml html(String buttonText);
-        }
-
-        public static final WarningMessageTemplate WARNING_MESSAGE_TEMPLATE = GWT.create(WarningMessageTemplate.class);
-        public static final OkButtonTemplate OK_BTN_TEMPLATE = GWT.create(OkButtonTemplate.class);
     }
 }
