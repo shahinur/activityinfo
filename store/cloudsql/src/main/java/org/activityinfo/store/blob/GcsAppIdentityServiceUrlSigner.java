@@ -26,6 +26,8 @@ import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.common.io.BaseEncoding;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 
@@ -40,19 +42,24 @@ public class GcsAppIdentityServiceUrlSigner {
 
     private final AppIdentityService identityService = AppIdentityServiceFactory.getAppIdentityService();
 
-    public String getSignedUrl(final String httpVerb, final String path) throws Exception {
+    public URI getSignedUrl(final String httpVerb, final String path) {
         final long expiration = expiration();
         final String unsigned = stringToSign(expiration, path, httpVerb);
         final String signature = sign(unsigned);
-        return new StringBuilder(BASE_URL)
-                .append("/")
-                .append(path)
-                .append("?GoogleAccessId=")
-                .append(clientId())
-                .append("&Expires=")
-                .append(expiration)
-                .append("&Signature=")
-                .append(URLEncoder.encode(signature, "UTF-8")).toString();
+        try {
+            return new URI(new StringBuilder(BASE_URL)
+                    .append("/")
+                    .append(path)
+                    .append("?GoogleAccessId=")
+                    .append(clientId())
+                    .append("&Expires=")
+                    .append(expiration)
+                    .append("&Signature=")
+                    .append(URLEncoder.encode(signature, "UTF-8")).toString());
+
+        } catch (URISyntaxException | UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static long expiration() {
@@ -71,7 +78,7 @@ public class GcsAppIdentityServiceUrlSigner {
                 + expiration + "\n" + canonicalizedExtensionHeaders + canonicalizedResource;
     }
 
-    protected String sign(final String stringToSign) throws UnsupportedEncodingException {
+    protected String sign(final String stringToSign) {
         final AppIdentityService.SigningResult signingResult = identityService
                 .signForApp(stringToSign.getBytes());
         return BaseEncoding.base64().encode(signingResult.getSignature());

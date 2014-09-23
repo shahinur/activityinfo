@@ -28,7 +28,7 @@ public class TestApplication extends DefaultResourceConfig {
         JacksonJsonProvider jsonProvider = new JacksonJsonProvider(ObjectMapperFactory.get());
         MigrateService migrateService = migrateService();
         HrdUserTaskService taskService = new HrdUserTaskService();
-        TestBlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
+        DevBlobStorageService blobFieldStorageService = new DevBlobStorageService();
         LoadService loadService = new LoadService(taskService, blobFieldStorageService);
        // AuthenticatedUser user = new AuthenticatedUser("XYZ", 1, "test@test.org");
         return Sets.newHashSet(jsonProvider, migrateService, taskService, blobFieldStorageService, loadService);
