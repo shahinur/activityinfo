@@ -101,27 +101,30 @@ public class BlobUploader {
 
 
     private void requestUploadUrl() {
+        RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, UPLOAD_REQUEST_URL);
+        requestBuilder.setHeader("Content-type", "application/x-www-form-urlencoded");
+        requestBuilder.setRequestData("blobId=" + currentBlobId.asString() + "&filename=" + URL.encode(fileUpload.getFilename()));
+        requestBuilder.setCallback(new RequestCallback() {
+            @Override
+            public void onResponseReceived(com.google.gwt.http.client.Request request, Response response) {
+                if(response.getStatusCode() != 200) {
+                    currentRequest.reject(new StatusCodeException(response.getStatusCode()));
+                } else {
+                    JSONObject credentials = JSONParser.parseStrict(response.getText()).isObject();
+                    executeUpload(credentials);
+                }
+            }
+
+            @Override
+            public void onError(com.google.gwt.http.client.Request request, Throwable exception) {
+                LOGGER.log(Level.SEVERE, "Failed to send request", exception);
+                currentRequest.reject(exception);
+            }
+        });
+
         try {
-            RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, UPLOAD_REQUEST_URL);
-            String parameters = "blobId=" + currentBlobId.asString() + "&filename=" + URL.encode(fileUpload.getFilename());
+            requestBuilder.send();
 
-            requestBuilder.sendRequest(parameters, new RequestCallback() {
-                @Override
-                public void onResponseReceived(com.google.gwt.http.client.Request request, Response response) {
-                    if(response.getStatusCode() != 200) {
-                        currentRequest.reject(new StatusCodeException(response.getStatusCode()));
-                    } else {
-                        JSONObject credentials = JSONParser.parseStrict(response.getText()).isObject();
-                        executeUpload(credentials);
-                    }
-                }
-
-                @Override
-                public void onError(com.google.gwt.http.client.Request request, Throwable exception) {
-                    LOGGER.log(Level.SEVERE, "Failed to send request", exception);
-                    currentRequest.reject(exception);
-                }
-            });
         } catch (RequestException e) {
             LOGGER.log(Level.SEVERE, "Failed to send request", e);
             currentRequest.reject(e);
