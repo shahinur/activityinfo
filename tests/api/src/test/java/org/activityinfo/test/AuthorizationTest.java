@@ -3,7 +3,6 @@ package org.activityinfo.test;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import org.activityinfo.client.ActivityInfoClient;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
 import org.junit.Test;
 
@@ -24,6 +23,6 @@ public class AuthorizationTest {
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(NOT_FOUND.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
-        }
     }
 }
+
