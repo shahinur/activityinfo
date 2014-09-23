@@ -7,8 +7,11 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
-import org.activityinfo.ui.app.client.chrome.EditLabelDialog;
+import org.activityinfo.ui.app.client.chrome.PageFrame;
+import org.activityinfo.ui.app.client.chrome.PageFrameConfig;
 import org.activityinfo.ui.app.client.chrome.nav.NavLink;
+import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
+import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
 import org.activityinfo.ui.app.client.draft.Draft;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.PageView;
@@ -22,13 +25,9 @@ import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.ClickHandler;
 import org.activityinfo.ui.style.icons.FontAwesome;
-import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
-import static org.activityinfo.ui.style.BaseStyles.CONTENTPANEL;
-import static org.activityinfo.ui.style.BaseStyles.PAGEHEADER;
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class FormPage extends PageView implements StoreChangeListener {
@@ -157,10 +156,11 @@ public class FormPage extends PageView implements StoreChangeListener {
         if (getFormClass() == null) { // still loading
             return new PagePreLoader();
         }
-        editLabelDialog.setLabel(getFormClass().getLabel());
-        return new VNode(HtmlTag.DIV,
-                div(PAGEHEADER, formHeading()),
-                div(CONTENTPANEL, navTabs(), tabPane()));
+
+        final PageFrameConfig config = new PageFrameConfig().
+                setEnableRename(editLabelDialog).
+                setEnableDeletion(new DeleteResourceAction(getApplication(), getResourceId(), getFormClass().getLabel()));
+        return new PageFrame(FontAwesome.FILE, getFormClass().getLabel(), config, navTabs(), tabPane());
     }
 
     private VTree tabPane() {
@@ -182,9 +182,5 @@ public class FormPage extends PageView implements StoreChangeListener {
         return ul(classNames(BaseStyles.NAV, BaseStyles.NAV_TABS, BaseStyles.NAV_DARK),
                 tableTab, designTab
         );
-    }
-
-    private VTree formHeading() {
-        return h2(FontAwesome.FILE.render(), t(getFormClass().getLabel()), editLabelDialog.createLinkButton(), editLabelDialog);
     }
 }
