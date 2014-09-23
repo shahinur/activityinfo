@@ -8,6 +8,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
 import org.activityinfo.ui.app.client.request.Request;
+import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
 import org.activityinfo.ui.flux.store.Status;
@@ -45,6 +46,10 @@ public class ResourceStore extends AbstractStore implements RemoteUpdateHandler 
     public <R> void processUpdate(Request<R> request, R response) {
         if(response instanceof Resource) {
             cache((Resource)response);
+        } else if (request instanceof SaveRequest) {
+            SaveRequest saveRequest = (SaveRequest) request;
+            Resource updatedResource = saveRequest.getUpdatedResource();
+            cache(updatedResource);
         }
     }
 

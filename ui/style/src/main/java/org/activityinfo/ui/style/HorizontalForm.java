@@ -18,11 +18,10 @@ import java.util.List;
  */
 public class HorizontalForm extends VComponent {
 
-    private final List<VTree> formGroups = Lists.newArrayList();
-
+    private final List<VTree> content = Lists.newArrayList();
 
     public HorizontalForm addGroup(VTree group) {
-        this.formGroups.add(group);
+        this.content.add(group);
         return this;
     }
 
@@ -35,6 +34,6 @@ public class HorizontalForm extends VComponent {
     public VTree render() {
         return new VNode(HtmlTag.FORM,
             PropMap.withClasses(BaseStyles.FORM_HORIZONTAL).role(AriaRole.FORM),
-            Children.toArray(formGroups));
+            Children.toArray(content));
     }
 }
