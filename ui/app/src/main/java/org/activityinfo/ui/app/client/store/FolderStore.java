@@ -1,6 +1,7 @@
 package org.activityinfo.ui.app.client.store;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.FolderProjection;
@@ -56,20 +57,22 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
         } else if(request instanceof SaveRequest) {
             SaveRequest save = (SaveRequest) request;
             UpdateResult result = (UpdateResult) response;
+            Resource updatedResource = save.getUpdatedResource();
 
-            if(save.getUpdatedResource().getString("classId").equals(FolderClass.CLASS_ID.asString())) {
+            if(updatedResource.getString("classId").equals(FolderClass.CLASS_ID.asString())) {
                 cacheFolder(save, result);
             }
 
-            if(isFolderItem(save.getUpdatedResource())) {
-                ResourceId ownerId = save.getUpdatedResource().getOwnerId();
+            if(isFolderItem(updatedResource)) {
+                ResourceId ownerId = updatedResource.getOwnerId();
                 Status<FolderProjection> folder = get(ownerId);
                 if(folder.isAvailable()) {
+
                     // update folder root
-                    folder.get().getRootNode().setLabel(save.getUpdatedResource().getString(FolderClass.LABEL_FIELD_ID.asString()));
+                    folder.get().getRootNode().setLabel(Strings.nullToEmpty(updatedResource.isString(FolderClass.LABEL_FIELD_ID.asString())));
 
                     // update childs
-                    updateChildren(folder.get(), save.getUpdatedResource());
+                    updateChildren(folder.get(), updatedResource);
                 }
             }
         }
