@@ -1,6 +1,7 @@
 package org.activityinfo.store.blob;
 
 import com.google.appengine.api.appidentity.AppIdentityService;
+import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
@@ -15,18 +16,11 @@ import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.image.ImageRowValue;
-import org.activityinfo.model.type.image.ImageType;
-import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.UploadCredentials;
-import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.service.store.ResourceStore;
 import org.joda.time.Period;
 
 import javax.ws.rs.PathParam;
@@ -40,7 +34,6 @@ import java.net.URI;
 import java.nio.channels.Channels;
 import java.util.logging.Logger;
 
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 public class GcsBlobFieldStorageService implements BlobFieldStorageService {
@@ -48,15 +41,13 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
     private static final Logger LOGGER = Logger.getLogger(GcsBlobFieldStorageService.class.getName());
 
     private final String bucketName;
-    private AppIdentityService appIdentityService;
-    private ResourceStore locator;
+    private final AppIdentityService appIdentityService = AppIdentityServiceFactory.getAppIdentityService();
 
     @Inject
-    public GcsBlobFieldStorageService(DeploymentConfiguration config, ResourceStore locator) {
+    public GcsBlobFieldStorageService(DeploymentConfiguration config) {
         this.bucketName = config.getBlobServiceBucketName();
-        this.locator = locator;
 
-        LOGGER.info("Service account: " + appIdentityService.getServiceAccountName());
+        LOGGER.info("Service account: " + this.appIdentityService.getServiceAccountName());
     }
 
     @Override
@@ -92,6 +83,8 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
                              @PathParam("resourceId") ResourceId resourceId,
                              @PathParam("fieldId") ResourceId fieldId,
                              @PathParam("blobId") BlobId blobId) throws IOException {
+
+
         /* TODO: Ensure that users can download images they've just uploaded
         ImageRowValue imageRowValue = getImageRowValue(user, resourceId, fieldId, blobId);
         */
@@ -142,7 +135,8 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
     }
 
     @Override
-    public UploadCredentials getUploadCredentials(@InjectParam AuthenticatedUser user,
+    public UploadCredentials getUploadCredentials(
+                                         @InjectParam AuthenticatedUser user,
                                          @PathParam("blobId") BlobId blobId) {
 
         if (user == null || user.isAnonymous()) {
@@ -158,33 +152,16 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
     }
 
     @Override
-    public ByteSource getContent(BlobId blobId) {
-
-        return null;
-    }
-
-    private ImageRowValue getImageRowValue(AuthenticatedUser user, ResourceId resourceId, ResourceId fieldId, BlobId blobId) {
-        if (user == null || user.isAnonymous()) throw new WebApplicationException(UNAUTHORIZED);
-
-        final Resource resource;
-
-        try {
-            resource = locator.get(user, resourceId);
-        } catch (ResourceNotFound resourceNotFound) {
-            throw new WebApplicationException(NOT_FOUND);
-        }
-
-        FormInstance formInstance = FormInstance.fromResource(resource);
-        ImageValue imageValue = (ImageValue) formInstance.get(fieldId, ImageType.TYPE_CLASS);
-
-        if (imageValue != null) {
-            for (ImageRowValue imageRowValue : imageValue.getValues()) {
-                if (imageRowValue.getBlobId().equals(blobId.asString())) {
-                    return imageRowValue;
-                }
+    public ByteSource getContent(final BlobId blobId) {
+        return new ByteSource() {
+            @Override
+            public InputStream openStream() throws IOException {
+                GcsFilename gcsFilename = getFileName(blobId);
+                GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
+                GcsInputChannel channel = gcsService.openPrefetchingReadChannel(gcsFilename, 0, ONE_MEGABYTE);
+                return Channels.newInputStream(channel);
             }
-        }
-
-        throw new WebApplicationException(NOT_FOUND);
+        };
     }
+
 }
