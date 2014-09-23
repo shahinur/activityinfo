@@ -4,7 +4,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
-import com.google.appengine.tools.cloudstorage.*;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.io.load.excel.ExcelFormImportReader;
 import org.activityinfo.model.auth.AuthenticatedUser;
@@ -13,7 +12,6 @@ import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskService;
-import org.activityinfo.store.blob.GcsBlobFieldStorageService;
 import org.activityinfo.store.hrd.Authorization;
 import org.activityinfo.store.hrd.entity.ReadTransaction;
 import org.activityinfo.store.hrd.entity.Workspace;
@@ -25,7 +23,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Path("/service/load")
@@ -62,10 +59,6 @@ public class LoadService {
                 .entity("url parameter is required").build());
         }
 
-        if(blobService instanceof GcsBlobFieldStorageService) {
-            checkMetadata(blobId);
-        }
-
         Workspace workspace = workspaceLookup.lookup(ownerId);
 
         try(WorkspaceTransaction tx = new ReadTransaction(workspace, datastoreService, user)) {
@@ -86,22 +79,6 @@ public class LoadService {
         }
     }
 
-    private void checkMetadata(BlobId blobId) {
-        GcsFilename gcsFilename = ((GcsBlobFieldStorageService)blobService).getFileName(blobId);
-        GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
-        GcsFileMetadata metadata;
-        try {
-            metadata = gcsService.getMetadata(gcsFilename);
-        } catch (IOException e) {
-            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST)
-                .entity("Could not read blobId " + blobId)
-                .build());
-        }
-
-        LOGGER.log(Level.INFO, "Content disposition = " + metadata.getOptions().getContentDisposition());
-        LOGGER.log(Level.INFO, "Content type = " + metadata.getOptions().getMimeType());
-    }
-
     @POST
     @Path("run")
     public Response runImport(@FormParam("blobId") BlobId blobId,
@@ -109,10 +86,12 @@ public class LoadService {
                               @FormParam("workspaceId") ResourceId workspaceId,
                               @FormParam("ownerId") ResourceId ownerId) throws IOException {
 
+        AuthenticatedUser user = new AuthenticatedUser("", (int) userId, "");
+
         BulkLoader loader = new BulkLoader();
-        loader.setUser(new AuthenticatedUser("", (int) userId, ""));
+        loader.setUser(user);
         loader.setWorkspaceId(workspaceId);
-        loader.setSource(blobService.getContent(blobId));
+        loader.setSource(blobService.getBlob(user, blobId).getContent());
         loader.setOwnerId(ownerId);
         loader.setReader(new ExcelFormImportReader());
         loader.run();

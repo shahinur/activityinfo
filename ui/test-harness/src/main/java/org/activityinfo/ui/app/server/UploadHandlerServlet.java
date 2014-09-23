@@ -30,11 +30,10 @@ public class UploadHandlerServlet extends HttpServlet {
         Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
         BlobKey blobKey = Iterables.getOnlyElement(Iterables.getOnlyElement(blobs.values()));
 
-        Entity entity = new Entity(TestBlobFieldStorageService.BLOB_INDEX_KIND, req.getParameter("blobId"));
+        Entity entity = new Entity(DevBlobResource.BLOB_INDEX_KIND, req.getParameter("blobId"));
         entity.setProperty("blobKey", blobKey);
         datastoreService.put(entity);
 
         res.setStatus(201);
     }
-
 }
