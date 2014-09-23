@@ -350,4 +350,13 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("{0} code does not exist.")
     String doesNotExist(String placeholder);
+
+    @DefaultMessage("Are you sure you want to delete {0}?")
+    String removeResourceConfirmation(String formClassLabel);
+
+    @DefaultMessage("Deleting {0}...")
+    String deletingResource(String formClassLabel);
+
+    @DefaultMessage("Do you want to retry deleting {0}?")
+    String retryResourceDeletion(String formClassLabel);
 }

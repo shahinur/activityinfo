@@ -37,6 +37,7 @@ import org.activityinfo.ui.style.ButtonStyle;
 /**
  * @author yuriyz on 4/1/14.
  */
+@Deprecated // we are trying to stick to react, please use: org.activityinfo.ui.app.client.dialogs.ConfirmDialog
 public class ConfirmDialog  {
 
 

@@ -5,10 +5,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.*;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.user.client.ui.FileUpload;
@@ -26,6 +23,8 @@ import java.util.logging.Logger;
 public class BlobUploader {
 
     private static final Logger LOGGER = Logger.getLogger(BlobUploader.class.getName());
+
+    private static final String UPLOAD_REQUEST_URL = "/service/blob";
 
     private static BlobUploader instance;
 
@@ -101,31 +100,31 @@ public class BlobUploader {
     }-*/;
 
 
-    private String uploadRequestUrl(String blobId) {
-        return "/service/blob/credentials/" + blobId;
-    }
-
     private void requestUploadUrl() {
-        try {
-            RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST,
-                uploadRequestUrl(currentBlobId.asString()));
-            requestBuilder.sendRequest(null, new RequestCallback() {
-                @Override
-                public void onResponseReceived(com.google.gwt.http.client.Request request, Response response) {
-                    if(response.getStatusCode() != 200) {
-                        currentRequest.reject(new StatusCodeException(response.getStatusCode()));
-                    } else {
-                        JSONObject credentials = JSONParser.parseStrict(response.getText()).isObject();
-                        executeUpload(credentials);
-                    }
+        RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, UPLOAD_REQUEST_URL);
+        requestBuilder.setHeader("Content-type", "application/x-www-form-urlencoded");
+        requestBuilder.setRequestData("blobId=" + currentBlobId.asString() + "&filename=" + URL.encode(fileUpload.getFilename()));
+        requestBuilder.setCallback(new RequestCallback() {
+            @Override
+            public void onResponseReceived(com.google.gwt.http.client.Request request, Response response) {
+                if(response.getStatusCode() != 200) {
+                    currentRequest.reject(new StatusCodeException(response.getStatusCode()));
+                } else {
+                    JSONObject credentials = JSONParser.parseStrict(response.getText()).isObject();
+                    executeUpload(credentials);
                 }
+            }
 
-                @Override
-                public void onError(com.google.gwt.http.client.Request request, Throwable exception) {
-                    LOGGER.log(Level.SEVERE, "Failed to send request", exception);
-                    currentRequest.reject(exception);
-                }
-            });
+            @Override
+            public void onError(com.google.gwt.http.client.Request request, Throwable exception) {
+                LOGGER.log(Level.SEVERE, "Failed to send request", exception);
+                currentRequest.reject(exception);
+            }
+        });
+
+        try {
+            requestBuilder.send();
+
         } catch (RequestException e) {
             LOGGER.log(Level.SEVERE, "Failed to send request", e);
             currentRequest.reject(e);
