@@ -24,6 +24,7 @@ package org.activityinfo.ui.app.client.chrome;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.style.*;
 import org.activityinfo.ui.style.icons.FontAwesome;
+import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
@@ -39,6 +40,8 @@ public class EditLabelDialog extends VComponent {
 
     private ClickHandler okClickHandler;
     private String label;
+    private Alert failedAlert = new Alert(AlertStyle.DANGER,
+            H.h5("Oops... You encounter bug. Failed to edit label."));
 
     public EditLabelDialog() {
         Button cancelButton = new Button(ButtonStyle.DEFAULT, t(I18N.CONSTANTS.cancel()));
@@ -60,9 +63,11 @@ public class EditLabelDialog extends VComponent {
         });
 
         inputControl = new InputControl(InputControlType.TEXT, "", "");
+        failedAlert.setVisible(false);
 
         HorizontalForm form = new HorizontalForm().
-                addGroup(Forms.label("Name"), inputControl);
+                addGroup(Forms.label("Name"), inputControl).
+                addGroup(Forms.label(BaseStyles.COL_SM_1, ""), failedAlert);
 
         modal.setTitle(t("Edit"));
         modal.setBody(form);
@@ -112,6 +117,6 @@ public class EditLabelDialog extends VComponent {
     }
 
     public void failedToEditLabel() {
-        // todo
+        failedAlert.setVisible(true);
     }
 }

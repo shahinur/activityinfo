@@ -2,10 +2,10 @@ package org.activityinfo.ui.style;
 
 import org.activityinfo.ui.vdom.shared.html.AriaRole;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
-import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.VComponent;
-import org.activityinfo.ui.vdom.shared.tree.VNode;
-import org.activityinfo.ui.vdom.shared.tree.VTree;
+import org.activityinfo.ui.vdom.shared.tree.*;
+
+import static com.google.gwt.dom.client.Style.Display.BLOCK;
+import static com.google.gwt.dom.client.Style.Display.NONE;
 
 /**
  * Provide contextual feedback messages for typical user actions with the handful of
@@ -17,6 +17,7 @@ public class Alert extends VComponent {
 
     private AlertStyle style;
     private VTree[] content;
+    private boolean visible = true;
 
     public Alert(AlertStyle style, VTree... content) {
         this.style = style;
@@ -25,7 +26,25 @@ public class Alert extends VComponent {
 
     @Override
     protected VTree render() {
-        return new VNode(HtmlTag.DIV, PropMap.withClasses(style.getClassNames()).role(AriaRole.ALERT), content);
+        PropMap props = PropMap.withClasses(style.getClassNames()).role(AriaRole.ALERT);
+        if (visible) {
+            props.setStyle(new Style().display(BLOCK));
+        } else {
+            props.setStyle(new Style().display(NONE));
+        }
+
+        return new VNode(HtmlTag.DIV, props, content);
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        if (this.visible != visible) {
+            this.visible = visible;
+            refresh();
+        }
     }
 
     @Override

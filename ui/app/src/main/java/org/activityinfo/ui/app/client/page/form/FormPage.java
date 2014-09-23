@@ -1,22 +1,26 @@
 package org.activityinfo.ui.app.client.page.form;
 
 import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.promise.Promise;
+import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.chrome.EditLabelDialog;
 import org.activityinfo.ui.app.client.chrome.nav.NavLink;
 import org.activityinfo.ui.app.client.draft.Draft;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.PageViewFactory;
 import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.BaseStyles;
+import org.activityinfo.ui.style.ClickHandler;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
@@ -51,8 +55,9 @@ public class FormPage extends PageView implements StoreChangeListener {
     private Application application;
     private FormViewType viewType = FormViewType.OVERVIEW;
     private ResourceId resourceId;
+    private EditLabelDialog editLabelDialog = new EditLabelDialog();
 
-    private Promise<FormTree> formTree;
+//    private Promise<FormTree> formTree;
 
     public FormPage(Application application, ResourceId resourceId) {
         this.application = application;
@@ -60,6 +65,30 @@ public class FormPage extends PageView implements StoreChangeListener {
 
         FormPlace currentPlace = application.getRouter().getCurrentPlace();
         this.viewType = currentPlace.getFormViewType();
+
+        editLabelDialog.setOkClickHandler(new ClickHandler() {
+            @Override
+            public void onClicked() {
+                String newName = editLabelDialog.getInputControl().getValueAsString();
+                onRename(newName);
+            }
+        });
+    }
+
+    private void onRename(String newName) {
+        Resource resource = application.getResourceStore().get(getResourceId()).get();
+        resource.set(FormClass.LABEL_FIELD_ID, newName);
+        application.getRequestDispatcher().execute(new SaveRequest(resource)).then(new AsyncCallback<UpdateResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                editLabelDialog.failedToEditLabel();
+            }
+
+            @Override
+            public void onSuccess(UpdateResult result) {
+                editLabelDialog.setVisible(false);
+            }
+        });
     }
 
     public Application getApplication() {
@@ -71,6 +100,7 @@ public class FormPage extends PageView implements StoreChangeListener {
         application.getDraftStore().addChangeListener(this);
         application.getResourceStore().addChangeListener(this);
         application.getRouter().addChangeListener(this);
+
     }
 
     @Override
@@ -127,6 +157,7 @@ public class FormPage extends PageView implements StoreChangeListener {
         if (getFormClass() == null) { // still loading
             return new PagePreLoader();
         }
+        editLabelDialog.setLabel(getFormClass().getLabel());
         return new VNode(HtmlTag.DIV,
                 div(PAGEHEADER, formHeading()),
                 div(CONTENTPANEL, navTabs(), tabPane()));
@@ -154,6 +185,6 @@ public class FormPage extends PageView implements StoreChangeListener {
     }
 
     private VTree formHeading() {
-        return h2(new VTree[]{FontAwesome.FILE.render(), t(getFormClass().getLabel())});
+        return h2(FontAwesome.FILE.render(), t(getFormClass().getLabel()), editLabelDialog.createLinkButton(), editLabelDialog);
     }
 }
