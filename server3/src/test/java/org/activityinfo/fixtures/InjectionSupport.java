@@ -27,8 +27,6 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
-import org.activityinfo.server.database.LoadDataSet;
-import org.activityinfo.server.database.OnDataSet;
 import org.junit.AfterClass;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.runner.notification.RunNotifier;
@@ -38,7 +36,6 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import java.lang.reflect.Method;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,31 +113,10 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
         Statement statement = super.methodInvoker(method, test);
-        statement = withLoadDatasets(method, statement, test);
         return statement;
     }
 
-    @Override
-    protected Statement withBefores(FrameworkMethod method, Object target,
-                                    Statement statement) {
 
-        return withLoadDatasets(method,
-                super.withBefores(method, target, statement),
-                target);
-    }
-
-    private Statement withLoadDatasets(FrameworkMethod method,
-                                       Statement statement, Object target) {
-        OnDataSet ods = method.getAnnotation(OnDataSet.class);
-
-        if (ods == null) {
-            ods = target.getClass().getAnnotation(OnDataSet.class);
-        }
-
-        return ods == null ? statement :
-                new LoadDataSet(injector.getProvider(Connection.class), statement,
-                        ods.value(), target);
-    }
 
     /**
      * Returns a {@link Statement}: run all non-overridden {@code @AfterClass}

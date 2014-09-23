@@ -86,33 +86,43 @@
           </excludes>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <version>${gwtVersion}</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <goals>
-              <goal>resources</goal>
-            </goals>
-            <phase>generate-resources</phase>
-          </execution>
-          <execution>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <phase>integration-test</phase>
-            <configuration>
-              <productionMode>true</productionMode>
-              <mode>htmlunit</mode>
-              <style>PRETTY</style>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>gwt-test</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <version>${gwtVersion}</version>
+            <executions>
+              <execution>
+                <id>copy-resources</id>
+                <goals>
+                  <goal>resources</goal>
+                </goals>
+                <phase>generate-resources</phase>
+              </execution>
+              <execution>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <phase>integration-test</phase>
+                <configuration>
+                  <productionMode>true</productionMode>
+                  <mode>htmlunit</mode>
+                  <style>PRETTY</style>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
 
 </project>

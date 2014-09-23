@@ -39,13 +39,9 @@ import org.hibernate.cfg.Environment;
 import org.hibernate.ejb.Ejb3Configuration;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
-import org.hibernate.validator.HibernateValidator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.List;
 
 /**
@@ -85,14 +81,6 @@ public class HibernateModule extends ServletModule {
     public Session provideSession(EntityManager em) {
         HibernateEntityManager hem = (HibernateEntityManager) em;
         return hem.getSession();
-    }
-
-    @Provides @Singleton
-    public Validator provideValidator() {
-        ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
-                                                      .configure()
-                                                      .buildValidatorFactory();
-        return validatorFactory.getValidator();
     }
 
     protected static class EntityManagerFactoryProvider implements Provider<EntityManagerFactory> {
