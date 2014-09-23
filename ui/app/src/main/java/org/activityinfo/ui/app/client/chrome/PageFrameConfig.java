@@ -33,7 +33,7 @@ public class PageFrameConfig {
     }
 
     private EditLabelDialog enableRename;
-    private DeleteResourceAction deleteResourceAction;
+    private DeleteResourceAction enableDeletion;
 
     public EditLabelDialog getEnableRename() {
         return enableRename;
@@ -45,11 +45,11 @@ public class PageFrameConfig {
     }
 
     public DeleteResourceAction enableDeletion() {
-        return deleteResourceAction;
+        return enableDeletion;
     }
 
-    public PageFrameConfig setDeleteResourceAction(DeleteResourceAction deleteResourceAction) {
-        this.deleteResourceAction = deleteResourceAction;
+    public PageFrameConfig setEnableDeletion(DeleteResourceAction enableDeletion) {
+        this.enableDeletion = enableDeletion;
         return this;
     }
 }

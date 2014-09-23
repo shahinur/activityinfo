@@ -159,7 +159,7 @@ public class FormPage extends PageView implements StoreChangeListener {
 
         final PageFrameConfig config = new PageFrameConfig().
                 setEnableRename(editLabelDialog).
-                setDeleteResourceAction(new DeleteResourceAction(getApplication(), getResourceId(), getFormClass().getLabel()));
+                setEnableDeletion(new DeleteResourceAction(getApplication(), getResourceId(), getFormClass().getLabel()));
         return new PageFrame(FontAwesome.FILE, getFormClass().getLabel(), config, navTabs(), tabPane());
     }
 
