@@ -23,7 +23,8 @@
 <module>
 
   <inherits name="org.activityinfo.ui.store.remote.RemoteStore"/>
+  <inherits name="com.google.gwt.i18n.I18N"/>
 
+  <set-property name="locale" value="en"/>
   <set-property name="user.agent" value="gecko1_8"/>
-
 </module>
