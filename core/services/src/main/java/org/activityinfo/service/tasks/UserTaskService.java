@@ -15,6 +15,7 @@ import java.util.List;
 @Path("/service/tasks")
 public interface UserTaskService {
 
+
     /**
      * Adds a new background task to the user's list of running tasks.
      */

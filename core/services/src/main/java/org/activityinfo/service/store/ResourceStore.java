@@ -33,7 +33,7 @@ public interface ResourceStore {
 
 
     /**
-     * Creates or updates a {@code Resource} within the store.
+     * Updates a {@code Resource} within the store.
      */
     @PUT
     @Path("resource/{id}")
