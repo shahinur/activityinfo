@@ -1,4 +1,4 @@
-package org.activityinfo.store.blob;
+package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.io.ByteSource;
 import com.sun.jersey.api.core.InjectParam;

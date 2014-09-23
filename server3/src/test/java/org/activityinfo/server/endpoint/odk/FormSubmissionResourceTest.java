@@ -5,7 +5,6 @@ import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.service.blob.BlobFieldStorageService;
-import org.activityinfo.store.blob.TestBlobFieldStorageService;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
