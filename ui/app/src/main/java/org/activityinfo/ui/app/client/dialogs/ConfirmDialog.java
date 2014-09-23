@@ -83,7 +83,6 @@ public class ConfirmDialog extends VComponent {
         ButtonStyle getPrimaryButtonStyle();
 
         /**
-         *
          * Invoked when the user has confirmed the action, or is retrying.
          */
         Promise<Void> execute();
@@ -157,7 +156,7 @@ public class ConfirmDialog extends VComponent {
      * Shows the confirmation dialog
      */
     public static ConfirmDialog confirm(Action action) {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new ConfirmDialog();
         }
         INSTANCE.action = action;
@@ -167,7 +166,11 @@ public class ConfirmDialog extends VComponent {
     }
 
     public void setVisible(boolean visible) {
-        dialog.setVisible(visible);
+        confirm(action); // reset state
+        if (dialog.isVisible() != visible) {
+            dialog.setVisible(visible);
+            refresh();
+        }
     }
 
     private void tryAction() {
