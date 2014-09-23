@@ -3,53 +3,33 @@ package org.activityinfo.server.endpoint.odk;
 import com.google.common.io.ByteSource;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.BlobResource;
 import org.activityinfo.service.blob.UploadCredentials;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
-import java.net.URI;
+import java.io.IOException;
 
 public class TestBlobFieldStorageService implements BlobFieldStorageService {
-    @Override
-    public URI getBlobUrl(BlobId blobId) {
-        return null;
-    }
 
     @Override
-    public void put(AuthenticatedUser authenticatedUser, String contentDisposition, String mimeType, BlobId blobId,
-                    ByteSource byteSource) {
-    }
-
-    @Override
-    public Response getImage(@InjectParam AuthenticatedUser user,
-                             @PathParam("resourceId") ResourceId resourceId,
-                             @PathParam("fieldId") ResourceId fieldId,
-                             @PathParam("blobId") BlobId blobId) {
+    public UploadCredentials startUpload(@InjectParam AuthenticatedUser user,
+                                         @PathParam("blobId") BlobId blobId, @FormParam("fileName") String fileName) {
         throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
     }
 
     @Override
-    public Response getThumbnail(@InjectParam AuthenticatedUser user,
-                                 @PathParam("resourceId") ResourceId resourceId,
-                                 @PathParam("fieldId") ResourceId fieldId,
-                                 @PathParam("blobId") BlobId blobId,
-                                 @QueryParam("width") int width,
-                                 @QueryParam("height") int height) {
-        throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+    public void put(AuthenticatedUser user, BlobId blobId, String contentDisposition, String mimeType, ByteSource byteSource) throws IOException {
+
     }
 
     @Override
-    public UploadCredentials getUploadCredentials(@InjectParam AuthenticatedUser user, BlobId blobId) {
+    public BlobResource getBlob(@InjectParam AuthenticatedUser user, @PathParam("blobId") BlobId blobId) {
         throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
     }
 
-    @Override
-    public ByteSource getContent(BlobId blobId) {
-        throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
-    }
 }
