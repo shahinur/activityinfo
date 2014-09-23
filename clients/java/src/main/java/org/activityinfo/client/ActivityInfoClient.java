@@ -6,6 +6,7 @@ import com.google.common.io.ByteSource;
 import com.sun.jersey.api.client.AsyncWebResource;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
@@ -18,6 +19,9 @@ import org.activityinfo.client.xform.XFormInstanceBuilder;
 import org.activityinfo.client.xform.XFormItem;
 import org.activityinfo.client.xform.XFormList;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.UploadCredentials;
 import org.activityinfo.service.store.UpdateResult;
@@ -187,5 +191,21 @@ public class ActivityInfoClient {
             }
         };
 
+    }
+
+    public Resource get(ResourceId resourceId) {
+        return store.path("resource").path(resourceId.asString())
+                .type(MediaType.APPLICATION_JSON_TYPE)
+                .get(Resource.class);
+    }
+
+    public List<ResourceNode> getOwnedOrSharedWorkspaces() {
+        return store.path("query")
+                .path("roots")
+                .type(MediaType.APPLICATION_JSON_TYPE)
+                .get(new ResourceNodeListGenericType());
+    }
+
+    final static private class ResourceNodeListGenericType extends GenericType<List<ResourceNode>> {
     }
 }

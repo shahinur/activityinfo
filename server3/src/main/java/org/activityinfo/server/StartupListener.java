@@ -83,7 +83,6 @@ public class StartupListener extends GuiceServletContextListener {
                 new JaxRsModule(),
                 new RestApiModule(),
                 new OdkModule(),
-                new ServiceModule(),
                 new GcsBlobFieldStorageServiceModule(),
                 new ServiceModule()));
 
