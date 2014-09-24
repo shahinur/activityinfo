@@ -32,6 +32,7 @@ public class AcrIndex {
     }
 
     public static void put(WorkspaceTransaction workspaceTransaction, AccessControlRule rule) {
+        // todo construct correct key!
         Entity entity = new Entity(key(rule.getResourceId(), rule.getPrincipalId()));
         entity.setUnindexedProperty("owner", rule.isOwner());
         entity.setUnindexedProperty("view", toString(rule.getViewCondition()));
