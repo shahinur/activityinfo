@@ -133,7 +133,7 @@ public class Authorization {
         return accessControlRule != null ? accessControlRule.getViewCondition() : null;
     }
 
-    private boolean isOwner() {
+    public boolean isOwner() {
         return accessControlRule != null && accessControlRule.isOwner();
     }
 }
