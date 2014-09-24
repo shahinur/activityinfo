@@ -1,10 +1,6 @@
 package org.activityinfo.store.hrd;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceConfig;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.ImplicitTransactionManagementPolicy;
+import com.google.appengine.api.datastore.*;
 import com.google.apphosting.api.ApiProxy;
 import com.google.apphosting.api.ApiProxy.Environment;
 import com.google.common.base.Optional;
@@ -27,30 +23,18 @@ import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
-import org.activityinfo.store.hrd.entity.ReadTransaction;
-import org.activityinfo.store.hrd.entity.Snapshot;
-import org.activityinfo.store.hrd.entity.UpdateTransaction;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.entity.*;
 import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
 
 public class HrdResourceStore implements ResourceStore {
@@ -85,12 +69,9 @@ public class HrdResourceStore implements ResourceStore {
 
             try(WorkspaceTransaction tx = beginRead(workspace, user)) {
                 Authorization authorization = new Authorization(user, resourceId, tx);
+                authorization.assertCanView();
 
-                if (authorization.canView()) {
-                    return workspace.getLatestContent(resourceId).get(tx);
-                } else {
-                    throw new WebApplicationException(UNAUTHORIZED);
-                }
+                return workspace.getLatestContent(resourceId).get(tx);
             }
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(resourceId);
@@ -190,14 +171,15 @@ public class HrdResourceStore implements ResourceStore {
 
         try(WorkspaceTransaction tx = beginRead(workspace, user)) {
             Authorization rootNodeAuthorization = new Authorization(user, request.getRootId(), tx);
+            rootNodeAuthorization.assertCanView();
 
             ResourceNode rootNode = workspace.getLatestContent(request.getRootId()).getAsNode(tx).
-                    setCanEdit(rootNodeAuthorization.canEdit()).
+                    setEditAllowed(rootNodeAuthorization.canEdit()).
                     setOwner(rootNodeAuthorization.isOwner());
 
             for (ResourceNode child : workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId())) {
-                Authorization childAuthorization = new Authorization(user, child.getId(), tx);
-                child.setCanEdit(childAuthorization.canEdit()).
+                Authorization childAuthorization = rootNodeAuthorization.ofChild(child.getId());
+                child.setEditAllowed(childAuthorization.canEdit()).
                         setOwner(childAuthorization.isOwner());
                 rootNode.getChildren().add(child);
             }
