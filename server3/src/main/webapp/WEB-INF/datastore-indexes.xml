@@ -10,4 +10,7 @@
     <property name="V" direction="desc"/>
     <property name="r" direction="desc"/>
   </datastore-index>
+  <datastore-index kind="UserTask" ancestor="true" source="manual">
+    <property name="startTime" direction="desc"/>
+  </datastore-index>
 </datastore-indexes>
