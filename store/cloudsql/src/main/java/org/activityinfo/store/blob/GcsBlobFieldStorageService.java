@@ -18,10 +18,12 @@ import org.activityinfo.store.BadRequestException;
 import org.joda.time.Period;
 
 import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
@@ -56,12 +58,15 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
         getBlobResource(blobId).put(contentDisposition, mimeType, byteSource);
     }
 
-
+    @POST
     @Override
     public UploadCredentials startUpload(
         @InjectParam AuthenticatedUser user,
         @FormParam("blobId") BlobId blobId,
         @FormParam("filename") String filename) {
+
+        LOGGER.log(Level.INFO, String.format("Upload request: user = %s, blobId = %s, filename = %s\n",
+            user, blobId, filename));
 
         if (user == null || user.isAnonymous()) {
             throw new WebApplicationException(UNAUTHORIZED);

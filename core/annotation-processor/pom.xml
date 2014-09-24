@@ -32,6 +32,26 @@
       <artifactId>activityinfo-model</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.testing.compile</groupId>
+      <artifactId>compile-testing</artifactId>
+      <version>0.5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.truth0</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.15</version>
+    </dependency>
   </dependencies>
 
 </project>
