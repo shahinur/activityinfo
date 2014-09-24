@@ -23,7 +23,6 @@ import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
 
 public class Authorization {
 
-    private WorkspaceTransaction transaction;
     private ResourceId userResourceId;
 
     final private AccessControlRule accessControlRule;
@@ -40,7 +39,6 @@ public class Authorization {
         Preconditions.checkNotNull(transaction);
 
         this.userResourceId = Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
-        this.transaction = transaction;
 
         this.accessControlRule = findRule(transaction, resourceId);
     }
@@ -183,7 +181,7 @@ public class Authorization {
         return accessControlRule != null && accessControlRule.isOwner();
     }
 
-    public Authorization ofChild(ResourceId childId) {
+    public Authorization ofChild(ResourceId childId, WorkspaceTransaction transaction) {
         Preconditions.checkNotNull(userResourceId);
         Preconditions.checkNotNull(transaction);
 
