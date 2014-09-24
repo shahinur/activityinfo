@@ -178,13 +178,11 @@ public class HrdResourceStore implements ResourceStore {
 
             ResourceNode rootNode = workspace.getLatestContent(request.getRootId()).getAsNode(tx).
                     setCanEdit(rootNodeAuthorization.canEdit()).
-                    setCanView(rootNodeAuthorization.canView()).
                     setOwner(rootNodeAuthorization.isOwner());
 
             for (ResourceNode child : workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId())) {
                 Authorization childAuthorization = new Authorization(user, child.getId(), tx);
                 child.setCanEdit(childAuthorization.canEdit()).
-                        setCanView(childAuthorization.canView()).
                         setOwner(childAuthorization.isOwner());
                 rootNode.getChildren().add(child);
             }
