@@ -30,7 +30,6 @@ public class ResourceNode {
 
     // permissions
     private boolean canEdit;
-    private boolean canView;
     private boolean owner;
 
     @JsonCreator
@@ -147,15 +146,6 @@ public class ResourceNode {
 
     public ResourceNode setCanEdit(boolean canEdit) {
         this.canEdit = canEdit;
-        return this;
-    }
-
-    public boolean isCanView() {
-        return canView;
-    }
-
-    public ResourceNode setCanView(boolean canView) {
-        this.canView = canView;
         return this;
     }
 
