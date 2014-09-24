@@ -1,13 +1,16 @@
 package org.activityinfo.store.hrd;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.AcrIndex;
@@ -15,6 +18,9 @@ import org.activityinfo.store.hrd.index.AcrIndex;
 import javax.ws.rs.WebApplicationException;
 
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static org.activityinfo.model.resource.Resources.ROOT_ID;
+import static org.activityinfo.store.hrd.entity.Content.deserializeResourceNode;
+import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
 
 public class Authorization {
 
@@ -46,7 +52,7 @@ public class Authorization {
 
     private AccessControlRule findRule(WorkspaceTransaction transaction, ResourceId resourceId) {
 
-        while(!resourceId.equals(Resources.ROOT_ID)) {
+        while(!ROOT_ID.equals(resourceId)) {
             Optional<AccessControlRule> rule = AcrIndex.getRule(transaction, resourceId, userResourceId);
             if(rule.isPresent()) {
                 return rule.get();
@@ -61,6 +67,31 @@ public class Authorization {
             }
         }
         return null;
+    }
+
+    /**
+     * Special-purpose constructor. Won't fetch ACRs recursively and should only be used on root entities (workspaces).
+     * @param authenticatedUser The {@link AuthenticatedUser} this {@link AccessControlRule} should correspond with.
+     * @param resourceId The id of the {@link Resource} this {@link AccessControlRule} should correspond with.
+     * @param datastore The {@link DatastoreService} that should be used to extract the {@link AccessControlRule}.
+     */
+    public Authorization(AuthenticatedUser authenticatedUser, ResourceId resourceId, DatastoreService datastore) {
+        ResourceId userResourceId = Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
+        Optional<AccessControlRule> rule = AcrIndex.getRule(datastore, resourceId, userResourceId);
+
+        try {
+            Entity entity = datastore.get(KeyFactory.createKey(ROOT_KIND, resourceId.asString()));
+            ResourceNode resourceNode = deserializeResourceNode(entity);
+            assert ROOT_ID.equals(resourceNode.getOwnerId());
+        } catch (EntityNotFoundException e) {
+            throw new IllegalStateException("Missing resource: " + resourceId);
+        }
+
+        if(rule.isPresent()) {
+            accessControlRule = rule.get();
+        } else {
+            accessControlRule = null;
+        }
     }
 
     /**
