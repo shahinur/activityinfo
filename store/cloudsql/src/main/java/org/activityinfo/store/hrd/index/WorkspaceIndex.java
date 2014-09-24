@@ -1,10 +1,16 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.store.hrd.Authorization;
 import org.activityinfo.store.hrd.entity.Content;
 import org.activityinfo.store.hrd.entity.Workspace;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
@@ -62,8 +68,12 @@ public class WorkspaceIndex {
         for(Entity entity : entities) {
             ResourceId workspaceId = ResourceId.valueOf(entity.getKey().getName());
             Workspace workspace = new Workspace(workspaceId);
-            workspaceKeys.add(workspace.getLatestContent(workspaceId).getKey());
-            workspaceLookup.cache(workspaceId, workspace);
+            Authorization authorization = new Authorization(user, workspaceId, datastore);
+
+            if (authorization.canView()) {
+                workspaceKeys.add(workspace.getLatestContent(workspaceId).getKey());
+                workspaceLookup.cache(workspaceId, workspace);
+            }
         }
 
 

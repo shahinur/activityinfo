@@ -76,6 +76,15 @@ public class AcrIndex {
         }
     }
 
+    public static Optional<AccessControlRule> getRule(DatastoreService datastore, ResourceId resourceId,
+                                                      ResourceId subjectId) {
+        try {
+            return Optional.of(fromEntity(datastore.get(key(resourceId, subjectId))));
+        } catch (EntityNotFoundException e) {
+            return Optional.absent();
+        }
+    }
+
     public static Iterable<AccessControlRule> queryRules(WorkspaceTransaction tx, ResourceId resourceId) {
         Query query = new Query(KIND, parentKey(resourceId));
         return Iterables.transform(tx.prepare(query).asIterable(), new Function<Entity, AccessControlRule>() {
