@@ -2,12 +2,14 @@ package org.activityinfo.test;
 
 import com.sun.jersey.api.client.UniformInterfaceException;
 import org.activityinfo.client.ActivityInfoClient;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
 import org.junit.Test;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static org.activityinfo.model.resource.Resources.ROOT_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -24,6 +26,10 @@ public class AuthorizationTest {
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(NOT_FOUND.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
+
+        for (ResourceNode resourceNode : client.getOwnedOrSharedWorkspaces()) {
+            Resource resource = client.get(resourceNode.getId());
+            assertEquals(ROOT_ID, resource.getOwnerId());
         }
     }
 }
