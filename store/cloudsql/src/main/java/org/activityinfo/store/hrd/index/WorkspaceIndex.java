@@ -1,11 +1,6 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
@@ -71,6 +66,7 @@ public class WorkspaceIndex {
             Authorization authorization = new Authorization(user, workspaceId, datastore);
 
             if (authorization.canView()) {
+                //Key workspaceKey = KeyFactory.createKey(ROOT_KIND, workspaceId.asString());
                 workspaceKeys.add(workspace.getLatestContent(workspaceId).getKey());
                 workspaceLookup.cache(workspaceId, workspace);
             }

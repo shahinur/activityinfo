@@ -67,7 +67,26 @@ public class Workspace {
     public LatestContent getLatestContent(ResourceId id) {
         return new LatestContent(rootKey, id);
     }
+    /**
+     *
+     * @return the entity holding the latest content (properties) of the resource identified by
+     * {@code id}
+     */
+    public LatestContent getLatestContent(ResourceId id, WorkspaceTransaction transaction) {
+        return new LatestContent(rootKey, id, transaction);
+    }
 
+    /**
+     * Gets latest content before creation. Method must "know" full path of resources to correctly construct
+     * the object key before persistence.
+     * @param id resource id
+     * @param parentId parent id
+     * @param transaction transaction
+     * @return latest content with correctly constructed key (full path from object to root)
+     */
+    public LatestContent getLatestContentBeforeCreation(ResourceId id, ResourceId parentId, WorkspaceTransaction transaction) {
+        return new LatestContent(rootKey, id, parentId, transaction);
+    }
 
     public Snapshot getSnapshot(ResourceId resourceId, long version) {
         return new Snapshot(rootKey, resourceId, version);
@@ -113,6 +132,7 @@ public class Workspace {
         resource = resource.copy();
         resource.setVersion(tx.incrementVersion());
 
+//      getLatestContentBeforeCreation(resource.getId(), resource.getOwnerId(), tx).create(tx, resource, rowIndex);
         getLatestContent(resource.getId()).create(tx, resource, rowIndex);
         getSnapshot(resource.getId(), resource.getVersion()).put(tx, resource);
 
