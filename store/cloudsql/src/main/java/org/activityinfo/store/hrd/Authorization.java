@@ -23,6 +23,10 @@ import static org.activityinfo.store.hrd.entity.Content.deserializeResourceNode;
 import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
 
 public class Authorization {
+
+    private WorkspaceTransaction transaction;
+    private ResourceId userResourceId;
+
     final private AccessControlRule accessControlRule;
 
     /**
@@ -36,11 +40,17 @@ public class Authorization {
         Preconditions.checkNotNull(resourceId);
         Preconditions.checkNotNull(transaction);
 
-        accessControlRule = findRule(transaction, resourceId, authenticatedUser);
+        this.userResourceId = Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
+        this.transaction = transaction;
+
+        this.accessControlRule = findRule(transaction, resourceId);
     }
 
-    private AccessControlRule findRule(WorkspaceTransaction transaction, ResourceId resourceId, AuthenticatedUser authenticatedUser) {
-        ResourceId userResourceId = Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
+    public Authorization(AccessControlRule accessControlRule) {
+        this.accessControlRule = accessControlRule;
+    }
+
+    private AccessControlRule findRule(WorkspaceTransaction transaction, ResourceId resourceId) {
 
         while(!ROOT_ID.equals(resourceId)) {
             Optional<AccessControlRule> rule = AcrIndex.getRule(transaction, resourceId, userResourceId);
@@ -151,6 +161,12 @@ public class Authorization {
         }
     }
 
+    public void assertCanView() {
+        if (!canView()) {
+            throw new WebApplicationException(UNAUTHORIZED);
+        }
+    }
+
 
     private static boolean evaluate(ExprValue exprValue) {
         return exprValue != null && "true".equals(exprValue.getExpression());
@@ -164,7 +180,19 @@ public class Authorization {
         return accessControlRule != null ? accessControlRule.getViewCondition() : null;
     }
 
-    private boolean isOwner() {
+    public boolean isOwner() {
         return accessControlRule != null && accessControlRule.isOwner();
+    }
+
+    public Authorization ofChild(ResourceId childId) {
+        Preconditions.checkNotNull(userResourceId);
+        Preconditions.checkNotNull(transaction);
+
+        Optional<AccessControlRule> rule = AcrIndex.getRule(transaction, childId, userResourceId);
+        if(rule.isPresent()) {
+            return new Authorization(rule.get());
+        } else {
+            return this; // if child doesn't have ACR return parent ACR
+        }
     }
 }
