@@ -3,6 +3,9 @@ package org.activityinfo.service.tasks;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 
+/**
+ * Describes the status of a background task being run on behalf of the user.
+ */
 public class UserTask implements IsRecord {
 
     private String id;

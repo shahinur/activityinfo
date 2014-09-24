@@ -14,12 +14,10 @@ import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.migrator.filter.MigrationFilter;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.CuidGenerator;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.activityinfo.store.hrd.ClientIdProvider;
 import org.activityinfo.store.hrd.entity.Workspace;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 
@@ -64,11 +62,7 @@ public class MigrateDatabaseTask {
             fetchDatabaseProperties(connection);
             filter = new DatabaseFilter(databaseId, countryId);
 
-            CuidGenerator generator = new CuidGenerator(
-                new ClientIdProvider().getNext(), System.currentTimeMillis());
-
-
-            FreshIdStrategy idStrategy = new FreshIdStrategy(generator);
+            FreshIdStrategy idStrategy = new FreshIdStrategy();
             ResourceId workspaceId = idStrategy.resourceId(CuidAdapter.DATABASE_DOMAIN, databaseId);
             Workspace workspace = new Workspace(workspaceId);
 

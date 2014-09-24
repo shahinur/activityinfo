@@ -44,7 +44,7 @@ public class LoadService {
 
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    public Response startImport(@InjectParam AuthenticatedUser user,
+    public UserTask startImport(@InjectParam AuthenticatedUser user,
                                 @FormParam("ownerId") ResourceId ownerId,
                                 @FormParam("blobId") BlobId blobId) {
 
@@ -75,7 +75,7 @@ public class LoadService {
                 .param("ownerId", ownerId.asString())
                 .param("userTaskId", userTask.getId()));
 
-            return Response.ok(Response.Status.CREATED).build();
+            return userTask;
         }
     }
 

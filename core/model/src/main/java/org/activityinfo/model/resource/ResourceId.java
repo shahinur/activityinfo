@@ -2,6 +2,7 @@ package org.activityinfo.model.resource;
 
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.google.common.base.Strings;
 
 import javax.annotation.Nonnull;
 
@@ -21,20 +22,12 @@ public final class ResourceId {
      * used as a Jersey {@code @PathParam}
      */
     public static ResourceId valueOf(@Nonnull String string) {
-        assert string != null;
+        assert !Strings.isNullOrEmpty(string);
         return new ResourceId(string);
     }
 
     private ResourceId(@Nonnull String text) {
         this.text = text;
-    }
-
-    public ResourceId getWorkspaceId() {
-        int index = text.indexOf('-');
-        if(index < 0) {
-            throw new IllegalArgumentException("malformed argument");
-        }
-        return ResourceId.valueOf(text.substring(0, index));
     }
 
     @JsonValue

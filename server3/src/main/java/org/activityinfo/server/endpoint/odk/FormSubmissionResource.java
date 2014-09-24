@@ -180,7 +180,7 @@ public class FormSubmissionResource {
                                     LOGGER.log(Level.SEVERE, "Could not find the specified filename");
                                     return Response.status(BAD_REQUEST).build();
                                 }
-                                BlobId blobId = new BlobId(imageRowValue.getBlobId());
+                                BlobId blobId = BlobId.valueOf(imageRowValue.getBlobId());
                                 blobFieldStorageService.put(user, blobId, contentDisposition, mimeType, byteSource);
                             } catch (MessagingException messagingException) {
                                 LOGGER.log(Level.SEVERE, "Unable to parse input", messagingException);

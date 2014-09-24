@@ -11,18 +11,20 @@ import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.BlobResource;
 import org.activityinfo.service.blob.UploadCredentials;
 
-import javax.ws.rs.FormParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Map;
 
 @Path("/service/blob")
 public class DevBlobStorageService implements BlobFieldStorageService {
 
+    @POST
     @Override
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
     public UploadCredentials startUpload(@InjectParam AuthenticatedUser user,
-                                         @PathParam("blobId") BlobId blobId,
+                                         @FormParam("blobId") BlobId blobId,
                                          @FormParam("fileName") String fileName) {
         BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
         String uploadUrl = blobstoreService.createUploadUrl("/uploadComplete");
