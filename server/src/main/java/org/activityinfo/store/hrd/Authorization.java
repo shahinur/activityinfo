@@ -177,7 +177,7 @@ public class Authorization {
         return accessControlRule != null && accessControlRule.isOwner();
     }
 
-    public Authorization ofChild(ResourceId childId) {
+    public Authorization ofChild(ResourceId childId, WorkspaceTransaction transaction) {
         Preconditions.checkNotNull(userResourceId);
         Preconditions.checkNotNull(transaction);
 
