@@ -111,7 +111,6 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
-            <version>${gwtVersion}</version>
             <executions>
               <execution>
                 <goals>
@@ -129,7 +128,6 @@
         </plugins>
       </build>
     </profile>
-
   </profiles>
 
 </project>

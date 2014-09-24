@@ -12,6 +12,10 @@
 
   <artifactId>activityinfo-excel-loader</artifactId>
 
+  <properties>
+    <poi.version>3.11-beta2-bdd-b14</poi.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.activityinfo</groupId>
