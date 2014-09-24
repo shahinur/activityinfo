@@ -178,10 +178,13 @@ public class HrdResourceStore implements ResourceStore {
                     setOwner(rootNodeAuthorization.isOwner());
 
             for (ResourceNode child : workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId())) {
-                Authorization childAuthorization = rootNodeAuthorization.ofChild(child.getId());
-                child.setEditAllowed(childAuthorization.canEdit()).
-                        setOwner(childAuthorization.isOwner());
-                rootNode.getChildren().add(child);
+
+                try (WorkspaceTransaction childTx = beginRead(workspace, user)) {
+                    Authorization childAuthorization = rootNodeAuthorization.ofChild(child.getId(), childTx);
+                    child.setEditAllowed(childAuthorization.canEdit()).
+                            setOwner(childAuthorization.isOwner());
+                    rootNode.getChildren().add(child);
+                }
             }
 
             return new FolderProjection(rootNode);
