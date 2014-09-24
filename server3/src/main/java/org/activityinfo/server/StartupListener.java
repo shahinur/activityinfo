@@ -31,6 +31,7 @@ import org.activityinfo.server.authentication.AuthenticationModule;
 import org.activityinfo.server.branding.BrandingModule;
 import org.activityinfo.server.database.hibernate.HibernateModule;
 import org.activityinfo.server.endpoint.odk.OdkModule;
+import org.activityinfo.server.endpoint.test.TestModule;
 import org.activityinfo.server.login.LoginModule;
 import org.activityinfo.server.mail.MailModule;
 import org.activityinfo.server.util.TemplateModule;
@@ -80,9 +81,9 @@ public class StartupListener extends GuiceServletContextListener {
                 new JaxRsModule(),
                 new OdkModule(),
                 new GcsBlobFieldStorageServiceModule(),
-                new ServiceModule()));
+                new ServiceModule(),
+                new TestModule()));
 
         return Guice.createInjector(modules);
     }
-
 }
