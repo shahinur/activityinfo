@@ -1,7 +1,6 @@
 package org.activityinfo.store.hrd;
 
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.base.Optional;
@@ -12,6 +11,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.type.expr.ExprValue;
+import org.activityinfo.store.hrd.entity.LatestContent;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.AcrIndex;
 
@@ -19,7 +19,6 @@ import javax.ws.rs.WebApplicationException;
 
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
-import static org.activityinfo.store.hrd.entity.Content.deserializeResourceNode;
 import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
 
 public class Authorization {
@@ -80,8 +79,8 @@ public class Authorization {
         Optional<AccessControlRule> rule = AcrIndex.getRule(datastore, resourceId, userResourceId);
 
         try {
-            Entity entity = datastore.get(KeyFactory.createKey(ROOT_KIND, resourceId.asString()));
-            ResourceNode resourceNode = deserializeResourceNode(entity);
+            ResourceNode resourceNode = new LatestContent(
+                    KeyFactory.createKey(ROOT_KIND, resourceId.asString()), resourceId).getAsNode(datastore);
             assert ROOT_ID.equals(resourceNode.getOwnerId());
         } catch (EntityNotFoundException e) {
             throw new IllegalStateException("Missing resource: " + resourceId);

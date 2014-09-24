@@ -62,6 +62,11 @@ public class LatestContent {
         return deserializeResourceNode(entity);
     }
 
+    public ResourceNode getAsNode(DatastoreService datastore) throws EntityNotFoundException {
+        Entity entity = datastore.get(key);
+        return deserializeResourceNode(entity);
+    }
+
     public Iterable<ResourceId> getChildIds(WorkspaceTransaction tx) throws EntityNotFoundException {
         return Iterables.transform(getAsNode(tx).getChildren(), new Function<ResourceNode, ResourceId>() {
             @Override
