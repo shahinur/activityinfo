@@ -1,9 +1,6 @@
 package org.activityinfo.model.annotation.processor;
 
 import org.activityinfo.model.annotation.DefaultBooleanValue;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.primitive.BooleanType;
-import org.activityinfo.model.type.primitive.TextType;
 
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
@@ -24,7 +21,7 @@ public class Field {
     String type;
     TypeMirror typeMirror;
     ExecutableElement getter;
-    FieldType fieldType;
+    String fieldType;
 
 
     public String getReadExpression() {
@@ -81,19 +78,19 @@ public class Field {
         return getter;
     }
 
-    public FieldType getFieldType() {
+    public String getFieldType() {
         return fieldType;
     }
 
     public String getTypeExpression() {
         if(typeMirror.getKind() == TypeKind.BOOLEAN) {
-            return BooleanType.class.getName() + ".INSTANCE";
+            return "org.activityinfo.model.type.primitive.BooleanType.INSTANCE";
 
         } else if(typeMirror.getKind() == TypeKind.DECLARED) {
             DeclaredType type = (DeclaredType) typeMirror;
             TypeElement typeElement = (TypeElement) type.asElement();
             if(typeElement.getQualifiedName().contentEquals("java.lang.String")) {
-                return TextType.class.getName() + ".INSTANCE";
+                return "org.activityinfo.model.type.primitive.TextType.INSTANCE";
             }
         }
         throw new UnsupportedOperationException(typeMirror.toString());
