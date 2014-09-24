@@ -29,12 +29,16 @@ public class Authorization {
         Preconditions.checkNotNull(authenticatedUser);
         Preconditions.checkNotNull(resourceId);
         Preconditions.checkNotNull(transaction);
+        Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
 
-        accessControlRule = findRule(transaction, resourceId, authenticatedUser);
+        this.accessControlRule = findRule(transaction, resourceId);
     }
 
-    private AccessControlRule findRule(WorkspaceTransaction transaction, ResourceId resourceId, AuthenticatedUser authenticatedUser) {
-        ResourceId userResourceId = Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
+    public Authorization(AccessControlRule accessControlRule) {
+        this.accessControlRule = accessControlRule;
+    }
+
+    private AccessControlRule findRule(WorkspaceTransaction transaction, ResourceId resourceId) {
 
         while(!resourceId.equals(Resources.ROOT_ID)) {
             Optional<AccessControlRule> rule = AcrIndex.getRule(transaction, resourceId, userResourceId);
@@ -120,6 +124,12 @@ public class Authorization {
         }
     }
 
+    public void assertCanView() {
+        if (!canView()) {
+            throw new WebApplicationException(UNAUTHORIZED);
+        }
+    }
+
 
     private static boolean evaluate(ExprValue exprValue) {
         return exprValue != null && "true".equals(exprValue.getExpression());
@@ -135,5 +145,17 @@ public class Authorization {
 
     public boolean isOwner() {
         return accessControlRule != null && accessControlRule.isOwner();
+    }
+
+    public Authorization ofChild(ResourceId childId) {
+        Preconditions.checkNotNull(userResourceId);
+        Preconditions.checkNotNull(transaction);
+
+        Optional<AccessControlRule> rule = AcrIndex.getRule(transaction, childId, userResourceId);
+        if(rule.isPresent()) {
+            return new Authorization(rule.get());
+        } else {
+            return this; // if child doesn't have ACR return parent ACR
+        }
     }
 }
