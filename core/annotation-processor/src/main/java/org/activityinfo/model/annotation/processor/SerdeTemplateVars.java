@@ -3,7 +3,6 @@ package org.activityinfo.model.annotation.processor;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
 
 import java.util.List;
-import java.util.SortedSet;
 
 public class SerdeTemplateVars extends TemplateVars {
     String pkg;
@@ -11,12 +10,6 @@ public class SerdeTemplateVars extends TemplateVars {
     String formClassId;
     String simpleClassName;
     String serdeClass;
-    SortedSet<String> imports;
-
-    String generated;
-    String record;
-    String list;
-    String arrayList;
 
     List<Field> fields;
     List<ListField> listFields;

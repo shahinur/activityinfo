@@ -6,7 +6,6 @@ public class ListField {
     String name;
     ExecutableElement getter;
     String elementType;
-    String elementFormType;
 
     public String getName() {
         return name;
@@ -20,8 +19,8 @@ public class ListField {
         return elementType;
     }
 
-    public String getElementFormType() {
-        return elementFormType;
+    public String getElementSerdeType() {
+        return elementType + "Serde";
     }
 
     public String getGetterName() {
@@ -29,6 +28,6 @@ public class ListField {
     }
 
     public String getTypeExpression() {
-        return "new ListFieldType(new SubFormType(" + elementFormType + ".CLASS_ID" + "))";
+        return "new ListFieldType(new SubFormType(" + getElementSerdeType() + ".CLASS_ID" + "))";
     }
 }
