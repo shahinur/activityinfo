@@ -3,15 +3,7 @@ package org.activityinfo.model.annotation.processor;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.annotation.RecordBean;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.RecordSerde;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.ListFieldType;
-import org.activityinfo.model.type.SubFormType;
 
-import javax.annotation.Generated;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -173,20 +165,7 @@ public class RecordBeanProcessor extends AbstractProcessor {
         Map<String, ExecutableElement> methods = Maps.newHashMap();
         findGetterMethods(type, methods);
 
-        Set<TypeMirror> types = new TypeMirrorSet();
-        types.addAll(returnTypesOf(methods.values()));
-        types.add(getTypeMirror(Generated.class));
-        types.add(getTypeMirror(Record.class));
-        types.add(getTypeMirror(ArrayList.class));
-        types.add(getTypeMirror(ListFieldType.class));
-        types.add(getTypeMirror(SubFormType.class));
-        types.add(getTypeMirror(FormClass.class));
-        types.add(getTypeMirror(FormField.class));
-        types.add(getTypeMirror(ResourceId.class));
-        types.add(getTypeMirror(RecordSerde.class));
-
         String pkg = TypeSimplifier.packageNameOf(type);
-        TypeSimplifier typeSimplifier = new TypeSimplifier(typeUtils, pkg, types, type.asType());
 
         List<Field> fields = new ArrayList<>();
         List<ListField> listFields = new ArrayList<>();
@@ -194,32 +173,21 @@ public class RecordBeanProcessor extends AbstractProcessor {
         for(ExecutableElement getter : methods.values()) {
             TypeMirror fieldType = getter.getReturnType();
             if(isList(fieldType)) {
-                TypeMirror elementType = listElementType(fieldType);
-
                 ListField field = new ListField();
                 field.name = parseFieldName(getter);
                 field.getter = getter;
-                field.elementType = typeSimplifier.simplify(elementType);
-                field.elementFormType = serdeClassType(elementType);
+                field.elementType = listElementType(fieldType);
                 listFields.add(field);
 
             } else {
                 Field field = new Field();
                 field.name = parseFieldName(getter);
                 field.getter = getter;
-                field.type = typeSimplifier.simplify(fieldType);
+                field.type = qualifiedNameOf(fieldType);
                 field.typeMirror = fieldType;
                 fields.add(field);
             }
         }
-
-        vars.imports = typeSimplifier.typesToImport();
-        vars.generated = typeSimplifier.simplify(getTypeMirror(Generated.class));
-        vars.record = typeSimplifier.simplify(getTypeMirror(Record.class));
-        vars.list = typeSimplifier.simplify(getTypeMirror(List.class));
-        vars.arrayList = typeSimplifier.simplify(getTypeMirror(ArrayList.class));
-
-
         vars.fields = fields;
         vars.listFields = listFields;
     }
@@ -241,20 +209,25 @@ public class RecordBeanProcessor extends AbstractProcessor {
         }
     }
 
-    private TypeMirror listElementType(TypeMirror listType) {
+    private String listElementType(TypeMirror listType) {
+        // Get the type argument of List<E> where E is the element type
         DeclaredType declaredType = (DeclaredType) listType;
-        return declaredType.getTypeArguments().get(0);
+        TypeMirror elementType = declaredType.getTypeArguments().get(0);
+
+        return qualifiedNameOf(elementType);
     }
 
-
-    private Set<TypeMirror> returnTypesOf(Iterable<ExecutableElement> methods) {
-        Set<TypeMirror> returnTypes = new TypeMirrorSet();
-        for (ExecutableElement method : methods) {
-            returnTypes.add(method.getReturnType());
-        }
-        return returnTypes;
+    /**
+     *
+     * @param typeMirror
+     * @return the qualified name of the
+     */
+    private String qualifiedNameOf(TypeMirror typeMirror) {
+        return typeMirror.toString();
+//        TypeElement elementType = (TypeElement) processingEnv.getTypeUtils().asElement(typeMirror);
+//        assert elementType != null : "asElement(" + typeMirror + ") is null";
+//        return elementType.getQualifiedName().toString();
     }
-
 
     private TypeMirror getTypeMirror(Class<?> c) {
         return processingEnv.getElementUtils().getTypeElement(c.getName()).asType();
