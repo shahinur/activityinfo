@@ -28,15 +28,8 @@ public class HibernateDAOModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bindDAOProxy(ActivityDAO.class);
         bindDAOProxy(AuthenticationDAO.class);
-        bindDAOProxy(CountryDAO.class);
-        bindDAOProxy(IndicatorDAO.class);
-        bindDAOProxy(ReportDefinitionDAO.class);
-        bindDAOProxy(PartnerDAO.class);
-        bindDAOProxy(UserDatabaseDAO.class);
         bind(UserDAO.class).to(UserDAOImpl.class);
-        bind(UserPermissionDAO.class).to(UserPermissionDAOImpl.class);
     }
 
     private <T extends DAO> void bindDAOProxy(Class<T> daoClass) {

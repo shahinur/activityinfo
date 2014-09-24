@@ -26,15 +26,13 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.endpoint.gwtrpc.CommandServlet;
 
 /**
  * Stores and provides the authentication status for requests.
  * <p/>
  * <p/>
  * This value is initially set for each new request by the
- * {@link AuthenticationFilter}. It can be overridden in specific cases (see
- * {@link CommandServlet})
+ * {@link AuthenticationFilter}. It can be overridden in specific cases
  */
 @Singleton
 public class ServerSideAuthProvider implements Provider<AuthenticatedUser> {

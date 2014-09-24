@@ -1,9 +1,6 @@
 package org.activityinfo.server.util.jaxrs;
 
-import com.bedatadriven.geojson.jackson2.GeoJsonModule;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.inject.Inject;
 

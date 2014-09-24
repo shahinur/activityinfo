@@ -25,14 +25,8 @@ package org.activityinfo.server.login;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.sun.jersey.api.view.Viewable;
-import org.activityinfo.server.database.hibernate.dao.PartnerDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
-import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
-import org.activityinfo.server.database.hibernate.dao.UserPermissionDAO;
-import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.database.hibernate.entity.UserDatabase;
-import org.activityinfo.server.database.hibernate.entity.UserPermission;
 import org.activityinfo.server.login.model.SignUpConfirmationInvalidPageModel;
 import org.activityinfo.server.login.model.SignUpConfirmationPageModel;
 import org.activityinfo.server.util.MailingListClient;
@@ -45,7 +39,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,29 +50,17 @@ public class SignUpConfirmationController {
 
     private static final int MAX_PARAM_LENGTH = 200;
 
-    private static final int DEFAULT_DATABASE_ID = 507; // training DB
-    private static final int DEFAULT_PARTNER_ID = 274; // bedatadriven
-
     private final MailingListClient mailingList;
 
     private final Provider<UserDAO> userDAO;
-    private final Provider<UserDatabaseDAO> databaseDAO;
-    private final Provider<PartnerDAO> partnerDAO;
-    private final Provider<UserPermissionDAO> permissionDAO;
     private final AuthTokenProvider authTokenProvider;
 
     @Inject
     public SignUpConfirmationController(Provider<UserDAO> userDAO,
-                                        Provider<UserDatabaseDAO> databaseDAO,
-                                        Provider<PartnerDAO> partnerDAO,
-                                        Provider<UserPermissionDAO> permissionDAO,
                                         MailingListClient mailChimp,
                                         AuthTokenProvider authTokenProvider) {
         super();
         this.userDAO = userDAO;
-        this.databaseDAO = databaseDAO;
-        this.partnerDAO = partnerDAO;
-        this.permissionDAO = permissionDAO;
         this.authTokenProvider = authTokenProvider;
         this.mailingList = mailChimp;
     }
@@ -111,9 +92,6 @@ public class SignUpConfirmationController {
             user.clearChangePasswordKey();
             user.setEmailNotification(true);
 
-            // add user to default database
-            addUserToDefaultDatabase(user);
-
             if (newsletter) {
                 mailingList.subscribe(user);
             }
@@ -131,17 +109,6 @@ public class SignUpConfirmationController {
         }
     }
 
-    @LogException(emailAlert = true)
-    protected void addUserToDefaultDatabase(User user) {
-        UserDatabase database = databaseDAO.get().findById(DEFAULT_DATABASE_ID);
-        Partner partner = partnerDAO.get().findById(DEFAULT_PARTNER_ID);
-        UserPermission permission = new UserPermission(database, user);
-        permission.setPartner(partner);
-        permission.setAllowView(true);
-        permission.setAllowViewAll(true);
-        permission.setLastSchemaUpdate(new Date());
-        permissionDAO.get().persist(permission);
-    }
 
     private void checkParam(String value, boolean required) {
         boolean illegal = false;

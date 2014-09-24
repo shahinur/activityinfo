@@ -1,0 +1,96 @@
+#* @vtlvariable name="" type="org.activityinfo.model.annotation.processor.SerdeTemplateVars" *#
+## Template for each generated Accessor_Foo class.
+## This template uses the Apache Velocity Template Language (VTL).
+## The variables ($pkg, $props, and so on) are defined by the fields of AutoValueTemplateVars.
+##
+## Comments, like this one, begin with ##. The comment text extends up to and including the newline
+## character at the end of the line. So comments also serve to join a line to the next one.
+## Velocity deletes a newline after a directive (#if, #foreach, #end etc) so ## is not needed there.
+## That does mean that we sometimes need an extra blank line after such a directive.
+##
+## A post-processing step will remove unwanted spaces and blank lines, but will not join two lines.
+
+#if (!$pkg.empty)
+package $pkg;
+#end
+
+#foreach ($i in $imports)
+import $i;
+#end
+
+@${generated}("org.activityinfo.model.annotation.processor.FormClassProcessor")
+public final class $serdeClass implements RecordSerde<$beanClass> {
+
+    public static final ResourceId CLASS_ID = ResourceId.valueOf("${formClassId}");
+
+    public static final $serdeClass INSTANCE = new ${serdeClass}();
+
+    private ${serdeClass}() { }
+
+    @Override
+    public $beanClass toBean($record record) {
+        $beanClass bean = new ${beanClass}();
+##
+## Assign each of the fields to the new bean instance
+##
+#foreach ($f in $fields)
+        bean.${f.setterName}(${f.readExpression});
+#end
+##
+## For list properties, we need to add items
+##
+#foreach ($f in $listFields)
+        for(Record item : record.getRecordList("${f.name}")) {
+            bean.${f.getterName}().add(${f.elementFormType}.INSTANCE.toBean(item));
+        }
+#end
+        return bean;
+    }
+
+    @Override
+    public $record toRecord($beanClass bean) {
+        $record record = new ${record}();
+        record.set("classId", CLASS_ID);
+##
+## Write each of the fields to the record instance
+#foreach ($f in $fields)
+        record.set("${f.name}", bean.${f.getterName}());
+#end
+##
+##
+## For list properties, only write if the list is not empty
+##
+#foreach ($f in $listFields)
+        if(!bean.${f.getterName}().isEmpty()) {
+            List<${record}> items = new ArrayList<${record}>();
+            for(${f.elementType} item : bean.${f.getterName}()) {
+                items.add(${f.elementFormType}.INSTANCE.toRecord(item));
+            }
+            record.set("${f.name}", items);
+        }
+#end
+##
+        return record;
+    }
+
+    @Override
+    public FormClass getFormClass() {
+        FormClass formClass = new FormClass(CLASS_ID);
+##
+#foreach ($f in $fields)
+
+        formClass.addElement(new FormField(ResourceId.valueOf("${f.name}"))
+        .setLabel("${f.name}")
+        .setType(${f.typeExpression}));
+#end
+##
+#foreach ($f in $listFields)
+
+        formClass.addElement(new FormField(ResourceId.valueOf("${f.name}"))
+        .setLabel("${f.name}")
+        .setType(${f.typeExpression}));
+#end
+##
+        return formClass;
+    }
+}

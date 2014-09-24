@@ -22,6 +22,7 @@ package org.activityinfo.server.login;
  * #L%
  */
 
+import com.google.common.base.Charsets;
 import com.google.inject.util.Providers;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -32,7 +33,6 @@ import org.activityinfo.server.database.hibernate.entity.Domain;
 import org.activityinfo.server.login.model.PageModel;
 import org.activityinfo.server.util.TemplateModule;
 import org.activityinfo.server.util.jaxrs.FreemarkerViewProcessor;
-import org.bouncycastle.util.Strings;
 import org.junit.BeforeClass;
 
 import java.io.ByteArrayOutputStream;
@@ -61,7 +61,7 @@ public abstract class ViewTestCase {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         processor.writeTo(template, model.asViewable(), baos);
 
-        return Strings.fromUTF8ByteArray(baos.toByteArray());
+        return new String(baos.toByteArray(), Charsets.UTF_8);
     }
 
     protected void assertProcessable(PageModel model) {
