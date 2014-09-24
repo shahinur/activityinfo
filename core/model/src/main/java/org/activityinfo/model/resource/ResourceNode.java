@@ -28,6 +28,11 @@ public class ResourceNode {
     private List<ResourceNode> children = Lists.newArrayList();
     private boolean parent;
 
+    // permissions
+    private boolean canEdit;
+    private boolean canView;
+    private boolean owner;
+
     @JsonCreator
     public ResourceNode(@JsonProperty("id") ResourceId id) {
         this.id = id;
@@ -134,6 +139,33 @@ public class ResourceNode {
 
     public void setParent(boolean parent) {
         this.parent = parent;
+    }
+
+    public boolean isCanEdit() {
+        return canEdit;
+    }
+
+    public ResourceNode setCanEdit(boolean canEdit) {
+        this.canEdit = canEdit;
+        return this;
+    }
+
+    public boolean isCanView() {
+        return canView;
+    }
+
+    public ResourceNode setCanView(boolean canView) {
+        this.canView = canView;
+        return this;
+    }
+
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public ResourceNode setOwner(boolean owner) {
+        this.owner = owner;
+        return this;
     }
 
     private void appendTo(StringBuilder sb, String indent) {
