@@ -29,7 +29,7 @@ public class ResourceNode {
     private boolean parent;
 
     // permissions
-    private boolean canEdit;
+    private boolean editAllowed;
     private boolean owner;
 
     @JsonCreator
@@ -140,12 +140,12 @@ public class ResourceNode {
         this.parent = parent;
     }
 
-    public boolean isCanEdit() {
-        return canEdit;
+    public boolean isEditAllowed() {
+        return editAllowed;
     }
 
-    public ResourceNode setCanEdit(boolean canEdit) {
-        this.canEdit = canEdit;
+    public ResourceNode setEditAllowed(boolean editAllowed) {
+        this.editAllowed = editAllowed;
         return this;
     }
 
