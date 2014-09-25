@@ -65,19 +65,19 @@ public class Authorization {
     /**
      * Special-purpose constructor. Won't fetch ACRs recursively and should only be used on root entities (workspaces).
      * @param authenticatedUser The {@link AuthenticatedUser} this {@link AccessControlRule} should correspond with.
-     * @param resourceId The id of the {@link Resource} this {@link AccessControlRule} should correspond with.
+     * @param workspaceId The id of the {@link Resource} this {@link AccessControlRule} should correspond with.
      * @param datastore The {@link DatastoreService} that should be used to extract the {@link AccessControlRule}.
      */
-    public Authorization(AuthenticatedUser authenticatedUser, ResourceId resourceId, DatastoreService datastore) {
+    public Authorization(AuthenticatedUser authenticatedUser, ResourceId workspaceId, DatastoreService datastore) {
         ResourceId userResourceId = Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
-        Optional<AccessControlRule> rule = AcrIndex.getRule(datastore, resourceId, userResourceId);
+        Optional<AccessControlRule> rule = AcrIndex.getRule(datastore, workspaceId, userResourceId, workspaceId);
 
         try {
             ResourceNode resourceNode = new LatestContent(
-                    KeyFactory.createKey(ROOT_KIND, resourceId.asString()), resourceId).getAsNode(datastore);
+                    KeyFactory.createKey(ROOT_KIND, workspaceId.asString()), workspaceId).getAsNode(datastore);
             assert ROOT_ID.equals(resourceNode.getOwnerId());
         } catch (EntityNotFoundException e) {
-            throw new IllegalStateException("Missing resource: " + resourceId);
+            throw new IllegalStateException("Missing resource: " + workspaceId);
         }
 
         if(rule.isPresent()) {
@@ -177,7 +177,7 @@ public class Authorization {
         return accessControlRule != null && accessControlRule.isOwner();
     }
 
-    public Authorization ofChild(ResourceId childId, WorkspaceTransaction transaction) {
+    public Authorization ofChild(ResourceId childId) {
         Preconditions.checkNotNull(userResourceId);
         Preconditions.checkNotNull(transaction);
 
