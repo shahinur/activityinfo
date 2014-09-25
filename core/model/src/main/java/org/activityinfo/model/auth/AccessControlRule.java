@@ -74,7 +74,6 @@ public class AccessControlRule implements IsResource {
         this.resourceId = resourceId;
     }
 
-
     /**
      *
      * @return the boolean expression that determines whether the principal is authorized
@@ -121,6 +120,7 @@ public class AccessControlRule implements IsResource {
     public static AccessControlRule fromResource(Resource resource) {
         ResourceId resourceId = resource.getOwnerId();
         ReferenceValue principal = ReferenceValue.fromRecord(resource.getRecord("principal"));
+        ReferenceValue workspace = ReferenceValue.fromRecord(resource.getRecord("workspaceId"));
 
         AccessControlRule rule = new AccessControlRule(resourceId, principal.getResourceId());
         rule.setResourceId(resource.getOwnerId());
