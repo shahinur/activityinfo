@@ -20,8 +20,8 @@ public class AcrIndex {
 
     private static final String KIND = "ACR";
 
-    public static Key key(AccessControlRule rule) {
-        return key(rule.getResourceId(), rule.getPrincipalId(), rule.getWorkspaceId());
+    public static Key key(AccessControlRule rule, ResourceId workspaceId) {
+        return key(rule.getResourceId(), rule.getPrincipalId(), workspaceId);
     }
 
     public static Key key(ResourceId resourceId, ResourceId principalId, ResourceId workspaceId) {
@@ -39,7 +39,7 @@ public class AcrIndex {
     }
 
     public static void put(WorkspaceTransaction workspaceTransaction, AccessControlRule rule) {
-        Entity entity = new Entity(key(rule));
+        Entity entity = new Entity(key(rule, workspaceTransaction.getWorkspace().getWorkspaceId()));
         entity.setUnindexedProperty("owner", rule.isOwner());
         entity.setUnindexedProperty("view", toString(rule.getViewCondition()));
         entity.setUnindexedProperty("edit", toString(rule.getEditCondition()));
@@ -57,7 +57,7 @@ public class AcrIndex {
             return fromEntity(entity);
 
         } catch (EntityNotFoundException e) {
-            AccessControlRule rule = new AccessControlRule(resourceId, principalId, versionedTransaction.getWorkspace().getWorkspaceId());
+            AccessControlRule rule = new AccessControlRule(resourceId, principalId);
             rule.setOwner(false);
             rule.setEditCondition(null);
             rule.setViewCondition(null);
@@ -69,12 +69,7 @@ public class AcrIndex {
         String principalId = entity.getKey().getName();
         String resourceId = entity.getKey().getParent().getName();
 
-        String workspaceId = resourceId;
-        if (entity.getKey().getParent().getParent() != null) {
-            workspaceId = entity.getKey().getParent().getParent().getName();
-        }
-
-        AccessControlRule rule = new AccessControlRule(ResourceId.valueOf(resourceId), ResourceId.valueOf(principalId), ResourceId.valueOf(workspaceId));
+        AccessControlRule rule = new AccessControlRule(ResourceId.valueOf(resourceId), ResourceId.valueOf(principalId));
         rule.setOwner((Boolean)entity.getProperty("owner"));
         rule.setViewCondition(ExprValue.valueOf((String) entity.getProperty("view")));
         rule.setEditCondition(ExprValue.valueOf((String) entity.getProperty("edit")));
