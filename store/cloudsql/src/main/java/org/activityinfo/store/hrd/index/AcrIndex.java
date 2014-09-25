@@ -8,6 +8,7 @@ import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.expr.ExprValue;
+import org.activityinfo.store.hrd.entity.LatestContent;
 import org.activityinfo.store.hrd.entity.Workspace;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 
@@ -19,20 +20,26 @@ public class AcrIndex {
 
     private static final String KIND = "ACR";
 
-    public Key key(AccessControlRule rule) {
-        return key(rule.getResourceId(), rule.getPrincipalId());
+    public static Key key(AccessControlRule rule) {
+        return key(rule.getResourceId(), rule.getPrincipalId(), rule.getWorkspaceId());
     }
 
-    public static Key key(ResourceId resourceId, ResourceId principalId) {
-        return KeyFactory.createKey(parentKey(resourceId), KIND, principalId.asString());
+    public static Key key(ResourceId resourceId, ResourceId principalId, ResourceId workspaceId) {
+        boolean isWorkspace = workspaceId.equals(resourceId);
+        if (isWorkspace) {
+            return KeyFactory.createKey(workspaceKey(workspaceId), KIND, principalId.asString());
+        } else {
+            Key parentKey = KeyFactory.createKey(workspaceKey(workspaceId), LatestContent.KIND, resourceId.asString());
+            return KeyFactory.createKey(parentKey, KIND, principalId.asString());
+        }
     }
 
-    private static Key parentKey(ResourceId resourceId) {
+    private static Key workspaceKey(ResourceId resourceId) {
         return new Workspace(resourceId).getRootKey();
     }
 
     public static void put(WorkspaceTransaction workspaceTransaction, AccessControlRule rule) {
-        Entity entity = new Entity(key(rule.getResourceId(), rule.getPrincipalId()));
+        Entity entity = new Entity(key(rule));
         entity.setUnindexedProperty("owner", rule.isOwner());
         entity.setUnindexedProperty("view", toString(rule.getViewCondition()));
         entity.setUnindexedProperty("edit", toString(rule.getEditCondition()));
@@ -46,11 +53,11 @@ public class AcrIndex {
                                         ResourceId principalId) {
 
         try {
-            Entity entity = versionedTransaction.get(key(resourceId, principalId));
+            Entity entity = versionedTransaction.get(key(resourceId, principalId, versionedTransaction.getWorkspace().getWorkspaceId()));
             return fromEntity(entity);
 
         } catch (EntityNotFoundException e) {
-            AccessControlRule rule = new AccessControlRule(resourceId, principalId);
+            AccessControlRule rule = new AccessControlRule(resourceId, principalId, versionedTransaction.getWorkspace().getWorkspaceId());
             rule.setOwner(false);
             rule.setEditCondition(null);
             rule.setViewCondition(null);
@@ -61,7 +68,13 @@ public class AcrIndex {
     private static AccessControlRule fromEntity(Entity entity) {
         String principalId = entity.getKey().getName();
         String resourceId = entity.getKey().getParent().getName();
-        AccessControlRule rule = new AccessControlRule(ResourceId.valueOf(resourceId), ResourceId.valueOf(principalId));
+
+        String workspaceId = resourceId;
+        if (entity.getKey().getParent().getParent() != null) {
+            workspaceId = entity.getKey().getParent().getParent().getName();
+        }
+
+        AccessControlRule rule = new AccessControlRule(ResourceId.valueOf(resourceId), ResourceId.valueOf(principalId), ResourceId.valueOf(workspaceId));
         rule.setOwner((Boolean)entity.getProperty("owner"));
         rule.setViewCondition(ExprValue.valueOf((String) entity.getProperty("view")));
         rule.setEditCondition(ExprValue.valueOf((String) entity.getProperty("edit")));
@@ -70,23 +83,23 @@ public class AcrIndex {
 
     public static Optional<AccessControlRule> getRule(WorkspaceTransaction tx, ResourceId resourceId, ResourceId subjectId) {
         try {
-            return Optional.of(fromEntity(tx.get(key(resourceId, subjectId))));
+            return Optional.of(fromEntity(tx.get(key(resourceId, subjectId, tx.getWorkspace().getWorkspaceId()))));
         } catch (EntityNotFoundException e) {
             return Optional.absent();
         }
     }
 
     public static Optional<AccessControlRule> getRule(DatastoreService datastore, ResourceId resourceId,
-                                                      ResourceId subjectId) {
+                                                      ResourceId subjectId, ResourceId workspaceId) {
         try {
-            return Optional.of(fromEntity(datastore.get(key(resourceId, subjectId))));
+            return Optional.of(fromEntity(datastore.get(key(resourceId, subjectId, workspaceId))));
         } catch (EntityNotFoundException e) {
             return Optional.absent();
         }
     }
 
     public static Iterable<AccessControlRule> queryRules(WorkspaceTransaction tx, ResourceId resourceId) {
-        Query query = new Query(KIND, parentKey(resourceId));
+        Query query = new Query(KIND, workspaceKey(resourceId));
         return Iterables.transform(tx.prepare(query).asIterable(), new Function<Entity, AccessControlRule>() {
             @Override
             public AccessControlRule apply(Entity input) {
@@ -96,7 +109,7 @@ public class AcrIndex {
     }
 
     public static Iterable<Resource> queryRules(DatastoreService datastore, ResourceId resourceId) {
-        Query query = new Query(KIND, parentKey(resourceId));
+        Query query = new Query(KIND, workspaceKey(resourceId));
         return Iterables.transform(datastore.prepare(query).asIterable(), new Function<Entity, Resource>() {
             @Override
             public Resource apply(Entity input) {
