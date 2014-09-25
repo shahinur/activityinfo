@@ -16,4 +16,5 @@ public interface FieldValue {
      * @return this value's {@code FieldTypeClass}
      */
     FieldTypeClass getTypeClass();
+
 }

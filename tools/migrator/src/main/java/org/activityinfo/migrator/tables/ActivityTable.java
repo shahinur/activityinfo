@@ -13,6 +13,7 @@ import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormSection;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
@@ -132,8 +133,9 @@ public class ActivityTable extends ResourceMigrator {
         return Resources.createResource()
                         .setId(categoryId)
                         .setOwnerId(databaseId)
-                        .set(CLASS_FIELD, FolderClass.CLASS_ID)
-                        .set(FolderClass.LABEL_FIELD_ID.asString(), category);
+                        .setValue(Records.builder(FolderClass.CLASS_ID)
+                            .set(FolderClass.LABEL_FIELD_ID.asString(), category)
+                            .build());
     }
 
     private Map<Integer, List<FormElement>> queryFields(

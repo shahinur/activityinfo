@@ -2,9 +2,7 @@ package org.activityinfo.model.table;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.type.ReferenceValue;
 
 public class RowSource implements IsRecord {
@@ -36,10 +34,10 @@ public class RowSource implements IsRecord {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("rootFormClass", new ReferenceValue(rootFormClass).asRecord());
         record.set("criteria", criteriaExpression);
-        return record;
+        return record.build();
     }
 
     public static RowSource fromRecord(Record record) {

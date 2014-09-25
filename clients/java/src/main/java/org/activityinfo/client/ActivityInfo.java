@@ -1,6 +1,7 @@
 package org.activityinfo.client;
 
 import com.google.common.collect.Lists;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
@@ -27,9 +28,11 @@ public class ActivityInfo {
     public Folder createWorkspace(String label) {
         Resource resource = Resources.createResource();
         resource.setId(Resources.generateId());
-        resource.set("classId", FolderClass.CLASS_ID.asString());
         resource.setOwnerId(Resources.ROOT_ID);
-        resource.set(FolderClass.LABEL_FIELD_ID.asString(), label);
+
+        resource.setValue(Records.builder(FolderClass.CLASS_ID)
+            .set(FolderClass.LABEL_FIELD_ID.asString(), label)
+            .build());
         client.create(resource);
 
         return new Folder(client, new ResourceNode(resource));

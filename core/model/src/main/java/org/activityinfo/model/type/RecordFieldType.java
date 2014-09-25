@@ -4,23 +4,24 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 
-public class SubFormType implements FieldType {
+public class RecordFieldType implements FieldType {
 
-    public interface TypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass<SubFormValue> {}
+    public interface TypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass<Record> {}
 
     public static final TypeClass TYPE_CLASS = new TypeClass() {
 
         @Override
         public String getId() {
-            return "subForm";
+            return "record";
         }
 
         @Override
-        public SubFormType deserializeType(Record parameters) {
-            return new SubFormType(Types.readReference(parameters, "class"));
+        public RecordFieldType deserializeType(Record parameters) {
+            return new RecordFieldType(Types.readReference(parameters, "class"));
         }
 
         @Override
@@ -29,8 +30,8 @@ public class SubFormType implements FieldType {
         }
 
         @Override
-        public SubFormValue deserialize(Record record) {
-            return new SubFormValue(Types.readReference(record, "class"), record.isRecord("fields"));
+        public Record deserialize(Record record) {
+            return record;
         }
 
         @Override
@@ -46,7 +47,7 @@ public class SubFormType implements FieldType {
 
     private ResourceId classId;
 
-    public SubFormType(ResourceId classId) {
+    public RecordFieldType(ResourceId classId) {
         this.classId = classId;
     }
 
@@ -62,6 +63,6 @@ public class SubFormType implements FieldType {
 
     @Override
     public Record asRecord() {
-        return new Record().set("class", new ReferenceValue(classId).asRecord());
+        return Records.builder().set("class", new ReferenceValue(classId).asRecord()).build();
     }
 }

@@ -21,8 +21,6 @@ package org.activityinfo.model.type.expr;
  * #L%
  */
 
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.number.Quantity;
@@ -31,25 +29,15 @@ import org.activityinfo.model.type.primitive.BooleanFieldValue;
 /**
  * @author yuriyz on 8/14/14.
  */
-public class CalculatedValue implements FieldValue, IsRecord {
+public class CalculatedValue implements FieldValue {
 
     private FieldValue value;
 
-    public CalculatedValue(FieldValue value) {
-        this.value = value;
-    }
+    private CalculatedValue() {}
 
     @Override
     public FieldTypeClass getTypeClass() {
         return CalculatedFieldType.TYPE_CLASS;
-    }
-
-    @Override
-    public Record asRecord() {
-        if (value instanceof IsRecord) {
-            return ((IsRecord)value).asRecord();
-        }
-        return new Record();
     }
 
     public String asString() {

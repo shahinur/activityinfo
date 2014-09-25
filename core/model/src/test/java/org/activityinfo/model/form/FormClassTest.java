@@ -24,7 +24,5 @@ public class FormClassTest {
 
         FormClass reform = FormClass.fromResource(resource);
         assertThat(reform.getFields(), hasSize(1));
-
     }
-
 }

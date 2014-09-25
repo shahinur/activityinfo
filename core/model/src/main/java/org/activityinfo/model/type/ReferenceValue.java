@@ -6,9 +6,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.*;
 
 import java.util.List;
 import java.util.Set;
@@ -48,7 +46,7 @@ public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set(TYPE_CLASS_FIELD_NAME, ReferenceType.TYPE_CLASS.getId());
 
         if(resourceIds.size() == 1) {
@@ -56,7 +54,7 @@ public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
         } else if(resourceIds.size() > 1) {
             record.set("value", toStringList(resourceIds));
         }
-        return record;
+        return record.build();
     }
 
     private List<String> toStringList(Set<ResourceId> resourceIds) {

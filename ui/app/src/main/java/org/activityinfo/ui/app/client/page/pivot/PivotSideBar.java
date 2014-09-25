@@ -10,7 +10,6 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
-import org.activityinfo.model.type.SubFormValue;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.form.store.AddListItemAction;
 import org.activityinfo.ui.app.client.page.pivot.tree.FieldChooser;
@@ -102,17 +101,16 @@ public class PivotSideBar extends VComponent implements StoreChangeListener {
     @VisibleForTesting
     void onMeasureSelected(FormClass formClass, FormField value) {
 
-        MeasureModel measure = new MeasureModel();
+        MeasureModel measure = new MeasureModel(value);
         measure.setId(Resources.generateId().asString());
         measure.setSource(formClass.getId());
         measure.setLabel(value.getLabel());
         measure.setValueExpression(new SymbolExpr(value.getId()).asExpression());
         measure.setMeasurementType(MeasurementType.FLOW);
 
-        SubFormValue fieldValue = new SubFormValue(MeasureModel.CLASS_ID, measure.asRecord());
 
         application.getDispatcher().dispatch(
-            new AddListItemAction(draft.getInstanceId(), ResourceId.valueOf("measures"), fieldValue));
+            new AddListItemAction(draft.getInstanceId(), ResourceId.valueOf("measures"), measure.asRecord()));
     }
 
 
@@ -123,10 +121,8 @@ public class PivotSideBar extends VComponent implements StoreChangeListener {
         dimension.setId(Resources.generateId().asString());
         dimension.setLabel(value.getLabel());
 
-        SubFormValue fieldValue = new SubFormValue(DimensionModel.CLASS_ID, dimension.asRecord());
-
         application.getDispatcher().dispatch(
-            new AddListItemAction(draft.getInstanceId(), ResourceId.valueOf("dimensions"), fieldValue));
+            new AddListItemAction(draft.getInstanceId(), ResourceId.valueOf("dimensions"), dimension.asRecord()));
     }
 
     @Override

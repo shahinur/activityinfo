@@ -4,17 +4,14 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.chrome.PageFrameConfig;
 import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
 import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
-import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.*;
 import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
@@ -85,7 +82,10 @@ public class FolderPage extends PageView implements StoreChangeListener {
     private void onRename(String newName) {
         ResourceId id = getFolder().get().getRootNode().getId();
         Resource resource = application.getResourceStore().get(id).get();
-        resource.set(FolderClass.LABEL_FIELD_ID.asString(), newName);
+
+        RecordBuilder updated = Records.buildCopyOf(resource.getValue());
+        updated.set(FolderClass.LABEL_FIELD_ID.asString(), newName);
+        resource.setValue(updated.build());
 
         application.getRequestDispatcher().execute(new SaveRequest(resource)).then(new AsyncCallback<UpdateResult>() {
             @Override

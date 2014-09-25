@@ -2,6 +2,7 @@ package org.activityinfo.model.type.time;
 
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -41,10 +42,11 @@ public class MonthValue implements FieldValue, IsRecord, TemporalValue {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
             .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
             .set("year", year)
-            .set("month", monthOfYear);
+            .set("month", monthOfYear)
+            .build();
     }
 
     @Override

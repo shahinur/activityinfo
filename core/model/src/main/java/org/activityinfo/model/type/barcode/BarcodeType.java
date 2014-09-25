@@ -3,17 +3,14 @@ package org.activityinfo.model.type.barcode;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.RecordFieldTypeClass;
-import org.activityinfo.model.type.TypeFieldType;
+import org.activityinfo.model.type.*;
 
 /**
  * A value types that describes a real-valued barcode and its units.
  */
 public class BarcodeType implements FieldType {
 
-    public interface TypeClass extends RecordFieldTypeClass<BarcodeValue> {};
+    public interface TypeClass extends SingletonTypeClass, RecordFieldTypeClass<BarcodeValue> {}
 
     public static final TypeClass TYPE_CLASS = new TypeClass() {
 

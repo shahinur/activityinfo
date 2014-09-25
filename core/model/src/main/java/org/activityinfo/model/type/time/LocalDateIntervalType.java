@@ -3,10 +3,7 @@ package org.activityinfo.model.type.time;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.RecordFieldTypeClass;
-import org.activityinfo.model.type.TypeFieldType;
+import org.activityinfo.model.type.*;
 
 /**
  * Value type that represents a continuous interval between two {@link org.activityinfo.model.type.time.LocalDate}s,
@@ -14,7 +11,9 @@ import org.activityinfo.model.type.TypeFieldType;
  */
 public class LocalDateIntervalType implements FieldType, TemporalType {
 
-    public static final FieldTypeClass TYPE_CLASS = new RecordFieldTypeClass<LocalDateInterval>() {
+    public interface TypeClass extends RecordFieldTypeClass<LocalDateInterval>, SingletonTypeClass {}
+
+    public static final TypeClass TYPE_CLASS = new TypeClass() {
         @Override
         public String getId() {
             return "localDateInterval";

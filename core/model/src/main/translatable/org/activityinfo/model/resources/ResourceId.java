@@ -28,4 +28,8 @@ public final class ResourceId extends JavaScriptObject {
     public char getDomain() {
         return toString().charAt(0);
     }
+
+    public boolean isApplicationDefined() {
+        return toString().charAt(0) == '_';
+    }
 }

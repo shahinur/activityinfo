@@ -86,7 +86,7 @@ public class ResourcePageView extends PageView implements StoreChangeListener {
     }
 
     private VTree createPageView(Resource resource) {
-        ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
+        ResourceId classId = resource.getValue().getClassId();
 
         if(classId.equals(PivotTableModel.CLASS_ID)) {
             Status<FormClass> formClass = application.getResourceStore().getFormClass(classId);

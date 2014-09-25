@@ -3,6 +3,8 @@ package org.activityinfo.model.type;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
+import org.activityinfo.model.resource.Records;
 
 public class TypeFieldType implements FieldType {
 
@@ -24,11 +26,12 @@ public class TypeFieldType implements FieldType {
             FieldType type;
             if(typeClass instanceof ParametrizedFieldTypeClass) {
                 return ((ParametrizedFieldTypeClass)typeClass).deserializeType(record.getRecord("parameters"));
+            } else if(typeClass instanceof SingletonTypeClass) {
+                return ((SingletonTypeClass)typeClass).createType();
             } else {
-                return typeClass.createType();
+                throw new UnsupportedOperationException("Cannot instantiate type for class " + typeClassId);
             }
         }
-
 
         @Override
         public String getLabel() {
@@ -63,12 +66,12 @@ public class TypeFieldType implements FieldType {
     }
 
     public static Record asRecord(FieldType type) {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("typeClass", type.getTypeClass().getId());
         if(type instanceof ParametrizedFieldType) {
             record.set("parameters", ((ParametrizedFieldType)type).getParameters());
         }
-        return record;
+        return record.build();
     }
 
 }

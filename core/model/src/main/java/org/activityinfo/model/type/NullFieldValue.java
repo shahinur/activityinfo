@@ -32,4 +32,5 @@ public class NullFieldValue implements FieldValue {
     public FieldTypeClass getTypeClass() {
         return MissingTypeClass.INSTANCE;
     }
+
 }

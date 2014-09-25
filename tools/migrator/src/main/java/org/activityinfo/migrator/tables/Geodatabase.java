@@ -6,6 +6,7 @@ import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
@@ -35,9 +36,11 @@ public class Geodatabase extends ResourceMigrator {
     private void writeGeodatabase(ResourceWriter writer) throws Exception {
         Resource resource = Resources.createResource();
         resource.setId(context.getIdStrategy().geoDbId());
-        resource.set("classId", "_folder");
         resource.setOwnerId(context.getGeoDbOwnerId());
-        resource.set(FolderClass.LABEL_FIELD_ID.asString(), "Geographic Reference");
+        resource.setValue(Records.builder(FolderClass.CLASS_ID)
+            .set("classId", "_folder")
+            .set(FolderClass.LABEL_FIELD_ID.asString(), "Geographic Reference")
+            .build());
 
         Preconditions.checkNotNull(resource.getId());
 

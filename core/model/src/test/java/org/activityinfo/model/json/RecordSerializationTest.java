@@ -29,7 +29,7 @@ public class RecordSerializationTest {
         ObjectMapper objectMapper = ObjectMapperFactory.get();
         String json = objectMapper.writeValueAsString(field);
         Record readRecord = objectMapper.readValue(json, Record.class);
-        assertThat(readRecord.getRecord("defaultValue").getProperties(),
+        assertThat(readRecord.getRecord("defaultValue").asMap(),
             hasEntry(equalTo("@type"), equalTo((Object) QuantityType.TYPE_CLASS.getId())));
 
 

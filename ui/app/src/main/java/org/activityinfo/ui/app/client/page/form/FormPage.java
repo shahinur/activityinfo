@@ -3,6 +3,8 @@ package org.activityinfo.ui.app.client.page.form;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.UpdateResult;
@@ -76,7 +78,12 @@ public class FormPage extends PageView implements StoreChangeListener {
 
     private void onRename(String newName) {
         Resource resource = application.getResourceStore().get(getResourceId()).get();
-        resource.set(FormClass.LABEL_FIELD_ID, newName);
+
+        Record update = Records.builder()
+                .set(FormClass.LABEL_FIELD_ID, newName)
+                .build();
+
+        resource.setValue(update);
         application.getRequestDispatcher().execute(new SaveRequest(resource)).then(new AsyncCallback<UpdateResult>() {
             @Override
             public void onFailure(Throwable caught) {

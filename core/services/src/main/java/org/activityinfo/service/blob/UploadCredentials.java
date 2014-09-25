@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
+import org.activityinfo.model.resource.Records;
 
 import java.util.Map;
 
@@ -69,13 +71,14 @@ public class UploadCredentials implements IsRecord {
 
     @Override
     public Record asRecord() {
-        Record formFieldsRecord = new Record();
+        RecordBuilder formFieldsRecord = Records.builder();
         for (Map.Entry<String,String> entry : formFields.entrySet()) {
             formFieldsRecord.set(entry.getKey(), entry.getValue());
         }
-        return new Record()
+        return Records.builder()
                 .set("url", url)
                 .set("method", method)
-                .set("formFields", formFieldsRecord);
+                .set("formFields", formFieldsRecord.build())
+                .build();
     }
 }

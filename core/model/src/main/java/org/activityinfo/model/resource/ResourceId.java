@@ -64,4 +64,7 @@ public final class ResourceId {
         return text;
     }
 
+    public boolean isApplicationDefined() {
+        return text.startsWith("_");
+    }
 }

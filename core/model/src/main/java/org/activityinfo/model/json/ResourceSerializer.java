@@ -21,7 +21,7 @@ public class ResourceSerializer extends JsonSerializer<Resource> {
         json.writeStringField("@owner", resource.getOwnerId().asString());
         json.writeNumberField("@version", resource.getVersion());
 
-        RecordSerialization.writeProperties(json, resource);
+        RecordSerialization.writeProperties(json, resource.getValue());
 
         json.writeEndObject();
     }

@@ -2,6 +2,7 @@ package org.activityinfo.model.type;
 
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.type.primitive.HasStringValue;
 
 public class NarrativeValue implements FieldValue, IsRecord, HasStringValue {
@@ -24,9 +25,10 @@ public class NarrativeValue implements FieldValue, IsRecord, HasStringValue {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
                 .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
-                .set("text", text);
+                .set("text", text)
+                .build();
     }
 
     @Override

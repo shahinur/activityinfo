@@ -1,9 +1,6 @@
 package org.activityinfo.model.system;
 
-import org.activityinfo.model.resource.IsResource;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.*;
 
 public class FolderInstance implements IsResource {
 
@@ -47,11 +44,15 @@ public class FolderInstance implements IsResource {
 
     @Override
     public Resource asResource() {
-        return Resources.createResource()
-            .setId(id)
-            .set("classId", FolderClass.CLASS_ID.asString())
-            .setOwnerId(ownerId)
+        RecordBuilder record = Records.builder(FolderClass.CLASS_ID)
             .set(FolderClass.LABEL_FIELD_ID.asString(), label)
             .set(FolderClass.DESCRIPTION_FIELD_ID.asString(), description);
+
+
+        return Resources.createResource()
+            .setId(id)
+            .setOwnerId(ownerId)
+            .setValue(record.build());
+
     }
 }

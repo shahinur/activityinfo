@@ -3,10 +3,7 @@ package org.activityinfo.model.type.geo;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.RecordFieldTypeClass;
-import org.activityinfo.model.type.TypeFieldType;
+import org.activityinfo.model.type.*;
 
 /**
  * A value type describing a point within the WGS84 Geographic Reference System.
@@ -17,7 +14,7 @@ public class GeoPointType implements FieldType {
 
     public static final GeoPointType INSTANCE = new GeoPointType();
 
-    public interface TypeClass extends RecordFieldTypeClass<GeoPoint> { }
+    public interface TypeClass extends SingletonTypeClass, RecordFieldTypeClass<GeoPoint> { }
 
     public static final TypeClass TYPE_CLASS = new TypeClass() {
         @Override
@@ -52,6 +49,7 @@ public class GeoPointType implements FieldType {
     public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
         return visitor.visitGeoPointField(field, this);
     }
+
 
     @Override
     public Record asRecord() {

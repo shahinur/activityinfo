@@ -85,21 +85,6 @@ public class CuidAdapter {
     private CuidAdapter() {
     }
 
-    public static ResourceId newLegacyFormInstanceId(ResourceId formClassId) {
-        if (formClassId != null) {
-            final int newId = new KeyGenerator().generateInt();
-            switch (formClassId.getDomain()) {
-                case ACTIVITY_DOMAIN:
-                    return resourceId(SITE_DOMAIN, newId);
-                case LOCATION_TYPE_DOMAIN:
-                    return locationInstanceId(newId);
-                case ATTRIBUTE_GROUP_DOMAIN:
-                    return attributeId(newId);
-            }
-        }
-        return Resources.generateId();
-    }
-
     public static final ResourceId resourceId(char domain, int id) {
         assert id != 0 : "resourceId for domain " + domain + " has id = 0";
         return ResourceId.valueOf(domain + Integer.toString(id));

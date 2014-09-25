@@ -1,141 +1,114 @@
 package org.activityinfo.model.analysis;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.PropertyBag;
+import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
-import org.activityinfo.model.type.expr.ExprFieldType;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.expr.ExprValue;
 
-import java.util.Map;
+public class MeasureModel implements IsRecord {
 
-public class MeasureModel extends AbstractModel<MeasureModel> {
-
+    private String id;
+    private String label;
+    private MeasurementType measurementType;
+    private ReferenceValue sourceId;
+    private ExprValue valueExpression;
+    private ExprValue criteriaExpression;
 
     public static final ResourceId CLASS_ID = ResourceId.valueOf("_measure");
 
-    private Map<String, String> dimensionTags = Maps.newHashMap();
+
+    public MeasureModel(Record value) {
+    }
+
+    public MeasureModel(FormField value) {
+        throw new UnsupportedOperationException();
+    }
 
     public MeasureModel() {
-    }
 
-    public MeasureModel(PropertyBag propertyBag) {
-        super(propertyBag);
     }
-
-    @Override
-    public ResourceId getClassId() {
-        return CLASS_ID;
-    }
-
-    public String getId() {
-        return getString("id");
-    }
-
-    public MeasureModel setId(String id) {
-        return set("id", id);
-    }
-
 
     public MeasurementType getMeasurementType() {
-        return get("measurementType", MeasurementType.class);
+        return measurementType;
     }
 
-    public void setMeasurementType(MeasurementType type) {
-        set("measurementType", type);
+    public void setMeasurementType(MeasurementType measurementType) {
+        this.measurementType = measurementType;
     }
 
     public void setDimensionTag(String dimensionId, String dimensionValue) {
-        dimensionTags.put(dimensionId, dimensionValue);
     }
 
-    public Map<String, String> getDimensionTags() {
-        return dimensionTags;
+    public String getId() {
+        return id;
     }
 
-    /**
-     *
-     * @return the id of the resource that is the source of this
-     * measure
-     */
-    public ResourceId getSourceId() {
-        return getReference("source");
-    }
-
-    public MeasureModel setSource(ResourceId source) {
-        return set("source", source);
-    }
-
-    public MeasureModel setLabel(String label) {
-        return set("label", label);
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getLabel() {
-        return getString("label");
+        return label;
     }
 
-    public MeasureModel setValueExpression(String expr) {
-        return set("value", new ExprValue(expr));
+    public void setLabel(String label) {
+        this.label = label;
     }
 
-    public String getValueExpression() {
-        return getExprValue("value");
+    public ReferenceValue getSourceId() {
+        return sourceId;
     }
 
-    public String getCriteriaExpression() {
-        return getExprValue("criteria");
+    public void setSourceId(ReferenceValue sourceId) {
+        this.sourceId = sourceId;
     }
 
-    public MeasureModel setCriteriaExpression(String value) {
-        return set("criteria", new ExprValue(value));
+    public ExprValue getValueExpression() {
+        return valueExpression;
     }
+
+    public void setValueExpression(String expression) {
+        this.valueExpression = new ExprValue(expression);
+    }
+
+    public void setValueExpression(ExprValue valueExpression) {
+        this.valueExpression = valueExpression;
+    }
+
+    public ExprValue getCriteriaExpression() {
+        return criteriaExpression;
+    }
+
+    public MeasureModel setCriteriaExpression(String expr) {
+        return setCriteriaExpression(ExprValue.valueOf(expr));
+    }
+
+    public MeasureModel setCriteriaExpression(ExprValue criteriaExpression) {
+        this.criteriaExpression = criteriaExpression;
+        return this;
+    }
+
+    public MeasureModel setSource(ResourceId source) {
+        setSourceId(new ReferenceValue(source));
+        return this;
+    }
+
 
     public static MeasureModel fromRecord(Record record) {
-        return new MeasureModel(record);
+        throw new UnsupportedOperationException();
     }
+
+    public Record asRecord() {
+        throw new UnsupportedOperationException();
+    }
+
 
     public static FormClass getFormClass() {
-        FormClass formClass = new FormClass(ResourceId.valueOf("_measure"));
-
-        formClass.addElement(
-            new FormField(ResourceId.valueOf("label"))
-                .setLabel("Label")
-                .setType(ReferenceType.single(FormClass.CLASS_ID))
-                .setRequired(true));
-
-        formClass.addElement(
-            new FormField(ResourceId.valueOf("source"))
-                .setLabel("Source")
-                .setType(ReferenceType.single(FormClass.CLASS_ID))
-                .setRequired(true));
-
-        formClass.addElement(
-            new FormField(ResourceId.valueOf("value"))
-                .setLabel("Value")
-                .setType(ExprFieldType.INSTANCE)
-                .setRequired(true));
-
-        formClass.addElement(
-            new FormField(ResourceId.valueOf("measurementType"))
-                .setLabel("Value")
-                .setType(new EnumType(Cardinality.SINGLE, Lists.newArrayList(
-                    new EnumValue(ResourceId.valueOf("FLOW"), "Flow"),
-                    new EnumValue(ResourceId.valueOf("STOCK"), "Stock"))))
-                .setRequired(true));
-
-        formClass.addElement(
-            new FormField(ResourceId.valueOf("criteria"))
-                .setLabel("Criteria")
-                .setType(ExprFieldType.INSTANCE)
-                .setRequired(false));
-
-        return formClass;
+        throw new UnsupportedOperationException();
     }
+
+
 }
