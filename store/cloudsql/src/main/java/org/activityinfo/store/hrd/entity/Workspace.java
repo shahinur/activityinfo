@@ -91,7 +91,7 @@ public class Workspace {
 
         AccessControlRule acr = new AccessControlRule(resource.getId(), tx.getUser().getUserResourceId());
         acr.setOwner(true);
-        AcrIndex.put(tx, acr);
+        getAcrIndex().put(tx, acr);
 
         // add to the index
         WorkspaceIndex.addOwnerIndexEntry(tx, this);
@@ -144,4 +144,7 @@ public class Workspace {
         return new FormMetadata(rootKey, formClassId);
     }
 
+    public AcrIndex getAcrIndex() {
+        return new AcrIndex(rootKey);
+    }
 }
