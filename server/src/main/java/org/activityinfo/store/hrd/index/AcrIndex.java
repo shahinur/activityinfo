@@ -9,7 +9,6 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.store.hrd.entity.LatestContent;
-import org.activityinfo.store.hrd.entity.Workspace;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 
 /**
@@ -20,40 +19,47 @@ public class AcrIndex {
 
     private static final String KIND = "ACR";
 
-    public static Key key(AccessControlRule rule, ResourceId workspaceId) {
-        return key(rule.getResourceId(), rule.getPrincipalId(), workspaceId);
+    private final Key workspaceRootKey;
+
+    public AcrIndex(Key workspaceRootKey) {
+        this.workspaceRootKey = workspaceRootKey;
     }
 
-    public static Key key(ResourceId resourceId, ResourceId principalId, ResourceId workspaceId) {
-        boolean isWorkspace = workspaceId.equals(resourceId);
-        if (isWorkspace) {
-            return KeyFactory.createKey(workspaceKey(workspaceId), KIND, principalId.asString());
-        } else {
-            Key parentKey = KeyFactory.createKey(workspaceKey(workspaceId), LatestContent.KIND, resourceId.asString());
-            return KeyFactory.createKey(parentKey, KIND, principalId.asString());
-        }
+    public Key key(AccessControlRule rule) {
+        return key(rule.getResourceId(), rule.getPrincipalId());
     }
 
-    private static Key workspaceKey(ResourceId resourceId) {
-        return new Workspace(resourceId).getRootKey();
+    public Key key(ResourceId resourceId, ResourceId principalId) {
+        Key parentKey = parentKey(resourceId);
+        return KeyFactory.createKey(parentKey, KIND, principalId.asString());
     }
 
-    public static void put(WorkspaceTransaction workspaceTransaction, AccessControlRule rule) {
-        Entity entity = new Entity(key(rule, workspaceTransaction.getWorkspace().getWorkspaceId()));
+    /**
+     * The parent key of all ACRs for a given {@code resourceId}
+     */
+    private Key parentKey(ResourceId resourceId) {
+        return KeyFactory.createKey(workspaceRootKey, LatestContent.KIND, resourceId.asString());
+    }
+
+    /**
+     * Creates or updates an Access Control Rule
+     */
+    public void put(WorkspaceTransaction tx, AccessControlRule rule) {
+        Entity entity = new Entity(key(rule));
         entity.setUnindexedProperty("owner", rule.isOwner());
         entity.setUnindexedProperty("view", toString(rule.getViewCondition()));
         entity.setUnindexedProperty("edit", toString(rule.getEditCondition()));
 
-        workspaceTransaction.put(entity);
-        workspaceTransaction.getWorkspace().createResource(workspaceTransaction, rule.asResource());
+        tx.put(entity);
+        tx.getWorkspace().createResource(tx, rule.asResource());
     }
 
-    public static AccessControlRule get(WorkspaceTransaction versionedTransaction,
+    public AccessControlRule get(WorkspaceTransaction tx,
                                         ResourceId resourceId,
                                         ResourceId principalId) {
 
         try {
-            Entity entity = versionedTransaction.get(key(resourceId, principalId, versionedTransaction.getWorkspace().getWorkspaceId()));
+            Entity entity = tx.get(key(resourceId, principalId));
             return fromEntity(entity);
 
         } catch (EntityNotFoundException e) {
@@ -70,42 +76,29 @@ public class AcrIndex {
         String resourceId = entity.getKey().getParent().getName();
 
         AccessControlRule rule = new AccessControlRule(ResourceId.valueOf(resourceId), ResourceId.valueOf(principalId));
-        rule.setOwner((Boolean)entity.getProperty("owner"));
+        rule.setOwner((Boolean) entity.getProperty("owner"));
         rule.setViewCondition(ExprValue.valueOf((String) entity.getProperty("view")));
         rule.setEditCondition(ExprValue.valueOf((String) entity.getProperty("edit")));
         return rule;
     }
 
-    public static Optional<AccessControlRule> getRule(WorkspaceTransaction tx, ResourceId resourceId, ResourceId subjectId) {
+    /**
+     * Retrieves the ACR for a given resource for the current user if one exists
+     */
+    public Optional<AccessControlRule> getRule(WorkspaceTransaction tx, ResourceId resourceId) {
         try {
-            return Optional.of(fromEntity(tx.get(key(resourceId, subjectId, tx.getWorkspace().getWorkspaceId()))));
+            return Optional.of(fromEntity(tx.get(key(resourceId, tx.getUser().getUserResourceId()))));
         } catch (EntityNotFoundException e) {
             return Optional.absent();
         }
     }
 
-    public static Optional<AccessControlRule> getRule(DatastoreService datastore, ResourceId resourceId,
-                                                      ResourceId subjectId, ResourceId workspaceId) {
-        try {
-            return Optional.of(fromEntity(datastore.get(key(resourceId, subjectId, workspaceId))));
-        } catch (EntityNotFoundException e) {
-            return Optional.absent();
-        }
-    }
-
-    public static Iterable<AccessControlRule> queryRules(WorkspaceTransaction tx, ResourceId resourceId) {
-        Query query = new Query(KIND, workspaceKey(resourceId));
-        return Iterables.transform(tx.prepare(query).asIterable(), new Function<Entity, AccessControlRule>() {
-            @Override
-            public AccessControlRule apply(Entity input) {
-                return fromEntity(input);
-            }
-        });
-    }
-
-    public static Iterable<Resource> queryRules(DatastoreService datastore, ResourceId resourceId) {
-        Query query = new Query(KIND, workspaceKey(resourceId));
-        return Iterables.transform(datastore.prepare(query).asIterable(), new Function<Entity, Resource>() {
+    /**
+     * Retrieves all ACRs for a given resource
+     */
+    public Iterable<Resource> queryRules(WorkspaceTransaction tx, ResourceId resourceId) {
+        Query query = new Query(KIND, parentKey(resourceId));
+        return Iterables.transform(tx.prepare(query).asIterable(), new Function<Entity, Resource>() {
             @Override
             public Resource apply(Entity input) {
                 return fromEntity(input).asResource();
