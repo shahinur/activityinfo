@@ -19,7 +19,7 @@
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
-          "typeClass": "REFERENCE"
+          "type": "REFERENCE"
         }
       },
       {
@@ -36,7 +36,7 @@
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
-          "typeClass": "REFERENCE"
+          "type": "REFERENCE"
         }
       },
       {
@@ -45,7 +45,7 @@
         "label": "Start Date",
         "required": true,
         "type": {
-          "typeClass": "LOCAL_DATE"
+          "type": "LOCAL_DATE"
         }
       },
       {
@@ -54,7 +54,7 @@
         "label": "End Date",
         "required": true,
         "type": {
-          "typeClass": "LOCAL_DATE"
+          "type": "LOCAL_DATE"
         }
       },
       {
@@ -71,7 +71,7 @@
             "classId": "_type:ref",
             "cardinality": "SINGLE"
           },
-          "typeClass": "REFERENCE"
+          "type": "REFERENCE"
         }
       },
       {
@@ -89,7 +89,7 @@
                 "classId": "_type:quantity",
                 "units": "menages"
               },
-              "typeClass": "QUANTITY"
+              "type": "QUANTITY"
             }
           },
           {
@@ -102,7 +102,7 @@
                 "classId": "_type:quantity",
                 "units": "distributions"
               },
-              "typeClass": "QUANTITY"
+              "type": "QUANTITY"
             }
           },
           {
@@ -115,7 +115,7 @@
                 "classId": "_type:quantity",
                 "units": "distributions"
               },
-              "typeClass": "QUANTITY"
+              "type": "QUANTITY"
             }
           }
         ]
@@ -142,7 +142,7 @@
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
-          "typeClass": "enumerated"
+          "type": "enumerated"
         }
       },
       {
@@ -155,7 +155,7 @@
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
-          "typeClass": "enumerated"
+          "type": "enumerated"
         }
       },
       {
@@ -173,7 +173,7 @@
                 "classId": "_type:quantity",
                 "units": "menages"
               },
-              "typeClass": "QUANTITY"
+              "type": "QUANTITY"
             }
           }
         ]
@@ -200,7 +200,7 @@
             "classId": "_type:enum",
             "cardinality": "MULTIPLE"
           },
-          "typeClass": "enumerated"
+          "type": "enumerated"
         }
       },
       {
@@ -213,7 +213,7 @@
             "classId": "_type:quantity",
             "units": "calculated"
           },
-          "typeClass": "QUANTITY"
+          "type": "QUANTITY"
         }
       },
       {
@@ -222,7 +222,7 @@
         "label": "Comments",
         "required": false,
         "type": {
-          "typeClass": "NARRATIVE"
+          "type": "NARRATIVE"
         }
       }
     ]

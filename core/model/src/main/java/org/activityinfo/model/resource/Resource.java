@@ -1,8 +1,6 @@
 package org.activityinfo.model.resource;
 
 
-import com.google.common.base.Joiner;
-
 /**
  * ActivityInfo is, at it's core, concerned with the management of users' `Resource`s.
  *
@@ -22,12 +20,12 @@ import com.google.common.base.Joiner;
  * Resources have zero or more, named properties.
  *
  */
-public final class Resource extends PropertyBag<Resource> {
+public final class Resource {
 
     private ResourceId id;
     private ResourceId ownerId;
-    private ResourceId workspaceId;
     private long version;
+    private Record value;
 
     Resource() {
     }
@@ -37,7 +35,7 @@ public final class Resource extends PropertyBag<Resource> {
         copy.id = this.id;
         copy.ownerId = this.ownerId;
         copy.version = this.version;
-        copy.getProperties().putAll(this.getProperties());
+        copy.value = this.value;
         return copy;
     }
 
@@ -91,8 +89,41 @@ public final class Resource extends PropertyBag<Resource> {
         this.version = version;
     }
 
+    public Record getValue() {
+        return value;
+    }
+
+    public Resource setValue(Record value) {
+        this.value = value;
+        return this;
+    }
+
     @Override
     public String toString() {
-        return "{" + id.asString() + ": " + Joiner.on(", ").withKeyValueSeparator("=").join(getProperties()) + "}";
+        return "{" + id.asString() + ": " + value + "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Resource)) return false;
+
+        Resource resource = (Resource) o;
+
+        if (version != resource.version) return false;
+        if (id != null ? !id.equals(resource.id) : resource.id != null) return false;
+        if (ownerId != null ? !ownerId.equals(resource.ownerId) : resource.ownerId != null) return false;
+        if (value != null ? !value.equals(resource.value) : resource.value != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
+        result = 31 * result + (int) (version ^ (version >>> 32));
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 }

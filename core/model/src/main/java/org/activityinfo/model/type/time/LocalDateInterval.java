@@ -2,6 +2,7 @@ package org.activityinfo.model.type.time;
 
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -44,10 +45,11 @@ public class LocalDateInterval implements FieldValue, IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
             .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
             .set("start", getStartDate().toString())
-            .set("end", getEndDate().toString());
+            .set("end", getEndDate().toString())
+            .build();
     }
 
     public static LocalDateInterval fromRecord(Record record) {

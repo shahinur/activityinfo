@@ -33,10 +33,10 @@ public class ContentTest {
         form.addElement(field);
 
         Resource formResource = form.asResource();
-        assertThat(formResource.getRecordList("elements").get(0).getRecord("defaultValue").getProperties(),
+        assertThat(formResource.getValue().getRecordList("elements").get(0).getRecord("defaultValue").asMap(),
             hasEntry(equalTo("@type"), Matchers.equalTo((Object) QuantityType.TYPE_CLASS.getId())));
 
-        String json = Content.writePropertiesAsString(formResource);
+        String json = Content.writePropertiesAsString(formResource.getValue());
 
         System.out.println(json);
 
@@ -44,7 +44,7 @@ public class ContentTest {
         readResource.setId(formId);
         Content.readPropertiesFromString(readResource, new Text(json));
 
-        assertThat(readResource.getRecordList("elements").get(0).getRecord("defaultValue").getProperties(),
+        assertThat(readResource.getValue().getRecordList("elements").get(0).getRecord("defaultValue").asMap(),
             hasEntry(equalTo("@type"), Matchers.equalTo((Object) QuantityType.TYPE_CLASS.getId())));
 
         FormClass readClass = FormClass.fromResource(readResource);

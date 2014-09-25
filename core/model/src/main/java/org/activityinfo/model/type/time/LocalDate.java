@@ -3,6 +3,7 @@ package org.activityinfo.model.type.time;
 import com.bedatadriven.rebar.time.CalendricalException;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -187,9 +188,11 @@ public class LocalDate implements FieldValue, IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
             .set(TYPE_CLASS_FIELD_NAME, LocalDateType.TYPE_CLASS.getId())
-            .set("value", toString());
+            .set("value", toString())
+            .build();
+
     }
 
     public static LocalDate fromRecord(Record record) {

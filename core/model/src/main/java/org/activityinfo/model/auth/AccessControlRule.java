@@ -1,9 +1,6 @@
 package org.activityinfo.model.auth;
 
-import org.activityinfo.model.resource.IsResource;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.expr.ExprValue;
@@ -102,34 +99,36 @@ public class AccessControlRule implements IsResource {
 
     @Override
     public Resource asResource() {
+        RecordBuilder record = Records.builder(CLASS_ID);
+        record.set("principal", new ReferenceValue(principalId).asRecord());
+        if(owner) {
+            record.set("owner", true);
+        } else {
+            record.set("owner", false);
+            record.set("view", viewCondition.asRecord());
+            record.set("edit", editCondition.asRecord());
+        }
+
         Resource resource = Resources.createResource();
         resource.setId(id);
         resource.setOwnerId(resourceId);
-        resource.set("classId", CLASS_ID.asString());
-        resource.set("principal", new ReferenceValue(principalId).asRecord());
-        if(owner) {
-            resource.set("owner", true);
-        } else {
-            resource.set("owner", false);
-            resource.set("view", viewCondition.asRecord());
-            resource.set("edit", editCondition.asRecord());
-        }
+        resource.setValue(record.build());
+
         return resource;
     }
 
     public static AccessControlRule fromResource(Resource resource) {
         ResourceId resourceId = resource.getOwnerId();
-        ReferenceValue principal = ReferenceValue.fromRecord(resource.getRecord("principal"));
-        ReferenceValue workspace = ReferenceValue.fromRecord(resource.getRecord("workspaceId"));
+        ReferenceValue principal = ReferenceValue.fromRecord(resource.getValue().getRecord("principal"));
 
         AccessControlRule rule = new AccessControlRule(resourceId, principal.getResourceId());
         rule.setResourceId(resource.getOwnerId());
-        if (resource.getBoolean("owner")) {
+        if (resource.getValue().getBoolean("owner")) {
             rule.setOwner(true);
         } else {
             rule.setOwner(false);
-            rule.setViewCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getRecord("view")));
-            rule.setEditCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getRecord("edit")));
+            rule.setViewCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getValue().getRecord("view")));
+            rule.setEditCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getValue().getRecord("edit")));
         }
         return rule;
     }

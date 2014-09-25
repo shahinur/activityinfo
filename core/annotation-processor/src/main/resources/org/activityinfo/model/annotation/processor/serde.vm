@@ -21,10 +21,12 @@ import javax.annotation.Generated;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
 import org.activityinfo.model.resource.RecordSerde;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.type.ListFieldType;
-import org.activityinfo.model.type.SubFormType;
+import org.activityinfo.model.type.RecordFieldType;
 
 @Generated("org.activityinfo.model.annotation.processor.RecordBeanProcessor")
 public final class $serdeClass implements RecordSerde<$beanClass> {
@@ -57,8 +59,7 @@ public final class $serdeClass implements RecordSerde<$beanClass> {
 
     @Override
     public Record toRecord($beanClass bean) {
-        Record record = new Record();
-        record.set("classId", CLASS_ID);
+        RecordBuilder record = Records.builder(CLASS_ID);
 ##
 ## Write each of the fields to the record instance
 #foreach ($f in $fields)
@@ -78,7 +79,7 @@ public final class $serdeClass implements RecordSerde<$beanClass> {
         }
 #end
 ##
-        return record;
+        return record.build();
     }
 
     @Override

@@ -14,16 +14,14 @@ import org.activityinfo.model.table.views.DoubleArrayColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
 import org.activityinfo.model.table.views.StringArrayColumnView;
 
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class ResourceStoreStub implements ResourceStore {
 
@@ -34,6 +32,10 @@ public class ResourceStoreStub implements ResourceStore {
 
     private int nextClientId = 1;
 
+
+    @GET
+    @Path("resource/{id}")
+    @Produces("application/json")
     public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
 
         if(!resourceId.equals(MY_RESOURCE_ID)) {
@@ -48,12 +50,15 @@ public class ResourceStoreStub implements ResourceStore {
         resource.setId(MY_RESOURCE_ID);
         resource.setOwnerId(Resources.ROOT_ID);
         resource.setVersion(15);
-        resource.set("stringProperty", "stringValue");
-        resource.set("booleanValue", true);
-        resource.set("recordProperty", new Record()
-                    .set("subStringProp", "A")
-                    .set("anotherSubProp", "B")
-                    .set("subBoolProp", true));
+        resource.setValue(Records.builder()
+            .set("stringProperty", "stringValue")
+            .set("booleanValue", true)
+            .set("recordProperty", Records.builder()
+                .set("subStringProp", "A")
+                .set("anotherSubProp", "B")
+                .set("subBoolProp", true)
+                .build())
+            .build());
         return resource;
     }
 
@@ -61,11 +66,14 @@ public class ResourceStoreStub implements ResourceStore {
         Resource resource = Resources.createResource();
         resource.setId(NEW_RESOURCE_ID_TO_COMMIT);
         resource.setOwnerId(ResourceId.valueOf("parent32"));
-        resource.set("stringProperty", "_string1__");
-        resource.set("falseValue", false);
-        resource.set("recordProperty", new Record()
+        resource.setValue(Records.builder()
+            .set("stringProperty", "_string1__")
+            .set("falseValue", false)
+            .set("recordProperty", Records.builder()
                 .set("recordId", "record1")
-                .set("subRecord", new Record().set("subSubString", "downUnder")));
+                .set("subRecord", Records.builder().set("subSubString", "downUnder").build())
+                .build())
+            .build());
         return resource;
     }
 
@@ -145,7 +153,8 @@ public class ResourceStoreStub implements ResourceStore {
 
         if(NEW_RESOURCE_ID_TO_COMMIT.equals(resource.getId())) {
 
-            assertThat(resource, equalTo(getNewResourceThatWillCommit()));
+            Resource expected = getNewResourceThatWillCommit();
+            assertTrue(Records.deepEquals(resource.getValue(), expected.getValue()));
 
             return UpdateResult.committed(resource.getId(), NEW_VERSION);
         }

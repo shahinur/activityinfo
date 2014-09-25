@@ -3,6 +3,8 @@ package org.activityinfo.model.form;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 
 import javax.annotation.Nonnull;
@@ -48,12 +50,12 @@ public class FormSection extends FormElement implements FormElementContainer {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("id", id.asString());
         record.set("label", label);
         record.set("type", "section");
         record.set("elements", asRecordList(getElements()));
-        return record;
+        return record.build();
     }
 
     @Override

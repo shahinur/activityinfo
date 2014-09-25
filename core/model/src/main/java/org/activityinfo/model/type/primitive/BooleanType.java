@@ -26,6 +26,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.SingletonTypeClass;
 import org.activityinfo.model.type.TypeFieldType;
 
 /**
@@ -33,9 +34,9 @@ import org.activityinfo.model.type.TypeFieldType;
  */
 public class BooleanType implements FieldType {
 
-    public static final FieldType INSTANCE = new BooleanType();
+    public static final BooleanType INSTANCE = new BooleanType();
 
-    public static final FieldTypeClass TYPE_CLASS = new FieldTypeClass() {
+    public static final FieldTypeClass TYPE_CLASS = new SingletonTypeClass() {
         @Override
         public String getId() {
             return "boolean";
@@ -47,7 +48,7 @@ public class BooleanType implements FieldType {
         }
 
         @Override
-        public FieldType createType() {
+        public BooleanType createType() {
             return INSTANCE;
         }
     };

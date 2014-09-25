@@ -1,8 +1,6 @@
 package org.activityinfo.model.type.enumerated;
 
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -47,11 +45,11 @@ public class EnumValue implements FieldValue, IsRecord {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId()).
                 set("label", label).
                 set("id", id.asString());
-        return record;
+        return record.build();
     }
 
     @Override

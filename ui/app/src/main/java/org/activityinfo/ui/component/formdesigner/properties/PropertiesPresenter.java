@@ -35,7 +35,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ParametrizedFieldType;
@@ -240,15 +241,15 @@ public class PropertiesPresenter {
             public void onFieldUpdated(FormField field, FieldValue newValue) {
                 super.onFieldUpdated(field, newValue);
                 ParametrizedFieldType parametrizedFieldType = (ParametrizedFieldType) formField.getType();
-                Record param = parametrizedFieldType.getParameters();
-                param.set(field.getId(), newValue);
+                RecordBuilder param = Records.buildCopyOf(parametrizedFieldType.getParameters());
+                param.set(field.getId().asString(), newValue);
                 ParametrizedFieldTypeClass typeClass = (ParametrizedFieldTypeClass) parametrizedFieldType.getTypeClass();
                 if (formField.getType() instanceof CalculatedFieldType && newValue instanceof ExprValue) {
                     // for calculated fields we updated expression directly because it is handled via ExprFieldType
                     ExprValue exprValue = (ExprValue) newValue;
                     ((CalculatedFieldType) formField.getType()).setExpression(exprValue.getExpression());
                 } else {
-                    formField.setType(typeClass.deserializeType(param));
+                    formField.setType(typeClass.deserializeType(param.build()));
                 }
                 fieldWidgetContainer.syncWithModel();
             }

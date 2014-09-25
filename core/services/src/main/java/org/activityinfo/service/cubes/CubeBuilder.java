@@ -25,7 +25,7 @@ public class CubeBuilder {
         List<MeasureBuilder> measureBuilders = Lists.newArrayList();
         for (int i = 0; i < model.getMeasures().size(); i++) {
             MeasureModel measureModel = model.getMeasures().get(i);
-            FormClass formClass = FormClass.fromResource(resourceStore.get(measureModel.getSourceId()));
+            FormClass formClass = FormClass.fromResource(resourceStore.get(measureModel.getSourceId().getResourceId()));
 
             switch(measureModel.getMeasurementType()) {
                 case STOCK:

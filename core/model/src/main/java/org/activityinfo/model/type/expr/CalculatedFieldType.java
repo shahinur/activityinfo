@@ -4,6 +4,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 
@@ -78,9 +79,9 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record()
+        return Records.builder(getTypeClass())
                 .set("expression", expression)
-                .set("classId", getTypeClass().getParameterFormClass().getId());
+                .build();
     }
 
     @Override

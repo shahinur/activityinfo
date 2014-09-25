@@ -3,6 +3,7 @@ package org.activityinfo.model.type.number;
 import com.google.common.base.Strings;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -73,10 +74,11 @@ public class Quantity implements FieldValue, IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
             .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
             .set("value", value)
-            .set("units", units);
+            .set("units", units)
+            .build();
     }
 
     public boolean hasUnits() {

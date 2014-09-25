@@ -6,9 +6,7 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.google.common.base.Preconditions;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.*;
 
 import java.io.IOException;
 
@@ -21,6 +19,7 @@ public class ResourceDeserializer extends JsonDeserializer<Resource> {
         Preconditions.checkState(reader.getCurrentToken() == JsonToken.START_OBJECT);
 
         Resource resource = Resources.createResource();
+        RecordBuilder recordBuilder = Records.builder();
 
         while(reader.nextToken() == JsonToken.FIELD_NAME) {
             String propertyName = reader.getCurrentName();
@@ -44,9 +43,12 @@ public class ResourceDeserializer extends JsonDeserializer<Resource> {
                 }
 
             } else {
-                RecordSerialization.readProperty(reader, resource, propertyName);
+                RecordSerialization.readProperty(reader, recordBuilder, propertyName);
             }
         }
+
+        resource.setValue(recordBuilder.build());
+
         return resource;
     }
 
