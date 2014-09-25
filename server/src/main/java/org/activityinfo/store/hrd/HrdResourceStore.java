@@ -18,7 +18,6 @@ import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.store.hrd.entity.*;
-import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
@@ -83,8 +82,11 @@ public class HrdResourceStore implements ResourceStore {
     @Override
     public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
                                                 @PathParam("id") ResourceId resourceId) {
+        Workspace workspace = workspaceLookup.lookup(resourceId);
 
-         return Lists.newArrayList(AcrIndex.queryRules(datastore, resourceId));
+        try (WorkspaceTransaction tx = beginRead(workspace, user)) {
+            return Lists.newArrayList(workspace.getAcrIndex().queryRules(tx, resourceId));
+        }
     }
 
     @PUT
@@ -193,7 +195,7 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
-        return WorkspaceIndex.queryUserWorkspaces(datastore, user, workspaceLookup);
+        return WorkspaceIndex.queryUserWorkspaces(user);
     }
 
     @Override
