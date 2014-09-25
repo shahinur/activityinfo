@@ -228,7 +228,7 @@ public class HrdResourceStore implements ResourceStore {
                 final Authorization authorization;
                 Resource resource = snapshot.get(tx);
 
-                if (AccessControlRule.CLASS_ID.toString().equals(resource.get("classId"))) {
+                if (AccessControlRule.CLASS_ID.equals(resource.getValue().getClassId())) {
                     final Optional<Authorization> oldAuthorization;
                     final Optional<Snapshot> optionalSnapshot = Snapshot.getSnapshotAsOf(tx, resource.getId(), version);
 
