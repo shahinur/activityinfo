@@ -23,8 +23,6 @@ public class AccessControlRule implements IsResource {
 
     private ResourceId principalId;
 
-    private ResourceId workspaceId;
-
     private boolean owner;
 
     private ExprValue viewCondition;
@@ -32,11 +30,10 @@ public class AccessControlRule implements IsResource {
     private ExprValue editCondition;
 
 
-    public AccessControlRule(ResourceId resourceId, ResourceId principalId, ResourceId workspaceId) {
-        this.id = ResourceId.valueOf("_acr-" + resourceId.asString() + "-" + principalId + "-" + workspaceId);
+    public AccessControlRule(ResourceId resourceId, ResourceId principalId) {
+        this.id = ResourceId.valueOf("_acr-" + resourceId.asString() + "-" + principalId);
         this.resourceId = resourceId;
         this.principalId = principalId;
-        this.workspaceId = workspaceId;
     }
 
 
@@ -77,14 +74,6 @@ public class AccessControlRule implements IsResource {
         this.resourceId = resourceId;
     }
 
-    public ResourceId getWorkspaceId() {
-        return workspaceId;
-    }
-
-    public void setWorkspaceId(ResourceId workspaceId) {
-        this.workspaceId = workspaceId;
-    }
-
     /**
      *
      * @return the boolean expression that determines whether the principal is authorized
@@ -118,7 +107,6 @@ public class AccessControlRule implements IsResource {
         resource.setOwnerId(resourceId);
         resource.set("classId", CLASS_ID.asString());
         resource.set("principal", new ReferenceValue(principalId).asRecord());
-        resource.set("workspaceId", new ReferenceValue(workspaceId).asRecord());
         if(owner) {
             resource.set("owner", true);
         } else {
@@ -134,7 +122,7 @@ public class AccessControlRule implements IsResource {
         ReferenceValue principal = ReferenceValue.fromRecord(resource.getRecord("principal"));
         ReferenceValue workspace = ReferenceValue.fromRecord(resource.getRecord("workspaceId"));
 
-        AccessControlRule rule = new AccessControlRule(resourceId, principal.getResourceId(), workspace.getResourceId());
+        AccessControlRule rule = new AccessControlRule(resourceId, principal.getResourceId());
         rule.setResourceId(resource.getOwnerId());
         if (resource.getBoolean("owner")) {
             rule.setOwner(true);

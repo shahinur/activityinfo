@@ -89,7 +89,7 @@ public class Workspace {
 
         long newVersion = createResource(tx, resource, Optional.<Long>absent());
 
-        AccessControlRule acr = new AccessControlRule(resource.getId(), tx.getUser().getUserResourceId(), workspaceId);
+        AccessControlRule acr = new AccessControlRule(resource.getId(), tx.getUser().getUserResourceId());
         acr.setOwner(true);
         AcrIndex.put(tx, acr);
 
