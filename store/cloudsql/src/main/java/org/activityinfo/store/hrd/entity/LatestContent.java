@@ -8,18 +8,16 @@ import com.google.common.collect.Iterators;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.ResourceNotFound;
 
 import java.util.Iterator;
 
 import static org.activityinfo.store.hrd.entity.Content.*;
-import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
 
 /**
  * An entity within the {@code ResourceGroup} which contains the
  * content (properties) of the latest version of the resource.
- * <p/>
+ *
  * The {@code OWNER_PROPERTY} is indexed, allowing queries on owned entities
  */
 public class LatestContent {
@@ -33,67 +31,15 @@ public class LatestContent {
 
     public static final String ROW_INDEX_PROPERTY = "R";
 
+
     private final Key rootKey;
     private final ResourceId resourceId;
     private final Key key;
 
-    /**
-     * Must be used only for direct childs of root.
-     *
-     * @param rootKey root key
-     * @param id id
-     */
     public LatestContent(Key rootKey, ResourceId id) {
         this.rootKey = rootKey;
         this.resourceId = id;
         this.key = KeyFactory.createKey(rootKey, KIND, id.asString());
-    }
-
-    public LatestContent(Key rootKey, ResourceId id, Key key) {
-        this.rootKey = rootKey;
-        this.resourceId = id;
-        this.key = key;
-    }
-
-    /**
-     * Must be used only for NOT previously persisted resources.
-     *
-     * @param rootKey          root (workspace) key
-     * @param id               resource id
-     * @param parentResourceId parent of resource
-     * @param tx               the transaction in which this change is to be effected
-     */
-    public LatestContent(Key rootKey, ResourceId id, ResourceId parentResourceId, WorkspaceTransaction tx) {
-        this.rootKey = rootKey;
-        this.resourceId = id;
-
-        if (Resources.ROOT_ID.equals(parentResourceId)) {
-            this.key = KeyFactory.createKey(ROOT_KIND, resourceId.asString());
-        } else {
-            ResourceKeyBuilder keyBuilder = new ResourceKeyBuilder(tx, false).
-                    setKind(LatestContent.KIND).
-                    setParentResourceId(parentResourceId).
-                    setResourceId(id).
-                    setWorkspaceId(ResourceId.valueOf(rootKey.getName()));
-            this.key = keyBuilder.build();
-        }
-    }
-
-    /**
-     * Must be used only for previously persisted resources.
-     *
-     * @param rootKey workspace key
-     * @param id      resource id that is descendant of workspace
-     */
-    public LatestContent(Key rootKey, ResourceId id, WorkspaceTransaction tx) {
-        this.rootKey = rootKey;
-        this.resourceId = id;
-
-        ResourceKeyBuilder keyBuilder = new ResourceKeyBuilder(tx, true).
-                setKind(LatestContent.KIND).
-                setResourceId(id).
-                setWorkspaceId(ResourceId.valueOf(rootKey.getName()));
-        this.key = keyBuilder.build();
     }
 
     public Resource get(WorkspaceTransaction tx) throws EntityNotFoundException {
@@ -132,8 +78,7 @@ public class LatestContent {
 
     /**
      * Updates the LatestContent entity to reflect the content of {@code resource}
-     *
-     * @param tx       the transaction in which this change is to be effected
+     * @param tx the transaction in which this change is to be effected
      * @param resource the latest version of the resource
      * @param rowIndex
      */
@@ -145,12 +90,12 @@ public class LatestContent {
         entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
         Content.writeProperties(resource, entity);
 
-        if (FolderIndex.isFolderItem(resource)) {
+        if(FolderIndex.isFolderItem(resource)) {
             entity.setProperty(LABEL_PROPERTY, FolderIndex.getLabelAndAssertNonEmpty(resource));
         }
 
-        if (FormMetadata.isFormInstance(resource)) {
-            if (rowIndex.isPresent()) {
+        if(FormMetadata.isFormInstance(resource)) {
+            if(rowIndex.isPresent()) {
                 entity.setProperty(ROW_INDEX_PROPERTY, rowIndex.get());
             } else {
                 FormMetadata metadata = new FormMetadata(rootKey, resource);
@@ -176,11 +121,11 @@ public class LatestContent {
         entity.setProperty(CLASS_PROPERTY, resource.isString("classId"));
         Content.writeProperties(resource, entity);
 
-        if (FolderIndex.isFolderItem(resource)) {
+        if(FolderIndex.isFolderItem(resource)) {
             entity.setProperty(LABEL_PROPERTY, FolderIndex.getLabelAndAssertNonEmpty(resource));
         }
 
-        if (FormMetadata.isFormInstance(resource)) {
+        if(FormMetadata.isFormInstance(resource)) {
             FormMetadata metadata = new FormMetadata(rootKey, resource);
             metadata.updateLatestVersion(tx, resource.getVersion());
         }
@@ -200,9 +145,9 @@ public class LatestContent {
                 resourceId.asString());
 
         Query query = new Query(KIND)
-                .setFilter(classFilter)
-                .addSort(ROW_INDEX_PROPERTY)
-                .setAncestor(rootKey);
+            .setFilter(classFilter)
+            .addSort(ROW_INDEX_PROPERTY)
+            .setAncestor(rootKey);
 
         Iterator<Entity> entityIterator = tx.prepare(query).asIterator();
 

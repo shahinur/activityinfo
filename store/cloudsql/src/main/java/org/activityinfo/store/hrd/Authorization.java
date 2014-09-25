@@ -77,9 +77,6 @@ public class Authorization {
         Optional<AccessControlRule> rule = AcrIndex.getRule(datastore, resourceId, userResourceId);
 
         try {
-//            Key rootKey = KeyFactory.createKey(ROOT_KIND, resourceId.asString());
-//            LatestContent latestContent = new LatestContent(rootKey, resourceId, KeyFactory.createKey(rootKey, LatestContent.KIND, resourceId.asString()));
-
             ResourceNode resourceNode = new LatestContent(
                     KeyFactory.createKey(ROOT_KIND, resourceId.asString()), resourceId).getAsNode(datastore);
             assert ROOT_ID.equals(resourceNode.getOwnerId());
