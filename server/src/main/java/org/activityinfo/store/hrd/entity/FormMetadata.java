@@ -41,7 +41,7 @@ public class FormMetadata {
     }
 
     private static ResourceId formClassOf(Resource resource) {
-        String classId = resource.isString("classId");
+        String classId = resource.getValue().getClassId().asString();
         if(classId == null) {
             return null;
         }

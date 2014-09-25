@@ -23,10 +23,9 @@ public class FolderIndex {
     }
 
     public static boolean isFolderItem(Resource resource) {
-        String classId = resource.isString("classId");
+        ResourceId classId = resource.getValue().getClassId();
         if (classId != null) {
-            ResourceId id = ResourceId.valueOf(classId);
-            if (ApplicationProperties.isFolderItem(id)) {
+            if (ApplicationProperties.isFolderItem(classId)) {
                 return true;
             }
         }
@@ -38,9 +37,9 @@ public class FolderIndex {
         // from users because it's better to get their data safely in and mark it as invalid
         // and strand them in the middle of some refugee camp fighting with a form submission,
         // but for some basic classes like folders and forms, we need to enforce basic rules
-        String classId = resource.getString("classId");
+        ResourceId classId = resource.getValue().getClassId();
         String labelFieldName = ApplicationProperties.getLabelPropertyName(classId);
-        String label = resource.isString(labelFieldName);
+        String label = resource.getValue().isString(labelFieldName);
         if (Strings.isNullOrEmpty(label)) {
             throw new BadRequestException(String.format("Resources of class %s must have a label property " +
                 " with id %s", classId, labelFieldName));
