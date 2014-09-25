@@ -49,14 +49,14 @@ public class PageFrame extends VComponent<PageFrame> {
         List<VTree> h2Content = Lists.newArrayList(pageIcon(pageIcon), t(pageTitle));
 
         DeleteResourceAction enableDeletion = config.enableDeletion();
-        if (enableDeletion != null) {
+        if (enableDeletion != null && config.isEditAllowed()) {
             ConfirmDialog confirmDialog = ConfirmDialog.confirm(enableDeletion);
             h2Content.add(confirmDialog);
             h2Content.add(div(BaseStyles.PULL_RIGHT, deleteButton(confirmDialog)));
         }
 
         EditLabelDialog enableRename = config.getEnableRename();
-        if (enableRename != null) {
+        if (enableRename != null && config.isEditAllowed()) {
             enableRename.setLabel(pageTitle);
             h2Content.add(enableRename);
             h2Content.add(div(BaseStyles.PULL_RIGHT, enableRename.createLinkButton()));

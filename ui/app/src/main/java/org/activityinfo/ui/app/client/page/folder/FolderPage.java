@@ -138,7 +138,8 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
             final PageFrameConfig config = new PageFrameConfig().
                     setEnableRename(editLabelDialog).
-                    setEnableDeletion(new DeleteResourceAction(application, resourceId, label));
+                    setEnableDeletion(new DeleteResourceAction(application, resourceId, label)).
+                    setEditAllowed(folder.get().getRootNode().isEditAllowed());
             return new PageFrame(PAGE_ICON,
                 folder.get().getRootNode().getLabel(), config,
                 renderContents(folder.get().getRootNode()));
