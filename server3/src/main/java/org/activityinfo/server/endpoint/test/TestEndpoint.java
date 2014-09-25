@@ -3,6 +3,7 @@ package org.activityinfo.server.endpoint.test;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.sun.jersey.multipart.FormDataParam;
+import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.service.DeploymentConfiguration;
@@ -34,6 +35,7 @@ public class TestEndpoint {
     @POST
     @Path("createUser")
     @Consumes(MULTIPART_FORM_DATA)
+    @Transactional
     public Response createUser(@FormDataParam("email") String email, @FormDataParam("password") String password) {
         if (userDAO == null) return Response.status(FORBIDDEN).build();
 
