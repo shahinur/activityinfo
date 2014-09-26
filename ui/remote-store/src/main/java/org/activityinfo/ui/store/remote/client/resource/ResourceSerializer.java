@@ -13,6 +13,7 @@ public class ResourceSerializer {
         jso.setString("@id", resource.getId().asString());
         jso.setString("@owner", resource.getOwnerId().asString());
         jso.setString("@version", Long.toString(resource.getVersion()));
+        jso.setString("@class", resource.getValue().getClassId().asString());
 
         for (Map.Entry<String, Object> entry : resource.getValue().asMap().entrySet()) {
             jso.set(entry.getKey(), entry.getValue());
