@@ -67,7 +67,8 @@ public class ExpressionBuilder {
             arguments.add(new SymbolExpr(row.getFormField().getId().asString()));
 
             if (value instanceof BooleanFieldValue || value instanceof Quantity || value instanceof TextValue) {
-                arguments.add(new ConstantExpr(value));
+                arguments.add(ConstantExpr.valueOf(value));
+
             } else if (value instanceof HasSetFieldValue) {
                 List<ResourceId> idSet = Lists.newArrayList(((HasSetFieldValue)value).getResourceIds());
                 for (ResourceId resourceId : idSet) {
@@ -81,11 +82,11 @@ public class ExpressionBuilder {
 
         // OPERATOR building
         if (value instanceof BooleanFieldValue) {
-            right = new ConstantExpr(value);
+            right = new ConstantExpr(((BooleanFieldValue) value).asBoolean());
         } else if (value instanceof Quantity) {
-            right = new ConstantExpr(value);
+            right = new ConstantExpr((Quantity) value);
         } else if (value instanceof TextValue) {
-            right = new ConstantExpr(value);
+            right = new ConstantExpr((TextValue) value);
         } else if (value instanceof HasSetFieldValue) {
             List<ResourceId> idSet = Lists.newArrayList(((HasSetFieldValue)value).getResourceIds());
             int size = idSet.size();

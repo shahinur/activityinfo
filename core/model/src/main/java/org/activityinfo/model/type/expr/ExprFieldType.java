@@ -3,17 +3,14 @@ package org.activityinfo.model.type.expr;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.RecordFieldTypeClass;
-import org.activityinfo.model.type.TypeFieldType;
+import org.activityinfo.model.type.*;
 
 /**
  * Value type that represents an expression
  */
 public class ExprFieldType implements FieldType {
 
-    public interface TypeClass extends RecordFieldTypeClass<ExprValue> {
+    public interface TypeClass extends SingletonTypeClass, RecordFieldTypeClass<ExprValue> {
         ExprValue deserialize(Record record);
     }
 

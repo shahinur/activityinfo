@@ -317,9 +317,7 @@ public class PropertyBag<T extends PropertyBag> {
             properties.put(propertyName, ((ResourceId) value).asString());
 
         } else if(value instanceof Map) {
-            Record record = new Record();
-            record.setProperties((Map<String, Object>) value);
-            properties.put(propertyName, record);
+            throw new UnsupportedOperationException();
 
         } else {
             assert validPropertyValue(value) : "Invalid " + propertyName + " = " + value +
@@ -357,8 +355,11 @@ public class PropertyBag<T extends PropertyBag> {
         return (T)this;
     }
 
-    public void setAll(PropertyBag propertyBag) {
-        properties.putAll(propertyBag.properties);
+    public void setAll(Record record) {
+        properties.putAll(record.asMap());
+    }
+    public void setAll(Map<String, Object> properties) {
+        properties.putAll(properties);
     }
 
     @JsonGetter
@@ -395,5 +396,26 @@ public class PropertyBag<T extends PropertyBag> {
     @Override
     public String toString() {
         return properties.toString();
+    }
+
+    public Record toRecord(ResourceId classId) {
+        RecordBuilder record = Records.builder(classId);
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if(value instanceof String) {
+                record.set(key, (String)value);
+            } else if(value instanceof Double) {
+                record.set(key, (Double)value);
+            } else if(value instanceof Record) {
+                record.set(key, (Record)value);
+            } else if(value instanceof Boolean) {
+                record.set(key, (Boolean)value);
+            } else {
+                throw new IllegalArgumentException(value.getClass().getName());
+            }
+        }
+        return record.build();
     }
 }

@@ -1,10 +1,7 @@
 package org.activityinfo.model.table;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Records;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.*;
 
 import java.util.List;
 
@@ -65,10 +62,10 @@ public class TableModel implements IsRecord {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("rowSources", Records.toRecordList(rowSources));
         record.set("columnModels", Records.toRecordList(columns));
-        return record;
+        return record.build();
     }
 
     public static TableModel fromRecord(Record record) {

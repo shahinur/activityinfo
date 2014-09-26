@@ -51,7 +51,7 @@ public class TypeRegistry {
         register(BarcodeType.TYPE_CLASS);
         register(ImageType.TYPE_CLASS);
         register(TypeFieldType.TYPE_CLASS);
-        register(SubFormType.TYPE_CLASS);
+        register(RecordFieldType.TYPE_CLASS);
         register(ListFieldType.TYPE_CLASS);
     }
 

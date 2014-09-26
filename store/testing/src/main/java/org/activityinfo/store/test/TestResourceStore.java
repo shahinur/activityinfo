@@ -9,10 +9,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
@@ -61,7 +58,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     public ResourceCursor openCursor(ResourceId formClassId) {
         List<Resource> resources = Lists.newArrayList();
         for(Resource resource : resourceMap.values()) {
-            if(formClassId.asString().equals(resource.isString("classId"))) {
+            if(formClassId.equals(resource.getValue().getClassId())) {
                 resources.add(resource);
             }
         }
@@ -78,6 +75,11 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     public Resource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
         return get(resourceId);
+    }
+
+    @Override
+    public UserResource getUserResource(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+        return UserResource.userResource(get(resourceId));
     }
 
     private Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
@@ -110,14 +112,14 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     private ResourceNode newNode(Resource resource) {
-        ResourceId classId = ResourceId.valueOf(resource.getString("classId"));
+        ResourceId classId = ResourceId.valueOf(resource.getValue().getString("classId"));
         ResourceNode node = new ResourceNode(resource.getId(), classId);
         node.setOwnerId(resource.getOwnerId());
 
         if(classId.equals(FormClass.CLASS_ID)) {
-            node.setLabel(resource.isString(FormClass.LABEL_FIELD_ID));
+            node.setLabel(resource.getValue().isString(FormClass.LABEL_FIELD_ID));
         } else if(classId.equals(FolderClass.CLASS_ID)) {
-            node.setLabel(resource.isString(FolderClass.LABEL_FIELD_ID.asString()));
+            node.setLabel(resource.getValue().isString(FolderClass.LABEL_FIELD_ID.asString()));
         }
         return node;
     }
@@ -184,20 +186,16 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     private String getLabel(Resource resource, ResourceId classId) {
         if(FormClass.CLASS_ID.equals(classId)) {
-            return resource.getString(FormClass.LABEL_FIELD_ID);
+            return resource.getValue().getString(FormClass.LABEL_FIELD_ID);
         } else if(FolderClass.CLASS_ID.equals(classId)) {
-            return resource.getString(FolderClass.LABEL_FIELD_ID.asString());
+            return resource.getValue().getString(FolderClass.LABEL_FIELD_ID.asString());
         } else {
             return classId == null ? resource.getId().asString() : classId.asString();
         }
     }
 
     private ResourceId getClassId(Resource resource) {
-        if(resource.has("classId")) {
-            return ResourceId.valueOf(resource.getString("classId"));
-        } else {
-            return null;
-        }
+        return resource.getValue().getClassId();
     }
 
     public void put(Resource resource) {

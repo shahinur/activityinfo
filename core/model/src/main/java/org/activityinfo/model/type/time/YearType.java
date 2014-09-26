@@ -3,10 +3,7 @@ package org.activityinfo.model.type.time;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.RecordFieldTypeClass;
-import org.activityinfo.model.type.TypeFieldType;
+import org.activityinfo.model.type.*;
 
 /**
  * Value type that represents a calendar year in the ISO-8601 calendar.
@@ -14,7 +11,7 @@ import org.activityinfo.model.type.TypeFieldType;
  */
 public class YearType implements FieldType, TemporalType {
 
-    public interface TypeClass extends RecordFieldTypeClass<YearValue> {}
+    public interface TypeClass extends SingletonTypeClass, RecordFieldTypeClass<YearValue> {}
 
     public static final TypeClass TYPE_CLASS = new TypeClass() {
         @Override
@@ -56,4 +53,5 @@ public class YearType implements FieldType, TemporalType {
     public Record asRecord() {
         return TypeFieldType.asRecord(this);
     }
+
 }

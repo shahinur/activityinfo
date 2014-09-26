@@ -6,11 +6,11 @@ import org.activityinfo.model.system.FolderClass;
 
 public class ResourceWriters {
     public static String getLabel(Resource resource) {
-        String classId = resource.isString("classId");
+        String classId = resource.getValue().isString("classId");
         if(FormClass.CLASS_ID.asString().equals(classId)) {
-            return resource.getString(FormClass.LABEL_FIELD_ID);
+            return resource.getValue().getString(FormClass.LABEL_FIELD_ID);
         } else if(FolderClass.CLASS_ID.asString().equals(classId)) {
-            return resource.isString(FolderClass.LABEL_FIELD_ID.asString());
+            return resource.getValue().isString(FolderClass.LABEL_FIELD_ID.asString());
         }
         return null;
     }

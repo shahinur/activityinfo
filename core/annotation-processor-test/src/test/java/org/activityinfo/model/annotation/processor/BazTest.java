@@ -2,6 +2,7 @@ package org.activityinfo.model.annotation.processor;
 
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -12,7 +13,7 @@ public class BazTest {
     @Test
     public void testDefaultBoolean() {
 
-        Record record = new Record();
+        Record record = Records.builder();
         record.set("label", "My name");
 
         Baz baz = BazSerde.INSTANCE.toBean(record);
@@ -23,7 +24,7 @@ public class BazTest {
     @Test
     public void testBoolean() {
 
-        Record record = new Record();
+        Record record = Records.builder();
         record.set("label", "My name");
         record.set("visible", false);
 

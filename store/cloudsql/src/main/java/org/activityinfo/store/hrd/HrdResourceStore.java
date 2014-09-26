@@ -10,10 +10,7 @@ import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -24,7 +21,6 @@ import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
 import org.activityinfo.store.hrd.entity.*;
-import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
@@ -58,12 +54,20 @@ public class HrdResourceStore implements ResourceStore {
         return new ReadTransaction(workspace, datastore, user);
     }
 
-
     @GET
     @Path("resource/{id}")
     @Produces("application/json")
     @Override
     public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+         UserResource userResource = getUserResource(user, resourceId);
+         return userResource.getResource();
+    }
+
+    @GET
+    @Path("userresource/{id}")
+    @Produces("application/json")
+    @Override
+    public UserResource getUserResource(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
 
@@ -71,7 +75,9 @@ public class HrdResourceStore implements ResourceStore {
                 Authorization authorization = new Authorization(user, resourceId, tx);
                 authorization.assertCanView();
 
-                return workspace.getLatestContent(resourceId).get(tx);
+                return UserResource.userResource(workspace.getLatestContent(resourceId).get(tx)).
+                        setOwner(authorization.isOwner()).
+                        setEditAllowed(authorization.canEdit());
             }
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(resourceId);
@@ -83,8 +89,11 @@ public class HrdResourceStore implements ResourceStore {
     @Override
     public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
                                                 @PathParam("id") ResourceId resourceId) {
+        Workspace workspace = workspaceLookup.lookup(resourceId);
 
-         return Lists.newArrayList(AcrIndex.queryRules(datastore, resourceId));
+        try (WorkspaceTransaction tx = beginRead(workspace, user)) {
+            return Lists.newArrayList(workspace.getAcrIndex().queryRules(tx, resourceId));
+        }
     }
 
     @PUT
@@ -217,7 +226,7 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
-        return WorkspaceIndex.queryUserWorkspaces(datastore, user, workspaceLookup);
+        return WorkspaceIndex.queryUserWorkspaces(user);
     }
 
     @Override
@@ -252,7 +261,7 @@ public class HrdResourceStore implements ResourceStore {
                 final Authorization authorization;
                 Resource resource = snapshot.get(tx);
 
-                if (AccessControlRule.CLASS_ID.toString().equals(resource.get("classId"))) {
+                if (AccessControlRule.CLASS_ID.equals(resource.getValue().getClassId())) {
                     final Optional<Authorization> oldAuthorization;
                     final Optional<Snapshot> optionalSnapshot = Snapshot.getSnapshotAsOf(tx, resource.getId(), version);
 

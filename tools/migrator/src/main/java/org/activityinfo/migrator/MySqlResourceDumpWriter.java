@@ -52,7 +52,7 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
         append(",1,1,");
         appendParameter(resource.getOwnerId());
         append(',');
-        appendParameter(resource.isString("classId"));
+        appendParameter(resource.getValue().isString("classId"));
         append(',');
         appendParameter(ResourceWriters.getLabel(resource));
         append(',');

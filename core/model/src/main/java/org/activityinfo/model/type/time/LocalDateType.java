@@ -23,7 +23,9 @@ public class LocalDateType implements FieldType, TemporalType {
 
     public static final String TYPE_ID = "LOCAL_DATE";
 
-    public static final FieldTypeClass TYPE_CLASS = new RecordFieldTypeClass() {
+    public interface TypeClass extends RecordFieldTypeClass<LocalDate>, SingletonTypeClass {}
+
+    public static final TypeClass TYPE_CLASS = new TypeClass() {
         @Override
         public String getId() {
             return TYPE_ID;
@@ -40,7 +42,7 @@ public class LocalDateType implements FieldType, TemporalType {
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public LocalDate deserialize(Record record) {
             return org.activityinfo.model.type.time.LocalDate.fromRecord(record);
         }
     };

@@ -2,6 +2,7 @@ package org.activityinfo.service.tasks;
 
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 
 /**
  * Describes the status of a background task being run on behalf of the user.
@@ -47,11 +48,12 @@ public class UserTask implements IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
             .set("id", id)
             .set("description", description)
             .set("timeStarted", timeStarted)
-            .set("status", status.name());
+            .set("status", status.name())
+            .build();
     }
 
     public static UserTask fromRecord(Record record) {

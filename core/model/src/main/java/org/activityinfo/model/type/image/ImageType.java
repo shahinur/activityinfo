@@ -25,11 +25,14 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
+
+import java.util.Arrays;
 
 /**
  * @author yuriyz on 8/6/14.
@@ -69,9 +72,9 @@ public class ImageType implements ParametrizedFieldType {
 
         @Override
         public FormClass getParameterFormClass() {
-            EnumType cardinalityType = (EnumType) EnumType.TYPE_CLASS.createType();
-            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("single"), "Single"));
-            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("multiple"), "Multiple"));
+            EnumType cardinalityType = new EnumType(Cardinality.SINGLE,
+                Arrays.asList(new EnumValue(ResourceId.valueOf("single"), "Single"),
+                              new EnumValue(ResourceId.valueOf("multiple"), "Multiple")));
 
             FormClass formClass = new FormClass(Types.parameterFormClassId(this));
             formClass.addElement(new FormField(ResourceId.valueOf("cardinality"))
@@ -107,9 +110,10 @@ public class ImageType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record()
+        return Records.builder()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
-                .set("cardinality", new EnumFieldValue(ResourceId.valueOf(cardinality.name())).asRecord());
+                .set("cardinality", new EnumFieldValue(ResourceId.valueOf(cardinality.name())).asRecord())
+                .build();
     }
 
     @Override

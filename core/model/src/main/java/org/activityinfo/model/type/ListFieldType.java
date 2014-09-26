@@ -5,6 +5,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
@@ -68,9 +69,9 @@ public class ListFieldType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record()
-            .set("classId", Types.parameterFormClassId(TYPE_CLASS))
-            .set("elementType", elementType.asRecord());
+        return Records.builder(Types.parameterFormClassId(TYPE_CLASS))
+            .set("elementType", elementType.asRecord())
+            .build();
     }
 
     @Override

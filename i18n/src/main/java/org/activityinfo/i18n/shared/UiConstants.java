@@ -3216,7 +3216,7 @@ public interface UiConstants extends Constants {
     @Key("fieldTypeGeographicPoint")
     String fieldTypeGeographicPoint();
 
-    @DefaultStringValue("Narrative")
+    @DefaultStringValue("Multi-line text")
     @Key("fieldTypeNarrative")
     String fieldTypeNarrative();
 
@@ -3542,4 +3542,11 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Upload data")
     String uploadData();
+
+
+    @DefaultStringValue("Date range")
+    String dateInterval();
+
+    @DefaultStringValue("Barcode")
+    String fieldTypeBarCode();
 }

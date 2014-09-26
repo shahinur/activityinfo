@@ -3,10 +3,7 @@ package org.activityinfo.service.store;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -25,6 +22,13 @@ public interface ResourceStore {
     @Produces("application/json")
     Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
 
+    /**
+     * Fetches the latest version of the user resource from the store.
+     */
+    @GET
+    @Path("userresource/{id}")
+    @Produces("application/json")
+    UserResource getUserResource(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
 
     @GET
     @Path("resource/{id}/acr")

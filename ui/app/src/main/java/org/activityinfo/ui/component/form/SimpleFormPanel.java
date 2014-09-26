@@ -5,14 +5,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.*;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.ui.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.widget.loading.DisplayWidget;
@@ -85,7 +88,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     }
     public Promise<Void> show(final Resource instance) {
         this.instance = instance;
-        return locator.getFormClass(instance.getResourceId("classId")).join(new Function<FormClass, Promise<Void>>() {
+        return locator.getFormClass(instance.getValue().getClassId()).join(new Function<FormClass, Promise<Void>>() {
             @Nullable
             @Override
             public Promise<Void> apply(@Nullable FormClass formClass) {

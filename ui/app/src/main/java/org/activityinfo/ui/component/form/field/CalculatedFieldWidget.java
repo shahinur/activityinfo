@@ -40,10 +40,6 @@ public class CalculatedFieldWidget implements FormFieldWidget<CalculatedValue> {
         this.label = new Label();
     }
 
-    private CalculatedValue getValue() {
-        return value;
-    }
-
     @Override
     public void setReadOnly(boolean readOnly) {
     }

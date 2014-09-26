@@ -186,8 +186,8 @@ public class FormClass implements IsResource, FormElementContainer {
     public static FormClass fromResource(Resource resource) {
         FormClass formClass = new FormClass(resource.getId());
         formClass.setOwnerId(resource.getOwnerId());
-        formClass.setLabel(Strings.nullToEmpty(resource.isString(LABEL_FIELD_ID)));
-        formClass.elements.addAll(fromRecords(resource.getRecordList("elements")));
+        formClass.setLabel(Strings.nullToEmpty(resource.getValue().isString(LABEL_FIELD_ID)));
+        formClass.elements.addAll(fromRecords(resource.getValue().getRecordList("elements")));
         return formClass;
     }
 
@@ -213,12 +213,14 @@ public class FormClass implements IsResource, FormElementContainer {
     }
 
     public Resource asResource() {
+        RecordBuilder record = Records.builder(CLASS_ID);
+        record.set(LABEL_FIELD_ID, label);
+        record.set("elements", FormElement.asRecordList(elements));
+
         Resource resource = Resources.createResource();
         resource.setId(id);
         resource.setOwnerId(ownerId);
-        resource.set("classId", CLASS_ID);
-        resource.set(LABEL_FIELD_ID, label);
-        resource.set("elements", FormElement.asRecordList(elements));
+        resource.setValue(record.build());
         return resource;
     }
 

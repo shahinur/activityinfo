@@ -35,14 +35,14 @@ public class ApplicationProperties {
     public static final ResourceId COUNTRY_CLASS = ResourceId.valueOf("_country");
 
 
-    public static String getLabelPropertyName(String classId) {
-        if (FormClass.CLASS_ID.asString().equals(classId)) {
+    public static String getLabelPropertyName(ResourceId classId) {
+        if (FormClass.CLASS_ID.equals(classId)) {
             return FormClass.LABEL_FIELD_ID;
 
-        } else if (FolderClass.CLASS_ID.asString().equals(classId)) {
+        } else if (FolderClass.CLASS_ID.equals(classId)) {
             return FolderClass.LABEL_FIELD_ID.asString();
 
-        } else if (PivotTableModel.CLASS_ID.asString().equals(classId)) {
+        } else if (PivotTableModel.CLASS_ID.equals(classId)) {
             return PivotTableModel.LABEL_FIELD_ID;
         }
         return null;

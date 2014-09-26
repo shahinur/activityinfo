@@ -23,6 +23,7 @@ package org.activityinfo.model.type.image;
 
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 
 /**
  * @author yuriyz on 8/12/14.
@@ -87,18 +88,19 @@ public class ImageRowValue implements IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
                 .set("mimeType", mimeType)
                 .set("width", width)
                 .set("height", height)
                 .set("filename", filename)
-                .set("blobId", blobId);
+                .set("blobId", blobId)
+                .build();
     }
 
     public static ImageRowValue fromRecord(Record record) {
         ImageRowValue rowValue = new ImageRowValue(record.getString("mimeType"), record.getString("filename"), record.getString("blobId"));
-        rowValue.setHeight(record.getInt("height"));
-        rowValue.setWidth(record.getInt("width"));
+        rowValue.setHeight((int) record.getDouble("height"));
+        rowValue.setWidth((int) record.getDouble("width"));
         return rowValue;
     }
 }

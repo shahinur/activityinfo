@@ -5,6 +5,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.type.*;
 
 import java.util.ArrayList;
@@ -99,10 +100,11 @@ public class EnumType implements ParametrizedFieldType {
             enumValueRecords.add(enumValue.asRecord());
         }
 
-        return new Record()
+        return Records.builder()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
                 .set("cardinality", cardinality.name())
-                .set("values", enumValueRecords);
+                .set("values", enumValueRecords)
+                .build();
     }
 
     @Override

@@ -1,37 +1,59 @@
 package org.activityinfo.model.resource;
 
-import com.fasterxml.jackson.annotation.JsonValue;
+import org.activityinfo.model.type.FieldValue;
 
+import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.Map;
 
 /**
- * A record is a collection of named properties that
+ * A record is a collection of field values that
  * may be embedded within a {@code Resource}
  *
  * Unlike a resource, individual {@code Record}s are not
  * required to have a stable, globally unique identity.
  */
-public final class Record extends PropertyBag<Record> {
+public interface Record extends FieldValue {
 
-    @Override
-    public String toString() {
-        return getProperties().toString();
-    }
+    public ResourceId getClassId();
 
-    @JsonValue
-    @Override
-    public Map<String, Object> getProperties() {
-        // Overriden in order to apply the @JsonValue annotation
-        // specifically for Records
-        return super.getProperties();
-    }
+    public Object get(String fieldName);
 
-    @Override
-    public boolean equals(Object o) {
-        if(o instanceof Record) {
-            Record otherRecord = (Record) o;
-            return this.getProperties().equals(otherRecord.getProperties());
-        }
-        return false;
-    }
+    /**
+     * @return {@code true} if this {@code Record} contains a value for the given field name.
+     */
+    public boolean has(String fieldName);
+
+    public boolean getBoolean(String fieldName);
+
+    public Boolean isBoolean(String fieldName);
+
+    public boolean getBoolean(String fieldName, boolean defaultValue);
+
+    @Nonnull
+    public List<Record> getRecordList(String fieldName);
+
+    @Nonnull
+    public List<String> getStringList(String fieldName);
+
+    @Nonnull
+    public String getString(String fieldName);
+
+    public String isString(String fieldName);
+
+    @Nonnull
+    public Record getRecord(String fieldName);
+
+    public Record isRecord(String fieldName);
+
+    public double getDouble(String fieldName);
+
+    public int getInt(String fieldName);
+
+    /**
+     *
+     * @return an immutable {@code Map} view of this {@code Record}
+     */
+    Map<String, Object> asMap();
+
 }

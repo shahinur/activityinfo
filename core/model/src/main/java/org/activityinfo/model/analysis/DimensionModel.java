@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 
 import java.util.ArrayList;
@@ -67,11 +68,12 @@ public class DimensionModel implements IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
             .set("id", id)
             .set("classId", DimensionModel.CLASS_ID.asString())
             .set("label", label)
-            .set("description", description);
+            .set("description", description)
+            .build();
     }
 
     public static DimensionModel fromRecord(Record record) {

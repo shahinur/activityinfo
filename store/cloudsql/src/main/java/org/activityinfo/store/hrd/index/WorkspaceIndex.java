@@ -1,16 +1,10 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.store.hrd.Authorization;
 import org.activityinfo.store.hrd.entity.Content;
 import org.activityinfo.store.hrd.entity.Workspace;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
@@ -54,26 +48,21 @@ public class WorkspaceIndex {
         tx.put(entity);
     }
 
+    public static List<ResourceNode> queryUserWorkspaces(AuthenticatedUser user) {
 
-    public static List<ResourceNode> queryUserWorkspaces(DatastoreService datastore, AuthenticatedUser user, WorkspaceLookup workspaceLookup) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         Query query = new Query(INDEX_KIND)
             .setAncestor(parentKey(user))
             .setKeysOnly();
 
-        List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withLimit(100));
-
+        List<Entity> entities = datastore.prepare(null, query).asList(FetchOptions.Builder.withLimit(100));
 
         List<Key> workspaceKeys = Lists.newArrayList();
         for(Entity entity : entities) {
             ResourceId workspaceId = ResourceId.valueOf(entity.getKey().getName());
             Workspace workspace = new Workspace(workspaceId);
-            Authorization authorization = new Authorization(user, workspaceId, datastore);
-
-            if (authorization.canView()) {
-                workspaceKeys.add(workspace.getLatestContent(workspaceId).getKey());
-                workspaceLookup.cache(workspaceId, workspace);
-            }
+            workspaceKeys.add(workspace.getLatestContent(workspaceId).getKey());
         }
 
 
@@ -86,5 +75,4 @@ public class WorkspaceIndex {
         }
         return resourceNodes;
     }
-
 }

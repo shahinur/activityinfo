@@ -59,7 +59,7 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
             UpdateResult result = (UpdateResult) response;
             Resource updatedResource = save.getUpdatedResource();
 
-            if(updatedResource.getString("classId").equals(FolderClass.CLASS_ID.asString())) {
+            if(updatedResource.getValue().getClassId().equals(FolderClass.CLASS_ID)) {
                 cacheFolder(save, result);
             }
 
@@ -69,7 +69,8 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
                 if(folder.isAvailable()) {
 
                     // update folder root
-                    folder.get().getRootNode().setLabel(Strings.nullToEmpty(updatedResource.isString(FolderClass.LABEL_FIELD_ID.asString())));
+                    folder.get().getRootNode().setLabel(Strings.nullToEmpty(
+                        updatedResource.getValue().isString(FolderClass.LABEL_FIELD_ID.asString())));
 
                     // update childs
                     updateChildren(folder.get(), updatedResource);
@@ -79,7 +80,7 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
     }
 
     private boolean isFolderItem(Resource updatedResource) {
-        return updatedResource.getString("classId").startsWith("_");
+        return updatedResource.getValue().getClassId().isApplicationDefined();
     }
 
     private void updateChildren(FolderProjection folder, Resource updatedResource) {
@@ -113,7 +114,7 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
         } else {
             if (folders.containsKey(resource.getId())) {
                 FolderProjection folder = folders.get(resource.getId()).get();
-                folder.getRootNode().setLabel(resource.getString(FolderClass.LABEL_FIELD_ID.asString()));
+                folder.getRootNode().setLabel(resource.getValue().getString(FolderClass.LABEL_FIELD_ID.asString()));
             }
         }
         fireChange();

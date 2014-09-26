@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.PropertyBag;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
+import org.activityinfo.model.resource.Records;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -14,8 +15,11 @@ import java.util.Map;
 
 public class RecordSerialization {
 
-    public static void writeProperties(JsonGenerator json, PropertyBag<?> resource) throws IOException {
-        for (Map.Entry<String, Object> entry : resource.getProperties().entrySet()) {
+    public static void writeProperties(JsonGenerator json, Record record) throws IOException {
+        if(record.getClassId() != null) {
+            json.writeStringField("@class", record.getClassId().asString());
+        }
+        for (Map.Entry<String, Object> entry : record.asMap().entrySet()) {
             json.writeFieldName(entry.getKey());
             writeValue(json, entry.getValue());
         }
@@ -53,8 +57,12 @@ public class RecordSerialization {
         json.writeEndArray();
     }
 
-    public static void readProperty(JsonParser reader, PropertyBag<?> resource, String propertyName) throws IOException {
-        if(reader.getCurrentToken() == JsonToken.VALUE_STRING) {
+    public static void readProperty(JsonParser reader, RecordBuilder resource, String propertyName) throws IOException {
+
+        if(propertyName.contentEquals("@class")) {
+            resource.setClassId(reader.getText());
+
+        } else if(reader.getCurrentToken() == JsonToken.VALUE_STRING) {
             resource.set(propertyName, reader.getText());
         } else if(reader.getCurrentToken() == JsonToken.VALUE_NUMBER_INT ||
                   reader.getCurrentToken() == JsonToken.VALUE_NUMBER_FLOAT) {
@@ -76,19 +84,18 @@ public class RecordSerialization {
     }
 
     public static Record readRecord(JsonParser reader) throws IOException {
-        Record record = new Record();
-        readProperties(reader, record);
-        return record;
+        return readProperties(reader);
     }
 
-    public static void readProperties(JsonParser reader, PropertyBag record) throws IOException {
+    public static Record readProperties(JsonParser reader) throws IOException {
+        RecordBuilder record = Records.builder();
         while(reader.nextToken() == JsonToken.FIELD_NAME) {
             String propertyName = reader.getCurrentName();
-
             if(reader.nextToken() != JsonToken.VALUE_NULL) {
                 readProperty(reader, record, propertyName);
             }
         }
+        return record.build();
     }
 
     public static List<Object> readArray(JsonParser reader) throws IOException {
