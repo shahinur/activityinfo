@@ -45,7 +45,7 @@ public class PivotTest {
         store.load("lcca.json");
 
         for(Resource resource : store.all()) {
-            if(FormClass.CLASS_ID.asString().equals(resource.isString("classId"))) {
+            if(FormClass.CLASS_ID.asString().equals(resource.getValue().getClassId())) {
                 forms.add(FormClass.fromResource(resource));
             }
         }
@@ -517,8 +517,8 @@ public class PivotTest {
         for(MeasureModel measure : model.getMeasures()) {
 
             System.out.println("\t\t" + measure.getLabel() + ": " + measure.getValueExpression() + " FROM [" +
-                getFormLabel(measure.getSourceId()) + "]");
-            if(!Strings.isNullOrEmpty(measure.getCriteriaExpression())) {
+                getFormLabel(measure.getSourceId().getResourceId()) + "]");
+            if(measure.getCriteriaExpression() != null) {
                 System.out.println("\t\t\tWHERE " + measure.getCriteriaExpression());
             }
             if(measure.getMeasurementType() == MeasurementType.STOCK) {
@@ -527,7 +527,7 @@ public class PivotTest {
 
             List<String> dims = Lists.newArrayList();
             for(DimensionModel dim : model.getDimensions()) {
-                Optional<DimensionSource> source = dim.getSource(measure.getSourceId());
+                Optional<DimensionSource> source = dim.getSource(measure.getSourceId().getResourceId());
                 if(source.isPresent()) {
                     dims.add(dim.getLabel());
                 }
@@ -566,6 +566,6 @@ public class PivotTest {
     }
 
     private String getFormLabel(ResourceId sourceId) {
-        return store.get(sourceId).getString(FormClass.LABEL_FIELD_ID);
+        return store.get(sourceId).getValue().getString(FormClass.LABEL_FIELD_ID);
     }
 }

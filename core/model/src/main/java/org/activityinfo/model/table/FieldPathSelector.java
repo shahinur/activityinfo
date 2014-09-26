@@ -3,10 +3,7 @@ package org.activityinfo.model.table;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Records;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.type.primitive.TextType;
 
@@ -59,12 +56,12 @@ public class FieldPathSelector implements FieldSelector {
 
         @Override
         public Record asRecord() {
-            Record record = new Record();
+            RecordBuilder record = Records.builder();
             if(formClass != null) {
                 record.set("formClass", formClass.asString());
             }
             record.set("fieldId", fieldId.asString());
-            return record;
+            return record.build();
         }
     }
 
@@ -144,10 +141,7 @@ public class FieldPathSelector implements FieldSelector {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
-        record.set("path", Records.toRecordList(steps));
-
-        return record;
+        return Records.builder().set("path", Records.toRecordList(steps)).build();
     }
 
     public static FieldPathSelector fromRecord(Record record) {

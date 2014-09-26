@@ -3,6 +3,7 @@ package org.activityinfo.model.table;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
 import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 
@@ -58,10 +59,10 @@ public class FieldSource extends ColumnSource {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("type", SOURCE_TYPE);
         record.set("selectors", Records.toRecordList(selectors));
-        return record;
+        return record.build();
     }
 
 

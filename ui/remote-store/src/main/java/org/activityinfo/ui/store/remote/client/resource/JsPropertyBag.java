@@ -40,7 +40,7 @@ public final class JsPropertyBag extends JavaScriptObject {
 
     private JsPropertyBag toBag(Record record) {
         JsPropertyBag bag = create();
-        for (Map.Entry<String, Object> entry : record.getProperties().entrySet()) {
+        for (Map.Entry<String, Object> entry : record.asMap().entrySet()) {
             bag.set(entry.getKey(), entry.getValue());
         }
         return bag;

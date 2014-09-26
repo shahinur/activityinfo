@@ -26,7 +26,7 @@ public class Content {
     public static final String CONTENTS_PROPERTY = "P";
 
     @VisibleForTesting
-    static String writePropertiesAsString(PropertyBag bag) {
+    static String writePropertiesAsString(Record bag) {
         try {
             StringWriter writer = new StringWriter();
             JsonGenerator json = ObjectMapperFactory.get().getFactory().createGenerator(writer);
@@ -40,14 +40,14 @@ public class Content {
         }
     }
 
-    public static void readPropertiesFromString(PropertyBag bag, Text text) {
+    public static void readPropertiesFromString(Resource resource, Text text) {
         try {
             JsonParser json = ObjectMapperFactory.get().getFactory().createParser(text.getValue());
             json.nextToken();
             assert json.getCurrentToken() == JsonToken.START_OBJECT;
-            RecordSerialization.readProperties(json, bag);
+            resource.setValue(RecordSerialization.readProperties(json));
         } catch(IOException e) {
-            throw new RuntimeException("Exception deserializing property bag: " + e.getMessage(), e);
+            throw new RuntimeException("Exception deserializing property recordBuilder: " + e.getMessage(), e);
         }
     }
 
@@ -56,7 +56,7 @@ public class Content {
     }
 
     public static void writeProperties(Resource resource, Entity entity) {
-        entity.setProperty(CONTENTS_PROPERTY, new Text(writePropertiesAsString(resource)));
+        entity.setProperty(CONTENTS_PROPERTY, new Text(writePropertiesAsString(resource.getValue())));
     }
 
     public static Resource deserializeResource(Entity entity) {

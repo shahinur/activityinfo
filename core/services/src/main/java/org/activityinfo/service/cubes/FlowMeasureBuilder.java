@@ -1,7 +1,6 @@
 package org.activityinfo.service.cubes;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.analysis.DimensionModel;
@@ -49,7 +48,7 @@ public class FlowMeasureBuilder implements MeasureBuilder {
         this.criteria = rowSetBuilder.fetch(resolveCriteria());
 
         for (int i = 0; i < dimensions.size(); i++) {
-            Optional<DimensionSource> source = dimensions.get(i).getSource(model.getSourceId());
+            Optional<DimensionSource> source = dimensions.get(i).getSource(model.getSourceId().getResourceId());
             if(source.isPresent()) {
                 dimensionViews.add(rowSetBuilder.fetch(source.get().getExpression()));
             } else {
@@ -59,10 +58,10 @@ public class FlowMeasureBuilder implements MeasureBuilder {
     }
 
     private String resolveCriteria() {
-        if(Strings.isNullOrEmpty(model.getCriteriaExpression())) {
+        if(model.getCriteriaExpression() == null) {
             return "true";
         } else {
-            return model.getCriteriaExpression();
+            return model.getCriteriaExpression().getExpression();
         }
     }
 
@@ -101,9 +100,9 @@ public class FlowMeasureBuilder implements MeasureBuilder {
             for(int i=0;i!=dimensions.size();++i) {
                 bucket.setDimensionValue(dimensions.get(i).getId(), key.getDimensionValue(i));
             }
-            for (Map.Entry<String, String> tag : model.getDimensionTags().entrySet()) {
-                bucket.setDimensionValue(tag.getKey(), tag.getValue());
-            }
+//            for (Map.Entry<String, String> tag : model.getDimensionTags().entrySet()) {
+//                bucket.setDimensionValue(tag.getKey(), tag.getValue());
+//            }
             buckets.add(bucket);
         }
         return buckets;

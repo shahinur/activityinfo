@@ -39,7 +39,7 @@ public class NewWorkspacePageTest {
 
         Resource created = store.getOnlyCreatedResource();
         assertThat(created.getOwnerId(), equalTo(Resources.ROOT_ID));
-        assertThat(created.isString(FolderClass.LABEL_FIELD_ID.asString()), equalTo("MyWorkspace"));
+        assertThat(created.getValue().getString(FolderClass.LABEL_FIELD_ID.asString()), equalTo("MyWorkspace"));
 
     }
 }

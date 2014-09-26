@@ -72,12 +72,12 @@ public class FormInstance implements IsResource {
     }
 
     public static FormInstance fromResource(Resource resource) {
-        FormInstance instance = new FormInstance(resource.getId(), resource.getResourceId("classId"));
+        FormInstance instance = new FormInstance(resource.getId(), resource.getValue().getClassId());
         instance.setVersion(resource.getVersion());
         if (resource.getOwnerId() != null) { // owner may be null for FieldTypes
             instance.setOwnerId(resource.getOwnerId());
         }
-        instance.propertyBag.setAll(resource);
+        instance.propertyBag.setAll(resource.getValue());
         return instance;
     }
 
@@ -87,8 +87,7 @@ public class FormInstance implements IsResource {
         resource.setId(id);
         resource.setOwnerId(ownerId);
         resource.setVersion(version);
-        resource.set("classId", classId);
-        resource.setAll(propertyBag);
+        resource.setValue(propertyBag.toRecord(classId));
         return resource;
     }
 
@@ -176,7 +175,7 @@ public class FormInstance implements IsResource {
     }
 
     public FieldValue get(ResourceId fieldId) {
-        return Types.read(propertyBag, fieldId.asString());
+        return Types.read(propertyBag.toRecord(classId), fieldId.asString());
     }
 
     /**
@@ -232,7 +231,7 @@ public class FormInstance implements IsResource {
     public FormInstance copy() {
         final FormInstance copy = new FormInstance(getId(), getClassId());
         copy.setOwnerId(getOwnerId());
-        copy.propertyBag.setAll(propertyBag);
+        copy.propertyBag.setAll(propertyBag.getProperties());
         return copy;
     }
 

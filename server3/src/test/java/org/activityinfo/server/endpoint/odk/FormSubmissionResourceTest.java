@@ -1,6 +1,8 @@
 package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.time.LocalDate;
@@ -40,10 +42,12 @@ public class FormSubmissionResourceTest {
         Response response = resource.submit(bytes);
         assertEquals(CREATED, fromStatusCode(response.getStatus()));
 
-        Map<String, Object> map = store.getLastUpdated().getProperties();
+        Record record = store.getLastUpdated().getValue();
+        Map<String, Object> map = record.asMap();
 
-        assertEquals(7, map.size());
-        assertEquals("a1081", map.get("classId"));
+
+        assertEquals(6, map.size());
+        assertEquals(ResourceId.valueOf("a1081"), record.getClassId());
         assertEquals(new ReferenceValue(CuidAdapter.partnerInstanceId(507, 562)).asRecord(), map.get("a1081f7"));
         assertEquals(new LocalDate(2005, 8, 31).asRecord(), map.get("a1081f12"));
         assertEquals("09/06/06", map.get("a1081f13"));

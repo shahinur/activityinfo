@@ -1,7 +1,6 @@
 package org.activityinfo.model.resource;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class Resources {
 
@@ -26,32 +25,8 @@ public class Resources {
     public static Resource createResource(Record record) {
         Resource resource = new Resource();
         resource.setId(generateId());
-        resource.getProperties().putAll(record.getProperties());
+        resource.setValue(record);
         return resource;
-    }
-
-    /**
-     * @return  {@code} true if {@code x} and {@code y} have the same identity
-     * and have equal properties
-     */
-    public static boolean deepEquals(Resource x, Resource y) {
-        if(x == y) {
-            return true;
-        }
-        if(!Objects.equals(x.getId(), y.getId()) ||
-           !Objects.equals(x.getOwnerId(), y.getOwnerId())) {
-            return false;
-        }
-
-        if(x.getProperties().size() != y.getProperties().size()) {
-            return false;
-        }
-        for(String propertyName : x.getProperties().keySet()) {
-            if(!Objects.equals(x.get(propertyName), y.get(propertyName))) {
-                return false;
-            }
-        }
-        return true;
     }
 
     public static ResourceId generateId() {

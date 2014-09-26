@@ -194,7 +194,9 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    locator.create(user, formInstance.asResource().set("backupBlobId", resourceId.asString()));
+                    formInstance.set(ResourceId.valueOf("backupBlobId"), resourceId.asString());
+
+                    locator.create(user, formInstance.asResource());
                     return Response.status(CREATED).build();
                 }
             }

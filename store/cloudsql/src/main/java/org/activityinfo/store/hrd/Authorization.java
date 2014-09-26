@@ -1,25 +1,19 @@
 package org.activityinfo.store.hrd;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.type.expr.ExprValue;
-import org.activityinfo.store.hrd.entity.LatestContent;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
-import org.activityinfo.store.hrd.index.AcrIndex;
 
 import javax.ws.rs.WebApplicationException;
 
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
-import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
 
 public class Authorization {
 
@@ -49,10 +43,10 @@ public class Authorization {
         this.accessControlRule = accessControlRule;
     }
 
-    private AccessControlRule findRule(WorkspaceTransaction transaction, ResourceId resourceId) {
+    private AccessControlRule findRule(WorkspaceTransaction tx, ResourceId resourceId) {
 
         while(!ROOT_ID.equals(resourceId)) {
-            Optional<AccessControlRule> rule = AcrIndex.getRule(transaction, resourceId, userResourceId);
+            Optional<AccessControlRule> rule = tx.getWorkspace().getAcrIndex().getRule(tx, resourceId);
             if(rule.isPresent()) {
                 return rule.get();
             }
@@ -60,37 +54,12 @@ public class Authorization {
             // ACRs are inherited from the owner, so if we don't find an ACR here,
             // ascend to this resource's owner in search of an applicable rule.
             try {
-                resourceId = transaction.getWorkspace().getLatestContent(resourceId).getAsNode(transaction).getOwnerId();
+                resourceId = tx.getWorkspace().getLatestContent(resourceId).getAsNode(tx).getOwnerId();
             } catch (EntityNotFoundException e) {
                 throw new IllegalStateException("Missing resource/owner: " + resourceId);
             }
         }
         return null;
-    }
-
-    /**
-     * Special-purpose constructor. Won't fetch ACRs recursively and should only be used on root entities (workspaces).
-     * @param authenticatedUser The {@link AuthenticatedUser} this {@link AccessControlRule} should correspond with.
-     * @param workspaceId The id of the {@link Resource} this {@link AccessControlRule} should correspond with.
-     * @param datastore The {@link DatastoreService} that should be used to extract the {@link AccessControlRule}.
-     */
-    public Authorization(AuthenticatedUser authenticatedUser, ResourceId workspaceId, DatastoreService datastore) {
-        ResourceId userResourceId = Preconditions.checkNotNull(authenticatedUser.getUserResourceId());
-        Optional<AccessControlRule> rule = AcrIndex.getRule(datastore, workspaceId, userResourceId, workspaceId);
-
-        try {
-            ResourceNode resourceNode = new LatestContent(
-                    KeyFactory.createKey(ROOT_KIND, workspaceId.asString()), workspaceId).getAsNode(datastore);
-            assert ROOT_ID.equals(resourceNode.getOwnerId());
-        } catch (EntityNotFoundException e) {
-            throw new IllegalStateException("Missing resource: " + workspaceId);
-        }
-
-        if(rule.isPresent()) {
-            accessControlRule = rule.get();
-        } else {
-            accessControlRule = null;
-        }
     }
 
     /**
@@ -187,7 +156,7 @@ public class Authorization {
         Preconditions.checkNotNull(userResourceId);
         Preconditions.checkNotNull(transaction);
 
-        Optional<AccessControlRule> rule = AcrIndex.getRule(transaction, childId, userResourceId);
+        Optional<AccessControlRule> rule = transaction.getWorkspace().getAcrIndex().getRule(transaction, childId);
         if(rule.isPresent()) {
             return new Authorization(rule.get());
         } else {

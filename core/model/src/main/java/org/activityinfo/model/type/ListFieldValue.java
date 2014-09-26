@@ -4,11 +4,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
 
-public class ListFieldValue implements FieldValue, IsRecord {
+public class ListFieldValue implements FieldValue {
     private final ImmutableList<? extends FieldValue> elements;
 
     private ListFieldValue(List<? extends FieldValue> elements) {
@@ -40,25 +39,23 @@ public class ListFieldValue implements FieldValue, IsRecord {
         return ListFieldType.TYPE_CLASS;
     }
 
-    @Override
-    public Record asRecord() {
-        List<Record> elements = Lists.newArrayList();
-        for(FieldValue value : this.elements) {
-            assert value instanceof IsRecord;
-            elements.add(((IsRecord) value).asRecord());
-        }
-
-        return new Record()
-            .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
-            .set("elements", elements);
-    }
 
     public static ListFieldValue ofSubForms(List<? extends IsRecord> subForms) {
-        ImmutableList.Builder<SubFormValue> listBuilder = new ImmutableList.Builder<>();
+        ImmutableList.Builder<Record> listBuilder = new ImmutableList.Builder<>();
         for(IsRecord subForm : subForms) {
             Record record = subForm.asRecord();
-            listBuilder.add(new SubFormValue(ResourceId.valueOf(record.isString("classId")), record));
+            listBuilder.add(record);
         }
         return new ListFieldValue(listBuilder.build());
+    }
+
+    public List<Record> asRecordList() {
+        List<Record> serializedElements = Lists.newArrayList();
+        for (FieldValue element : elements) {
+            if (element instanceof Record) {
+                serializedElements.add((Record) element);
+            }
+        }
+        return serializedElements;
     }
 }

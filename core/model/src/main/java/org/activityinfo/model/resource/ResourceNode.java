@@ -44,14 +44,14 @@ public class ResourceNode {
 
     public ResourceNode(Resource resource) {
         this.id = resource.getId();
-        this.classId = ResourceId.valueOf(resource.getString("classId"));
+        this.classId = resource.getValue().getClassId();
         this.ownerId = resource.getOwnerId();
         this.version = resource.getVersion();
 
         if(classId.equals(FolderClass.CLASS_ID)) {
-            this.label = resource.getString(FolderClass.LABEL_FIELD_ID.asString());
+            this.label = resource.getValue().getString(FolderClass.LABEL_FIELD_ID.asString());
         } else if(classId.equals(FormClass.CLASS_ID)) {
-            this.label = resource.getString(FormClass.LABEL_FIELD_ID);
+            this.label = resource.getValue().getString(FormClass.LABEL_FIELD_ID);
         }
 
     }

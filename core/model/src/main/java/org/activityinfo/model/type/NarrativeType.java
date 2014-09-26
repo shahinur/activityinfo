@@ -13,7 +13,7 @@ public class NarrativeType implements FieldType {
 
     public static final NarrativeType INSTANCE = new NarrativeType();
 
-    public interface TypeClass extends RecordFieldTypeClass<NarrativeValue> {}
+    public interface TypeClass extends SingletonTypeClass, RecordFieldTypeClass<NarrativeValue> {}
 
     public static final TypeClass TYPE_CLASS = new TypeClass() {
         @Override

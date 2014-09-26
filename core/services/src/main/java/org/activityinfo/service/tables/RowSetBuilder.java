@@ -13,6 +13,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnModel;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
@@ -52,6 +53,13 @@ public class RowSetBuilder {
         ExprNode expr = ExprParser.parse(expression);
         return expr.accept(columnVisitor);
     }
+
+    public Supplier<ColumnView> fetch(ExprValue exprValue) {
+        return fetch(exprValue.getExpression());
+    }
+
+
+
 
     public Supplier<ColumnView> fetch(FormField field) {
         return batchBuilder.addColumn(tree.getRootField(field.getId()));

@@ -34,6 +34,7 @@ public class PageFrameConfig {
 
     private EditLabelDialog enableRename;
     private DeleteResourceAction enableDeletion;
+    private boolean editAllowed = false;
 
     public EditLabelDialog getEnableRename() {
         return enableRename;
@@ -50,6 +51,15 @@ public class PageFrameConfig {
 
     public PageFrameConfig setEnableDeletion(DeleteResourceAction enableDeletion) {
         this.enableDeletion = enableDeletion;
+        return this;
+    }
+
+    public boolean isEditAllowed() {
+        return editAllowed;
+    }
+
+    public PageFrameConfig setEditAllowed(boolean editAllowed) {
+        this.editAllowed = editAllowed;
         return this;
     }
 }

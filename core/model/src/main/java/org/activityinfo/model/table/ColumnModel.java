@@ -2,6 +2,8 @@ package org.activityinfo.model.table;
 
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
+import org.activityinfo.model.resource.Records;
 
 /**
  * Defines a Column within a Table request
@@ -77,13 +79,13 @@ public class ColumnModel implements IsRecord {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("id", id);
         if(type != null) {
             record.set("type", type.name());
         }
         record.set("source", source.asRecord());
-        return record;
+        return record.build();
     }
 
     public static ColumnModel fromRecords(Record record) {

@@ -5,7 +5,8 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.ListFieldType;
+import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.primitive.TextType;
 
 import java.util.List;
@@ -79,55 +80,31 @@ public class PivotTableModel implements IsRecord, IsResource {
         formClass.addElement(new FormField(ResourceId.valueOf("measures"))
             .setLabel("Measures")
             .setRequired(true)
-            .setType(new ListFieldType(new SubFormType(MeasureModel.CLASS_ID))));
+            .setType(new ListFieldType(new RecordFieldType(MeasureModel.CLASS_ID))));
 
         formClass.addElement(new FormField(ResourceId.valueOf("dimensions"))
             .setLabel("Dimensions")
-            .setType(new ListFieldType(new SubFormType(DimensionModel.CLASS_ID))));
+            .setType(new ListFieldType(new RecordFieldType(DimensionModel.CLASS_ID))));
 
         return formClass;
     }
 
     @Override
     public Record asRecord() {
-        return new Record().set("measures", ListFieldValue.ofSubForms(measures).asRecord());
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public Resource asResource() {
-        Resource resource = Resources.createResource();
-        resource.setId(id);
-        resource.set("classId", CLASS_ID.asString());
-        resource.set(LABEL_FIELD_ID, label);
-        resource.setOwnerId(ownerId);
-        resource.set("measures", ListFieldValue.ofSubForms(measures).asRecord());
-        resource.set("dimensions", ListFieldValue.ofSubForms(dimensions).asRecord());
-        return resource;
+        throw new UnsupportedOperationException();
     }
 
     public static PivotTableModel fromRecord(Record record) {
-        return fromProperties(record);
+        throw new UnsupportedOperationException();
     }
 
     public static PivotTableModel fromResource(Resource resource) {
-        return fromProperties(resource);
+        throw new UnsupportedOperationException();
     }
 
-    private static PivotTableModel fromProperties(PropertyBag resource) {
-        PivotTableModel model = new PivotTableModel();
-        model.setLabel(resource.isString(LABEL_FIELD_ID));
-        ListFieldValue measureList = Types.read(resource, "measures", ListFieldType.TYPE_CLASS);
-        for(FieldValue value : measureList.getElements()) {
-            if(value instanceof SubFormValue) {
-                model.addMeasure(new MeasureModel(((SubFormValue) value).getFields()));
-            }
-        }
-        ListFieldValue dimensionList = Types.read(resource, "measures", ListFieldType.TYPE_CLASS);
-        for(FieldValue value : dimensionList.getElements()) {
-            if(value instanceof SubFormValue) {
-                model.addDimension(DimensionModel.fromRecord(((SubFormValue) value).getFields()));
-            }
-        }
-        return model;
-    }
 }

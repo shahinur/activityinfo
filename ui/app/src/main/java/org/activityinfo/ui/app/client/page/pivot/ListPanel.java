@@ -1,8 +1,8 @@
 package org.activityinfo.ui.app.client.page.pivot;
 
+import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ListFieldValue;
-import org.activityinfo.model.type.SubFormValue;
 import org.activityinfo.ui.app.client.form.store.FieldState;
 import org.activityinfo.ui.style.*;
 import org.activityinfo.ui.vdom.shared.html.H;
@@ -54,8 +54,8 @@ public class ListPanel extends VComponent {
     }
 
     private VTree renderItem(FieldValue item) {
-        if(item instanceof SubFormValue) {
-            SubFormValue subForm = (SubFormValue) item;
+        if(item instanceof Record) {
+            Record subForm = (Record) item;
             CloseButton deleteButton = new CloseButton(FloatStyle.RIGHT);
             return li(t(subForm.getString("label")), deleteButton);
         } else {

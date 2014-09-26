@@ -68,7 +68,7 @@ public class ResourceStoreTest extends JerseyTest {
         assertThat(resource.getId(), equalTo(expected.getId()));
         assertThat(resource.getOwnerId(), equalTo(expected.getOwnerId()));
         assertThat(resource.getVersion(), equalTo(expected.getVersion()));
-        assertThat(resource.getProperties(), equalTo(expected.getProperties()));
+        assertTrue(Records.deepEquals(resource.getValue(), expected.getValue()));
         assertThat(resource, equalTo(expected));
     }
 

@@ -28,6 +28,6 @@ public class ListField {
     }
 
     public String getTypeExpression() {
-        return "new ListFieldType(new SubFormType(" + getElementSerdeType() + ".CLASS_ID" + "))";
+        return "new ListFieldType(new RecordFieldType(" + getElementSerdeType() + ".CLASS_ID" + "))";
     }
 }

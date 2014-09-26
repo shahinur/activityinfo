@@ -1,11 +1,11 @@
 package org.activityinfo.model.hierarchy;
 
 import com.google.common.collect.Lists;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.ReferenceValue;
 
@@ -74,15 +74,15 @@ public class Level {
 
     public Node createNode(Resource resource) {
         if(isRoot()) {
-            return new Node(resource.getId(), resource.getString(labelFieldId.asString()));
+            return new Node(resource.getId(), resource.getValue().getString(labelFieldId.asString()));
         } else {
 
-            ReferenceValue parent = ReferenceValue.fromRecord(resource.getRecord(parentFieldId.asString()));
+            ReferenceValue parent = ReferenceValue.fromRecord(resource.getValue().getRecord(parentFieldId.asString()));
 
             return new Node(
                     resource.getId(),
                     parent.getResourceId(),
-                    resource.getString(labelFieldId.asString()));
+                    resource.getValue().getString(labelFieldId.asString()));
         }
     }
 }

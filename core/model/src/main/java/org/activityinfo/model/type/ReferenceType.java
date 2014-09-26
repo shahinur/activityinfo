@@ -4,9 +4,7 @@ import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
+import org.activityinfo.model.resource.*;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -132,13 +130,13 @@ public class ReferenceType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("classId", getTypeClass().getParameterFormClass().getId());
         record.set("cardinality", cardinality);
         if(!range.isEmpty()) {
             record.set("range", new ReferenceValue(range).asRecord());
         }
-        return record;
+        return record.build();
     }
 
     @Override

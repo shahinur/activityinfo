@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -34,6 +31,11 @@ public class MockRemoteStoreService implements RemoteStoreService {
 
     @Override
     public Promise<Resource> get(ResourceId resourceId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Promise<UserResource> getUserResource(ResourceId resourceId) {
         throw new UnsupportedOperationException();
     }
 

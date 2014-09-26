@@ -52,7 +52,7 @@ class InitialSelection {
     private Set<ResourceId> populateSelection(List<Resource> resources) {
         Set<ResourceId> parents = Sets.newHashSet();
         for(Resource resource : resources) {
-            Level level = hierarchy.getLevel(ResourceId.valueOf(resource.getString("classId")));
+            Level level = hierarchy.getLevel(resource.getValue().getClassId());
             if(level != null) {
                 Node node = level.createNode(resource);
                 selection.put(level.getClassId(), node);

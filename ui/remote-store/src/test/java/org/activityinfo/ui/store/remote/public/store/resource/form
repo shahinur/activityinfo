@@ -19,7 +19,7 @@
                "classId":"_type:QUANTITY",
                "units":"%"
             },
-            "typeClass":"QUANTITY"
+            "type":"QUANTITY"
          }
       }
    ]

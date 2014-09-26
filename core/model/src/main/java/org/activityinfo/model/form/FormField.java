@@ -3,6 +3,8 @@ package org.activityinfo.model.form;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.RecordBuilder;
+import org.activityinfo.model.resource.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 
@@ -231,7 +233,7 @@ public class FormField extends FormElement {
     public Record asRecord() {
         assert type != null : id + " has no type";
 
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("id", id.asString());
         record.set("code", code);
         record.set("description", description);
@@ -250,16 +252,16 @@ public class FormField extends FormElement {
             record.set("superProperties", new ReferenceValue(superProperties).asRecord());
         }
 
-        return record;
+        return record.build();
     }
 
     private Record toRecord(FieldType type) {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("typeClass", type.getTypeClass().getId());
         if(type instanceof ParametrizedFieldType) {
             record.set("parameters", ((ParametrizedFieldType)type).getParameters());
         }
-        return record;
+        return record.build();
     }
 
     public static FormElement fromRecord(Record record) {
@@ -291,8 +293,10 @@ public class FormField extends FormElement {
         FieldTypeClass typeClass = TypeRegistry.get().getTypeClass(typeClassId);
         if(typeClass instanceof ParametrizedFieldTypeClass) {
             return ((ParametrizedFieldTypeClass)typeClass).deserializeType(record.getRecord("parameters"));
+        } else if(typeClass instanceof SingletonTypeClass) {
+            return ((SingletonTypeClass)typeClass).createType();
         } else {
-            return typeClass.createType();
+            throw new UnsupportedOperationException();
         }
     }
 }

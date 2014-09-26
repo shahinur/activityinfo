@@ -1,6 +1,5 @@
 package org.activityinfo.model.type;
 
-import org.activityinfo.model.resource.PropertyBag;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.number.Quantity;
@@ -9,7 +8,7 @@ import org.activityinfo.model.type.primitive.TextValue;
 
 public class Types {
 
-    public static FieldValue read(PropertyBag bag, String name) {
+    public static FieldValue read(Record bag, String name) {
         Object value = bag.get(name);
         if (value == null) {
             return null;
@@ -32,7 +31,7 @@ public class Types {
         }
     }
 
-    public static <V extends FieldValue> V read(PropertyBag bag, String name, RecordFieldTypeClass<V> typeClass) {
+    public static <V extends FieldValue> V read(Record bag, String name, RecordFieldTypeClass<V> typeClass) {
         Record record = bag.isRecord(name);
         if(record != null) {
             String typeName = record.getString(FieldValue.TYPE_CLASS_FIELD_NAME);
@@ -43,7 +42,7 @@ public class Types {
         return null;
     }
 
-    public static ResourceId readReference(PropertyBag bag, String name) {
+    public static ResourceId readReference(Record bag, String name) {
         ReferenceValue value = read(bag, name, ReferenceType.TYPE_CLASS);
         return value.getResourceId();
     }

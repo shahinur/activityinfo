@@ -55,7 +55,7 @@ public class HrdResourceTest {
         assertThat(divACreationResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
         Resource resource = environment.getStore().get(environment.getUser(), divA.getId());
-        assertThat(resource.getString(FolderClass.LABEL_FIELD_ID.asString()), equalTo("Division A"));
+        assertThat(resource.getValue().getString(FolderClass.LABEL_FIELD_ID.asString()), equalTo("Division A"));
         assertThat(resource.getVersion(), equalTo(divACreationResult.getNewVersion()));
 
         // Ensure that this stuff gets cached
@@ -117,7 +117,7 @@ public class HrdResourceTest {
         assertThat(updateResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
         Resource newlyFetched = environment.getStore().get(environment.getUser(), workspace.getId());
-        assertThat(newlyFetched.getString(FolderClass.LABEL_FIELD_ID.asString()), Matchers.equalTo("Workspace B"));
+        assertThat(newlyFetched.getValue().getString(FolderClass.LABEL_FIELD_ID.asString()), Matchers.equalTo("Workspace B"));
     }
 
     @Test
