@@ -33,11 +33,6 @@ public class ReferenceType implements ParametrizedFieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Reference";
-        }
-
-        @Override
         public FieldType createType() {
             return new ReferenceType()
                     .setCardinality(Cardinality.SINGLE)

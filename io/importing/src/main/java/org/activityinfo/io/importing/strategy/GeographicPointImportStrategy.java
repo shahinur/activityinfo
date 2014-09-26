@@ -1,10 +1,10 @@
 package org.activityinfo.io.importing.strategy;
 
 import com.google.common.base.Objects;
-import org.activityinfo.model.type.converter.ConverterFactory;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.converter.ConverterFactory;
+import org.activityinfo.model.type.geo.GeoPointType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ public class GeographicPointImportStrategy implements FieldImportStrategy {
 
     @Override
     public boolean accept(FormTree.Node fieldNode) {
-        return fieldNode.getTypeClass() == FieldTypeClass.GEOGRAPHIC_POINT;
+        return fieldNode.getTypeClass() == GeoPointType.TYPE_CLASS;
     }
 
     @Override

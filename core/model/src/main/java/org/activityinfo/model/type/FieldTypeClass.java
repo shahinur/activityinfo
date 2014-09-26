@@ -1,12 +1,5 @@
 package org.activityinfo.model.type;
 
-import org.activityinfo.model.type.barcode.BarcodeType;
-import org.activityinfo.model.type.geo.GeoPointType;
-import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.model.type.primitive.BooleanType;
-import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.LocalDateType;
-
 /**
  * Defines a class of Field Types.
  *
@@ -21,8 +14,6 @@ import org.activityinfo.model.type.time.LocalDateType;
  */
 public interface FieldTypeClass {
 
-    public static final String TYPE_FIELD_NAME = "type";
-
     /**
      *
      * @return a string uniquely identifying this {@code FieldTypeClass}. This
@@ -32,35 +23,10 @@ public interface FieldTypeClass {
 
 
     /**
-     * @return a human readable label describing this type class
-     */
-    String getLabel();
-
-
-    /**
      *
      * @return an instance of this {@code FieldTypeClass} using default parameters
      */
     FieldType createType();
 
-
-    // intermediate step to support refactoring
-
-
-    public static final ParametrizedFieldTypeClass QUANTITY = QuantityType.TYPE_CLASS;
-
-    public static final FieldTypeClass NARRATIVE = NarrativeType.TYPE_CLASS;
-
-    public static final FieldTypeClass FREE_TEXT = TextType.TYPE_CLASS;
-
-    public static final FieldTypeClass LOCAL_DATE = LocalDateType.TYPE_CLASS;
-
-    public static final FieldTypeClass GEOGRAPHIC_POINT = GeoPointType.TYPE_CLASS;
-
-    public static final FieldTypeClass BOOLEAN = BooleanType.TYPE_CLASS;
-
-    public static final FieldTypeClass BARCODE = BarcodeType.TYPE_CLASS;
-
-    public static final ParametrizedFieldTypeClass REFERENCE = ReferenceType.TYPE_CLASS;
 
 }

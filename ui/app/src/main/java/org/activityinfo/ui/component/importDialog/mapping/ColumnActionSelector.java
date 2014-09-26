@@ -14,14 +14,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.io.importing.model.ColumnAction;
 import org.activityinfo.io.importing.model.IgnoreAction;
 import org.activityinfo.io.importing.model.ImportModel;
 import org.activityinfo.io.importing.model.MapExistingAction;
 import org.activityinfo.io.importing.strategy.ImportTarget;
-import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.ui.widget.Panel;
 import org.activityinfo.ui.widget.form.RadioButton;
 
@@ -188,8 +190,8 @@ public class ColumnActionSelector extends Composite implements HasValue<ColumnAc
                 button.removeStyleName(ColumnMappingStyles.INSTANCE.typeNotMatched());
                 button.removeStyleName(ColumnMappingStyles.INSTANCE.typeMatched());
 
-                if (targetType == sourceType || (sourceType == FieldTypeClass.FREE_TEXT &&
-                                                 targetType == FieldTypeClass.REFERENCE)) {
+                if (targetType == sourceType || (sourceType == TextType.TYPE_CLASS &&
+                                                 targetType == ReferenceType.TYPE_CLASS)) {
                     button.addStyleName(ColumnMappingStyles.INSTANCE.typeMatched());
                 } else {
                     button.addStyleName(ColumnMappingStyles.INSTANCE.typeNotMatched());

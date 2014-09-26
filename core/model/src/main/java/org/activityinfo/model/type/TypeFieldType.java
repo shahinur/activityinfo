@@ -34,11 +34,6 @@ public class TypeFieldType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Type";
-        }
-
-        @Override
         public FieldType createType() {
             throw new UnsupportedOperationException();
         }

@@ -17,11 +17,6 @@ public class MissingTypeClass implements FieldTypeClass {
     }
 
     @Override
-    public String getLabel() {
-        return "Missing";
-    }
-
-    @Override
     public FieldType createType() {
         return MissingFieldType.INSTANCE;
     }

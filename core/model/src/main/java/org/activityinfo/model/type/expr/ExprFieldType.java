@@ -21,11 +21,6 @@ public class ExprFieldType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Expression";
-        }
-
-        @Override
         public FieldType createType() {
             return INSTANCE;
         }

@@ -25,11 +25,6 @@ public class QuantityType implements ParametrizedFieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Quantity";
-        }
-
-        @Override
         public QuantityType createType() {
             return new QuantityType()
                     .setUnits("households");

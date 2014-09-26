@@ -1,6 +1,7 @@
 package org.activityinfo.io.importing.source;
 
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.primitive.TextType;
 
 /**
  * Describes a column in the imported table
@@ -9,7 +10,7 @@ public class SourceColumn {
 
     private String header;
     private int index;
-    private FieldTypeClass guessedType = FieldTypeClass.FREE_TEXT;
+    private FieldTypeClass guessedType = TextType.TYPE_CLASS;
 
     public String getHeader() {
         return header;
