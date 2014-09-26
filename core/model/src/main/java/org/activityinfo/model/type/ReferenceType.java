@@ -129,8 +129,7 @@ public class ReferenceType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        RecordBuilder record = Records.builder();
-        record.set("classId", getTypeClass().getParameterFormClass().getId());
+        RecordBuilder record = Records.builder(getTypeClass());
         record.set("cardinality", cardinality);
         if(!range.isEmpty()) {
             record.set("range", new ReferenceValue(range).asRecord());
