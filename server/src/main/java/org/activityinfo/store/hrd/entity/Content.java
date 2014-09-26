@@ -8,7 +8,11 @@ import com.google.appengine.api.datastore.Text;
 import com.google.common.annotations.VisibleForTesting;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.json.RecordSerialization;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.Resources;
 
 import java.io.IOException;
 import java.io.StringWriter;
