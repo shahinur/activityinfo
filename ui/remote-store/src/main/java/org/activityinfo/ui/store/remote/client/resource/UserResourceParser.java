@@ -25,6 +25,8 @@ import com.google.common.base.Function;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.json.client.JSONBoolean;
+import com.google.gwt.json.client.JSONObject;
 import org.activityinfo.model.resource.UserResource;
 
 import javax.annotation.Nullable;
@@ -33,6 +35,7 @@ import javax.annotation.Nullable;
  * @author yuriyz on 9/26/14.
  */
 public class UserResourceParser implements Function<Response, UserResource> {
+
     @Nullable
     @Override
     public UserResource apply(@Nullable Response input) {
@@ -41,18 +44,23 @@ public class UserResourceParser implements Function<Response, UserResource> {
 
     public static UserResource parse(String json) {
         JavaScriptObject object = JsonUtils.safeEval(json);
-        return parseResource(object);
+        return parseUserResource(new JSONObject(object));
     }
 
-    public static UserResource parseResource(JavaScriptObject object) {
+    public static UserResource parseUserResource(JSONObject object) {
         UserResource userResource = UserResource.userResource();
-
-        // todo
-//        userResource.setResource(ResourceParser.parseResource());
-//        userResource.setEditAllowed();
-//        userResource.setOwner();
-//        parseResourceProperties(resource, object);
-//        resource.setValue(new RecordJsoImpl(new JSONObject(object)));
+        JSONBoolean editAllowed = object.get("@editAllowed").isBoolean();
+        if (editAllowed != null) {
+            userResource.setEditAllowed(editAllowed.booleanValue());
+        }
+        JSONBoolean isOwner = object.get("@owner").isBoolean();
+        if (isOwner != null) {
+            userResource.setOwner(isOwner.booleanValue());
+        }
+        JSONObject hasResource = object.get("@resource").isObject();
+        if (hasResource != null) {
+            userResource.setResource(ResourceParser.parseResource(hasResource.getJavaScriptObject()));
+        }
         return userResource;
     }
 }

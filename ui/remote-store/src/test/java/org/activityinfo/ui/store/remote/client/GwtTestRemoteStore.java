@@ -8,11 +8,13 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.ui.store.remote.client.resource.ResourceParser;
+import org.activityinfo.ui.store.remote.client.resource.UserResourceParser;
 import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
 import java.util.List;
@@ -89,42 +91,70 @@ public class GwtTestRemoteStore extends GWTTestCase {
         });
         delayTestFinish(5000);
     }
+
+    public static String resourceJson() {
+        return ("{" +
+                "   '@id':'c123'," +
+                "   '@owner':'c456'," +
+                "   'classId':'_class'," +
+                "   '_class_label':'My Form'," +
+                "   'elements':[" +
+                "      {" +
+                "         'id':'ci07lcztd1'," +
+                "         'visible':true," +
+                "         'primaryKey':false," +
+                "         'label':'Default Field'," +
+                "         'code':'ABC'," +
+                "         'defaultValue':{" +
+                "            '@type':'QUANTITY'," +
+                "            'value':41.0," +
+                "            'units':'%'" +
+                "         }," +
+                "         'required':false," +
+                "         'type':{" +
+                "            'parameters':{" +
+                "               'classId':'_type:QUANTITY'," +
+                "               'units':'%'" +
+                "            }," +
+                "            'typeClass':'QUANTITY'" +
+                "         }" +
+                "      }" +
+                "   ]" +
+                "}").replace('\'', '"');
+    }
     
     public void testParseResource() {
-        String jsonResponse = ("{" +
-            "   '@id':'c123'," +
-            "   '@owner':'c456'," +
-            "   'classId':'_class'," +
-            "   '_class_label':'My Form'," +
-            "   'elements':[" +
-            "      {" +
-            "         'id':'ci07lcztd1'," +
-            "         'visible':true," +
-            "         'primaryKey':false," +
-            "         'label':'Default Field'," +
-            "         'code':'ABC'," +
-            "         'defaultValue':{" +
-            "            '@type':'QUANTITY'," +
-            "            'value':41.0," +
-            "            'units':'%'" +
-            "         }," +
-            "         'required':false," +
-            "         'type':{" +
-            "            'parameters':{" +
-            "               'classId':'_type:QUANTITY'," +
-            "               'units':'%'" +
-            "            }," +
-            "            'typeClass':'QUANTITY'" +
-            "         }" +
-            "      }" +
-            "   ]" +
-            "}").replace('\'', '"');
-
-        Resource form = ResourceParser.parse(jsonResponse);
+        Resource form = ResourceParser.parse(resourceJson());
         FormClass formClass = FormClass.fromResource(form);
         assertEquals("c123", formClass.getId().asString());
         assertEquals("c456", formClass.getOwnerId().asString());
         assertEquals(new Quantity(41, "%"), formClass.getFields().get(0).getDefaultValue());
+    }
+
+    public static String userResourceJson() {
+        return "{\"@editAllowed\":true," +
+                "\"@owner\":true," +
+                "\"@resource\":{" +
+                "    \"@id\":\"ci0j74r0n1\"," +
+                "    \"@owner\":\"_root\"," +
+                "    \"@version\":7," +
+                "    \"@class\":\"_folder\"," +
+                "    \"_folder_description\":\"w1\"," +
+                "    \"_folder_label\":\"f1\"}" +
+                "}";
+    }
+
+    public void testParseUserResource() {
+        UserResource resource = UserResourceParser.parse(userResourceJson());
+
+        assertEquals(resource.getEditAllowed().booleanValue(), true);
+        assertEquals(resource.isOwner().booleanValue(), true);
+        assertEquals(resource.getResourceId().asString(), "ci0j74r0n1");
+        assertEquals(resource.getResource().getOwnerId().asString(), "_root");
+        assertEquals(resource.getResource().getValue().getClassId().asString(), "_folder");
+        assertEquals(resource.getResource().getValue().getString("_folder_description"), "w1");
+        assertEquals(resource.getResource().getValue().getString("_folder_label"), "f1");
+        assertEquals(resource.getResource().getVersion(), 7);
     }
 
     public void testQueryTable() {
