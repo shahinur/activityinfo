@@ -11,11 +11,14 @@ import org.activityinfo.model.resource.*;
 import java.io.IOException;
 
 public class ResourceDeserializer extends JsonDeserializer<Resource> {
+
     @Override
     public Resource deserialize(JsonParser reader,
                                 DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+        return deserialize(reader);
+    }
 
-
+    public static Resource deserialize(JsonParser reader) throws IOException {
         Preconditions.checkState(reader.getCurrentToken() == JsonToken.START_OBJECT);
 
         Resource resource = Resources.createResource();

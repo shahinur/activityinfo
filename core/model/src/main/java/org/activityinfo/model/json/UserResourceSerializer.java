@@ -43,6 +43,7 @@ public class UserResourceSerializer extends JsonSerializer<UserResource> {
         json.writeStartObject();
         json.writeBooleanField("@editAllowed", resource.getEditAllowed());
         json.writeBooleanField("@owner", resource.isOwner());
+        json.writeFieldName("@resource");
 
         ResourceSerializer.writeResource(resource.getResource(), json);
 
