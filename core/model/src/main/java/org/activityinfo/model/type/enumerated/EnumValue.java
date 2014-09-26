@@ -1,6 +1,10 @@
 package org.activityinfo.model.type.enumerated;
 
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 

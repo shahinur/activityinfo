@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.RecordBuilder;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 
 import java.io.IOException;
 import java.util.Collection;

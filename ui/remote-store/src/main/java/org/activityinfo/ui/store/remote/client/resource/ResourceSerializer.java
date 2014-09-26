@@ -1,7 +1,7 @@
 package org.activityinfo.ui.store.remote.client.resource;
 
 import com.google.gwt.json.client.JSONObject;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.Resource;
 
 import java.util.Map;

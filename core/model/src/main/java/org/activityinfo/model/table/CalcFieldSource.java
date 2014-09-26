@@ -1,6 +1,6 @@
 package org.activityinfo.model.table;
 
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
 
 public class CalcFieldSource extends ColumnSource {

@@ -2,7 +2,7 @@ package org.activityinfo.ui.store.remote.client.resource;
 
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 
 import java.util.Collection;
 import java.util.Map;

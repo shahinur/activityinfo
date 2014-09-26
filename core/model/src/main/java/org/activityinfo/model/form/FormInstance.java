@@ -23,6 +23,7 @@ package org.activityinfo.model.form;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.number.Quantity;

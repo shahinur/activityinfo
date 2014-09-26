@@ -1,7 +1,7 @@
 package org.activityinfo.model.table;
 
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.resource.IsRecord;
+import org.activityinfo.model.record.IsRecord;
 
 import java.util.List;
 

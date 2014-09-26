@@ -2,7 +2,7 @@ package org.activityinfo.model.type.time;
 
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.type.*;
 
 /**

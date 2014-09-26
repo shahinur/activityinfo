@@ -1,8 +1,8 @@
 package org.activityinfo.model.table;
 
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.RecordBuilder;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 
 public class ResourceIdSource extends ColumnSource {
 

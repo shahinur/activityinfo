@@ -2,7 +2,7 @@ package org.activityinfo.model.type;
 
 
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 
 public interface ParametrizedFieldTypeClass extends FieldTypeClass {
 

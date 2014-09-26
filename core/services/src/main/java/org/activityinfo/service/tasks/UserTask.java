@@ -1,8 +1,8 @@
 package org.activityinfo.service.tasks;
 
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.record.IsRecord;
 
 /**
  * Describes the status of a background task being run on behalf of the user.

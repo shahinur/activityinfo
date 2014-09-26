@@ -3,7 +3,7 @@ package org.activityinfo.model.type;
 
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.IsRecord;
+import org.activityinfo.model.record.IsRecord;
 
 public interface FieldType extends FieldValue, IsRecord {
 

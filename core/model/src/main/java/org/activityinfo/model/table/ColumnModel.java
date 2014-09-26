@@ -1,9 +1,9 @@
 package org.activityinfo.model.table;
 
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.RecordBuilder;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 
 /**
  * Defines a Column within a Table request

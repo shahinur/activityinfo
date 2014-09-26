@@ -1,6 +1,8 @@
 package org.activityinfo.model.resource;
 
 
+import org.activityinfo.model.record.Record;
+
 /**
  * ActivityInfo is, at it's core, concerned with the management of users' `Resource`s.
  *

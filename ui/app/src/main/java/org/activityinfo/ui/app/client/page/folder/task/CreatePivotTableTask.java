@@ -2,7 +2,7 @@ package org.activityinfo.ui.app.client.page.folder.task;
 
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
