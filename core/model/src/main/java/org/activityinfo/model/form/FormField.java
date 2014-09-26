@@ -2,9 +2,9 @@ package org.activityinfo.model.form;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.RecordBuilder;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 
@@ -204,7 +204,7 @@ public class FormField extends FormElement {
         return "FormField{" +
                 "id=" + id +
                 ", label=" + label +
-                ", type=" + type.getTypeClass().getLabel() +
+                ", type=" + type.getTypeClass().getId() +
                 '}';
     }
 

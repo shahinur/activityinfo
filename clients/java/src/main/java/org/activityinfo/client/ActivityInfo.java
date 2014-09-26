@@ -1,7 +1,7 @@
 package org.activityinfo.client;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;

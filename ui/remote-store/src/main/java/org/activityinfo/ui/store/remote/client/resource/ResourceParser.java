@@ -6,8 +6,8 @@ import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.RecordJsoImpl;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordJsoImpl;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.Resources;
 

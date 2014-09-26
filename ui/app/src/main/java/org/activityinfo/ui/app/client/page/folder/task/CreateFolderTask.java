@@ -1,9 +1,10 @@
 package org.activityinfo.ui.app.client.page.folder.task;
 
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
-import org.activityinfo.model.system.FolderInstance;
+import org.activityinfo.model.system.Folder;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.style.icons.FontAwesome;
@@ -31,11 +32,11 @@ public class CreateFolderTask implements Task {
 
     @Override
     public void onClicked() {
-        FolderInstance newFolder = new FolderInstance();
-        newFolder.setId(Resources.generateId());
-        newFolder.setOwnerId(ownerId);
+        Folder newFolder = new Folder();
         newFolder.setLabel(I18N.CONSTANTS.newFolder());
 
-        application.getRequestDispatcher().execute(new SaveRequest(newFolder));
+        Resource resource = Resources.newResource(ownerId, newFolder);
+
+        application.getRequestDispatcher().execute(new SaveRequest(resource));
     }
 }

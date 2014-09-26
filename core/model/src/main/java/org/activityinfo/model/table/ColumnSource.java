@@ -1,6 +1,6 @@
 package org.activityinfo.model.table;
 
-import org.activityinfo.model.resource.IsRecord;
+import org.activityinfo.model.record.IsRecord;
 
 /**
  * Defines the source of the column

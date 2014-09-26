@@ -1,6 +1,6 @@
 package org.activityinfo.ui.app.client.page.pivot;
 
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ListFieldValue;
 import org.activityinfo.ui.app.client.form.store.FieldState;

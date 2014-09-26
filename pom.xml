@@ -97,10 +97,10 @@
   </pluginRepositories>
 
   <modules>
+    <module>core/annotations</module>
     <module>core/model</module>
     <module>core/promises</module>
     <module>core/services</module>
-    <module>core/annotation-processor</module>
     <module>store/cloudsql</module>
     <module>store/testing</module>
     <module>server</module>

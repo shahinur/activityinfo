@@ -3,7 +3,11 @@ package org.activityinfo.model.table;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.type.primitive.TextType;
 

@@ -1,7 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;

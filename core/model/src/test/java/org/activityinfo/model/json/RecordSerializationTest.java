@@ -2,7 +2,7 @@ package org.activityinfo.model.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;

@@ -2,8 +2,8 @@ package org.activityinfo.model.type;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
 
 import java.util.List;
 

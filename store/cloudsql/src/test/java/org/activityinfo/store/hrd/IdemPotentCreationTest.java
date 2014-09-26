@@ -1,6 +1,6 @@
 package org.activityinfo.store.hrd;
 
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.Resources;
 import org.junit.Test;

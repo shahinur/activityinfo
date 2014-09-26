@@ -3,7 +3,11 @@ package org.activityinfo.model.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 

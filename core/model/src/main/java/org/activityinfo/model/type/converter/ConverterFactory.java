@@ -3,6 +3,8 @@ package org.activityinfo.model.type.converter;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.formatter.DateFormatter;
 import org.activityinfo.model.type.formatter.QuantityFormatterFactory;
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.time.LocalDateType;
 
 import java.util.logging.Logger;
 
@@ -40,9 +42,9 @@ public class ConverterFactory {
 
         if(from == FieldTypeClass.FREE_TEXT || from == FieldTypeClass.NARRATIVE) {
             return createStringConverter(to);
-        } else if(from == FieldTypeClass.QUANTITY) {
+        } else if(from instanceof QuantityType) {
             return createQuantityConverter(to);
-        } else if(from == FieldTypeClass.LOCAL_DATE) {
+        } else if(from instanceof LocalDateType) {
             return createDateConverter(to);
         } else if(from == FieldTypeClass.REFERENCE) {
             throw new IllegalArgumentException("Reference fields are handled elsewhere");

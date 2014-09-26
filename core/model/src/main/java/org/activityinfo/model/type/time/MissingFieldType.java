@@ -2,8 +2,8 @@ package org.activityinfo.model.type.time;
 
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.MissingTypeClass;

@@ -52,7 +52,7 @@ public class DraftStore extends AbstractStore implements DraftHandler {
             FormInstance instance = new FormInstance(Resources.generateId(), FolderClass.CLASS_ID);
             instance.setOwnerId(Resources.ROOT_ID);
 
-            newWorkspaceDraft = new InstanceState(dispatcher, FolderClass.get(), instance);
+            newWorkspaceDraft = new InstanceState(dispatcher, FolderClass.INSTANCE.get(), instance);
         }
         return newWorkspaceDraft;
     }

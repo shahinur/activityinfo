@@ -20,7 +20,7 @@ public class ApplicationClassProvider {
     public ApplicationClassProvider() {
 
         classMap.put(FormClass.CLASS_ID, createFormClassClass());
-        classMap.put(FolderClass.CLASS_ID, FolderClass.get());
+        classMap.put(FolderClass.CLASS_ID, FolderClass.INSTANCE.get());
 
 
         for (FieldTypeClass fieldTypeClass : TypeRegistry.get().getTypeClasses()) {

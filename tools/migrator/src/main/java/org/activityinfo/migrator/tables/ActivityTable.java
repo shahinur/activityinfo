@@ -13,7 +13,7 @@ import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormSection;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.Records;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
