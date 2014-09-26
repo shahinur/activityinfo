@@ -110,4 +110,26 @@ public class UserResource {
         this.editAllowed = editAllowed;
         return this;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UserResource that = (UserResource) o;
+
+        if (editAllowed != null ? !editAllowed.equals(that.editAllowed) : that.editAllowed != null) return false;
+        if (owner != null ? !owner.equals(that.owner) : that.owner != null) return false;
+        if (resource != null ? !resource.equals(that.resource) : that.resource != null) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = resource != null ? resource.hashCode() : 0;
+        result = 31 * result + (editAllowed != null ? editAllowed.hashCode() : 0);
+        result = 31 * result + (owner != null ? owner.hashCode() : 0);
+        return result;
+    }
 }

@@ -23,6 +23,7 @@ package org.activityinfo.model.json;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import org.activityinfo.model.resource.UserResource;
@@ -35,13 +36,27 @@ import java.io.IOException;
 public class UserResourceDeserializer extends JsonDeserializer<UserResource> {
     @Override
     public UserResource deserialize(JsonParser reader,
-                                DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+                                    DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
 
+        UserResource userResource = UserResource.userResource();
 
-        UserResource resource = UserResource.userResource();
-        // todo
+        while (reader.nextToken() == JsonToken.FIELD_NAME) {
+            String propertyName = reader.getCurrentName();
 
-        return resource;
+            // read the value
+            reader.nextToken();
+
+            if (propertyName.equals("@editAllowed")) {
+                userResource.setEditAllowed(Boolean.valueOf(reader.getText()));
+
+            } else if (propertyName.equals("@owner")) {
+                userResource.setOwner(Boolean.valueOf(reader.getText()));
+
+            } else if (propertyName.equals("@resource")) {
+                userResource.setResource(ResourceDeserializer.deserialize(reader));
+            }
+        }
+        return userResource;
     }
 
 }
