@@ -50,6 +50,7 @@ public class ColumnTypeGuesser {
     public static final FieldTypeClass[] TYPES = new FieldTypeClass[] {
         QuantityType.TYPE_CLASS,
         TextType.TYPE_CLASS,
+        NarrativeType.TYPE_CLASS,
         LocalDateType.TYPE_CLASS,
         BooleanType.TYPE_CLASS };
     /**
