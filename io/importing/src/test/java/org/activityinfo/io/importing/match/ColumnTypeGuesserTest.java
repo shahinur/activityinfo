@@ -22,7 +22,11 @@ package org.activityinfo.io.importing.match;
  */
 
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.converter.JvmConverterFactory;
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.time.LocalDateType;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,13 +40,13 @@ public class ColumnTypeGuesserTest {
 
     @Test
     public void type() {
-        assertType(FieldTypeClass.QUANTITY, "1", "2", "3");
-        assertType(FieldTypeClass.QUANTITY, "0.1", "2.54", "334");
-        assertType(FieldTypeClass.LOCAL_DATE, "2012-12-18");
-        assertType(FieldTypeClass.LOCAL_DATE, "2012/12/18");
-        assertType(FieldTypeClass.LOCAL_DATE, "2012-12-18 12:38:40.0");
-        assertType(FieldTypeClass.FREE_TEXT, "df", "fsdf", "ff");
-        assertType(FieldTypeClass.NARRATIVE, "fKholishaur dffsdffsdffsdffsdffsdffsdfdfsdfsdfsdgfdfghdfgddddddddddddddddddddddddddddddddd", "fKholishaur fsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdf", "ff");
+        assertType(QuantityType.TYPE_CLASS, "1", "2", "3");
+        assertType(QuantityType.TYPE_CLASS, "0.1", "2.54", "334");
+        assertType(LocalDateType.TYPE_CLASS, "2012-12-18");
+        assertType(LocalDateType.TYPE_CLASS, "2012/12/18");
+        assertType(LocalDateType.TYPE_CLASS, "2012-12-18 12:38:40.0");
+        assertType(TextType.TYPE_CLASS, "df", "fsdf", "ff");
+        assertType(NarrativeType.TYPE_CLASS, "fKholishaur dffsdffsdffsdffsdffsdffsdfdfsdfsdfsdgfdfghdfgddddddddddddddddddddddddddddddddd", "fKholishaur fsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdfdffsdffsdffsdffsdffsdffsdf", "ff");
     }
 
     private void assertType(FieldTypeClass exptectedType, String... columnValueList) {

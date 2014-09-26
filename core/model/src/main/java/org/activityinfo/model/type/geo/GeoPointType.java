@@ -23,11 +23,6 @@ public class GeoPointType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Latitude/Longitude";
-        }
-
-        @Override
         public FieldType createType() {
             return INSTANCE;
         }

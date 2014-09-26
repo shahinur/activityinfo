@@ -23,10 +23,14 @@ package org.activityinfo.io.importing.match;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.converter.Converter;
 import org.activityinfo.model.type.converter.ConverterFactory;
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.BooleanType;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.time.LocalDateType;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,6 +47,18 @@ import java.util.Map;
  */
 public class ColumnTypeGuesser {
 
+    public static final FieldTypeClass[] TYPES = new FieldTypeClass[] {
+        QuantityType.TYPE_CLASS,
+        TextType.TYPE_CLASS,
+        LocalDateType.TYPE_CLASS,
+        BooleanType.TYPE_CLASS };
+    /**
+     * Defined exact length of string to differ between FREE_TEXT and NARRATIVE types.
+     * If string length less than #FREE_TEXT_LENGTH then type is #FREE_TEXT otherwise it is NARRATIVE.
+     */
+    public static final int FREE_TEXT_LENGTH = 80;
+
+
     private final Map<FieldTypeClass, Integer> typeMap = newFieldMap();
 
     private final List<String> columnValues;
@@ -52,6 +68,8 @@ public class ColumnTypeGuesser {
         this.columnValues = columnValues;
         this.converterFactory = converterFactory;
     }
+
+
 
     public FieldTypeClass guessType() {
         calculateTypeScores();
@@ -71,8 +89,8 @@ public class ColumnTypeGuesser {
             final Map<FieldTypeClass, Integer> copyMap = Maps.newHashMap(typeMap);
 
             // we don't need to iterate over string types because input is always string
-            copyMap.remove(FieldTypeClass.FREE_TEXT);
-            copyMap.remove(FieldTypeClass.NARRATIVE);
+            copyMap.remove(TextType.TYPE_CLASS);
+            copyMap.remove(NarrativeType.TYPE_CLASS);
 
             boolean hasMatch = false;
             for (Map.Entry<FieldTypeClass, Integer> entry : copyMap.entrySet()) {
@@ -94,10 +112,10 @@ public class ColumnTypeGuesser {
             // if no match then we fallback to string type
             if (!hasMatch) {
                 final int length = value.length();
-                if (length < FormFieldType.FREE_TEXT_LENGTH) {
-                    increaseValue(FieldTypeClass.FREE_TEXT);
+                if (length < FREE_TEXT_LENGTH) {
+                    increaseValue(TextType.TYPE_CLASS);
                 } else {
-                    increaseValue(FieldTypeClass.NARRATIVE);
+                    increaseValue(NarrativeType.TYPE_CLASS);
                 }
             }
         }
@@ -109,10 +127,9 @@ public class ColumnTypeGuesser {
 
     private static Map<FieldTypeClass, Integer> newFieldMap() {
         Map<FieldTypeClass, Integer> typeMap = Maps.newHashMap();
-        for (FieldTypeClass type : FormFieldType.values()) {
+        for (FieldTypeClass type : TYPES) {
             typeMap.put(type, 0);
         }
         return typeMap;
     }
-
 }

@@ -43,11 +43,6 @@ public class BooleanType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Boolean";
-        }
-
-        @Override
         public BooleanType createType() {
             return INSTANCE;
         }

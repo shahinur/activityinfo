@@ -25,11 +25,6 @@ public class YearType implements FieldType, TemporalType {
         }
 
         @Override
-        public String getLabel() {
-            return "Year";
-        }
-
-        @Override
         public FieldType createType() {
             return INSTANCE;
         }

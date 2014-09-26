@@ -21,11 +21,6 @@ public class CalculatedFieldType implements ParametrizedFieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Calculated";
-        }
-
-        @Override
         public FieldType createType() {
             return new CalculatedFieldType();
         }

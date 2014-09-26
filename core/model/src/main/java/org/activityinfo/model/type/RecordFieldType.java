@@ -35,11 +35,6 @@ public class RecordFieldType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Sub Form";
-        }
-
-        @Override
         public FieldType createType() {
             throw new UnsupportedOperationException();
         }

@@ -22,11 +22,6 @@ public class NarrativeType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Multi-line Text";
-        }
-
-        @Override
         public FieldType createType() {
             return INSTANCE;
         }

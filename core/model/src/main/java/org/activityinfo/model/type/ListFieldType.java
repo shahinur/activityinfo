@@ -51,11 +51,6 @@ public class ListFieldType implements ParametrizedFieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "List";
-        }
-
-        @Override
         public FieldType createType() {
             return new ListFieldType(MissingTypeClass.INSTANCE.createType());
         }

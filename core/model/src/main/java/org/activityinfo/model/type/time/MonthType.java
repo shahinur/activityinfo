@@ -25,11 +25,6 @@ public class MonthType implements FieldType, TemporalType {
         }
 
         @Override
-        public String getLabel() {
-            return "Month";
-        }
-
-        @Override
         public FieldType createType() {
             return INSTANCE;
         }

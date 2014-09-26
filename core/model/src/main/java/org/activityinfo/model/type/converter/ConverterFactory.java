@@ -1,9 +1,12 @@
 package org.activityinfo.model.type.converter;
 
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.formatter.DateFormatter;
 import org.activityinfo.model.type.formatter.QuantityFormatterFactory;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 import java.util.logging.Logger;
@@ -40,38 +43,38 @@ public class ConverterFactory {
             return NullConverter.INSTANCE;
         }
 
-        if(from == FieldTypeClass.FREE_TEXT || from == FieldTypeClass.NARRATIVE) {
+        if(from == TextType.TYPE_CLASS || from == NarrativeType.TYPE_CLASS) {
             return createStringConverter(to);
         } else if(from instanceof QuantityType) {
             return createQuantityConverter(to);
         } else if(from instanceof LocalDateType) {
             return createDateConverter(to);
-        } else if(from == FieldTypeClass.REFERENCE) {
+        } else if(from == ReferenceType.TYPE_CLASS) {
             throw new IllegalArgumentException("Reference fields are handled elsewhere");
         }
         throw new UnsupportedOperationException("Conversion from " + from + " to " + to + " is not supported.");
     }
 
     private Converter createDateConverter(FieldTypeClass to) {
-        if(to == FieldTypeClass.FREE_TEXT || to == FieldTypeClass.NARRATIVE) {
+        if(to == TextType.TYPE_CLASS || to == NarrativeType.TYPE_CLASS) {
             return dateToStringConverter;
         }
         throw new UnsupportedOperationException(to.getId());
     }
 
     public Converter createQuantityConverter(FieldTypeClass to) {
-        if(to == FieldTypeClass.FREE_TEXT || to == FieldTypeClass.NARRATIVE) {
+        if(to == TextType.TYPE_CLASS || to == NarrativeType.TYPE_CLASS) {
             return quantityParser;
         }
         throw new UnsupportedOperationException(to.getId());
     }
 
     public Converter createStringConverter(FieldTypeClass fieldType) {
-        if(fieldType == FieldTypeClass.QUANTITY) {
+        if(fieldType == QuantityType.TYPE_CLASS) {
             return stringToQuantityFormatter;
-        } else if(fieldType == FieldTypeClass.LOCAL_DATE) {
+        } else if(fieldType == LocalDateType.TYPE_CLASS) {
             return StringToDateConverter.INSTANCE;
-        } else if(fieldType == FieldTypeClass.FREE_TEXT || fieldType == FieldTypeClass.NARRATIVE) {
+        } else if(fieldType == TextType.TYPE_CLASS || fieldType == NarrativeType.TYPE_CLASS) {
             return StringParser.INSTANCE;
         }
         throw new UnsupportedOperationException(fieldType.getId());
