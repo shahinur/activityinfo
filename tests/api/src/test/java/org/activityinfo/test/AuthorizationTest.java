@@ -7,6 +7,9 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
 import org.junit.Test;
+import org.junit.internal.AssumptionViolatedException;
+
+import java.security.SecureRandom;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
@@ -18,7 +21,12 @@ public class AuthorizationTest {
 
     @Test
     public void test() {
-        ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI(), "auth.test@mailinator.com", "auth");
+        final SecureRandom secureRandom = new SecureRandom();
+        final String email = Long.toHexString(secureRandom.nextLong()) + "@example.com";
+        final String password = Long.toHexString(secureRandom.nextLong());
+        final ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI(), email, password);
+
+        if (!client.createUser()) throw new AssumptionViolatedException("Server is not configured to run in test mode");
 
         try {
             client.get(resourceId);
