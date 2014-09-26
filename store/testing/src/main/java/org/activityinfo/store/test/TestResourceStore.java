@@ -9,10 +9,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
@@ -78,6 +75,11 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     public Resource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
         return get(resourceId);
+    }
+
+    @Override
+    public UserResource getUserResource(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+        return UserResource.userResource(get(resourceId));
     }
 
     private Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {

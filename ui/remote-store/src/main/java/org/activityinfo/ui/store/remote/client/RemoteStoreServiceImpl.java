@@ -9,10 +9,7 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -45,6 +42,12 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     @Override
     public Promise<Resource> get(ResourceId resourceId) {
         return store.resolve("resource").resolve(resourceId.asString()).get(new ResourceParser());
+    }
+
+
+    @Override
+    public Promise<UserResource> getUserResource(ResourceId resourceId) {
+        return store.resolve("userresource").resolve(resourceId.asString()).get(new UserResourceParser());
     }
 
     @Override

@@ -16,6 +16,11 @@ public class ResourceSerializer extends JsonSerializer<Resource> {
                           JsonGenerator json,
                           SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
 
+        writeResource(resource, json);
+    }
+
+    public static void writeResource(Resource resource,
+                                     JsonGenerator json) throws IOException {
         json.writeStartObject();
         json.writeStringField("@id", resource.getId().asString());
         json.writeStringField("@owner", resource.getOwnerId().asString());
