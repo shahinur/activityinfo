@@ -80,9 +80,8 @@ public class QuantityType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return Records.builder()
+        return Records.builder(getTypeClass())
                 .set("units", units)
-                .set("classId", getTypeClass().getParameterFormClass().getId())
                 .build();
     }
 
