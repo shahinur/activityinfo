@@ -10,10 +10,7 @@ import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -57,12 +54,20 @@ public class HrdResourceStore implements ResourceStore {
         return new ReadTransaction(workspace, datastore, user);
     }
 
-
     @GET
     @Path("resource/{id}")
     @Produces("application/json")
     @Override
     public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+         UserResource userResource = getUserResource(user, resourceId);
+         return userResource.getResource();
+    }
+
+    @GET
+    @Path("userresource/{id}")
+    @Produces("application/json")
+    @Override
+    public UserResource getUserResource(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
 
@@ -70,7 +75,9 @@ public class HrdResourceStore implements ResourceStore {
                 Authorization authorization = new Authorization(user, resourceId, tx);
                 authorization.assertCanView();
 
-                return workspace.getLatestContent(resourceId).get(tx);
+                return UserResource.userResource(workspace.getLatestContent(resourceId).get(tx)).
+                        setOwner(authorization.isOwner()).
+                        setEditAllowed(authorization.canEdit());
             }
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(resourceId);
