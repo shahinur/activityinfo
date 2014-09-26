@@ -36,6 +36,7 @@ public class ResourceStoreStub implements ResourceStore {
     @GET
     @Path("resource/{id}")
     @Produces("application/json")
+    @Override
     public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
 
         if(!resourceId.equals(MY_RESOURCE_ID)) {
@@ -43,6 +44,20 @@ public class ResourceStoreStub implements ResourceStore {
         }
 
         return getMyResource();
+    }
+
+    @GET
+    @Path("userresource/{id}")
+    @Produces("application/json")
+    @Override
+    public UserResource getUserResource(@InjectParam AuthenticatedUser user, @PathParam("id")  ResourceId resourceId) {
+        if(!resourceId.equals(MY_RESOURCE_ID)) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+
+        return UserResource.userResource(getMyResource()).
+                setEditAllowed(true).
+                setOwner(true);
     }
 
     public static Resource getMyResource() {

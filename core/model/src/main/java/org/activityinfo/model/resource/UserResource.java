@@ -27,6 +27,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.Nullable;
 
 /**
+ * Contains resource together with information related to User entity (Resource<->User).
+ *
+ * For now such information is permissions (E.g. "Is user allowed to edit this resource?").
+ *
  * @author yuriyz on 9/25/14.
  */
 public class UserResource {
@@ -34,10 +38,18 @@ public class UserResource {
     @Nullable
     private Resource resource;
 
-    private Boolean editAllowed;
-    private Boolean owner;
+    private Boolean editAllowed = false;
+    private Boolean owner = false;
 
     public UserResource() {
+    }
+
+    public static UserResource userResource() {
+        return new UserResource();
+    }
+
+    public static UserResource userResource(Resource resource) {
+        return userResource().setResource(resource);
     }
 
     @JsonCreator
@@ -47,6 +59,18 @@ public class UserResource {
         this.resource = resource;
         this.editAllowed = editAllowed;
         this.owner = owner;
+    }
+
+    public UserResource copy() {
+        UserResource copy = new UserResource();
+        copy.resource = this.resource != null ? this.resource.copy() : null;
+        copy.editAllowed = this.editAllowed;
+        copy.owner = this.owner;
+        return copy;
+    }
+
+    public ResourceId getResourceId() {
+        return this.resource.getId();
     }
 
     /**
