@@ -48,7 +48,9 @@ public class InstanceTableView implements IsWidget, RequiresResize {
     @UiField
     Button loadMoreButton;
     @UiField
-    HTML loadFailureMessageContainer;
+    HTML failureMessageContainer;
+    @UiField
+    DivElement failureMessage;
 
     interface InstanceTableViewUiBinder extends UiBinder<HTMLPanel, InstanceTableView> {
     }
@@ -87,11 +89,20 @@ public class InstanceTableView implements IsWidget, RequiresResize {
     }
 
     private void handleLoadMoreButton(final InstanceTableDataLoader.DataLoadEvent event) {
-        loadFailureMessageContainer.setVisible(event.isFailed());
+        failureMessageContainer.setVisible(event.isFailed());
+        if (event.isFailed()) {
+            showErrorMessage(I18N.CONSTANTS.failedToLoadEntries());
+        }
+
         loadMoreButton.setText(event.isFailed() ? I18N.CONSTANTS.retryLoading() : I18N.CONSTANTS.loadMore());
         final int totalCount = event.getTotalCount();
         final int loadedDataCount = event.getLoadedDataCount();
         loadMoreButton.setEnabled(loadedDataCount < totalCount);
+    }
+
+    public void showErrorMessage(String errorMessage) {
+        failureMessageContainer.setVisible(true);
+        failureMessage.setInnerText(errorMessage);
     }
 
     public void setCriteria(Criteria criteria) {
@@ -160,7 +171,7 @@ public class InstanceTableView implements IsWidget, RequiresResize {
     public void onLoadMore(ClickEvent event) {
         loadMoreButton.setHTML(Templates.OK_BTN_TEMPLATE.html(I18N.CONSTANTS.loading()));
         loadMoreButton.setEnabled(false);
-        loadFailureMessageContainer.setVisible(false);
+        failureMessageContainer.setVisible(false);
         table.loadMore();
     }
 

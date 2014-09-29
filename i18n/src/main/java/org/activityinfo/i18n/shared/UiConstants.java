@@ -3549,4 +3549,8 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Barcode")
     String fieldTypeBarCode();
+
+    @DefaultStringValue("Form is empty. Please design form first.")
+    String formIsEmpty();
+
 }

@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.RangeChangeEvent;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.legacy.ProjectionKeyProvider;
 import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.model.legacy.Projection;
@@ -108,14 +109,19 @@ public class InstanceTable implements IsWidget {
 
     public void setColumns(List<FieldColumn> columns) {
         removeAllColumns();
-        for (FieldColumn column : columns) {
-            final FilterCellAction filterAction = new FilterCellAction(this, column);
-            table.addColumn(column, new FilterHeader(column, filterAction));
-            dataLoader.getFields().addAll(column.getFieldPaths());
-        }
 
-        reload();
-        table.saveColumnWidthInformation();
+        if (!columns.isEmpty()) {
+            for (FieldColumn column : columns) {
+                final FilterCellAction filterAction = new FilterCellAction(this, column);
+                table.addColumn(column, new FilterHeader(column, filterAction));
+                dataLoader.getFields().addAll(column.getFieldPaths());
+            }
+
+            reload();
+            table.saveColumnWidthInformation();
+        } else {
+            tableView.showErrorMessage(I18N.CONSTANTS.formIsEmpty());
+        }
     }
 
     private void removeAllColumns() {

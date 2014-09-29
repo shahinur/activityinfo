@@ -21,6 +21,8 @@ public class TasksPanel extends VComponent {
     private List<TaskButton> tasks = Lists.newArrayList();
 
     public TasksPanel(Application application, ResourceId ownerId) {
+        this.application = application;
+        this.ownerId = ownerId;
 
         tasks.add(new TaskButton(new CreateFolderTask(application, ownerId)));
         tasks.add(new TaskButton(new CreateFormTask(application, ownerId)));
@@ -35,7 +37,7 @@ public class TasksPanel extends VComponent {
     }
 
     private VNode content() {
-        Boolean canEdit = application.getResourceStore().get(ownerId).get().getEditAllowed();
+        Boolean canEdit = application.getFolderStore().get(ownerId).get().getRootNode().isEditAllowed();
         if (!canEdit) {
             return H.div("", t("No permission to perform task."));
         }
