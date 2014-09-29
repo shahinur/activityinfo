@@ -203,8 +203,9 @@ public class HrdResourceStore implements ResourceStore {
         Environment environment = ApiProxy.getCurrentEnvironment();
         Map<ResourceId, Snapshot> snapshots = Maps.newLinkedHashMap();
         Map<ResourceId, Authorization> authorizations = Maps.newHashMap();
-
         Workspace workspace = new Workspace(workspaceId);
+
+        if (version < 0) version = 0;
 
         try(WorkspaceTransaction tx = beginRead(workspace, user)) {
 
