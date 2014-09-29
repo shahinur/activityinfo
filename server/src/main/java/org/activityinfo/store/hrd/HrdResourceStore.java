@@ -185,6 +185,9 @@ public class HrdResourceStore implements ResourceStore {
             try(WorkspaceTransaction tx = begin(workspace, user)) {
                 long newVersion = workspace.createWorkspace(tx, resource);
                 tx.commit();
+
+                workspaceLookup.cache(resource.getId(), workspace);
+
                 return UpdateResult.committed(resource.getId(), newVersion);
             }
 
