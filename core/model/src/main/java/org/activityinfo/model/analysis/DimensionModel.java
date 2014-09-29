@@ -1,25 +1,19 @@
 package org.activityinfo.model.analysis;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import org.activityinfo.model.record.IsRecord;
-import org.activityinfo.model.record.Record;
-import org.activityinfo.model.record.Records;
+import org.activityinfo.model.annotation.RecordBean;
 import org.activityinfo.model.resource.ResourceId;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DimensionModel implements IsRecord {
-
-    public static final ResourceId CLASS_ID = ResourceId.valueOf("_dimension");
+@RecordBean(classId = "_dimension")
+public class DimensionModel {
 
     private String id;
     private String label;
     private String description;
     private final List<DimensionSource> sources = new ArrayList<>();
-    private final List<CategoryMapping> categoryMappings = Lists.newArrayList();
-
 
     public String getId() {
         return id;
@@ -49,14 +43,6 @@ public class DimensionModel implements IsRecord {
         return sources;
     }
 
-    public void addCategoryMapping(CategoryMapping mapping) {
-        this.categoryMappings.add(mapping);
-    }
-
-    public List<CategoryMapping> getCategoryMappings() {
-        return categoryMappings;
-    }
-
     public Optional<DimensionSource> getSource(ResourceId sourceId) {
         for(DimensionSource source : sources) {
             if(source.getSourceId().equals(sourceId)) {
@@ -64,23 +50,5 @@ public class DimensionModel implements IsRecord {
             }
         }
         return Optional.absent();
-    }
-
-    @Override
-    public Record asRecord() {
-        return Records.builder()
-            .set("id", id)
-            .set("classId", DimensionModel.CLASS_ID.asString())
-            .set("label", label)
-            .set("description", description)
-            .build();
-    }
-
-    public static DimensionModel fromRecord(Record record) {
-        DimensionModel dim = new DimensionModel();
-        dim.setId(record.isString("id"));
-        dim.setLabel(record.isString("label"));
-        dim.setDescription(record.isString("description"));
-        return dim;
     }
 }

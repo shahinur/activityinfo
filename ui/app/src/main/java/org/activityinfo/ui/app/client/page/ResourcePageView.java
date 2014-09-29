@@ -1,7 +1,7 @@
 package org.activityinfo.ui.app.client.page;
 
 import com.google.common.base.Function;
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -89,7 +89,7 @@ public class ResourcePageView extends PageView implements StoreChangeListener {
     private VTree createPageView(Resource resource) {
         ResourceId classId = resource.getValue().getClassId();
 
-        if(classId.equals(PivotTableModel.CLASS_ID)) {
+        if(classId.equals(PivotTableModelClass.CLASS_ID)) {
             Status<FormClass> formClass = application.getResourceStore().getFormClass(classId);
             if(formClass.isAvailable()) {
                 return new PivotPage(application, formClass.get(), resource);

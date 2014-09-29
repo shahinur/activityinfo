@@ -1,31 +1,22 @@
 package org.activityinfo.model.analysis;
 
+import org.activityinfo.model.annotation.RecordBean;
+import org.activityinfo.model.annotation.Reference;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.record.IsRecord;
-import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.expr.ExprValue;
 
-public class MeasureModel implements IsRecord {
+
+@RecordBean(classId = "_measure")
+public class MeasureModel {
 
     private String id;
     private String label;
     private MeasurementType measurementType;
-    private ReferenceValue sourceId;
+    private ResourceId sourceId;
     private ExprValue valueExpression;
     private ExprValue criteriaExpression;
 
-    public static final ResourceId CLASS_ID = ResourceId.valueOf("_measure");
-
-
-    public MeasureModel(Record value) {
-    }
-
-    public MeasureModel(FormField value) {
-        throw new UnsupportedOperationException();
-    }
 
     public MeasureModel() {
 
@@ -58,11 +49,12 @@ public class MeasureModel implements IsRecord {
         this.label = label;
     }
 
-    public ReferenceValue getSourceId() {
+    @Reference(range = FormClass.class)
+    public ResourceId getSourceId() {
         return sourceId;
     }
 
-    public void setSourceId(ReferenceValue sourceId) {
+    public void setSourceId(ResourceId sourceId) {
         this.sourceId = sourceId;
     }
 
@@ -89,25 +81,6 @@ public class MeasureModel implements IsRecord {
     public MeasureModel setCriteriaExpression(ExprValue criteriaExpression) {
         this.criteriaExpression = criteriaExpression;
         return this;
-    }
-
-    public MeasureModel setSource(ResourceId source) {
-        setSourceId(new ReferenceValue(source));
-        return this;
-    }
-
-
-    public static MeasureModel fromRecord(Record record) {
-        throw new UnsupportedOperationException();
-    }
-
-    public Record asRecord() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    public static FormClass getFormClass() {
-        throw new UnsupportedOperationException();
     }
 
 

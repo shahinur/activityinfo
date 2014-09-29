@@ -1,22 +1,22 @@
 package org.activityinfo.model.annotation.processor;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.annotation.Field;
-import org.activityinfo.model.annotation.RecordBean;
+import org.activityinfo.model.annotation.*;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.*;
 import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.ElementFilter;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
@@ -32,7 +32,7 @@ import java.util.*;
 @SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class RecordBeanProcessor extends AbstractProcessor {
 
-    private static final boolean SILENT = false;
+    private static final boolean SILENT = true;
     public static final String GENERATED_CLASS_SUFFIX = "Class";
 
 
@@ -161,46 +161,38 @@ public class RecordBeanProcessor extends AbstractProcessor {
     }
 
     private void defineVarsForType(TypeElement type, SerdeTemplateVars vars) {
-        Types typeUtils = processingEnv.getTypeUtils();
 
         Map<String, ExecutableElement> methods = Maps.newHashMap();
         findGetterMethods(type, methods);
 
-        String pkg = TypeSimplifier.packageNameOf(type);
-
-        List<ScalarField> fields = new ArrayList<>();
-        List<ListField> listFields = new ArrayList<>();
-
+        List<FieldDescriptor> fields = new ArrayList<>();
         for(ExecutableElement getter : methods.values()) {
-
-            TypeMirror fieldType = getter.getReturnType();
-            if(isList(fieldType)) {
-                ListField field = new ListField();
-                field.fieldName = aliasFromGetter(getter);
-                field.getter = getter;
-                field.elementType = listElementType(fieldType);
-                listFields.add(field);
-
-            } else {
-                ScalarField field = new ScalarField();
-                field.name = fieldNameFromGetter(getter);
-                field.alias = aliasFromGetter(getter);
-                field.getter = getter;
-                field.type = qualifiedNameOf(fieldType);
-                field.typeMirror = fieldType;
+            FieldDescriptor field = createFieldDescriptor(getter);
+            if(field != null) {
                 fields.add(field);
             }
         }
         vars.fields = fields;
-        vars.listFields = listFields;
     }
 
-    private boolean isList(TypeMirror fieldType) {
+    private List<String> enumItems(TypeMirror fieldType) {
         Types typeUtils = processingEnv.getTypeUtils();
         Element element = typeUtils.asElement(fieldType);
-        if(element instanceof TypeElement) {
-            TypeElement type = (TypeElement) element;
-            return type.getQualifiedName().contentEquals("java.util.List");
+        List<String> items = Lists.newArrayList();
+        for(Element item : element.getEnclosedElements()) {
+            if(item.getKind() == ElementKind.ENUM_CONSTANT) {
+                items.add(item.toString());
+            }
+        }
+        return items;
+    }
+
+    private boolean isEnum(TypeMirror fieldType) {
+        if(fieldType.getKind() == TypeKind.DECLARED) {
+            Types typeUtils = processingEnv.getTypeUtils();
+            Element element = typeUtils.asElement(fieldType);
+            Preconditions.checkNotNull(element, fieldType.toString());
+            return element.getKind() == ElementKind.ENUM;
         } else {
             return false;
         }
@@ -221,13 +213,6 @@ public class RecordBeanProcessor extends AbstractProcessor {
      */
     private String qualifiedNameOf(TypeMirror typeMirror) {
         return typeMirror.toString();
-//        TypeElement elementType = (TypeElement) processingEnv.getTypeUtils().asElement(typeMirror);
-//        assert elementType != null : "asElement(" + typeMirror + ") is null";
-//        return elementType.getQualifiedName().toString();
-    }
-
-    private TypeMirror getTypeMirror(Class<?> c) {
-        return processingEnv.getElementUtils().getTypeElement(c.getName()).asType();
     }
 
     private void findGetterMethods(TypeElement type, Map<String, ExecutableElement> methods) {
@@ -241,42 +226,193 @@ public class RecordBeanProcessor extends AbstractProcessor {
         List<ExecutableElement> theseMethods = ElementFilter.methodsIn(type.getEnclosedElements());
         for (ExecutableElement method : theseMethods) {
 
-            String fieldName = fieldNameFromGetter(method);
-            if(fieldName == null) {
-                // continue processing to find all errors
-                continue;
-            }
-            if(!methods.containsKey(fieldName)) {
-                methods.put(fieldName, method);
+            String fieldName = FieldDescriptor.fieldNameFromGetter(method);
+
+            if(fieldName != null && !isTransient(method)) {
+
+                if (!methods.containsKey(fieldName)) {
+                    methods.put(fieldName, method);
+                }
             }
         }
     }
 
-    public String aliasFromGetter(ExecutableElement getter) {
+    public FieldDescriptor createFieldDescriptor(ExecutableElement getter) {
+
+        TypeMirror typeMirror = getter.getReturnType();
+        if(typeMirror.getKind() == TypeKind.BOOLEAN) {
+            return booleanField(getter);
+
+        } else if(typeMirror.getKind() == TypeKind.DOUBLE) {
+            return doubleField(getter);
+
+        } else if(typeMirror.getKind() == TypeKind.DECLARED) {
+            DeclaredType type = (DeclaredType) typeMirror;
+            TypeElement typeElement = (TypeElement) type.asElement();
+            if (typeElement.getQualifiedName().contentEquals("java.lang.String")) {
+                return stringField(getter);
+
+            } else if(typeElement.getQualifiedName().contentEquals("java.util.List")) {
+                return listField(getter);
+
+            } else if(typeElement.getQualifiedName().contentEquals("org.activityinfo.model.resource.ResourceId")) {
+                return referenceField(getter);
+
+            } else if(typeElement.getAnnotation(RecordBean.class) != null) {
+                return recordBeanField(getter, type);
+
+            } else if(typeElement.getKind() == ElementKind.ENUM) {
+                return enumField(getter);
+
+            } else if(isFieldValueType(typeMirror)) {
+                return fieldValueField(getter);
+
+            }
+        }
+
+        reportError("Unsupported @Field type: " + getter.getReturnType(), getter);
+
+        return null;
+    }
+
+
+    private FieldDescriptor stringField(ExecutableElement getter) {
+        FieldDescriptor field = new FieldDescriptor(getter);
+        field.readExpression = "record.getString(" + quote(serializedNameFromGetter(getter)) + ")";
+        field.typeExpression = "org.activityinfo.model.type.primitive.TextType.INSTANCE";
+        return field;
+    }
+
+    private FieldDescriptor booleanField(ExecutableElement getter) {
+
+        FieldDescriptor field = new FieldDescriptor(getter);
+
+        DefaultBooleanValue defaultValue = getter.getAnnotation(DefaultBooleanValue.class);
+        if(defaultValue == null) {
+            field.readExpression = "record.getBoolean(" + quote(serializedNameFromGetter(getter)) + ")";
+        } else {
+            field.readExpression = "record.getBoolean(" + quote(serializedNameFromGetter(getter)) + ", " +
+                (defaultValue.value() ? "true" : "false") + ")";
+        }
+
+        field.typeExpression = "org.activityinfo.model.type.primitive.BooleanType.INSTANCE";
+        return field;
+    }
+
+    private FieldDescriptor doubleField(ExecutableElement getter) {
+        FieldDescriptor field = new FieldDescriptor(getter);
+        field.readExpression = "record.getDouble(" + quote(serializedNameFromGetter(getter)) + ")";
+        field.typeExpression = "new org.activityinfo.model.form.field.QuantityType()";
+        return field;
+    }
+
+
+    private FieldDescriptor recordBeanField(ExecutableElement getter, DeclaredType type) {
+        FieldDescriptor field = new FieldDescriptor(getter);
+        String typeClass = type + "Class";
+        field.readExpression = typeClass + ".toBean(record.getRecord(" + quote(serializedNameFromGetter(getter)) + "))";
+        field.serializedExpression = typeClass + ".toRecord(bean." + field.getGetterName() + "())";
+        field.typeExpression = "org.activityinfo.model.type.RecordFieldType(" + typeClass + ".CLASS_ID)";
+        return field;
+    }
+
+    private FieldDescriptor listField(ExecutableElement getter) {
+        FieldDescriptor field = new FieldDescriptor(getter);
+        field.elementType = listElementType(getter.getReturnType());
+        field.readExpression = "record.getRecordList(" + quote(serializedNameFromGetter(getter)) + ")";
+        field.typeExpression = "new org.activityinfo.model.type.ListFieldType(" +
+            "new org.activityinfo.model.type.RecordFieldType(" +
+                field.getElementClassType() + ".CLASS_ID))";
+        return field;
+    }
+
+
+    private FieldDescriptor referenceField(ExecutableElement getter) {
+        FieldDescriptor field = new FieldDescriptor(getter);
+        String typeClass = "org.activityinfo.model.type.ReferenceValue";
+        field.readExpression = typeClass + ".deserializeSingle(record.isRecord(" + quote(field.name) + "))";
+        field.serializedExpression = typeClass + ".serialize(bean." + field.getGetterName() + "())";
+        field.typeExpression = "org.activityinfo.model.type.ReferenceType.single(FormClass.CLASS_ID)";
+
+        return field;
+    }
+
+
+    private FieldDescriptor enumField(ExecutableElement getter) {
+        FieldDescriptor field = new FieldDescriptor(getter);
+        String enumType = getter.getReturnType().toString();
+        field.readExpression = enumType + ".valueOf(record.getString(" + quote(serializedNameFromGetter(getter)) + "))";
+        field.serializedExpression = "bean." + field.getGetterName() + "().name()";
+        field.typeExpression = "new org.activityinfo.model.type.enumerated.EnumType()";
+        return field;
+    }
+
+    private boolean isFieldValueType(TypeMirror typeMirror) {
+        return processingEnv.getTypeUtils().isAssignable(typeMirror,
+            processingEnv.getElementUtils().getTypeElement("org.activityinfo.model.type.FieldValue").asType());
+    }
+
+    private FieldDescriptor fieldValueField(ExecutableElement getter) {
+
+        Element type = processingEnv.getTypeUtils().asElement(getter.getReturnType());
+        TypeMirror fieldType = getFieldTypeClass(getter.getReturnType());
+
+        if(fieldType == null) {
+            reportError(getter.getReturnType() + " is missing @ValueOf annotation, no way to determine FieldType", type);
+            return null;
+        }
+
+        FieldDescriptor field = new FieldDescriptor(getter);
+        String fieldValueType = getter.getReturnType().toString();
+        field.readExpression = fieldValueType + ".fromRecord(record.getRecord(" + quote(serializedNameFromGetter(getter)) + "))";
+        field.typeExpression = fieldType + ".INSTANCE";
+        return field;
+    }
+
+    private TypeMirror getFieldTypeClass(TypeMirror propertyType) {
+        Types typeUtils = processingEnv.getTypeUtils();
+        Elements elementUtils = processingEnv.getElementUtils();
+
+        TypeElement valueOfClass = elementUtils.getTypeElement(ValueOf.class.getName());
+        ExecutableElement valueMember = getValueMethod(valueOfClass);
+
+        Element type = typeUtils.asElement(propertyType);
+        for (AnnotationMirror annotation : type.getAnnotationMirrors()) {
+            if(typeUtils.isSameType(annotation.getAnnotationType(), valueOfClass.asType())) {
+
+                AnnotationValue annotationValue = annotation.getElementValues().get(valueMember);
+                TypeMirror typeMirror = (TypeMirror) annotationValue.getValue();
+                return typeMirror;
+            }
+        }
+        return null;
+    }
+
+    private ExecutableElement getValueMethod(TypeElement valueOfClass) {
+        for (Element element : valueOfClass.getEnclosedElements()) {
+            if(element instanceof ExecutableElement && element.getSimpleName().contentEquals("value")) {
+                return (ExecutableElement) element;
+            }
+        }
+        reportError("Cannot find value() method", valueOfClass);
+        throw new AbortProcessingException();
+    }
+
+
+    private String quote(String name) {
+        return "\"" + name + "\"";
+    }
+
+    private boolean isTransient(ExecutableElement method) {
+        return method.getAnnotation(Transient.class) != null;
+    }
+
+    public String serializedNameFromGetter(ExecutableElement getter) {
         Field field = getter.getAnnotation(Field.class);
         if(field != null && field.name() != null) {
             return field.name();
         }
-        return fieldNameFromGetter(getter);
+        return FieldDescriptor.fieldNameFromGetter(getter);
     }
 
-    public String fieldNameFromGetter(ExecutableElement getter) {
-        String getterName = getter.getSimpleName().toString();
-        String prefix;
-        if (getterName.startsWith("get")) {
-            prefix = "get";
-        } else if (getterName.startsWith("is")) {
-            prefix = "is";
-        } else {
-            return null;
-        }
-
-        if(!getter.getParameters().isEmpty()) {
-            return null;
-        }
-
-        return
-            getterName.substring(prefix.length(), prefix.length() + 1).toLowerCase() +
-            getterName.substring(prefix.length() + 1);
-    }
 }

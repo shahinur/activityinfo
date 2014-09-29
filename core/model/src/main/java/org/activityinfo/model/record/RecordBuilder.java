@@ -83,7 +83,7 @@ public interface RecordBuilder {
      * @param fieldName the name of the field whose value is to be set.
      * @param value the new field value.
      */
-    RecordBuilder set(String fieldName, FieldValue value);
+    RecordBuilder setFieldValue(String fieldName, FieldValue value);
 
     RecordBuilder set(String fieldName, Iterable<?> value);
 

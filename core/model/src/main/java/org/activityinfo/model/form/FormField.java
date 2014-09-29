@@ -41,6 +41,11 @@ public class FormField extends FormElement {
         return id;
     }
 
+
+    public String getName() {
+        return this.id.asString();
+    }
+
     /**
      * @return user-assigned code for this field that can be
      * used in expressions.
@@ -245,7 +250,7 @@ public class FormField extends FormElement {
         record.set("relevanceConditionExpression", relevanceConditionExpression);
 
         if(defaultValue != null) {
-            record.set("defaultValue", defaultValue);
+            record.setFieldValue("defaultValue", defaultValue);
         }
 
         if(!superProperties.isEmpty()) {
@@ -299,4 +304,5 @@ public class FormField extends FormElement {
             throw new UnsupportedOperationException();
         }
     }
+
 }

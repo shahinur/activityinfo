@@ -2,7 +2,7 @@ package org.activityinfo.ui.app.client.page.folder;
 
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.record.RecordBuilder;
 import org.activityinfo.model.record.Records;
@@ -207,7 +207,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
         if (FormClass.CLASS_ID.equals(child.getClassId())) {
             icon = FontAwesome.FILE;
 
-        } else if(PivotTableModel.CLASS_ID.equals(child.getClassId())) {
+        } else if(PivotTableModelClass.CLASS_ID.equals(child.getClassId())) {
             icon = FontAwesome.TABLE;
 
         } else {

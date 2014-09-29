@@ -1,6 +1,7 @@
 package org.activityinfo.model.record;
 
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
  * Serializes and deserializes a Java bean between
@@ -9,6 +10,8 @@ import org.activityinfo.model.form.FormClass;
  * @param <T>
  */
 public interface RecordBeanClass<T> {
+
+    ResourceId getClassId();
 
     Record toRecord(T bean);
 
