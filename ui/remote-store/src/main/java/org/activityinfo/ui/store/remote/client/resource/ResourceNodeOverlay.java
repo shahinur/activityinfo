@@ -11,6 +11,10 @@ public final class ResourceNodeOverlay extends JavaScriptObject {
         return this[propertyName];
     }-*/;
 
+    public native boolean getBoolean(String propertyName) /*-{
+        return this[propertyName];
+    }-*/;
+
     public native JsArray<ResourceNodeOverlay> getChildren() /*-{
         return this.children;
     }-*/;

@@ -27,8 +27,12 @@ import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.ClickHandler;
 import org.activityinfo.ui.style.icons.FontAwesome;
+import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.activityinfo.ui.vdom.shared.html.H.*;
 
@@ -194,8 +198,15 @@ public class FormPage extends PageView implements StoreChangeListener {
         tableTab.setLabel("Table");
         tableTab.setTarget(new FormPlace(getResourceId(), FormViewType.TABLE));
 
+        List<VTree> tabs = new ArrayList<>();
+        tabs.add(tableTab);
+
+        if (canEdit()) {
+            tabs.add(designTab);
+        }
+
         return ul(classNames(BaseStyles.NAV, BaseStyles.NAV_TABS, BaseStyles.NAV_DARK),
-                tableTab, designTab
+                Children.toArray(tabs)
         );
     }
 }
