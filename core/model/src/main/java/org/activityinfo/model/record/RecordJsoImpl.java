@@ -44,7 +44,7 @@ public final class RecordJsoImpl implements Record {
                 elements.add(parseValue(array.get(i)));
             }
             return elements;
-        } else if(value instanceof JSONNull) {
+        } else if(value instanceof JSONNull || value == null) {
             return null;
         } else {
             throw new IllegalArgumentException("value: " + value);
