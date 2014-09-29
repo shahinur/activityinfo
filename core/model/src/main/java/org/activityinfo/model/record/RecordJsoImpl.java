@@ -130,6 +130,15 @@ public final class RecordJsoImpl implements Record {
         }
     }
 
+    public String getString(String fieldName, String defaultValue) {
+        String value = has(fieldName) ? isString(fieldName) : null;
+        if (value != null) {
+            return value;
+        } else {
+            return defaultValue;
+        }
+    }
+
     @Nonnull
     @Override
     public Record getRecord(String fieldName) {

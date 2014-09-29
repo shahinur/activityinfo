@@ -266,7 +266,7 @@ public class FormField extends FormElement {
 
     public static FormElement fromRecord(Record record) {
         FormField formField = new FormField(ResourceId.valueOf(record.getString("id")))
-            .setDescription(record.isString("description"))
+            .setDescription(record.getString("description", ""))
             .setLabel(Strings.nullToEmpty(record.isString("label")))
             .setType(typeFromRecord(record.getRecord("type")))
             .setVisible(record.getBoolean("visible", true))

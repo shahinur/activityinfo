@@ -42,6 +42,8 @@ public interface Record extends FieldValue {
 
     public String isString(String fieldName);
 
+    public String getString(String fieldName, String defaultValue);
+
     @Nonnull
     public Record getRecord(String fieldName);
 

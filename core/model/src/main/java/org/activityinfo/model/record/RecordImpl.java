@@ -98,6 +98,14 @@ class RecordImpl implements Record {
         return (String)map.get(fieldName);
     }
 
+    public String getString(String fieldName, String defaultValue) {
+        Object value = map.get(fieldName);
+        if(value instanceof String) {
+            return (String) value;
+        }
+        return defaultValue;
+    }
+
     @Override
     public String isString(String fieldName) {
         assert !fieldName.contentEquals("classId");
