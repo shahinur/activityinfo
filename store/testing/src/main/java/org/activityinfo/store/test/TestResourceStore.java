@@ -73,12 +73,8 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         return resource.copy();
     }
 
-    public Resource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
-        return get(resourceId);
-    }
-
     @Override
-    public UserResource getUserResource(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+    public UserResource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
         return UserResource.userResource(get(resourceId));
     }
 
@@ -112,14 +108,14 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     private ResourceNode newNode(Resource resource) {
-        ResourceId classId = ResourceId.valueOf(resource.getValue().getString("classId"));
+        ResourceId classId = resource.getValue().getClassId();
         ResourceNode node = new ResourceNode(resource.getId(), classId);
         node.setOwnerId(resource.getOwnerId());
 
         if(classId.equals(FormClass.CLASS_ID)) {
             node.setLabel(resource.getValue().isString(FormClass.LABEL_FIELD_ID));
         } else if(classId.equals(FolderClass.CLASS_ID)) {
-            node.setLabel(resource.getValue().isString(FolderClass.LABEL_FIELD_ID.asString()));
+            node.setLabel(resource.getValue().isString(FolderClass.LABEL_FIELD_NAME));
         }
         return node;
     }

@@ -40,13 +40,8 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<Resource> get(ResourceId resourceId) {
+    public Promise<UserResource> get(ResourceId resourceId) {
         return Promise.resolved(store.get(AuthenticatedUser.getAnonymous(), resourceId));
-    }
-
-    @Override
-    public Promise<UserResource> getUserResource(ResourceId resourceId) {
-        return Promise.resolved(UserResource.userResource(store.get(AuthenticatedUser.getAnonymous(), resourceId)));
     }
 
     @Override

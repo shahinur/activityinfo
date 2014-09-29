@@ -65,7 +65,7 @@ public class FormResource {
         Resource resource;
 
         try {
-            resource = locator.get(user, CuidAdapter.activityFormClass(id));
+            resource = locator.get(user, CuidAdapter.activityFormClass(id)).getResource();
         } catch (ResourceNotFound resourceNotFound) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }

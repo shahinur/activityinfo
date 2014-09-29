@@ -8,6 +8,7 @@ import org.activityinfo.model.hierarchy.Level;
 import org.activityinfo.model.hierarchy.Node;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.ResourceLocator;
 
@@ -35,9 +36,9 @@ class InitialSelection {
     private Promise<Void> fetchLabelAndParentIds(final ResourceLocator locator, Set<ResourceId> instanceIds) {
 
         return locator.get(instanceIds)
-                  .join(new Function<List<Resource>, Promise<Void>>() {
+                  .join(new Function<List<UserResource>, Promise<Void>>() {
                       @Override
-                      public Promise<Void> apply(List<Resource> instances) {
+                      public Promise<Void> apply(List<UserResource> instances) {
 
                           Set<ResourceId> parents = populateSelection(instances);
                           if (parents.isEmpty()) {
@@ -49,9 +50,10 @@ class InitialSelection {
                   });
     }
 
-    private Set<ResourceId> populateSelection(List<Resource> resources) {
+    private Set<ResourceId> populateSelection(List<UserResource> resources) {
         Set<ResourceId> parents = Sets.newHashSet();
-        for(Resource resource : resources) {
+        for(UserResource userResource : resources) {
+            Resource resource = userResource.getResource();
             Level level = hierarchy.getLevel(resource.getValue().getClassId());
             if(level != null) {
                 Node node = level.createNode(resource);

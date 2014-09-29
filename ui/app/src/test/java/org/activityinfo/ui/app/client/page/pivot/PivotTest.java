@@ -46,7 +46,7 @@ public class PivotTest {
         store.load("lcca.json");
 
         for(Resource resource : store.all()) {
-            if(FormClass.CLASS_ID.asString().equals(resource.getValue().getClassId())) {
+            if(FormClass.CLASS_ID.equals(resource.getValue().getClassId())) {
                 forms.add(FormClass.fromResource(resource));
             }
         }
