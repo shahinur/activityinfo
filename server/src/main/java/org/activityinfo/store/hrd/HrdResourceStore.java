@@ -62,16 +62,7 @@ public class HrdResourceStore implements ResourceStore {
     @Path("resource/{id}")
     @Produces("application/json")
     @Override
-    public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
-         UserResource userResource = getUserResource(user, resourceId);
-         return userResource.getResource();
-    }
-
-    @GET
-    @Path("userresource/{id}")
-    @Produces("application/json")
-    @Override
-    public UserResource getUserResource(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+    public UserResource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
 
@@ -87,8 +78,6 @@ public class HrdResourceStore implements ResourceStore {
             throw new ResourceNotFound(resourceId);
         }
     }
-
-
 
     @Override
     public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
