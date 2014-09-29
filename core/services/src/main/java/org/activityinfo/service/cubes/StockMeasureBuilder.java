@@ -78,7 +78,7 @@ public class StockMeasureBuilder implements MeasureBuilder {
     }
 
     private String resolveCriteria() {
-        if(model == null) {
+        if(model.getCriteriaExpression() == null) {
             return "true";
         } else {
             return model.getCriteriaExpression().getExpression();

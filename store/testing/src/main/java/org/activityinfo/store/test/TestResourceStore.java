@@ -108,14 +108,14 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     private ResourceNode newNode(Resource resource) {
-        ResourceId classId = ResourceId.valueOf(resource.getValue().getString("classId"));
+        ResourceId classId = resource.getValue().getClassId();
         ResourceNode node = new ResourceNode(resource.getId(), classId);
         node.setOwnerId(resource.getOwnerId());
 
         if(classId.equals(FormClass.CLASS_ID)) {
             node.setLabel(resource.getValue().isString(FormClass.LABEL_FIELD_ID));
         } else if(classId.equals(FolderClass.CLASS_ID)) {
-            node.setLabel(resource.getValue().isString(FolderClass.LABEL_FIELD_ID.asString()));
+            node.setLabel(resource.getValue().isString(FolderClass.LABEL_FIELD_NAME));
         }
         return node;
     }
