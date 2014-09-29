@@ -1,9 +1,6 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
@@ -15,6 +12,7 @@ import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.store.hrd.entity.LatestContent;
 import org.activityinfo.store.hrd.entity.Workspace;
 
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +34,9 @@ public class WorkspaceLookup {
             .build(new CacheLoader<ResourceId, ResourceId>() {
                 @Override
                 public ResourceId load(ResourceId key) throws Exception {
-                    return lookupWorkspace(key);
+                    ResourceId workspaceId = lookupWorkspace(key);
+                    memcache(key, workspaceId);
+                    return workspaceId;
                 }
             });
     }
@@ -59,19 +59,28 @@ public class WorkspaceLookup {
             .setFilter(new Query.FilterPredicate(LatestContent.RESOURCE_ID_PROPERTY,
                                     Query.FilterOperator.EQUAL, key.asString()));
 
-        Entity entity = datastore.prepare(query).asSingleEntity();
+        Iterator<Entity> indexEntry = datastore.prepare(query).asIterator();
 
-        if(entity == null) {
-            throw new ResourceNotFound(key);
+        // Check to see if the resource is a workspace in parallel
+        if(isWorkspace(key)) {
+            return key;
         }
 
-        ResourceId workspaceId = LatestContent.workspaceFromKey(entity.getKey());
+        if(indexEntry.hasNext()) {
+            return LatestContent.workspaceFromKey(indexEntry.next().getKey());
+        }
 
+        // Give up
+        throw new ResourceNotFound(key);
+    }
 
-        // ...and cache in memcache
-        memcache(key, workspaceId);
-
-        return workspaceId;
+    private boolean isWorkspace(ResourceId key)  {
+        try {
+            datastore.get(null, new Workspace(key).getLatestContent(key).getKey());
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
     }
 
     private void memcache(ResourceId resourceId, ResourceId workspaceId) {
