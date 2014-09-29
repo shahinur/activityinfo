@@ -71,7 +71,10 @@ public class WorkspaceIndex {
         Collection<Entity> indices = datastore.get(null, workspaceKeys).values();
         List<ResourceNode> resourceNodes = Lists.newArrayList();
         for(Entity workspaceEntity : indices) {
-            resourceNodes.add(Content.deserializeResourceNode(workspaceEntity));
+            ResourceNode node = Content.deserializeResourceNode(workspaceEntity);
+            node.setOwner(true); // queried user's workspaces : flag is always true
+            node.setEditAllowed(true);
+            resourceNodes.add(node);
         }
         return resourceNodes;
     }
