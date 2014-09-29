@@ -42,11 +42,11 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
         if(classId.asString().startsWith("_")) {
             return Promise.resolved(systemClassProvider.get(classId));
         } else {
-            return store.get(classId).then(new Function<Resource, FormClass>() {
+            return store.get(classId).then(new Function<UserResource, FormClass>() {
                 @Nullable
                 @Override
-                public FormClass apply(@Nullable Resource input) {
-                    return FormClass.fromResource(input);
+                public FormClass apply(@Nullable UserResource input) {
+                    return FormClass.fromResource(input.getResource());
                 }
             });
         }
@@ -54,20 +54,20 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
 
     @Override
     public Promise<FormInstance> getFormInstance(ResourceId instanceId) {
-        return store.get(instanceId).then(new Function<Resource, FormInstance>() {
+        return store.get(instanceId).then(new Function<UserResource, FormInstance>() {
             @Nullable
             @Override
-            public FormInstance apply(@Nullable Resource input) {
-                return FormInstance.fromResource(input);
+            public FormInstance apply(@Nullable UserResource input) {
+                return FormInstance.fromResource(input.getResource());
             }
         });
     }
 
     @Override
-    public Promise<List<Resource>> get(Set<ResourceId> resourceIds) {
-        return Promise.map(resourceIds, new Function<ResourceId, Promise<Resource>>() {
+    public Promise<List<UserResource>> get(Set<ResourceId> resourceIds) {
+        return Promise.map(resourceIds, new Function<ResourceId, Promise<UserResource>>() {
             @Override
-            public Promise<Resource> apply(ResourceId input) {
+            public Promise<UserResource> apply(ResourceId input) {
                 return store.get(input);
             }
         });

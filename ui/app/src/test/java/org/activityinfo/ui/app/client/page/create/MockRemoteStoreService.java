@@ -30,12 +30,7 @@ public class MockRemoteStoreService implements RemoteStoreService {
     private Promise<?> lastPromise;
 
     @Override
-    public Promise<Resource> get(ResourceId resourceId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Promise<UserResource> getUserResource(ResourceId resourceId) {
+    public Promise<UserResource> get(ResourceId resourceId) {
         throw new UnsupportedOperationException();
     }
 

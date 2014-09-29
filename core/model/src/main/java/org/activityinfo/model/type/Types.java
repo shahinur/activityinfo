@@ -9,6 +9,9 @@ import org.activityinfo.model.type.primitive.TextValue;
 public class Types {
 
     public static FieldValue read(Record bag, String name) {
+        if (!bag.has(name)) {
+            return null;
+        }
         Object value = bag.get(name);
         if (value == null) {
             return null;

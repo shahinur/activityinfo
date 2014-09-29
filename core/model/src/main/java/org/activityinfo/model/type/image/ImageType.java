@@ -105,8 +105,7 @@ public class ImageType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return Records.builder()
-                .set("classId", getTypeClass().getParameterFormClass().getId())
+        return Records.builder(getTypeClass())
                 .set("cardinality", new EnumFieldValue(ResourceId.valueOf(cardinality.name())).asRecord())
                 .build();
     }

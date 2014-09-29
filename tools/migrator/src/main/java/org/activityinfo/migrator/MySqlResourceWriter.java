@@ -63,7 +63,7 @@ public class MySqlResourceWriter implements ResourceWriter {
         statement.setLong(2, version);
         statement.setLong(3, version);
         statement.setString(4, resource.getOwnerId().asString());
-        statement.setString(5, resource.getValue().isString("classId"));
+        statement.setString(5, resource.getValue().getClassId().asString());
         statement.setString(6, ResourceWriters.getLabel(resource));
         statement.setString(7, objectMapper.writeValueAsString(resource));
         statement.addBatch();

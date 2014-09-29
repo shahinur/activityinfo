@@ -6,7 +6,7 @@ import org.activityinfo.model.system.FolderClass;
 
 public class ResourceWriters {
     public static String getLabel(Resource resource) {
-        String classId = resource.getValue().isString("classId");
+        String classId = resource.getValue().getClassId().asString();
         if(FormClass.CLASS_ID.asString().equals(classId)) {
             return resource.getValue().getString(FormClass.LABEL_FIELD_ID);
         } else if(FolderClass.CLASS_ID.asString().equals(classId)) {

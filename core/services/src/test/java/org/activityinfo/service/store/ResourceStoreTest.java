@@ -59,18 +59,18 @@ public class ResourceStoreTest extends JerseyTest {
 
     @Test
     public void get() {
-        Resource resource = getStoreService()
+        UserResource resource = getStoreService()
                 .path("resource")
                 .path(ResourceStoreStub.MY_RESOURCE_ID.asString())
                 .accept(MediaType.APPLICATION_JSON)
-                .get(Resource.class);
+                .get(UserResource.class);
 
         Resource expected = ResourceStoreStub.getMyResource();
-        assertThat(resource.getId(), equalTo(expected.getId()));
-        assertThat(resource.getOwnerId(), equalTo(expected.getOwnerId()));
-        assertThat(resource.getVersion(), equalTo(expected.getVersion()));
-        assertTrue(Records.deepEquals(resource.getValue(), expected.getValue()));
-        assertThat(resource, equalTo(expected));
+        assertThat(resource.getResource().getId(), equalTo(expected.getId()));
+        assertThat(resource.getResource().getOwnerId(), equalTo(expected.getOwnerId()));
+        assertThat(resource.getResource().getVersion(), equalTo(expected.getVersion()));
+        assertTrue(Records.deepEquals(resource.getResource().getValue(), expected.getValue()));
+        assertThat(resource.getResource(), equalTo(expected));
     }
 
     @Test
