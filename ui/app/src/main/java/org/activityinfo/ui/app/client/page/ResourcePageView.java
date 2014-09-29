@@ -5,6 +5,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.draft.Draft;
 import org.activityinfo.ui.app.client.page.pivot.PivotPage;
@@ -39,7 +40,7 @@ public class ResourcePageView extends PageView implements StoreChangeListener {
     private final Application application;
     private ResourceId resourceId;
 
-    private Status<Resource> resource;
+    private Status<UserResource> resource;
 
     public ResourcePageView(Application application, ResourceId resourceId) {
         this.application = application;
@@ -47,10 +48,10 @@ public class ResourcePageView extends PageView implements StoreChangeListener {
 
         Status<Draft> draft = application.getDraftStore().get(resourceId);
         if(draft.isAvailable()) {
-            this.resource = draft.join(new Function<Draft, Resource>() {
+            this.resource = draft.join(new Function<Draft, UserResource>() {
                 @Override
-                public Resource apply(Draft input) {
-                    return input.getResource();
+                public UserResource apply(Draft input) {
+                    return input.getUserResource();
                 }
             });
         } else {
@@ -79,7 +80,7 @@ public class ResourcePageView extends PageView implements StoreChangeListener {
     @Override
     protected VTree render() {
         if(resource.isAvailable()) {
-            return createPageView(resource.get());
+            return createPageView(resource.get().getResource());
         } else {
             return new PagePreLoader();
         }
