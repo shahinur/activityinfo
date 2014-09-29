@@ -54,7 +54,7 @@ public class HrdResourceTest {
 
         assertThat(divACreationResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
-        Resource resource = environment.getStore().get(environment.getUser(), divA.getId());
+        Resource resource = environment.getStore().get(environment.getUser(), divA.getId()).getResource();
         assertThat(resource.getValue().getString(FolderClass.LABEL_FIELD_ID.asString()), equalTo("Division A"));
         assertThat(resource.getVersion(), equalTo(divACreationResult.getNewVersion()));
 
@@ -82,7 +82,7 @@ public class HrdResourceTest {
 
         // Read the form class back and verify
         FormClass reformClass = FormClass.fromResource(
-            environment.getStore().get(environment.getUser(), formClass.getId()));
+            environment.getStore().get(environment.getUser(), formClass.getId()).getResource());
 
         assertThat(reformClass.getId(), Matchers.equalTo(formClass.getId()));
         assertThat(reformClass.getOwnerId(), Matchers.equalTo(formClass.getOwnerId()));
@@ -116,7 +116,7 @@ public class HrdResourceTest {
 
         assertThat(updateResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
-        Resource newlyFetched = environment.getStore().get(environment.getUser(), workspace.getId());
+        Resource newlyFetched = environment.getStore().get(environment.getUser(), workspace.getId()).getResource();
         assertThat(newlyFetched.getValue().getString(FolderClass.LABEL_FIELD_ID.asString()), Matchers.equalTo("Workspace B"));
     }
 

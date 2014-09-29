@@ -125,7 +125,7 @@ public class FormSubmissionResource {
                         throw new RuntimeException(e);
                     }
 
-                    Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
+                    Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId)).getResource();
                     FormClass formClass = FormClass.fromResource(resource);
                     FormInstance formInstance = new FormInstance(ResourceId.valueOf(instanceId), formClass.getId());
 

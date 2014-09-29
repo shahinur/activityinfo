@@ -20,15 +20,7 @@ public interface ResourceStore {
     @GET
     @Path("resource/{id}")
     @Produces("application/json")
-    Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
-
-    /**
-     * Fetches the latest version of the user resource from the store.
-     */
-    @GET
-    @Path("userresource/{id}")
-    @Produces("application/json")
-    UserResource getUserResource(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
+    UserResource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
 
     @GET
     @Path("resource/{id}/acr")

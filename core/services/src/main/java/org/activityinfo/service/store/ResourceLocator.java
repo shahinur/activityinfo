@@ -7,10 +7,7 @@ import org.activityinfo.model.legacy.InstanceQuery;
 import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.legacy.QueryResult;
 import org.activityinfo.model.legacy.criteria.Criteria;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.IsResource;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -32,7 +29,7 @@ public interface ResourceLocator {
 
     Promise<FormInstance> getFormInstance(ResourceId formId);
 
-    Promise<List<Resource>> get(Set<ResourceId> resourceIds);
+    Promise<List<UserResource>> get(Set<ResourceId> resourceIds);
 
     Promise<TableData> queryTable(TableModel tableModel);
 

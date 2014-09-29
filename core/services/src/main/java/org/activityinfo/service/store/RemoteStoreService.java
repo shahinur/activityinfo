@@ -18,12 +18,7 @@ public interface RemoteStoreService {
     /**
      * Retrieves a single Resource from the server.
      */
-    Promise<Resource> get(ResourceId resourceId);
-
-    /**
-     * Retrieves a single User Resource from the server.
-     */
-    Promise<UserResource> getUserResource(ResourceId resourceId);
+    Promise<UserResource> get(ResourceId resourceId);
 
     /**
      * Updates a Response
