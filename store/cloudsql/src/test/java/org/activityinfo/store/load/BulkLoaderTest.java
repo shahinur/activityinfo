@@ -58,7 +58,7 @@ public class BulkLoaderTest {
         loader.run();
 
         // verify that the form class has appeared
-        Resource formClass = environment.getStore().get(me, formClassId);
+        Resource formClass = environment.getStore().get(me, formClassId).getResource();
         assertThat(formClass.getOwnerId(), equalTo(ws.getId()));
         assertThat(formClass.getVersion(), greaterThan(1L));
 

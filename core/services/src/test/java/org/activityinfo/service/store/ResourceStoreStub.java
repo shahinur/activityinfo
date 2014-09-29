@@ -38,20 +38,8 @@ public class ResourceStoreStub implements ResourceStore {
     @Path("resource/{id}")
     @Produces("application/json")
     @Override
-    public Resource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+    public UserResource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
 
-        if(!resourceId.equals(MY_RESOURCE_ID)) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-
-        return getMyResource();
-    }
-
-    @GET
-    @Path("userresource/{id}")
-    @Produces("application/json")
-    @Override
-    public UserResource getUserResource(@InjectParam AuthenticatedUser user, @PathParam("id")  ResourceId resourceId) {
         if(!resourceId.equals(MY_RESOURCE_ID)) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }

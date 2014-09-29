@@ -30,15 +30,15 @@ public class GwtTestRemoteStore extends GWTTestCase {
         GWT.log("testGet() starting...");
 
         RemoteStoreService service = getStore();
-        service.get(ResourceId.valueOf("test")).then(new AsyncCallback<Resource>() {
+        service.get(ResourceId.valueOf("test")).then(new AsyncCallback<UserResource>() {
             @Override
             public void onFailure(Throwable caught) {
                 fail(caught.getMessage());
             }
 
             @Override
-            public void onSuccess(Resource resource) {
-                FormClass form = FormClass.fromResource(resource);
+            public void onSuccess(UserResource resource) {
+                FormClass form = FormClass.fromResource(resource.getResource());
                 assertEquals("resource.id", ResourceId.valueOf("a1"), form.getId());
                 assertEquals("resource.ownerId", ResourceId.valueOf("C1c4a0524b"),  form.getOwnerId());
              //   assertEquals("resource.version", 41L, resource.getVersion());

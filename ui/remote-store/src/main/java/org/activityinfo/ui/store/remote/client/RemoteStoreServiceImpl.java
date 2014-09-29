@@ -40,14 +40,8 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     }
 
     @Override
-    public Promise<Resource> get(ResourceId resourceId) {
-        return store.resolve("resource").resolve(resourceId.asString()).get(new ResourceParser());
-    }
-
-
-    @Override
-    public Promise<UserResource> getUserResource(ResourceId resourceId) {
-        return store.resolve("userresource").resolve(resourceId.asString()).get(new UserResourceParser());
+    public Promise<UserResource> get(ResourceId resourceId) {
+        return store.resolve("resource").resolve(resourceId.asString()).get(new UserResourceParser());
     }
 
     @Override

@@ -73,12 +73,8 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         return resource.copy();
     }
 
-    public Resource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
-        return get(resourceId);
-    }
-
     @Override
-    public UserResource getUserResource(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+    public UserResource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
         return UserResource.userResource(get(resourceId));
     }
 
