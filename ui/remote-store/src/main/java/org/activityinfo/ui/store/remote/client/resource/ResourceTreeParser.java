@@ -23,6 +23,8 @@ public class ResourceTreeParser implements Function<Response, FolderProjection> 
         node.setLabel(overlay.getString("label"));
         node.setVersion(overlay.getLong("version"));
         node.setSubTreeVersion(overlay.getLong("subTreeVersion"));
+        node.setEditAllowed(overlay.getBoolean("editAllowed"));
+        node.setOwner(overlay.getBoolean("owner"));
         for(int i=0;i!=overlay.getChildren().length();++i) {
             node.getChildren().add(parse(overlay.getChildren().get(i)));
         }
