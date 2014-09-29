@@ -19,6 +19,7 @@ import org.activityinfo.client.xform.XFormList;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.UploadCredentials;
 import org.activityinfo.service.tasks.UserTask;
@@ -119,7 +120,8 @@ public class ActivityInfoClient {
     public Resource get(ResourceId resourceId) {
         return store.path("resource").path(resourceId.asString())
                 .type(MediaType.APPLICATION_JSON_TYPE)
-                .get(Resource.class);
+                .get(UserResource.class)
+                .getResource();
     }
 
     /**
