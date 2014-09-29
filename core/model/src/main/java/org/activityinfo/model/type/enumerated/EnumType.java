@@ -95,8 +95,7 @@ public class EnumType implements ParametrizedFieldType {
             enumValueRecords.add(enumValue.asRecord());
         }
 
-        return Records.builder()
-                .set("classId", getTypeClass().getParameterFormClass().getId())
+        return Records.builder(getTypeClass())
                 .set("cardinality", cardinality.name())
                 .set("values", enumValueRecords)
                 .build();
