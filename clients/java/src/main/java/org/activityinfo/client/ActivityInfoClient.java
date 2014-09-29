@@ -2,7 +2,11 @@ package org.activityinfo.client;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.io.ByteSource;
-import com.sun.jersey.api.client.*;
+import com.sun.jersey.api.client.AsyncWebResource;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.GenericType;
+import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
@@ -30,6 +34,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.fromStatusCode;
 
 public class ActivityInfoClient {
 
@@ -234,10 +239,11 @@ public class ActivityInfoClient {
         form.put("email", Collections.singletonList(accountEmail));
         form.put("password", Collections.singletonList(password));
 
-        return CREATED.equals(root.path("test").path("createUser")
+        return CREATED.equals(fromStatusCode(
+                root.path("test").path("createUser")
                 .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
                 .post(ClientResponse.class, form)
-                .getStatus());
+                .getStatus()));
     }
 
     final static private class ResourceNodeListGenericType extends GenericType<List<ResourceNode>> {
