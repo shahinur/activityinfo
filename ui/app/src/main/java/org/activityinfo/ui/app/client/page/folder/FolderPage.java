@@ -86,7 +86,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
     private void onRename(String newName) {
         ResourceId id = getFolder().get().getRootNode().getId();
-        Resource resource = application.getResourceStore().get(id).get();
+        Resource resource = application.getResourceStore().get(id).get().getResource();
 
         RecordBuilder updated = Records.buildCopyOf(resource.getValue());
         updated.set(FolderClass.LABEL_FIELD_ID.asString(), newName);
@@ -137,17 +137,22 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
         } else {
 
-            ResourceId resourceId = folder.get().getRootNode().getId();
-            String label = folder.get().getRootNode().getLabel();
+            ResourceNode rootNode = folder.get().getRootNode();
+
+            ResourceId resourceId = rootNode.getId();
+            String label = rootNode.getLabel();
             LOGGER.info("Folder id = " + resourceId + ", label = " + label);
 
-            final PageFrameConfig config = new PageFrameConfig().
-                    setEnableRename(editLabelDialog).
-                    setEnableDeletion(new DeleteResourceAction(application, resourceId, label)).
-                    setEditAllowed(folder.get().getRootNode().isEditAllowed());
+            final PageFrameConfig config = new PageFrameConfig();
+
+            if (rootNode.isEditAllowed()) {
+                config.setEnableRename(editLabelDialog);
+                config.setEnableDeletion(new DeleteResourceAction(application, resourceId, label));
+                config.setEditAllowed(rootNode.isEditAllowed());
+            }
             return new PageFrame(PAGE_ICON,
-                folder.get().getRootNode().getLabel(), config,
-                renderContents(folder.get().getRootNode()));
+                rootNode.getLabel(), config,
+                renderContents(rootNode));
         }
     }
 

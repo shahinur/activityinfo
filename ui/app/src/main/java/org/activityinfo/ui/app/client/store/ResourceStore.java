@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
 import org.activityinfo.ui.app.client.request.Request;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class ResourceStore extends AbstractStore implements RemoteUpdateHandler {
 
     private ApplicationClassProvider classProvider;
-    private Map<ResourceId, Status<Resource>> resources = Maps.newHashMap();
+    private Map<ResourceId, Status<UserResource>> resources = Maps.newHashMap();
 
 
     public ResourceStore(Dispatcher dispatcher) {
@@ -44,22 +45,22 @@ public class ResourceStore extends AbstractStore implements RemoteUpdateHandler 
 
     @Override
     public <R> void processUpdate(Request<R> request, R response) {
-        if(response instanceof Resource) {
-            cache((Resource)response);
+        if(response instanceof UserResource) {
+            cache((UserResource)response);
         } else if (request instanceof SaveRequest) {
             SaveRequest saveRequest = (SaveRequest) request;
             Resource updatedResource = saveRequest.getUpdatedResource();
-            cache(updatedResource);
+            cache(UserResource.userResource(updatedResource).setEditAllowed(true));
         }
     }
 
-    private void cache(Resource response) {
-        resources.put(response.getId(), Status.cache(response.copy()));
+    private void cache(UserResource response) {
+        resources.put(response.getResourceId(), Status.cache(response.copy()));
         fireChange();
     }
 
-    public Status<Resource> get(ResourceId id) {
-        Status<Resource> resource = resources.get(id);
+    public Status<UserResource> get(ResourceId id) {
+        Status<UserResource> resource = resources.get(id);
         if(resource == null) {
             return Status.unavailable();
         } else {
@@ -73,10 +74,10 @@ public class ResourceStore extends AbstractStore implements RemoteUpdateHandler 
             return Status.cache(classProvider.get(id));
         }
 
-        return get(id).join(new Function<Resource, FormClass>() {
+        return get(id).join(new Function<UserResource, FormClass>() {
             @Override
-            public FormClass apply(Resource input) {
-                return FormClass.fromResource(input);
+            public FormClass apply(UserResource input) {
+                return FormClass.fromResource(input.getResource());
             }
         });
     }

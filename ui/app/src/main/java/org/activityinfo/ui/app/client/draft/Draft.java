@@ -1,6 +1,7 @@
 package org.activityinfo.ui.app.client.draft;
 
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.UserResource;
 
 public class Draft {
 
@@ -23,6 +24,11 @@ public class Draft {
         return resource.copy();
     }
 
+    public UserResource getUserResource() {
+        return UserResource.userResource(getResource()).
+                setEditAllowed(true).
+                setOwner(true);
+    }
 
     public static Draft create(Resource resource) {
         Draft draft = new Draft(resource);

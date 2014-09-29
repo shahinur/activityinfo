@@ -77,7 +77,7 @@ public class FormPage extends PageView implements StoreChangeListener {
     }
 
     private void onRename(String newName) {
-        Resource resource = application.getResourceStore().get(getResourceId()).get();
+        Resource resource = application.getResourceStore().get(getResourceId()).get().getResource();
 
         Record update = Records.builder()
                 .set(FormClass.LABEL_FIELD_ID, newName)
@@ -158,15 +158,23 @@ public class FormPage extends PageView implements StoreChangeListener {
         return null;
     }
 
+    private boolean canEdit() {
+        return application.getResourceStore().get(getResourceId()).get().getEditAllowed();
+    }
+
     @Override
     protected VTree render() {
         if (getFormClass() == null) { // still loading
             return new PagePreLoader();
         }
 
-        final PageFrameConfig config = new PageFrameConfig().
-                setEnableRename(editLabelDialog).
-                setEnableDeletion(new DeleteResourceAction(getApplication(), getResourceId(), getFormClass().getLabel()));
+        final PageFrameConfig config = new PageFrameConfig();
+
+        if (canEdit()) {
+           config.setEnableRename(editLabelDialog);
+           config.setEnableDeletion(new DeleteResourceAction(getApplication(), getResourceId(), getFormClass().getLabel()));
+        }
+
         return new PageFrame(FontAwesome.FILE, getFormClass().getLabel(), config, navTabs(), tabPane());
     }
 
