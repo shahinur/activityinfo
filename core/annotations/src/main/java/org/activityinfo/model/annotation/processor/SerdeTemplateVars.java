@@ -11,8 +11,7 @@ public class SerdeTemplateVars extends TemplateVars {
     String simpleClassName;
     String serdeClass;
 
-    List<ScalarField> fields;
-    List<ListField> listFields;
+    List<FieldDescriptor> fields;
 
     private static final SimpleNode TEMPLATE = parsedTemplateForResource("serde.vm");
 

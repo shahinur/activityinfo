@@ -1,24 +1,34 @@
 package org.activityinfo.model.analysis;
 
+import org.activityinfo.model.annotation.RecordBean;
+import org.activityinfo.model.annotation.Reference;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.expr.ExprValue;
 
+@RecordBean(classId = "_dimensionSource")
 public class DimensionSource {
 
     private ResourceId sourceId;
-    private String expression;
-    private String criteria;
+    private ExprValue expression;
+    private ExprValue criteria;
+
+    DimensionSource() {
+
+    }
 
     public DimensionSource(ResourceId sourceId, ResourceId fieldId) {
         this.sourceId = sourceId;
-        this.expression = fieldId.asString();
+        this.expression = new ExprValue(fieldId.asString());
     }
 
     public DimensionSource(ResourceId sourceId, String expr) {
         this.sourceId = sourceId;
-        this.expression = expr;
+        this.expression = new ExprValue(expr);
     }
 
 
+    @Reference(range = FormClass.class)
     public ResourceId getSourceId() {
         return sourceId;
     }
@@ -27,19 +37,19 @@ public class DimensionSource {
         this.sourceId = sourceId;
     }
 
-    public String getExpression() {
+    public ExprValue getExpression() {
         return expression;
     }
 
-    public void setExpression(String expression) {
+    public void setExpression(ExprValue expression) {
         this.expression = expression;
     }
 
-    public String getCriteria() {
+    public ExprValue getCriteria() {
         return criteria;
     }
 
-    public void setCriteria(String criteria) {
+    public void setCriteria(ExprValue criteria) {
         this.criteria = criteria;
     }
 }

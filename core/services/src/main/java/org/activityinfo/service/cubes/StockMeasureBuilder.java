@@ -53,7 +53,7 @@ public class StockMeasureBuilder implements MeasureBuilder {
 
         // Dimensions
         for (int i = 0; i < dimensions.size(); i++) {
-            Optional<DimensionSource> source = dimensions.get(i).getSource(model.getSourceId().getResourceId());
+            Optional<DimensionSource> source = dimensions.get(i).getSource(model.getSourceId());
             if(source.isPresent()) {
                 dimensionViews.add(rowSetBuilder.fetch(source.get().getExpression()));
             } else {

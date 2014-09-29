@@ -50,7 +50,7 @@ final class RecordBuilderJsoImpl extends JavaScriptObject implements RecordBuild
     }-*/;
 
     @Override
-    public RecordBuilder set(String fieldName, FieldValue value) {
+    public RecordBuilder setFieldValue(String fieldName, FieldValue value) {
         RecordBuilderImpl.setFieldValue(this, fieldName, value);
         return this;
     }

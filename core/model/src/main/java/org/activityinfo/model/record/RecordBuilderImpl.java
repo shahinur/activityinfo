@@ -80,7 +80,7 @@ class RecordBuilderImpl implements RecordBuilder {
     }
 
     @Override
-    public RecordBuilder set(String fieldName, FieldValue value) {
+    public RecordBuilder setFieldValue(String fieldName, FieldValue value) {
         setFieldValue(this, fieldName, value);
         return this;
     }
