@@ -5,7 +5,9 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.FieldTypeClass;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 public class Records {
 
@@ -33,13 +35,22 @@ public class Records {
         return new RecordBuilderImpl(record);
     }
 
-    public static boolean deepEquals(Record x, Record y) {
+    public static boolean deepEquals(@NotNull Record x, @NotNull Record y) {
+        ResourceId xClassId = x.getClassId(), yClassId = y.getClassId();
+        Map<String, Object> xMap = x.asMap(), yMap = y.asMap();
 
-        if(x.asMap().size() != y.asMap().size()) {
+        if (xClassId != null ? !xClassId.equals(yClassId) : yClassId != null) return false;
+        if (xMap != null ? yMap == null || !mapEquals(xMap, yMap) : yMap != null) return false;
+
+        return true;
+    }
+
+    private static boolean mapEquals(@NotNull Map<String, Object> x, @NotNull Map<String, Object> y) {
+        if(x.size() != y.size()) {
             return false;
         }
 
-        for(String fieldName : x.asMap().keySet()) {
+        for(String fieldName : x.keySet()) {
             Object fx = x.get(fieldName);
             Object fy = y.get(fieldName);
 
@@ -51,7 +62,7 @@ public class Records {
                     return false;
                 }
             } else {
-                if(!fx.equals(fy)) {
+                if(!fy.equals(fx)) {
                     return false;
                 }
             }
