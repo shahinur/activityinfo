@@ -27,6 +27,7 @@ public class ResourceNode {
     private long subTreeVersion;
     private List<ResourceNode> children = Lists.newArrayList();
     private boolean parent;
+    private boolean deleted;
 
     // permissions
     private boolean editAllowed;
@@ -118,6 +119,15 @@ public class ResourceNode {
 
     public void setVersion(long version) {
         this.version = version;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public ResourceNode setDeleted(boolean deleted) {
+        this.deleted = deleted;
+        return this;
     }
 
     /**

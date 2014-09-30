@@ -88,6 +88,7 @@ public class LatestContent {
         entity.setProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
         entity.setProperty(CLASS_PROPERTY, resource.getValue().getClassId().asString());
         entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
+        entity.setProperty(DELETED_PROPERTY, resource.isDeleted());
         Content.writeProperties(resource, entity);
 
         if(FolderIndex.isFolderItem(resource)) {
@@ -119,13 +120,14 @@ public class LatestContent {
         entity.setProperty(VERSION_PROPERTY, resource.getVersion());
         entity.setProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
         entity.setProperty(CLASS_PROPERTY, resource.getValue().getClassId().asString());
+        entity.setProperty(DELETED_PROPERTY, resource.isDeleted());
         Content.writeProperties(resource, entity);
 
-        if(FolderIndex.isFolderItem(resource)) {
+        if (FolderIndex.isFolderItem(resource)) {
             entity.setProperty(LABEL_PROPERTY, FolderIndex.getLabelAndAssertNonEmpty(resource));
         }
 
-        if(FormMetadata.isFormInstance(resource)) {
+        if (FormMetadata.isFormInstance(resource)) {
             FormMetadata metadata = new FormMetadata(rootKey, resource);
             metadata.updateLatestVersion(tx, resource.getVersion());
         }

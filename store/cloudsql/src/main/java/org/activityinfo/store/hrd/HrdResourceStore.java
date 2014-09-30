@@ -127,13 +127,9 @@ public class HrdResourceStore implements ResourceStore {
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
 
-            Resource resource = workspace.getLatestContent(resourceId).get(tx);
-            resource.setDeleted(true);
+            long newVersion = workspace.deleteResourceTree(tx, resourceId);
 
-            long newVersion = workspace.updateResource(tx, resource);
-            tx.commit();
-
-            return UpdateResult.committed(resource.getId(), newVersion);
+            return UpdateResult.committed(resourceId, newVersion);
         } catch (EntityNotFoundException e) {
             return UpdateResult.rejected(resourceId);
         }
