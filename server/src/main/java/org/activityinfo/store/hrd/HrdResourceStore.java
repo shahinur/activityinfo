@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
 
 public class HrdResourceStore implements ResourceStore {
@@ -198,6 +199,10 @@ public class HrdResourceStore implements ResourceStore {
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
         if(ROOT_ID.equals(resource.getOwnerId())) {
+            if(user.isAnonymous()) {
+                throw new WebApplicationException(UNAUTHORIZED);
+            }
+
             Workspace workspace = new Workspace(resource.getId());
             try(WorkspaceTransaction tx = begin(workspace, user)) {
                 long newVersion = workspace.createWorkspace(tx, resource);
