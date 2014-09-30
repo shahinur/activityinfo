@@ -75,7 +75,11 @@ class RecordBuilderImpl implements RecordBuilder {
 
     @Override
     public RecordBuilder set(String fieldName, IsRecord record) {
-        bag.put(fieldName, record.asRecord());
+        if(record == null) {
+            bag.remove(fieldName);
+        } else {
+            bag.put(fieldName, record.asRecord());
+        }
         return this;
     }
 

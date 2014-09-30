@@ -1,11 +1,14 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 import org.activityinfo.model.auth.AccessControlRule;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.store.hrd.entity.LatestContent;
@@ -94,14 +97,17 @@ public class AcrIndex {
     }
 
     /**
-     * Retrieves all ACRs for a given resource
+     * Retrieves all ACR IDs for a given resource
      */
-    public Iterable<Resource> queryRules(WorkspaceTransaction tx, ResourceId resourceId) {
-        Query query = new Query(KIND, parentKey(resourceId));
-        return Iterables.transform(tx.prepare(query).asIterable(), new Function<Entity, Resource>() {
+    public Iterable<ResourceId> queryRules(WorkspaceTransaction tx, ResourceId resourceId) {
+        Query query = new Query(KIND, parentKey(resourceId)).setKeysOnly();
+        return Iterables.transform(tx.prepare(query).asIterable(), new Function<Entity, ResourceId>() {
             @Override
-            public Resource apply(Entity input) {
-                return fromEntity(input).asResource();
+            public ResourceId apply(Entity input) {
+                Key key = input.getKey();
+                String principalId = key.getName();
+                String resourceId = key.getParent().getName();
+                return AccessControlRule.calculateId(resourceId, principalId);
             }
         });
     }

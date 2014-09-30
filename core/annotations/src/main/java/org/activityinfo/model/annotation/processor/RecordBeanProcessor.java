@@ -341,7 +341,7 @@ public class RecordBeanProcessor extends AbstractProcessor {
     private FieldDescriptor enumField(ExecutableElement getter) {
         FieldDescriptor field = new FieldDescriptor(getter);
         String enumType = getter.getReturnType().toString();
-        field.readExpression = enumType + ".valueOf(record.getString(" + quote(serializedNameFromGetter(getter)) + "))";
+        field.readExpression = enumType + ".valueOf(record.isString(" + quote(serializedNameFromGetter(getter)) + "))";
         field.serializedExpression = "bean." + field.getGetterName() + "().name()";
         field.typeExpression = "new org.activityinfo.model.type.enumerated.EnumType()";
         return field;
@@ -381,8 +381,7 @@ public class RecordBeanProcessor extends AbstractProcessor {
             if(typeUtils.isSameType(annotation.getAnnotationType(), valueOfClass.asType())) {
 
                 AnnotationValue annotationValue = annotation.getElementValues().get(valueMember);
-                TypeMirror typeMirror = (TypeMirror) annotationValue.getValue();
-                return typeMirror;
+                return (TypeMirror) annotationValue.getValue();
             }
         }
         return null;

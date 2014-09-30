@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 class RecordImpl implements Record {
 
@@ -91,7 +92,7 @@ class RecordImpl implements Record {
     @Override
     public String getString(String fieldName) {
         assert !fieldName.contentEquals("classId");
-        assert map.containsKey(fieldName) : fieldName + " has no value";
+        assert map.containsKey(fieldName) : "field '" + fieldName + "' has no value";
         assert map.get(fieldName) instanceof String :
             "Expected String type for field " + fieldName + ", found: " + map.get(fieldName).getClass().getName();
 
@@ -183,5 +184,49 @@ class RecordImpl implements Record {
         int result = classId != null ? classId.hashCode() : 0;
         result = 31 * result + (map != null ? map.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public boolean deepEquals(Record record) {
+        return recordEquals(this, record);
+    }
+
+    static boolean recordEquals(Record first, Record second) {
+        if (first == null) {
+            return second == null;
+        } else {
+            ResourceId firstClassId = first.getClassId(), secondClassId = second.getClassId();
+            Map<String, Object> firstMap = first.asMap(), secondMap = second.asMap();
+
+            if (firstClassId != null ? !firstClassId.equals(secondClassId) : secondClassId != null) return false;
+
+            if (firstMap == null) {
+                return secondMap == null;
+            } else {
+                Set<String> keys = firstMap.keySet();
+
+                if (keys.equals(secondMap.keySet())) {
+                    for (String key : keys) {
+                        if (!objectEquals(firstMap.get(key), secondMap.get(key))) return false;
+                    }
+
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+    private static boolean objectEquals(Object first, Object second) {
+        if (first == null) {
+            return second == null;
+        } else if (first instanceof Record && second instanceof Record) {
+            Record firstRecord = (Record) first, secondRecord = (Record) second;
+
+            return firstRecord.deepEquals(secondRecord);
+        } else {
+            return first.equals(second);
+        }
     }
 }

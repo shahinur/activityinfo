@@ -125,6 +125,17 @@ public class ActivityInfoClient {
     }
 
     /**
+     * Retrieves a resource's access control rules from the server.
+     * @param resourceId the resource's id.
+     * @return a list of resources representing the resource's access control rules
+     */
+    public List<Resource> getAccessControlRules(ResourceId resourceId) {
+        return store.path("resource").path(resourceId.asString()).path("acr")
+                .type(MediaType.APPLICATION_JSON_TYPE)
+                .get(new ResourceListGenericType());
+    }
+
+    /**
      * Creates a new resource
      */
     public void create(Resource resource) {

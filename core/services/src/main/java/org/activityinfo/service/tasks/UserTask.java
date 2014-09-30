@@ -1,8 +1,8 @@
 package org.activityinfo.service.tasks;
 
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.Records;
-import org.activityinfo.model.record.IsRecord;
 
 /**
  * Describes the status of a background task being run on behalf of the user.
@@ -63,5 +63,15 @@ public class UserTask implements IsRecord {
         task.setDescription(record.getString("description"));
         task.setStatus(UserTaskStatus.valueOf(record.getString("status")));
         return task;
+    }
+
+    @Override
+    public String toString() {
+        return "UserTask{" +
+            "id='" + id + '\'' +
+            ", description='" + description + '\'' +
+            ", timeStarted=" + timeStarted +
+            ", status=" + status +
+            '}';
     }
 }

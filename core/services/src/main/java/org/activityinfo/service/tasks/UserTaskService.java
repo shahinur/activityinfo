@@ -5,6 +5,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
@@ -32,4 +33,10 @@ public interface UserTaskService {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     List<UserTask> getUserTasks(@InjectParam AuthenticatedUser user);
+
+
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    UserTask getUserTask(@InjectParam AuthenticatedUser user, @PathParam("id") String taskId);
 }
