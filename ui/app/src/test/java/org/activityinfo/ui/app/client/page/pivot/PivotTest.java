@@ -17,6 +17,7 @@ import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.cubes.PivotTableData;
 import org.activityinfo.service.cubes.PivotTableDataBuilder;
@@ -77,7 +78,7 @@ public class PivotTest {
         MeasureModel iniCost = new MeasureModel();
         iniCost.setId("HP_1_IN_HDW");
         iniCost.setLabel("HP1 Capital cost hand-dug wells as designed: Initial");
-        iniCost.setSource(costs.getId());
+        iniCost.setSourceId(costs.getId());
         iniCost.setValueExpression("V_InCostAgg");
         iniCost.setMeasurementType(MeasurementType.FLOW);
         iniCost.setCriteriaExpression("[System Identifier]=='Hand Dug Wells (All)'");
@@ -92,15 +93,15 @@ public class PivotTest {
         MeasureModel iniCost = new MeasureModel();
         iniCost.setId("HP_1_IN_HDW");
         iniCost.setLabel("HP1 Capital cost hand-dug wells as designed: Initial");
-        iniCost.setSource(costs.getId());
+        iniCost.setSourceId(costs.getId());
         iniCost.setValueExpression("V_InCostAgg");
         iniCost.setMeasurementType(MeasurementType.FLOW);
         iniCost.setCriteriaExpression("[System Identifier]=='Hand Dug Wells (All)'");
         model.addMeasure(iniCost);
 
-        Record record = model.asRecord();
+        Record record = PivotTableModelClass.INSTANCE.toRecord(model);
 
-        execute(PivotTableModel.fromRecord(record));
+        execute(PivotTableModelClass.INSTANCE.toBean(record));
     }
 
     @Test
@@ -115,7 +116,7 @@ public class PivotTest {
             if(field.getCode() != null && field.getCode().startsWith("V_")) {
                 MeasureModel measure = new MeasureModel();
                 measure.setId(field.getCode());
-                measure.setSource(costs.getId());
+                measure.setSourceId(costs.getId());
                 measure.setLabel(field.getCode());
                 measure.setMeasurementType(MeasurementType.FLOW);
                 measure.setValueExpression(field.getId().asString());
@@ -197,7 +198,7 @@ public class PivotTest {
 
         MeasureModel investmentCost = new MeasureModel();
         investmentCost.setId("investment");
-        investmentCost.setSource(costs.getId());
+        investmentCost.setSourceId(costs.getId());
         investmentCost.setLabel("Investment cost");
         investmentCost.setMeasurementType(MeasurementType.FLOW);
         investmentCost.setValueExpression("V_InCostAgg+V_ExtCostAgg");
@@ -206,7 +207,7 @@ public class PivotTest {
 
         MeasureModel capMaint = new MeasureModel();
         capMaint.setId("capmaint_");
-        capMaint.setSource(costs.getId());
+        capMaint.setSourceId(costs.getId());
         capMaint.setLabel("Capital maintenance cost");
         capMaint.setMeasurementType(MeasurementType.FLOW);
         capMaint.setValueExpression("V_CapMaInSys+V_CapMaSysExt");
@@ -216,7 +217,7 @@ public class PivotTest {
 
         MeasureModel dirSupp = new MeasureModel();
         dirSupp.setId("dirSupp");
-        dirSupp.setSource(costs.getId());
+        dirSupp.setSourceId(costs.getId());
         dirSupp.setLabel("Direct support");
         dirSupp.setMeasurementType(MeasurementType.FLOW);
         dirSupp.setValueExpression("V_DirSupAgg");
@@ -226,7 +227,7 @@ public class PivotTest {
 
         MeasureModel hdwPlanned = new MeasureModel();
         hdwPlanned.setId("Nr planned HDW");
-        hdwPlanned.setSource(wp.getId());
+        hdwPlanned.setSourceId(wp.getId());
         hdwPlanned.setLabel("Number of planned HDW");
         hdwPlanned.setMeasurementType(MeasurementType.STOCK);
         hdwPlanned.setValueExpression("[Nr planned HDW]");
@@ -238,7 +239,7 @@ public class PivotTest {
 
         MeasureModel hdwActual = new MeasureModel();
         hdwActual.setId("Nbr functunal HDW");
-        hdwActual.setSource(wp.getId());
+        hdwActual.setSourceId(wp.getId());
         hdwActual.setLabel("Number of functional wells");
         hdwActual.setMeasurementType(MeasurementType.STOCK);
         hdwActual.setValueExpression("[Nbr functunal HDW]");
@@ -250,7 +251,7 @@ public class PivotTest {
 
         MeasureModel tpsPlanned = new MeasureModel();
         tpsPlanned.setId("Nbr Planned taps");
-        tpsPlanned.setSource(wp.getId());
+        tpsPlanned.setSourceId(wp.getId());
         tpsPlanned.setLabel("Number of planned taps");
         tpsPlanned.setMeasurementType(MeasurementType.STOCK);
         tpsPlanned.setValueExpression("[Nbr Planned taps]");
@@ -260,7 +261,7 @@ public class PivotTest {
 
         MeasureModel tpsFunctional = new MeasureModel();
         tpsFunctional.setId("Nbr functioning taps");
-        tpsFunctional.setSource(wp.getId());
+        tpsFunctional.setSourceId(wp.getId());
         tpsFunctional.setLabel("Number of functioning taps");
         tpsFunctional.setMeasurementType(MeasurementType.STOCK);
         tpsFunctional.setValueExpression("[Nbr functioning taps]");
@@ -270,7 +271,7 @@ public class PivotTest {
         MeasureModel population = new MeasureModel();
         population.setId("population");
         population.setLabel("Refugee Population");
-        population.setSource(camp.getId());
+        population.setSourceId(camp.getId());
         population.setValueExpression("[Camp Population]");
         population.setMeasurementType(MeasurementType.STOCK);
         population.setDimensionTag("Indicator", "Refugee population");
@@ -298,7 +299,7 @@ public class PivotTest {
         MeasureModel wellCount = new MeasureModel();
         wellCount.setId("Nr actual HDW");
         wellCount.setLabel("Nr actual HDW");
-        wellCount.setSource(wp.getId());
+        wellCount.setSourceId(wp.getId());
         wellCount.setValueExpression("[Nr actual HDW]");
         wellCount.setMeasurementType(MeasurementType.FLOW);
         model.addMeasure(wellCount);
@@ -372,7 +373,7 @@ public class PivotTest {
         MeasureModel iniCost = new MeasureModel();
         iniCost.setId("HP_1_IN_HDW");
         iniCost.setLabel("HP1 Capital cost hand-dug wells as designed: Initial");
-        iniCost.setSource(costs.getId());
+        iniCost.setSourceId(costs.getId());
         iniCost.setValueExpression("V_InCostAgg");
         iniCost.setMeasurementType(MeasurementType.FLOW);
         iniCost.setCriteriaExpression("[System Identifier]=='Hand Dug Wells (All)'");
@@ -381,7 +382,7 @@ public class PivotTest {
         MeasureModel extCosts = new MeasureModel();
         extCosts.setId("extCosts");
         extCosts.setLabel("HP1 Capital cost hand-dug wells as designed: Extended");
-        extCosts.setSource(costs.getId());
+        extCosts.setSourceId(costs.getId());
         extCosts.setValueExpression("V_ExtCostAgg");
         extCosts.setCriteriaExpression("[System Identifier]=='Hand Dug Wells (All)'");
         extCosts.setMeasurementType(MeasurementType.FLOW);
@@ -390,7 +391,7 @@ public class PivotTest {
         MeasureModel wellCount = new MeasureModel();
         wellCount.setId("wellCount");
         wellCount.setLabel("HDW Count");
-        wellCount.setSource(wp.getId());
+        wellCount.setSourceId(wp.getId());
         wellCount.setValueExpression("[TPSfnct]");
         wellCount.setMeasurementType(MeasurementType.STOCK);
         wellCount.setCriteriaExpression("[Site].[Water Collection Point Identifier]='Hand Dug Wells (All)'");
@@ -434,7 +435,7 @@ public class PivotTest {
     private DimensionSource source(FormClass form, String fieldName, String criteria) {
         ResourceId fieldId = findField(form, fieldName).getId();
         DimensionSource dimensionSource = new DimensionSource(form.getId(), fieldId);
-        dimensionSource.setCriteria(criteria);
+        dimensionSource.setCriteria(new ExprValue(criteria));
         return dimensionSource;
     }
 
@@ -518,7 +519,7 @@ public class PivotTest {
         for(MeasureModel measure : model.getMeasures()) {
 
             System.out.println("\t\t" + measure.getLabel() + ": " + measure.getValueExpression() + " FROM [" +
-                getFormLabel(measure.getSourceId().getResourceId()) + "]");
+                getFormLabel(measure.getSourceId()) + "]");
             if(measure.getCriteriaExpression() != null) {
                 System.out.println("\t\t\tWHERE " + measure.getCriteriaExpression());
             }
@@ -528,7 +529,7 @@ public class PivotTest {
 
             List<String> dims = Lists.newArrayList();
             for(DimensionModel dim : model.getDimensions()) {
-                Optional<DimensionSource> source = dim.getSource(measure.getSourceId().getResourceId());
+                Optional<DimensionSource> source = dim.getSource(measure.getSourceId());
                 if(source.isPresent()) {
                     dims.add(dim.getLabel());
                 }

@@ -1,7 +1,7 @@
 package org.activityinfo.ui.app.client.page.pivot;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.app.client.Application;
@@ -43,7 +43,7 @@ public class PivotTablePreview extends VComponent implements StoreChangeListener
 
     private void requestData() {
         buckets = application.getRemoteService().queryCube(
-            PivotTableModel.fromResource(workingDraft.getUpdatedResource()));
+            PivotTableModelClass.INSTANCE.toBean(workingDraft.getUpdatedResource().getValue()));
         buckets.then(new AsyncCallback<List<Bucket>>() {
             @Override
             public void onFailure(Throwable caught) {
