@@ -278,7 +278,7 @@ public class RecordBeanProcessor extends AbstractProcessor {
 
     private FieldDescriptor stringField(ExecutableElement getter) {
         FieldDescriptor field = new FieldDescriptor(getter);
-        field.readExpression = "record.getString(" + quote(serializedNameFromGetter(getter)) + ")";
+        field.readExpression = "record.isString(" + quote(serializedNameFromGetter(getter)) + ")";
         field.typeExpression = "org.activityinfo.model.type.primitive.TextType.INSTANCE";
         return field;
     }
@@ -341,7 +341,7 @@ public class RecordBeanProcessor extends AbstractProcessor {
     private FieldDescriptor enumField(ExecutableElement getter) {
         FieldDescriptor field = new FieldDescriptor(getter);
         String enumType = getter.getReturnType().toString();
-        field.readExpression = enumType + ".valueOf(record.isString(" + quote(serializedNameFromGetter(getter)) + "))";
+        field.readExpression = enumType + ".valueOf(record.getString(" + quote(serializedNameFromGetter(getter)) + "))";
         field.serializedExpression = "bean." + field.getGetterName() + "().name()";
         field.typeExpression = "new org.activityinfo.model.type.enumerated.EnumType()";
         return field;
@@ -362,9 +362,14 @@ public class RecordBeanProcessor extends AbstractProcessor {
             return null;
         }
 
+
         FieldDescriptor field = new FieldDescriptor(getter);
+
+        String nameExpr = quote(serializedNameFromGetter(getter));
         String fieldValueType = getter.getReturnType().toString();
-        field.readExpression = fieldValueType + ".fromRecord(record.getRecord(" + quote(serializedNameFromGetter(getter)) + "))";
+        field.readExpression = String.format("(record.has(%s) ? %s.fromRecord(record.getRecord(%s)) : null)",
+            nameExpr, fieldValueType, nameExpr);
+
         field.typeExpression = fieldType + ".INSTANCE";
         return field;
     }
