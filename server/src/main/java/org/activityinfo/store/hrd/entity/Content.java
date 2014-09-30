@@ -27,6 +27,8 @@ public class Content {
 
     public static final String CLASS_PROPERTY = "C";
 
+    public static final String DELETED_PROPERTY = "D";
+
     public static final String CONTENTS_PROPERTY = "P";
 
     @VisibleForTesting
@@ -68,6 +70,7 @@ public class Content {
         resource.setId(ResourceId.valueOf(entity.getKey().getName()));
         resource.setVersion((Long)entity.getProperty(VERSION_PROPERTY));
         resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
+        resource.setDeleted(isDeleted(entity));
         readProperties(entity, resource);
         return resource;
     }
@@ -79,9 +82,18 @@ public class Content {
         resource.setVersion((Long) entity.getProperty(VERSION_PROPERTY));
         resource.setLabel((String)entity.getProperty(LABEL_PROPERTY));
         resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
+        resource.setDeleted(isDeleted(entity));
+
         if(entity.getProperty(CLASS_PROPERTY) instanceof String) {
             resource.setClassId(ResourceId.valueOf((String) entity.getProperty(CLASS_PROPERTY)));
         }
         return resource;
+    }
+
+    public static boolean isDeleted(Entity entity) {
+        if (entity.getProperty(Content.DELETED_PROPERTY) instanceof Boolean) {
+            return (Boolean)entity.getProperty(Content.DELETED_PROPERTY);
+        }
+        return false;
     }
 }

@@ -25,9 +25,7 @@ import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 import static com.google.appengine.api.datastore.Query.FilterOperator.GREATER_THAN;
 import static com.google.appengine.api.datastore.Query.FilterOperator.LESS_THAN_OR_EQUAL;
 import static com.google.appengine.api.datastore.Query.SortDirection.DESCENDING;
-import static org.activityinfo.store.hrd.entity.Content.OWNER_PROPERTY;
-import static org.activityinfo.store.hrd.entity.Content.VERSION_PROPERTY;
-import static org.activityinfo.store.hrd.entity.Content.deserializeResource;
+import static org.activityinfo.store.hrd.entity.Content.*;
 import static org.activityinfo.store.hrd.entity.Workspace.ROOT_KIND;
 
 /**
@@ -86,6 +84,7 @@ public class Snapshot {
         Entity entity = new Entity(snapshotKey);
         entity.setProperty(VERSION_PROPERTY, resource.getVersion());
         entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
+        entity.setProperty(DELETED_PROPERTY, resource.isDeleted());
         entity.setUnindexedProperty(TIMESTAMP_PROPERTY, System.currentTimeMillis());
         entity.setUnindexedProperty(USER_PROPERTY, tx.getUser().getId());
         entity.setUnindexedProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
