@@ -236,6 +236,15 @@ public class ActivityInfoClient {
             .post(UserTask.class, form);
     }
 
+    public List<Resource> getUpdates(ResourceId workspaceId, long version) {
+        return store.path("query")
+            .path("updates")
+            .path(workspaceId.asString())
+            .queryParam("version", String.valueOf(version))
+            .accept(MediaType.APPLICATION_JSON)
+            .get(new ResourceListGenericType());
+    }
+
     public boolean createUser() {
         Form form = new Form();
         form.put("email", Collections.singletonList(accountEmail));
@@ -252,5 +261,8 @@ public class ActivityInfoClient {
     }
 
     final static private class TasksListGenericType extends GenericType<List<UserTask>> {
+    }
+
+    final static private class ResourceListGenericType extends GenericType<List<Resource>> {
     }
 }
