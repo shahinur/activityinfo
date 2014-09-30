@@ -39,6 +39,10 @@ public final class UpdateResult {
         return new UpdateResult(CommitStatus.REJECTED);
     }
 
+    public static UpdateResult rejected(ResourceId id) {
+        return new UpdateResult(CommitStatus.REJECTED, id, -1);
+    }
+
     public static UpdateResult pending() {
         return new UpdateResult(CommitStatus.PENDING);
     }

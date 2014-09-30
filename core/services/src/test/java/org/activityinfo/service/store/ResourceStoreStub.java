@@ -1,6 +1,7 @@
 package org.activityinfo.service.store;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
@@ -164,6 +165,15 @@ public class ResourceStoreStub implements ResourceStore {
         }
 
         throw new WebApplicationException(Response.Status.BAD_REQUEST);
+    }
+
+    @Override
+    public List<UpdateResult> delete(@InjectParam AuthenticatedUser user, List<ResourceId> resources) {
+        List<UpdateResult> result = Lists.newArrayList();
+        for (ResourceId resource : resources) {
+            result.add(UpdateResult.committed(resource, 1));
+        }
+        return result;
     }
 
 
