@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.internal.AssumptionViolatedException;
 
 import java.security.SecureRandom;
+import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
@@ -45,6 +46,7 @@ public class AuthorizationTest {
         Resource workspace = Resources.createResource();
         workspace.setId(workspaceId);
         workspace.setOwnerId(ROOT_ID);
+        workspace.setVersion(1);
         workspace.setValue(Records.builder(FolderClass.CLASS_ID)
                 .set(FolderClass.LABEL_FIELD_ID.asString(), "Workspace")
                 .build());
@@ -53,6 +55,7 @@ public class AuthorizationTest {
         Resource folder = Resources.createResource();
         folder.setId(resourceId);
         folder.setOwnerId(workspaceId);
+        folder.setVersion(3);
         folder.setValue(Records.builder(FolderClass.CLASS_ID)
                 .set(FolderClass.LABEL_FIELD_ID.asString(), "Folder")
                 .build());
@@ -60,14 +63,19 @@ public class AuthorizationTest {
 
         for (ResourceNode resourceNode : client.getOwnedOrSharedWorkspaces()) {
             Resource resource = client.get(resourceNode.getId());
-            assertEquals(ROOT_ID, resource.getOwnerId());
-            assertEquals(workspaceId, resource.getId());
-            assertNotEquals(resourceId, resource.getId());
+            assertEquals(workspace, resource);
+            assertNotEquals(folder, resource);
 
             resource = client.get(resourceId);
-            assertEquals(workspaceId, resource.getOwnerId());
-            assertEquals(resourceId, resource.getId());
-            assertNotEquals(workspaceId, resource.getId());
+            assertEquals(folder, resource);
+            assertNotEquals(workspace, resource);
         }
+
+        List<Resource> resources = client.getUpdates(workspaceId, 0);
+        assertEquals(3, resources.size());
+        assertEquals(workspaceId, resources.get(0).getId());
+        assertNotEquals(workspaceId, resources.get(1).getId());
+        assertNotEquals(resourceId, resources.get(1).getId());
+        assertEquals(resourceId, resources.get(2).getId());
     }
 }
