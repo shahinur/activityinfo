@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
 
 public class HrdResourceStore implements ResourceStore {
@@ -202,7 +203,11 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-        if (ROOT_ID.equals(resource.getOwnerId())) {
+        if(ROOT_ID.equals(resource.getOwnerId())) {
+            if(user.isAnonymous()) {
+                throw new WebApplicationException(UNAUTHORIZED);
+            }
+
             Workspace workspace = new Workspace(resource.getId());
             try (WorkspaceTransaction tx = begin(workspace, user)) {
                 long newVersion = workspace.createWorkspace(tx, resource);
@@ -251,7 +256,7 @@ public class HrdResourceStore implements ResourceStore {
 
         Workspace workspace = workspaceLookup.lookup(request.getRootId());
 
-        try (WorkspaceTransaction tx = beginRead(workspace, user)) {
+        try(WorkspaceTransaction tx = beginRead(workspace, user)) {
             Authorization rootNodeAuthorization = new Authorization(user, request.getRootId(), tx);
             rootNodeAuthorization.assertCanView();
 
@@ -265,7 +270,7 @@ public class HrdResourceStore implements ResourceStore {
                 Authorization childAuthorization = rootNodeAuthorization.ofChild(child.getId());
                 child.setEditAllowed(childAuthorization.canEdit()).
                         setOwner(childAuthorization.isOwner());
-                    rootNode.getChildren().add(child);
+                rootNode.getChildren().add(child);
             }
 
             return new FolderProjection(rootNode);
