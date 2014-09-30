@@ -8,10 +8,9 @@ import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskService;
 import org.activityinfo.service.tasks.UserTaskStatus;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Date;
 import java.util.List;
 
@@ -66,10 +65,6 @@ public class HrdUserTaskService implements UserTaskService {
         }
     }
 
-    private Key taskKey(AuthenticatedUser user, String taskId) {
-        return KeyFactory.createKey(parentKey(user), KIND, Long.parseLong(taskId, 16));
-    }
-
     @GET
     @Override
     @Produces(MediaType.APPLICATION_JSON)
@@ -86,17 +81,39 @@ public class HrdUserTaskService implements UserTaskService {
             if( (now - timeStarted.getTime()) > TWO_DAYS ) {
                 break;
             }
-            UserTask task = new UserTask();
-            task.setId(Long.toHexString(entity.getKey().getId()));
-            task.setStatus(UserTaskStatus.valueOf((String) entity.getProperty(STATUS_PROPERTY)));
-            task.setDescription((String)entity.getProperty(DESCRIPTION_PROPERTY));
-            task.setTimeStarted(((Date)entity.getProperty(START_TIME_PROPERTY)).getTime());
-            tasks.add(task);
+            tasks.add(fromEntity(entity));
         }
         return tasks;
+    }
+
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Override
+    public UserTask getUserTask(@InjectParam AuthenticatedUser user, @PathParam("id") String taskId) {
+        try {
+            return fromEntity(datastore.get(taskKey(user, taskId)));
+        } catch (EntityNotFoundException e) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+    }
+
+
+    private Key taskKey(AuthenticatedUser user, String taskId) {
+        return KeyFactory.createKey(parentKey(user), KIND, Long.parseLong(taskId, 16));
     }
 
     private Key parentKey(AuthenticatedUser user) {
         return KeyFactory.createKey(ANCESTOR_KIND, user.getId());
     }
+
+    private UserTask fromEntity(Entity entity) {
+        UserTask task = new UserTask();
+        task.setId(Long.toHexString(entity.getKey().getId()));
+        task.setStatus(UserTaskStatus.valueOf((String) entity.getProperty(STATUS_PROPERTY)));
+        task.setDescription((String)entity.getProperty(DESCRIPTION_PROPERTY));
+        task.setTimeStarted(((Date)entity.getProperty(START_TIME_PROPERTY)).getTime());
+        return task;
+    }
+
 }
