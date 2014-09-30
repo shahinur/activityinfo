@@ -5,6 +5,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.CuidGenerator;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.store.tasks.HrdUserTaskService;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
@@ -16,6 +17,7 @@ public class TestingEnvironment extends TestWatcher {
 
 
     private HrdResourceStore store;
+    private HrdUserTaskService taskService;
     private AuthenticatedUser user;
     private CuidGenerator cuidGenerator;
 
@@ -23,7 +25,7 @@ public class TestingEnvironment extends TestWatcher {
     protected void starting(Description description) {
         helper.setUp();
         store = new HrdResourceStore();
-
+        taskService = new HrdUserTaskService();
         user = new AuthenticatedUser("XYZ", 1, "test@test.org");
         cuidGenerator = new CuidGenerator(1, System.currentTimeMillis());
     }
@@ -41,6 +43,7 @@ public class TestingEnvironment extends TestWatcher {
         return user;
     }
 
+    public HrdUserTaskService getTaskService() { return taskService; }
 
     public ResourceId generateId() {
         return cuidGenerator.generateResourceId();
