@@ -59,4 +59,12 @@ public interface Record extends FieldValue {
      */
     Map<String, Object> asMap();
 
+    /**
+     * Indicates whether another {@code Record} is equal to this one. Implementations of this method may call themselves
+     * recursively for records contained within other records, because records aren't allowed to contain themselves. Put
+     * differently, circular references are not allowed to exist, so they will not be able to cause any problems either.
+     * @param record the reference {@code Record) with which to compare this {@code Record}.
+     * @return {@code true} if this {@code Record} is the equal to the {@code record} argument, {@code false} otherwise.
+     */
+    public boolean deepEquals(Record record);
 }
