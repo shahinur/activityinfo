@@ -91,7 +91,7 @@ class RecordImpl implements Record {
     @Override
     public String getString(String fieldName) {
         assert !fieldName.contentEquals("classId");
-        assert map.containsKey(fieldName) : fieldName + " has no value";
+        assert map.containsKey(fieldName) : "field '" + fieldName + "' has no value";
         assert map.get(fieldName) instanceof String :
             "Expected String type for field " + fieldName + ", found: " + map.get(fieldName).getClass().getName();
 

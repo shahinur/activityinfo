@@ -2,6 +2,7 @@ package org.activityinfo.ui.app.client.page.pivot;
 
 import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
@@ -39,6 +40,7 @@ public class MeasureListTest {
         Resource pivotTableModel = Resources.createResource();
         pivotTableModel.setId(Resources.generateId());
         pivotTableModel.setOwnerId(Resources.generateId());
+        pivotTableModel.setValue(Records.builder(PivotTableModelClass.CLASS_ID).build());
 
         PivotPage pivotPage = new PivotPage(scenario.application(), PivotTableModelClass.INSTANCE.get(),
            pivotTableModel);
