@@ -3,7 +3,7 @@ package org.activityinfo.ui.app.client.page.pivot;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
@@ -100,7 +100,7 @@ public class PivotPage extends PageView implements StoreChangeListener {
     }
 
     private String getLabel() {
-        FieldValue labelValue = workingDraft.getState(ResourceId.valueOf(PivotTableModel.LABEL_FIELD_ID)).getValue();
+        FieldValue labelValue = workingDraft.getState(ResourceId.valueOf(PivotTableModelClass.LABEL_FIELD_NAME)).getValue();
         if(labelValue instanceof TextValue) {
             return ((TextValue) labelValue).asString();
         }

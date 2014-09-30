@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.activityinfo.model.annotation.ValueOf;
 import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.RecordBuilder;
@@ -19,6 +20,7 @@ import java.util.Set;
  * A Field Value containing the value of {@code ReferenceType} or
  * {@code EnumType}
  */
+@ValueOf(ReferenceType.class)
 public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
 
 
@@ -46,6 +48,24 @@ public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
     public ResourceId getResourceId() {
         Preconditions.checkState(resourceIds.size() == 1);
         return resourceIds.iterator().next();
+    }
+
+    public static Record serialize(ResourceId id) {
+        if(id == null) {
+            return null;
+        } else {
+            return new ReferenceValue(id).asRecord();
+        }
+    }
+
+    public static ResourceId deserializeSingle(Record record) {
+        if(record != null) {
+            ReferenceValue ref = ReferenceValue.fromRecord(record);
+            if (ref.getResourceIds().size() == 1) {
+                return ref.getResourceId();
+            }
+        }
+        return null;
     }
 
     @Override

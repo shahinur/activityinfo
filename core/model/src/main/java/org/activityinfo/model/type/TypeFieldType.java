@@ -68,5 +68,4 @@ public class TypeFieldType implements FieldType {
         }
         return record.build();
     }
-
 }

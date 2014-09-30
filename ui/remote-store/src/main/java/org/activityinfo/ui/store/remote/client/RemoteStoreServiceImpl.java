@@ -9,6 +9,7 @@ import com.google.gwt.http.client.Response;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
@@ -59,7 +60,7 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     @Override
     public Promise<List<Bucket>> queryCube(PivotTableModel cubeModel) {
         return store.resolve("query").resolve("cube")
-            .postJson(ResourceSerializer.toJson(cubeModel.asRecord()))
+            .postJson(ResourceSerializer.toJson(PivotTableModelClass.INSTANCE.toRecord(cubeModel)))
             .then(new Function<Response, List<Bucket>>() {
                 @Override
                 public List<Bucket> apply(Response input) {

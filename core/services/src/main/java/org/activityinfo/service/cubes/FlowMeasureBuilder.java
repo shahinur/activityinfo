@@ -48,7 +48,7 @@ public class FlowMeasureBuilder implements MeasureBuilder {
         this.criteria = rowSetBuilder.fetch(resolveCriteria());
 
         for (int i = 0; i < dimensions.size(); i++) {
-            Optional<DimensionSource> source = dimensions.get(i).getSource(model.getSourceId().getResourceId());
+            Optional<DimensionSource> source = dimensions.get(i).getSource(model.getSourceId());
             if(source.isPresent()) {
                 dimensionViews.add(rowSetBuilder.fetch(source.get().getExpression()));
             } else {

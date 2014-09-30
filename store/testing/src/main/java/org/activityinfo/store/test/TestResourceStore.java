@@ -9,7 +9,11 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
@@ -21,6 +25,7 @@ import org.activityinfo.service.tables.TableBuilder;
 import javax.ws.rs.PathParam;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +99,23 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         lastUpdated.setVersion(currentVersion++);
         put(lastUpdated);
         return UpdateResult.committed(id, lastUpdated.getVersion());
+    }
+
+    @Override
+    public List<UpdateResult> delete(@InjectParam AuthenticatedUser user, List<ResourceId> resources) {
+        final List<UpdateResult> results = new ArrayList<>();
+        for (ResourceId id : resources) {
+            Resource resource = resourceMap.get(id);
+            if (resource != null) {
+                resource.setDeleted(true);
+                long version = resource.getVersion() + 1;
+                resourceMap.put(id, resource);
+                results.add(UpdateResult.committed(id, version));
+            } else {
+                results.add(UpdateResult.rejected(id));
+            }
+        }
+        return results;
     }
 
     @Override

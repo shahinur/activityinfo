@@ -1,7 +1,9 @@
 package org.activityinfo.ui.app.client.page.pivot;
 
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.table.Bucket;
@@ -35,12 +37,13 @@ public class MeasureListTest {
 
         form.newInstance().set("My Measure #1", 5).save();
 
-        PivotTableModel pivotTableModel = new PivotTableModel();
+        Resource pivotTableModel = Resources.createResource();
         pivotTableModel.setId(Resources.generateId());
         pivotTableModel.setOwnerId(Resources.generateId());
+        pivotTableModel.setValue(Records.builder(PivotTableModelClass.CLASS_ID).build());
 
-        PivotPage pivotPage = new PivotPage(scenario.application(), PivotTableModel.getFormClass(),
-            pivotTableModel.asResource());
+        PivotPage pivotPage = new PivotPage(scenario.application(), PivotTableModelClass.INSTANCE.get(),
+           pivotTableModel);
 
         scenario.page().render(pivotPage);
 
@@ -57,7 +60,7 @@ public class MeasureListTest {
         scenario.page().assertTextIsPresent(field.getLabel());
 
         Promise<List<Bucket>> cube = scenario.request(new FetchCube(
-            PivotTableModel.fromResource(pivotPage.getWorkingDraft().getUpdatedResource())));
+            PivotTableModelClass.INSTANCE.toBean(pivotPage.getWorkingDraft().getUpdatedResource().getValue())));
 
         assertThat(cube.getState(), equalTo(Promise.State.FULFILLED));
         assertThat(cube.get(), hasSize(1));

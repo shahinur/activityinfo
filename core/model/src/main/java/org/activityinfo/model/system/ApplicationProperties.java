@@ -1,6 +1,6 @@
 package org.activityinfo.model.system;
 
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
 
@@ -40,8 +40,8 @@ public class ApplicationProperties {
         } else if (FolderClass.CLASS_ID.equals(classId)) {
             return FolderClass.LABEL_FIELD_NAME;
 
-        } else if (PivotTableModel.CLASS_ID.equals(classId)) {
-            return PivotTableModel.LABEL_FIELD_ID;
+        } else if (PivotTableModelClass.CLASS_ID.equals(classId)) {
+            return PivotTableModelClass.LABEL_FIELD_NAME;
         }
         return null;
     }
@@ -54,6 +54,6 @@ public class ApplicationProperties {
     public static boolean isFolderItem(ResourceId formClassId) {
         return formClassId.equals(FormClass.CLASS_ID) ||
             formClassId.equals(FolderClass.CLASS_ID) ||
-            formClassId.equals(PivotTableModel.CLASS_ID);
+            formClassId.equals(PivotTableModelClass.CLASS_ID);
     }
 }

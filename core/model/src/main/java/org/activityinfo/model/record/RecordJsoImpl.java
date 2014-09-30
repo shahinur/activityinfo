@@ -122,12 +122,14 @@ public final class RecordJsoImpl implements Record {
 
     @Override
     public String isString(String fieldName) {
-        JSONString value = record.get(fieldName).isString();
-        if(value == null) {
-            return null;
-        } else {
-            return value.stringValue();
+        JSONValue jsonValue = record.get(fieldName);
+        if(jsonValue != null) {
+            JSONString value = jsonValue.isString();
+            if(value != null ) {
+                return value.stringValue();
+            }
         }
+        return null;
     }
 
     public String getString(String fieldName, String defaultValue) {
