@@ -18,6 +18,10 @@ import java.util.List;
 @Path("/service/tasks")
 public class HrdUserTaskService implements UserTaskService {
 
+    private static final String START_TIME_PROPERTY = "startTime";
+    private static final String DESCRIPTION_PROPERTY = "description";
+    private static final String STATUS_PROPERTY = "status";
+
     private static final String KIND = "UserTask";
 
     private static final String ANCESTOR_KIND = "User";
@@ -32,9 +36,9 @@ public class HrdUserTaskService implements UserTaskService {
         Date startTime = new Date();
 
         Entity entity = new Entity(KIND, parentKey(user));
-        entity.setProperty("startTime", startTime);
-        entity.setUnindexedProperty("description", description);
-        entity.setUnindexedProperty("status", UserTaskStatus.RUNNING.name());
+        entity.setProperty(START_TIME_PROPERTY, startTime);
+        entity.setUnindexedProperty(DESCRIPTION_PROPERTY, description);
+        entity.setUnindexedProperty(STATUS_PROPERTY, UserTaskStatus.RUNNING.name());
         Key taskKey = datastore.put(null, entity);
 
         UserTask task = new UserTask();
@@ -54,7 +58,7 @@ public class HrdUserTaskService implements UserTaskService {
 
         try {
             Entity entity = datastore.get(tx, taskKey);
-            entity.setUnindexedProperty("status", status.name());
+            entity.setUnindexedProperty(STATUS_PROPERTY, status.name());
             datastore.put(tx, entity);
             tx.commit();
         } catch(Exception e) {
@@ -72,21 +76,21 @@ public class HrdUserTaskService implements UserTaskService {
     public List<UserTask> getUserTasks(@InjectParam AuthenticatedUser user) {
 
         Query query = new Query(KIND, parentKey(user))
-            .addSort("startTime", Query.SortDirection.DESCENDING);
+            .addSort(START_TIME_PROPERTY, Query.SortDirection.DESCENDING);
 
         long now = System.currentTimeMillis();
 
         List<UserTask> tasks = Lists.newArrayList();
         for(Entity entity : datastore.prepare(query).asIterable()) {
-            Date timeStarted = (Date) entity.getProperty("startTime");
+            Date timeStarted = (Date) entity.getProperty(START_TIME_PROPERTY);
             if( (now - timeStarted.getTime()) > TWO_DAYS ) {
                 break;
             }
             UserTask task = new UserTask();
             task.setId(Long.toHexString(entity.getKey().getId()));
-            task.setStatus(UserTaskStatus.valueOf((String) entity.getProperty("status")));
-            task.setDescription((String)entity.getProperty("description"));
-            task.setTimeStarted((Long)entity.getProperty("timeStarted"));
+            task.setStatus(UserTaskStatus.valueOf((String) entity.getProperty(STATUS_PROPERTY)));
+            task.setDescription((String)entity.getProperty(DESCRIPTION_PROPERTY));
+            task.setTimeStarted(((Date)entity.getProperty(START_TIME_PROPERTY)).getTime());
             tasks.add(task);
         }
         return tasks;

@@ -81,6 +81,7 @@ public class HrdResourceTest {
         assertThat(formCreationResult.getStatus(), Matchers.equalTo(CommitStatus.COMMITTED));
 
         // Read the form class back and verify
+
         FormClass reformClass = FormClass.fromResource(
             environment.getStore().get(environment.getUser(), formClass.getId()).getResource());
 
