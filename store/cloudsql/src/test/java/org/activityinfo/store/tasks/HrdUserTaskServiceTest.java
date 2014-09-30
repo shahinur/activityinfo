@@ -4,7 +4,6 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskStatus;
 import org.activityinfo.store.hrd.TestingEnvironment;
-import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -31,9 +30,9 @@ public class HrdUserTaskServiceTest {
         // ensure that the task is listed
         List<UserTask> tasks = environment.getTaskService().getUserTasks(me());
         assertThat(tasks, hasSize(1));
-        assertThat(tasks.get(0).getStatus(), Matchers.equalTo(UserTaskStatus.RUNNING));
-        assertThat(tasks.get(0).getDescription(), Matchers.equalTo("Import Job"));
-        assertThat(tasks.get(0).getId(), Matchers.equalTo(userTask.getId()));
+        assertThat(tasks.get(0).getStatus(), equalTo(UserTaskStatus.RUNNING));
+        assertThat(tasks.get(0).getDescription(), equalTo("Import Job"));
+        assertThat(tasks.get(0).getId(), equalTo(userTask.getId()));
 
         // update the task
         environment.getTaskService().updateTask(me(), userTask.getId(), UserTaskStatus.COMPLETE);
@@ -41,7 +40,13 @@ public class HrdUserTaskServiceTest {
         // ensure that the task is listed
         List<UserTask> updatedTasks = environment.getTaskService().getUserTasks(me());
         assertThat(updatedTasks, hasSize(1));
-        assertThat(updatedTasks.get(0).getStatus(), Matchers.equalTo(UserTaskStatus.COMPLETE));
+        assertThat(updatedTasks.get(0).getStatus(), equalTo(UserTaskStatus.COMPLETE));
+
+        // and that we can fetch by id
+        UserTask updated = environment.getTaskService().getUserTask(environment.getUser(), userTask.getId());
+        assertThat(updated.getId(), equalTo(updated.getId()));
+        assertThat(updated.getStatus(), equalTo(UserTaskStatus.COMPLETE));
+        assertThat(updated.getDescription(), equalTo("Import Job"));
     }
 
     private AuthenticatedUser me() {
