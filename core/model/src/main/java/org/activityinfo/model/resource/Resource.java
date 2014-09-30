@@ -27,6 +27,7 @@ public final class Resource {
     private ResourceId id;
     private ResourceId ownerId;
     private long version;
+    private boolean deleted = false;
     private Record value;
 
     Resource() {
@@ -38,6 +39,7 @@ public final class Resource {
         copy.ownerId = this.ownerId;
         copy.version = this.version;
         copy.value = this.value;
+        copy.deleted = this.deleted;
         return copy;
     }
 
@@ -54,6 +56,26 @@ public final class Resource {
             throw new NullPointerException("id");
         }
         this.id = id;
+        return this;
+    }
+
+    /**
+     * Returns whether resource is deleted or not.
+     *
+     * @return whether resource is deleted or not
+     */
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    /**
+     * Sets deleted flag.
+     *
+     * @param deleted deleted flag
+     * @return resource object
+     */
+    public Resource setDeleted(boolean deleted) {
+        this.deleted = deleted;
         return this;
     }
 
@@ -108,10 +130,11 @@ public final class Resource {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Resource)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Resource resource = (Resource) o;
 
+        if (deleted != resource.deleted) return false;
         if (version != resource.version) return false;
         if (id != null ? !id.equals(resource.id) : resource.id != null) return false;
         if (ownerId != null ? !ownerId.equals(resource.ownerId) : resource.ownerId != null) return false;
@@ -125,6 +148,7 @@ public final class Resource {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
         result = 31 * result + (int) (version ^ (version >>> 32));
+        result = 31 * result + (deleted ? 1 : 0);
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
