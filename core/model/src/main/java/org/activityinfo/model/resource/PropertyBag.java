@@ -10,6 +10,7 @@ import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.RecordBuilder;
 import org.activityinfo.model.record.Records;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ListFieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
 
@@ -221,6 +222,9 @@ public class PropertyBag<T extends PropertyBag> {
         } else if(fieldValue instanceof IsRecord) {
             set(propertyName, ((IsRecord) fieldValue).asRecord());
 
+        } else if(fieldValue instanceof ListFieldValue) {
+            set(propertyName, ((ListFieldValue) fieldValue).asRecordList());
+
         } else {
             throw new UnsupportedOperationException(propertyName + " = " + fieldValue);
         }
@@ -415,7 +419,9 @@ public class PropertyBag<T extends PropertyBag> {
             } else if(value instanceof Record) {
                 record.set(key, (Record)value);
             } else if(value instanceof Boolean) {
-                record.set(key, (Boolean)value);
+                record.set(key, (Boolean) value);
+            } else if(value instanceof List) {
+                record.set(key, (List)value);
             } else {
                 throw new IllegalArgumentException(value.getClass().getName());
             }
