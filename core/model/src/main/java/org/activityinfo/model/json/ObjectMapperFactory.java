@@ -3,6 +3,7 @@ package org.activityinfo.model.json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.IsResource;
@@ -37,7 +38,7 @@ public class ObjectMapperFactory {
             module.addSerializer(IsRecord.class, new IsRecordSerializer());
 
             module.addDeserializer(TableModel.class, new IsRecordDeserializer<TableModel>(TableModel.class));
-            module.addDeserializer(PivotTableModel.class, new IsRecordDeserializer<PivotTableModel>(PivotTableModel.class));
+            module.addDeserializer(PivotTableModel.class, new RecordBeanDeserializer<>(PivotTableModelClass.INSTANCE));
 
             module.addSerializer(TableData.class, new TableDataSerializer());
             module.addDeserializer(TableData.class, new TableDataDeserializer());

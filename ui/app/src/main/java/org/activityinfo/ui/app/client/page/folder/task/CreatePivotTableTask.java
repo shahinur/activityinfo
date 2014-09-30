@@ -1,7 +1,7 @@
 package org.activityinfo.ui.app.client.page.folder.task;
 
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.model.analysis.PivotTableModel;
+import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -37,8 +37,8 @@ public class CreatePivotTableTask implements Task {
         Resource resource = Resources.createResource();
         resource.setId(Resources.generateId());
         resource.setOwnerId(ownerId);
-        resource.setValue(Records.builder(PivotTableModel.CLASS_ID)
-            .set(PivotTableModel.LABEL_FIELD_ID, "New Pivot Table")
+        resource.setValue(Records.builder(PivotTableModelClass.CLASS_ID)
+            .set(PivotTableModelClass.LABEL_FIELD_NAME, "New Pivot Table")
             .build());
 
         application.getDispatcher().dispatch(new CreateDraft(resource));

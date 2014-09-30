@@ -242,7 +242,7 @@ public class PropertiesPresenter {
                 super.onFieldUpdated(field, newValue);
                 ParametrizedFieldType parametrizedFieldType = (ParametrizedFieldType) formField.getType();
                 RecordBuilder param = Records.buildCopyOf(parametrizedFieldType.getParameters());
-                param.set(field.getId().asString(), newValue);
+                param.setFieldValue(field.getId().asString(), newValue);
                 ParametrizedFieldTypeClass typeClass = (ParametrizedFieldTypeClass) parametrizedFieldType.getTypeClass();
                 if (formField.getType() instanceof CalculatedFieldType && newValue instanceof ExprValue) {
                     // for calculated fields we updated expression directly because it is handled via ExprFieldType

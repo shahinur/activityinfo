@@ -1,14 +1,16 @@
 package org.activityinfo.model.type.expr;
 
+import org.activityinfo.model.annotation.ValueOf;
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.Records;
-import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
 /**
  * A FieldValue containing a symbolic expression such as "A + B"
  */
+@ValueOf(ExprFieldType.class)
 public class ExprValue implements FieldValue, IsRecord {
 
     private final String expression;

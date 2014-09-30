@@ -33,7 +33,7 @@ public class QuantityType implements ParametrizedFieldType {
         @Override
         public QuantityType deserializeType(Record typeParameters) {
             return new QuantityType()
-                    .setUnits(typeParameters.getString("units"));
+                    .setUnits(typeParameters.isString("units"));
         }
 
         @Override

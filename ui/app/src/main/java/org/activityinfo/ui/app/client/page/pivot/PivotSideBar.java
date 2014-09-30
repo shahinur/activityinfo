@@ -2,9 +2,7 @@ package org.activityinfo.ui.app.client.page.pivot;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.model.analysis.DimensionModel;
-import org.activityinfo.model.analysis.MeasureModel;
-import org.activityinfo.model.analysis.MeasurementType;
+import org.activityinfo.model.analysis.*;
 import org.activityinfo.model.expr.SymbolExpr;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -101,16 +99,17 @@ public class PivotSideBar extends VComponent implements StoreChangeListener {
     @VisibleForTesting
     void onMeasureSelected(FormClass formClass, FormField value) {
 
-        MeasureModel measure = new MeasureModel(value);
+        MeasureModel measure = new MeasureModel();
         measure.setId(Resources.generateId().asString());
-        measure.setSource(formClass.getId());
+        measure.setSourceId(formClass.getId());
         measure.setLabel(value.getLabel());
         measure.setValueExpression(new SymbolExpr(value.getId()).asExpression());
         measure.setMeasurementType(MeasurementType.FLOW);
 
-
         application.getDispatcher().dispatch(
-            new AddListItemAction(draft.getInstanceId(), ResourceId.valueOf("measures"), measure.asRecord()));
+            new AddListItemAction(draft.getInstanceId(),
+                PivotTableModelClass.MEASURES_FIELD_ID,
+                MeasureModelClass.INSTANCE.toRecord(measure)));
     }
 
 
@@ -122,7 +121,9 @@ public class PivotSideBar extends VComponent implements StoreChangeListener {
         dimension.setLabel(value.getLabel());
 
         application.getDispatcher().dispatch(
-            new AddListItemAction(draft.getInstanceId(), ResourceId.valueOf("dimensions"), dimension.asRecord()));
+            new AddListItemAction(draft.getInstanceId(),
+                PivotTableModelClass.MEASURES_FIELD_ID,
+                DimensionModelClass.INSTANCE.toRecord(dimension)));
     }
 
     @Override
