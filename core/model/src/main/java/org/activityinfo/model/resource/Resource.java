@@ -3,6 +3,8 @@ package org.activityinfo.model.resource;
 
 import org.activityinfo.model.record.Record;
 
+import static org.activityinfo.model.record.Records.deepEquals;
+
 /**
  * ActivityInfo is, at it's core, concerned with the management of users' `Resource`s.
  *
@@ -138,7 +140,7 @@ public final class Resource {
         if (version != resource.version) return false;
         if (id != null ? !id.equals(resource.id) : resource.id != null) return false;
         if (ownerId != null ? !ownerId.equals(resource.ownerId) : resource.ownerId != null) return false;
-        if (value != null ? !value.equals(resource.value) : resource.value != null) return false;
+        if (value != null ? resource.value == null || !deepEquals(value, resource.value) : resource.value != null) return false;
 
         return true;
     }
