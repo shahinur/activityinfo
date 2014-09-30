@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.activityinfo.model.record.RecordImpl.recordEquals;
+
 public final class RecordJsoImpl implements Record {
 
     private final JSONObject record;
@@ -181,5 +183,10 @@ public final class RecordJsoImpl implements Record {
     @Override
     public FieldTypeClass getTypeClass() {
         return RecordFieldType.TYPE_CLASS;
+    }
+
+    @Override
+    public boolean deepEquals(Record record) {
+        return recordEquals(this, record);
     }
 }

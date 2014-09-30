@@ -12,6 +12,7 @@ import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskService;
+import org.activityinfo.service.tasks.UserTaskStatus;
 import org.activityinfo.store.hrd.Authorization;
 import org.activityinfo.store.hrd.entity.ReadTransaction;
 import org.activityinfo.store.hrd.entity.Workspace;
@@ -23,6 +24,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Path("/service/load")
@@ -83,19 +85,26 @@ public class LoadService {
     @Path("run")
     public Response runImport(@FormParam("blobId") BlobId blobId,
                               @FormParam("userId") long userId,
+                              @FormParam("taskId") String taskId,
                               @FormParam("workspaceId") ResourceId workspaceId,
                               @FormParam("ownerId") ResourceId ownerId) throws IOException {
 
         AuthenticatedUser user = new AuthenticatedUser("", (int) userId, "");
 
-        BulkLoader loader = new BulkLoader();
-        loader.setUser(user);
-        loader.setWorkspaceId(workspaceId);
-        loader.setSource(blobService.getBlob(user, blobId).getContent());
-        loader.setOwnerId(ownerId);
-        loader.setReader(new ExcelFormImportReader());
-        loader.run();
+        try {
+            BulkLoader loader = new BulkLoader();
+            loader.setUser(user);
+            loader.setWorkspaceId(workspaceId);
+            loader.setSource(blobService.getBlob(user, blobId).getContent());
+            loader.setOwnerId(ownerId);
+            loader.setReader(new ExcelFormImportReader());
+            loader.run();
+            taskService.updateTask(user, taskId, UserTaskStatus.COMPLETE);
 
+        } catch(Exception | NoClassDefFoundError e) {
+            LOGGER.log(Level.SEVERE, "Import failed: " + e.getMessage(), e);
+            taskService.updateTask(user, taskId, UserTaskStatus.FAILED);
+        }
         return Response.ok().build();
     }
 }

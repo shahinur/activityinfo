@@ -33,7 +33,7 @@ public class AccessControlRule implements IsResource {
 
 
     public AccessControlRule(ResourceId resourceId, ResourceId principalId) {
-        this.id = ResourceId.valueOf("_acr-" + resourceId.asString() + "-" + principalId);
+        this.id = calculateId(resourceId.asString(), principalId.asString());
         this.resourceId = resourceId;
         this.principalId = principalId;
     }
@@ -136,5 +136,9 @@ public class AccessControlRule implements IsResource {
             rule.setEditCondition(ExprFieldType.TYPE_CLASS.deserialize(resource.getValue().getRecord("edit")));
         }
         return rule;
+    }
+
+    public static ResourceId calculateId(String resourceId, String principalId) {
+        return ResourceId.valueOf("_acr-" + resourceId + "-" + principalId);
     }
 }
