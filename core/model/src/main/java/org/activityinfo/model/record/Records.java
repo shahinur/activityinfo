@@ -35,6 +35,14 @@ public class Records {
         return new RecordBuilderImpl(record);
     }
 
+    /**
+     * Indicates whether two {@code Record} instances are equal. This method and mapEquals() recursively call each other
+     * for records contained within other records, which works because records aren't allowed to contain themselves. Put
+     * differently, circular references are not allowed to exist, so they will not be able to cause any problems either.
+     * @param x the first {@code Record) to compare.
+     * @param y the second {@code Record) to compare.
+     * @return {@code true} if {@code x} is equal to {@code y}, {@code false} otherwise.
+     */
     public static boolean deepEquals(@NotNull Record x, @NotNull Record y) {
         ResourceId xClassId = x.getClassId(), yClassId = y.getClassId();
         Map<String, Object> xMap = x.asMap(), yMap = y.asMap();
