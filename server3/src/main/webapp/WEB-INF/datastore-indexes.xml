@@ -5,6 +5,7 @@
     <property name="C" direction="asc"/>
     <property name="L" direction="asc"/>
     <property name="V" direction="asc"/>
+    <property name="D" direction="asc"/>
   </datastore-index>
   <datastore-index kind="S" ancestor="false" source="manual">
     <property name="r" direction="asc"/>
