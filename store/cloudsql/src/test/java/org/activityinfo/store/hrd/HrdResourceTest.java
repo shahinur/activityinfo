@@ -5,7 +5,13 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.system.Folder;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -18,6 +24,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -122,6 +129,34 @@ public class HrdResourceTest {
     }
 
     @Test
+    public void delete() {
+        FormInstance workspace = createWorkspace("Workspace A");
+        Resource folderLevel1 = createFolder("Level 1", workspace.getId());
+        Resource folderLevel2 = createFolder("Level 2", folderLevel1.getId());
+        Resource folderLevel3 = createFolder("Level 3", folderLevel2.getId());
+
+        createInStore(workspace.asResource());
+        createInStore(folderLevel1);
+        createInStore(folderLevel2);
+        createInStore(folderLevel3);
+
+        FolderProjection folderProjection = environment.getStore().queryTree(environment.getUser(), new FolderRequest(folderLevel1.getId()));
+        assertThat(folderProjection.getRootNode().getChildren().size(), Matchers.equalTo(1));
+
+        // delete leaf
+        assertCommitted(environment.getStore().delete(environment.getUser(), Arrays.asList(folderLevel3.getId())).get(0));
+
+        assertDeleted(folderLevel3.getId(), true);
+        assertDeleted(folderLevel2.getId(), false);
+
+        // delete node (level1) that has child (level2) - child (level2) must be marked as deleted automatically
+        assertCommitted(environment.getStore().delete(environment.getUser(), Arrays.asList(folderLevel1.getId())).get(0));
+
+        assertDeleted(folderLevel1.getId(), true);
+        assertDeleted(folderLevel2.getId(), true);
+    }
+
+    @Test
     public void getWorkspace() {
 
         FormInstance folder1 = createWorkspace("Folder 1");
@@ -167,7 +202,25 @@ public class HrdResourceTest {
         return divA;
     }
 
+    private Resource createFolder(String label, ResourceId parent) {
+        Folder newFolder = new Folder();
+        newFolder.setLabel(label);
+
+        return Resources.newResource(parent, newFolder);
+    }
+
+    public void createInStore(Resource resource) {
+        UpdateResult result = environment.getStore()
+                .create(environment.getUser(), resource);
+        assertCommitted(result);
+    }
+
     private void assertCommitted(UpdateResult resource) {
         assertThat(resource.getStatus(), Matchers.equalTo(CommitStatus.COMMITTED));
+    }
+
+    private void assertDeleted(ResourceId resourceId, boolean deleted) {
+        UserResource userResource = environment.getStore().get(environment.getUser(), resourceId);
+        assertThat(userResource.getResource().isDeleted(), Matchers.equalTo(deleted));
     }
 }
