@@ -71,11 +71,13 @@ public class AuthorizationTest {
             assertNotEquals(workspace, resource);
         }
 
+        List<Resource> acrs = client.getAccessControlRules(workspaceId);
+        assertEquals(1, acrs.size());
+
         List<Resource> resources = client.getUpdates(workspaceId, 0);
         assertEquals(3, resources.size());
-        assertEquals(workspaceId, resources.get(0).getId());
-        assertNotEquals(workspaceId, resources.get(1).getId());
-        assertNotEquals(resourceId, resources.get(1).getId());
-        assertEquals(resourceId, resources.get(2).getId());
+        assertEquals(workspace, resources.get(0));
+        assertEquals(acrs.get(0), resources.get(1));
+        assertEquals(folder, resources.get(2));
     }
 }
