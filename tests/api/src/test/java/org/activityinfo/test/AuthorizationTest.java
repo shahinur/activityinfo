@@ -15,6 +15,7 @@ import java.security.SecureRandom;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
+import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -22,11 +23,32 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class AuthorizationTest {
-    final private static ResourceId workspaceId = Resources.generateId();
-    final private static ResourceId resourceId = Resources.generateId();
+    final private ResourceId workspaceId = Resources.generateId();
+    final private ResourceId resourceId = Resources.generateId();
 
     @Test
-    public void test() {
+    public void testAnonymousUser() {
+        final ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI(), "A.Nonymous@example.com", "");
+
+        assertTrue(client.getOwnedOrSharedWorkspaces().isEmpty());
+
+        Resource workspace = Resources.createResource();
+        workspace.setId(workspaceId);
+        workspace.setOwnerId(ROOT_ID);
+        workspace.setVersion(1);
+        workspace.setValue(Records.builder(FolderClass.CLASS_ID)
+                .set(FolderClass.LABEL_FIELD_ID.asString(), "An unwanted workspace that was never actually meant to be")
+                .build());
+        try {
+            client.create(workspace);
+            fail("Anonymous users can create new workspaces!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+    }
+
+    @Test
+    public void testAuthorizedUser() {
         final SecureRandom secureRandom = new SecureRandom();
         final String email = Long.toHexString(secureRandom.nextLong()) + "@example.com";
         final String password = Long.toHexString(secureRandom.nextLong());
