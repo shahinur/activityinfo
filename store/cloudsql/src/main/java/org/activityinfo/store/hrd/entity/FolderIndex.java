@@ -53,6 +53,7 @@ public class FolderIndex {
         .addProjection(new PropertyProjection(Content.VERSION_PROPERTY, Long.class))
         .addProjection(new PropertyProjection(Content.LABEL_PROPERTY, String.class))
         .addProjection(new PropertyProjection(Content.CLASS_PROPERTY, String.class))
+        .addProjection(new PropertyProjection(Content.DELETED_PROPERTY, Boolean.class))
         .setFilter(new Query.FilterPredicate(Content.OWNER_PROPERTY,
             Query.FilterOperator.EQUAL, folderId.asString()));
 
@@ -66,6 +67,7 @@ public class FolderIndex {
             if(entity.getProperty(Content.CLASS_PROPERTY) instanceof String) {
                 node.setClassId(ResourceId.valueOf((String) entity.getProperty(Content.CLASS_PROPERTY)));
             }
+            node.setDeleted(Content.isDeleted(entity));
             nodes.add(node);
         }
 
