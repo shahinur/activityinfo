@@ -138,9 +138,12 @@ public final class Resource {
         if (version != resource.version) return false;
         if (id != null ? !id.equals(resource.id) : resource.id != null) return false;
         if (ownerId != null ? !ownerId.equals(resource.ownerId) : resource.ownerId != null) return false;
-        if (value != null ? !value.equals(resource.value) : resource.value != null) return false;
 
-        return true;
+        if (value == null) {
+            return resource.value == null;
+        } else {
+            return value.deepEquals(resource.value);
+        }
     }
 
     @Override
