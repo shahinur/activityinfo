@@ -24,15 +24,18 @@ package org.activityinfo.ui.app.client.dialogs;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.page.home.HomePlace;
 import org.activityinfo.ui.app.client.request.RemoveRequest;
 import org.activityinfo.ui.style.ButtonStyle;
 
+import java.util.Set;
+
 /**
  * @author yuriyz on 9/23/14.
  */
-public class DeleteResourceAction implements ConfirmDialog.Action {
+public class DeleteResourceAction implements ConfirmDialog.Action<Set<UpdateResult>> {
 
     private Application application;
     private ResourceId resourceId;
@@ -74,7 +77,7 @@ public class DeleteResourceAction implements ConfirmDialog.Action {
     }
 
     @Override
-    public Promise<Void> execute() {
+    public Promise<Set<UpdateResult>> execute() {
         return application.getRequestDispatcher().execute(new RemoveRequest(resourceId));
     }
 

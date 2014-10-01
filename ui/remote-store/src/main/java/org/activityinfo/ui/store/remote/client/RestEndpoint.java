@@ -54,6 +54,11 @@ public class RestEndpoint {
         return sendJson(RequestBuilder.PUT, body);
     }
 
+    public Promise<Response> deleteJson(String body) {
+        return sendJson(RequestBuilder.DELETE, body);
+    }
+
+
     /**
      * Posts the given body as JSON to this endpoint.
      * @param body the entity encoded as JSON
@@ -71,7 +76,7 @@ public class RestEndpoint {
      */
     private Promise<Response> send(RequestBuilder.Method method, String contentType, String body) {
 
-        assert method == RequestBuilder.POST || method == RequestBuilder.PUT;
+        assert method == RequestBuilder.POST || method == RequestBuilder.PUT || method == RequestBuilder.DELETE;
 
         RequestBuilder request = new RequestBuilder(method, uri);
         request.setHeader(ACCEPT, APPLICATION_JSON);

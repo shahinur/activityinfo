@@ -1,4 +1,4 @@
-package org.activityinfo.ui.app.client.request;
+package org.activityinfo.ui.store.remote.client.resource;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,35 +21,29 @@ package org.activityinfo.ui.app.client.request;
  * #L%
  */
 
-import com.google.common.collect.Sets;
+import com.google.gwt.json.client.JSONArray;
+import com.google.gwt.json.client.JSONString;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.RemoteStoreService;
-import org.activityinfo.service.store.UpdateResult;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
- * @author yuriyz on 9/22/14.
+ * @author yuriyz on 10/1/14.
  */
-public class RemoveRequest implements Request<Set<UpdateResult>> {
+public class ResourceIdListSerializer {
 
-    private Set<ResourceId> resources = Sets.newHashSet();
-
-    public RemoveRequest(ResourceId resource) {
-        this.resources.add(resource);
+    private ResourceIdListSerializer() {
     }
 
-    public RemoveRequest(Set<ResourceId> resourceIds) {
-        this.resources.addAll(resources);
-    }
-
-    public Set<ResourceId> getResources() {
-        return resources;
-    }
-
-    @Override
-    public Promise<Set<UpdateResult>> send(RemoteStoreService service) {
-        return service.remove(resources);
+    public static String toJson(Collection<ResourceId> resourceIds) {
+        JSONArray jsonArray = new JSONArray();
+        Iterator<ResourceId> iterator = resourceIds.iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            jsonArray.set(index, new JSONString(iterator.next().asString()));
+            index++;
+        }
+        return jsonArray.toString();
     }
 }
