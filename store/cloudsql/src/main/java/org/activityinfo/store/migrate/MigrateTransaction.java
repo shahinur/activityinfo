@@ -28,6 +28,8 @@ public class MigrateTransaction implements WorkspaceTransaction {
 
     private List<Entity> toWrite = Lists.newArrayList();
 
+    private long timestamp = System.currentTimeMillis();
+
     public MigrateTransaction(DatastoreService datastore, Workspace workspace, AuthenticatedUser user) {
         this.datastore = datastore;
         this.workspace = workspace;
@@ -85,6 +87,15 @@ public class MigrateTransaction implements WorkspaceTransaction {
     @Override
     public AuthenticatedUser getUser() {
         return user;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public long currentTimeMillis() {
+        return timestamp;
     }
 
     public void flush() {

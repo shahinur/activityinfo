@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import org.activityinfo.model.auth.AuthenticatedUser;
 
 public interface WorkspaceTransaction extends AutoCloseable {
+
     Workspace getWorkspace();
 
     long incrementVersion();
@@ -22,4 +23,12 @@ public interface WorkspaceTransaction extends AutoCloseable {
     void close();
 
     AuthenticatedUser getUser();
+
+    /**
+     *
+     * @return the current time in milliseconds that should be used to
+     * date snapshot records
+     */
+    long currentTimeMillis();
+
 }
