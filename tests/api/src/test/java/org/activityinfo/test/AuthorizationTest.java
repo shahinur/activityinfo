@@ -11,7 +11,6 @@ import org.activityinfo.model.system.FolderClass;
 import org.junit.Test;
 import org.junit.internal.AssumptionViolatedException;
 
-import java.security.SecureRandom;
 import java.util.List;
 
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
@@ -49,10 +48,7 @@ public class AuthorizationTest {
 
     @Test
     public void testAuthorizedUser() {
-        final SecureRandom secureRandom = new SecureRandom();
-        final String email = Long.toHexString(secureRandom.nextLong()) + "@example.com";
-        final String password = Long.toHexString(secureRandom.nextLong());
-        final ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI(), email, password);
+        final ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI());
 
         if (!client.createUser()) throw new AssumptionViolatedException("Server is not configured to run in test mode");
 
@@ -102,8 +98,7 @@ public class AuthorizationTest {
         assertEquals(acrs.get(0), resources.get(1));
         assertEquals(folder, resources.get(2));
 
-        ActivityInfoClient newClient = new ActivityInfoClient(TestConfig.getRootURI(),
-                Long.toHexString(secureRandom.nextLong()) + "@example.com", Long.toHexString(secureRandom.nextLong()));
+        ActivityInfoClient newClient = new ActivityInfoClient(TestConfig.getRootURI());
 
         assertTrue(newClient.createUser());
         assertTrue(newClient.getOwnedOrSharedWorkspaces().isEmpty());
