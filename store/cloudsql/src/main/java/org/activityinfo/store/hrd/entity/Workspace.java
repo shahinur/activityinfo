@@ -150,38 +150,6 @@ public class Workspace {
         return new AcrIndex(rootKey);
     }
 
-    public long deleteResourceTree(WorkspaceTransaction tx, ResourceId resourceId) throws EntityNotFoundException {
-        Resource resource = getLatestContent(resourceId).get(tx);
-        resource.setDeleted(true);
-
-        long newVersion = updateResource(tx, resource);
-
-        // mark descendants as deleted too
-        deleteChilds(tx, resourceId, resourceId);
-        tx.commit();
-        return newVersion;
-    }
-
-    private void deleteChilds(WorkspaceTransaction tx, ResourceId resourceId, ResourceId parentId) throws EntityNotFoundException {
-        Query descendantsQuery = new Query(LatestContent.KIND)
-                .setAncestor(getRootKey())
-                .setFilter(Query.CompositeFilterOperator.and(
-                    new Query.FilterPredicate(Content.OWNER_PROPERTY, Query.FilterOperator.EQUAL, parentId.asString()),
-                    new Query.FilterPredicate(Content.DELETED_PROPERTY, Query.FilterOperator.EQUAL, false)
-                ))
-                .setKeysOnly();
-
-        List<Entity> descendants = Lists.newArrayList(tx.prepare(descendantsQuery).asIterator());
-        for (Entity entity : descendants) {
-            ResourceId id = ResourceId.valueOf(entity.getKey().getName());
-
-            Resource childResource = getLatestContent(id).get(tx);
-            childResource.setDeleted(true);
-            updateResource(tx, childResource);
-            deleteChilds(tx, resourceId, id); // recursive deletion
-        }
-    }
-
     public boolean resourceExists(WorkspaceTransaction tx, ResourceId resourceId) {
         try {
             getLatestContent(resourceId).get(tx);
@@ -189,5 +157,18 @@ public class Workspace {
         } catch (EntityNotFoundException e) {
             return false;
         }
+    }
+
+    public long deleteResource(WorkspaceTransaction tx, ResourceId resourceId) throws EntityNotFoundException {
+        Preconditions.checkNotNull(tx);
+        Preconditions.checkNotNull(resourceId);
+
+        long newVersion = tx.incrementVersion();
+
+        getLatestContent(resourceId).delete(tx);
+        getSnapshot(resourceId, newVersion).markDeleted(tx);
+
+        tx.commit();
+        return newVersion;
     }
 }

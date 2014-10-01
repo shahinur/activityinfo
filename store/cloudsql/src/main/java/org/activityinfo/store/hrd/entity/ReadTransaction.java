@@ -35,6 +35,7 @@ public class ReadTransaction implements WorkspaceTransaction {
 
     @Override
     public Entity get(Key key) throws EntityNotFoundException {
+        System.out.println("ReadTransaction, key: " + key);
         return datastoreService.get(key);
     }
 
@@ -45,6 +46,16 @@ public class ReadTransaction implements WorkspaceTransaction {
 
     @Override
     public void put(Iterable<Entity> entities) {
+        throw new UnsupportedOperationException("Read-only transaction in progress.");
+    }
+
+    @Override
+    public void delete(Key key) {
+        throw new UnsupportedOperationException("Read-only transaction in progress.");
+    }
+
+    @Override
+    public void delete(Iterable<Key> entities) {
         throw new UnsupportedOperationException("Read-only transaction in progress.");
     }
 
