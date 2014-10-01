@@ -153,6 +153,16 @@ public class ActivityInfoClient {
     }
 
     /**
+     * Updates a resource
+     */
+    public void update(Resource resource) {
+        store.path("resource")
+            .path(resource.getId().asString())
+            .type(MediaType.APPLICATION_JSON_TYPE)
+            .put(resource);
+    }
+
+    /**
      *
      * @return a list of workspaces which the authenticated user owns
      * or to which they have been explicitly granted access.
