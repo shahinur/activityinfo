@@ -139,15 +139,15 @@ class Presenter {
 
         final TableModel tableModel = new TableModel();
         tableModel.getRowSources().add(new RowSource(level.getClassId()));
-        tableModel.addResourceId("id");
-        tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
+        tableModel.selectResourceId().as("id");
+        tableModel.selectField(ApplicationProperties.LABEL_PROPERTY).as("label");
 
         final ResourceId selectedParentId;
         if(level.isRoot()) {
             selectedParentId = null;
         } else {
             selectedParentId = getSelection(level.getParent()).getId();
-            tableModel.addColumn("parentId").select().fieldPath(level.getParentFieldId());
+            tableModel.selectField(level.getParentFieldId()).as("parentId");
         }
 
         return new Supplier<Promise<List<Node>>>() {

@@ -8,10 +8,7 @@ import org.activityinfo.model.legacy.InstanceQuery;
 import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.legacy.QueryResult;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.RowSource;
-import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.TableModel;
+import org.activityinfo.model.table.*;
 import org.activityinfo.promise.Promise;
 
 import java.util.List;
@@ -39,11 +36,11 @@ public class ProjectionAdapter {
         // Temporary work around: wrap the TableService to return Projections
         TableModel tableModel = new TableModel();
         tableModel.getRowSources().add(new RowSource(classId));
-        tableModel.addColumn("_id").selectId();
-        tableModel.addColumn("_classId").select().fieldPath(ResourceId.valueOf("classId"));
+        tableModel.selectResourceId().as("_id");
+        tableModel.selectClassId().as("_classId");
 
         for(FieldPath path : query.getFieldPaths()) {
-            tableModel.addColumn(path.toString()).select().fieldPath(path.getPath());
+            tableModel.addColumn(new ColumnModel().setId(path.toString()).setExpression(path));
         }
 
         return tableService.queryTable(tableModel).then(new Function<TableData, QueryResult>() {

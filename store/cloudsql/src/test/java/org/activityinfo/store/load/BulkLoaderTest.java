@@ -9,7 +9,6 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.primitive.TextType;
@@ -65,7 +64,7 @@ public class BulkLoaderTest {
 
         // Verify we can read imported instances
         TableModel tableModel = new TableModel(formClassId);
-        tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(nameFieldId);
+        tableModel.selectField(nameFieldId).as("C1");
 
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
 
