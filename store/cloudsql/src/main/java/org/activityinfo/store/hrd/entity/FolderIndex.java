@@ -47,7 +47,7 @@ public class FolderIndex {
         return label;
     }
 
-    public List<ResourceNode> queryFolderItems(WorkspaceTransaction tx, ResourceId folderId) {
+    public List<ResourceNode> queryFolderItems(WorkspaceTransaction tx, ResourceId folderId, boolean filterOutDeletedNodes) {
         Query query = new Query(LatestContent.KIND)
         .setAncestor(workspaceKey)
         .addProjection(new PropertyProjection(Content.VERSION_PROPERTY, Long.class))
@@ -59,6 +59,11 @@ public class FolderIndex {
 
         List<ResourceNode> nodes = Lists.newArrayList();
         for (Entity entity : tx.prepare(query).asIterable()) {
+            boolean deleted = Content.isDeleted(entity);
+            if (filterOutDeletedNodes && deleted) {
+                continue;
+            }
+
             ResourceId id = ResourceId.valueOf(entity.getKey().getName());
             ResourceNode node = new ResourceNode(id);
             node.setVersion((Long) entity.getProperty(Content.VERSION_PROPERTY));
@@ -67,8 +72,11 @@ public class FolderIndex {
             if(entity.getProperty(Content.CLASS_PROPERTY) instanceof String) {
                 node.setClassId(ResourceId.valueOf((String) entity.getProperty(Content.CLASS_PROPERTY)));
             }
-            node.setDeleted(Content.isDeleted(entity));
+            node.setDeleted(deleted);
+
             nodes.add(node);
+
+
         }
 
         return nodes;
