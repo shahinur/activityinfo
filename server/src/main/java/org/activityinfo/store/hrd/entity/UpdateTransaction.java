@@ -32,6 +32,7 @@ public class UpdateTransaction implements WorkspaceTransaction {
      */
     private long currentVersion = -1;
 
+    private long timestamp = System.currentTimeMillis();
 
     private boolean committed;
 
@@ -119,6 +120,15 @@ public class UpdateTransaction implements WorkspaceTransaction {
     @Override
     public AuthenticatedUser getUser() {
         return user;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    @Override
+    public long currentTimeMillis() {
+        return timestamp;
     }
 
 }
