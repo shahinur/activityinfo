@@ -129,6 +129,11 @@ public class Authorization {
         }
     }
 
+    public void assertIsOwner() {
+        if (!isOwner()) {
+            throw new WebApplicationException(UNAUTHORIZED);
+        }
+    }
 
     private static boolean evaluate(ExprValue exprValue) {
         return exprValue != null && "true".equals(exprValue.getExpression());
