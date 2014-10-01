@@ -27,10 +27,10 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
-import org.activityinfo.model.legacy.InstanceQuery;
-import org.activityinfo.model.legacy.QueryResult;
-import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.legacy.InstanceQuery;
+import org.activityinfo.model.legacy.Projection;
+import org.activityinfo.model.legacy.QueryResult;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.widget.grid.CellTable;
 import org.activityinfo.ui.widget.loading.LoadingState;
@@ -120,8 +120,7 @@ public class InstanceTableDataLoader {
             return;
         }
 
-        int maxScrollTop = table.getTable().getOffsetHeight()
-                - event.getScrollAncestor().getOffsetHeight();
+        int maxScrollTop = table.getTable().getOffsetHeight();
 
         // if near the end then load data
         if (lastVerticalScrollPosition >= maxScrollTop) {
