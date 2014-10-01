@@ -108,8 +108,12 @@ public class AuthorizationTest {
         assertTrue(newClient.createUser());
         assertTrue(newClient.getOwnedOrSharedWorkspaces().isEmpty());
 
-        acrs = newClient.getAccessControlRules(workspaceId);
-        assertEquals(0, acrs.size());
+        try {
+            newClient.getAccessControlRules(workspaceId);
+            fail("Non-owners can access a resource's ACR!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
 
         for (Resource resource : resources) {
             try {
