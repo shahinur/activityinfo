@@ -8,7 +8,9 @@ import com.google.common.collect.Iterators;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.ResourceNotFound;
+import org.activityinfo.store.EntityDeletedException;
 
 import java.util.Iterator;
 
@@ -17,7 +19,7 @@ import static org.activityinfo.store.hrd.entity.Content.*;
 /**
  * An entity within the {@code ResourceGroup} which contains the
  * content (properties) of the latest version of the resource.
- *
+ * <p/>
  * The {@code OWNER_PROPERTY} is indexed, allowing queries on owned entities
  */
 public class LatestContent {
@@ -44,7 +46,27 @@ public class LatestContent {
 
     public Resource get(WorkspaceTransaction tx) throws EntityNotFoundException {
         Entity entity = tx.get(key);
+        assertAncestorNotDeleted(tx, entity);
         return deserializeResource(entity);
+    }
+
+    private void assertAncestorNotDeleted(WorkspaceTransaction tx, Entity entity) throws EntityDeletedException {
+        try {
+            if (entity.getProperty(OWNER_PROPERTY) instanceof String) {
+                String ownerId = (String) entity.getProperty(OWNER_PROPERTY);
+                boolean isRoot = Resources.ROOT_ID.asString().equals(ownerId);
+                Key ownerKey = KeyFactory.createKey(rootKey, KIND, isRoot ? rootKey.getName() : ownerId);
+                Entity ownerEntity = tx.get(ownerKey);
+                if (!isRoot) {
+                    assertAncestorNotDeleted(tx, ownerEntity);
+                }
+            } else {
+                // if owner is blank then we assume that it's root, otherwise it must not be empty
+                return;
+            }
+        } catch (EntityNotFoundException e) {
+            throw new EntityDeletedException();
+        }
     }
 
     public Resource get(DatastoreService datastore) throws EntityNotFoundException {
@@ -78,7 +100,8 @@ public class LatestContent {
 
     /**
      * Updates the LatestContent entity to reflect the content of {@code resource}
-     * @param tx the transaction in which this change is to be effected
+     *
+     * @param tx       the transaction in which this change is to be effected
      * @param resource the latest version of the resource
      * @param rowIndex
      */
@@ -88,15 +111,14 @@ public class LatestContent {
         entity.setProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
         entity.setProperty(CLASS_PROPERTY, resource.getValue().getClassId().asString());
         entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
-        entity.setProperty(DELETED_PROPERTY, resource.isDeleted());
         Content.writeProperties(resource, entity);
 
-        if(FolderIndex.isFolderItem(resource)) {
+        if (FolderIndex.isFolderItem(resource)) {
             entity.setProperty(LABEL_PROPERTY, FolderIndex.getLabelAndAssertNonEmpty(resource));
         }
 
-        if(FormMetadata.isFormInstance(resource)) {
-            if(rowIndex.isPresent()) {
+        if (FormMetadata.isFormInstance(resource)) {
+            if (rowIndex.isPresent()) {
                 entity.setProperty(ROW_INDEX_PROPERTY, rowIndex.get());
             } else {
                 FormMetadata metadata = new FormMetadata(rootKey, resource);
@@ -114,13 +136,15 @@ public class LatestContent {
         Entity entity;
         try {
             entity = tx.get(key);
+
+            assertAncestorNotDeleted(tx, entity);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFound(resource.getId());
         }
+
         entity.setProperty(VERSION_PROPERTY, resource.getVersion());
         entity.setProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
         entity.setProperty(CLASS_PROPERTY, resource.getValue().getClassId().asString());
-        entity.setProperty(DELETED_PROPERTY, resource.isDeleted());
         Content.writeProperties(resource, entity);
 
         if (FolderIndex.isFolderItem(resource)) {
@@ -135,6 +159,10 @@ public class LatestContent {
         tx.put(entity);
     }
 
+    public void delete(WorkspaceTransaction tx) {
+        tx.delete(key);
+    }
+
 
     /**
      * Returns a list of resources, ordered by their row index to ensure
@@ -147,9 +175,9 @@ public class LatestContent {
                 resourceId.asString());
 
         Query query = new Query(KIND)
-            .setFilter(classFilter)
-            .addSort(ROW_INDEX_PROPERTY)
-            .setAncestor(rootKey);
+                .setFilter(classFilter)
+                .addSort(ROW_INDEX_PROPERTY)
+                .setAncestor(rootKey);
 
         Iterator<Entity> entityIterator = tx.prepare(query).asIterator();
 

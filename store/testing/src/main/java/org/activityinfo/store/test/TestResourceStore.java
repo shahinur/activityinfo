@@ -107,9 +107,8 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         for (ResourceId id : resources) {
             Resource resource = resourceMap.get(id);
             if (resource != null) {
-                resource.setDeleted(true);
                 long version = resource.getVersion() + 1;
-                resourceMap.put(id, resource);
+                resourceMap.remove(id);
                 results.add(UpdateResult.committed(id, version));
             } else {
                 results.add(UpdateResult.rejected(id));

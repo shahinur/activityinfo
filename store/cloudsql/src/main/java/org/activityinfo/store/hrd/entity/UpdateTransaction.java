@@ -84,6 +84,16 @@ public class UpdateTransaction implements WorkspaceTransaction {
         datastoreService.put(transaction, entities);
     }
 
+    @Override
+    public void delete(Key key) {
+        datastoreService.delete(transaction, key);
+    }
+
+    @Override
+    public void delete(Iterable<Key> entities) {
+        datastoreService.delete(transaction, entities);
+    }
+
 
     @Override
     public PreparedQuery prepare(Query projection) {
