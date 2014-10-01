@@ -138,5 +138,22 @@ public class AuthorizationTest {
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
+
+        folder.setValue(Records.builder(FolderClass.CLASS_ID)
+                .set(FolderClass.LABEL_FIELD_ID.asString(), "Renamed folder")
+                .build());
+        folder.setVersion(4);
+        assertNotEquals(folder, client.get(resourceId));
+
+        try {
+            newClient.update(folder);
+            fail("Users can update each other's resources without permission!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        assertNotEquals(folder, client.get(resourceId));
+        client.update(folder);
+        assertEquals(folder, client.get(resourceId));
     }
 }
