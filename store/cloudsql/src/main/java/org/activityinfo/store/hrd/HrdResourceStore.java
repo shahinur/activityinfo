@@ -30,6 +30,7 @@ import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
+import org.activityinfo.store.EntityDeletedException;
 import org.activityinfo.store.hrd.entity.ReadTransaction;
 import org.activityinfo.store.hrd.entity.Snapshot;
 import org.activityinfo.store.hrd.entity.UpdateTransaction;
@@ -38,15 +39,7 @@ import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -65,7 +58,7 @@ public class HrdResourceStore implements ResourceStore {
 
     public HrdResourceStore() {
         this.datastore = DatastoreServiceFactory.getDatastoreService(DatastoreServiceConfig.Builder
-            .withImplicitTransactionManagementPolicy(ImplicitTransactionManagementPolicy.NONE));
+                .withImplicitTransactionManagementPolicy(ImplicitTransactionManagementPolicy.NONE));
     }
 
     private WorkspaceTransaction begin(Workspace workspace, AuthenticatedUser user) {
@@ -85,11 +78,14 @@ public class HrdResourceStore implements ResourceStore {
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
 
-            try(WorkspaceTransaction tx = beginRead(workspace, user)) {
+            try (WorkspaceTransaction tx = beginRead(workspace, user)) {
                 Authorization authorization = new Authorization(user, resourceId, tx);
                 authorization.assertCanView();
 
-                return UserResource.userResource(workspace.getLatestContent(resourceId).get(tx)).
+                Resource resource = workspace.getLatestContent(resourceId).get(tx);
+                assertDeleted(resource);
+
+                return UserResource.userResource(resource).
                         setOwner(authorization.isOwner()).
                         setEditAllowed(authorization.canEdit());
             }
@@ -105,16 +101,16 @@ public class HrdResourceStore implements ResourceStore {
 
         try (WorkspaceTransaction tx = beginRead(workspace, user)) {
             return Lists.newArrayList(Iterables.transform(workspace.getAcrIndex().queryRules(tx, resourceId),
-                new Function<ResourceId, Resource>() {
-                @Override
-                public Resource apply(ResourceId resourceId) {
-                    try {
-                        return workspace.getLatestContent(resourceId).get(tx);
-                    } catch (EntityNotFoundException e) {
-                        throw new ResourceNotFound(resourceId);
-                    }
-                }
-            }));
+                    new Function<ResourceId, Resource>() {
+                        @Override
+                        public Resource apply(ResourceId resourceId) {
+                            try {
+                                return workspace.getLatestContent(resourceId).get(tx);
+                            } catch (EntityNotFoundException e) {
+                                throw new ResourceNotFound(resourceId);
+                            }
+                        }
+                    }));
         }
     }
 
@@ -123,11 +119,11 @@ public class HrdResourceStore implements ResourceStore {
     @Consumes("application/json")
     @Produces("application/json")
     public UpdateResult put(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId, Resource resource) {
-       if (resourceId.equals(resource.getId())) {
-           return put(user, resource);
-       } else {
-           throw new WebApplicationException(BAD_REQUEST);
-       }
+        if (resourceId.equals(resource.getId())) {
+            return put(user, resource);
+        } else {
+            throw new WebApplicationException(BAD_REQUEST);
+        }
     }
 
     /**
@@ -187,7 +183,9 @@ public class HrdResourceStore implements ResourceStore {
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
             try {
-                workspace.getLatestContent(resource.getId()).get(tx);
+                Resource latestResource = workspace.getLatestContent(resource.getId()).get(tx);
+                assertDeleted(latestResource);
+
             } catch (EntityNotFoundException e) {
                 return create(tx, user, resource);
             }
@@ -211,7 +209,7 @@ public class HrdResourceStore implements ResourceStore {
             }
 
             Workspace workspace = new Workspace(resource.getId());
-            try(WorkspaceTransaction tx = begin(workspace, user)) {
+            try (WorkspaceTransaction tx = begin(workspace, user)) {
                 long newVersion = workspace.createWorkspace(tx, resource);
                 tx.commit();
 
@@ -266,7 +264,9 @@ public class HrdResourceStore implements ResourceStore {
                     setEditAllowed(rootNodeAuthorization.canEdit()).
                     setOwner(rootNodeAuthorization.isOwner());
 
-            for (ResourceNode child : workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId())) {
+            assertDeleted(rootNode);
+
+            for (ResourceNode child : workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId(), true)) {
                 Authorization childAuthorization = rootNodeAuthorization.ofChild(child.getId());
                 child.setEditAllowed(childAuthorization.canEdit()).
                         setOwner(childAuthorization.isOwner());
@@ -318,7 +318,7 @@ public class HrdResourceStore implements ResourceStore {
 
         if (version < 0) version = 0;
 
-        try(WorkspaceTransaction tx = beginRead(workspace, user)) {
+        try (WorkspaceTransaction tx = beginRead(workspace, user)) {
 
             for (Snapshot snapshot : Snapshot.getSnapshotsAfter(tx, version)) {
                 ResourceId resourceId = snapshot.getResourceId();
@@ -419,5 +419,17 @@ public class HrdResourceStore implements ResourceStore {
         }
 
         return result;
+    }
+
+    public static void assertDeleted(Resource resource) {
+        if (resource.isDeleted()) {
+            throw new EntityDeletedException();
+        }
+    }
+
+    public static void assertDeleted(ResourceNode resourceNode) {
+        if (resourceNode.isDeleted()) {
+            throw new EntityDeletedException();
+        }
     }
 }

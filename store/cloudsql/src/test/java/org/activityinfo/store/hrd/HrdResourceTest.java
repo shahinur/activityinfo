@@ -18,6 +18,7 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.store.EntityDeletedException;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -68,16 +69,16 @@ public class HrdResourceTest {
         // Ensure that this stuff gets cached
         Stopwatch stopwatch = Stopwatch.createStarted();
         int requestCount = 10;
-        for(int i=0;i!= requestCount;++i) {
+        for (int i = 0; i != requestCount; ++i) {
             FolderProjection tree = environment.getStore().queryTree(
-                environment.getUser(),
-                new FolderRequest(divA.getId()));
+                    environment.getUser(),
+                    new FolderRequest(divA.getId()));
             assertThat(tree.getRootNode().getId(), equalTo(divA.getId()));
             assertThat(tree.getRootNode().getLabel(), equalTo("Division A"));
             assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
             //assertThat(tree.getRootNode().getSubTreeVersion(), equalTo(divACreationResult.getNewVersion()));
         }
-        System.out.println( (requestCount / (double)stopwatch.elapsed(TimeUnit.SECONDS)) + " requests per second");
+        System.out.println((requestCount / (double) stopwatch.elapsed(TimeUnit.SECONDS)) + " requests per second");
 
         // Create form class
 
@@ -90,7 +91,7 @@ public class HrdResourceTest {
         // Read the form class back and verify
 
         FormClass reformClass = FormClass.fromResource(
-            environment.getStore().get(environment.getUser(), formClass.getId()).getResource());
+                environment.getStore().get(environment.getUser(), formClass.getId()).getResource());
 
         assertThat(reformClass.getId(), Matchers.equalTo(formClass.getId()));
         assertThat(reformClass.getOwnerId(), Matchers.equalTo(formClass.getOwnerId()));
@@ -98,8 +99,8 @@ public class HrdResourceTest {
         // Verify that the subtree version gets updated
 
         FolderProjection tree = environment.getStore().queryTree(
-            environment.getUser(),
-            new FolderRequest(divA.getId()));
+                environment.getUser(),
+                new FolderRequest(divA.getId()));
         assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
         assertThat(tree.getRootNode().getId(), Matchers.equalTo(divA.getId()));
         assertThat(tree.getRootNode().getChildren().get(0).getId(), Matchers.equalTo(formClass.getId()));
@@ -220,7 +221,19 @@ public class HrdResourceTest {
     }
 
     private void assertDeleted(ResourceId resourceId, boolean deleted) {
-        UserResource userResource = environment.getStore().get(environment.getUser(), resourceId);
-        assertThat(userResource.getResource().isDeleted(), Matchers.equalTo(deleted));
+        try {
+            UserResource userResource = environment.getStore().get(environment.getUser(), resourceId);
+            if (!deleted) {
+                assertThat(userResource.getResource().isDeleted(), Matchers.equalTo(false));
+                return;
+            }
+        } catch (EntityDeletedException e) {
+            if (deleted) {
+                return; // as expected we got "deleted" exception
+            }
+        }
+        throw new AssertionError("Resource 'deleted' flag does not match expected value, resourceId: " +
+                resourceId + ", expected: " + deleted);
+
     }
 }
