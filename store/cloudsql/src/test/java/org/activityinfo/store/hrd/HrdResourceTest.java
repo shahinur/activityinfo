@@ -224,10 +224,9 @@ public class HrdResourceTest {
         try {
             UserResource userResource = environment.getStore().get(environment.getUser(), resourceId);
             if (!deleted) {
-                assertThat(userResource.getResource().isDeleted(), Matchers.equalTo(false));
                 return;
             }
-        } catch (EntityDeletedException e) {
+        } catch (EntityDeletedException | IllegalStateException e) {
             if (deleted) {
                 return; // as expected we got "deleted" exception
             }

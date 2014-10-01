@@ -47,35 +47,29 @@ public class FolderIndex {
         return label;
     }
 
-    public List<ResourceNode> queryFolderItems(WorkspaceTransaction tx, ResourceId folderId, boolean filterOutDeletedNodes) {
+    public List<ResourceNode> queryFolderItems(WorkspaceTransaction tx, ResourceId folderId) {
         Query query = new Query(LatestContent.KIND)
         .setAncestor(workspaceKey)
         .addProjection(new PropertyProjection(Content.VERSION_PROPERTY, Long.class))
         .addProjection(new PropertyProjection(Content.LABEL_PROPERTY, String.class))
         .addProjection(new PropertyProjection(Content.CLASS_PROPERTY, String.class))
-        .addProjection(new PropertyProjection(Content.DELETED_PROPERTY, Boolean.class))
         .setFilter(new Query.FilterPredicate(Content.OWNER_PROPERTY,
             Query.FilterOperator.EQUAL, folderId.asString()));
 
         List<ResourceNode> nodes = Lists.newArrayList();
         for (Entity entity : tx.prepare(query).asIterable()) {
-            boolean deleted = Content.isDeleted(entity);
-            if (filterOutDeletedNodes && deleted) {
-                continue;
-            }
 
             ResourceId id = ResourceId.valueOf(entity.getKey().getName());
             ResourceNode node = new ResourceNode(id);
             node.setVersion((Long) entity.getProperty(Content.VERSION_PROPERTY));
             node.setLabel((String) entity.getProperty(Content.LABEL_PROPERTY));
             node.setOwnerId(folderId);
+
             if(entity.getProperty(Content.CLASS_PROPERTY) instanceof String) {
                 node.setClassId(ResourceId.valueOf((String) entity.getProperty(Content.CLASS_PROPERTY)));
             }
-            node.setDeleted(deleted);
 
             nodes.add(node);
-
 
         }
 

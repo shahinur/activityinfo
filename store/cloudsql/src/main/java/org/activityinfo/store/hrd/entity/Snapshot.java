@@ -81,19 +81,28 @@ public class Snapshot {
      *
      */
     public void put(WorkspaceTransaction tx, Resource resource) {
-        Entity entity = new Entity(snapshotKey);
-        entity.setProperty(VERSION_PROPERTY, resource.getVersion());
-        entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
-        entity.setProperty(DELETED_PROPERTY, resource.isDeleted());
-        entity.setUnindexedProperty(TIMESTAMP_PROPERTY, tx.currentTimeMillis());
-        entity.setUnindexedProperty(USER_PROPERTY, tx.getUser().getId());
-        entity.setUnindexedProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
-
-        Content.writeProperties(resource, entity);
-
+        Entity entity = asEntity(resource, tx.getUser().getId());
         tx.put(entity);
     }
 
+    private Entity asEntity(Resource resource, int userId) {
+        Entity entity = new Entity(snapshotKey);
+        entity.setProperty(VERSION_PROPERTY, resource.getVersion());
+        entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
+        entity.setUnindexedProperty(TIMESTAMP_PROPERTY, System.currentTimeMillis());
+        entity.setUnindexedProperty(USER_PROPERTY, userId);
+        entity.setUnindexedProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
+
+        Content.writeProperties(resource, entity);
+        return entity;
+    }
+
+    public void markDeleted(WorkspaceTransaction tx) throws EntityNotFoundException {
+        Entity entity = new Entity(snapshotKey);
+        entity.setProperty(Content.DELETED_PROPERTY, true);
+        tx.put(entity);
+    }
+    
     public Resource get(WorkspaceTransaction tx) throws EntityNotFoundException {
         return deserializeResource(tx.get(snapshotKey));
     }
