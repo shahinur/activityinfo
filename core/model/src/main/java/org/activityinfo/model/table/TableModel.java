@@ -1,10 +1,8 @@
 package org.activityinfo.model.table;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.record.IsRecord;
-import org.activityinfo.model.record.Record;
-import org.activityinfo.model.record.RecordBuilder;
-import org.activityinfo.model.record.Records;
+import org.activityinfo.model.annotation.RecordBean;
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
@@ -13,7 +11,8 @@ import java.util.List;
  * Describes a Table to be constructed from a
  * FormTree.
  */
-public class TableModel implements IsRecord {
+@RecordBean(classId = "_tableModel")
+public class TableModel {
 
     private final List<RowSource> rowSources = Lists.newArrayList();
     private final List<ColumnModel> columns = Lists.newArrayList();
@@ -37,9 +36,34 @@ public class TableModel implements IsRecord {
         return columns;
     }
 
-    public ColumnModel addColumn(String id) {
+    /**
+     * Adds a {@code ColumnModel} to this {@code TableModel} using the given
+     * field's code or label as the column's id and value expression.
+     */
+    public ColumnModel selectField(String codeOrLabel) {
         ColumnModel column = new ColumnModel();
-        column.setId(id);
+        column.setId(codeOrLabel);
+        column.setExpression("[" + codeOrLabel + "]");
+        columns.add(column);
+        return column;
+    }
+
+    public ColumnModel selectField(FieldPath path) {
+        ColumnModel column = new ColumnModel();
+        column.setId(path.getLeafId().asString());
+        column.setExpression(path);
+        columns.add(column);
+        return column;
+    }
+
+    /**
+     * Adds a {@code ColumnModel} to this {@code TableModel} using the given
+     * field's id as the column's id and value expression.
+     */
+    public ColumnModel selectField(ResourceId fieldId) {
+        ColumnModel column = new ColumnModel();
+        column.setId(fieldId.asString());
+        column.setExpression(fieldId.asString());
         columns.add(column);
         return column;
     }
@@ -56,34 +80,19 @@ public class TableModel implements IsRecord {
      * Adds the {@code ResourceId} as a string column to the table model with
      * the given column id
      */
-    public TableModel addResourceId(String columnId) {
+    public ColumnModel selectResourceId() {
         ColumnModel columnModel = new ColumnModel();
-        columnModel.setId(columnId);
-        columnModel.selectId();
+        columnModel.setExpression(ColumnModel.ID_SYMBOL);
         columns.add(columnModel);
-        return this;
+        return columnModel;
     }
 
-    @Override
-    public Record asRecord() {
-        RecordBuilder record = Records.builder();
-        record.set("rowSources", Records.toRecordList(rowSources));
-        record.set("columnModels", Records.toRecordList(columns));
-        return record.build();
+    public ColumnModel selectClassId() {
+        ColumnModel columnModel = new ColumnModel();
+        columnModel.setExpression(ColumnModel.CLASS_SYMBOL);
+        columns.add(columnModel);
+        return columnModel;
     }
-
-    public static TableModel fromRecord(Record record) {
-        TableModel model = new TableModel();
-
-        for(Record sourceRecord : record.getRecordList("rowSources")) {
-            model.rowSources.add(RowSource.fromRecord(sourceRecord));
-        }
-        for(Record columnRecord : record.getRecordList("columnModels")) {
-            model.columns.add(ColumnModel.fromRecords(columnRecord));
-        }
-        return model;
-    }
-
 
 }
 

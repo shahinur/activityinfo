@@ -44,11 +44,10 @@ public class TableQueryBatchBuilder {
      * Adds a query to the batch for a column composed of a several possible nodes within
      * the FormTree.
      *
-     * @param columnType the type to which the columns should be coerced
      * @return a ColumnView Supplier that can be used to retrieve the result after the batch
      * has finished executing.
      */
-    public Supplier<ColumnView> addColumn(ColumnType columnType, List<FormTree.Node> nodes) {
+    public Supplier<ColumnView> addColumn(List<FormTree.Node> nodes) {
         Preconditions.checkArgument(!nodes.isEmpty(), "nodes cannot be empty");
 
         if(nodes.size() == 1) {
@@ -58,7 +57,7 @@ public class TableQueryBatchBuilder {
             for(FormTree.Node node : nodes) {
                 sources.add(addColumn(node));
             }
-            return new ColumnCombiner(columnType, sources);
+            return new ColumnCombiner(sources);
         }
     }
 
@@ -94,8 +93,8 @@ public class TableQueryBatchBuilder {
      * Adds a query to the batch for an empty column. It may still be required to hit the data store
      * to find the number of rows.
      */
-    public Supplier<ColumnView> addEmptyColumn(ColumnType type, FormClass formClass) {
-        return getTable(formClass).fetchEmptyColumn(type);
+    public Supplier<ColumnView> addEmptyColumn(FormClass formClass) {
+        return getTable(formClass).fetchEmptyColumn(ColumnType.STRING);
     }
 
     /**

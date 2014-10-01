@@ -3,8 +3,8 @@ package org.activityinfo.model.formTree;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.io.PrintWriter;
 import java.util.Collections;
@@ -38,13 +38,13 @@ public class FormTreePrettyPrinter {
         // print data fields first
         for(FormTree.Node node : nodes) {
             if(!node.isReference() && node.getDefiningFormClass().getId().equals(formClassId)) {
-                println(indent, "." + node.getField().getLabel());
+                println(indent, "." + node.getFieldId() + ": " + node.getField().getLabel());
             }
         }
 
         for(FormTree.Node node : nodes) {
             if(node.isReference() && node.getDefiningFormClass().getId().equals(formClassId)) {
-                String fieldLabel = "." + node.getField().getLabel() + " = ";
+                String fieldLabel = "." + node.getFieldId() + ": " + node.getField().getLabel() + " = ";
                 print(indent, fieldLabel);
                 prettyPrintNodes(indent + fieldLabel.length(), node.getChildren());
             }
@@ -85,7 +85,7 @@ public class FormTreePrettyPrinter {
             if(needsPipe) {
                 sb.append(" | ");
             }
-            sb.append(formClass.getLabel());
+            sb.append(formClass.getId() + ": " + formClass.getLabel());
             needsPipe = true;
         }
         sb.append("]");
