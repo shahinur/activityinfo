@@ -125,5 +125,16 @@ public class AuthorizationTest {
                 .set(FolderClass.LABEL_FIELD_ID.asString(), "Another workspace")
                 .build());
         newClient.create(workspace);
+
+        List<ResourceNode> workspaces = newClient.getOwnedOrSharedWorkspaces();
+        assertEquals(1, workspaces.size());
+        assertEquals(workspace, newClient.get(workspaces.get(0).getId()));
+
+        try {
+            client.get(workspaces.get(0).getId());
+            fail("Users can access each other's resources without permission!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
     }
 }
