@@ -57,11 +57,11 @@ public class AuthenticatedUser  {
     }
 
     public AuthenticatedUser(String authToken, int userId, String userEmail) {
-        super();
-        this.authToken = authToken;
-        this.userId = userId;
-        this.userEmail = userEmail;
-        this.userLocale = "en";
+        this(authToken, userId, userEmail, "en");
+    }
+
+    public AuthenticatedUser(int userId) {
+        this("", userId, "");
     }
 
     public String getAuthToken() {
