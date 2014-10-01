@@ -1,16 +1,17 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.*;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
+
+import java.util.List;
 
 /**
  * Workspaces form an Entity Group within all transactions occur with "serialized" consistency and
@@ -147,6 +148,15 @@ public class Workspace {
 
     public AcrIndex getAcrIndex() {
         return new AcrIndex(rootKey);
+    }
+
+    public boolean resourceExists(WorkspaceTransaction tx, ResourceId resourceId) {
+        try {
+            getLatestContent(resourceId).get(tx);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
     }
 
     public long deleteResource(WorkspaceTransaction tx, ResourceId resourceId) throws EntityNotFoundException {
