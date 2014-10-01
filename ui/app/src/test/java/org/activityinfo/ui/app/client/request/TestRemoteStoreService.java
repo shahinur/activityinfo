@@ -72,7 +72,7 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<Void> remove(Set<ResourceId> resources) {
+    public Promise<Set<UpdateResult>> remove(Set<ResourceId> resources) {
         return Promise.rejected(new UnsupportedOperationException());
     }
 

@@ -4,7 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -78,9 +82,11 @@ public class MockRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<Void> remove(Set<ResourceId> resources) {
+    public Promise<Set<UpdateResult>> remove(Set<ResourceId> resources) {
+        Set<UpdateResult> results = Sets.newHashSet();
         for (ResourceId resourceId : resources) {
             folders.remove(resourceId);
+            results.add(UpdateResult.committed(resourceId, 1));
         }
 
         Set<Resource> toRemove = Sets.newHashSet();
@@ -91,7 +97,7 @@ public class MockRemoteStoreService implements RemoteStoreService {
         }
         createdResources.removeAll(toRemove);
 
-        return Promise.done();
+        return Promise.resolved(results);
     }
 
     public Resource getOnlyCreatedResource() {
