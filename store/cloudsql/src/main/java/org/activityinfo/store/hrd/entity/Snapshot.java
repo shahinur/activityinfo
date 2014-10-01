@@ -102,7 +102,7 @@ public class Snapshot {
         entity.setProperty(Content.DELETED_PROPERTY, true);
         tx.put(entity);
     }
-
+    
     public Resource get(WorkspaceTransaction tx) throws EntityNotFoundException {
         return deserializeResource(tx.get(snapshotKey));
     }

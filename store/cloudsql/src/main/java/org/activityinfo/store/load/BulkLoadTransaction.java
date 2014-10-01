@@ -78,4 +78,9 @@ public class BulkLoadTransaction implements WorkspaceTransaction {
     public AuthenticatedUser getUser() {
         return user;
     }
+
+    @Override
+    public long currentTimeMillis() {
+        return System.currentTimeMillis();
+    }
 }
