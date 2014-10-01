@@ -70,7 +70,6 @@ public class Content {
         resource.setId(ResourceId.valueOf(entity.getKey().getName()));
         resource.setVersion((Long)entity.getProperty(VERSION_PROPERTY));
         resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
-        resource.setDeleted(isDeleted(entity));
         readProperties(entity, resource);
         return resource;
     }
@@ -82,7 +81,6 @@ public class Content {
         resource.setVersion((Long) entity.getProperty(VERSION_PROPERTY));
         resource.setLabel((String)entity.getProperty(LABEL_PROPERTY));
         resource.setOwnerId(ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY)));
-        resource.setDeleted(isDeleted(entity));
 
         if(entity.getProperty(CLASS_PROPERTY) instanceof String) {
             resource.setClassId(ResourceId.valueOf((String) entity.getProperty(CLASS_PROPERTY)));
