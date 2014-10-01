@@ -24,11 +24,18 @@ package org.activityinfo.ui.app.client.dialogs;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.app.client.chrome.FailureDescription;
-import org.activityinfo.ui.style.*;
+import org.activityinfo.ui.style.Alert;
+import org.activityinfo.ui.style.AlertStyle;
+import org.activityinfo.ui.style.Button;
+import org.activityinfo.ui.style.ButtonStyle;
+import org.activityinfo.ui.style.Modal;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
+
+import java.util.Set;
 
 import static org.activityinfo.ui.vdom.shared.html.H.t;
 
@@ -72,7 +79,7 @@ public class ConfirmDialog extends VComponent {
     /**
      * @author yuriyz on 4/7/14.
      */
-    public static interface Action {
+    public static interface Action<T> {
 
         Messages getConfirmationMessages();
 
@@ -85,7 +92,7 @@ public class ConfirmDialog extends VComponent {
         /**
          * Invoked when the user has confirmed the action, or is retrying.
          */
-        Promise<Void> execute();
+        Promise<T> execute();
 
         /**
          * Invoked when the action completes successfully
@@ -176,14 +183,14 @@ public class ConfirmDialog extends VComponent {
     private void tryAction() {
         state = State.PROGRESS;
         throwable = null;
-        action.execute().then(new AsyncCallback<Void>() {
+        action.execute().then(new AsyncCallback<Set<ResourceId>>() {
             @Override
             public void onFailure(Throwable caught) {
                 showFailureDelayed(caught);
             }
 
             @Override
-            public void onSuccess(Void result) {
+            public void onSuccess(Set<ResourceId> result) {
                 ConfirmDialog.this.dialog.setVisible(false);
                 action.onComplete();
             }

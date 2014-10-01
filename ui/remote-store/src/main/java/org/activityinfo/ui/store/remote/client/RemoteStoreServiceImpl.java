@@ -10,7 +10,11 @@ import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.analysis.PivotTableModelClass;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -77,8 +81,8 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
                 .then(new Function<Response, UpdateResult>() {
                     @Nullable
                     @Override
-                    public UpdateResult apply(@Nullable Response input) {
-                        return UpdateResultParser.parse(input);
+                    public UpdateResult apply(Response input) {
+                        return UpdateResultParser.parse(input.getText());
                     }
                 });
     }
@@ -121,7 +125,7 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
                 .then(new Function<Response, UpdateResult>() {
                     @Override
                     public UpdateResult apply(Response input) {
-                        return UpdateResultParser.parse(input);
+                        return UpdateResultParser.parse(input.getText());
                     }
                 });
     }
@@ -140,7 +144,16 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     }
 
     @Override
-    public Promise<Void> remove(Set<ResourceId> resources) {
-        return Promise.rejected(new UnsupportedOperationException("todo"));
+    public Promise<Set<UpdateResult>> remove(Set<ResourceId> resourceIds) {
+        return store
+                .resolve("resources")
+                .deleteJson(ResourceIdListSerializer.toJson(resourceIds))
+                .then(new Function<Response, Set<UpdateResult>>() {
+                    @Nullable
+                    @Override
+                    public Set<UpdateResult> apply(Response input) {
+                        return UpdateResultParser.parseSet(input.getText());
+                    }
+                });
     }
 }

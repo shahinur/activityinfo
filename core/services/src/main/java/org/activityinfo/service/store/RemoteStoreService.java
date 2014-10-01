@@ -52,5 +52,8 @@ public interface RemoteStoreService {
 
     Promise<FolderProjection> getFolder(ResourceId rootId);
 
-    Promise<Void> remove(Set<ResourceId> resources);
+    /**
+     * Removes resources from store by respective id.
+     */
+    Promise<Set<UpdateResult>> remove(Set<ResourceId> resources);
 }
