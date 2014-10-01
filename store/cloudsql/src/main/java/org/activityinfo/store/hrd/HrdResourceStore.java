@@ -100,6 +100,9 @@ public class HrdResourceStore implements ResourceStore {
         final Workspace workspace = workspaceLookup.lookup(resourceId);
 
         try (WorkspaceTransaction tx = beginRead(workspace, user)) {
+            Authorization authorization = new Authorization(user, resourceId, tx);
+            authorization.assertIsOwner();
+
             return Lists.newArrayList(Iterables.transform(workspace.getAcrIndex().queryRules(tx, resourceId),
                     new Function<ResourceId, Resource>() {
                         @Override

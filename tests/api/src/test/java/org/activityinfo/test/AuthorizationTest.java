@@ -108,6 +108,9 @@ public class AuthorizationTest {
         assertTrue(newClient.createUser());
         assertTrue(newClient.getOwnedOrSharedWorkspaces().isEmpty());
 
+        acrs = newClient.getAccessControlRules(workspaceId);
+        assertEquals(0, acrs.size());
+
         for (Resource resource : resources) {
             try {
                 newClient.get(resource.getId());
