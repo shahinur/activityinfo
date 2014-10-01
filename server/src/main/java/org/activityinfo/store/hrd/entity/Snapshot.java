@@ -85,7 +85,7 @@ public class Snapshot {
         entity.setProperty(VERSION_PROPERTY, resource.getVersion());
         entity.setProperty(RESOURCE_ID_PROPERTY, resource.getId().asString());
         entity.setProperty(DELETED_PROPERTY, resource.isDeleted());
-        entity.setUnindexedProperty(TIMESTAMP_PROPERTY, System.currentTimeMillis());
+        entity.setUnindexedProperty(TIMESTAMP_PROPERTY, tx.currentTimeMillis());
         entity.setUnindexedProperty(USER_PROPERTY, tx.getUser().getId());
         entity.setUnindexedProperty(OWNER_PROPERTY, resource.getOwnerId().asString());
 

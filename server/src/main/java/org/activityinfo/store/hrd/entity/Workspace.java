@@ -1,10 +1,6 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.*;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -170,8 +166,8 @@ public class Workspace {
         Query descendantsQuery = new Query(LatestContent.KIND)
                 .setAncestor(getRootKey())
                 .setFilter(Query.CompositeFilterOperator.and(
-                        new Query.FilterPredicate(Content.OWNER_PROPERTY, Query.FilterOperator.EQUAL, parentId.asString()),
-                        new Query.FilterPredicate(Content.DELETED_PROPERTY, Query.FilterOperator.EQUAL, false)
+                    new Query.FilterPredicate(Content.OWNER_PROPERTY, Query.FilterOperator.EQUAL, parentId.asString()),
+                    new Query.FilterPredicate(Content.DELETED_PROPERTY, Query.FilterOperator.EQUAL, false)
                 ))
                 .setKeysOnly();
 
@@ -183,6 +179,15 @@ public class Workspace {
             childResource.setDeleted(true);
             updateResource(tx, childResource);
             deleteChilds(tx, resourceId, id); // recursive deletion
+        }
+    }
+
+    public boolean resourceExists(WorkspaceTransaction tx, ResourceId resourceId) {
+        try {
+            getLatestContent(resourceId).get(tx);
+            return true;
+        } catch (EntityNotFoundException e) {
+            return false;
         }
     }
 }
