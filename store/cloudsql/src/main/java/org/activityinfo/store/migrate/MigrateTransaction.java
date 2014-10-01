@@ -27,6 +27,7 @@ public class MigrateTransaction implements WorkspaceTransaction {
     private long currentVersion = 0;
 
     private List<Entity> toWrite = Lists.newArrayList();
+    private List<Key> toDelete = Lists.newArrayList();
 
     public MigrateTransaction(DatastoreService datastore, Workspace workspace, AuthenticatedUser user) {
         this.datastore = datastore;
@@ -61,8 +62,21 @@ public class MigrateTransaction implements WorkspaceTransaction {
         maybeSendBatch();
     }
 
+    @Override
+    public void delete(Key key) {
+        toDelete.add(key);
+        maybeSendBatch();
+    }
+
+    @Override
+    public void delete(Iterable<Key> entities) {
+        Iterables.addAll(toDelete, entities);
+        maybeSendBatch();
+    }
+
     private void maybeSendBatch() {
-        if(toWrite.size() > BATCH_LIMIT) {
+        int size = toWrite.size() + toDelete.size();
+        if(size > BATCH_LIMIT) {
             flush();
         }
     }
@@ -89,6 +103,9 @@ public class MigrateTransaction implements WorkspaceTransaction {
 
     public void flush() {
         datastore.put(null, toWrite);
+        datastore.delete(toDelete);
+
         toWrite.clear();
+        toDelete.clear();
     }
 }

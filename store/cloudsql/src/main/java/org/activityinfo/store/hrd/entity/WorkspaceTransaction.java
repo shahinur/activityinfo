@@ -14,6 +14,10 @@ public interface WorkspaceTransaction extends AutoCloseable {
 
     void put(Iterable<Entity> entities);
 
+    void delete(Key key);
+
+    void delete(Iterable<Key> entities);
+
     PreparedQuery prepare(Query projection);
 
     void commit();

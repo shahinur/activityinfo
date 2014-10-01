@@ -30,7 +30,6 @@ import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
-import org.activityinfo.store.EntityDeletedException;
 import org.activityinfo.store.hrd.entity.ReadTransaction;
 import org.activityinfo.store.hrd.entity.Snapshot;
 import org.activityinfo.store.hrd.entity.UpdateTransaction;
@@ -82,10 +81,7 @@ public class HrdResourceStore implements ResourceStore {
                 Authorization authorization = new Authorization(user, resourceId, tx);
                 authorization.assertCanView();
 
-                Resource resource = workspace.getLatestContent(resourceId).get(tx);
-                assertDeleted(resource);
-
-                return UserResource.userResource(resource).
+                return UserResource.userResource(workspace.getLatestContent(resourceId).get(tx)).
                         setOwner(authorization.isOwner()).
                         setEditAllowed(authorization.canEdit());
             }
@@ -156,7 +152,7 @@ public class HrdResourceStore implements ResourceStore {
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
 
-            long newVersion = workspace.deleteResourceTree(tx, resourceId);
+            long newVersion = workspace.deleteResource(tx, resourceId);
 
             return UpdateResult.committed(resourceId, newVersion);
         } catch (EntityNotFoundException e) {
@@ -183,8 +179,9 @@ public class HrdResourceStore implements ResourceStore {
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
             try {
-                Resource latestResource = workspace.getLatestContent(resource.getId()).get(tx);
-                assertDeleted(latestResource);
+
+                // check whether resource is in workspace and whether it's not deleted
+                workspace.getLatestContent(resource.getId()).get(tx);
 
             } catch (EntityNotFoundException e) {
                 return create(tx, user, resource);
@@ -264,9 +261,7 @@ public class HrdResourceStore implements ResourceStore {
                     setEditAllowed(rootNodeAuthorization.canEdit()).
                     setOwner(rootNodeAuthorization.isOwner());
 
-            assertDeleted(rootNode);
-
-            for (ResourceNode child : workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId(), true)) {
+            for (ResourceNode child : workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId())) {
                 Authorization childAuthorization = rootNodeAuthorization.ofChild(child.getId());
                 child.setEditAllowed(childAuthorization.canEdit()).
                         setOwner(childAuthorization.isOwner());
@@ -419,17 +414,5 @@ public class HrdResourceStore implements ResourceStore {
         }
 
         return result;
-    }
-
-    public static void assertDeleted(Resource resource) {
-        if (resource.isDeleted()) {
-            throw new EntityDeletedException();
-        }
-    }
-
-    public static void assertDeleted(ResourceNode resourceNode) {
-        if (resourceNode.isDeleted()) {
-            throw new EntityDeletedException();
-        }
     }
 }

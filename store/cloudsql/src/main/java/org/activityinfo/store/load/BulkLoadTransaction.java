@@ -50,6 +50,16 @@ public class BulkLoadTransaction implements WorkspaceTransaction {
     }
 
     @Override
+    public void delete(Key key) {
+        datastore.delete(key);
+    }
+
+    @Override
+    public void delete(Iterable<Key> entities) {
+        datastore.delete(entities);
+    }
+
+    @Override
     public PreparedQuery prepare(Query projection) {
         throw new UnsupportedOperationException("Reads not supported within a BulkLoadTransaction.");
     }
