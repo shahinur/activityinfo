@@ -1,17 +1,16 @@
 package org.activityinfo.store.hrd.entity;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.store.hrd.index.AcrIndex;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
-
-import java.util.List;
 
 /**
  * Workspaces form an Entity Group within all transactions occur with "serialized" consistency and
@@ -150,36 +149,17 @@ public class Workspace {
         return new AcrIndex(rootKey);
     }
 
-    public long deleteResourceTree(WorkspaceTransaction tx, ResourceId resourceId) throws EntityNotFoundException {
-        Resource resource = getLatestContent(resourceId).get(tx);
-        resource.setDeleted(true);
+    public long deleteResource(WorkspaceTransaction tx, ResourceId resourceId) throws EntityNotFoundException {
+        Preconditions.checkNotNull(tx);
+        Preconditions.checkNotNull(resourceId);
 
-        long newVersion = updateResource(tx, resource);
+        long newVersion = tx.incrementVersion();
 
-        // mark descendants as deleted too
-        deleteChilds(tx, resourceId, resourceId);
+        getLatestContent(resourceId).delete(tx);
+        getSnapshot(resourceId, newVersion).markDeleted(tx);
+
         tx.commit();
         return newVersion;
-    }
-
-    private void deleteChilds(WorkspaceTransaction tx, ResourceId resourceId, ResourceId parentId) throws EntityNotFoundException {
-        Query descendantsQuery = new Query(LatestContent.KIND)
-                .setAncestor(getRootKey())
-                .setFilter(Query.CompositeFilterOperator.and(
-                    new Query.FilterPredicate(Content.OWNER_PROPERTY, Query.FilterOperator.EQUAL, parentId.asString()),
-                    new Query.FilterPredicate(Content.DELETED_PROPERTY, Query.FilterOperator.EQUAL, false)
-                ))
-                .setKeysOnly();
-
-        List<Entity> descendants = Lists.newArrayList(tx.prepare(descendantsQuery).asIterator());
-        for (Entity entity : descendants) {
-            ResourceId id = ResourceId.valueOf(entity.getKey().getName());
-
-            Resource childResource = getLatestContent(id).get(tx);
-            childResource.setDeleted(true);
-            updateResource(tx, childResource);
-            deleteChilds(tx, resourceId, id); // recursive deletion
-        }
     }
 
     public boolean resourceExists(WorkspaceTransaction tx, ResourceId resourceId) {
