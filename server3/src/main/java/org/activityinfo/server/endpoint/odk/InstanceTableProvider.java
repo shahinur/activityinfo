@@ -25,8 +25,8 @@ public class InstanceTableProvider {
     public InstanceLabelTable getTable(ResourceId formClassId) {
 
         TableModel tableModel = new TableModel(formClassId);
-        tableModel.addResourceId("id");
-        tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
+        tableModel.selectResourceId().as("id");
+        tableModel.selectField(ApplicationProperties.LABEL_PROPERTY).as("label");
 
         TableData table = store.queryTable(user.get(), tableModel);
 

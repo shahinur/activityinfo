@@ -15,15 +15,12 @@ import java.util.List;
  */
 class ColumnCombiner implements Supplier<ColumnView> {
 
-    private ColumnType type;
     private List<Supplier<ColumnView>> sources;
 
     private ColumnView result;
 
-    ColumnCombiner(ColumnType type, List<Supplier<ColumnView>> sources) {
-        Preconditions.checkNotNull(type, "type");
+    ColumnCombiner(List<Supplier<ColumnView>> sources) {
         Preconditions.checkArgument(sources.size() > 1, "source.size() > 1");
-        this.type = type;
         this.sources = sources;
     }
 
@@ -36,19 +33,27 @@ class ColumnCombiner implements Supplier<ColumnView> {
     }
 
     private ColumnView combine() {
-        if(type == ColumnType.STRING) {
-            return combineString();
-        } else if(type == ColumnType.NUMBER) {
-            return combineDouble();
-        }
-        throw new UnsupportedOperationException();
-    }
-
-    private ColumnView combineString() {
         ColumnView[] cols = new ColumnView[sources.size()];
         for(int j=0;j<cols.length;++j) {
             cols[j] = sources.get(j).get();
         }
+        ColumnType columnType = sources.get(0).get().getType();
+
+        switch(columnType) {
+
+            case STRING:
+                return combineString(cols);
+            case NUMBER:
+                return combineDouble(cols);
+            case BOOLEAN:
+                break;
+            case DATE:
+                break;
+        }
+        throw new UnsupportedOperationException();
+    }
+
+    private ColumnView combineString(ColumnView[] cols) {
         int numRows = cols[0].numRows();
         int numCols = cols.length;
 
@@ -67,11 +72,7 @@ class ColumnCombiner implements Supplier<ColumnView> {
         return new StringArrayColumnView(values);
     }
 
-    private ColumnView combineDouble() {
-        ColumnView[] cols = new ColumnView[sources.size()];
-        for(int j=0;j<cols.length;++j) {
-            cols[j] = sources.get(j).get();
-        }
+    private ColumnView combineDouble(ColumnView[] cols) {
         int numRows = cols[0].numRows();
         int numCols = cols.length;
 

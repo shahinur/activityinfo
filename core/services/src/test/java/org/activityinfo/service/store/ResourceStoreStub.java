@@ -137,7 +137,7 @@ public class ResourceStoreStub implements ResourceStore {
             case "c3":
                 return new DoubleArrayColumnView(new double[] { 91, Double.NaN, 92});
             default:
-                return new EmptyColumnView(numRows, model.getType());
+                return new EmptyColumnView(numRows, ColumnType.STRING);
         }
     }
 

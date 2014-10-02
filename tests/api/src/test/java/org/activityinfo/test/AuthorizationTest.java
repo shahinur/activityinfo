@@ -29,8 +29,10 @@ public class AuthorizationTest {
     public void testAnonymousUser() {
         final ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI(), "A.Nonymous@example.com", "");
 
+        // At least as of the time of writing anonymous users shouldn't be able to view any workspaces on the dev server
         assertTrue(client.getOwnedOrSharedWorkspaces().isEmpty());
 
+        // Prepare a workspace so creating it can be attempted
         Resource workspace = Resources.createResource();
         workspace.setId(workspaceId);
         workspace.setOwnerId(ROOT_ID);
@@ -38,6 +40,8 @@ public class AuthorizationTest {
         workspace.setValue(Records.builder(FolderClass.CLASS_ID)
                 .set(FolderClass.LABEL_FIELD_ID.asString(), "An unwanted workspace that was never actually meant to be")
                 .build());
+
+        // Try and fail to create a workspace anonymously
         try {
             client.create(workspace);
             fail("Anonymous users can create new workspaces!");
@@ -50,8 +54,10 @@ public class AuthorizationTest {
     public void testAuthorizedUser() {
         final ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI());
 
+        // Creating a test user requires a special endpoint to be enabled
         if (!client.createUser()) throw new AssumptionViolatedException("Server is not configured to run in test mode");
 
+        // Check to see if the initial environment is sane
         try {
             client.get(resourceId);
             fail("An ID locally generated at random should not already be present inside the server's resource store!");
@@ -70,6 +76,7 @@ public class AuthorizationTest {
                 .build());
         client.create(workspace);
 
+        // Create a folder inside the newly created workspace
         Resource folder = Resources.createResource();
         folder.setId(resourceId);
         folder.setOwnerId(workspaceId);
@@ -79,6 +86,7 @@ public class AuthorizationTest {
                 .build());
         client.create(folder);
 
+        // Retrieve the workspace that was just created, along with its contents
         for (ResourceNode resourceNode : client.getOwnedOrSharedWorkspaces()) {
             Resource resource = client.get(resourceNode.getId());
             assertEquals(workspace, resource);
@@ -89,20 +97,24 @@ public class AuthorizationTest {
             assertNotEquals(workspace, resource);
         }
 
+        // Retrieve the workspace's ACR
         List<Resource> acrs = client.getAccessControlRules(workspaceId);
         assertEquals(1, acrs.size());
 
+        // Perform a sanity check on the updates endpoint
         List<Resource> resources = client.getUpdates(workspaceId, 0);
         assertEquals(3, resources.size());
         assertEquals(workspace, resources.get(0));
         assertEquals(acrs.get(0), resources.get(1));
         assertEquals(folder, resources.get(2));
 
+        // Now introduce a second user to really test the authorization functionality
         ActivityInfoClient newClient = new ActivityInfoClient(TestConfig.getRootURI());
 
         assertTrue(newClient.createUser());
         assertTrue(newClient.getOwnedOrSharedWorkspaces().isEmpty());
 
+        // Only a resource's owner should be able to view its ACRs
         try {
             newClient.getAccessControlRules(workspaceId);
             fail("Non-owners can access a resource's ACR!");
@@ -110,6 +122,7 @@ public class AuthorizationTest {
             assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
 
+        // Try and fail to access the other user's resources
         for (Resource resource : resources) {
             try {
                 newClient.get(resource.getId());
@@ -132,11 +145,35 @@ public class AuthorizationTest {
         assertEquals(1, workspaces.size());
         assertEquals(workspace, newClient.get(workspaces.get(0).getId()));
 
+        // Try and fail to access the new user's workspace from the other user's account
         try {
             client.get(workspaces.get(0).getId());
             fail("Users can access each other's resources without permission!");
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
+
+        // Rename the folder and check that it no longer matches the version on the server
+        folder.setValue(Records.builder(FolderClass.CLASS_ID)
+                .set(FolderClass.LABEL_FIELD_ID.asString(), "Renamed folder")
+                .build());
+        folder.setVersion(4);
+        assertNotEquals(folder, client.get(resourceId));
+
+        // Try and fail to rename the folder through the wrong user account
+        try {
+            newClient.update(folder);
+            fail("Users can update each other's resources without permission!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        // Rename the folder on the server, for real this time
+        assertNotEquals(folder, client.get(resourceId));
+        client.update(folder);
+        assertEquals(folder, client.get(resourceId));
+
+        // Fetch updates about the other user's workspace, none should be returned
+        assertTrue(newClient.getUpdates(workspaceId, 0).isEmpty());
     }
 }

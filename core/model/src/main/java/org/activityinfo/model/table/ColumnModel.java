@@ -1,19 +1,21 @@
 package org.activityinfo.model.table;
 
-import org.activityinfo.model.record.IsRecord;
-import org.activityinfo.model.record.Record;
-import org.activityinfo.model.record.RecordBuilder;
-import org.activityinfo.model.record.Records;
+import org.activityinfo.model.annotation.RecordBean;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.expr.ExprValue;
 
 /**
  * Defines a Column within a Table request
  */
-public class ColumnModel implements IsRecord {
+@RecordBean(classId = "_columnModel")
+public class ColumnModel {
+
+    public static final String ID_SYMBOL = "_id";
+    public static final String CLASS_SYMBOL = "_class";
 
     private String id;
-    private ColumnType type;
-    private ColumnSource source;
-    private String expression;
+    private ExprValue expression;
 
     /**
      *
@@ -25,89 +27,48 @@ public class ColumnModel implements IsRecord {
         return id;
     }
 
-    public void setId(String id) {
+    public ColumnModel setId(String id) {
         this.id = id;
-    }
-
-    public ColumnType getType() {
-        return type;
-    }
-
-    public void setType(ColumnType type) {
-        this.type = type;
-    }
-
-    public ColumnSource getSource() {
-        return source;
-    }
-
-    public void setSource(ColumnSource source) {
-        this.source = source;
-    }
-
-    public String getExpression() {
-        return expression;
-    }
-
-    public void setExpression(String expression) {
-        this.expression = expression;
+        return this;
     }
 
     /**
-     * Sets the source of this column to a new
-     * {@code FieldSource}
+     * Sets the column's id
      *
-     * @return the newly created {@code FieldSource}
+     * @param id the new id of the column
      */
-    public FieldSource select() {
-        FieldSource fieldSource = new FieldSource();
-        this.source = fieldSource;
-        return fieldSource;
+    public ColumnModel as(String id) {
+        return setId(id);
     }
 
-    public FieldSource select(ColumnType type) {
-        FieldSource fieldSource = new FieldSource();
-        this.source = fieldSource;
-        this.type = type;
-        return fieldSource;
+    public ExprValue getExpression() {
+        return expression;
     }
 
-    public void selectId() {
-        this.type = ColumnType.STRING;
-        this.source = new ResourceIdSource();
+    public ColumnModel setExpression(ExprValue exprValue) {
+        this.expression = exprValue;
+        return this;
     }
 
-    @Override
-    public Record asRecord() {
-        RecordBuilder record = Records.builder();
-        record.set("id", id);
-        if(type != null) {
-            record.set("type", type.name());
+    public ColumnModel setExpression(String expression) {
+        this.expression = new ExprValue(expression);
+        return this;
+    }
+
+
+    public ColumnModel setExpression(ResourceId resourceId) {
+        return setExpression(resourceId.asString());
+    }
+
+    public ColumnModel setExpression(FieldPath expression) {
+        StringBuilder sb = new StringBuilder();
+        for (ResourceId fieldId : expression.getPath()) {
+            if(sb.length() > 0) {
+                sb.append(".");
+            }
+            sb.append(fieldId.asString());
         }
-        record.set("source", source.asRecord());
-        return record.build();
+        return setExpression(sb.toString());
     }
 
-    public static ColumnModel fromRecords(Record record) {
-        ColumnModel model = new ColumnModel();
-        model.setId(record.getString("id"));
-
-        if(record.has("type")) {
-            model.setType(ColumnType.valueOf(record.getString("type")));
-        }
-
-        Record sourceRecord = record.getRecord("source");
-        String sourceType = sourceRecord.getString("type");
-        switch(sourceType) {
-            case FieldSource.SOURCE_TYPE:
-                model.setSource(FieldSource.fromRecord(sourceRecord));
-                break;
-            case ResourceIdSource.SOURCE_TYPE:
-                model.setSource(new ResourceIdSource());
-                break;
-            default:
-                throw new IllegalArgumentException(sourceType);
-        }
-        return model;
-    }
 }
