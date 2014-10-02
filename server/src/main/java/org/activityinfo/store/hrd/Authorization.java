@@ -11,6 +11,7 @@ import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
@@ -41,7 +42,7 @@ public class Authorization {
 
         while(!ROOT_ID.equals(resourceId)) {
             Optional<AccessControlRule> rule = tx.getWorkspace().getAcrIndex().getRule(tx, resourceId);
-            if(rule.isPresent()) {
+            if (rule.isPresent()) {
                 return rule.get();
             }
 
@@ -50,7 +51,8 @@ public class Authorization {
             try {
                 resourceId = tx.getWorkspace().getLatestContent(resourceId).getAsNode(tx).getOwnerId();
             } catch (EntityNotFoundException e) {
-                throw new IllegalStateException("Missing resource/owner: " + resourceId);
+                // owner entity may not exist if it was deleted, return UNAUTHORIZED status code.
+                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
             }
         }
         return null;
