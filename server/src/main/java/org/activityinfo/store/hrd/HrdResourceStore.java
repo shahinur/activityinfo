@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.CONFLICT;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
 
@@ -188,6 +189,8 @@ public class HrdResourceStore implements ResourceStore {
 
             Workspace workspace = new Workspace(resource.getId());
             try (WorkspaceTransaction tx = begin(workspace, user)) {
+                assertNoConflict(resource, workspace, tx);
+
                 long newVersion = workspace.createWorkspace(tx, resource);
                 tx.commit();
 
@@ -210,21 +213,16 @@ public class HrdResourceStore implements ResourceStore {
         Workspace workspace = tx.getWorkspace();
 
         authorization.assertCanEdit();
+        assertNoConflict(resource, workspace, tx);
 
-        try {
-            workspace.getLatestContent(resource.getId()).get(tx);
-            return UpdateResult.rejected();
-        } catch (EntityNotFoundException e) {
-            long newVersion = workspace.createResource(tx, resource, Optional.<Long>absent());
-            tx.commit();
+        long newVersion = workspace.createResource(tx, resource, Optional.<Long>absent());
+        tx.commit();
 
-            // Cache immediately so that subsequent reads will be able to find the resource
-            // if it takes a while for the indices to catch up
-            workspaceLookup.cache(resource.getId(), workspace);
+        // Cache immediately so that subsequent reads will be able to find the resource
+        // if it takes a while for the indices to catch up
+        workspaceLookup.cache(resource.getId(), workspace);
 
-            return UpdateResult.committed(resource.getId(), newVersion);
-        }
-
+        return UpdateResult.committed(resource.getId(), newVersion);
     }
 
 
@@ -371,5 +369,13 @@ public class HrdResourceStore implements ResourceStore {
         }
 
         return result;
+    }
+
+    private static void assertNoConflict(Resource resource, Workspace workspace, WorkspaceTransaction tx) {
+        try {
+            Resource other = workspace.getLatestContent(resource.getId()).get(tx);
+            other.setVersion(resource.getVersion());    // The client need not know the version assigned to the resource
+            if (!resource.equals(other)) throw new WebApplicationException(CONFLICT);
+        } catch (EntityNotFoundException e) {}
     }
 }
