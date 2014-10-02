@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static javax.ws.rs.core.Response.Status.CONFLICT;
 import static javax.ws.rs.core.Response.Status.GONE;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
@@ -128,18 +129,19 @@ public class AuthorizationTest {
             }
         }
 
-        workspace = Resources.createResource();
-        workspace.setId(Resources.generateId());
-        workspace.setOwnerId(ROOT_ID);
-        workspace.setVersion(1);
-        workspace.setValue(Records.builder(FolderClass.CLASS_ID)
+        Resource newWorkspace = Resources.createResource();
+        newWorkspace.setId(Resources.generateId());
+        newWorkspace.setOwnerId(ROOT_ID);
+        newWorkspace.setVersion(1);
+        newWorkspace.setValue(Records.builder(FolderClass.CLASS_ID)
                 .set(FolderClass.LABEL_FIELD_ID.asString(), "Another workspace")
                 .build());
-        newClient.create(workspace);
+        newClient.create(newWorkspace);
+        newClient.create(newWorkspace); // Not a mistake - resource creation should be idempotent
 
         List<ResourceNode> workspaces = newClient.getOwnedOrSharedWorkspaces();
         assertEquals(1, workspaces.size());
-        assertEquals(workspace, newClient.get(workspaces.get(0).getId()));
+        assertEquals(newWorkspace, newClient.get(workspaces.get(0).getId()));
 
         // Try and fail to access the new user's workspace from the other user's account
         try {
@@ -148,6 +150,9 @@ public class AuthorizationTest {
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
+
+        // Create the folder a second time, with identical contents - once again, resource creation should be idempotent
+        client.create(folder);
 
         // Rename the folder and check that it no longer matches the version on the server
         folder.setValue(Records.builder(FolderClass.CLASS_ID)
@@ -162,6 +167,14 @@ public class AuthorizationTest {
             fail("Users can update each other's resources without permission!");
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        // Try and fail to create the folder a second time, but with changes
+        try {
+            client.create(folder);
+            fail("Users can create resources with IDs that are already in use with different contents!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(CONFLICT.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
 
         // Rename the folder on the server, for real this time
@@ -221,6 +234,22 @@ public class AuthorizationTest {
             fail("Users can see deletion of each other's workspaces without permission!");
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        // Try and fail to recreate the deleted workspace
+        try {
+            client.create(workspace);
+            fail("Deleted resources can be recreated!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(CONFLICT.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        // Try and fail to recreate the deleted workspace as another user
+        try {
+            newClient.create(workspace);
+            fail("Deleted resources can be recreated by another user!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(CONFLICT.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
     }
 }
