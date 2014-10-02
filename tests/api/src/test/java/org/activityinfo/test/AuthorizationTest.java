@@ -9,7 +9,6 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
 import org.junit.Test;
-import org.junit.internal.AssumptionViolatedException;
 
 import java.util.List;
 
@@ -52,10 +51,7 @@ public class AuthorizationTest {
 
     @Test
     public void testAuthorizedUser() {
-        final ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI());
-
-        // Creating a test user requires a special endpoint to be enabled
-        if (!client.createUser()) throw new AssumptionViolatedException("Server is not configured to run in test mode");
+        final ActivityInfoTestClient client = new ActivityInfoTestClient(TestConfig.getRootURI());
 
         // Check to see if the initial environment is sane
         try {
@@ -109,9 +105,8 @@ public class AuthorizationTest {
         assertEquals(folder, resources.get(2));
 
         // Now introduce a second user to really test the authorization functionality
-        ActivityInfoClient newClient = new ActivityInfoClient(TestConfig.getRootURI());
+        ActivityInfoTestClient newClient = new ActivityInfoTestClient(TestConfig.getRootURI());
 
-        assertTrue(newClient.createUser());
         assertTrue(newClient.getOwnedOrSharedWorkspaces().isEmpty());
 
         // Only a resource's owner should be able to view its ACRs

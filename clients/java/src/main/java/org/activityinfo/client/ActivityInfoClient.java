@@ -29,30 +29,15 @@ import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.security.SecureRandom;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import static java.lang.Long.toHexString;
-import static javax.ws.rs.core.Response.Status.CREATED;
-import static javax.ws.rs.core.Response.Status.fromStatusCode;
-
 public class ActivityInfoClient {
-    final private static String TEST_ADDRESS_SUFFIX = "@example.com";
-    final private static SecureRandom secureRandom = new SecureRandom();
-
     private final Client client;
     private final URI rootUri;
-    private final WebResource root;
-    private final String accountEmail;
-    private final String password;
-    private WebResource store;
-
-    public ActivityInfoClient(URI rootUri) {
-        this(rootUri, toHexString(secureRandom.nextLong()) + TEST_ADDRESS_SUFFIX, toHexString(secureRandom.nextLong()));
-    }
+    protected final WebResource root;
+    protected final WebResource store;
 
     public ActivityInfoClient(URI rootUri, String accountEmail, String password) {
         ClientConfig clientConfig = new DefaultClientConfig(
@@ -60,8 +45,6 @@ public class ActivityInfoClient {
                 ObjectMapperProvider.class);
 
         this.rootUri = rootUri;
-        this.accountEmail = accountEmail;
-        this.password = password;
 
         client = Client.create(clientConfig);
         client.addFilter(new HTTPBasicAuthFilter(accountEmail, password));
@@ -272,18 +255,6 @@ public class ActivityInfoClient {
             .queryParam("version", String.valueOf(version))
             .accept(MediaType.APPLICATION_JSON)
             .get(new ResourceListGenericType());
-    }
-
-    public boolean createUser() {
-        Form form = new Form();
-        form.put("email", Collections.singletonList(accountEmail));
-        form.put("password", Collections.singletonList(password));
-
-        return CREATED.equals(fromStatusCode(
-                root.path("test").path("createUser")
-                .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
-                .post(ClientResponse.class, form)
-                .getStatus()));
     }
 
     final static private class ResourceNodeListGenericType extends GenericType<List<ResourceNode>> {
