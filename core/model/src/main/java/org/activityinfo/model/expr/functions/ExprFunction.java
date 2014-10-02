@@ -29,6 +29,6 @@ public abstract class ExprFunction {
     /**
      * @return the FieldTypeClass of the result given the argumentTypes as input
      */
-    public abstract FieldType getResultType(List<FieldType> argumentTypes);
+    public abstract FieldType resolveResultType(List<FieldType> argumentTypes);
 
 }

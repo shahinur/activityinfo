@@ -1,10 +1,16 @@
 package org.activityinfo.model.type;
 
+import org.activityinfo.model.expr.diagnostic.ExprException;
+
+/**
+ * A FieldValue resulting from an {@link org.activityinfo.model.expr.diagnostic.ExprException}, indicating
+ * that the user has defined a expression incorrectly.
+ */
 public class ErrorValue implements FieldValue {
 
-    private final Exception exception;
+    private final ExprException exception;
 
-    public ErrorValue(Exception e) {
+    public ErrorValue(ExprException e) {
         this.exception = e;
     }
 

@@ -1,6 +1,6 @@
-package org.activityinfo.model.expr;
+package org.activityinfo.model.expr.diagnostic;
 
-public class ExprSyntaxException extends RuntimeException {
+public class ExprSyntaxException extends ExprException {
 
     public ExprSyntaxException() {
     }
