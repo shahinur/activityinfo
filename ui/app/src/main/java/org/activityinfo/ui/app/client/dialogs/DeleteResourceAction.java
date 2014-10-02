@@ -23,11 +23,15 @@ package org.activityinfo.ui.app.client.dialogs;
 
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.app.client.page.home.HomePlace;
 import org.activityinfo.ui.app.client.request.RemoveRequest;
+import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.style.ButtonStyle;
 
 /**
@@ -38,11 +42,22 @@ public class DeleteResourceAction implements ConfirmDialog.Action<UpdateResult> 
     private Application application;
     private ResourceId resourceId;
     private String resourceLabel;
+    private Place placeAfterDeletion;
 
     public DeleteResourceAction(Application application, ResourceId resourceId, String resourceLabel) {
         this.application = application;
         this.resourceId = resourceId;
         this.resourceLabel = resourceLabel;
+        this.placeAfterDeletion = placeAfterDeletion(application, resourceId);
+    }
+
+    private Place placeAfterDeletion(Application application, ResourceId resourceId) {
+        Status<UserResource> resourceStatus = application.getResourceStore().get(resourceId);
+        if (resourceStatus.isAvailable() &&
+                application.getFolderStore().get(resourceStatus.get().getResource().getOwnerId()).isAvailable()) {
+            return new FolderPlace(resourceStatus.get().getResource().getOwnerId());
+        }
+        return HomePlace.INSTANCE;
     }
 
     @Override
@@ -81,6 +96,6 @@ public class DeleteResourceAction implements ConfirmDialog.Action<UpdateResult> 
 
     @Override
     public void onComplete() {
-        application.getRouter().navigate(HomePlace.INSTANCE);
+        application.getRouter().navigate(placeAfterDeletion);
     }
 }
