@@ -23,6 +23,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +57,37 @@ public class GcsBlobFieldStorageService implements BlobFieldStorageService {
 
         writeMetadata(user, blobId, contentDisposition);
         getBlobResource(blobId).put(contentDisposition, mimeType, byteSource);
+    }
+
+    @Override
+    public OutputStream put(final AuthenticatedUser user,
+                            final BlobId blobId,
+                            final String contentDisposition,
+                            final String mimeType) throws IOException {
+        final OutputStream out = getBlobResource(blobId).openOutputStream(contentDisposition, mimeType);
+        return new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                out.write(b);
+            }
+
+            @Override
+            public void write(byte[] b) throws IOException {
+                out.write(b);
+            }
+
+            @Override
+            public void write(byte[] b, int off, int len) throws IOException {
+                out.write(b, off, len);
+            }
+
+            @Override
+            public void close() throws IOException {
+                out.close();
+
+                writeMetadata(user, blobId, contentDisposition);
+            }
+        };
     }
 
     @POST

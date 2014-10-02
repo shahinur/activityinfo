@@ -359,4 +359,7 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("Do you want to retry deleting {0}?")
     String retryResourceDeletion(String formClassLabel);
+
+    @DefaultMessage("Exporting {0}...")
+    String exportJobDescription(String label);
 }

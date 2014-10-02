@@ -1,8 +1,8 @@
 package org.activityinfo.model.type.time;
 
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.Records;
-import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -74,4 +74,8 @@ public class MonthValue implements FieldValue, IsRecord, TemporalValue {
         return new LocalDateInterval(new LocalDate(year, monthOfYear, 1), TimeUtils.getLastDayOfMonth(this));
     }
 
+    @Override
+    public String toString() {
+        return year + (monthOfYear < 10 ? "-0" : "-") + monthOfYear;
+    }
 }
