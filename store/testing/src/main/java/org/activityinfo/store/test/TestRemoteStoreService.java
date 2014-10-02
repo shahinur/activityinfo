@@ -2,7 +2,11 @@ package org.activityinfo.store.test;
 
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -15,7 +19,6 @@ import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tasks.UserTask;
 
 import java.util.List;
-import java.util.Set;
 
 public class TestRemoteStoreService implements RemoteStoreService {
 
@@ -76,7 +79,7 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<Set<UpdateResult>> remove(Set<ResourceId> resources) {
+    public Promise<UpdateResult> remove(ResourceId resourceId) {
         throw new UnsupportedOperationException();
     }
 }

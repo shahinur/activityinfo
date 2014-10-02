@@ -2,7 +2,11 @@ package org.activityinfo.ui.app.client.store;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
@@ -15,7 +19,6 @@ import org.activityinfo.ui.flux.store.AbstractStore;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class WorkspaceStore extends AbstractStore implements RemoteUpdateHandler {
 
@@ -63,17 +66,14 @@ public class WorkspaceStore extends AbstractStore implements RemoteUpdateHandler
             if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
                 addNewWorkspace(resource, (UpdateResult)response);
             }
-        } else if (request instanceof RemoveRequest && response instanceof Set) {
-            Set<UpdateResult> updatedResults = (Set<UpdateResult>) response;
-            boolean fireChanged = false;
-            for (UpdateResult updateResult : updatedResults) {
-                if (updateResult.getStatus() == CommitStatus.COMMITTED) {
-                    fireChanged = true;
-                    workspaces.remove(updateResult.getResourceId());
+        } else if (request instanceof RemoveRequest) {
+            UpdateResult updatedResult = (UpdateResult) response;
+
+            if (updatedResult.getStatus() == CommitStatus.COMMITTED) {
+                boolean removed = workspaces.remove(updatedResult.getResourceId()) != null;
+                if (removed) {
+                    fireChange();
                 }
-            }
-            if (fireChanged) {
-                fireChange();
             }
         }
     }

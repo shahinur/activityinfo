@@ -1,7 +1,11 @@
 package org.activityinfo.service.store;
 
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -10,7 +14,6 @@ import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.tasks.UserTask;
 
 import java.util.List;
-import java.util.Set;
 
 public interface RemoteStoreService {
 
@@ -55,5 +58,5 @@ public interface RemoteStoreService {
     /**
      * Removes resources from store by respective id.
      */
-    Promise<Set<UpdateResult>> remove(Set<ResourceId> resources);
+    Promise<UpdateResult> remove(ResourceId resourceId);
 }
