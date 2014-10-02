@@ -9,10 +9,10 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
 import org.junit.Test;
-import org.junit.internal.AssumptionViolatedException;
 
 import java.util.List;
 
+import static javax.ws.rs.core.Response.Status.GONE;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
@@ -52,10 +52,7 @@ public class AuthorizationTest {
 
     @Test
     public void testAuthorizedUser() {
-        final ActivityInfoClient client = new ActivityInfoClient(TestConfig.getRootURI());
-
-        // Creating a test user requires a special endpoint to be enabled
-        if (!client.createUser()) throw new AssumptionViolatedException("Server is not configured to run in test mode");
+        final ActivityInfoTestClient client = new ActivityInfoTestClient(TestConfig.getRootURI());
 
         // Check to see if the initial environment is sane
         try {
@@ -109,9 +106,8 @@ public class AuthorizationTest {
         assertEquals(folder, resources.get(2));
 
         // Now introduce a second user to really test the authorization functionality
-        ActivityInfoClient newClient = new ActivityInfoClient(TestConfig.getRootURI());
+        ActivityInfoTestClient newClient = new ActivityInfoTestClient(TestConfig.getRootURI());
 
-        assertTrue(newClient.createUser());
         assertTrue(newClient.getOwnedOrSharedWorkspaces().isEmpty());
 
         // Only a resource's owner should be able to view its ACRs
@@ -175,5 +171,24 @@ public class AuthorizationTest {
 
         // Fetch updates about the other user's workspace, none should be returned
         assertTrue(newClient.getUpdates(workspaceId, 0).isEmpty());
+
+        // Try and fail to delete the folder through the wrong user account
+        try {
+            newClient.delete(resourceId);
+            fail("Users can delete each other's resources without permission!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        // Really delete the folder
+        client.delete(resourceId);
+
+        // Check that the HTTP status code for "Gone" is returned, instead of "Not Found", "Internal Server Error", etc.
+        try {
+            client.get(resourceId);
+            fail("Deleting resources does not work!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(GONE.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
     }
 }
