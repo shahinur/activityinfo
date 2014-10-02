@@ -14,7 +14,7 @@ import java.util.Map;
  * Unlike a resource, individual {@code Record}s are not
  * required to have a stable, globally unique identity.
  */
-public interface Record extends FieldValue {
+public interface Record extends FieldValue, IsRecord {
 
     public ResourceId getClassId();
 

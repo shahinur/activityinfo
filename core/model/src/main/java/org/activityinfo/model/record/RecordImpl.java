@@ -184,4 +184,9 @@ class RecordImpl implements Record {
         result = 31 * result + (map != null ? map.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public Record asRecord() {
+        return this;
+    }
 }
