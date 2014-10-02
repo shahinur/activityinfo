@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static javax.ws.rs.core.Response.Status.GONE;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
@@ -170,5 +171,24 @@ public class AuthorizationTest {
 
         // Fetch updates about the other user's workspace, none should be returned
         assertTrue(newClient.getUpdates(workspaceId, 0).isEmpty());
+
+        // Try and fail to delete the folder through the wrong user account
+        try {
+            newClient.delete(resourceId);
+            fail("Users can delete each other's resources without permission!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        // Really delete the folder
+        client.delete(resourceId);
+
+        // Check that the HTTP status code for "Gone" is returned, instead of "Not Found", "Internal Server Error", etc.
+        try {
+            client.get(resourceId);
+            fail("Deleting resources does not work!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(GONE.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
     }
 }
