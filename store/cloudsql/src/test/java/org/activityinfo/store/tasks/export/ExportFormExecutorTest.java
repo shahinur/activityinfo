@@ -120,7 +120,7 @@ public class ExportFormExecutorTest {
         // Populate data
         for(int i=0;i!=10;++i) {
             RecordBuilder record = Records.builder(formClass.getId())
-                .set(name.getName(), "Bob " + i)
+                .set(name.getName(), (i % 2 == 0) ? ("Bob " + i) : null)
                 .set(serialNo.getName(), BarcodeValue.valueOf(Integer.toHexString(Integer.valueOf(i).hashCode())))
                 .set(age.getName(), new Quantity(i, "years"))
                 .set(gender.getName(), genderType.getValues().get(i % 2))
