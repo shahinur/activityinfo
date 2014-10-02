@@ -18,6 +18,12 @@ Resources may be created by users, or defined by the application.
 Each resource may have zero or more access control rules that determine which operations a user may perform
 on a resource.
 
+# Resource creation
+
+Resource creation is an idempotent operation - creating the same resource twice has the same effect as creating it once.
+
+Attempting to create a resource with an ID that is already used with different contents leads to a 409 error (CONFLICT).
+
 # Resource Owners
 
 Each resource, except the root resource, is "owned" by exactly one other resource. 
