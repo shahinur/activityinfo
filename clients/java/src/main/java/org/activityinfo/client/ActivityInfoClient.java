@@ -146,6 +146,16 @@ public class ActivityInfoClient {
     }
 
     /**
+     * Deletes a resource
+     */
+    public void delete(ResourceId resourceId) {
+        store.path("resource")
+            .path(resourceId.asString())
+            .type(MediaType.APPLICATION_JSON_TYPE)
+            .delete();
+    }
+
+    /**
      *
      * @return a list of workspaces which the authenticated user owns
      * or to which they have been explicitly granted access.
