@@ -7,7 +7,10 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.ApplicationClassProvider;
+import org.activityinfo.service.store.CommitStatus;
+import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
+import org.activityinfo.ui.app.client.request.RemoveRequest;
 import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
@@ -15,6 +18,7 @@ import org.activityinfo.ui.flux.store.AbstractStore;
 import org.activityinfo.ui.flux.store.Status;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The ResourceCache manages the caching and retrieval of individual
@@ -51,6 +55,18 @@ public class ResourceStore extends AbstractStore implements RemoteUpdateHandler 
             SaveRequest saveRequest = (SaveRequest) request;
             Resource updatedResource = saveRequest.getUpdatedResource();
             cache(UserResource.userResource(updatedResource).setEditAllowed(true));
+        } else if (request instanceof RemoveRequest && response instanceof Set) {
+            Set<UpdateResult> updatedResults = (Set<UpdateResult>) response;
+            boolean fireChanged = false;
+            for (UpdateResult updateResult : updatedResults) {
+                if (updateResult.getStatus() == CommitStatus.COMMITTED) {
+                    fireChanged = true;
+                    resources.remove(updateResult.getResourceId());
+                }
+            }
+            if (fireChanged) {
+                fireChange();
+            }
         }
     }
 
