@@ -1,6 +1,7 @@
 package org.activityinfo.model.form;
 
 import com.google.common.collect.Maps;
+import org.activityinfo.model.expr.diagnostic.ExprException;
 import org.activityinfo.model.expr.eval.*;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -76,7 +77,7 @@ public class FormEvalContext implements EvalContext {
         assert formInstance != null;
         try {
             return fieldMap.get(fieldName).getValue(formInstance, this);
-        } catch(Exception e) {
+        } catch(ExprException e) {
             return new ErrorValue(e);
         }
     }
