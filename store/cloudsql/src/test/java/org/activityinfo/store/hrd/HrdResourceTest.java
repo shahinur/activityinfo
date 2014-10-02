@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -145,13 +144,13 @@ public class HrdResourceTest {
         assertThat(folderProjection.getRootNode().getChildren().size(), Matchers.equalTo(1));
 
         // delete leaf
-        assertCommitted(environment.getStore().delete(environment.getUser(), Arrays.asList(folderLevel3.getId())).get(0));
+        assertCommitted(environment.getStore().delete(environment.getUser(), folderLevel3.getId()));
 
         assertDeleted(folderLevel3.getId(), true);
         assertDeleted(folderLevel2.getId(), false);
 
         // delete node (level1) that has child (level2) - child (level2) must be marked as deleted automatically
-        assertCommitted(environment.getStore().delete(environment.getUser(), Arrays.asList(folderLevel1.getId())).get(0));
+        assertCommitted(environment.getStore().delete(environment.getUser(), folderLevel1.getId()));
 
         assertDeleted(folderLevel1.getId(), true);
         assertDeleted(folderLevel2.getId(), true);

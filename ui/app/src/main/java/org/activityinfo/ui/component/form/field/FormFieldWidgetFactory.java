@@ -45,9 +45,9 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.ui.component.form.field.hierarchy.HierarchyFieldWidget;
 import org.activityinfo.ui.component.form.field.image.ImageUploadFieldWidget;
-import org.activityinfo.service.store.ResourceLocator;
 
 import java.util.logging.Logger;
 
@@ -172,8 +172,8 @@ public class FormFieldWidgetFactory {
         } else {
 
             TableModel tableModel = new TableModel(Iterables.getOnlyElement(type.getRange()));
-            tableModel.addResourceId("id");
-            tableModel.addColumn("label").select().fieldPath(ApplicationProperties.LABEL_PROPERTY);
+            tableModel.selectResourceId().as("id");
+            tableModel.selectField(ApplicationProperties.LABEL_PROPERTY).as("label");
 
             return resourceLocator.queryTable(tableModel).then(new Function<TableData, InstanceLabelTable>() {
                 @Override

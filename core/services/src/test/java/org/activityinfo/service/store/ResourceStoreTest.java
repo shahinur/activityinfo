@@ -14,7 +14,6 @@ import com.sun.jersey.test.framework.spi.container.inmemory.InMemoryTestContaine
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.*;
-import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -106,9 +105,9 @@ public class ResourceStoreTest extends JerseyTest {
     public void queryTable() {
 
         TableModel tableModel = new TableModel(ResourceStoreStub.MY_RESOURCE_ID);
-        tableModel.addColumn("c1").select(ColumnType.STRING).fieldPath(ResourceId.valueOf("foo"));
-        tableModel.addColumn("c2").select(ColumnType.STRING).fieldPath(ResourceId.valueOf("foo"));
-        tableModel.addColumn("c3").select(ColumnType.STRING).fieldPath(ResourceId.valueOf("foo"));
+        tableModel.selectField(ResourceId.valueOf("foo")).as("c1");
+        tableModel.selectField(ResourceId.valueOf("foo")).as("c2");
+        tableModel.selectField(ResourceId.valueOf("foo")).as("c3");
 
         TableData tableData = getStoreService()
                 .path("query")

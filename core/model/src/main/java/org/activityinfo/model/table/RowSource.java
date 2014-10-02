@@ -2,23 +2,25 @@ package org.activityinfo.model.table;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.activityinfo.model.record.IsRecord;
-import org.activityinfo.model.record.Record;
-import org.activityinfo.model.record.RecordBuilder;
-import org.activityinfo.model.record.Records;
+import org.activityinfo.model.annotation.RecordBean;
+import org.activityinfo.model.annotation.Reference;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.ReferenceValue;
 
-public class RowSource implements IsRecord {
+@RecordBean(classId = "_rowSource")
+public class RowSource {
 
     private ResourceId rootFormClass;
-    private String criteriaExpression;
+
+    public RowSource() {
+    }
 
     @JsonCreator
     public RowSource(@JsonProperty("rootFormClass") ResourceId rootFormClass) {
         this.rootFormClass = rootFormClass;
     }
 
+    @Reference(range = FormClass.class)
     public ResourceId getRootFormClass() {
         return rootFormClass;
     }
@@ -28,55 +30,21 @@ public class RowSource implements IsRecord {
         return this;
     }
 
-    public String getCriteriaExpression() {
-        return criteriaExpression;
-    }
-
-    public void setCriteriaExpression(String criteriaExpression) {
-        this.criteriaExpression = criteriaExpression;
-    }
-
-    @Override
-    public Record asRecord() {
-        RecordBuilder record = Records.builder();
-        record.set("rootFormClass", new ReferenceValue(rootFormClass).asRecord());
-        record.set("criteria", criteriaExpression);
-        return record.build();
-    }
-
-    public static RowSource fromRecord(Record record) {
-        ReferenceValue rootFormClassRef = ReferenceValue.fromRecord(record.isRecord("rootFormClass"));
-        RowSource source = new RowSource(rootFormClassRef.getResourceId());
-        source.setCriteriaExpression(record.isString("criteriaExpression"));
-        return source;
-    }
-
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         RowSource rowSource = (RowSource) o;
 
-        if (criteriaExpression != null ? !criteriaExpression.equals(rowSource.criteriaExpression) :
-                rowSource.criteriaExpression != null) {
+        if (rootFormClass != null ? !rootFormClass.equals(rowSource.rootFormClass) : rowSource.rootFormClass != null)
             return false;
-        }
-        if (!rootFormClass.equals(rowSource.rootFormClass)) {
-            return false;
-        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = rootFormClass.hashCode();
-        result = 31 * result + (criteriaExpression != null ? criteriaExpression.hashCode() : 0);
-        return result;
+        return rootFormClass != null ? rootFormClass.hashCode() : 0;
     }
 }

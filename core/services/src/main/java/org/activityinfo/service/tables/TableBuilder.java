@@ -2,18 +2,16 @@ package org.activityinfo.service.tables;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.expr.ExprNode;
-import org.activityinfo.model.expr.ExprParser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.table.*;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.table.ColumnModel;
+import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.tree.FormTreeBuilder;
 
-import java.util.List;
 import java.util.Map;
 
 public class TableBuilder {
@@ -37,37 +35,13 @@ public class TableBuilder {
         // so first queue up all necessary work before executing
         TableQueryBatchBuilder batch = new TableQueryBatchBuilder(resourceStore);
 
-//
-//        RowSetBuilder rowSetBuilder = new RowSetBuilder(formClass.getId(), batch);
-//        rowSetBuilder.fetch(batch);
-
-
+        RowSetBuilder rowSetBuilder = new RowSetBuilder(formClass.getId(), batch);
 
         Map<String, Supplier<ColumnView>> columnViews = Maps.newHashMap();
 
         for(ColumnModel column : table.getColumns()) {
-            if(column.getSource() instanceof FieldSource) {
-                FieldSource source = (FieldSource) column.getSource();
-                List<FormTree.Node> sourceNodes = source.select(tree);
-                ColumnType type = column.getType();
-                if (type == null) {
-                    type = detectType(sourceNodes);
-                }
-                if (sourceNodes.isEmpty()) {
-                    columnViews.put(column.getId(), batch.addEmptyColumn(type, formClass));
-                } else {
-                    columnViews.put(column.getId(), batch.addColumn(type, sourceNodes));
-                }
-            } else if(column.getSource() instanceof CalcFieldSource) {
-                assert formClass.getId().equals(((CalcFieldSource) column.getSource()).getFormClassId());
-
-                columnViews.put(column.getId(), buildColumn(tree, (CalcFieldSource)column.getSource()));
-
-            } else if(column.getSource() instanceof ResourceIdSource) {
-                columnViews.put(column.getId(), batch.getIdColumn(formClass));
-            } else {
-                throw new UnsupportedOperationException("Field source " + column.getSource());
-            }
+            Supplier<ColumnView> view = rowSetBuilder.fetch(column.getExpression().getExpression());
+            columnViews.put(column.getId(), view);
         }
 
         // Now execute the batch
@@ -89,26 +63,4 @@ public class TableBuilder {
         return new TableData(numRows, dataMap);
     }
 
-    private Supplier<ColumnView> buildColumn(FormTree formTree, CalcFieldSource source) {
-        ExprNode expr = ExprParser.parse(source.getExpression());
-
-        throw new UnsupportedOperationException();
-
-    }
-
-    private ColumnType detectType(List<FormTree.Node> sourceNodes) {
-        if(sourceNodes.isEmpty()) {
-            return ColumnType.STRING;
-        } else {
-            FieldType fieldType = sourceNodes.get(0).getType();
-            if(fieldType instanceof QuantityType) {
-                return ColumnType.NUMBER;
-//            } else if(fieldType instanceof LocalDateType) {
-//                return ColumnType.DATE;
-            } else {
-                return ColumnType.STRING;
-            }
-
-        }
-    }
 }

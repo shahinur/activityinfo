@@ -28,9 +28,9 @@ public class TableModelTest {
 
         ResourceId classId = ResourceId.valueOf("f023423");
         TableModel model = new TableModel(classId);
-        model.addColumn("c1").select().fieldPath(Resources.generateId());
+        model.selectField(Resources.generateId()).as("c1");
 
-        String json = mapper.writeValueAsString(model);
+        String json = mapper.writeValueAsString(TableModelClass.INSTANCE.toRecord(model));
         System.out.println(json);
 
         TableModel remodel = mapper.readValue(json, TableModel.class);
