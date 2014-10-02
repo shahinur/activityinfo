@@ -24,7 +24,7 @@
 
 * Deletion is considered a change in state, so a new Snapshot is created for the resource.
 * A snapshot of a deleted resource has no properties and has a 'deleted' flag set to true.
-* When resources are deleted, the corresponding LatestContent entity is removed so that they
+* When resources are deleted, the corresponding LatestContent entity properties are saved as unindexed and
   do not appear in indices over LatestContent.
 
 ## Security Considerations
