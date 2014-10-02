@@ -26,3 +26,19 @@
 * A snapshot of a deleted resource has no properties and has a 'deleted' flag set to true.
 * When resources are deleted, the corresponding LatestContent entity is removed so that they
   do not appear in indices over LatestContent.
+
+## Security Considerations
+
+In some rare cases, the fact that a record has been deleted should be considered confidential information. Take,
+for example, a security incident that is reported through AI and inadvertently shared with a malicious user with
+connections to the aggressor documented in the incident report.
+ 
+If it is the practice of the data owner to delete reports which are considered to be false, the malicious user could
+poll AI periodically to determine the status of the incident, even after their access has been revoked.
+
+For this reason, the LatestContent entities of the ACRs which apply to a deleted resource should be left in place.
+A GET request for a deleted entity for which the user is not authorized to view should return FORBIDDEN rather than
+NOT FOUND, even after that resource has been deleted.
+
+These precautions do not affect the queryXX() methods, resources will not be visible to unauthorized users regardless
+of whether they are deleted or not deleted.
