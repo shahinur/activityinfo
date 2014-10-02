@@ -189,7 +189,11 @@ public class HrdResourceStore implements ResourceStore {
 
             Workspace workspace = new Workspace(resource.getId());
             try (WorkspaceTransaction tx = begin(workspace, user)) {
-                assertNoConflict(resource, workspace, tx);
+                long oldVersion = assertNoConflictAndGetVersion(resource, workspace, tx);
+
+                if (oldVersion > 0) {
+                    return UpdateResult.committed(resource.getId(), oldVersion);
+                }
 
                 long newVersion = workspace.createWorkspace(tx, resource);
                 tx.commit();
@@ -213,7 +217,12 @@ public class HrdResourceStore implements ResourceStore {
         Workspace workspace = tx.getWorkspace();
 
         authorization.assertCanEdit();
-        assertNoConflict(resource, workspace, tx);
+
+        long oldVersion = assertNoConflictAndGetVersion(resource, workspace, tx);
+
+        if (oldVersion > 0) {
+            return UpdateResult.committed(resource.getId(), oldVersion);
+        }
 
         long newVersion = workspace.createResource(tx, resource, Optional.<Long>absent());
         tx.commit();
@@ -371,11 +380,21 @@ public class HrdResourceStore implements ResourceStore {
         return result;
     }
 
-    private static void assertNoConflict(Resource resource, Workspace workspace, WorkspaceTransaction tx) {
+    private static long assertNoConflictAndGetVersion(Resource resource, Workspace workspace, WorkspaceTransaction tx) {
+        final long version;
+
         try {
             Resource other = workspace.getLatestContent(resource.getId()).get(tx);
+            version = other.getVersion();
             other.setVersion(resource.getVersion());    // The client need not know the version assigned to the resource
-            if (!resource.equals(other)) throw new WebApplicationException(CONFLICT);
-        } catch (EntityNotFoundException e) {}
+
+            if (resource.equals(other)) {
+                return version;
+            } else {
+                throw new WebApplicationException(CONFLICT);
+            }
+        } catch (EntityNotFoundException e) {
+            return 0L;
+        }
     }
 }
