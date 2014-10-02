@@ -21,35 +21,28 @@ package org.activityinfo.ui.app.client.request;
  * #L%
  */
 
-import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
 
-import java.util.Set;
-
 /**
  * @author yuriyz on 9/22/14.
  */
-public class RemoveRequest implements Request<Set<UpdateResult>> {
+public class RemoveRequest implements Request<UpdateResult> {
 
-    private Set<ResourceId> resources = Sets.newHashSet();
+    private ResourceId resource;
 
     public RemoveRequest(ResourceId resource) {
-        this.resources.add(resource);
+        this.resource = resource;
     }
 
-    public RemoveRequest(Set<ResourceId> resourceIds) {
-        this.resources.addAll(resources);
-    }
-
-    public Set<ResourceId> getResources() {
-        return resources;
+    public ResourceId getResource() {
+        return resource;
     }
 
     @Override
-    public Promise<Set<UpdateResult>> send(RemoteStoreService service) {
-        return service.remove(resources);
+    public Promise<UpdateResult> send(RemoteStoreService service) {
+        return service.remove(resource);
     }
 }
