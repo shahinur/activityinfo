@@ -190,5 +190,37 @@ public class AuthorizationTest {
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(GONE.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
+
+        // Unauthorized users should not be able to see that a resource was deleted, for privacy reasons in edge cases
+        try {
+            newClient.get(resourceId);
+            fail("Users can see deletion of each other's resources without permission!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        // Perform all the same deletion tests again, but this time for the workspace instead of the folder
+        try {
+            newClient.delete(workspaceId);
+            fail("Users can delete each other's workspaces without permission!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        client.delete(workspaceId);
+
+        try {
+            client.get(workspaceId);
+            fail("Deleting workspaces does not work!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(GONE.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
+
+        try {
+            newClient.get(workspaceId);
+            fail("Users can see deletion of each other's workspaces without permission!");
+        } catch (UniformInterfaceException uniformInterfaceException) {
+            assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
+        }
     }
 }
