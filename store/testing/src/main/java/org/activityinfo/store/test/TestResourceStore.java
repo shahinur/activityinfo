@@ -25,7 +25,6 @@ import org.activityinfo.service.tables.TableBuilder;
 import javax.ws.rs.PathParam;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -102,19 +101,15 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     @Override
-    public List<UpdateResult> delete(@InjectParam AuthenticatedUser user, List<ResourceId> resources) {
-        final List<UpdateResult> results = new ArrayList<>();
-        for (ResourceId id : resources) {
-            Resource resource = resourceMap.get(id);
-            if (resource != null) {
-                long version = resource.getVersion() + 1;
-                resourceMap.remove(id);
-                results.add(UpdateResult.committed(id, version));
-            } else {
-                results.add(UpdateResult.rejected(id));
-            }
+    public UpdateResult delete(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+        Resource resource = resourceMap.get(resourceId);
+        if (resource != null) {
+            long version = resource.getVersion() + 1;
+            resourceMap.remove(resourceId);
+            return UpdateResult.committed(resourceId, version);
+        } else {
+            return UpdateResult.rejected(resourceId);
         }
-        return results;
     }
 
     @Override

@@ -18,6 +18,7 @@ import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
+import org.activityinfo.model.table.TableModelClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.RemoteStoreService;
@@ -57,7 +58,7 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     @Override
     public Promise<TableData> queryTable(TableModel tableModel) {
         return store.resolve("query").resolve("table")
-                .postJson(ResourceSerializer.toJson(tableModel.asRecord()))
+                .postJson(ResourceSerializer.toJson(TableModelClass.INSTANCE.toRecord(tableModel)))
                 .then(new JsTableDataBuilder());
     }
 

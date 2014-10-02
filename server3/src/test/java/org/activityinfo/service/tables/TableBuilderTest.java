@@ -1,5 +1,6 @@
 package org.activityinfo.service.tables;
 
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.TableData;
@@ -34,9 +35,9 @@ public class TableBuilderTest {
     @Test
     public void singleJoin() throws Exception {
         TableModel tableModel = new TableModel(DISTRICT);
-        tableModel.addColumn("id").selectId();
-        tableModel.addColumn("district").select().fieldPath(LABEL_PROPERTY);
-        tableModel.addColumn("province").select().fieldPath(PARENT_PROPERTY, LABEL_PROPERTY);
+        tableModel.selectResourceId().as("id");
+        tableModel.selectField(LABEL_PROPERTY).as("district");
+        tableModel.selectField(new FieldPath(PARENT_PROPERTY, LABEL_PROPERTY)).as("province");
 
         TableData tableData = tableService.buildTable(tableModel);
 
@@ -46,10 +47,10 @@ public class TableBuilderTest {
     @Test
     public void twoLinkJoin() throws Exception {
         TableModel tableModel = new TableModel(TERRITOIRE);
-        tableModel.addColumn("id").selectId();
-        tableModel.addColumn("territoire").select().fieldPath(LABEL_PROPERTY);
-        tableModel.addColumn("district").select().fieldPath(PARENT_PROPERTY, LABEL_PROPERTY);
-        tableModel.addColumn("province").select().fieldPath(PARENT_PROPERTY, PARENT_PROPERTY, LABEL_PROPERTY);
+        tableModel.selectResourceId().as("id");
+        tableModel.selectField(LABEL_PROPERTY).as("territoire");
+        tableModel.selectField(new FieldPath(PARENT_PROPERTY, LABEL_PROPERTY)).as("district");
+        tableModel.selectField(new FieldPath(PARENT_PROPERTY, PARENT_PROPERTY, LABEL_PROPERTY)).as("province");
 
         TableData tableData = tableService.buildTable(tableModel);
 

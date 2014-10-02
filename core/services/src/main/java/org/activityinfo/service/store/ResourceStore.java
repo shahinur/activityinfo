@@ -41,14 +41,14 @@ public interface ResourceStore {
      * Deletes {@code Resource}s from the store
      *
      * @param user      authenticated user
-     * @param resources resources
+     * @param resourceId resource id
      * @return result whether resource was deleted or not
      */
     @DELETE
-    @Path("resources")
+    @Path("resource/{id}")
     @Consumes("application/json")
     @Produces("application/json")
-    List<UpdateResult> delete(@InjectParam AuthenticatedUser user, List<ResourceId> resources);
+    UpdateResult delete(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
 
     /**
      * Creates or updates a {@code Resource} within the store.

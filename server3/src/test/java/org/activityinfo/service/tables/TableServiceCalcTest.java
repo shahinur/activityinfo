@@ -7,7 +7,6 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
-import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.FieldValue;
@@ -134,23 +133,6 @@ public class TableServiceCalcTest {
         initialTotalField.setLabel("Total Value of Initial Cost");
         initialTotalField.setCode("INITIAL_TOTAL");
         initialTotalField.setType(new CalculatedFieldType("{INITIAL}+{INITIAL_HARD}+{INITIAL_SOFT}"));
-        formClass.addElement(initialSoftField);
-
-        formClass.addElement(waterAllocField);
-        formClass.addElement(pctInitialField);
-        formClass.addElement(pctInitialHardField);
-        formClass.addElement(pctInitialSoftField);
-        formClass.addElement(pctExtensionField);
-        formClass.addElement(pctExtensionHardField);
-        formClass.addElement(pctExtensionSoftField);
-        formClass.addElement(pctOpField);
-        formClass.addElement(pctMaintenanceField);
-        formClass.addElement(pctOpMaintField);
-        formClass.addElement(waterExpField);
-
-        formClass.addElement(initialField);
-        formClass.addElement(initialHardField);
-        formClass.addElement(initialSoftField);
         formClass.addElement(initialTotalField);
 
         store.put(formClass.asResource());
@@ -206,12 +188,12 @@ public class TableServiceCalcTest {
         store.put(instance.asResource());
 
         TableModel tableModel = new TableModel(formClass.getId());
-        tableModel.addColumn("EXP").select(ColumnType.NUMBER).fieldPath(fieldId("EXP"));
-        tableModel.addColumn("WATER_EXP").select(ColumnType.NUMBER).fieldPath(fieldId("WATER_EXP"));
-        tableModel.addColumn("INITIAL").select(ColumnType.NUMBER).fieldPath(fieldId("INITIAL"));
-        tableModel.addColumn("INITIAL_HARD").select(ColumnType.NUMBER).fieldPath(fieldId("INITIAL_HARD"));
-        tableModel.addColumn("INITIAL_SOFT").select(ColumnType.NUMBER).fieldPath(fieldId("INITIAL_SOFT"));
-        tableModel.addColumn("INITIAL_TOTAL").select(ColumnType.NUMBER).fieldPath(fieldId("INITIAL_TOTAL"));
+        tableModel.selectField("EXP");
+        tableModel.selectField("WATER_EXP");
+        tableModel.selectField("INITIAL");
+        tableModel.selectField("INITIAL_HARD");
+        tableModel.selectField("INITIAL_SOFT");
+        tableModel.selectField("INITIAL_TOTAL");
 
         TableData data = tableService.buildTable(tableModel);
 
