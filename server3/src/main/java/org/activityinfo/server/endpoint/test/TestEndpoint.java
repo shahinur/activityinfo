@@ -25,7 +25,7 @@ public class TestEndpoint {
 
     @Inject
     public TestEndpoint(DeploymentConfiguration deploymentConfiguration, Provider<UserDAO> userDAO) {
-        if ("enabled".equals(deploymentConfiguration.getProperty(TEST_MODE))) {
+        if ("enabled".equals(deploymentConfiguration.getProperty(TEST_MODE)) || "enabled".equals(System.getProperty(TEST_MODE))) {
             this.userDAO = userDAO;
         } else {
             this.userDAO = null;
