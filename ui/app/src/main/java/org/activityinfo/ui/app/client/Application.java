@@ -29,7 +29,7 @@ public class Application {
         router = new Router(dispatcher);
 
         workspaceStore = new WorkspaceStore(dispatcher);
-        folderStore = new FolderStore(dispatcher);
+        folderStore = new FolderStore(dispatcher, router);
         draftStore = new DraftStore(dispatcher);
         resourceStore = new ResourceStore(dispatcher);
         connectivityStore = new ConnectivityStore(dispatcher);
