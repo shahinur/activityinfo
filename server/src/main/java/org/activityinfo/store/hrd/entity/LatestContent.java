@@ -12,6 +12,8 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.store.EntityDeletedException;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.util.Iterator;
 
 import static org.activityinfo.store.hrd.entity.Content.*;
@@ -46,8 +48,19 @@ public class LatestContent {
 
     public Resource get(WorkspaceTransaction tx) throws EntityNotFoundException {
         Entity entity = tx.get(key);
+        assertDeleted(entity);
         assertAncestorNotDeleted(tx, entity);
         return deserializeResource(entity);
+    }
+
+    private boolean isDeleted(Entity entity) {
+        return entity.isUnindexedProperty(VERSION_PROPERTY);
+    }
+
+    private void assertDeleted(Entity entity) {
+        if (isDeleted(entity)) {
+            throw new WebApplicationException(Response.Status.GONE);
+        }
     }
 
     private void assertAncestorNotDeleted(WorkspaceTransaction tx, Entity entity) throws EntityDeletedException {
@@ -57,6 +70,7 @@ public class LatestContent {
                 boolean isRoot = Resources.ROOT_ID.asString().equals(ownerId);
                 Key ownerKey = KeyFactory.createKey(rootKey, KIND, isRoot ? rootKey.getName() : ownerId);
                 Entity ownerEntity = tx.get(ownerKey);
+                assertDeleted(ownerEntity);
                 if (!isRoot) {
                     assertAncestorNotDeleted(tx, ownerEntity);
                 }
@@ -159,8 +173,19 @@ public class LatestContent {
         tx.put(entity);
     }
 
-    public void delete(WorkspaceTransaction tx) {
-        tx.delete(key);
+    public void delete(WorkspaceTransaction tx) throws EntityNotFoundException {
+        Entity entity = tx.get(key);
+        unindexProperty(entity, VERSION_PROPERTY);
+        unindexProperty(entity, OWNER_PROPERTY);
+        unindexProperty(entity, CLASS_PROPERTY);
+        unindexProperty(entity, CONTENTS_PROPERTY);
+        unindexProperty(entity, LABEL_PROPERTY);
+
+        tx.put(entity);
+    }
+
+    private void unindexProperty(Entity entity, String propertyName) {
+        entity.setUnindexedProperty(propertyName, entity.getProperty(propertyName));
     }
 
 
