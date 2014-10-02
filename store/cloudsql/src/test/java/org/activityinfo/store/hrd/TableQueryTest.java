@@ -7,7 +7,6 @@ import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -95,9 +94,9 @@ public class TableQueryTest {
         create(newInstance().set(name, "Doug").set(age, years(18)).set(gender, male));
 
         TableModel tableModel = new TableModel(formClassId);
-        tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
-        tableModel.addColumn("C2").select(ColumnType.NUMBER).fieldPath(age);
-        tableModel.addColumn("C3").select(ColumnType.STRING).fieldPath(gender);
+        tableModel.selectField(name).as("C1");
+        tableModel.selectField(age).as("C2");
+        tableModel.selectField(gender).as("C3");
 
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
 
@@ -116,8 +115,8 @@ public class TableQueryTest {
 
 
         TableModel tableModel = new TableModel(formClassId);
-        tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
-        tableModel.addColumn("C2").select(ColumnType.NUMBER).fieldPath(dogYears);
+        tableModel.selectField(name).as("C1");
+        tableModel.selectField(dogYears).as("C2");
 
 
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
@@ -135,8 +134,8 @@ public class TableQueryTest {
         create(newInstance().set(name, "Francine").set(age, years(10)).set(gender, female));
 
         TableModel tableModel = new TableModel(formClassId);
-        tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
-        tableModel.addColumn("C2").select(ColumnType.STRING).fieldPath(gender);
+        tableModel.selectField(name).as("C1");
+        tableModel.selectField(gender).as("C2");
 
 
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
@@ -156,8 +155,8 @@ public class TableQueryTest {
 
 
         TableModel tableModel = new TableModel(formClassId);
-        tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
-        tableModel.addColumn("C2").select(ColumnType.NUMBER).fieldPath(dogYears);
+        tableModel.selectField(name).as("C1");
+        tableModel.selectField(dogYears).as("C2");
 
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
 
@@ -175,8 +174,8 @@ public class TableQueryTest {
 
 
         TableModel tableModel = new TableModel(formClassId);
-        tableModel.addColumn("C1").select(ColumnType.STRING).fieldPath(name);
-        tableModel.addColumn("C2").select(ColumnType.STRING).fieldPath(barcode);
+        tableModel.selectField(name).as("C1");
+        tableModel.selectField(barcode).as("C2");
 
         TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
 

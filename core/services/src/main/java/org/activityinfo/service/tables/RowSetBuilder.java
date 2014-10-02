@@ -9,6 +9,7 @@ import org.activityinfo.model.expr.diagnostic.SymbolNotFoundException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.formTree.FormTreePrettyPrinter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnModel;
 import org.activityinfo.model.table.ColumnView;
@@ -21,6 +22,7 @@ import org.activityinfo.model.type.time.TemporalValue;
 import org.activityinfo.service.tables.function.ColumnFunctions;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Constructs a set of rows from a given RowSource model.
@@ -30,6 +32,8 @@ import java.util.List;
 public class RowSetBuilder {
 
 
+    private static final Logger LOGGER = Logger.getLogger(RowSetBuilder.class.getName());
+
     private TableQueryBatchBuilder batchBuilder;
     private FormTree tree;
     private FormClass rootFormClass;
@@ -38,9 +42,6 @@ public class RowSetBuilder {
 
     private final ColumnExprVisitor columnVisitor = new ColumnExprVisitor();
 
-
-
-
     public RowSetBuilder(ResourceId formClassId, TableQueryBatchBuilder batchBuilder) {
         this.formClassId = formClassId;
         this.batchBuilder = batchBuilder;
@@ -48,23 +49,28 @@ public class RowSetBuilder {
         this.rootFormClass = tree.getRootFormClasses().get(formClassId);
     }
 
-
     public Supplier<ColumnView> fetch(String expression) {
         ExprNode expr = ExprParser.parse(expression);
-        return expr.accept(columnVisitor);
+        try {
+            return expr.accept(columnVisitor);
+        } catch(SymbolNotFoundException e) {
+            // TODO: I think we should be stricter here but we have unit tests that rely on
+            // unmatched symbols mapping to empty columns
+            LOGGER.warning("Could not find symbol " + e.getMessage() + " in expression '" + expression + "' " +
+                "in root form class " + rootFormClass.getId());
+            FormTreePrettyPrinter.print(tree);
+
+            return batchBuilder.addEmptyColumn(rootFormClass);
+        }
     }
 
     public Supplier<ColumnView> fetch(ExprValue exprValue) {
         return fetch(exprValue.getExpression());
     }
 
-
-
-
     public Supplier<ColumnView> fetch(FormField field) {
         return batchBuilder.addColumn(tree.getRootField(field.getId()));
     }
-
 
 
     private Supplier<ColumnView> constant(Object value) {
@@ -85,13 +91,7 @@ public class RowSetBuilder {
 
         // then try to resolve the field by the code or label
         List<FormTree.Node> matching = Lists.newArrayList();
-        for(FormTree.Node rootField : fields) {
-            if(name.equalsIgnoreCase(rootField.getField().getCode())) {
-                matching.add(rootField);
-            } else if(name.equalsIgnoreCase(rootField.getField().getLabel())) {
-                matching.add(rootField);
-            }
-        }
+        matchSymbol(fields, name, matching);
 
         if(matching.size() == 1) {
             return matching.get(0);
@@ -103,6 +103,38 @@ public class RowSetBuilder {
         }
     }
 
+    private void matchSymbol(List<FormTree.Node> fields, String symbolName, List<FormTree.Node> matching) {
+        boolean matched = false;
+        for(FormTree.Node rootField : fields) {
+            if (matches(symbolName, rootField.getField())) {
+                matching.add(rootField);
+                matched = true;
+            }
+        }
+        // if we do not have a direct match, consider descendants
+        if(!matched) {
+            for(FormTree.Node field : fields) {
+                matchSymbol(field.getChildren(), symbolName, matching);
+            }
+        }
+    }
+
+    private boolean matches(String symbolName, FormField field) {
+        if(symbolName.equalsIgnoreCase(field.getCode()) ||
+           symbolName.equalsIgnoreCase(field.getLabel())) {
+            return true;
+        }
+        if(symbolName.equals(field.getId().asString())) {
+            return true;
+        }
+        for(ResourceId superProperty : field.getSuperProperties()) {
+            if(symbolName.equals(superProperty.asString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private FormTree.Node resolveCompoundExpr(List<FormTree.Node> fields, CompoundExpr expr) {
         if(expr.getValue() instanceof SymbolExpr) {
             FormTree.Node parentField = resolveSymbol(fields, ((SymbolExpr) expr.getValue()).getName());
@@ -110,12 +142,11 @@ public class RowSetBuilder {
 
         } else if(expr.getValue() instanceof CompoundExpr) {
             return resolveCompoundExpr(fields, (CompoundExpr) expr.getValue());
+
         } else {
             throw new UnsupportedOperationException("Unexpected value of compound expr: " + expr.getValue());
         }
     }
-
-
 
     private class ColumnExprVisitor implements ExprVisitor<Supplier<ColumnView>> {
 
@@ -137,6 +168,11 @@ public class RowSetBuilder {
 
         @Override
         public Supplier<ColumnView> visitSymbol(SymbolExpr symbolExpr) {
+            if(symbolExpr.getName().equals(ColumnModel.ID_SYMBOL)) {
+                return batchBuilder.getIdColumn(rootFormClass);
+            } else if(symbolExpr.getName().equals(ColumnModel.CLASS_SYMBOL)) {
+                return batchBuilder.addConstantColumn(rootFormClass, rootFormClass.getId().asString());
+            }
             return batchBuilder.addColumn(resolveSymbol(symbolExpr.getName()));
         }
 
