@@ -1,31 +1,17 @@
 package org.activityinfo.ui.store.remote.client.resource;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Sets;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
-import com.google.gwt.json.client.JSONArray;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.UpdateResult;
-
-import java.util.Set;
 
 public class UpdateResultParser implements Function<Response, UpdateResult> {
 
     @Override
     public UpdateResult apply(Response input) {
         return parse(input.getText());
-    }
-
-    public static Set<UpdateResult> parseSet(String input) {
-        JavaScriptObject object = JsonUtils.safeEval(input);
-        final Set<UpdateResult> results = Sets.newHashSet();
-        JSONArray array = new JSONArray(object);
-        for (int i = 0; i < array.size(); i++) {
-            results.add(parse(array.get(i).toString()));
-        }
-        return results;
     }
 
     public static UpdateResult parse(String input) {

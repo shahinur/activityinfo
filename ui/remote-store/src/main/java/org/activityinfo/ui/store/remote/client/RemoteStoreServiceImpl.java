@@ -25,12 +25,16 @@ import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.ui.store.remote.client.cube.BucketOverlay;
-import org.activityinfo.ui.store.remote.client.resource.*;
+import org.activityinfo.ui.store.remote.client.resource.ResourceNodeListParser;
+import org.activityinfo.ui.store.remote.client.resource.ResourceParser;
+import org.activityinfo.ui.store.remote.client.resource.ResourceSerializer;
+import org.activityinfo.ui.store.remote.client.resource.ResourceTreeParser;
+import org.activityinfo.ui.store.remote.client.resource.UpdateResultParser;
+import org.activityinfo.ui.store.remote.client.resource.UserResourceParser;
 import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
 public class RemoteStoreServiceImpl implements RemoteStoreService {
@@ -145,15 +149,16 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     }
 
     @Override
-    public Promise<Set<UpdateResult>> remove(Set<ResourceId> resourceIds) {
+    public Promise<UpdateResult> remove(ResourceId resourceId) {
         return store
-                .resolve("resources")
-                .deleteJson(ResourceIdListSerializer.toJson(resourceIds))
-                .then(new Function<Response, Set<UpdateResult>>() {
+                .resolve("resource")
+                .resolve(resourceId.asString())
+                .deleteJson("")
+                .then(new Function<Response, UpdateResult>() {
                     @Nullable
                     @Override
-                    public Set<UpdateResult> apply(Response input) {
-                        return UpdateResultParser.parseSet(input.getText());
+                    public UpdateResult apply(Response input) {
+                        return UpdateResultParser.parse(input.getText());
                     }
                 });
     }

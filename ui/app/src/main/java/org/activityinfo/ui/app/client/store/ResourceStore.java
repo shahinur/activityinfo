@@ -18,7 +18,6 @@ import org.activityinfo.ui.flux.store.AbstractStore;
 import org.activityinfo.ui.flux.store.Status;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The ResourceCache manages the caching and retrieval of individual
@@ -55,17 +54,13 @@ public class ResourceStore extends AbstractStore implements RemoteUpdateHandler 
             SaveRequest saveRequest = (SaveRequest) request;
             Resource updatedResource = saveRequest.getUpdatedResource();
             cache(UserResource.userResource(updatedResource).setEditAllowed(true));
-        } else if (request instanceof RemoveRequest && response instanceof Set) {
-            Set<UpdateResult> updatedResults = (Set<UpdateResult>) response;
-            boolean fireChanged = false;
-            for (UpdateResult updateResult : updatedResults) {
-                if (updateResult.getStatus() == CommitStatus.COMMITTED) {
-                    fireChanged = true;
-                    resources.remove(updateResult.getResourceId());
+        } else if (request instanceof RemoveRequest) {
+            UpdateResult updatedResult = (UpdateResult) response;
+            if (updatedResult.getStatus() == CommitStatus.COMMITTED) {
+                boolean removed = resources.remove(updatedResult.getResourceId()) != null;
+                if (removed) {
+                    fireChange();
                 }
-            }
-            if (fireChanged) {
-                fireChange();
             }
         }
     }

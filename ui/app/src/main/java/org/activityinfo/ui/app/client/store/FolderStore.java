@@ -12,6 +12,8 @@ import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.folder.FolderPlace;
 import org.activityinfo.ui.app.client.request.FetchFolder;
 import org.activityinfo.ui.app.client.request.RemoveRequest;
 import org.activityinfo.ui.app.client.request.Request;
@@ -20,6 +22,7 @@ import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
 import org.activityinfo.ui.flux.store.Status;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,9 +32,11 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
     private Map<ResourceId, Status<FolderProjection>> folders = Maps.newHashMap();
 
     private Set<ResourceId> loading = Sets.newHashSet();
+    private final Router router;
 
-    public FolderStore(Dispatcher dispatcher) {
+    public FolderStore(Dispatcher dispatcher, Router router) {
         super(dispatcher);
+        this.router = router;
     }
 
     @Override
@@ -78,25 +83,44 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
                     updateChildren(folder.get(), updatedResource);
                 }
             }
-        } else if (request instanceof RemoveRequest && response instanceof Set) {
-            Set<UpdateResult> updatedResults = (Set<UpdateResult>) response;
-            boolean fireChanged = false;
-            for (UpdateResult updateResult : updatedResults) {
-                if (updateResult.getStatus() == CommitStatus.COMMITTED) {
-                    boolean removed = loading.remove(updateResult.getResourceId());
+        } else if (request instanceof RemoveRequest) {
+            UpdateResult updatedResult = (UpdateResult) response;
+
+            if (updatedResult.getStatus() == CommitStatus.COMMITTED) {
+                boolean removed = loading.remove(updatedResult.getResourceId());
+                if (!removed) {
+                    removed = folders.remove(updatedResult.getResourceId()) != null;
                     if (!removed) {
-                        removed = folders.remove(updateResult.getResourceId()) != null;
-                        if (!removed) {
-                            // give up
+                        Place currentPlace = router.getCurrentPlace();
+                        if (currentPlace instanceof FolderPlace) {
+                            FolderPlace folderPlace = (FolderPlace) currentPlace;
+                            Status<FolderProjection> folderProjection = folders.get(folderPlace.getResourceId());
+                            if (folderProjection != null && folderProjection.isAvailable()) {
+                                removed = removeDescendant(folderProjection.get().getRootNode(), updatedResult.getResourceId());
+                            }
                         }
+                        // give up
                     }
-                    fireChanged = removed || fireChanged;
+                }
+                if (removed) {
+                    fireChange();
                 }
             }
-            if (fireChanged) {
-                fireChange();
+        }
+    }
+
+    private static boolean removeDescendant(ResourceNode node, ResourceId id) {
+        Iterator<ResourceNode> iterator = node.getChildren().iterator();
+        while(iterator.hasNext()) {
+            ResourceNode next = iterator.next();
+            if (next.getId().equals(id)) {
+                iterator.remove();
+                return true;
+            } else {
+                return removeDescendant(next, id);
             }
         }
+        return false;
     }
 
     private boolean isFolderItem(Resource updatedResource) {

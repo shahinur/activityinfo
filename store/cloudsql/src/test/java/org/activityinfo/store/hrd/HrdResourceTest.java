@@ -23,6 +23,8 @@ import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -114,13 +116,13 @@ public class HrdResourceTest {
 
         FormInstance workspace = createWorkspace("Workspace A");
         UpdateResult creationResult = environment.getStore()
-            .create(environment.getUser(), workspace.asResource());
+                .create(environment.getUser(), workspace.asResource());
 
         assertThat(creationResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
         workspace.set(FolderClass.LABEL_FIELD_ID, "Workspace B");
         UpdateResult updateResult = environment.getStore()
-            .create(environment.getUser(), workspace.asResource());
+                .create(environment.getUser(), workspace.asResource());
 
         assertThat(updateResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
@@ -154,6 +156,12 @@ public class HrdResourceTest {
 
         assertDeleted(folderLevel1.getId(), true);
         assertDeleted(folderLevel2.getId(), true);
+
+        try {
+            environment.getStore().get(environment.getUser(), folderLevel1.getId());
+        } catch (WebApplicationException e) {
+            assertThat(e.getResponse().getStatus(), Matchers.equalTo(Response.Status.UNAUTHORIZED.getStatusCode()));
+        }
     }
 
     @Test
@@ -162,7 +170,7 @@ public class HrdResourceTest {
         FormInstance folder1 = createWorkspace("Folder 1");
         FormInstance folder2 = createWorkspace("Folder 2");
 
-        assertCommitted(environment.getStore().create(environment.getUser(),  folder1.asResource()));
+        assertCommitted(environment.getStore().create(environment.getUser(), folder1.asResource()));
         assertCommitted(environment.getStore().create(environment.getUser(), folder2.asResource()));
 
         List<ResourceNode> roots = environment.getStore().getOwnedOrSharedWorkspaces(environment.getUser());
@@ -227,6 +235,10 @@ public class HrdResourceTest {
             }
         } catch (EntityDeletedException | IllegalStateException e) {
             if (deleted) {
+                return; // as expected we got "deleted" exception
+            }
+        } catch (WebApplicationException e) {
+            if (deleted && e.getResponse().getStatus() == Response.Status.UNAUTHORIZED.getStatusCode()) {
                 return; // as expected we got "deleted" exception
             }
         }
