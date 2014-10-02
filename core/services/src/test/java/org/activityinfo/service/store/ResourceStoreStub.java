@@ -1,22 +1,35 @@
 package org.activityinfo.service.store;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.record.Records;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.model.table.*;
+import org.activityinfo.model.table.Bucket;
+import org.activityinfo.model.table.ColumnModel;
+import org.activityinfo.model.table.ColumnType;
+import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.views.ConstantColumnView;
 import org.activityinfo.model.table.views.DoubleArrayColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
 import org.activityinfo.model.table.views.StringArrayColumnView;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
@@ -168,12 +181,8 @@ public class ResourceStoreStub implements ResourceStore {
     }
 
     @Override
-    public List<UpdateResult> delete(@InjectParam AuthenticatedUser user, List<ResourceId> resources) {
-        List<UpdateResult> result = Lists.newArrayList();
-        for (ResourceId resource : resources) {
-            result.add(UpdateResult.committed(resource, 1));
-        }
-        return result;
+    public UpdateResult delete(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+        return UpdateResult.committed(resourceId, 1);
     }
 
 
