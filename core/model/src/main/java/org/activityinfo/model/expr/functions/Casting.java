@@ -1,5 +1,6 @@
 package org.activityinfo.model.expr.functions;
 
+import org.activityinfo.model.expr.diagnostic.InvalidTypeException;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.HasSetFieldValue;
@@ -15,7 +16,7 @@ public class Casting {
         } else if(fieldValue == null) {
             return new Quantity(Double.NaN);
         } else {
-            throw new RuntimeException("Cannot cast " + fieldValue + " to quantity");
+            throw new InvalidTypeException("Cannot cast " + fieldValue + " to quantity");
         }
     }
 
@@ -25,7 +26,7 @@ public class Casting {
         } else if(value == BooleanFieldValue.FALSE) {
             return false;
         } else {
-            throw new RuntimeException("Cannot cast [" + value + "] to boolean");
+            throw new InvalidTypeException("Cannot cast [" + value + "] to boolean");
         }
     }
 
@@ -33,7 +34,7 @@ public class Casting {
         if (value instanceof HasSetFieldValue) {
             return ((HasSetFieldValue) value).getResourceIds();
         }else {
-            throw new RuntimeException("Cannot cast [" + value + "] to Set<ResourceId>");
+            throw new InvalidTypeException("Cannot cast [" + value + "] to Set<ResourceId>");
         }
     }
 }
