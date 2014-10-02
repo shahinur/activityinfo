@@ -78,7 +78,12 @@ public class GcsBlobResource implements BlobResource {
     }
 
     void put(String contentDisposition, String contentType, ByteSource byteSource) throws IOException {
+        try (OutputStream outputStream = openOutputStream(contentDisposition, contentType)) {
+            byteSource.copyTo(outputStream);
+        }
+    }
 
+    OutputStream openOutputStream(String contentDisposition, String contentType) throws IOException {
         GcsFilename gcsFilename = getFileName(blobId);
         GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
         GcsFileOptions.Builder builder = new GcsFileOptions.Builder();
@@ -87,9 +92,6 @@ public class GcsBlobResource implements BlobResource {
 
         GcsFileOptions gcsFileOptions = builder.build();
         GcsOutputChannel channel = gcsService.createOrReplace(gcsFilename, gcsFileOptions);
-
-        try (OutputStream outputStream = Channels.newOutputStream(channel)) {
-            byteSource.copyTo(outputStream);
-        }
+        return Channels.newOutputStream(channel);
     }
 }

@@ -89,7 +89,7 @@ public class LoadService {
                               @FormParam("workspaceId") ResourceId workspaceId,
                               @FormParam("ownerId") ResourceId ownerId) throws IOException {
 
-        AuthenticatedUser user = new AuthenticatedUser("", (int) userId, "");
+        AuthenticatedUser user = new AuthenticatedUser((int) userId);
 
         try {
             BulkLoader loader = new BulkLoader();

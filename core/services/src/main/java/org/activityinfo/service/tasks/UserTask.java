@@ -1,8 +1,11 @@
 package org.activityinfo.service.tasks;
 
+import com.google.common.collect.Lists;
 import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.Records;
+
+import java.util.List;
 
 /**
  * Describes the status of a background task being run on behalf of the user.
@@ -13,6 +16,8 @@ public class UserTask implements IsRecord {
     private String description;
     private double timeStarted;
     private UserTaskStatus status;
+
+    private final List<BlobResult> blobResults = Lists.newArrayList();
 
     public String getId() {
         return id;
@@ -44,6 +49,10 @@ public class UserTask implements IsRecord {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<BlobResult> getBlobResults() {
+        return blobResults;
     }
 
     @Override
