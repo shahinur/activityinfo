@@ -82,22 +82,18 @@ public class MockRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<Set<UpdateResult>> remove(Set<ResourceId> resources) {
-        Set<UpdateResult> results = Sets.newHashSet();
-        for (ResourceId resourceId : resources) {
-            folders.remove(resourceId);
-            results.add(UpdateResult.committed(resourceId, 1));
-        }
+    public Promise<UpdateResult> remove(ResourceId resourceId) {
+        folders.remove(resourceId);
 
         Set<Resource> toRemove = Sets.newHashSet();
         for (Resource resource : createdResources) {
-            if (resources.contains(resource.getId())) {
+            if (resourceId.equals(resource.getId())) {
                 toRemove.add(resource);
             }
         }
         createdResources.removeAll(toRemove);
 
-        return Promise.resolved(results);
+        return Promise.resolved(UpdateResult.committed(resourceId, 1));
     }
 
     public Resource getOnlyCreatedResource() {

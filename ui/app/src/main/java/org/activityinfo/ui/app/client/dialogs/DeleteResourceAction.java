@@ -30,12 +30,10 @@ import org.activityinfo.ui.app.client.page.home.HomePlace;
 import org.activityinfo.ui.app.client.request.RemoveRequest;
 import org.activityinfo.ui.style.ButtonStyle;
 
-import java.util.Set;
-
 /**
  * @author yuriyz on 9/23/14.
  */
-public class DeleteResourceAction implements ConfirmDialog.Action<Set<UpdateResult>> {
+public class DeleteResourceAction implements ConfirmDialog.Action<UpdateResult> {
 
     private Application application;
     private ResourceId resourceId;
@@ -77,7 +75,7 @@ public class DeleteResourceAction implements ConfirmDialog.Action<Set<UpdateResu
     }
 
     @Override
-    public Promise<Set<UpdateResult>> execute() {
+    public Promise<UpdateResult> execute() {
         return application.getRequestDispatcher().execute(new RemoveRequest(resourceId));
     }
 
