@@ -9,9 +9,11 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
 import org.activityinfo.ui.app.client.request.FetchFolder;
+import org.activityinfo.ui.app.client.request.RemoveRequest;
 import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
@@ -75,6 +77,24 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
                     // update childs
                     updateChildren(folder.get(), updatedResource);
                 }
+            }
+        } else if (request instanceof RemoveRequest && response instanceof Set) {
+            Set<UpdateResult> updatedResults = (Set<UpdateResult>) response;
+            boolean fireChanged = false;
+            for (UpdateResult updateResult : updatedResults) {
+                if (updateResult.getStatus() == CommitStatus.COMMITTED) {
+                    boolean removed = loading.remove(updateResult.getResourceId());
+                    if (!removed) {
+                        removed = folders.remove(updateResult.getResourceId()) != null;
+                        if (!removed) {
+                            // give up
+                        }
+                    }
+                    fireChanged = removed || fireChanged;
+                }
+            }
+            if (fireChanged) {
+                fireChange();
             }
         }
     }
