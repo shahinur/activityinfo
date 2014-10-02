@@ -126,53 +126,30 @@ public class HrdResourceStore implements ResourceStore {
     }
 
     /**
-     * Deletes {@code Resource}s from the store
+     * Deletes {@code Resource} from the store
      *
      * @param user      authenticated user
-     * @param resources resources
+     * @param resourceId resource id
      * @return result whether resource was deleted or not
      */
     @DELETE
-    @Path("resources")
+    @Path("resource/{id}")
     @Consumes("application/json")
     @Produces("application/json")
-    @Override
-    public List<UpdateResult> delete(@InjectParam AuthenticatedUser user, List<ResourceId> resources) {
+    public UpdateResult delete(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
 
-        // first assert whether "whole" request can be handled, to not be trapped in the UNAUTHORIZED
-        // response in the middle of processing (other solution may be always return UpdateResult, but we leave this strategy for now)
-        assertCanDelete(user, resources);
-
-        List<UpdateResult> result = Lists.newArrayList();
-        for (ResourceId resourceId : resources) {
-            result.add(deleteResource(user, resourceId));
-        }
-        return result;
-    }
-
-    private UpdateResult deleteResource(AuthenticatedUser user, ResourceId resourceId) {
         Workspace workspace = workspaceLookup.lookup(resourceId);
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
+
+            Authorization authorization = new Authorization(user, resourceId, tx);
+            authorization.assertCanEdit();
 
             long newVersion = workspace.deleteResource(tx, resourceId);
 
             return UpdateResult.committed(resourceId, newVersion);
         } catch (EntityNotFoundException e) {
             return UpdateResult.rejected(resourceId);
-        }
-    }
-
-    private void assertCanDelete(AuthenticatedUser user, List<ResourceId> resources) {
-        for (ResourceId resourceId : resources) {
-            Workspace workspace = workspaceLookup.lookup(resourceId);
-
-            try (WorkspaceTransaction tx = begin(workspace, user)) {
-
-                Authorization authorization = new Authorization(user, resourceId, tx);
-                authorization.assertCanEdit();
-
-            }
         }
     }
 
