@@ -59,7 +59,7 @@ public class LatestContent {
 
     private void assertDeleted(Entity entity) {
         if (isDeleted(entity)) {
-            throw new WebApplicationException(Response.Status.GONE);
+            throw new EntityDeletedException();
         }
     }
 
