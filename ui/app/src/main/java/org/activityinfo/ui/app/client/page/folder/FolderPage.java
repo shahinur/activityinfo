@@ -1,7 +1,6 @@
 package org.activityinfo.ui.app.client.page.folder;
 
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeUri;
 import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormClass;
@@ -115,18 +114,18 @@ public class FolderPage extends PageView implements StoreChangeListener {
             LOGGER.info("Folder id = " + rootNode.getId() + ", label = " + rootNode.getLabel());
 
             return new PageFrame(PAGE_ICON,
-                    rootNode.getLabel(), pageFrameConfig(rootNode),
+                    rootNode.getLabel(), pageFrameConfig(rootNode, true),
                     renderContents(rootNode));
         }
     }
 
-    private PageFrameConfig pageFrameConfig(ResourceNode node) {
+    private PageFrameConfig pageFrameConfig(ResourceNode node, boolean changePlaceAfterDeletion) {
         final PageFrameConfig config = new PageFrameConfig()
                 .setEditAllowed(node.isEditAllowed());
 
         if (node.isEditAllowed()) {
             config.setEnableRename(new RenameResourceDialog(application, node.getId()));
-            config.setEnableDeletion(new DeleteResourceAction(application, node.getId(), node.getLabel()));
+            config.setEnableDeletion(new DeleteResourceAction(application, node.getId(), node.getLabel(), changePlaceAfterDeletion));
         }
         return config;
     }
@@ -163,7 +162,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private VTree buttons(final ResourceNode node) {
-        final PageFrameConfig config = pageFrameConfig(node);
+        final PageFrameConfig config = pageFrameConfig(node, false);
         if (!config.isEditAllowed()) {
             return H.space();
         }
