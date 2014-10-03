@@ -1,7 +1,8 @@
 package org.activityinfo.ui.app.client.store;
 
 import com.google.common.base.Function;
-import com.google.common.base.Strings;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.FolderProjection;
@@ -70,39 +71,28 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
                 cacheFolder(save, result);
             }
 
-            if(isFolderItem(updatedResource)) {
-                ResourceId ownerId = updatedResource.getOwnerId();
-                Status<FolderProjection> folder = get(ownerId);
-                if(folder.isAvailable()) {
+            if (isFolderItem(updatedResource)) {
+                Status<FolderProjection> folder = get(updatedResource.getOwnerId());
+                if (folder.isAvailable()) {
 
-                    // update folder root
-                    folder.get().getRootNode().setLabel(Strings.nullToEmpty(
-                        updatedResource.getValue().isString(FolderClass.LABEL_FIELD_ID.asString())));
-
-                    // update childs
-                    updateChildren(folder.get(), updatedResource);
+                    updateChildren(folder.get(), updatedResource, true);
                 }
             }
         } else if (request instanceof RemoveRequest) {
             UpdateResult updatedResult = (UpdateResult) response;
 
             if (updatedResult.getStatus() == CommitStatus.COMMITTED) {
-                boolean removed = loading.remove(updatedResult.getResourceId());
-                if (!removed) {
-                    removed = folders.remove(updatedResult.getResourceId()) != null;
-                    if (!removed) {
-                        Place currentPlace = router.getCurrentPlace();
-                        if (currentPlace instanceof FolderPlace) {
-                            FolderPlace folderPlace = (FolderPlace) currentPlace;
-                            Status<FolderProjection> folderProjection = folders.get(folderPlace.getResourceId());
-                            if (folderProjection != null && folderProjection.isAvailable()) {
-                                removed = removeDescendant(folderProjection.get().getRootNode(), updatedResult.getResourceId());
-                            }
+                if (!loading.remove(updatedResult.getResourceId())) {
+                    folders.remove(updatedResult.getResourceId());
+
+                    Place currentPlace = router.getCurrentPlace();
+                    if (currentPlace instanceof FolderPlace) {
+                        FolderPlace folderPlace = (FolderPlace) currentPlace;
+                        Status<FolderProjection> folderProjection = folders.get(folderPlace.getResourceId());
+                        if (folderProjection != null && folderProjection.isAvailable()) {
+                            removeDescendant(folderProjection.get().getRootNode(), updatedResult.getResourceId());
                         }
-                        // give up
                     }
-                }
-                if (removed) {
                     fireChange();
                 }
             }
@@ -117,7 +107,7 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
                 iterator.remove();
                 return true;
             } else {
-                return removeDescendant(next, id);
+                removeDescendant(next, id);
             }
         }
         return false;
@@ -127,24 +117,22 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
         return updatedResource.getValue().getClassId().isApplicationDefined();
     }
 
-    private void updateChildren(FolderProjection folder, Resource updatedResource) {
+    private void updateChildren(FolderProjection folder, final Resource updatedResource, boolean editAllowed) {
         List<ResourceNode> children = folder.getRootNode().getChildren();
-        int index = getItemIndexById(children, updatedResource.getId());
-        if(index >= 0) {
-            children.set(index, new ResourceNode(updatedResource));
+        int index = Iterables.indexOf(children, new Predicate<ResourceNode>() {
+            @Override
+            public boolean apply(ResourceNode input) {
+                return input.getId().equals(updatedResource.getId());
+            }
+        });
+        ResourceNode node = new ResourceNode(updatedResource)
+                .setEditAllowed(editAllowed);
+        if (index >= 0) {
+            children.set(index, node);
         } else {
-            children.add(new ResourceNode(updatedResource));
+            children.add(node);
         }
         fireChange();
-    }
-
-    private int getItemIndexById(List<ResourceNode> items, ResourceId id) {
-        for(int i=0;i!=items.size();++i) {
-            if(items.get(i).getId().equals(id)) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private void cacheFolder(SaveRequest request, UpdateResult result) {
