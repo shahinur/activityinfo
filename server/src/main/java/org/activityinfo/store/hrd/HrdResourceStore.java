@@ -174,7 +174,11 @@ public class HrdResourceStore implements ResourceStore {
 
                 // check whether resource is in workspace and whether it's not deleted
                 workspace.getLatestContent(resource.getId()).get(tx);
+            } catch (EntityDeletedException e) {
+                Authorization authorization = new Authorization(user, resource.getId(), tx);
 
+                authorization.assertCanEdit();
+                throw e;
             } catch (EntityNotFoundException e) {
                 return create(tx, user, resource);
             }
