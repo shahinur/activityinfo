@@ -75,7 +75,7 @@ public class HrdUserTaskService implements UserTaskService {
 
 
         // Kick off task
-        QueueFactory.getDefaultQueue().add(TaskOptions.Builder
+        QueueFactory.getDefaultQueue().add(null, TaskOptions.Builder
             .withUrl("/service/tasks/run")
             .param("userId", Integer.toString(user.getId()))
             .param("taskId", task.getId()));
