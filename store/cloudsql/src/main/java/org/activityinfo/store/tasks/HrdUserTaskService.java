@@ -7,6 +7,7 @@ import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.json.ObjectMapperFactory;
@@ -50,6 +51,7 @@ public class HrdUserTaskService implements UserTaskService {
 
     private final HrdResourceStore store;
 
+    @Inject
     public HrdUserTaskService(HrdResourceStore store) {
         this.store = store;
         executors.put(ExportFormTaskClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
