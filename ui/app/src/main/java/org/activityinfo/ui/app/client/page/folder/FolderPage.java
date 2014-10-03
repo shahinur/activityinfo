@@ -2,28 +2,26 @@ package org.activityinfo.ui.app.client.page.folder;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.record.RecordBuilder;
-import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.chrome.PageFrameConfig;
+import org.activityinfo.ui.app.client.dialogs.ConfirmDialog;
 import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
-import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
+import org.activityinfo.ui.app.client.dialogs.RenameResourceDialog;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
-import org.activityinfo.ui.app.client.page.*;
+import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.PageViewFactory;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.ResourcePlace;
 import org.activityinfo.ui.app.client.page.folder.task.*;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
-import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
@@ -33,9 +31,7 @@ import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.html.Icon;
-import org.activityinfo.ui.vdom.shared.tree.PropMap;
-import org.activityinfo.ui.vdom.shared.tree.Style;
-import org.activityinfo.ui.vdom.shared.tree.VTree;
+import org.activityinfo.ui.vdom.shared.tree.*;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -77,18 +73,10 @@ public class FolderPage extends PageView implements StoreChangeListener {
         this.application = application;
         this.folderId = folderId;
         this.tasksPanel = new TasksPanel("Common Tasks",
-            new CreateFormTask(application, folderId),
             new CreateFolderTask(application, folderId),
+            new CreateFormTask(application, folderId),
             new ImportFileTask(application, folderId),
             new CreatePivotTableTask(application, folderId));
-
-        this.editLabelDialog.setOkClickHandler(new ClickHandler() {
-            @Override
-            public void onClicked() {
-                String newName = editLabelDialog.getInputControl().getValueAsString();
-                onRename(newName);
-            }
-        });
     }
 
     @Override
@@ -128,14 +116,14 @@ public class FolderPage extends PageView implements StoreChangeListener {
             LOGGER.info("Folder id = " + rootNode.getId() + ", label = " + rootNode.getLabel());
 
             return new PageFrame(PAGE_ICON,
-                    rootNode.getLabel(), pageFrameConfig(rootNode, true),
-                    renderContents(rootNode));
+                rootNode.getLabel(), pageFrameConfig(rootNode, true),
+                renderContents(rootNode));
         }
     }
 
     private PageFrameConfig pageFrameConfig(ResourceNode node, boolean changePlaceAfterDeletion) {
         final PageFrameConfig config = new PageFrameConfig()
-                .setEditAllowed(node.isEditAllowed());
+            .setEditAllowed(node.isEditAllowed());
 
         if (node.isEditAllowed()) {
             config.setEnableRename(new RenameResourceDialog(application, node.getId()));
@@ -146,10 +134,10 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
     private VTree renderContents(ResourceNode folder) {
         return
-                div(BaseStyles.ROW,
-                        listColumn(folder),
-                        timelineColumn(),
-                        helpColumn(folder));
+            div(BaseStyles.ROW,
+                listColumn(folder),
+                timelineColumn(),
+                helpColumn(folder));
     }
 
     private VTree listColumn(ResourceNode page) {
@@ -158,21 +146,21 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
     private VTree childTable(ResourceNode page) {
         return new Panel(
-                div(className(BaseStyles.WIDGET_BLOGLIST), map(page.getChildren(),
-                        new H.Render<ResourceNode>() {
+            div(className(BaseStyles.WIDGET_BLOGLIST), map(page.getChildren(),
+                new H.Render<ResourceNode>() {
 
-                @Override
-                public VTree render(ResourceNode item) {
-                    return media(item);
-                }
-            })));
+                    @Override
+                    public VTree render(ResourceNode item) {
+                        return media(item);
+                    }
+                })));
     }
 
     private VTree media(ResourceNode child) {
 
         return Media.media(childIcon(child),
-                link(child),
-                div("", t(child.getLabel()), buttons(child)), description(child));
+            link(child),
+            div("", t(child.getLabel()), buttons(child)), description(child));
     }
 
     private VTree buttons(final ResourceNode node) {
@@ -227,8 +215,8 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
     private static VTree description(ResourceNode child) {
         return FormClass.CLASS_ID.equals(child.getClassId()) ?
-                t("Data Entry Form") :
-                t("Folder");
+            t("Data Entry Form") :
+            t("Folder");
     }
 
     private static VTree childIcon(ResourceNode child) {
@@ -253,19 +241,23 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
     private static VTree timelineColumn() {
         return Grid.column(3,
-                new Panel("Recent Activity", p("Todo...")));
+            new Panel("Recent Activity", p("Todo...")));
     }
 
     private VTree helpColumn(ResourceNode folder) {
-        List<VTree> panels = Lists.newArrayList();
-
-        if (folder.isEditAllowed()) {
-            panels.add(tasksPanel);
-        } else {
-            panels.add(new Panel("Permissions", p("You have permission to view this folder.")));
-        }
-
         return Grid.column(3,
-            Children.toArray(panels));
+            new Panel("Permissions", permissions(folder)),
+            folder.isEditAllowed() ? tasksPanel : VText.EMPTY_TEXT,
+            new Panel("Administration", p("Todo...")));
+    }
+
+    private VTree permissions(ResourceNode folder) {
+        if(folder.isOwner()) {
+            return p("You are this folder's owner.");
+        } else if(folder.isEditAllowed()) {
+            return p("You have permission to create items in this folder");
+        } else {
+            return p("You do not permission to create items in this folder");
+        }
     }
 }
