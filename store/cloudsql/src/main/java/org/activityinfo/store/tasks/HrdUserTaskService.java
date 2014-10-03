@@ -8,6 +8,7 @@ import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.json.ObjectMapperFactory;
@@ -53,6 +54,7 @@ public class HrdUserTaskService implements UserTaskService {
 
     private final HrdResourceStore store;
 
+    @Inject
     public HrdUserTaskService(HrdResourceStore store) {
         this.store = store;
         executors.put(ExportFormTaskModelClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
@@ -280,7 +282,7 @@ public class HrdUserTaskService implements UserTaskService {
         UserTask task = new UserTask();
         task.setId(entity.getKey().getName());
         task.setStatus(UserTaskStatus.valueOf((String) entity.getProperty(STATUS_PROPERTY)));
-        task.setTimeStarted(((Date)entity.getProperty(START_TIME_PROPERTY)).getTime());
+        task.setTimeStarted(((Date) entity.getProperty(START_TIME_PROPERTY)).getTime());
 
         Text modelJson = (Text) entity.getProperty(MODEL_PROPERTY);
         if(modelJson != null) {
