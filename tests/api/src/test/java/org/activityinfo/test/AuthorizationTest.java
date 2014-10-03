@@ -246,16 +246,16 @@ public class AuthorizationTest {
 
         // Try and fail to update the deleted workspace
         try {
-            client.create(workspace);
-            fail("Deleted resources can be recreated!");
+            client.update(workspace);
+            fail("Deleted resources can still be updated!");
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(GONE.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
 
         // Try and fail to update the deleted workspace as another user
         try {
-            newClient.create(workspace);
-            fail("Deleted resources can be recreated by another user!");
+            newClient.update(workspace);
+            fail("Deleted resources can still be updated by another user!");
         } catch (UniformInterfaceException uniformInterfaceException) {
             assertEquals(UNAUTHORIZED.getStatusCode(), uniformInterfaceException.getResponse().getStatus());
         }
