@@ -2,6 +2,7 @@ package org.activityinfo.model.expr;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
+import org.activityinfo.model.expr.diagnostic.ExprSyntaxException;
 
 import java.util.List;
 

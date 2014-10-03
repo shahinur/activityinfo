@@ -116,4 +116,8 @@ public class ConstantExpr extends ExprNode {
     public String toString() {
         return asExpression();
     }
+
+    public FieldType getType() {
+        return type;
+    }
 }

@@ -44,7 +44,7 @@ public class FunctionCallNode extends ExprNode {
         for (ExprNode expr : arguments) {
             argumentTypes.add(expr.resolveType(context));
         }
-        return function.getResultType(argumentTypes);
+        return function.resolveResultType(argumentTypes);
     }
 
     @Nonnull
