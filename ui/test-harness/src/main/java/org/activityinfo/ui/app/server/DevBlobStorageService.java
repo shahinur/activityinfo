@@ -39,7 +39,8 @@ public class DevBlobStorageService implements BlobFieldStorageService {
     }
 
     @Override
-    public void put(AuthenticatedUser user, BlobId blobId, String contentDisposition, String mimeType, ByteSource byteSource) throws IOException {
+    public void put(AuthenticatedUser user, BlobId blobId, String contentDisposition,
+                    String mimeType, ByteSource byteSource) throws IOException {
 
     }
 
@@ -52,5 +53,4 @@ public class DevBlobStorageService implements BlobFieldStorageService {
     public BlobResource getBlob(@InjectParam AuthenticatedUser user, @PathParam("blobId") BlobId blobId) {
         return new DevBlobResource(blobId);
     }
-
 }
