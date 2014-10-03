@@ -32,8 +32,6 @@ import java.util.logging.Logger;
 @Path("/service/tasks")
 public class HrdUserTaskService implements UserTaskService {
 
-    public static final String TASK_NAME_HEADER = "X-AppEngine-TaskName";
-
     private static final Logger LOGGER = Logger.getLogger(HrdUserTaskService.class.getName());
 
     private static final String START_TIME_PROPERTY = "startTime";
@@ -144,6 +142,7 @@ public class HrdUserTaskService implements UserTaskService {
     }
 
 
+    @Override
     @POST
     @Path("run")
     public Response run(@HeaderParam(TASK_NAME_HEADER) String taskName,
