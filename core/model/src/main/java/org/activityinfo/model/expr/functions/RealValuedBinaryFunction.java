@@ -50,7 +50,7 @@ public abstract class RealValuedBinaryFunction extends ExprFunction {
     }
 
     @Override
-    public FieldType getResultType(List<FieldType> argumentTypes) {
+    public FieldType resolveResultType(List<FieldType> argumentTypes) {
         Preconditions.checkArgument(argumentTypes.size() == 2);
         if(argumentTypes.get(0) instanceof QuantityType &&
            argumentTypes.get(1) instanceof QuantityType) {
