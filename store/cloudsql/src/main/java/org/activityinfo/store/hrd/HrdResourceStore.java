@@ -30,6 +30,7 @@ import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
+import org.activityinfo.store.EntityDeletedException;
 import org.activityinfo.store.hrd.entity.ReadTransaction;
 import org.activityinfo.store.hrd.entity.Snapshot;
 import org.activityinfo.store.hrd.entity.UpdateTransaction;
@@ -446,6 +447,8 @@ public class HrdResourceStore implements ResourceStore {
             } else {
                 throw new WebApplicationException(CONFLICT);
             }
+        } catch (EntityDeletedException e) {
+            throw new WebApplicationException(CONFLICT);
         } catch (EntityNotFoundException e) {
             return 0L;
         }
