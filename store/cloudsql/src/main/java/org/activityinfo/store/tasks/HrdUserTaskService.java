@@ -261,7 +261,7 @@ public class HrdUserTaskService implements UserTaskService {
     @Override
     public UserTask getUserTask(@InjectParam AuthenticatedUser user, @PathParam("id") String taskId) {
         try {
-            return fromEntity(datastore.get(taskKey(user, taskId)));
+            return fromEntity(datastore.get(null, taskKey(user, taskId)));
         } catch (EntityNotFoundException e) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
