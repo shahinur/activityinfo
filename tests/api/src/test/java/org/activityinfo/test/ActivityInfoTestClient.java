@@ -5,13 +5,16 @@ import com.sun.jersey.api.representation.Form;
 import org.activityinfo.client.ActivityInfoClient;
 import org.junit.internal.AssumptionViolatedException;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response.Status;
 import java.net.URI;
 import java.security.SecureRandom;
 import java.util.Collections;
 
 import static java.lang.Long.toHexString;
 import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
 
 public class ActivityInfoTestClient extends ActivityInfoClient {
@@ -35,12 +38,16 @@ public class ActivityInfoTestClient extends ActivityInfoClient {
         form.put("password", Collections.singletonList(password));
 
         // Creating a test user requires a special endpoint to be enabled
-        if (!CREATED.equals(fromStatusCode(
+        Status status = fromStatusCode(
                 root.path("test").path("createUser")
                 .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
                 .post(ClientResponse.class, form)
-                .getStatus()))) {
+                .getStatus());
+
+        if (FORBIDDEN.equals(status)) {
             throw new AssumptionViolatedException("Server is not configured to run in test mode");
+        } else if (!CREATED.equals(status)) {
+            throw new WebApplicationException(status);
         }
     }
 }
