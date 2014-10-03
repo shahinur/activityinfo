@@ -1,8 +1,6 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.barcode.BarcodeValue;
-import org.activityinfo.model.type.primitive.TextValue;
 import org.w3c.dom.Element;
 
 
