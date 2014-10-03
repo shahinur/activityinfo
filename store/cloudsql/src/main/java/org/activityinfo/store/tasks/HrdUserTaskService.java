@@ -5,27 +5,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.export.ExcelExportModelClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.tasks.TaskContext;
-import org.activityinfo.service.tasks.TaskExecutor;
-import org.activityinfo.service.tasks.TaskModel;
-import org.activityinfo.service.tasks.UserTask;
-import org.activityinfo.service.tasks.UserTaskService;
-import org.activityinfo.service.tasks.UserTaskStatus;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.service.tasks.*;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.tasks.export.ExportFormExecutor;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -57,49 +53,38 @@ public class HrdUserTaskService implements UserTaskService {
 
     private final HrdResourceStore store;
 
-    @Inject
     public HrdUserTaskService(HrdResourceStore store) {
         this.store = store;
-        executors.put(ExcelExportModelClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
+        executors.put(ExportFormTaskModelClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
     }
 
     @Override
     public UserTask startTask(AuthenticatedUser user, String description) {
-        return persistTask(user, null, description);
+        return persistTask(user, Resources.generateId().asString(), null, description);
     }
 
-    private UserTask persistTask(AuthenticatedUser user, Record taskModelRecord, String description) {
-        Date startTime = new Date();
 
-        Entity entity = new Entity(KIND, parentKey(user));
-        entity.setProperty(START_TIME_PROPERTY, startTime);
-        entity.setUnindexedProperty(DESCRIPTION_PROPERTY, description);
-        entity.setUnindexedProperty(STATUS_PROPERTY, UserTaskStatus.RUNNING.name());
-        if(taskModelRecord != null) {
-            try {
-                entity.setUnindexedProperty(MODEL_PROPERTY, new Text(objectMapper.writeValueAsString(taskModelRecord)));
-            } catch (JsonProcessingException e) {
-                LOGGER.log(Level.SEVERE, "Exception writing Record model to json", e);
-                throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
-            }
-        }
-        Key taskKey = datastore.put(null, entity);
 
-        UserTask task = new UserTask();
-        task.setId(Long.toHexString(taskKey.getId()));
-        task.setDescription(description);
-        task.setStatus(UserTaskStatus.RUNNING);
-        task.setTimeStarted(startTime.getTime());
+    @POST
+    @Path("{taskId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Override
+    public UserTask start(@InjectParam AuthenticatedUser user, @PathParam("taskId") String taskId, Record taskModelRecord) {
+
+        UserTask task = createTask(user, taskId, taskModelRecord);
+
+
+        // Kick off task
+        QueueFactory.getDefaultQueue().add(TaskOptions.Builder
+            .withUrl("/service/tasks/run")
+            .param("userId", Integer.toString(user.getId()))
+            .param("taskId", task.getId()));
 
         return task;
     }
 
-
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Override
-    public UserTask start(@InjectParam AuthenticatedUser user, Record taskModelRecord) {
-
+    @VisibleForTesting
+    UserTask createTask(AuthenticatedUser user, String taskId, Record taskModelRecord) {
         TaskExecutor<TaskModel> executor = executors.get(taskModelRecord.getClassId());
         if(executor == null) {
             throw new WebApplicationException(Response
@@ -111,26 +96,51 @@ public class HrdUserTaskService implements UserTaskService {
         // Deserialize task model
         TaskModel taskModel = executor.getModelClass().toBean(taskModelRecord);
 
-        // Create a context for executing this task
-        TaskContext context = new HrdTaskContext(store, user);
-
         // Create a new task record
-        UserTask task = null;
         try {
-            task = persistTask(user, taskModelRecord, executor.describe(context, taskModel));
+            String describe;
+            try {
+                describe = executor.describe(taskModel);
+            } catch (IllegalArgumentException e) {
+                LOGGER.log(Level.SEVERE, "Invalid task model", e);
+                throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage()).build());
+            }
+            return persistTask(user, taskId, taskModelRecord, describe);
+
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Exception thrown while describing task", e);
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
+    }
 
-        // Kick off task
-        QueueFactory.getDefaultQueue().add(TaskOptions.Builder
-            .withUrl("/service/tasks/run")
-            .param("userId", Integer.toString(user.getId()))
-            .param("taskId", task.getId()));
+    private UserTask persistTask(AuthenticatedUser user, String taskId, Record taskModelRecord, String description) {
+        Date startTime = new Date();
+
+        Entity entity = new Entity(taskKey(user, taskId));
+        entity.setProperty(START_TIME_PROPERTY, startTime);
+        entity.setUnindexedProperty(DESCRIPTION_PROPERTY, description);
+        entity.setUnindexedProperty(STATUS_PROPERTY, UserTaskStatus.RUNNING.name());
+        if(taskModelRecord != null) {
+            try {
+                entity.setUnindexedProperty(MODEL_PROPERTY, new Text(objectMapper.writeValueAsString(taskModelRecord)));
+            } catch (JsonProcessingException e) {
+                LOGGER.log(Level.SEVERE, "Exception writing Record model to json", e);
+                throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+            }
+        }
+        datastore.put(null, entity);
+
+        UserTask task = new UserTask();
+        task.setId(taskId);
+        task.setStatus(UserTaskStatus.RUNNING);
+        task.setTimeStarted(startTime.getTime());
+        task.setTaskModel(taskModelRecord);
 
         return task;
     }
+
 
     @POST
     @Path("run")
@@ -251,7 +261,7 @@ public class HrdUserTaskService implements UserTaskService {
     @Override
     public UserTask getUserTask(@InjectParam AuthenticatedUser user, @PathParam("id") String taskId) {
         try {
-            return fromEntity(datastore.get(null, taskKey(user, taskId)));
+            return fromEntity(datastore.get(taskKey(user, taskId)));
         } catch (EntityNotFoundException e) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
@@ -259,7 +269,7 @@ public class HrdUserTaskService implements UserTaskService {
 
 
     private Key taskKey(AuthenticatedUser user, String taskId) {
-        return KeyFactory.createKey(parentKey(user), KIND, Long.parseLong(taskId, 16));
+        return KeyFactory.createKey(parentKey(user), KIND, taskId);
     }
 
     private Key parentKey(AuthenticatedUser user) {
@@ -268,10 +278,19 @@ public class HrdUserTaskService implements UserTaskService {
 
     private UserTask fromEntity(Entity entity) {
         UserTask task = new UserTask();
-        task.setId(Long.toHexString(entity.getKey().getId()));
+        task.setId(entity.getKey().getName());
         task.setStatus(UserTaskStatus.valueOf((String) entity.getProperty(STATUS_PROPERTY)));
-        task.setDescription((String)entity.getProperty(DESCRIPTION_PROPERTY));
         task.setTimeStarted(((Date)entity.getProperty(START_TIME_PROPERTY)).getTime());
+
+        Text modelJson = (Text) entity.getProperty(MODEL_PROPERTY);
+        if(modelJson != null) {
+            try {
+                task.setTaskModel(objectMapper.readValue(modelJson.getValue(), Record.class));
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Exception deserializing model json: " + modelJson.getValue(), e);
+                throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
+            }
+        }
         return task;
     }
 

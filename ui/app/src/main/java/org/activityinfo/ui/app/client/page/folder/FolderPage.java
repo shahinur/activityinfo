@@ -2,26 +2,28 @@ package org.activityinfo.ui.app.client.page.folder;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.chrome.PageFrameConfig;
-import org.activityinfo.ui.app.client.dialogs.ConfirmDialog;
 import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
-import org.activityinfo.ui.app.client.dialogs.RenameResourceDialog;
+import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
-import org.activityinfo.ui.app.client.page.PageView;
-import org.activityinfo.ui.app.client.page.PageViewFactory;
-import org.activityinfo.ui.app.client.page.Place;
-import org.activityinfo.ui.app.client.page.ResourcePlace;
-import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
+import org.activityinfo.ui.app.client.page.*;
+import org.activityinfo.ui.app.client.page.folder.task.*;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
+import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
@@ -74,7 +76,19 @@ public class FolderPage extends PageView implements StoreChangeListener {
     public FolderPage(Application application, ResourceId folderId) {
         this.application = application;
         this.folderId = folderId;
-        this.tasksPanel = new TasksPanel(application, folderId);
+        this.tasksPanel = new TasksPanel("Common Tasks",
+            new CreateFormTask(application, folderId),
+            new CreateFolderTask(application, folderId),
+            new ImportFileTask(application, folderId),
+            new CreatePivotTableTask(application, folderId));
+
+        this.editLabelDialog.setOkClickHandler(new ClickHandler() {
+            @Override
+            public void onClicked() {
+                String newName = editLabelDialog.getInputControl().getValueAsString();
+                onRename(newName);
+            }
+        });
     }
 
     @Override
@@ -147,11 +161,11 @@ public class FolderPage extends PageView implements StoreChangeListener {
                 div(className(BaseStyles.WIDGET_BLOGLIST), map(page.getChildren(),
                         new H.Render<ResourceNode>() {
 
-                            @Override
-                            public VTree render(ResourceNode item) {
-                                return media(item);
-                            }
-                        })));
+                @Override
+                public VTree render(ResourceNode item) {
+                    return media(item);
+                }
+            })));
     }
 
     private VTree media(ResourceNode child) {
@@ -243,8 +257,15 @@ public class FolderPage extends PageView implements StoreChangeListener {
     }
 
     private VTree helpColumn(ResourceNode folder) {
+        List<VTree> panels = Lists.newArrayList();
+
+        if (folder.isEditAllowed()) {
+            panels.add(tasksPanel);
+        } else {
+            panels.add(new Panel("Permissions", p("You have permission to view this folder.")));
+        }
+
         return Grid.column(3,
-                tasksPanel,
-                new Panel("Administration", p("Todo...")));
+            Children.toArray(panels));
     }
 }

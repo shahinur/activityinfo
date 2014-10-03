@@ -1813,6 +1813,9 @@ public interface UiConstants extends Constants {
     @Key("newText")
     String newText();
 
+    @DefaultStringValue("new")
+    String newBadgeText();
+
     /**
      * Translated "New user".
      *
@@ -3552,5 +3555,36 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Form is empty. Please design form first.")
     String formIsEmpty();
+
+    @DefaultStringValue("Tasks")
+    String tasks();
+
+    @DefaultStringValue("Running...")
+    String taskRunning();
+
+    @DefaultStringValue("Failed.")
+    String taskFailed();
+
+    @DefaultStringValue("Export ready. Click to download.")
+    String exportComplete();
+
+    @DefaultStringValue("Complete.")
+    String taskComplete();
+
+    @DefaultStringValue("Preparing export...")
+    String preparingExport();
+
+
+    @DefaultStringValue("Export failed, click for details.")
+    String exportFailed();
+
+    @DefaultStringValue("You don't have permission to export this form.")
+    String permissionDeniedExportFailure();
+
+    @DefaultStringValue("Online")
+    String online();
+
+    @DefaultStringValue("Offline")
+    String offline();
 
 }

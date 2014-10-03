@@ -21,6 +21,7 @@ package org.activityinfo.ui.app.client.chrome.connectivity;
  * #L%
  */
 
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.HeaderBar;
 import org.activityinfo.ui.flux.store.Store;
@@ -76,21 +77,6 @@ public class ConnectivityWidget extends VComponent<HeaderBar> {
 
     private VText label() {
         return application.getConnectivityStore().isOnline() ?
-                t("Online") : t("Offline");
+                t(I18N.CONSTANTS.online()) : t(I18N.CONSTANTS.offline());
     }
-
-    // for test switch state randomly each 3 seconds
-//    private void test() {
-//        Scheduler.get().scheduleFixedPeriod(new Scheduler.RepeatingCommand() {
-//            @Override
-//            public boolean execute() {
-//                Random random = new Random();
-//                boolean b = random.nextBoolean();
-//                System.out.println(b);
-//                ConnectivityWidget.this.application.getDispatcher().dispatch(new UpdateConnectivityAction(b ? ConnectivityState.ONLINE : ConnectivityState.OFFLINE));
-//                return true;
-//            }
-//        }, 3 * 1000);
-//    }
-
 }

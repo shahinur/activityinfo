@@ -2,6 +2,11 @@ package org.activityinfo.ui.vdom.shared.tree;
 
 public class VText extends VTree {
 
+    public static final VTree NO_BREAK_SPACE = new VText("\u00A0");
+
+    public static final VTree EMPTY_TEXT = new VText("");
+
+
     private final String text;
 
     public VText(String text) {

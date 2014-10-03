@@ -1,11 +1,8 @@
 package org.activityinfo.service.store;
 
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -28,6 +25,8 @@ public interface RemoteStoreService {
      */
     Promise<UpdateResult> put(Resource resource);
 
+    String getBlobDownloadUrl(BlobId blobId);
+
     /**
      * Creates a new Response
      */
@@ -44,6 +43,8 @@ public interface RemoteStoreService {
      */
     Promise<List<UserTask>> getTasks();
 
+    Promise<UserTask> startTask(String taskId, Record taskModel);
+
     /**
      * Retrieves the root resources that are owned or have been shared by the user
      */
@@ -59,4 +60,9 @@ public interface RemoteStoreService {
      * Removes resources from store by respective id.
      */
     Promise<UpdateResult> remove(ResourceId resourceId);
+
+    /**
+     * Tests the client's connection to the server.
+     */
+    Promise<Void> ping();
 }

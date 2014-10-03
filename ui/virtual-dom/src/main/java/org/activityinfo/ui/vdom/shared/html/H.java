@@ -172,12 +172,16 @@ public class H {
     public static VNode span(String text) {
         return new VNode(SPAN, new VText(text));
     }
-    public static VNode span(PropMap propMap) {
-        return new VNode(SPAN, propMap);
+    public static VNode span(PropMap propMap, VTree... children) {
+        return new VNode(SPAN, propMap, children);
     }
 
     public static VNode span(CssClass classNames, String text) {
         return new VNode(SPAN, PropMap.withClasses(classNames), new VText(text));
+    }
+
+    public static VTree span(CssClass classNames, VTree... children) {
+        return new VNode(SPAN, PropMap.withClasses(classNames), children);
     }
 
     public static VNode h1(VTree... children) {

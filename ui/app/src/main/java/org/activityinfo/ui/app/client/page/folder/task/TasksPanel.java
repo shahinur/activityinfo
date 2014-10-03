@@ -1,11 +1,8 @@
 package org.activityinfo.ui.app.client.page.folder.task;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.style.BaseStyles;
 import org.activityinfo.ui.style.Panel;
-import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 import org.activityinfo.ui.vdom.shared.tree.VNode;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
@@ -16,31 +13,22 @@ import static org.activityinfo.ui.vdom.shared.html.H.*;
 
 public class TasksPanel extends VComponent {
 
-    private Application application;
-    private ResourceId ownerId;
     private List<TaskButton> tasks = Lists.newArrayList();
+    private String heading;
 
-    public TasksPanel(Application application, ResourceId ownerId) {
-        this.application = application;
-        this.ownerId = ownerId;
-
-        tasks.add(new TaskButton(new CreateFolderTask(application, ownerId)));
-        tasks.add(new TaskButton(new CreateFormTask(application, ownerId)));
-        tasks.add(new TaskButton(new ImportFileTask(application, ownerId)));
-        tasks.add(new TaskButton(new CreatePivotTableTask(application, ownerId)));
-
+    public TasksPanel(String heading, Task... tasks) {
+        this.heading = heading;
+        for(Task task : tasks) {
+            this.tasks.add(new TaskButton(task));
+        }
     }
 
     @Override
     protected VTree render() {
-        return new Panel("Common Tasks", content());
+        return new Panel(heading, content());
     }
 
     private VNode content() {
-        Boolean canEdit = application.getFolderStore().get(ownerId).get().getRootNode().isEditAllowed();
-        if (!canEdit) {
-            return H.div("", t("No permission to perform task."));
-        }
         return ul(BaseStyles.LIST_UNSTYLED, map(tasks, new Render<TaskButton>() {
             @Override
             public VTree render(TaskButton item) {

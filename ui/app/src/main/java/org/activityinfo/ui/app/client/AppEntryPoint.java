@@ -8,7 +8,8 @@ import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.app.client.chrome.Chrome;
-import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView;
+import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivitySensor;
+import org.activityinfo.ui.app.client.chrome.tasks.TaskSensor;
 import org.activityinfo.ui.app.client.effects.Effects;
 import org.activityinfo.ui.app.client.page.WindowLocationHash;
 import org.activityinfo.ui.app.client.request.FetchWorkspaces;
@@ -61,8 +62,11 @@ public class AppEntryPoint implements EntryPoint {
         WindowLocationHash location = new WindowLocationHash(app);
         location.start();
 
+        TaskSensor taskSensor = new TaskSensor(app);
+        taskSensor.start();
+
         // view to track online/offline state from browser
-        new ConnectivityStateView(app);
+        new ConnectivitySensor(app);
 
         // Ensure that GWTs event system gets initialized
         RootPanel rootPanel = RootPanel.get();

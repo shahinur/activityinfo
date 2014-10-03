@@ -4,11 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -44,6 +41,11 @@ public class MockRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
+    public String getBlobDownloadUrl(BlobId blobId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Promise<UpdateResult> create(Resource resource) {
         createdResources.add(resource);
         return Promise.resolved(UpdateResult.committed(resource.getId(), 1));
@@ -57,6 +59,11 @@ public class MockRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<List<UserTask>> getTasks() {
         return null;
+    }
+
+    @Override
+    public Promise<UserTask> startTask(String taskId, Record taskModel) {
+        return Promise.rejected(new UnsupportedOperationException());
     }
 
     @Override
@@ -94,6 +101,11 @@ public class MockRemoteStoreService implements RemoteStoreService {
         createdResources.removeAll(toRemove);
 
         return Promise.resolved(UpdateResult.committed(resourceId, 1));
+    }
+
+    @Override
+    public Promise<Void> ping() {
+        return Promise.done();
     }
 
     public Resource getOnlyCreatedResource() {

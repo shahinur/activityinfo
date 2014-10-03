@@ -6,6 +6,9 @@ import org.activityinfo.ui.app.client.request.FetchTaskRequest;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 
+/**
+ * Polls the server for changes in task status.
+ */
 public class TaskSensor implements StoreChangeListener {
 
     private static final int TIMER_INTERVAL = 1000;
@@ -19,6 +22,7 @@ public class TaskSensor implements StoreChangeListener {
 
     public void start() {
         this.application.getTaskStore().addChangeListener(this);
+        this.application.getRequestDispatcher().execute(new FetchTaskRequest());
     }
 
     @Override

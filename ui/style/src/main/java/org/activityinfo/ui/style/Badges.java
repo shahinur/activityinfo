@@ -14,4 +14,8 @@ public class Badges {
     private static VNode badge(String text) {
         return new VNode(HtmlTag.SPAN, PropMap.withClasses(BaseStyles.BADGE), new VText(text));
     }
+
+    public static VNode success(String text) {
+        return new VNode(HtmlTag.SPAN, PropMap.withClasses(BaseStyles.BADGE, BaseStyles.BADGE_SUCCESS), new VText(text));
+    }
 }

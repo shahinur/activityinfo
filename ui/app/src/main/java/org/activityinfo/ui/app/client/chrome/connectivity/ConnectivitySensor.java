@@ -22,30 +22,42 @@ package org.activityinfo.ui.app.client.chrome.connectivity;
  */
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.user.client.Timer;
 import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.request.Ping;
+import org.activityinfo.ui.flux.store.Store;
+import org.activityinfo.ui.flux.store.StoreChangeListener;
 
 /**
  * @author yuriyz on 9/10/14.
  */
-public class ConnectivityStateView {
+public class ConnectivitySensor implements StoreChangeListener {
+
+    private static final int PING_INTERVAL_MS = 5000;
 
     private final Application application;
+    private Timer timer;
 
-    public ConnectivityStateView(Application application) {
+    public ConnectivitySensor(Application application) {
         this.application = application;
+        start();
+    }
+
+    public void start() {
         if (GWT.isClient()) {
             listenConnectivityEvents();
         }
+        application.getConnectivityStore().addChangeListener(this);
     }
 
     public native void listenConnectivityEvents() /*-{
 
         function onOnline(event) {
-            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView::setOnline())
+            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivitySensor::setOnline())
         }
 
         function onOffline(event) {
-            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStateView::setOffline())
+            $entry(this.@org.activityinfo.ui.app.client.chrome.connectivity.ConnectivitySensor::setOffline())
         }
 
         $wnd.addEventListener('online', onOnline);
@@ -60,4 +72,28 @@ public class ConnectivityStateView {
     public void setOffline() {
         application.getDispatcher().dispatch(new UpdateConnectivityAction(ConnectivityState.OFFLINE));
     }
+
+    @Override
+    public void onStoreChanged(Store store) {
+        if(application.getConnectivityStore().isOnline()) {
+            if(isTimerRunning()) {
+                timer.cancel();
+            }
+        } else {
+            if (!isTimerRunning()) {
+                timer = new Timer() {
+                    @Override
+                    public void run() {
+                        application.getRequestDispatcher().execute(new Ping());
+                    }
+                };
+                timer.scheduleRepeating(PING_INTERVAL_MS);
+            }
+        }
+    }
+
+    private boolean isTimerRunning() {
+        return timer != null && timer.isRunning();
+    }
+
 }

@@ -9,7 +9,7 @@ public interface RemoteUpdateHandler {
 
     void requestStarted(Request request);
 
-    void requestFailed(Request request, Exception e);
+    void requestFailed(Request request, Throwable e);
 
     <R> void processUpdate(Request<R> request, R response);
 

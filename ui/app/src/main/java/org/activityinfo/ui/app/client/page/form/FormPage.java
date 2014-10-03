@@ -54,7 +54,6 @@ public class FormPage extends PageView implements StoreChangeListener {
     private FormViewType viewType = FormViewType.OVERVIEW;
     private ResourceId resourceId;
 
-//    private Promise<FormTree> formTree;
 
     public FormPage(Application application, ResourceId resourceId) {
         this.application = application;
@@ -103,6 +102,8 @@ public class FormPage extends PageView implements StoreChangeListener {
 
             default:
             case OVERVIEW:
+                return new FormOverview(application, resourceId);
+
             case TABLE:
                 return new FormTableWidget(this);
         }
@@ -154,6 +155,11 @@ public class FormPage extends PageView implements StoreChangeListener {
     }
 
     private VTree navTabs() {
+        final NavLink overviewTab = new NavLink(application.getRouter());
+        overviewTab.setIcon(FontAwesome.HOME);
+        overviewTab.setLabel("Overview");
+        overviewTab.setTarget(new FormPlace(getResourceId(), FormViewType.OVERVIEW));
+
         final NavLink designTab = new NavLink(application.getRouter());
         designTab.setIcon(FontAwesome.PENCIL);
         designTab.setLabel("Design");
@@ -165,6 +171,7 @@ public class FormPage extends PageView implements StoreChangeListener {
         tableTab.setTarget(new FormPlace(getResourceId(), FormViewType.TABLE));
 
         List<VTree> tabs = new ArrayList<>();
+        tabs.add(overviewTab);
         tabs.add(tableTab);
 
         if (canEdit()) {

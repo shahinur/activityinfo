@@ -1,7 +1,6 @@
 package org.activityinfo.store.tasks.export;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteSource;
 import org.activityinfo.model.form.FormClass;
@@ -29,8 +28,7 @@ import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.service.tasks.BlobResult;
-import org.activityinfo.service.tasks.ExportFormTask;
+import org.activityinfo.service.tasks.ExportFormTaskModel;
 import org.activityinfo.store.hrd.TestingEnvironment;
 import org.activityinfo.store.tasks.TestingTaskContext;
 import org.apache.commons.csv.CSVFormat;
@@ -134,16 +132,16 @@ public class ExportFormExecutorTest {
             environment.getStore().create(environment.getUser(), resource);
         }
 
-        ExportFormTask task = new ExportFormTask();
+        ExportFormTaskModel task = new ExportFormTaskModel();
+        task.setBlobId(BlobId.generate());
+        task.setFilename("Export.csv");
         task.setFormClassId(formClass.getId());
 
         TestingTaskContext context = new TestingTaskContext(environment);
         ExportFormExecutor executor = new ExportFormExecutor();
         executor.execute(context, task);
 
-        BlobResult blobResult = Iterables.getOnlyElement(context.getBlobResults());
-
-        ByteSource byteSource = context.getBlob(BlobId.valueOf(blobResult.getBlobId()));
+        ByteSource byteSource = context.getBlob(BlobId.valueOf(task.getBlobId()));
 
         String csvText = new String(byteSource.read(), Charsets.UTF_8);
 
