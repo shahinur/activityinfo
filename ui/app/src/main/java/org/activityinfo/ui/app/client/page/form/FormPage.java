@@ -1,31 +1,24 @@
 package org.activityinfo.ui.app.client.page.form;
 
 import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.record.Record;
-import org.activityinfo.model.record.Records;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.chrome.PageFrameConfig;
 import org.activityinfo.ui.app.client.chrome.nav.NavLink;
 import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
-import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
+import org.activityinfo.ui.app.client.dialogs.RenameResourceDialog;
 import org.activityinfo.ui.app.client.draft.Draft;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
 import org.activityinfo.ui.app.client.page.PageView;
 import org.activityinfo.ui.app.client.page.PageViewFactory;
 import org.activityinfo.ui.app.client.page.Place;
-import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.BaseStyles;
-import org.activityinfo.ui.style.ClickHandler;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
@@ -60,7 +53,6 @@ public class FormPage extends PageView implements StoreChangeListener {
     private Application application;
     private FormViewType viewType = FormViewType.OVERVIEW;
     private ResourceId resourceId;
-    private EditLabelDialog editLabelDialog = new EditLabelDialog();
 
 //    private Promise<FormTree> formTree;
 
@@ -70,35 +62,6 @@ public class FormPage extends PageView implements StoreChangeListener {
 
         FormPlace currentPlace = application.getRouter().getCurrentPlace();
         this.viewType = currentPlace.getFormViewType();
-
-        editLabelDialog.setOkClickHandler(new ClickHandler() {
-            @Override
-            public void onClicked() {
-                String newName = editLabelDialog.getInputControl().getValueAsString();
-                onRename(newName);
-            }
-        });
-    }
-
-    private void onRename(String newName) {
-        Resource resource = application.getResourceStore().get(getResourceId()).get().getResource();
-
-        Record update = Records.buildCopyOf(resource.getValue())
-                .set(FormClass.LABEL_FIELD_ID, newName)
-                .build();
-
-        resource.setValue(update);
-        application.getRequestDispatcher().execute(new SaveRequest(resource)).then(new AsyncCallback<UpdateResult>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                editLabelDialog.failedToEditLabel();
-            }
-
-            @Override
-            public void onSuccess(UpdateResult result) {
-                editLabelDialog.setVisible(false);
-            }
-        });
     }
 
     public Application getApplication() {
@@ -178,7 +141,7 @@ public class FormPage extends PageView implements StoreChangeListener {
                 setEditAllowed(canEdit);
 
         if (canEdit) {
-            config.setEnableRename(editLabelDialog);
+            config.setEnableRename(new RenameResourceDialog(getApplication(), getResourceId()));
             config.setEnableDeletion(new DeleteResourceAction(getApplication(), getResourceId(), getFormClass().getLabel()));
         }
 

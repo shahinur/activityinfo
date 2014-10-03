@@ -3,8 +3,11 @@ package org.activityinfo.ui.app.client.chrome;
 import com.google.common.collect.Lists;
 import org.activityinfo.ui.app.client.dialogs.ConfirmDialog;
 import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
-import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
-import org.activityinfo.ui.style.*;
+import org.activityinfo.ui.app.client.dialogs.RenameResourceDialog;
+import org.activityinfo.ui.style.BaseStyles;
+import org.activityinfo.ui.style.Button;
+import org.activityinfo.ui.style.ButtonStyle;
+import org.activityinfo.ui.style.ClickHandler;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
@@ -55,7 +58,7 @@ public class PageFrame extends VComponent<PageFrame> {
             h2Content.add(div(BaseStyles.PULL_RIGHT, deleteButton(confirmDialog)));
         }
 
-        EditLabelDialog enableRename = config.getEnableRename();
+        RenameResourceDialog enableRename = config.getEnableRename();
         if (enableRename != null && config.isEditAllowed()) {
             enableRename.setLabel(pageTitle);
             h2Content.add(enableRename);
