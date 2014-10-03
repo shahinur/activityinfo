@@ -1,6 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.io.ByteSource;
+import com.google.common.io.ByteStreams;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.service.blob.BlobFieldStorageService;
@@ -13,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.io.OutputStream;
 
 public class TestBlobFieldStorageService implements BlobFieldStorageService {
 
@@ -25,6 +27,11 @@ public class TestBlobFieldStorageService implements BlobFieldStorageService {
     @Override
     public void put(AuthenticatedUser user, BlobId blobId, String contentDisposition, String mimeType, ByteSource byteSource) throws IOException {
 
+    }
+
+    @Override
+    public OutputStream put(AuthenticatedUser user, BlobId blobId, String contentDisposition, String mimeType) {
+        return ByteStreams.nullOutputStream();
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.expr.*;
-import org.activityinfo.model.expr.diagnostic.EvalException;
+import org.activityinfo.model.expr.diagnostic.ExprException;
 import org.activityinfo.model.expr.diagnostic.SymbolNotFoundException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -98,7 +98,7 @@ public class RowSetBuilder {
         } else if(matching.isEmpty()) {
             throw new SymbolNotFoundException(name);
         } else {
-            throw new EvalException("Ambiguous symbol [" + name + "] : Could refer to : " +
+            throw new ExprException("Ambiguous symbol [" + name + "] : Could refer to : " +
                 Joiner.on(", ").join(matching));
         }
     }

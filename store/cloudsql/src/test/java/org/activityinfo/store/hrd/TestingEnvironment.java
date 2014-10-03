@@ -2,6 +2,7 @@ package org.activityinfo.store.hrd;
 
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.CuidGenerator;
 import org.activityinfo.model.resource.ResourceId;
@@ -25,9 +26,11 @@ public class TestingEnvironment extends TestWatcher {
     protected void starting(Description description) {
         helper.setUp();
         store = new HrdResourceStore();
-        taskService = new HrdUserTaskService();
+        taskService = new HrdUserTaskService(store);
         user = new AuthenticatedUser("XYZ", 1, "test@test.org");
         cuidGenerator = new CuidGenerator(1, System.currentTimeMillis());
+
+        LocaleProxy.initialize();
     }
 
     @Override

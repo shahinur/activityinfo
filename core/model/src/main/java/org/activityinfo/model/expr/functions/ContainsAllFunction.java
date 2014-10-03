@@ -67,7 +67,7 @@ public class ContainsAllFunction extends ExprFunction {
     }
 
     @Override
-    public FieldType getResultType(List<FieldType> argumentTypes) {
+    public FieldType resolveResultType(List<FieldType> argumentTypes) {
         return BooleanType.INSTANCE;
     }
 }

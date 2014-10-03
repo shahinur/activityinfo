@@ -3,7 +3,10 @@ package org.activityinfo.model.type.barcode;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.record.Record;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.RecordFieldTypeClass;
+import org.activityinfo.model.type.SingletonTypeClass;
+import org.activityinfo.model.type.TypeFieldType;
 
 /**
  * A value types that describes a real-valued barcode and its units.
@@ -38,7 +41,7 @@ public class BarcodeType implements FieldType {
     }
 
     @Override
-    public FieldTypeClass getTypeClass() {
+    public TypeClass getTypeClass() {
         return TYPE_CLASS;
     }
 

@@ -9,6 +9,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Provides storage for fields which have blob values, such as images
@@ -51,6 +52,21 @@ public interface BlobFieldStorageService {
         String contentDisposition,
         String mimeType,
         ByteSource byteSource) throws IOException;
+
+    /**
+     * Provides an OutputStream to which results can be written. The metadata
+     * record is written upon closing of the stream.
+     * @param user
+     * @param blobId
+     * @param contentDisposition
+     * @param mimeType
+     * @return
+     */
+    public OutputStream put(
+        AuthenticatedUser user,
+        BlobId blobId,
+        String contentDisposition,
+        String mimeType) throws IOException;
 
 
     @Path("{blobId}")

@@ -1,17 +1,21 @@
 package org.activityinfo.model.type.enumerated;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.Records;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class EnumType implements ParametrizedFieldType {
+
 
     public interface EnumTypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass<EnumFieldValue> { }
 
@@ -109,6 +113,15 @@ public class EnumType implements ParametrizedFieldType {
     @Override
     public Record asRecord() {
         return TypeFieldType.asRecord(this);
+    }
+
+
+    public Map<ResourceId, String> labelMap() {
+        Map<ResourceId, String> labels = Maps.newHashMap();
+        for(EnumValue enumValue : values) {
+            labels.put(enumValue.getId(), enumValue.getLabel());
+        }
+        return labels;
     }
 
 }
