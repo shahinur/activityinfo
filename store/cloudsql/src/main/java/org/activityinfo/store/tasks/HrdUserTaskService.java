@@ -10,6 +10,7 @@ import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.export.ExcelExportModelClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
@@ -59,7 +60,7 @@ public class HrdUserTaskService implements UserTaskService {
     @Inject
     public HrdUserTaskService(HrdResourceStore store) {
         this.store = store;
-        executors.put(ExportFormTaskClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
+        executors.put(ExcelExportModelClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
     }
 
     @Override
