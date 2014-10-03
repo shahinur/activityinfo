@@ -22,7 +22,7 @@ package org.activityinfo.ui.app.client.chrome;
  */
 
 import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
-import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
+import org.activityinfo.ui.app.client.dialogs.RenameResourceDialog;
 
 /**
  * @author yuriyz on 9/23/14.
@@ -32,15 +32,15 @@ public class PageFrameConfig {
     public PageFrameConfig() {
     }
 
-    private EditLabelDialog enableRename;
+    private RenameResourceDialog enableRename;
     private DeleteResourceAction enableDeletion;
     private boolean editAllowed = false;
 
-    public EditLabelDialog getEnableRename() {
+    public RenameResourceDialog getEnableRename() {
         return enableRename;
     }
 
-    public PageFrameConfig setEnableRename(EditLabelDialog enableRename) {
+    public PageFrameConfig setEnableRename(RenameResourceDialog enableRename) {
         this.enableRename = enableRename;
         return this;
     }

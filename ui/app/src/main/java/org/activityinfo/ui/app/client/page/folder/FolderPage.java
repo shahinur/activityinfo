@@ -1,40 +1,42 @@
 package org.activityinfo.ui.app.client.page.folder;
 
+import com.google.common.collect.Lists;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.record.RecordBuilder;
-import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.PageFrame;
 import org.activityinfo.ui.app.client.chrome.PageFrameConfig;
+import org.activityinfo.ui.app.client.dialogs.ConfirmDialog;
 import org.activityinfo.ui.app.client.dialogs.DeleteResourceAction;
-import org.activityinfo.ui.app.client.dialogs.EditLabelDialog;
+import org.activityinfo.ui.app.client.dialogs.RenameResourceDialog;
 import org.activityinfo.ui.app.client.page.PagePreLoader;
-import org.activityinfo.ui.app.client.page.*;
+import org.activityinfo.ui.app.client.page.PageView;
+import org.activityinfo.ui.app.client.page.PageViewFactory;
+import org.activityinfo.ui.app.client.page.Place;
+import org.activityinfo.ui.app.client.page.ResourcePlace;
 import org.activityinfo.ui.app.client.page.folder.task.TasksPanel;
 import org.activityinfo.ui.app.client.page.form.FormPlace;
 import org.activityinfo.ui.app.client.page.form.FormViewType;
-import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.app.client.store.Router;
 import org.activityinfo.ui.flux.store.Status;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
 import org.activityinfo.ui.style.*;
 import org.activityinfo.ui.style.icons.FontAwesome;
+import org.activityinfo.ui.vdom.shared.html.Children;
 import org.activityinfo.ui.vdom.shared.html.H;
 import org.activityinfo.ui.vdom.shared.html.Icon;
 import org.activityinfo.ui.vdom.shared.tree.PropMap;
 import org.activityinfo.ui.vdom.shared.tree.Style;
 import org.activityinfo.ui.vdom.shared.tree.VTree;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.activityinfo.ui.vdom.shared.html.H.*;
@@ -69,40 +71,11 @@ public class FolderPage extends PageView implements StoreChangeListener {
     private final ResourceId folderId;
 
     private final TasksPanel tasksPanel;
-    private final EditLabelDialog editLabelDialog = new EditLabelDialog();
 
     public FolderPage(Application application, ResourceId folderId) {
         this.application = application;
         this.folderId = folderId;
         this.tasksPanel = new TasksPanel(application, folderId);
-        this.editLabelDialog.setOkClickHandler(new ClickHandler() {
-            @Override
-            public void onClicked() {
-                String newName = editLabelDialog.getInputControl().getValueAsString();
-                onRename(newName);
-            }
-        });
-    }
-
-    private void onRename(String newName) {
-        ResourceId id = getFolder().get().getRootNode().getId();
-        Resource resource = application.getResourceStore().get(id).get().getResource();
-
-        RecordBuilder updated = Records.buildCopyOf(resource.getValue());
-        updated.set(FolderClass.LABEL_FIELD_ID.asString(), newName);
-        resource.setValue(updated.build());
-
-        application.getRequestDispatcher().execute(new SaveRequest(resource)).then(new AsyncCallback<UpdateResult>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                editLabelDialog.failedToEditLabel();
-            }
-
-            @Override
-            public void onSuccess(UpdateResult result) {
-                editLabelDialog.setVisible(false);
-            }
-        });
     }
 
     @Override
@@ -139,52 +112,95 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
             ResourceNode rootNode = folder.get().getRootNode();
 
-            ResourceId resourceId = rootNode.getId();
-            String label = rootNode.getLabel();
-            LOGGER.info("Folder id = " + resourceId + ", label = " + label);
+            LOGGER.info("Folder id = " + rootNode.getId() + ", label = " + rootNode.getLabel());
 
-            final PageFrameConfig config = new PageFrameConfig();
-
-            if (rootNode.isEditAllowed()) {
-                config.setEnableRename(editLabelDialog);
-                config.setEnableDeletion(new DeleteResourceAction(application, resourceId, label));
-                config.setEditAllowed(rootNode.isEditAllowed());
-            }
             return new PageFrame(PAGE_ICON,
-                rootNode.getLabel(), config,
-                renderContents(rootNode));
+                    rootNode.getLabel(), pageFrameConfig(rootNode),
+                    renderContents(rootNode));
         }
+    }
+
+    private PageFrameConfig pageFrameConfig(ResourceNode node) {
+        final PageFrameConfig config = new PageFrameConfig()
+                .setEditAllowed(node.isEditAllowed());
+
+        if (node.isEditAllowed()) {
+            config.setEnableRename(new RenameResourceDialog(application, node.getId()));
+            config.setEnableDeletion(new DeleteResourceAction(application, node.getId(), node.getLabel()));
+        }
+        return config;
     }
 
     private VTree renderContents(ResourceNode folder) {
         return
-            div(BaseStyles.ROW,
-                    listColumn(folder),
-                    timelineColumn(),
-                    helpColumn(folder));
+                div(BaseStyles.ROW,
+                        listColumn(folder),
+                        timelineColumn(),
+                        helpColumn(folder));
     }
 
-    private static VTree listColumn(ResourceNode page) {
+    private VTree listColumn(ResourceNode page) {
         return Grid.column(5, childTable(page));
     }
 
-    private static VTree childTable(ResourceNode page) {
+    private VTree childTable(ResourceNode page) {
         return new Panel(
-            div(className(BaseStyles.WIDGET_BLOGLIST), map(page.getChildren(),
-                new H.Render<ResourceNode>() {
+                div(className(BaseStyles.WIDGET_BLOGLIST), map(page.getChildren(),
+                        new H.Render<ResourceNode>() {
 
-                @Override
-                public VTree render(ResourceNode item) {
-                    return media(item);
-                }
-            })));
+                            @Override
+                            public VTree render(ResourceNode item) {
+                                return media(item);
+                            }
+                        })));
     }
 
-    private static VTree media(ResourceNode child) {
+    private VTree media(ResourceNode child) {
+
         return Media.media(childIcon(child),
-            link(child),
-            t(child.getLabel()), description(child));
+                link(child),
+                div("", t(child.getLabel()), buttons(child)), description(child));
     }
+
+    private VTree buttons(final ResourceNode node) {
+        final PageFrameConfig config = pageFrameConfig(node);
+        if (!config.isEditAllowed()) {
+            return H.space();
+        }
+
+        final List<VTree> content = Lists.newArrayList();
+
+        if (config.getEnableRename() != null) {
+            config.getEnableRename().setLabel(node.getLabel());
+            content.add(config.getEnableRename());
+
+            Button renameButton = new Button(ButtonStyle.LINK, FontAwesome.EDIT.render());
+            renameButton.setClickHandler(new ClickHandler() {
+                @Override
+                public void onClicked() {
+                    config.getEnableRename().setVisible(true);
+                }
+            });
+            content.add(renameButton);
+        }
+
+        if (config.enableDeletion() != null) {
+            final ConfirmDialog confirmDialog = ConfirmDialog.confirm(config.enableDeletion());
+            content.add(confirmDialog);
+
+            Button deleteButton = new Button(ButtonStyle.LINK, FontAwesome.TRASH_O.render());
+            deleteButton.setClickHandler(new ClickHandler() {
+                @Override
+                public void onClicked() {
+                    confirmDialog.setVisible(true);
+                }
+            });
+            content.add(deleteButton);
+        }
+
+        return div(BaseStyles.PULL_RIGHT, Children.toArray(content));
+    }
+
 
     private static SafeUri link(ResourceNode node) {
         if (node.getClassId().equals(FormClass.CLASS_ID)) {
@@ -207,7 +223,7 @@ public class FolderPage extends PageView implements StoreChangeListener {
         if (FormClass.CLASS_ID.equals(child.getClassId())) {
             icon = FontAwesome.FILE;
 
-        } else if(PivotTableModelClass.CLASS_ID.equals(child.getClassId())) {
+        } else if (PivotTableModelClass.CLASS_ID.equals(child.getClassId())) {
             icon = FontAwesome.TABLE;
 
         } else {
@@ -224,12 +240,12 @@ public class FolderPage extends PageView implements StoreChangeListener {
 
     private static VTree timelineColumn() {
         return Grid.column(3,
-            new Panel("Recent Activity", p("Todo...")));
+                new Panel("Recent Activity", p("Todo...")));
     }
 
     private VTree helpColumn(ResourceNode folder) {
         return Grid.column(3,
-            tasksPanel,
-            new Panel("Administration", p("Todo...")));
+                tasksPanel,
+                new Panel("Administration", p("Todo...")));
     }
 }

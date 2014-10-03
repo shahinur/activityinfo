@@ -40,11 +40,6 @@ import static org.activityinfo.ui.vdom.shared.html.H.t;
  * @author yuriyz on 9/23/14.
  */
 public class ConfirmDialog extends VComponent {
-    /**
-     * Maintain a single instance of this dialog, as there is by definition never more than one
-     * modal dialog shown at a time.
-     */
-    private static ConfirmDialog INSTANCE = null;
 
     /**
      * @author yuriyz on 4/8/14.
@@ -108,7 +103,9 @@ public class ConfirmDialog extends VComponent {
     private Throwable throwable = null;
     private Action action;
 
-    private ConfirmDialog() {
+    private ConfirmDialog(Action action) {
+        this.action = action;
+        this.state = State.CONFIRM;
     }
 
     private Messages getMessages() {
@@ -160,13 +157,7 @@ public class ConfirmDialog extends VComponent {
      * Shows the confirmation dialog
      */
     public static ConfirmDialog confirm(Action action) {
-        if (INSTANCE == null) {
-            INSTANCE = new ConfirmDialog();
-        }
-        INSTANCE.action = action;
-        INSTANCE.throwable = null;
-        INSTANCE.state = State.CONFIRM;
-        return INSTANCE;
+        return new ConfirmDialog(action);
     }
 
     public void setVisible(boolean visible) {

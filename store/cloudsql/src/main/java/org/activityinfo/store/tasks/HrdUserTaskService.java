@@ -13,9 +13,13 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.tasks.*;
+import org.activityinfo.service.tasks.TaskContext;
+import org.activityinfo.service.tasks.TaskExecutor;
+import org.activityinfo.service.tasks.TaskModel;
+import org.activityinfo.service.tasks.UserTask;
+import org.activityinfo.service.tasks.UserTaskService;
+import org.activityinfo.service.tasks.UserTaskStatus;
 import org.activityinfo.store.hrd.HrdResourceStore;
-import org.activityinfo.store.tasks.export.ExportFormExecutor;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -54,7 +58,7 @@ public class HrdUserTaskService implements UserTaskService {
     @Inject
     public HrdUserTaskService(HrdResourceStore store) {
         this.store = store;
-        executors.put(ExportFormTaskClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
+        //executors.put(ExportFormTaskClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
     }
 
     @Override

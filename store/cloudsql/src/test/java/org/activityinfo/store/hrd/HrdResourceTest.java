@@ -159,6 +159,9 @@ public class HrdResourceTest {
         assertDeleted(folderLevel3.getId(), true);
         assertDeleted(folderLevel2.getId(), false);
 
+        folderProjection = environment.getStore().queryTree(environment.getUser(), new FolderRequest(folderLevel2.getId()));
+        assertThat(folderProjection.getRootNode().getChildren().size(), Matchers.equalTo(0));
+
         // delete node (level1) that has child (level2) - child (level2) must be marked as deleted automatically
         assertCommitted(environment.getStore().delete(environment.getUser(), folderLevel1.getId()));
 
