@@ -45,10 +45,14 @@ public class DeleteResourceAction implements ConfirmDialog.Action<UpdateResult> 
     private Place placeAfterDeletion;
 
     public DeleteResourceAction(Application application, ResourceId resourceId, String resourceLabel) {
+        this(application, resourceId, resourceLabel, true);
+    }
+
+    public DeleteResourceAction(Application application, ResourceId resourceId, String resourceLabel, boolean changePlaceAfterDeletion) {
         this.application = application;
         this.resourceId = resourceId;
         this.resourceLabel = resourceLabel;
-        this.placeAfterDeletion = placeAfterDeletion(application, resourceId);
+        this.placeAfterDeletion = changePlaceAfterDeletion ? placeAfterDeletion(application, resourceId) : null;
     }
 
     private Place placeAfterDeletion(Application application, ResourceId resourceId) {
@@ -96,6 +100,8 @@ public class DeleteResourceAction implements ConfirmDialog.Action<UpdateResult> 
 
     @Override
     public void onComplete() {
-        application.getRouter().navigate(placeAfterDeletion);
+        if (placeAfterDeletion != null) {
+            application.getRouter().navigate(placeAfterDeletion);
+        }
     }
 }
