@@ -6,6 +6,7 @@ import org.activityinfo.model.record.Record;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
@@ -14,6 +15,8 @@ import java.util.List;
 @Path("/service/tasks")
 public interface UserTaskService {
 
+
+    String TASK_NAME_HEADER = "X-AppEngine-TaskName";
 
     /**
      * Adds a new background task to the user's list of running tasks.
@@ -42,4 +45,10 @@ public interface UserTaskService {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     UserTask getUserTask(@InjectParam AuthenticatedUser user, @PathParam("id") String taskId);
+
+    @POST
+    @Path("run")
+    Response run(@HeaderParam(TASK_NAME_HEADER) String taskName,
+                 @FormParam("userId") int userId,
+                 @FormParam("taskId") String taskId);
 }
