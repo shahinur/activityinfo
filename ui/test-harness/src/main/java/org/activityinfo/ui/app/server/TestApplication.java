@@ -26,6 +26,7 @@ public class TestApplication extends DefaultResourceConfig {
         LocaleProxy.initialize();
     }
 
+
     @Override
     public Set<Object> getSingletons() {
         JacksonJsonProvider jsonProvider = new JacksonJsonProvider(ObjectMapperFactory.get());

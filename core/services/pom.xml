@@ -56,6 +56,27 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>package-generated-sources</id>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <phase>prepare-package</phase>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>target/generated-sources/annotations</directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+              <outputDirectory>${basedir}/target/classes</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
