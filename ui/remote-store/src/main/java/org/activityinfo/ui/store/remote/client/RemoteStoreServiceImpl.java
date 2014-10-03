@@ -6,15 +6,14 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
+import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
+import com.google.gwt.user.client.Window;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.analysis.PivotTableModelClass;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -25,16 +24,12 @@ import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.ui.store.remote.client.cube.BucketOverlay;
-import org.activityinfo.ui.store.remote.client.resource.ResourceNodeListParser;
-import org.activityinfo.ui.store.remote.client.resource.ResourceParser;
-import org.activityinfo.ui.store.remote.client.resource.ResourceSerializer;
-import org.activityinfo.ui.store.remote.client.resource.ResourceTreeParser;
-import org.activityinfo.ui.store.remote.client.resource.UpdateResultParser;
-import org.activityinfo.ui.store.remote.client.resource.UserResourceParser;
+import org.activityinfo.ui.store.remote.client.resource.*;
 import org.activityinfo.ui.store.remote.client.table.JsTableDataBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 public class RemoteStoreServiceImpl implements RemoteStoreService {
@@ -44,6 +39,8 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     private final RestEndpoint service;
     private final RestEndpoint store;
 
+    private Random random = new Random();
+
     public RemoteStoreServiceImpl(RestEndpoint service) {
         this.service = service;
         this.store = this.service.resolve("store");
@@ -51,12 +48,12 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
 
     @Override
     public Promise<UserResource> get(ResourceId resourceId) {
-        return store.resolve("resource").resolve(resourceId.asString()).get(new UserResourceParser());
+        return store.resolve("resource").resolve(resourceId.asString()).getJson(new UserResourceParser());
     }
 
     @Override
     public Promise<List<ResourceNode>> getWorkspaces() {
-        return store.resolve("query").resolve("roots").get(new ResourceNodeListParser());
+        return store.resolve("query").resolve("roots").getJson(new ResourceNodeListParser());
     }
 
     @Override
@@ -76,6 +73,15 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
                     return BucketOverlay.parse(input.getText());
                 }
             });
+    }
+
+    @Override
+    public String getBlobDownloadUrl(BlobId blobId) {
+        UrlBuilder builder = new UrlBuilder();
+        builder.setProtocol(Window.Location.getProtocol());
+        builder.setHost(Window.Location.getHost());
+        builder.setPath("/service/blob/" + blobId.asString());
+        return builder.buildString();
     }
 
     @Override
@@ -108,7 +114,7 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     @Override
     public Promise<List<UserTask>> getTasks() {
         return service
-                .resolve("load")
+                .resolve("tasks")
                 .getJson().then(new Function<Response, List<UserTask>>() {
                 @Override
                 public List<UserTask> apply(Response input) {
@@ -120,6 +126,20 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
                     return tasks;
                 }
             });
+    }
+
+    @Override
+    public Promise<UserTask> startTask(String taskId, Record taskModel) {
+        return service
+        .resolve("tasks")
+        .resolve(taskId)
+        .postJson(ResourceSerializer.toJson(taskModel))
+        .then(new Function<Response, UserTask>() {
+            @Override
+            public UserTask apply(Response input) {
+                return UserTask.fromRecord(ResourceParser.parseRecord(input.getText()));
+            }
+        });
     }
 
     public Promise<UpdateResult> put(final Resource resource) {
@@ -161,5 +181,10 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
                         return UpdateResultParser.parse(input.getText());
                     }
                 });
+    }
+
+    @Override
+    public Promise<Void> ping() {
+        return service.resolve("ping").get("nocache=" + random.nextInt()).thenDiscardResult();
     }
 }

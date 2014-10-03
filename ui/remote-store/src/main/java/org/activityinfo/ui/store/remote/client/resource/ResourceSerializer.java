@@ -24,6 +24,7 @@ public class ResourceSerializer {
 
     public static String toJson(Record record) {
         JsPropertyBag jso = JsPropertyBag.create();
+        jso.set("@class", record.getClassId().asString());
         for (Map.Entry<String, Object> entry : record.asMap().entrySet()) {
             jso.set(entry.getKey(), entry.getValue());
         }

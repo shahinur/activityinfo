@@ -21,8 +21,16 @@ public interface TaskExecutor<T extends TaskModel> {
      * @param task
      * @return a human-readable description of the task
      */
-    String describe(TaskContext context, T task) throws Exception;
+    String describe(T task) throws Exception;
 
+    /**
+     * Executes the task.
+     *
+     * @param context
+     * @param task
+     * @return a TaskModel-specific result encoded as a record.
+     * @throws Exception
+     */
     void execute(TaskContext context, T task) throws Exception;
 
 }

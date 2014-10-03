@@ -21,15 +21,19 @@ package org.activityinfo.ui.app.client.chrome.connectivity;
  * #L%
  */
 
+import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
+import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
+import org.activityinfo.ui.store.remote.client.StatusCodeException;
 
 /**
  * @author yuriyz on 9/8/14.
  */
-public class ConnectivityStore extends AbstractStore implements UpdateConnectivityHandler {
+public class ConnectivityStore extends AbstractStore implements RemoteUpdateHandler {
 
-    private ConnectivityState state = ConnectivityState.OFFLINE;
+    // Default to online, as the client has some how managed to load the javascript application!
+    private ConnectivityState state = ConnectivityState.ONLINE;
 
     public ConnectivityStore(Dispatcher dispatcher) {
         super(dispatcher);
@@ -43,9 +47,25 @@ public class ConnectivityStore extends AbstractStore implements UpdateConnectivi
         return state == ConnectivityState.ONLINE;
     }
 
+
     @Override
-    public void setState(ConnectivityState state) {
-        this.state = state;
-        fireChange();
+    public void requestStarted(Request request) {
+
+    }
+
+    @Override
+    public void requestFailed(Request request, Throwable e) {
+        if(isConnectionProblem(e)) {
+            this.state = ConnectivityState.OFFLINE;
+        }
+    }
+
+    private boolean isConnectionProblem(Throwable e) {
+        return !(e instanceof StatusCodeException);
+    }
+
+    @Override
+    public <R> void processUpdate(Request<R> request, R response) {
+
     }
 }

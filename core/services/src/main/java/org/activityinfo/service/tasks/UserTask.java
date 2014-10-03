@@ -1,11 +1,8 @@
 package org.activityinfo.service.tasks;
 
-import com.google.common.collect.Lists;
 import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.Records;
-
-import java.util.List;
 
 /**
  * Describes the status of a background task being run on behalf of the user.
@@ -13,22 +10,14 @@ import java.util.List;
 public class UserTask implements IsRecord {
 
     private String id;
-    private String description;
     private double timeStarted;
+    private double timeCompleted;
+    private Record taskModel;
     private UserTaskStatus status;
-
-    private final List<BlobResult> blobResults = Lists.newArrayList();
+    private String errorMessage;
 
     public String getId() {
         return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public double getTimeStarted() {
@@ -51,17 +40,38 @@ public class UserTask implements IsRecord {
         this.id = id;
     }
 
-    public List<BlobResult> getBlobResults() {
-        return blobResults;
+    public Record getTaskModel() {
+        return taskModel;
+    }
+
+    public void setTaskModel(Record taskModel) {
+        this.taskModel = taskModel;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public double getTimeCompleted() {
+        return timeCompleted;
+    }
+
+    public void setTimeCompleted(double timeCompleted) {
+        this.timeCompleted = timeCompleted;
     }
 
     @Override
     public Record asRecord() {
         return Records.builder()
             .set("id", id)
-            .set("description", description)
             .set("timeStarted", timeStarted)
             .set("status", status.name())
+            .set("taskModel", taskModel)
+            .set("errorMessage", errorMessage)
             .build();
     }
 
@@ -69,8 +79,9 @@ public class UserTask implements IsRecord {
         UserTask task = new UserTask();
         task.setId(record.getString("id"));
         task.setTimeStarted(record.getDouble("timeStarted"));
-        task.setDescription(record.getString("description"));
         task.setStatus(UserTaskStatus.valueOf(record.getString("status")));
+        task.setTaskModel(record.isRecord("taskModel"));
+        task.setErrorMessage(record.isString("errorMessage"));
         return task;
     }
 
@@ -78,7 +89,6 @@ public class UserTask implements IsRecord {
     public String toString() {
         return "UserTask{" +
             "id='" + id + '\'' +
-            ", description='" + description + '\'' +
             ", timeStarted=" + timeStarted +
             ", status=" + status +
             '}';

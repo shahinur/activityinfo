@@ -2,11 +2,8 @@ package org.activityinfo.store.test;
 
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -53,6 +50,11 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
+    public String getBlobDownloadUrl(BlobId blobId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Promise<UpdateResult> create(Resource resource) {
         throw new UnsupportedOperationException();
     }
@@ -65,6 +67,11 @@ public class TestRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<List<UserTask>> getTasks() {
         return null;
+    }
+
+    @Override
+    public Promise<UserTask> startTask(String taskId, Record taskModel) {
+        return Promise.rejected(new UnsupportedOperationException());
     }
 
     @Override
@@ -81,5 +88,10 @@ public class TestRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<UpdateResult> remove(ResourceId resourceId) {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Promise<Void> ping() {
+        return Promise.done();
     }
 }

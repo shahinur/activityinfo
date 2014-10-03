@@ -5,6 +5,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.ui.app.client.action.RemoteUpdate;
+import org.activityinfo.ui.app.client.action.RequestFailed;
+import org.activityinfo.ui.app.client.action.RequestStarted;
 import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityState;
 import org.activityinfo.ui.app.client.chrome.connectivity.UpdateConnectivityAction;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
@@ -39,6 +41,7 @@ public class RequestDispatcher {
 
         Promise<T> promise = (Promise<T>) pendingRequests.get(request);
         if(promise == null || promise.isSettled()) {
+            dispatcher.dispatch(new RequestStarted(request));
             promise = request.send(service);
             pendingRequests.put(request, promise);
         }
@@ -69,13 +72,7 @@ public class RequestDispatcher {
         } finally {
 
             LOGGER.log(Level.SEVERE, "Request failed:"  + caught.getMessage(), caught);
-
-            if (caught instanceof org.activityinfo.ui.store.remote.client.StatusCodeException) {
-                // do nothing, application exception
-            } else {
-                // everything else is considered as connection problem
-                dispatcher.dispatch(new UpdateConnectivityAction(ConnectivityState.OFFLINE));
-            }
+            dispatcher.dispatch(new RequestFailed(request, caught));
         }
     }
 

@@ -2,11 +2,8 @@ package org.activityinfo.ui.app.client.request;
 
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
@@ -17,6 +14,8 @@ import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tasks.UserTask;
+import org.activityinfo.service.tasks.UserTaskStatus;
+import org.activityinfo.ui.store.remote.client.StatusCodeException;
 
 import java.util.List;
 
@@ -24,6 +23,8 @@ public class TestRemoteStoreService implements RemoteStoreService {
 
     private ResourceStore store;
     private AuthenticatedUser user;
+
+    public boolean fail = false;
 
     public TestRemoteStoreService(ResourceStore store) {
         this.store = store;
@@ -40,6 +41,11 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
+    public String getBlobDownloadUrl(BlobId blobId) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public Promise<UpdateResult> create(Resource resource) {
         return Promise.resolved(store.create(user, resource));
     }
@@ -52,6 +58,20 @@ public class TestRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<List<UserTask>> getTasks() {
         return Promise.rejected(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Promise<UserTask> startTask(String taskId, Record taskModel) {
+        if(fail) {
+            return Promise.rejected(new StatusCodeException(400));
+        } else {
+            UserTask task = new UserTask();
+            task.setId(taskId);
+            task.setTimeStarted(System.currentTimeMillis());
+            task.setTaskModel(taskModel);
+            task.setStatus(UserTaskStatus.RUNNING);
+            return Promise.resolved(task);
+        }
     }
 
     @Override
@@ -78,6 +98,12 @@ public class TestRemoteStoreService implements RemoteStoreService {
     public Promise<UpdateResult> remove(ResourceId resourceId) {
         return Promise.rejected(new UnsupportedOperationException());
     }
+
+    @Override
+    public Promise<Void> ping() {
+        return Promise.done();
+    }
+
 
 
 }

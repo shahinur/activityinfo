@@ -150,9 +150,12 @@ public final class RecordJsoImpl implements Record {
 
     @Override
     public Record isRecord(String fieldName) {
-        JSONObject value = record.get(fieldName).isObject();
-        if(value != null) {
-            return new RecordJsoImpl(value);
+        JSONValue jsonValue = record.get(fieldName);
+        if(jsonValue != null) {
+            JSONObject jsonObject = jsonValue.isObject();
+            if (jsonObject != null) {
+                return new RecordJsoImpl(jsonObject);
+            }
         }
         return null;
     }

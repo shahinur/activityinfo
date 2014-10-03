@@ -2,7 +2,7 @@ package org.activityinfo.ui.app.client.chrome;
 
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityWidget;
-import org.activityinfo.ui.app.client.chrome.tasks.TaskIcon;
+import org.activityinfo.ui.app.client.chrome.tasks.TaskDropdownMenu;
 import org.activityinfo.ui.style.Badges;
 import org.activityinfo.ui.style.InputControlType;
 import org.activityinfo.ui.style.icons.FontAwesome;
@@ -32,9 +32,7 @@ public class HeaderBar extends VComponent<HeaderBar> {
                 searchForm(),
                 div(HEADER_RIGHT,
                     ul(HEADERMENU,
-                        headerMenu(FontAwesome.USER),
-                        headerMenu(FontAwesome.ENVELOPE),
-                        li(new TaskIcon(application)),
+                        li(new TaskDropdownMenu(application)),
                         li(new ConnectivityWidget(application)),
                         userMenu())));
     }

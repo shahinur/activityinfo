@@ -42,7 +42,7 @@ public class ResourceStore extends AbstractStore implements RemoteUpdateHandler 
     }
 
     @Override
-    public void requestFailed(Request request, Exception e) {
+    public void requestFailed(Request request, Throwable e) {
 
     }
 

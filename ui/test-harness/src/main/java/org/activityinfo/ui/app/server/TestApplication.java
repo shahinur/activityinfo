@@ -4,8 +4,10 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.Sets;
 import com.mysql.jdbc.Driver;
 import com.sun.jersey.api.core.DefaultResourceConfig;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.service.PingService;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.load.LoadService;
 import org.activityinfo.store.migrate.MigrateDatabaseTask;
@@ -21,6 +23,7 @@ public class TestApplication extends DefaultResourceConfig {
     private static final Logger LOGGER = Logger.getLogger(TestApplication.class.getName());
 
     public TestApplication() {
+        LocaleProxy.initialize();
     }
 
     @Override
@@ -31,8 +34,8 @@ public class TestApplication extends DefaultResourceConfig {
         HrdUserTaskService taskService = new HrdUserTaskService(store);
         DevBlobStorageService blobFieldStorageService = new DevBlobStorageService();
         LoadService loadService = new LoadService(taskService, blobFieldStorageService);
-       // AuthenticatedUser user = new AuthenticatedUser("XYZ", 1, "test@test.org");
-        return Sets.newHashSet(jsonProvider, migrateService, store, taskService, blobFieldStorageService, loadService);
+        return Sets.newHashSet(jsonProvider, store, migrateService, taskService, blobFieldStorageService, loadService,
+            new DevIoCProviderFactory());
     }
 
     private MigrateService migrateService() {
@@ -46,6 +49,6 @@ public class TestApplication extends DefaultResourceConfig {
 
     @Override
     public Set<Class<?>> getClasses() {
-        return Sets.<Class<?>>newHashSet(HostPage.class);
+        return Sets.<Class<?>>newHashSet(HostPage.class, PingService.class);
     }
 }

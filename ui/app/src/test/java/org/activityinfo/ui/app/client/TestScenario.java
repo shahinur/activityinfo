@@ -54,6 +54,10 @@ public class TestScenario {
         return this;
     }
 
+    public void remoteRequestsShouldFail(boolean shouldFail) {
+        remoteService.fail = shouldFail;
+    }
+
     public TestRenderContext page() {
         return renderContext;
     }

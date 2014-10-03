@@ -9,6 +9,7 @@ public class ServiceModule extends AbstractRestModule {
     @Override
     protected void configureResources() {
         bindResource(ServiceResources.class);
+        bindResource(PingService.class);
         bind(ResourceNotFoundMapper.class).in(Singleton.class);
     }
 }

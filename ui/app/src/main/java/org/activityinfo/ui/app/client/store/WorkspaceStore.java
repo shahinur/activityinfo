@@ -2,11 +2,7 @@ package org.activityinfo.ui.app.client.store;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
@@ -47,7 +43,7 @@ public class WorkspaceStore extends AbstractStore implements RemoteUpdateHandler
     }
 
     @Override
-    public void requestFailed(Request request, Exception e) {
+    public void requestFailed(Request request, Throwable e) {
         if(request instanceof FetchWorkspaces) {
             loading = false;
         }

@@ -1,6 +1,7 @@
 package org.activityinfo.ui.store.remote.client;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.http.client.*;
 import org.activityinfo.promise.Promise;
@@ -85,7 +86,16 @@ public class RestEndpoint {
         return send(request);
     }
 
-    public <T>  Promise<T> get(final Function<Response, T> reader) {
+    public Promise<Response> get(String queryString) {
+        String queryUrl = uri;
+        if(!Strings.isNullOrEmpty(queryString)) {
+            queryUrl += "?" + queryString;
+        }
+        RequestBuilder request = new RequestBuilder(RequestBuilder.GET, queryUrl);
+        return send(request);
+    }
+
+    public <T>  Promise<T> getJson(final Function<Response, T> reader) {
         return getJson().then(new Function<Response, T>() {
             @Override
             public T apply(Response response) {

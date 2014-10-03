@@ -46,7 +46,7 @@ public class FolderStore extends AbstractStore implements RemoteUpdateHandler {
     }
 
     @Override
-    public void requestFailed(Request request, Exception e) {
+    public void requestFailed(Request request, Throwable e) {
         loading.remove(folderId(request));
     }
 

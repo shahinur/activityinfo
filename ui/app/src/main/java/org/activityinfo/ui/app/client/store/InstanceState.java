@@ -125,7 +125,7 @@ public class InstanceState extends AbstractStore implements InstanceChangeHandle
     }
 
     @Override
-    public void requestFailed(Request request, Exception e) {
+    public void requestFailed(Request request, Throwable e) {
 
     }
 

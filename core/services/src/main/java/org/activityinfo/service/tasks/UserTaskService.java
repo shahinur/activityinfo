@@ -26,8 +26,9 @@ public interface UserTaskService {
     void updateTask(AuthenticatedUser user, String taskId, UserTaskStatus status);
 
     @POST
+    @Path("{taskId}")
     @Produces(MediaType.APPLICATION_JSON)
-    UserTask start(@InjectParam AuthenticatedUser user, Record taskModel);
+    UserTask start(@InjectParam AuthenticatedUser user, @PathParam("taskId") String taskId, Record taskModel);
 
     /**
      * Gets a list of running and recently completed background tasks.
