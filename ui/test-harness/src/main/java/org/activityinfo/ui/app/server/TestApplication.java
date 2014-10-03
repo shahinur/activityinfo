@@ -27,6 +27,7 @@ public class TestApplication extends DefaultResourceConfig {
     public Set<Object> getSingletons() {
         JacksonJsonProvider jsonProvider = new JacksonJsonProvider(ObjectMapperFactory.get());
         MigrateService migrateService = migrateService();
+        HrdResourceStore store = new HrdResourceStore();
         HrdUserTaskService taskService = new HrdUserTaskService(store);
         DevBlobStorageService blobFieldStorageService = new DevBlobStorageService();
         LoadService loadService = new LoadService(taskService, blobFieldStorageService);
@@ -45,6 +46,6 @@ public class TestApplication extends DefaultResourceConfig {
 
     @Override
     public Set<Class<?>> getClasses() {
-        return Sets.newHashSet(HrdResourceStore.class, HostPage.class);
+        return Sets.<Class<?>>newHashSet(HostPage.class);
     }
 }
