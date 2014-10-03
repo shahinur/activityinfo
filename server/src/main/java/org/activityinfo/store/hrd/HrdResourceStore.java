@@ -1,6 +1,10 @@
 package org.activityinfo.store.hrd;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceConfig;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.ImplicitTransactionManagementPolicy;
 import com.google.apphosting.api.ApiProxy;
 import com.google.apphosting.api.ApiProxy.Environment;
 import com.google.common.base.Function;
@@ -20,7 +24,11 @@ import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.store.hrd.entity.*;
+import org.activityinfo.store.hrd.entity.ReadTransaction;
+import org.activityinfo.store.hrd.entity.Snapshot;
+import org.activityinfo.store.hrd.entity.UpdateTransaction;
+import org.activityinfo.store.hrd.entity.Workspace;
+import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
@@ -68,6 +76,8 @@ public class HrdResourceStore implements ResourceStore {
     @Produces("application/json")
     @Override
     public UserResource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+        assertNotNull(resourceId);
+
         try {
             Workspace workspace = workspaceLookup.lookup(resourceId);
 
@@ -87,6 +97,8 @@ public class HrdResourceStore implements ResourceStore {
     @Override
     public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
                                                 @PathParam("id") ResourceId resourceId) {
+        assertNotNull(resourceId);
+
         final Workspace workspace = workspaceLookup.lookup(resourceId);
 
         try (WorkspaceTransaction tx = beginRead(workspace, user)) {
@@ -112,6 +124,8 @@ public class HrdResourceStore implements ResourceStore {
     @Consumes("application/json")
     @Produces("application/json")
     public UpdateResult put(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId, Resource resource) {
+        assertNotNull(resourceId, resource);
+
         if (resourceId.equals(resource.getId())) {
             return put(user, resource);
         } else {
@@ -131,6 +145,7 @@ public class HrdResourceStore implements ResourceStore {
     @Consumes("application/json")
     @Produces("application/json")
     public UpdateResult delete(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
+        assertNotNull(resourceId);
 
         Workspace workspace = workspaceLookup.lookup(resourceId);
 
@@ -149,6 +164,8 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
+        assertNotNull(resource);
+
         Workspace workspace = workspaceLookup.lookup(resource.getId());
 
         try (WorkspaceTransaction tx = begin(workspace, user)) {
@@ -174,6 +191,8 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
+        assertNotNull(resource);
+
         if (ROOT_ID.equals(resource.getOwnerId())) {
             if(user.isAnonymous()) {
                 throw new WebApplicationException(UNAUTHORIZED);
@@ -230,6 +249,7 @@ public class HrdResourceStore implements ResourceStore {
     @Override
     public FolderProjection queryTree(@InjectParam AuthenticatedUser user,
                                       FolderRequest request) {
+        assertNotNull(request);
 
         Workspace workspace = workspaceLookup.lookup(request.getRootId());
 
@@ -262,6 +282,8 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceId workspaceId, long version) {
+        assertNotNull(workspaceId);
+
         Environment environment = ApiProxy.getCurrentEnvironment();
         Map<ResourceId, Snapshot> snapshots = Maps.newLinkedHashMap();
         Map<ResourceId, Authorization> authorizations = Maps.newHashMap();
@@ -387,6 +409,12 @@ public class HrdResourceStore implements ResourceStore {
             }
         } catch (EntityNotFoundException e) {
             return 0L;
+        }
+    }
+
+    private static void assertNotNull(Object... objects) {
+        for (Object object : objects) {
+            if (object == null) throw new WebApplicationException(BAD_REQUEST);
         }
     }
 }
