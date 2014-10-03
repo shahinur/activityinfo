@@ -2,11 +2,7 @@ package org.activityinfo.client;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.io.ByteSource;
-import com.sun.jersey.api.client.AsyncWebResource;
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
-import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.*;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
@@ -16,12 +12,10 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 import org.activityinfo.client.xform.XFormInstanceBuilder;
 import org.activityinfo.client.xform.XFormItem;
 import org.activityinfo.client.xform.XFormList;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.UploadCredentials;
+import org.activityinfo.service.tasks.TaskModel;
 import org.activityinfo.service.tasks.UserTask;
 import org.w3c.dom.Document;
 
@@ -135,6 +129,16 @@ public class ActivityInfoClient {
             .post(resource);
     }
 
+
+    public UserTask startTask(TaskModel taskModel) {
+        String taskId = Resources.generateId().asString();
+        return root.path("service").path("tasks").path(taskId)
+            .type(MediaType.APPLICATION_JSON_TYPE)
+            .post(UserTask.class, taskModel.asRecord());
+    }
+
+
+
     /**
      * Updates a resource
      */
@@ -237,6 +241,13 @@ public class ActivityInfoClient {
         return root.path("service").path("tasks")
             .accept(MediaType.APPLICATION_JSON)
             .get(new TasksListGenericType());
+    }
+
+
+    public UserTask getTaskStatus(UserTask task) {
+        return root.path("service").path("tasks").path(task.getId())
+            .accept(MediaType.APPLICATION_JSON)
+            .get(UserTask.class);
     }
 
     /**

@@ -13,9 +13,7 @@ import java.security.SecureRandom;
 import java.util.Collections;
 
 import static java.lang.Long.toHexString;
-import static javax.ws.rs.core.Response.Status.CREATED;
-import static javax.ws.rs.core.Response.Status.FORBIDDEN;
-import static javax.ws.rs.core.Response.Status.fromStatusCode;
+import static javax.ws.rs.core.Response.Status.*;
 
 public class ActivityInfoTestClient extends ActivityInfoClient {
     final private static String TEST_ADDRESS_SUFFIX = "@example.com";
@@ -50,4 +48,5 @@ public class ActivityInfoTestClient extends ActivityInfoClient {
             throw new WebApplicationException(status);
         }
     }
+
 }

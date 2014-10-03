@@ -3,6 +3,7 @@ package org.activityinfo.service.tasks;
 import org.activityinfo.model.annotation.RecordBean;
 import org.activityinfo.model.annotation.Reference;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.blob.BlobId;
 
@@ -40,5 +41,10 @@ public class ExportFormTaskModel implements TaskModel {
 
     public void setBlobId(BlobId blobId) {
         this.blobId = blobId.asString();
+    }
+
+    @Override
+    public Record asRecord() {
+        return ExportFormTaskModelClass.INSTANCE.toRecord(this);
     }
 }
