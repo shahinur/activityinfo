@@ -182,4 +182,9 @@ public final class RecordJsoImpl implements Record {
     public FieldTypeClass getTypeClass() {
         return RecordFieldType.TYPE_CLASS;
     }
+
+    @Override
+    public Record asRecord() {
+        return this;
+    }
 }

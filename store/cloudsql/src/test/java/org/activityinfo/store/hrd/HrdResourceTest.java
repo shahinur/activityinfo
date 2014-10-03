@@ -122,7 +122,7 @@ public class HrdResourceTest {
 
         workspace.set(FolderClass.LABEL_FIELD_ID, "Workspace B");
         UpdateResult updateResult = environment.getStore()
-                .create(environment.getUser(), workspace.asResource());
+                .put(environment.getUser(), workspace.asResource());
 
         assertThat(updateResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 

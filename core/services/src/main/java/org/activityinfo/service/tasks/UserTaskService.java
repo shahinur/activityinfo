@@ -2,11 +2,9 @@ package org.activityinfo.service.tasks;
 
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.record.Record;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
@@ -26,6 +24,10 @@ public interface UserTaskService {
      * Updates the status of a user task
      */
     void updateTask(AuthenticatedUser user, String taskId, UserTaskStatus status);
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    UserTask start(@InjectParam AuthenticatedUser user, Record taskModel);
 
     /**
      * Gets a list of running and recently completed background tasks.
