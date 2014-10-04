@@ -6,7 +6,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.time.LocalDate;
-import org.activityinfo.service.blob.BlobFieldStorageService;
+import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,9 +30,9 @@ public class FormSubmissionResourceTest {
         store = new TestResourceStore().load("formSubmissionResourceTest.json");
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
-        BlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
+        UserBlobService userBlobService = new TestUserBlobService();
         resource = new FormSubmissionResource(
-                factory, store, authenticationTokenService, blobFieldStorageService, null);
+                factory, store, authenticationTokenService, userBlobService, null);
     }
 
     @Test
