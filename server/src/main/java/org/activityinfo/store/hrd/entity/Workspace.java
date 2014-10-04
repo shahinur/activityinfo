@@ -153,9 +153,7 @@ public class Workspace {
         Preconditions.checkNotNull(tx);
         Preconditions.checkNotNull(resourceId);
 
-        long newVersion = tx.incrementVersion();
-
-        getLatestContent(resourceId).delete(tx);
+        long newVersion = getLatestContent(resourceId).delete(tx);
         getSnapshot(resourceId, newVersion).markDeleted(tx);
 
         tx.commit();
