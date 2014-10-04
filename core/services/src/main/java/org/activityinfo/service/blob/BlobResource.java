@@ -1,6 +1,6 @@
 package org.activityinfo.service.blob;
 
-import com.google.common.io.ByteSource;
+import org.activityinfo.model.auth.AuthenticatedUser;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -8,29 +8,38 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 /**
- * Restful endpoint for a single user blob, which provides
+ * SubResource representing a single user blob.
  *
  */
-public interface BlobResource {
+public final class BlobResource {
 
+    private final AuthenticatedUser user;
+    private final BlobId blobId;
+    private final UserBlobService service;
 
+    public BlobResource(UserBlobService service, AuthenticatedUser user, BlobId blobId) {
+        this.service = service;
+        this.user = user;
+        this.blobId = blobId;
+    }
+
+    /**
+     * @see org.activityinfo.service.blob.UserBlobService#getThumbnail(org.activityinfo.model.auth.AuthenticatedUser, BlobId, int, int)
+     */
     @GET
     @Path("thumbnail")
     public Response getThumbnail(@QueryParam("width") int width,
-                                 @QueryParam("height") int height);
+                                 @QueryParam("height") int height) {
+
+        return service.getThumbnail(user, blobId, width, height);
+    }
 
 
     /**
-     *
-     * @return the content of the blob as a {@code ByteSource}
-     */
-    ByteSource getContent();
-
-
-    /**
-     * Redirects the client to a temporary, signed URL via which the user can access this blob
+     * @see org.activityinfo.service.blob.UserBlobService#serveBlob(org.activityinfo.model.auth.AuthenticatedUser, BlobId)
      */
     @GET
-    Response get();
-
+    Response serveBlob() {
+        return service.serveBlob(user, blobId);
+    }
 }

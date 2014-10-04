@@ -8,6 +8,7 @@ import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskStatus;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
@@ -28,10 +29,7 @@ public class BlobTest {
 
     @Before
     public void setUp() throws Exception {
-
-        client = new ActivityInfoClient(TestConfig.getRootURI(),
-            "apitest@bedatadriven.com",
-            "testing123");
+        client = new ActivityInfoTestClient(TestConfig.getRootURI());
     }
 
     @Test
@@ -51,6 +49,7 @@ public class BlobTest {
         assertTrue("contents downloaded equal to source", source.contentEquals(downloaded));
     }
 
+    @Ignore
     @Test
     public void importXlsx() throws IOException {
 

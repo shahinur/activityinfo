@@ -8,8 +8,8 @@ import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.io.load.excel.ExcelFormImportReader;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskService;
 import org.activityinfo.service.tasks.UserTaskStatus;
@@ -36,10 +36,10 @@ public class LoadService {
     private final DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();
 
     private final UserTaskService taskService;
-    private final BlobFieldStorageService blobService;
+    private final UserBlobService blobService;
 
     @Inject
-    public LoadService(UserTaskService taskService, BlobFieldStorageService blobService) {
+    public LoadService(UserTaskService taskService, UserBlobService blobService) {
         this.taskService = taskService;
         this.blobService = blobService;
     }
@@ -95,7 +95,7 @@ public class LoadService {
             BulkLoader loader = new BulkLoader();
             loader.setUser(user);
             loader.setWorkspaceId(workspaceId);
-            loader.setSource(blobService.getBlob(user, blobId).getContent());
+            loader.setSource(blobService.getContent(user, blobId));
             loader.setOwnerId(ownerId);
             loader.setReader(new ExcelFormImportReader());
             loader.run();
