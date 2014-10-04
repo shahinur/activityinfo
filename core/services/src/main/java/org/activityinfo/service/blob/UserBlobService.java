@@ -3,7 +3,6 @@ package org.activityinfo.service.blob;
 import com.google.common.io.ByteSource;
 import org.activityinfo.model.auth.AuthenticatedUser;
 
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -12,7 +11,6 @@ import java.io.OutputStream;
  * Provides storage for fields which have blob values, such as images
  * or general attachment fields.
  */
-@Path("/service/blob")
 public interface UserBlobService {
 
 

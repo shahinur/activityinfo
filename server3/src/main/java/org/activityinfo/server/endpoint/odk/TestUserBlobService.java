@@ -37,13 +37,10 @@ public class TestUserBlobService implements UserBlobService {
 
     @Override
     public void put(AuthenticatedUser user, BlobMetadata blobMetadata, ByteSource byteSource) throws IOException {
-
     }
 
     @Override
     public OutputStream put(AuthenticatedUser user, BlobId blobId, String contentDisposition, String mimeType) {
         return ByteStreams.nullOutputStream();
     }
-
-
 }
