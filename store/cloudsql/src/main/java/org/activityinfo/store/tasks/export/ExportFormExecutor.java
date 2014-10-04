@@ -44,7 +44,6 @@ public class ExportFormExecutor implements TaskExecutor<ExportFormTaskModel> {
         List<FieldColumnSet> fields = new ColumnListBuilder().build(formClass);
 
         OutputStream out = context.createBlob(BlobId.valueOf(task.getBlobId()), task.getFilename(), "text/plain");
-
         CsvWriter writer = new CsvWriter(fields, out);
 
         // Write data rows
@@ -54,6 +53,7 @@ public class ExportFormExecutor implements TaskExecutor<ExportFormTaskModel> {
             writer.writeRow(record);
         }
 
+        // Note that we don't want to close if there is an exception thrown and we fail
         writer.close();
     }
 }

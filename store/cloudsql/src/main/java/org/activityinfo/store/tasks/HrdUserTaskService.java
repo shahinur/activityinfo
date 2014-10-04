@@ -16,7 +16,6 @@ import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.tasks.*;
-import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.tasks.export.ExportFormExecutor;
 
 import javax.ws.rs.*;
@@ -50,11 +49,11 @@ public class HrdUserTaskService implements UserTaskService {
 
     private Map<ResourceId, TaskExecutor<TaskModel>> executors = Maps.newHashMap();
 
-    private final HrdResourceStore store;
+    private final TaskContextProvider contextProvider;
 
     @Inject
-    public HrdUserTaskService(HrdResourceStore store) {
-        this.store = store;
+    public HrdUserTaskService(TaskContextProvider contextProvider) {
+        this.contextProvider = contextProvider;
         executors.put(ExportFormTaskModelClass.CLASS_ID, (TaskExecutor)new ExportFormExecutor());
     }
 
@@ -194,7 +193,7 @@ public class HrdUserTaskService implements UserTaskService {
         // Kick off the task
         try {
             LOGGER.info("Starting task");
-            TaskContext context = new HrdTaskContext(store, user);
+            TaskContext context = contextProvider.create(user);
             executor.execute(context, taskModel);
 
             // mark task as complete

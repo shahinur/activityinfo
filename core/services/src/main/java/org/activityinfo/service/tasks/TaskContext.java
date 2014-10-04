@@ -5,6 +5,7 @@ import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.ResourceCursor;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 public interface TaskContext {
@@ -15,7 +16,7 @@ public interface TaskContext {
      * @param blobId the generated blobId
      * @return an OutputStream to which the blob can be written.
      */
-    OutputStream createBlob(BlobId blobId, String filename, String contentType);
+    OutputStream createBlob(BlobId blobId, String filename, String contentType) throws IOException;
 
     UserResource getResource(ResourceId resourceId) throws Exception;
 

@@ -1,6 +1,7 @@
 package org.activityinfo.client;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.google.common.base.Stopwatch;
 import com.google.common.io.ByteSource;
 import com.sun.jersey.api.client.*;
 import com.sun.jersey.api.client.config.ClientConfig;
@@ -26,6 +27,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class ActivityInfoClient {
     private final Client client;
@@ -47,7 +49,6 @@ public class ActivityInfoClient {
         root = client.resource(this.rootUri);
         store = root.path("service").path("store");
     }
-
 
 
     /**
@@ -130,11 +131,54 @@ public class ActivityInfoClient {
     }
 
 
+    /**
+     * Starts the execution of background task on behalf of the user.
+     *
+     *
+     * @param taskModel a description of the task to performed
+     * @return a {@link org.activityinfo.service.tasks.UserTask} object with the task's
+     * status and its id which can be used to query for its progress.
+     */
     public UserTask startTask(TaskModel taskModel) {
         String taskId = Resources.generateId().asString();
         return root.path("service").path("tasks").path(taskId)
             .type(MediaType.APPLICATION_JSON_TYPE)
             .post(UserTask.class, taskModel.asRecord());
+    }
+
+    /**
+     * Synchronously waits for a task to complete or to fail.
+     *
+     * @param taskId the id of the task for which to wait
+     * @param timeOut the amount of time to wait, or -1 for no limit
+     * @param timeUnit the unit of the time limit
+     * @return the completed {@code UserTask} object
+     * @throws org.activityinfo.client.UserTaskException if the task fails or times out
+     */
+    public UserTask waitForTask(String taskId, long timeOut, TimeUnit timeUnit)  {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        UserTask updated;
+        while(true) {
+            updated = getTaskStatus(taskId);
+            switch(updated.getStatus()) {
+                case RUNNING:
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new UserTaskException(updated, "Timeout");
+                    }
+                    break;
+                case FAILED:
+                    throw new UserTaskException(updated, updated.getErrorMessage());
+                case COMPLETE:
+                    return updated;
+            }
+            if(timeOut > 0) {
+                if(stopwatch.elapsed(timeUnit) > timeOut) {
+                    throw new UserTaskException(updated, "Timeout");
+                }
+            }
+        }
     }
 
 
@@ -237,15 +281,34 @@ public class ActivityInfoClient {
         };
     }
 
-    public List<UserTask> getTaskStatus() {
+    /**
+     *
+     * @return a list of recent tasks running or completed on behalf of the user.
+     */
+    public List<UserTask> getTasks() {
         return root.path("service").path("tasks")
             .accept(MediaType.APPLICATION_JSON)
             .get(new TasksListGenericType());
     }
 
 
+    /**
+     * Retrieves the latest status of a background task running on behalf of the user
+     * @param task the original task
+     * @return a new, updated {@code UserTask} object
+     */
     public UserTask getTaskStatus(UserTask task) {
-        return root.path("service").path("tasks").path(task.getId())
+        return getTaskStatus(task.getId());
+    }
+
+
+    /**
+     * Retrieves the latest status of a background task running on behalf of the user
+     * @param taskId the taskId
+     * @return an updated {@code UserTask} object
+     */
+    public UserTask getTaskStatus(String taskId) {
+        return root.path("service").path("tasks").path(taskId)
             .accept(MediaType.APPLICATION_JSON)
             .get(UserTask.class);
     }
