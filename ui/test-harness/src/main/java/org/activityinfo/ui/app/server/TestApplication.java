@@ -12,6 +12,7 @@ import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.load.LoadService;
 import org.activityinfo.store.migrate.MigrateDatabaseTask;
 import org.activityinfo.store.migrate.MigrateService;
+import org.activityinfo.store.tasks.HrdTaskContextProvider;
 import org.activityinfo.store.tasks.HrdUserTaskService;
 
 import java.util.Properties;
@@ -33,7 +34,7 @@ public class TestApplication extends DefaultResourceConfig {
         MigrateService migrateService = migrateService();
         HrdResourceStore store = new HrdResourceStore();
         DevBlobStorageService blobFieldStorageService = new DevBlobStorageService();
-        HrdUserTaskService taskService = new HrdUserTaskService(contextProvider);
+        HrdUserTaskService taskService = new HrdUserTaskService(new HrdTaskContextProvider(store, blobFieldStorageService));
         LoadService loadService = new LoadService(taskService, blobFieldStorageService);
         return Sets.newHashSet(jsonProvider, store, migrateService, taskService, blobFieldStorageService, loadService,
             new DevIoCProviderFactory());
