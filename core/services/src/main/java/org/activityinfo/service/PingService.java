@@ -5,6 +5,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Response;
 
+/**
+ * Simple endpoint to allow the client to test connectivity with the server.
+ */
 @Path("/service/ping")
 public class PingService {
 
