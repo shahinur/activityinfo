@@ -14,7 +14,6 @@ import org.activityinfo.service.blob.BlobMetadata;
 import org.activityinfo.service.blob.UploadCredentials;
 import org.activityinfo.service.blob.UserBlobService;
 
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -22,7 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 
-@Path("/service/blob")
 public class DevUserBlobService implements UserBlobService {
 
     public static final String BLOB_INDEX_KIND = "UserBlob";

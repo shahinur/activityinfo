@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
  * Provides a Restful facade for the {@link org.activityinfo.service.blob.UserBlobService}.
  *
  */
+@Path("/service/blob")
 public final class UserBlobRestfulService {
 
     private final UserBlobService service;
