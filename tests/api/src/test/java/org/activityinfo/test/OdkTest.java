@@ -4,12 +4,14 @@ import org.activityinfo.client.ActivityInfoClient;
 import org.activityinfo.client.xform.XFormInstanceBuilder;
 import org.activityinfo.client.xform.XFormItem;
 import org.activityinfo.model.resource.ResourceId;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.List;
 
+@Ignore("Need to update to use test accounts")
 public class OdkTest {
 
     @Test
@@ -34,9 +36,6 @@ public class OdkTest {
         builder.addFieldValue(ResourceId.valueOf("chz4mup7d1"), "2014-01-01");
         builder.addFieldValue(ResourceId.valueOf("chz4mv6ei2"), "");
         builder.addFieldValue(ResourceId.valueOf("chz4mvovm3"), "");
-
-
-
     }
 
     private XFormItem formNamed(List<XFormItem> forms, String label) {
