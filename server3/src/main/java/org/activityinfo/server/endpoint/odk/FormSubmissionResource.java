@@ -16,8 +16,9 @@ import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.model.type.primitive.TextValue;
-import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.BlobMetadata;
+import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,6 +33,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -47,10 +49,7 @@ import static com.google.common.io.ByteSource.wrap;
 import static com.google.common.io.ByteStreams.toByteArray;
 import static javax.ws.rs.core.MediaType.MULTIPART_FORM_DATA;
 import static javax.ws.rs.core.MediaType.TEXT_XML;
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.CREATED;
-import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static javax.ws.rs.core.Response.Status.*;
 import static javax.ws.rs.core.Response.status;
 import static org.activityinfo.server.endpoint.odk.OdkHelper.extractText;
 import static org.activityinfo.server.endpoint.odk.OdkHelper.toRelativeFieldName;
@@ -62,18 +61,18 @@ public class FormSubmissionResource {
     final private OdkFieldValueParserFactory factory;
     final private ResourceStore locator;
     final private AuthenticationTokenService authenticationTokenService;
-    final private BlobFieldStorageService blobFieldStorageService;
+    final private UserBlobService userBlobService;
     final private OdkFormSubmissionBackupService odkFormSubmissionBackupService;
 
     @Inject
     public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator,
                                   AuthenticationTokenService authenticationTokenService,
-                                  BlobFieldStorageService blobFieldStorageService,
+                                  UserBlobService userBlobService,
                                   OdkFormSubmissionBackupService odkFormSubmissionBackupService) {
         this.factory = factory;
         this.locator = locator;
         this.authenticationTokenService = authenticationTokenService;
-        this.blobFieldStorageService = blobFieldStorageService;
+        this.userBlobService = userBlobService;
         this.odkFormSubmissionBackupService = odkFormSubmissionBackupService;
     }
 
@@ -223,8 +222,9 @@ public class FormSubmissionResource {
         if (byteSource == null) throw new FileNotFoundException();
 
         BlobId blobId = BlobId.valueOf(imageRowValue.getBlobId());
+        BlobMetadata metadata = BlobMetadata.attachment(blobId, imageRowValue.getFilename(), MediaType.valueOf(mimeType));
 
-        blobFieldStorageService.put(user, blobId, contentDisposition, mimeType, byteSource);
+        userBlobService.put(user, metadata, byteSource);
     }
 
     /** A cascade of various validations of the structure of the submitted form, where node may have been set to null */

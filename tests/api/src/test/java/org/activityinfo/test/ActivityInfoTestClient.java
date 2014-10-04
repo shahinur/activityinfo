@@ -48,5 +48,4 @@ public class ActivityInfoTestClient extends ActivityInfoClient {
             throw new WebApplicationException(status);
         }
     }
-
 }

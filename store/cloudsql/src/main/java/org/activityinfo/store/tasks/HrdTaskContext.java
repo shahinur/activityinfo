@@ -3,8 +3,8 @@ package org.activityinfo.store.tasks;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
-import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.tasks.TaskContext;
 import org.activityinfo.store.hrd.HrdResourceStore;
@@ -17,10 +17,10 @@ public class HrdTaskContext implements TaskContext {
 
     private final HrdStoreAccessor accessor;
     private HrdResourceStore store;
-    private BlobFieldStorageService blobService;
+    private UserBlobService blobService;
     private final AuthenticatedUser user;
 
-    public HrdTaskContext(HrdResourceStore store, BlobFieldStorageService blobService, AuthenticatedUser user) {
+    public HrdTaskContext(HrdResourceStore store, UserBlobService blobService, AuthenticatedUser user) {
         this.store = store;
         this.blobService = blobService;
         this.user = user;
