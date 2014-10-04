@@ -12,8 +12,6 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.store.EntityDeletedException;
 
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.util.Iterator;
 
 import static org.activityinfo.store.hrd.entity.Content.*;
@@ -48,16 +46,17 @@ public class LatestContent {
 
     public Resource get(WorkspaceTransaction tx) throws EntityNotFoundException {
         Entity entity = tx.get(key);
-        assertDeleted(entity);
+        assertNotDeleted(entity);
         assertAncestorNotDeleted(tx, entity);
         return deserializeResource(entity);
     }
 
     private boolean isDeleted(Entity entity) {
-        return entity.isUnindexedProperty(VERSION_PROPERTY);
+        Object deletedProperty = entity.getProperty(DELETED_PROPERTY);
+        return deletedProperty instanceof Boolean ? (Boolean) deletedProperty : false;
     }
 
-    private void assertDeleted(Entity entity) {
+    private void assertNotDeleted(Entity entity) {
         if (isDeleted(entity)) {
             throw new EntityDeletedException();
         }
@@ -65,18 +64,13 @@ public class LatestContent {
 
     private void assertAncestorNotDeleted(WorkspaceTransaction tx, Entity entity) throws EntityDeletedException {
         try {
-            if (entity.getProperty(OWNER_PROPERTY) instanceof String) {
-                String ownerId = (String) entity.getProperty(OWNER_PROPERTY);
-                boolean isRoot = Resources.ROOT_ID.asString().equals(ownerId);
-                Key ownerKey = KeyFactory.createKey(rootKey, KIND, isRoot ? rootKey.getName() : ownerId);
+            ResourceId ownerResourceId = ResourceId.valueOf((String) entity.getProperty(OWNER_PROPERTY));
+            if (!Resources.ROOT_ID.equals(ownerResourceId)) {
+                Key ownerKey = new LatestContent(rootKey, ownerResourceId).getKey();
+
                 Entity ownerEntity = tx.get(ownerKey);
-                assertDeleted(ownerEntity);
-                if (!isRoot) {
-                    assertAncestorNotDeleted(tx, ownerEntity);
-                }
-            } else {
-                // if owner is blank then we assume that it's root, otherwise it must not be empty
-                return;
+                assertNotDeleted(ownerEntity);
+                assertAncestorNotDeleted(tx, ownerEntity);
             }
         } catch (EntityNotFoundException e) {
             throw new EntityDeletedException();
@@ -173,21 +167,20 @@ public class LatestContent {
         tx.put(entity);
     }
 
-    public void delete(WorkspaceTransaction tx) throws EntityNotFoundException {
-        Entity entity = tx.get(key);
-        unindexProperty(entity, VERSION_PROPERTY);
-        unindexProperty(entity, OWNER_PROPERTY);
-        unindexProperty(entity, CLASS_PROPERTY);
-        unindexProperty(entity, CONTENTS_PROPERTY);
-        unindexProperty(entity, LABEL_PROPERTY);
+    public long delete(WorkspaceTransaction tx) throws EntityNotFoundException {
 
-        tx.put(entity);
+        long incrementVersion = tx.incrementVersion();
+
+        Entity previousVersion = tx.get(key);
+
+        Entity newVersion = new Entity(key);
+        newVersion.setUnindexedProperty(VERSION_PROPERTY, incrementVersion);
+        newVersion.setUnindexedProperty(OWNER_PROPERTY, previousVersion.getProperty(OWNER_PROPERTY));
+        newVersion.setUnindexedProperty(DELETED_PROPERTY, Boolean.TRUE);
+
+        tx.put(newVersion);
+        return incrementVersion;
     }
-
-    private void unindexProperty(Entity entity, String propertyName) {
-        entity.setUnindexedProperty(propertyName, entity.getProperty(propertyName));
-    }
-
 
     /**
      * Returns a list of resources, ordered by their row index to ensure
