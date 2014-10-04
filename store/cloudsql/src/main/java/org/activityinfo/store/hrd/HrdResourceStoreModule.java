@@ -5,7 +5,9 @@ import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.tasks.UserTaskService;
 import org.activityinfo.store.load.LoadService;
 import org.activityinfo.store.migrate.MigrateService;
+import org.activityinfo.store.tasks.HrdTaskContextProvider;
 import org.activityinfo.store.tasks.HrdUserTaskService;
+import org.activityinfo.store.tasks.TaskContextProvider;
 
 public class HrdResourceStoreModule extends ServletModule {
 
@@ -15,5 +17,6 @@ public class HrdResourceStoreModule extends ServletModule {
         bind(LoadService.class);
         bind(MigrateService.class);
         bind(UserTaskService.class).to(HrdUserTaskService.class);
+        bind(TaskContextProvider.class).to(HrdTaskContextProvider.class);
     }
 }
