@@ -3,14 +3,10 @@ package org.activityinfo.store.hrd.entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import org.activityinfo.model.auth.AccessControlRule;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.store.hrd.index.AcrIndex;
-import org.activityinfo.store.hrd.index.WorkspaceIndex;
+import org.activityinfo.store.hrd.tx.WorkspaceTransaction;
 
 /**
  * Workspaces form an Entity Group within all transactions occur with "serialized" consistency and
@@ -81,65 +77,6 @@ public class Workspace {
         return folderIndex;
     }
 
-    public long createWorkspace(WorkspaceTransaction tx, Resource resource) {
-
-        Preconditions.checkArgument(resource.getOwnerId().equals(Resources.ROOT_ID),
-            "workspace owner must be root");
-        Preconditions.checkArgument(resource.getId().equals(workspaceId),
-            "resource id does not match workspace id");
-
-        long newVersion = createResource(tx, resource, Optional.<Long>absent());
-
-        AccessControlRule acr = new AccessControlRule(resource.getId(), tx.getUser().getUserResourceId());
-        acr.setOwner(true);
-        getAcrIndex().put(tx, acr);
-
-        // add to the index
-        WorkspaceIndex.addOwnerIndexEntry(tx, this);
-
-        return newVersion;
-    }
-
-
-    /**
-     * Writes the updated {@code resource} to the datastore.
-     * @param tx the transaction in which to apply the changes.
-     * @param resource the updated version
-     * @return the new version of the resource
-     */
-    public long createResource(WorkspaceTransaction tx, Resource resource, Optional<Long> rowIndex) {
-        Preconditions.checkNotNull(tx);
-        Preconditions.checkNotNull(resource.getOwnerId());
-
-        resource = resource.copy();
-        resource.setVersion(tx.incrementVersion());
-
-        getLatestContent(resource.getId()).create(tx, resource, rowIndex);
-        getSnapshot(resource.getId(), resource.getVersion()).put(tx, resource);
-
-        return resource.getVersion();
-    }
-
-
-    public long createResource(WorkspaceTransaction tx, Resource resource) {
-        return createResource(tx, resource, Optional.<Long>absent());
-    }
-
-    /**
-     * Writes the updated {@code resource} to the datastore.
-     * @param tx the transaction in which to apply the changes.
-     * @param resource the updated version
-     * @return the new version of the resource
-     */
-    public long updateResource(WorkspaceTransaction tx, Resource resource) {
-        resource = resource.copy();
-        resource.setVersion(tx.incrementVersion());
-
-        getLatestContent(resource.getId()).update(tx, resource);
-        getSnapshot(resource.getId(), resource.getVersion()).put(tx, resource);
-
-        return resource.getVersion();
-    }
 
     public FormMetadata getFormMetadata(ResourceId formClassId) {
         return new FormMetadata(rootKey, formClassId);
@@ -165,7 +102,6 @@ public class Workspace {
         long newVersion = getLatestContent(resourceId).delete(tx);
         getSnapshot(resourceId, newVersion).markDeleted(tx);
 
-        tx.commit();
         return newVersion;
     }
 }
