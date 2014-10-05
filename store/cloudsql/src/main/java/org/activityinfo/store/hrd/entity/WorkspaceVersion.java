@@ -1,45 +1,42 @@
 package org.activityinfo.store.hrd.entity;
 
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.EntityNotFoundException;
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 
 /**
- * Datastore entity which holds the current version of the Workspace
+ * Datastore entity which holds the current version of the Workspace.
+ *
+ * There is one {@code WorkspaceVersion} entity per workspace.
  */
-public class WorkspaceVersion {
+public class WorkspaceVersion implements IsEntity {
+
     private static final long INITIAL_VERSION = 0L;
-
-    private static final String KIND = "WV";
-
-    private static final String KEY_NAME = "current";
 
     private static final String VERSION_PROPERTY = "v";
 
-    private final Key key;
+    private final WorkspaceVersionKey key;
 
-    public WorkspaceVersion(Key rootKey) {
-        key = KeyFactory.createKey(rootKey, KIND, KEY_NAME);
+    private long currentVersion;
+
+    public WorkspaceVersion(WorkspaceVersionKey key) {
+        this.key = key;
     }
 
-    public long get(WorkspaceTransaction tx) {
-        try {
-            Entity entity = tx.get(key);
-            Object property = entity.getProperty(VERSION_PROPERTY);
-            if (property instanceof Long) {
-                return (Long)property;
-            } else {
-                return INITIAL_VERSION;
-            }
-        } catch(EntityNotFoundException e) {
-            return INITIAL_VERSION;
-        }
+    /**
+     *
+     * @return the current version of the workspace
+     */
+    public long getCurrentVersion() {
+        return currentVersion;
     }
 
-    public void put(WorkspaceTransaction tx, long newVersion) {
-        Entity entity = new Entity(key);
-        entity.setProperty(VERSION_PROPERTY, newVersion);
-        tx.put(entity);
+    public void setCurrentVersion(long currentVersion) {
+        this.currentVersion = currentVersion;
+    }
+
+    @Override
+    public Entity toEntity() {
+        Entity entity = new Entity(key.create());
+        entity.setUnindexedProperty(VERSION_PROPERTY, currentVersion);
+        return entity;
     }
 }

@@ -17,7 +17,7 @@ import java.util.Iterator;
 import static org.activityinfo.store.hrd.entity.Content.*;
 
 /**
- * An entity within the {@code ResourceGroup} which contains the
+ * An entity within the Workspace entity group which contains the
  * content (properties) of the latest version of the resource.
  * <p/>
  * The {@code OWNER_PROPERTY} is indexed, allowing queries on owned entities
@@ -32,7 +32,6 @@ public class LatestContent {
     public static final String RESOURCE_ID_PROPERTY = "ID";
 
     public static final String ROW_INDEX_PROPERTY = "R";
-
 
     private final Key rootKey;
     private final ResourceId resourceId;
