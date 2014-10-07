@@ -1,6 +1,5 @@
 package org.activityinfo.store.migrate;
 
-import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.taskqueue.QueueFactory;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Strings;
@@ -9,11 +8,9 @@ import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.activityinfo.store.hrd.entity.Workspace;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.Iterator;
 
 @Path("/service/migrate")
 public class MigrateService {
@@ -86,15 +83,15 @@ public class MigrateService {
                                        @FormParam("workspaceId") ResourceId workspaceId) throws Exception {
 
         assertValidTaskInvocation(taskName);
-
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Workspace workspace = new Workspace(workspaceId);
-
-        Query query = new Query(workspace.getRootKey()).setKeysOnly();
-        Iterator<Entity> iterator = datastore.prepare(null, query).asIterator();
-        while(iterator.hasNext()) {
-            datastore.delete((Transaction)null, iterator.next().getKey());
-        }
+//
+//        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+//        Workspace workspace = new Workspace(workspaceId);
+//
+//        Query query = new Query(workspace.getRootKey()).setKeysOnly();
+//        Iterator<Entity> iterator = datastore.prepare(null, query).asIterator();
+//        while(iterator.hasNext()) {
+//            datastore.delete((Transaction)null, iterator.next().getKey());
+//        }
     }
 
 

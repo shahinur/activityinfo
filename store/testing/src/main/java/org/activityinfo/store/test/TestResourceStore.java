@@ -9,11 +9,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.json.ObjectMapperFactory;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
@@ -92,8 +88,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         return new FolderProjection(root);
     }
 
-    @Override
-    public UpdateResult put(AuthenticatedUser user, ResourceId id, Resource resource) {
+    private UpdateResult put(AuthenticatedUser user, ResourceId id, Resource resource) {
         lastUpdated = resource.copy();
         lastUpdated.setVersion(currentVersion++);
         put(lastUpdated);

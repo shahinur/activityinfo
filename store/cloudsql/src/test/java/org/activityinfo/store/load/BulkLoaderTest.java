@@ -17,6 +17,7 @@ import org.activityinfo.service.store.FormImportReader;
 import org.activityinfo.service.store.ImportWriter;
 import org.activityinfo.service.store.InstanceWriter;
 import org.activityinfo.store.hrd.TestingEnvironment;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -27,6 +28,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertThat;
 
+@Ignore
 public class BulkLoaderTest {
 
     private ResourceId formClassId = Resources.generateId();

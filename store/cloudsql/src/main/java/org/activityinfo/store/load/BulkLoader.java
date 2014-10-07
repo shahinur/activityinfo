@@ -5,20 +5,16 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.common.io.ByteSource;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.FormImportOptions;
 import org.activityinfo.service.store.FormImportReader;
-import org.activityinfo.store.hrd.entity.UpdateTransaction;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class BulkLoader {
 
     private DatastoreService datastore;
     private AuthenticatedUser user;
-    private Workspace workspace;
+    private WorkspaceEntityGroup workspace;
     private ResourceId ownerId;
     private ByteSource source;
     private FormImportReader reader;
@@ -41,7 +37,7 @@ public class BulkLoader {
     }
 
     public void setWorkspaceId(ResourceId workspaceId) {
-        workspace = new Workspace(workspaceId);
+        workspace = new WorkspaceEntityGroup(workspaceId);
     }
 
     public void setSource(ByteSource source) {
@@ -54,30 +50,30 @@ public class BulkLoader {
 
 
     public void run() throws IOException {
-
-        // First get temporary version number
-        long temporaryVersionNumber;
-        try(WorkspaceTransaction tx = new UpdateTransaction(workspace, datastore, user)) {
-            temporaryVersionNumber = -tx.incrementVersion();
-            tx.commit();
-        }
-
-        FormImportOptions options = new FormImportOptions();
-        options.setOwnerId(ownerId);
-        options.setUser(user);
-
-        // Write the instances outside of a transaction with a temporary number
-        BulkLoadTransaction bulkTransaction = new BulkLoadTransaction(user, workspace, temporaryVersionNumber);
-        BulkWriter writer = new BulkWriter(bulkTransaction);
-        try(InputStream in = source.openBufferedStream()) {
-            reader.load(options, in, writer);
-        }
-
-        // Trade in our temporary number for a new one within a real transaction
-        // and persist the FormClasses
-        try(UpdateTransaction tx = new UpdateTransaction(workspace, datastore, user)) {
-            writer.flush(tx);
-            tx.commit();
-        }
+//
+//        // First get temporary version number
+//        long temporaryVersionNumber;
+//        try(WorkspaceTransaction tx = new UpdateTransaction(workspace, datastore, user)) {
+//            temporaryVersionNumber = -tx.incrementVersion();
+//            tx.commit();
+//        }
+//
+//        FormImportOptions options = new FormImportOptions();
+//        options.setOwnerId(ownerId);
+//        options.setUser(user);
+//
+//        // Write the instances outside of a transaction with a temporary number
+//        BulkLoadTransaction bulkTransaction = new BulkLoadTransaction(user, workspace, temporaryVersionNumber);
+//        BulkWriter writer = new BulkWriter(bulkTransaction);
+//        try(InputStream in = source.openBufferedStream()) {
+//            reader.load(options, in, writer);
+//        }
+//
+//        // Trade in our temporary number for a new one within a real transaction
+//        // and persist the FormClasses
+//        try(UpdateTransaction tx = new UpdateTransaction(workspace, datastore, user)) {
+//            writer.flush(tx);
+//            tx.commit();
+//        }
     }
 }

@@ -1,4 +1,4 @@
-package org.activityinfo.store.hrd.entity;
+package org.activityinfo.store.hrd.entity.workspace;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -11,28 +11,31 @@ import javax.annotation.Nonnull;
  * The datastore key for the root of the workspace entity group.
  *
  */
-public class WorkspaceKey implements IsKey {
+public class WorkspaceEntityGroup {
 
-    public static final String KIND = Workspace.ROOT_KIND;
+    public static final String KIND = "W";
 
     private final ResourceId workspaceId;
 
-    public WorkspaceKey(ResourceId workspaceId) {
+    public WorkspaceEntityGroup(ResourceId workspaceId) {
         this.workspaceId = workspaceId;
     }
 
-    public WorkspaceKey(@Nonnull Key key) {
-        Preconditions.checkArgument(key.getKind().equals(KIND) && key.getParent() == null, key.toString());
-
+    public WorkspaceEntityGroup(@Nonnull Key key) {
+        checkKey(key);
         this.workspaceId = ResourceId.valueOf(key.getName());
+    }
+
+    public static void checkKey(Key key) {
+        Preconditions.checkArgument(key.getKind().equals(KIND), "Expected kind %s, found %s", KIND, key.toString());
+        Preconditions.checkArgument(key.getParent() == null, "Expected root key, found %s", key.toString());
     }
 
     public ResourceId getWorkspaceId() {
         return workspaceId;
     }
 
-    @Override
-    public Key create() {
+    public Key getRootKey() {
         return KeyFactory.createKey(KIND, workspaceId.asString());
     }
 
@@ -41,7 +44,7 @@ public class WorkspaceKey implements IsKey {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        WorkspaceKey that = (WorkspaceKey) o;
+        WorkspaceEntityGroup that = (WorkspaceEntityGroup) o;
 
         if (!workspaceId.equals(that.workspaceId)) return false;
 
@@ -51,5 +54,11 @@ public class WorkspaceKey implements IsKey {
     @Override
     public int hashCode() {
         return workspaceId.hashCode();
+    }
+
+
+    @Override
+    public String toString() {
+        return "Workspace[" + getWorkspaceId() + "]";
     }
 }

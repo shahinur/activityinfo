@@ -1,6 +1,5 @@
-package org.activityinfo.store.hrd.entity;
+package org.activityinfo.store.hrd.entity.workspace;
 
-import com.google.appengine.api.datastore.Text;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
@@ -9,14 +8,12 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.assertThat;
-
-public class ContentTest {
+public class SerializedRecordTest {
 
     @Test
     public void defaultProperty() {
@@ -33,22 +30,22 @@ public class ContentTest {
         form.addElement(field);
 
         Resource formResource = form.asResource();
-        assertThat(formResource.getValue().getRecordList("elements").get(0).getRecord("defaultValue").asMap(),
-            hasEntry(equalTo("@type"), Matchers.equalTo((Object) QuantityType.TYPE_CLASS.getId())));
+        Assert.assertThat(formResource.getValue().getRecordList("elements").get(0).getRecord("defaultValue").asMap(),
+            Matchers.hasEntry(CoreMatchers.equalTo("@type"), Matchers.equalTo((Object) QuantityType.TYPE_CLASS.getId())));
 
-        String json = Content.writePropertiesAsString(formResource.getValue());
+        String json = SerializedRecord.toJson(formResource.getValue());
 
         System.out.println(json);
 
         Resource readResource = Resources.createResource();
         readResource.setId(formId);
-        Content.readPropertiesFromString(readResource, new Text(json));
+        readResource.setValue(SerializedRecord.fromJson(json));
 
-        assertThat(readResource.getValue().getRecordList("elements").get(0).getRecord("defaultValue").asMap(),
-            hasEntry(equalTo("@type"), Matchers.equalTo((Object) QuantityType.TYPE_CLASS.getId())));
+        Assert.assertThat(readResource.getValue().getRecordList("elements").get(0).getRecord("defaultValue").asMap(),
+            Matchers.hasEntry(CoreMatchers.equalTo("@type"), Matchers.equalTo((Object) QuantityType.TYPE_CLASS.getId())));
 
         FormClass readClass = FormClass.fromResource(readResource);
-        assertThat(readClass.getFields().get(0).getDefaultValue(), Matchers.equalTo((FieldValue)new Quantity(41, "%")));
+        Assert.assertThat(readClass.getFields().get(0).getDefaultValue(), Matchers.equalTo((FieldValue) new Quantity(41, "%")));
 
     }
 }

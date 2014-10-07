@@ -19,6 +19,7 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.jaxrs.EntityTags;
 import org.hamcrest.Matchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import javax.ws.rs.core.MediaType;
@@ -35,6 +36,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests the Jersey setup, not the actual service itself
  */
+@Ignore
 public class ResourceStoreTest extends JerseyTest {
 
     public ResourceStoreTest() {

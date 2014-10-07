@@ -6,6 +6,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.FolderClass;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -26,6 +27,7 @@ public class SyncTest {
         user = testingEnvironment.getUser();
     }
 
+    @Ignore
     @Test
     public void testGetUpdates() {
         ResourceId workspaceId = generateId();

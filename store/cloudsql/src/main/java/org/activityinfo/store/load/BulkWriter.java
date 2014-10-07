@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.service.store.ImportWriter;
 import org.activityinfo.service.store.InstanceWriter;
-import org.activityinfo.store.hrd.entity.UpdateTransaction;
 
 import java.util.List;
 
@@ -26,9 +25,9 @@ public class BulkWriter implements ImportWriter {
         return writer;
     }
 
-    public void flush(UpdateTransaction tx) {
-        for(BulkInstanceWriter writer : formClasses) {
-            writer.flushFormClass(tx);
-        }
-    }
+//    public void flush(UpdateTransaction tx) {
+//        for(BulkInstanceWriter writer : formClasses) {
+//            writer.flushFormClass(tx);
+//        }
+//    }
 }

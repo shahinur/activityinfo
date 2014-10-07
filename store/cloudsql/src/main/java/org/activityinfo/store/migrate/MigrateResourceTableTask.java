@@ -1,8 +1,8 @@
 package org.activityinfo.store.migrate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.appengine.api.datastore.*;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.json.ObjectMapperFactory;
@@ -12,11 +12,11 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.store.hrd.entity.ReadTransaction;
-import org.activityinfo.store.hrd.entity.UpdateTransaction;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.dao.Clock;
+import org.activityinfo.store.hrd.dao.WorkspaceUpdate;
+import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
+import org.activityinfo.store.hrd.tx.ReadTx;
 
 import java.io.IOException;
 import java.sql.*;
@@ -34,7 +34,6 @@ public class MigrateResourceTableTask {
 
     private static final Logger LOGGER = Logger.getLogger(MigrateResourceTableTask.class.getName());
 
-    private final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private final DeploymentConfiguration config;
 
     private final ObjectMapper objectMapper = ObjectMapperFactory.get();
@@ -58,9 +57,9 @@ public class MigrateResourceTableTask {
 
         WorkspaceLookup workspaceLookup = new WorkspaceLookup();
 
-        Workspace workspace;
+        WorkspaceEntityGroup workspace;
         try {
-            workspace = workspaceLookup.lookup(folderId);
+            workspace = workspaceLookup.lookupGroup(folderId);
         } catch(ResourceNotFound e) {
             LOGGER.log(Level.SEVERE, "Folder " + folderId + " does not exist.");
             return 0;
@@ -70,7 +69,7 @@ public class MigrateResourceTableTask {
 
         try(Connection connection = openConnection()) {
 
-            long lastMigratedVersion = queryMigratedVersion(workspace);
+            long lastMigratedVersion = queryLastMigratedVersion(workspace);
 
             LOGGER.log(Level.INFO, "Last version migrated = " + lastMigratedVersion);
 
@@ -108,58 +107,67 @@ public class MigrateResourceTableTask {
         return count;
     }
 
-    private long queryMigratedVersion(Workspace workspace) {
-        try(ReadTransaction tx = new ReadTransaction(workspace, datastore, new AuthenticatedUser(0))) {
-            return queryLastMigratedVersion(tx);
+    private long queryLastMigratedVersion(WorkspaceEntityGroup workspace) {
+        try(ReadTx tx = ReadTx.withSerializableConsistency()) {
+            return queryLastMigratedVersion(workspace, tx);
         }
     }
 
-    private long queryLastMigratedVersion(WorkspaceTransaction tx) {
-        try {
-            Entity entity = datastore.get(migratedVersionKey(tx.getWorkspace()));
-            return (Long)entity.getProperty("Version");
-        } catch (EntityNotFoundException e) {
+    private long queryLastMigratedVersion(WorkspaceEntityGroup workspace, ReadTx tx) {
+        Optional<MigrationStatus> status = tx.getIfExists(new MigrationStatusKey(workspace));
+        if (status.isPresent()) {
+            return status.get().getSourceVersionMigrated();
+        } else {
             return 0L;
         }
     }
 
+    private static class HistoricalClock implements Clock {
 
-    private boolean update(Workspace workspace, ResourceId ownerId, ResultSet resultSet) throws SQLException, IOException {
+        private final long time;
+
+        public HistoricalClock(Date commitDate) {
+            this.time = commitDate.getTime();
+        }
+
+        @Override
+        public long getTime() {
+            return time;
+        }
+    }
+
+    private boolean update(WorkspaceEntityGroup workspace, ResourceId ownerId, ResultSet resultSet) throws SQLException, IOException {
 
         ResourceId resourceId = ResourceId.valueOf(resultSet.getString("id"));
         AuthenticatedUser user = getUser(resultSet);
         long sourceVersion = resultSet.getLong("version");
 
-        try(UpdateTransaction tx = new UpdateTransaction(workspace, datastore, user)) {
+
+        // use the original timestamp
+        Date commitDate = resultSet.getDate("commit_time");
+        Clock sourceClock = new HistoricalClock(commitDate);
+
+        try(WorkspaceUpdate update = WorkspaceUpdate.build(workspace, user).setClock(sourceClock).begin()) {
 
             // check again, this time within the transaction, that this source version hasn't been applied
-            if(sourceVersion <= queryLastMigratedVersion(tx)) {
+            if(sourceVersion <= queryLastMigratedVersion(workspace)) {
                 return false;
             }
-
-            // use the original timestamp
-            Date commitDate = resultSet.getDate("commit_time");
-            tx.setTimestamp(commitDate.getTime());
 
             Resource resource = Resources.createResource();
             resource.setId(resourceId);
             resource.setOwnerId(ownerId);
             resource.setValue(parseRecord(resultSet.getString("content")));
 
-            if (workspace.resourceExists(tx, resourceId)) {
-                workspace.updateResource(tx, resource);
-            } else {
-                workspace.createResource(tx, resource);
-            }
+            update.createOrUpdateResource(resource);
 
             // Update our marker
-            Entity migratedVersion = new Entity(migratedVersionKey(workspace));
-            migratedVersion.setUnindexedProperty("Version", resultSet.getLong("version"));
-            tx.put(migratedVersion);
-            tx.commit();
+            MigrationStatus status = new MigrationStatus(workspace);
+            status.setSourceVersionMigrated(resultSet.getLong("version"));
+            update.getTx().put(status);
 
+            update.commit();
             return true;
-
         }
     }
 
@@ -169,10 +177,6 @@ public class MigrateResourceTableTask {
             throw new IllegalStateException("Unexpected user id " + userId);
         }
         return new AuthenticatedUser(Integer.parseInt(userId.substring(1)));
-    }
-
-    private Key migratedVersionKey(Workspace workspace) {
-        return KeyFactory.createKey(workspace.getRootKey(), "MigratedVersion", "Version");
     }
 
     @VisibleForTesting
