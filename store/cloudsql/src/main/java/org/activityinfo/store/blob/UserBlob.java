@@ -127,7 +127,4 @@ class UserBlob {
         return entity;
     }
 
-    public String getGcsKey() {
-        return blobId.asString();
-    }
 }

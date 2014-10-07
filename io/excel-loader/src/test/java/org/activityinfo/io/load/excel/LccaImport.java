@@ -1,7 +1,7 @@
 package org.activityinfo.io.load.excel;
 
+import org.activityinfo.io.load.FormImportOptions;
 import org.activityinfo.model.resource.Resources;
-import org.activityinfo.service.store.FormImportOptions;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.junit.internal.AssumptionViolatedException;
