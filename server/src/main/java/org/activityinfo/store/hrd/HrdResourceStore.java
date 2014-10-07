@@ -1,9 +1,6 @@
 package org.activityinfo.store.hrd;
 
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceConfig;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.ImplicitTransactionManagementPolicy;
 import com.google.apphosting.api.ApiProxy;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
@@ -19,7 +16,10 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.service.store.StoreLoader;
 import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.store.hrd.cache.WorkspaceCache;
+import org.activityinfo.store.hrd.dao.BulkLoader;
 import org.activityinfo.store.hrd.dao.ResourceExistsException;
 import org.activityinfo.store.hrd.dao.ResourceQuery;
 import org.activityinfo.store.hrd.dao.WorkspaceCreation;
@@ -31,9 +31,9 @@ import org.activityinfo.store.hrd.entity.workspace.Snapshot;
 import org.activityinfo.store.hrd.entity.workspace.SnapshotKey;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
-import org.activityinfo.store.hrd.index.WorkspaceLookup;
 import org.activityinfo.store.hrd.tx.ReadTx;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
@@ -50,23 +50,26 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 public class HrdResourceStore implements ResourceStore {
     private final static long TIME_LIMIT_MILLISECONDS = 10 * 1000L;
 
+    private final StoreContext context;
     private final DatastoreService datastore;
-    private final WorkspaceLookup workspaceLookup = new WorkspaceLookup();
+    private final WorkspaceCache workspaceLookup;
 
-    public HrdResourceStore() {
-        this.datastore = DatastoreServiceFactory.getDatastoreService(DatastoreServiceConfig.Builder
-            .withImplicitTransactionManagementPolicy(ImplicitTransactionManagementPolicy.NONE));
+    @Inject
+    public HrdResourceStore(StoreContext store) {
+        this.context = store;
+        this.datastore = store.getDatastore();
+        this.workspaceLookup = store.getWorkspaceCache();
     }
 
     private WorkspaceUpdate beginUpdate(AuthenticatedUser user, ResourceId id) {
-        WorkspaceEntityGroup workspace = workspaceLookup.lookupGroup(id);
-        return WorkspaceUpdate.build(workspace, user).begin();
+        WorkspaceEntityGroup workspace = workspaceLookup.lookup(id);
+        return WorkspaceUpdate.newBuilder(context, workspace, user).begin();
     }
 
     private WorkspaceQuery beginQuery(AuthenticatedUser user, ResourceId resourceId) {
-        WorkspaceEntityGroup workspace = workspaceLookup.lookupGroup(resourceId);
+        WorkspaceEntityGroup workspace = workspaceLookup.lookup(resourceId);
         ReadTx tx = ReadTx.withSerializableConsistency(datastore);
-        WorkspaceQuery query = new WorkspaceQuery(workspace, user, tx);
+        WorkspaceQuery query = new WorkspaceQuery(context, workspace, user, tx);
         return query;
     }
 
@@ -140,7 +143,7 @@ public class HrdResourceStore implements ResourceStore {
 
 
     private UpdateResult createWorkspace(AuthenticatedUser user, Resource resource) {
-        WorkspaceCreation creation = new WorkspaceCreation(user);
+        WorkspaceCreation creation = new WorkspaceCreation(context, user);
         creation.createWorkspace(resource);
 
         return UpdateResult.committed(resource.getId(), WorkspaceCreation.INITIAL_VERSION);
@@ -150,6 +153,11 @@ public class HrdResourceStore implements ResourceStore {
         try(WorkspaceUpdate update = beginUpdate(user, resource.getOwnerId())) {
             update.createResource(resource);
             update.commit();
+
+            // pre-cache this resource's workspace so the user can find it right after the call
+            // but possible before there was time to update the index
+
+            context.getWorkspaceCache().cache(resource.getId(), update.getWorkspace());
 
             return UpdateResult.committed(resource.getId(), update.getUpdateVersion());
         }
@@ -238,6 +246,14 @@ public class HrdResourceStore implements ResourceStore {
 
             return resources;
         }
+    }
+
+    @Override
+    public StoreLoader beginLoad(AuthenticatedUser user, ResourceId parentId) {
+        return BulkLoader.newBuilder(context)
+            .setUser(user)
+            .setParentId(parentId)
+            .begin();
     }
 
     private static Collection<Resource> applyAuthorization(AuthenticatedUser authenticatedUser, WorkspaceEntityGroup workspace,
