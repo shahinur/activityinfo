@@ -24,16 +24,21 @@ package org.activityinfo.legacy.shared.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.LockedPeriodDTO.HasLockedPeriod;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.resource.ResourceId;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * One-to-one DTO for the Activity table.
@@ -291,6 +296,11 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public String getCategory() {
         return get("category");
+    }
+
+    public ActivityCategory getActivityCategory() {
+        String category = getCategory();
+        return category == null || category.isEmpty() ? null : new ActivityCategory(getCategory());
     }
 
     /**
