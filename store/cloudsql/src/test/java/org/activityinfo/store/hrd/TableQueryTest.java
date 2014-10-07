@@ -66,7 +66,7 @@ public class TableQueryTest {
         create(instance);
         
         FormClass formClass = new FormClass(formClassId);
-        formClass.setParentId(Resources.ROOT_ID);
+        formClass.setParentId(workspaceId);
         formClass.setLabel("Test Form");
         formClass.addElement(new FormField(name).setLabel("Name").setType(TextType.INSTANCE));
         formClass.addElement(new FormField(age).setCode("AGE").setLabel("Age").setType(new QuantityType().setUnits("years")));

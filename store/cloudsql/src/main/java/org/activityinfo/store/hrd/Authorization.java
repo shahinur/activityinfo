@@ -1,6 +1,5 @@
 package org.activityinfo.store.hrd;
 
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AccessControlRule;
@@ -8,28 +7,35 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.expr.ExprValue;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.entity.workspace.AcrEntry;
+import org.activityinfo.store.hrd.entity.workspace.AcrEntryKey;
+import org.activityinfo.store.hrd.entity.workspace.LatestVersionKey;
+import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
+import org.activityinfo.store.hrd.tx.ReadTx;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
 
 public class Authorization {
 
-    private WorkspaceTransaction transaction;
+    private ReadTx transaction;
     private ResourceId userResourceId;
 
     final private AccessControlRule accessControlRule;
+    private WorkspaceEntityGroup workspace;
+    private AuthenticatedUser authenticatedUser;
 
     /**
      * Standard constructor. Extracts one {@link AccessControlRule} corresponding to a user and resource from the index.
      * @param authenticatedUser The {@link AuthenticatedUser} this {@link AccessControlRule} should correspond with.
      * @param resourceId The id of the {@link Resource} this {@link AccessControlRule} should correspond with.
-     * @param transaction The {@link WorkspaceTransaction} that should be used to extract the {@link AccessControlRule}.
+     * @param transaction The {@link org.activityinfo.store.hrd.tx.ReadTx} that should be used to extract the {@link AccessControlRule}.
      */
-    public Authorization(AuthenticatedUser authenticatedUser, ResourceId resourceId, WorkspaceTransaction transaction) {
+    public Authorization(WorkspaceEntityGroup workspace, AuthenticatedUser authenticatedUser, ResourceId resourceId, ReadTx transaction) {
+        this.workspace = workspace;
+        this.authenticatedUser = authenticatedUser;
         Preconditions.checkNotNull(authenticatedUser);
         Preconditions.checkNotNull(resourceId);
         Preconditions.checkNotNull(transaction);
@@ -44,22 +50,18 @@ public class Authorization {
         this.accessControlRule = accessControlRule;
     }
 
-    private AccessControlRule findRule(WorkspaceTransaction tx, ResourceId resourceId) {
+    private AccessControlRule findRule(ReadTx tx, ResourceId resourceId) {
 
         while(!ROOT_ID.equals(resourceId)) {
-            Optional<AccessControlRule> rule = tx.getWorkspace().getAcrIndex().getRule(tx, resourceId);
+            LatestVersionKey resourceKey = new LatestVersionKey(workspace, resourceId);
+            Optional<AcrEntry> rule = tx.getIfExists(new AcrEntryKey(resourceKey, authenticatedUser));
             if (rule.isPresent()) {
-                return rule.get();
+                return rule.get().toAccessControlRule();
             }
 
             // ACRs are inherited from the owner, so if we don't find an ACR here,
             // ascend to this resource's owner in search of an applicable rule.
-            try {
-                resourceId = tx.getWorkspace().getLatestContent(resourceId).getAsNode(tx).getOwnerId();
-            } catch (EntityNotFoundException e) {
-                // owner entity may not exist if it was deleted, return UNAUTHORIZED status code.
-                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-            }
+            resourceId = tx.getOrThrow(resourceKey).getResourceId();
         }
         return null;
     }
@@ -159,15 +161,4 @@ public class Authorization {
         return accessControlRule != null && accessControlRule.isOwner();
     }
 
-    public Authorization ofChild(ResourceId childId) {
-        Preconditions.checkNotNull(userResourceId);
-        Preconditions.checkNotNull(transaction);
-
-        Optional<AccessControlRule> rule = transaction.getWorkspace().getAcrIndex().getRule(transaction, childId);
-        if(rule.isPresent()) {
-            return new Authorization(rule.get());
-        } else {
-            return this; // if child doesn't have ACR return parent ACR
-        }
-    }
 }

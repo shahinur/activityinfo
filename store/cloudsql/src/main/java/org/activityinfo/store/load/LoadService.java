@@ -2,8 +2,6 @@ package org.activityinfo.store.load;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.io.load.excel.ExcelFormImportReader;
 import org.activityinfo.model.auth.AuthenticatedUser;
@@ -13,10 +11,6 @@ import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskService;
 import org.activityinfo.service.tasks.UserTaskStatus;
-import org.activityinfo.store.hrd.Authorization;
-import org.activityinfo.store.hrd.entity.ReadTransaction;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
 import javax.inject.Inject;
@@ -60,25 +54,22 @@ public class LoadService {
                 .status(Response.Status.BAD_REQUEST)
                 .entity("url parameter is required").build());
         }
-
-        Workspace workspace = workspaceLookup.lookup(ownerId);
-
-        try(WorkspaceTransaction tx = new ReadTransaction(workspace, datastoreService, user)) {
-            Authorization authorization = new Authorization(user, ownerId, tx);
-            authorization.assertCanEdit();
-
-            UserTask userTask = taskService.startTask(user, "Importing ...");
-
-            QueueFactory.getDefaultQueue().add(TaskOptions.Builder
-                .withUrl("/service/load/run")
-                .param("blobId", blobId.asString())
-                .param("userId", Long.toString(user.getId()))
-                .param("workspaceId", workspace.getWorkspaceId().asString())
-                .param("ownerId", ownerId.asString())
-                .param("userTaskId", userTask.getId()));
-
-            return userTask;
-        }
+//
+//        Workspace workspace = workspaceLookup.lookup(ownerId);
+//
+//            UserTask userTask = taskService.startTask(user, "Importing ...");
+//
+//            QueueFactory.getDefaultQueue().add(TaskOptions.Builder
+//                .withUrl("/service/load/run")
+//                .param("blobId", blobId.asString())
+//                .param("userId", Long.toString(user.getId()))
+//                .param("workspaceId", workspace.getWorkspaceId().asString())
+//                .param("ownerId", ownerId.asString())
+//                .param("userTaskId", userTask.getId()));
+//
+//            return userTask;
+//        }
+        throw new UnsupportedOperationException();
     }
 
     @POST

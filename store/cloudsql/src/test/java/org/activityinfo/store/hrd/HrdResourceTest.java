@@ -5,12 +5,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.Resources;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.Folder;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.number.QuantityType;
@@ -142,7 +137,12 @@ public class HrdResourceTest {
         createInStore(folderLevel2);
         createInStore(folderLevel3);
 
+
+        System.out.println("Querying for " + folderLevel1.getId());
+
         FolderProjection folderProjection = environment.getStore().queryTree(environment.getUser(), new FolderRequest(folderLevel1.getId()));
+
+
         assertThat(folderProjection.getRootNode().getChildren().size(), Matchers.equalTo(1));
 
         // commented it for now due to assert in org.activityinfo.model.legacy.CuidAdapter.resourceId

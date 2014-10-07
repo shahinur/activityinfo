@@ -1,6 +1,5 @@
 package org.activityinfo.service.store;
 
-import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
@@ -8,34 +7,17 @@ import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 
-import javax.ws.rs.*;
 import java.util.List;
 
-@Path("/service/store")
 public interface ResourceStore {
 
     /**
      * Fetches the latest version of the resource from the store.
      */
-    @GET
-    @Path("resource/{id}")
-    @Produces("application/json")
-    UserResource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
+    UserResource get(AuthenticatedUser user, ResourceId resourceId);
 
-    @GET
-    @Path("resource/{id}/acr")
-    @Produces("application/json")
-    List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
+    List<Resource> getAccessControlRules(AuthenticatedUser user, ResourceId resourceId);
 
-
-    /**
-     * Updates a {@code Resource} within the store.
-     */
-    @PUT
-    @Path("resource/{id}")
-    @Consumes("application/json")
-    @Produces("application/json")
-    UpdateResult put(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId, Resource resource);
 
     /**
      * Deletes {@code Resource}s from the store
@@ -44,11 +26,7 @@ public interface ResourceStore {
      * @param resourceId resource id
      * @return result whether resource was deleted or not
      */
-    @DELETE
-    @Path("resource/{id}")
-    @Consumes("application/json")
-    @Produces("application/json")
-    UpdateResult delete(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId);
+    UpdateResult delete(AuthenticatedUser user, ResourceId resourceId);
 
     /**
      * Creates or updates a {@code Resource} within the store.
@@ -68,35 +46,20 @@ public interface ResourceStore {
      * @param resource
      * @return
      */
-    @POST
-    @Path("resources")
-    @Consumes("application/json")
-    @Produces("application/json")
-    UpdateResult create(@InjectParam AuthenticatedUser user, Resource resource);
+    UpdateResult create(AuthenticatedUser user, Resource resource);
 
     /**
      * Fetches an outline of Resources, returning only their id and label.
      */
-    @POST
-    @Path("query/tree")
-    @Produces("application/json")
-    FolderProjection queryTree(@InjectParam AuthenticatedUser user, FolderRequest request);
+    FolderProjection queryTree(AuthenticatedUser user, FolderRequest request);
 
 
     /**
      * Fetches an outline of Resources, returning only their id and label.
      */
-    @POST
-    @Path("query/table")
-    @Consumes("application/json")
-    @Produces("application/json")
-    TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel);
+    TableData queryTable(AuthenticatedUser user, TableModel tableModel);
 
-    @POST
-    @Path("query/cube")
-    @Consumes("application/json")
-    @Produces("application/json")
-    List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel);
+    List<Bucket> queryCube(AuthenticatedUser user, PivotTableModel tableModel);
 
 
     /**
@@ -104,14 +67,9 @@ public interface ResourceStore {
      * @return a list of workspaces owned or explicitly shared with a
      * given user
      */
-    @GET
-    @Path("query/roots")
-    @Produces("application/json")
-    List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user);
+    List<ResourceNode> getOwnedOrSharedWorkspaces(AuthenticatedUser user);
 
-    @GET
-    @Path("query/updates/{workspaceId}")
-    @Produces("application/json")
-    List<Resource> getUpdates(@InjectParam AuthenticatedUser user, @PathParam("workspaceId") ResourceId workspaceId,
-                              @QueryParam("version") long version);
+    List<Resource> getUpdates(AuthenticatedUser user, ResourceId workspaceId, long version);
+
+
 }

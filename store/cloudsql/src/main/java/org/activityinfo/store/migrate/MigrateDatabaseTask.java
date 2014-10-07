@@ -18,8 +18,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 
 import java.sql.*;
 import java.util.Date;
@@ -64,7 +63,7 @@ public class MigrateDatabaseTask {
 
             FreshIdStrategy idStrategy = new FreshIdStrategy();
             ResourceId workspaceId = idStrategy.resourceId(CuidAdapter.DATABASE_DOMAIN, databaseId);
-            Workspace workspace = new Workspace(workspaceId);
+            WorkspaceEntityGroup workspace = new WorkspaceEntityGroup(workspaceId);
 
             LOGGER.info("Workspace id = " + workspaceId);
 
@@ -72,12 +71,12 @@ public class MigrateDatabaseTask {
             context.setRootId(Resources.ROOT_ID);
             context.setGeoDbOwnerId(workspaceId);
 
-            MigrateTransaction tx = new MigrateTransaction(datastore, workspace, user);
+         //   MigrateTransaction tx = new MigrateTransaction(datastore, workspace, user);
 
             try {
                 MySqlMigrator migrator = new MySqlMigrator(context);
-                migrator.migrate(connection, new HrdWriter(tx));
-                tx.flush();
+                //migrator.migrate(connection, new HrdWriter(tx));
+                //tx.flush();
             } catch(Exception e) {
                 LOGGER.log(Level.SEVERE, "Exception whilst migrating database " + databaseName +
                     " [" + databaseId + "]", e);
@@ -135,14 +134,12 @@ public class MigrateDatabaseTask {
 
     private class HrdWriter implements ResourceWriter {
 
-        private final WorkspaceTransaction tx;
-        private final Workspace workspace;
+        private final WorkspaceEntityGroup workspace;
 
         private Resource workspaceResource;
 
-        public HrdWriter(WorkspaceTransaction tx) {
-            this.tx = tx;
-            this.workspace = tx.getWorkspace();
+        public HrdWriter(WorkspaceEntityGroup workspace) {
+            this.workspace = workspace;
         }
 
         @Override
@@ -153,18 +150,19 @@ public class MigrateDatabaseTask {
         @Override
         public void writeResource(Resource resource, Date dateCreated, Date dateDeleted) throws Exception {
             // Wait until all the other writes are complete before we write the
-            // workspace and it becomes to the user
-            if(resource.getId().equals(tx.getWorkspace().getWorkspaceId())) {
-                workspaceResource = resource;
-            } else {
-                workspace.createResource(tx, resource);
-            }
+//            // workspace and it becomes to the user
+//            if(resource.getId().equals(tx.getWorkspace().getWorkspaceId())) {
+//                workspaceResource = resource;
+//            } else {
+//
+//                //workspace.createResource(tx, resource);
+//            }
         }
 
         @Override
         public void endResources() throws Exception {
             if(workspaceResource != null) {
-                workspace.createWorkspace(tx, workspaceResource);
+                //workspace.createWorkspace(tx, workspaceResource);
             }
         }
 

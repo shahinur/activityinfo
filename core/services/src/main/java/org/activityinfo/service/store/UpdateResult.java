@@ -68,5 +68,4 @@ public final class UpdateResult {
             return "<" + status.name() + ">";
         }
     }
-
 }
