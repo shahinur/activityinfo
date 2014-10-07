@@ -1,6 +1,5 @@
 package org.activityinfo.store.hrd;
 
-import com.google.appengine.api.datastore.DatastoreService;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
@@ -9,15 +8,13 @@ import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.store.hrd.dao.WorkspaceQuery;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
-import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
 import java.util.Iterator;
 import java.util.Map;
 
 public class HrdStoreAccessor implements StoreAccessor {
 
-    private final DatastoreService datastore;
-    private final WorkspaceLookup workspaceLookup;
+    private final StoreContext context;
     private final AuthenticatedUser user;
 
     /**
@@ -26,17 +23,16 @@ public class HrdStoreAccessor implements StoreAccessor {
     private final Map<WorkspaceEntityGroup, WorkspaceQuery> transactions = Maps.newHashMap();
 
 
-    public HrdStoreAccessor(DatastoreService datastore, WorkspaceLookup workspaceLookup, AuthenticatedUser user) {
-        this.datastore = datastore;
-        this.workspaceLookup = workspaceLookup;
+    public HrdStoreAccessor(StoreContext context, AuthenticatedUser user) {
+        this.context = context;
         this.user = user;
     }
 
     private WorkspaceQuery getWorkspaceOf(ResourceId formClassId) {
-        WorkspaceEntityGroup workspace = workspaceLookup.lookupGroup(formClassId);
+        WorkspaceEntityGroup workspace = context.getWorkspaceCache().lookup(formClassId);
         WorkspaceQuery tx = transactions.get(workspace);
         if(tx == null) {
-            tx = new WorkspaceQuery(workspace, user);
+            tx = new WorkspaceQuery(context, workspace, user);
             transactions.put(workspace, tx);
         }
         return tx;

@@ -1,4 +1,4 @@
-package org.activityinfo.store.hrd.index;
+package org.activityinfo.store.hrd.cache;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -9,31 +9,29 @@ import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.store.hrd.dao.Interceptor;
-import org.activityinfo.store.hrd.dao.UpdateInterceptor;
 import org.activityinfo.store.hrd.entity.workspace.*;
 import org.activityinfo.store.hrd.tx.ReadTx;
-import org.activityinfo.store.hrd.tx.ReadWriteTx;
 
+import javax.inject.Singleton;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Cached lookup of the workspace of resource ids.
  */
-public class WorkspaceLookup extends Interceptor {
+@Singleton
+public class WorkspaceCache {
 
-    private static final Logger LOGGER = Logger.getLogger(WorkspaceLookup.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(WorkspaceCache.class.getName());
 
     private LoadingCache<ResourceId, ResourceId> cache;
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     private MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
-    public WorkspaceLookup() {
+    public WorkspaceCache() {
         cache = CacheBuilder.newBuilder()
             .maximumSize(1000)
             .build(new CacheLoader<ResourceId, ResourceId>() {
@@ -88,8 +86,7 @@ public class WorkspaceLookup extends Interceptor {
         }
     }
 
-
-    public WorkspaceEntityGroup lookupGroup(ResourceId resourceId) {
+    public WorkspaceEntityGroup lookup(ResourceId resourceId) {
         try {
             return new WorkspaceEntityGroup(cache.get(resourceId));
         } catch (Exception e) {
@@ -97,19 +94,12 @@ public class WorkspaceLookup extends Interceptor {
         }
     }
 
-
     public void cache(ResourceId id, ResourceId workspaceId) {
         memcache(id, workspaceId);
         cache.put(id, workspaceId);
     }
 
-    @Override
-    public UpdateInterceptor createUpdateInterceptor(WorkspaceEntityGroup entityGroup, AuthenticatedUser user, ReadWriteTx transaction) {
-        return new UpdateInterceptor() {
-            @Override
-            public void onResourceCreated(LatestVersion latestVersion) {
-                cache(latestVersion.getResourceId(), latestVersion.getWorkspaceId());
-            }
-        };
+    public void cache(ResourceId id, WorkspaceEntityGroup workspace) {
+        cache(id, workspace.getWorkspaceId());
     }
 }
