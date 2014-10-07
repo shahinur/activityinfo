@@ -210,8 +210,8 @@ public class CalculatedIndicatorsQuery implements WorkItem {
         sitesQuery.setLimit(-1);
 
 
-        for(Dimension dim : query.getDimensions()) {
-            if(dim.getType() != DimensionType.Indicator) {
+        for (Dimension dim : query.getDimensions()) {
+            if (dim.getType() != DimensionType.Indicator && dim.getType() != DimensionType.Site) {
                 dimAccessors.add(createAccessor(dim));
             }
         }
