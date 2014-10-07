@@ -1,4 +1,4 @@
-package org.activityinfo.service.store;
+package org.activityinfo.io.load;
 
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
