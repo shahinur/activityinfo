@@ -1,11 +1,13 @@
 package org.activityinfo.store.tasks;
 
+import com.google.common.io.ByteSource;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.service.store.ResourceCursor;
+import org.activityinfo.service.store.StoreLoader;
 import org.activityinfo.service.tasks.TaskContext;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.hrd.HrdStoreAccessor;
@@ -40,5 +42,15 @@ public class HrdTaskContext implements TaskContext {
     @Override
     public ResourceCursor openCursor(ResourceId formClassId) throws Exception {
         return store.createAccessor(user).openCursor(formClassId);
+    }
+
+    @Override
+    public StoreLoader beginLoad(ResourceId parentId) throws Exception {
+        return store.beginLoad(user, parentId);
+    }
+
+    @Override
+    public ByteSource getBlob(BlobId blobId) {
+        return blobService.getContent(user, blobId);
     }
 }

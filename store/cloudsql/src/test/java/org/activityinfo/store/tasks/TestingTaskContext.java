@@ -1,25 +1,22 @@
 package org.activityinfo.store.tasks;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteSource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.ResourceCursor;
-import org.activityinfo.service.tasks.BlobResult;
+import org.activityinfo.service.store.StoreLoader;
 import org.activityinfo.service.tasks.TaskContext;
 import org.activityinfo.store.hrd.TestingEnvironment;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.Map;
 
 public class TestingTaskContext implements TaskContext {
 
     Map<BlobId, ByteArrayOutputStream> blobs = Maps.newHashMap();
-    List<BlobResult> blobResults = Lists.newArrayList();
     TestingEnvironment environment;
 
     public TestingTaskContext(TestingEnvironment environment) {
@@ -33,7 +30,6 @@ public class TestingTaskContext implements TaskContext {
         }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         blobs.put(blobId, baos);
-        blobResults.add(new BlobResult(blobId, filename));
         return baos;
     }
 
@@ -47,8 +43,9 @@ public class TestingTaskContext implements TaskContext {
         return environment.getStore().createAccessor(environment.getUser()).openCursor(formClassId);
     }
 
-    public List<BlobResult> getBlobResults() {
-        return blobResults;
+    @Override
+    public StoreLoader beginLoad(ResourceId parentId) throws Exception {
+        return environment.getStore().beginLoad(environment.getUser(), parentId);
     }
 
     public ByteSource getBlob(BlobId blobId) {

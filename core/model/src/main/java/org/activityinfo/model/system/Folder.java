@@ -14,16 +14,18 @@ public class Folder implements IsRecord {
         return label;
     }
 
-    public void setLabel(String label) {
+    public Folder setLabel(String label) {
         this.label = label;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Folder setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     @Override

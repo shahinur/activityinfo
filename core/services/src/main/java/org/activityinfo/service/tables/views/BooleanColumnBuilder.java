@@ -1,6 +1,5 @@
 package org.activityinfo.service.tables.views;
 
-import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.type.FieldValue;
@@ -20,8 +19,7 @@ public class BooleanColumnBuilder implements ColumnViewBuilder {
     }
 
     @Override
-    public void accept(FormEvalContext instance) {
-        FieldValue fieldValue = instance.getFieldValue(fieldId);
+    public void accept(FieldValue fieldValue) {
         if(fieldValue instanceof BooleanFieldValue) {
             values.set(index, fieldValue == BooleanFieldValue.TRUE);
         } else {

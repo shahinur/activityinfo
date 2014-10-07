@@ -8,7 +8,6 @@ import com.google.common.base.Preconditions;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.store.hrd.tx.IsEntity;
 import org.activityinfo.store.hrd.tx.ListQuery;
@@ -34,7 +33,7 @@ public class LatestVersion implements IsEntity, ResourceVersion {
     private ResourceId ownerId;
     private ResourceId classId;
     private boolean deleted;
-    private long transactionId;
+    private Long transactionId;
     private Long version;
     private Long rowIndex;
     private String label;
@@ -69,6 +68,9 @@ public class LatestVersion implements IsEntity, ResourceVersion {
         this.record = SerializedRecord.of(resource.getValue());
     }
 
+    public boolean hasVersion() {
+        return version != null;
+    }
 
     public LatestVersionKey getKey() {
         return key;
@@ -86,12 +88,6 @@ public class LatestVersion implements IsEntity, ResourceVersion {
         return new LatestVersionKey(key.getParent(), getOwnerId());
     }
 
-    public void set(Resource resource) {
-        setOwnerId(resource.getOwnerId());
-        setClassId(resource.getValue().getClassId());
-        setRecord(resource.getValue());
-    }
-
     public ResourceId getOwnerId() {
         return ownerId;
     }
@@ -104,10 +100,6 @@ public class LatestVersion implements IsEntity, ResourceVersion {
         return classId;
     }
 
-    public void setClassId(ResourceId classId) {
-        this.classId = classId;
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
@@ -117,18 +109,27 @@ public class LatestVersion implements IsEntity, ResourceVersion {
     }
 
     public long getTransactionId() {
+        Preconditions.checkState(transactionId != null && transactionId != 0, "transactionId is not set");
         return transactionId;
     }
 
     public void setTransactionId(long transactionId) {
+        Preconditions.checkArgument(transactionId != 0);
         this.transactionId = transactionId;
     }
 
+    public CommitStatusKey getTransactionStatusKey() {
+        Preconditions.checkState(transactionId != null && transactionId != 0, "transactionId is not set");
+        return new CommitStatusKey(key.getWorkspace(), transactionId);
+    }
+
     public long getVersion() {
+        Preconditions.checkState(version != null && version != 0, "version is not set:" + version);
         return version;
     }
 
     public void setVersion(Long version) {
+        Preconditions.checkArgument(version != 0);
         this.version = version;
     }
 
@@ -160,7 +161,9 @@ public class LatestVersion implements IsEntity, ResourceVersion {
     public Entity toEntity() {
 
         Preconditions.checkState(ownerId != null, "ownerId is required");
-        Preconditions.checkState(version != null && version != 0, "version cannot be zero");
+        Preconditions.checkState((version != null && version != 0) ||
+                                 (transactionId != null && transactionId != 0),
+            "either version or transactionId must be set");
 
         Entity entity = new Entity(key.unwrap());
 
@@ -197,12 +200,14 @@ public class LatestVersion implements IsEntity, ResourceVersion {
         Resource resource = Resources.createResource();
         resource.setId(getResourceId());
         resource.setOwnerId(getOwnerId());
-        resource.setVersion(getVersion());
+        if(hasVersion()) {
+            resource.setVersion(getVersion());
+        }
         resource.setValue(getRecord());
         return resource;
     }
 
-    public static ListQuery<ResourceNode> folderItemsOf(final LatestVersionKey folderKey) {
+    public static ListQuery<LatestVersion> folderItemsOf(final LatestVersionKey folderKey) {
         Query query = new Query(LatestVersionKey.KIND)
             .setAncestor(folderKey.getWorkspace().getRootKey())
             .addProjection(new PropertyProjection(VERSION_PROPERTY, Long.class))
@@ -210,20 +215,7 @@ public class LatestVersion implements IsEntity, ResourceVersion {
             .addProjection(new PropertyProjection(CLASS_PROPERTY, String.class))
             .setFilter(ownerIs(folderKey));
 
-        Function<Entity, ResourceNode> transform = new Function<Entity, ResourceNode>() {
-            @Override
-            public ResourceNode apply(Entity input) {
-                LatestVersion latestVersion = new LatestVersion(input);
-                ResourceNode node = new ResourceNode(latestVersion.getResourceId());
-                node.setOwnerId(folderKey.getResourceId());
-                node.setLabel(latestVersion.getLabel());
-                node.setClassId(latestVersion.getClassId());
-                node.setVersion(latestVersion.getVersion());
-                return node;
-            }
-        };
-
-        return new ListQuery<>(query, transform);
+        return ListQuery.create(query, LatestVersion.class);
     }
 
     public static ListQuery<LatestVersionKey> queryChildKeys(LatestVersionKey parentKey) {
@@ -260,5 +252,4 @@ public class LatestVersion implements IsEntity, ResourceVersion {
     public static Query.FilterPredicate ownerIs(LatestVersionKey ownerKey) {
         return new Query.FilterPredicate(OWNER_PROPERTY, EQUAL, ownerKey.getResourceId().asString());
     }
-
 }

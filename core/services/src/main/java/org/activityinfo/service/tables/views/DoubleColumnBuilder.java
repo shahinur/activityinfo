@@ -1,7 +1,6 @@
 package org.activityinfo.service.tables.views;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.views.DoubleArrayColumnView;
@@ -23,8 +22,7 @@ public class DoubleColumnBuilder implements ColumnViewBuilder {
     }
 
     @Override
-    public void accept(FormEvalContext resource) {
-        FieldValue fieldValue = resource.getFieldValue(fieldName);
+    public void accept(FieldValue fieldValue) {
         values.add(reader.read(fieldValue));
     }
 

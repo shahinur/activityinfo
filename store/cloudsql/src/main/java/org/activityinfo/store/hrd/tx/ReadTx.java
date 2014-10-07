@@ -11,6 +11,7 @@ public class ReadTx implements ReadableTx, AutoCloseable {
     private final DatastoreService datastore;
     private final Transaction transaction;
 
+
     private ReadTx(DatastoreService datastore, Transaction transaction) {
         this.datastore = datastore;
         this.transaction = transaction;
@@ -63,7 +64,6 @@ public class ReadTx implements ReadableTx, AutoCloseable {
     }
 
 
-
     public static ReadTx crossGroup() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Transaction tx = datastore.beginTransaction(TransactionOptions.Builder.withXG(true));
@@ -87,7 +87,7 @@ public class ReadTx implements ReadableTx, AutoCloseable {
      * @throws java.lang.IllegalStateException if the entity does not exist
      */
     public <T extends IsEntity> T getOrThrow(IsKey<T> key) {
-        return Operations.getOrThrow(datastore, transaction, key);
+        return Mapping.getOrThrow(datastore, transaction, key);
     }
 
     /**
@@ -97,11 +97,11 @@ public class ReadTx implements ReadableTx, AutoCloseable {
      * @return the entity wrapper, or {@code Optional.absent()} if the entity does not exist in the datastore.
      */
     public <T extends IsEntity> Optional<T> getIfExists(IsKey<T> key) {
-        return Operations.getIfExists(datastore, transaction, key);
+        return Mapping.getIfExists(datastore, transaction, key);
     }
 
     public <T extends IsEntity> Iterable<T> getList(List<? extends IsKey<T>> keys) {
-        return Operations.getList(datastore, transaction, keys);
+        return Mapping.getList(datastore, transaction, keys);
     }
 
     public <T> Iterable<T> query(final ListQuery<T> query) {
@@ -114,7 +114,7 @@ public class ReadTx implements ReadableTx, AutoCloseable {
     }
 
     public <T> Optional<T> query(final SingleResultQuery<T> query) {
-        return Operations.query(datastore, transaction, query);
+        return Mapping.query(datastore, transaction, query);
     }
 
     @Override

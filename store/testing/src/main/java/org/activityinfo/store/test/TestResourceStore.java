@@ -191,6 +191,11 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public StoreLoader beginLoad(AuthenticatedUser user, ResourceId parentId) {
+        throw new UnsupportedOperationException();
+    }
+
     private String getLabel(Resource resource, ResourceId classId) {
         if(FormClass.CLASS_ID.equals(classId)) {
             return resource.getValue().getString(FormClass.LABEL_FIELD_ID);

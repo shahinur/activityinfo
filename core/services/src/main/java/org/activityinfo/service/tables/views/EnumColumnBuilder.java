@@ -2,7 +2,6 @@ package org.activityinfo.service.tables.views;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.views.DiscreteStringColumnView;
@@ -36,8 +35,7 @@ public class EnumColumnBuilder implements ColumnViewBuilder {
     }
 
     @Override
-    public void accept(FormEvalContext instance) {
-        FieldValue value = instance.getFieldValue(fieldName);
+    public void accept(FieldValue value) {
         values.add(indexOf(value));
     }
 

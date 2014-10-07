@@ -12,10 +12,11 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.store.ResourceNotFound;
+import org.activityinfo.store.hrd.StoreContext;
+import org.activityinfo.store.hrd.cache.WorkspaceCache;
 import org.activityinfo.store.hrd.dao.Clock;
 import org.activityinfo.store.hrd.dao.WorkspaceUpdate;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
-import org.activityinfo.store.hrd.index.WorkspaceLookup;
 import org.activityinfo.store.hrd.tx.ReadTx;
 
 import java.io.IOException;
@@ -55,11 +56,11 @@ public class MigrateResourceTableTask {
 
     public int run() {
 
-        WorkspaceLookup workspaceLookup = new WorkspaceLookup();
+        WorkspaceCache workspaceLookup = new WorkspaceCache();
 
         WorkspaceEntityGroup workspace;
         try {
-            workspace = workspaceLookup.lookupGroup(folderId);
+            workspace = workspaceLookup.lookup(folderId);
         } catch(ResourceNotFound e) {
             LOGGER.log(Level.SEVERE, "Folder " + folderId + " does not exist.");
             return 0;
@@ -147,7 +148,9 @@ public class MigrateResourceTableTask {
         Date commitDate = resultSet.getDate("commit_time");
         Clock sourceClock = new HistoricalClock(commitDate);
 
-        try(WorkspaceUpdate update = WorkspaceUpdate.build(workspace, user).setClock(sourceClock).begin()) {
+        try(WorkspaceUpdate update = WorkspaceUpdate.newBuilder(new StoreContext(), workspace, user)
+                .setClock(sourceClock)
+                .begin()) {
 
             // check again, this time within the transaction, that this source version hasn't been applied
             if(sourceVersion <= queryLastMigratedVersion(workspace)) {

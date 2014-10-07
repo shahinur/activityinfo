@@ -201,4 +201,9 @@ public class ResourceStoreStub implements ResourceStore {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public StoreLoader beginLoad(AuthenticatedUser user, ResourceId parentId) {
+        throw new UnsupportedOperationException();
+    }
+
 }

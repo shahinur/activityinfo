@@ -3,7 +3,7 @@ package org.activityinfo.store.hrd.tx;
 import com.google.appengine.api.datastore.*;
 import com.google.common.base.Optional;
 
-public class ReadWriteTx implements ReadableTx, AutoCloseable {
+public class ReadWriteTx implements WritableTx, AutoCloseable {
     private final DatastoreService datastore;
     private final Transaction transaction;
 
@@ -20,16 +20,15 @@ public class ReadWriteTx implements ReadableTx, AutoCloseable {
 
     public void put(IsEntity entity) {
         Entity datastoreEntity = entity.toEntity();
-        System.out.println(datastoreEntity);
         this.datastore.put(transaction, datastoreEntity);
     }
 
     public <T extends IsEntity> T getOrThrow(IsKey<T> key) {
-        return Operations.getOrThrow(datastore, transaction, key);
+        return Mapping.getOrThrow(datastore, transaction, key);
     }
 
     public <T extends IsEntity> Optional<T> getIfExists(IsKey<T> key) {
-        return Operations.getIfExists(datastore, transaction, key);
+        return Mapping.getIfExists(datastore, transaction, key);
     }
 
     public void commit() {
