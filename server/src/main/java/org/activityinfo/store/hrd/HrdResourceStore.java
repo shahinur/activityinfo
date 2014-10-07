@@ -3,148 +3,82 @@ package org.activityinfo.store.hrd;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceConfig;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.ImplicitTransactionManagementPolicy;
 import com.google.apphosting.api.ApiProxy;
-import com.google.apphosting.api.ApiProxy.Environment;
-import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.FolderProjection;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.store.FolderRequest;
-import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tables.TableBuilder;
-import org.activityinfo.store.EntityDeletedException;
-import org.activityinfo.store.hrd.entity.ReadTransaction;
-import org.activityinfo.store.hrd.entity.Snapshot;
-import org.activityinfo.store.hrd.entity.UpdateTransaction;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.dao.*;
+import org.activityinfo.store.hrd.entity.workspace.*;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
+import org.activityinfo.store.hrd.tx.ReadTx;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static javax.ws.rs.core.Response.Status.CONFLICT;
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
-import static org.activityinfo.model.resource.Resources.ROOT_ID;
 
 public class HrdResourceStore implements ResourceStore {
     private final static long TIME_LIMIT_MILLISECONDS = 10 * 1000L;
-
 
     private final DatastoreService datastore;
     private final WorkspaceLookup workspaceLookup = new WorkspaceLookup();
 
     public HrdResourceStore() {
         this.datastore = DatastoreServiceFactory.getDatastoreService(DatastoreServiceConfig.Builder
-                .withImplicitTransactionManagementPolicy(ImplicitTransactionManagementPolicy.NONE));
+            .withImplicitTransactionManagementPolicy(ImplicitTransactionManagementPolicy.NONE));
     }
 
-    private WorkspaceTransaction begin(Workspace workspace, AuthenticatedUser user) {
-        return new UpdateTransaction(workspace, datastore, user);
+    private WorkspaceUpdate beginUpdate(AuthenticatedUser user, ResourceId id) {
+        WorkspaceEntityGroup workspace = workspaceLookup.lookupGroup(id);
+        return WorkspaceUpdate.build(workspace, user).begin();
     }
 
-
-    private WorkspaceTransaction beginRead(Workspace workspace, AuthenticatedUser user) {
-        return new ReadTransaction(workspace, datastore, user);
+    private WorkspaceQuery beginQuery(AuthenticatedUser user, ResourceId resourceId) {
+        WorkspaceEntityGroup workspace = workspaceLookup.lookupGroup(resourceId);
+        ReadTx tx = ReadTx.withSerializableConsistency(datastore);
+        WorkspaceQuery query = new WorkspaceQuery(workspace, user, tx);
+        return query;
     }
 
-    @GET
-    @Path("resource/{id}")
-    @Produces("application/json")
     @Override
     public UserResource get(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
-        assertNotNull(resourceId);
 
-        try {
-            Workspace workspace = workspaceLookup.lookup(resourceId);
-
-            try (WorkspaceTransaction tx = beginRead(workspace, user)) {
-                Authorization authorization = new Authorization(user, resourceId, tx);
-                authorization.assertCanView();
-
-                return UserResource.userResource(workspace.getLatestContent(resourceId).get(tx)).
-                        setOwner(authorization.isOwner()).
-                        setEditAllowed(authorization.canEdit());
-            }
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFound(resourceId);
+        try (WorkspaceQuery query = beginQuery(user, resourceId)) {
+            return query.getResource(resourceId).asUserResource();
         }
     }
 
     @Override
     public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
                                                 @PathParam("id") ResourceId resourceId) {
-        assertNotNull(resourceId);
 
-        final Workspace workspace = workspaceLookup.lookup(resourceId);
-
-        try (WorkspaceTransaction tx = beginRead(workspace, user)) {
-            Authorization authorization = new Authorization(user, resourceId, tx);
-            authorization.assertIsOwner();
-
-            return Lists.newArrayList(Iterables.transform(workspace.getAcrIndex().queryRules(tx, resourceId),
-                    new Function<ResourceId, Resource>() {
-                        @Override
-                        public Resource apply(ResourceId resourceId) {
-                            try {
-                                return workspace.getLatestContent(resourceId).get(tx);
-                            } catch (EntityNotFoundException e) {
-                                throw new ResourceNotFound(resourceId);
-                            }
-                        }
-                    }));
-        }
-    }
-
-    @PUT
-    @Path("resource/{id}")
-    @Consumes("application/json")
-    @Produces("application/json")
-    public UpdateResult put(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId, Resource resource) {
-        assertNotNull(resourceId, resource);
-
-        if (resourceId.equals(resource.getId())) {
-            return put(user, resource);
-        } else {
-            throw new WebApplicationException(BAD_REQUEST);
+        try (WorkspaceQuery query = beginQuery(user, resourceId)) {
+            return query.getResource(resourceId).getAccessControlRules();
         }
     }
 
     /**
      * Deletes {@code Resource} from the store
      *
-     * @param user      authenticated user
+     * @param user       authenticated user
      * @param resourceId resource id
      * @return result whether resource was deleted or not
      */
@@ -153,144 +87,81 @@ public class HrdResourceStore implements ResourceStore {
     @Consumes("application/json")
     @Produces("application/json")
     public UpdateResult delete(@InjectParam AuthenticatedUser user, @PathParam("id") ResourceId resourceId) {
-        assertNotNull(resourceId);
 
-        Workspace workspace = workspaceLookup.lookup(resourceId);
+        try (WorkspaceUpdate update = beginUpdate(user, resourceId)) {
+            update.delete(resourceId);
+            update.commit();
 
-        try (WorkspaceTransaction tx = begin(workspace, user)) {
-
-            Authorization authorization = new Authorization(user, resourceId, tx);
-            authorization.assertCanEdit();
-
-            long newVersion = workspace.deleteResource(tx, resourceId);
-
-            return UpdateResult.committed(resourceId, newVersion);
-        } catch (EntityNotFoundException e) {
-            return UpdateResult.rejected(resourceId);
+            return UpdateResult.committed(resourceId, update.getUpdateVersion());
         }
     }
 
     @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
-        assertNotNull(resource);
 
-        Workspace workspace = workspaceLookup.lookup(resource.getId());
+        try (WorkspaceUpdate update = beginUpdate(user, resource.getId())) {
 
-        try (WorkspaceTransaction tx = begin(workspace, user)) {
-            try {
+            update.updateResource(resource);
+            update.commit();
 
-                // check whether resource is in workspace and whether it's not deleted
-                workspace.getLatestContent(resource.getId()).get(tx);
-            } catch (EntityDeletedException e) {
-                Authorization authorization = new Authorization(user, resource.getId(), tx);
-
-                authorization.assertCanEdit();
-                throw e;
-            } catch (EntityNotFoundException e) {
-                return create(tx, user, resource);
-            }
-
-            Authorization authorization = new Authorization(user, resource.getId(), tx);
-
-            authorization.assertCanEdit();
-
-            long newVersion = workspace.updateResource(tx, resource);
-            tx.commit();
-
-            return UpdateResult.committed(resource.getId(), newVersion);
+            return UpdateResult.committed(resource.getId(), update.getUpdateVersion());
         }
     }
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-        assertNotNull(resource);
+        if (user.isAnonymous()) {
+            throw new WebApplicationException(UNAUTHORIZED);
+        }
 
-        if (ROOT_ID.equals(resource.getOwnerId())) {
-            if(user.isAnonymous()) {
-                throw new WebApplicationException(UNAUTHORIZED);
+        try {
+            if (resource.getOwnerId().equals(Resources.ROOT_ID)) {
+                return createWorkspace(user, resource);
+            } else {
+                return createResource(user, resource);
             }
 
-            Workspace workspace = new Workspace(resource.getId());
-            try (WorkspaceTransaction tx = begin(workspace, user)) {
-                long oldVersion = assertNoConflictAndGetVersion(resource, workspace, tx);
-
-                if (oldVersion > 0) {
-                    return UpdateResult.committed(resource.getId(), oldVersion);
-                }
-
-                long newVersion = workspace.createWorkspace(tx, resource);
-                tx.commit();
-
-                workspaceLookup.cache(resource.getId(), workspace);
-
-                return UpdateResult.committed(resource.getId(), newVersion);
-            }
-
-        } else {
-            Workspace workspace = workspaceLookup.lookup(resource.getOwnerId());
-
-            try (WorkspaceTransaction tx = begin(workspace, user)) {
-                return create(tx, user, resource);
-            }
+        } catch(ResourceExistsException e) {
+            return UpdateResult.committed(e.getResourceId(), e.getVersion());
         }
     }
 
-    private UpdateResult create(WorkspaceTransaction tx, AuthenticatedUser user, Resource resource) {
-        Authorization authorization = new Authorization(user, resource.getOwnerId(), tx);
-        Workspace workspace = tx.getWorkspace();
 
-        authorization.assertCanEdit();
+    private UpdateResult createWorkspace(AuthenticatedUser user, Resource resource) {
+        WorkspaceCreation creation = new WorkspaceCreation(user);
+        creation.createWorkspace(resource);
 
-        long oldVersion = assertNoConflictAndGetVersion(resource, workspace, tx);
+        return UpdateResult.committed(resource.getId(), WorkspaceCreation.INITIAL_VERSION);
+    }
 
-        if (oldVersion > 0) {
-            return UpdateResult.committed(resource.getId(), oldVersion);
+    private UpdateResult createResource(AuthenticatedUser user, Resource resource) {
+        try(WorkspaceUpdate update = beginUpdate(user, resource.getOwnerId())) {
+            update.createResource(resource);
+            update.commit();
+
+            return UpdateResult.committed(resource.getId(), update.getUpdateVersion());
         }
-
-        long newVersion = workspace.createResource(tx, resource, Optional.<Long>absent());
-        tx.commit();
-
-        // Cache immediately so that subsequent reads will be able to find the resource
-        // if it takes a while for the indices to catch up
-        workspaceLookup.cache(resource.getId(), workspace);
-
-        return UpdateResult.committed(resource.getId(), newVersion);
     }
 
 
     @Override
     public FolderProjection queryTree(@InjectParam AuthenticatedUser user,
                                       FolderRequest request) {
-        assertNotNull(request);
 
-        Workspace workspace = workspaceLookup.lookup(request.getRootId());
+        try(WorkspaceQuery query = beginQuery(user, request.getRootId())) {
 
-        try (WorkspaceTransaction tx = beginRead(workspace, user)) {
-            Authorization rootNodeAuthorization = new Authorization(user, request.getRootId(), tx);
-            rootNodeAuthorization.assertCanView();
-
-            ResourceNode rootNode = workspace.getLatestContent(request.getRootId()).getAsNode(tx).
-                    setEditAllowed(rootNodeAuthorization.canEdit()).
-                    setOwner(rootNodeAuthorization.isOwner());
-
-            for (ResourceNode child : workspace.getFolderIndex().queryFolderItems(tx, rootNode.getId())) {
-                Authorization childAuthorization = rootNodeAuthorization.ofChild(child.getId());
-                child.setEditAllowed(childAuthorization.canEdit()).
-                        setOwner(childAuthorization.isOwner());
+            ResourceQuery resource = query.getResource(request.getRootId());
+            ResourceNode rootNode = resource.asResourceNode();
+            for(ResourceNode child : resource.queryFolderItems()) {
                 rootNode.getChildren().add(child);
             }
 
             return new FolderProjection(rootNode);
-
-        } catch (EntityNotFoundException e) {
-            throw new ResourceNotFound(request.getRootId());
         }
     }
 
     @Override
     public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
-        assertNotNull(tableModel);
-
         TableBuilder builder = new TableBuilder(new HrdStoreAccessor(datastore, workspaceLookup, user));
         try {
             return builder.buildTable(tableModel);
@@ -308,8 +179,6 @@ public class HrdResourceStore implements ResourceStore {
     @Consumes("application/json")
     @Produces("application/json")
     public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
-        assertNotNull(tableModel);
-
         CubeBuilder builder = new CubeBuilder(new HrdStoreAccessor(datastore, workspaceLookup, user));
         try {
             return builder.buildCube(tableModel);
@@ -326,18 +195,17 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceId workspaceId, long version) {
-        assertNotNull(workspaceId);
 
-        Environment environment = ApiProxy.getCurrentEnvironment();
-        Map<ResourceId, Snapshot> snapshots = Maps.newLinkedHashMap();
+        ApiProxy.Environment environment = ApiProxy.getCurrentEnvironment();
+        Map<ResourceId, SnapshotKey> snapshots = Maps.newLinkedHashMap();
         Map<ResourceId, Authorization> authorizations = Maps.newHashMap();
-        Workspace workspace = new Workspace(workspaceId);
+        WorkspaceEntityGroup workspace = new WorkspaceEntityGroup(workspaceId);
 
         if (version < 0) version = 0;
 
-        try (WorkspaceTransaction tx = beginRead(workspace, user)) {
+        try (ReadTx tx = ReadTx.withSerializableConsistency(datastore)) {
 
-            for (Snapshot snapshot : Snapshot.getSnapshotsAfter(tx, version)) {
+            for (SnapshotKey snapshot : tx.query(Snapshot.afterVersion(workspace, version))) {
                 ResourceId resourceId = snapshot.getResourceId();
 
                 // We want the linked list to be sorted based on the most recent insertion of a resource
@@ -345,7 +213,7 @@ public class HrdResourceStore implements ResourceStore {
                 snapshots.put(resourceId, snapshot);
 
                 if (authorizations.get(resourceId) == null) {
-                    authorizations.put(resourceId, new Authorization(user, resourceId, tx));
+                    authorizations.put(resourceId, new Authorization(workspace, user, resourceId, tx));
                 }
 
                 if (environment.getRemainingMillis() < TIME_LIMIT_MILLISECONDS) {
@@ -355,24 +223,24 @@ public class HrdResourceStore implements ResourceStore {
 
             List<Resource> resources = Lists.newArrayListWithCapacity(snapshots.size());
 
-            for (Snapshot snapshot : snapshots.values()) {
+            for (SnapshotKey snapshot : snapshots.values()) {
                 final Authorization authorization;
-                Resource resource = snapshot.get(tx);
+                Resource resource = tx.getOrThrow(snapshot).toResource();
 
                 if (AccessControlRule.CLASS_ID.equals(resource.getValue().getClassId())) {
                     final Optional<Authorization> oldAuthorization;
-                    final Optional<Snapshot> optionalSnapshot = Snapshot.getSnapshotAsOf(tx, resource.getId(), version);
+                    final Optional<Snapshot> optionalSnapshot = tx.query(Snapshot.asOf(workspace, resource.getId(), version));
 
                     authorization = new Authorization(user, resource);
 
                     if (optionalSnapshot.isPresent()) {
-                        oldAuthorization = Optional.of(new Authorization(user, optionalSnapshot.get().get(tx)));
+                        oldAuthorization = Optional.of(new Authorization(user, optionalSnapshot.get().toResource()));
                     } else {
                         oldAuthorization = Optional.absent();
                     }
 
                     // TODO Deal with the effects of changed authorizations correctly
-                    for (Resource newlyAuthorizedResource : applyAuthorization(oldAuthorization, authorization, tx)) {
+                    for (Resource newlyAuthorizedResource : applyAuthorization(null, workspace, oldAuthorization, authorization, tx)) {
                         if (!snapshots.keySet().contains(newlyAuthorizedResource.getId())) {
                             resources.add(newlyAuthorizedResource);
                         }
@@ -385,25 +253,22 @@ public class HrdResourceStore implements ResourceStore {
             }
 
             return resources;
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    private static Collection<Resource> applyAuthorization(Optional<Authorization> oldAuthorization,
-                                                           Authorization newAuthorization, WorkspaceTransaction tx) {
+    private static Collection<Resource> applyAuthorization(AuthenticatedUser authenticatedUser, WorkspaceEntityGroup workspace,
+                                                           Optional<Authorization> oldAuthorization,
+                                                           Authorization newAuthorization, ReadTx tx) {
         if (newAuthorization.canViewNowButNotAsOf(oldAuthorization)) {
             ResourceId resourceId = newAuthorization.getResourceId();
 
             if (resourceId != null) {
                 final Collection<Resource> result = Lists.newArrayList();
 
-                for (ResourceId element : descendIdTree(newAuthorization, resourceId, tx)) {
-                    try {
-                        result.add(tx.getWorkspace().getLatestContent(element).get(tx));
-                    } catch (EntityNotFoundException e) {
-                        throw new RuntimeException(e);
-                    }
+                LatestVersionKey parentKey = new LatestVersionKey(workspace, resourceId);
+
+                for (LatestVersionKey element : descendIdTree(authenticatedUser, parentKey, newAuthorization, tx)) {
+                    result.add(tx.getOrThrow(element).toResource());
                 }
 
                 return result;
@@ -414,53 +279,22 @@ public class HrdResourceStore implements ResourceStore {
     }
 
     // This method recursively descends the ID tree of a resource node, including only nodes with the same authorization
-    private static List<ResourceId> descendIdTree(Authorization authorization, ResourceId id, WorkspaceTransaction tx) {
-        final List<ResourceId> result = Lists.newArrayList(id);
+    private static List<LatestVersionKey> descendIdTree(AuthenticatedUser authenticatedUser, LatestVersionKey parentKey, Authorization parentAuth, ReadTx tx) {
+        final List<LatestVersionKey> result = Lists.newArrayList(parentKey);
 
-        if (authorization != null && id != null && tx != null) {
-            ResourceId authorizationId = authorization.getId();
-            AuthenticatedUser authenticatedUser = tx.getUser();
-            Workspace workspace = tx.getWorkspace();
+        if (parentAuth != null && parentKey.getResourceId() != null && tx != null) {
+            ResourceId authorizationId = parentAuth.getId();
 
-            if (authorizationId != null && authenticatedUser != null && workspace != null) {
-                try {
-                    for (ResourceId child : workspace.getLatestContent(id).getChildIds(tx)) {
-                        if (authorizationId.equals(new Authorization(authenticatedUser, child, tx).getId())) {
-                            result.addAll(descendIdTree(authorization, child, tx));
-                        }
+            if (authorizationId != null) {
+                for (LatestVersionKey child : tx.query(LatestVersion.queryChildKeys(parentKey))) {
+                    Authorization childAuth = new Authorization(parentKey.getWorkspace(), authenticatedUser, child.getResourceId(), tx);
+                    if (authorizationId.equals(childAuth.getId())) {
+                        result.addAll(descendIdTree(authenticatedUser, child, parentAuth, tx));
                     }
-                } catch (EntityNotFoundException e) {
-                    throw new RuntimeException(e);
                 }
             }
         }
-
         return result;
     }
 
-    private static long assertNoConflictAndGetVersion(Resource resource, Workspace workspace, WorkspaceTransaction tx) {
-        final long version;
-
-        try {
-            Resource other = workspace.getLatestContent(resource.getId()).get(tx);
-            version = other.getVersion();
-            other.setVersion(resource.getVersion());    // The client need not know the version assigned to the resource
-
-            if (resource.equals(other)) {
-                return version;
-            } else {
-                throw new WebApplicationException(CONFLICT);
-            }
-        } catch (EntityDeletedException e) {
-            throw new WebApplicationException(CONFLICT);
-        } catch (EntityNotFoundException e) {
-            return 0L;
-        }
-    }
-
-    private static void assertNotNull(Object... objects) {
-        for (Object object : objects) {
-            if (object == null) throw new WebApplicationException(BAD_REQUEST);
-        }
-    }
 }

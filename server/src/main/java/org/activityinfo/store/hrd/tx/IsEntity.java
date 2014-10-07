@@ -1,4 +1,4 @@
-package org.activityinfo.store.hrd.entity;
+package org.activityinfo.store.hrd.tx;
 
 import com.google.appengine.api.datastore.Entity;
 

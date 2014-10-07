@@ -7,9 +7,8 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreAccessor;
-import org.activityinfo.store.hrd.entity.UpdateTransaction;
-import org.activityinfo.store.hrd.entity.Workspace;
-import org.activityinfo.store.hrd.entity.WorkspaceTransaction;
+import org.activityinfo.store.hrd.dao.WorkspaceQuery;
+import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 import org.activityinfo.store.hrd.index.WorkspaceLookup;
 
 import java.util.Iterator;
@@ -24,7 +23,7 @@ public class HrdStoreAccessor implements StoreAccessor {
     /**
      * Maintain one transaction per workspace
      */
-    private final Map<ResourceId, WorkspaceTransaction> transactions = Maps.newHashMap();
+    private final Map<WorkspaceEntityGroup, WorkspaceQuery> transactions = Maps.newHashMap();
 
 
     public HrdStoreAccessor(DatastoreService datastore, WorkspaceLookup workspaceLookup, AuthenticatedUser user) {
@@ -33,32 +32,30 @@ public class HrdStoreAccessor implements StoreAccessor {
         this.user = user;
     }
 
-    private WorkspaceTransaction getTransactionFor(ResourceId formClassId) {
-        Workspace workspaceId = workspaceLookup.lookup(formClassId);
-        WorkspaceTransaction tx = transactions.get(workspaceId);
+    private WorkspaceQuery getWorkspaceOf(ResourceId formClassId) {
+        WorkspaceEntityGroup workspace = workspaceLookup.lookupGroup(formClassId);
+        WorkspaceQuery tx = transactions.get(workspace);
         if(tx == null) {
-            tx = new UpdateTransaction(workspaceId, datastore, user);
-            transactions.put(workspaceId.getWorkspaceId(), tx);
+            tx = new WorkspaceQuery(workspace, user);
+            transactions.put(workspace, tx);
         }
         return tx;
     }
 
     @Override
     public ResourceCursor openCursor(ResourceId formClassId) throws Exception {
-        WorkspaceTransaction tx = getTransactionFor(formClassId);
-        Workspace workspace = tx.getWorkspace();
+        WorkspaceQuery workspace = getWorkspaceOf(formClassId);
 
-        Iterator<Resource> iterator = workspace.getLatestContent(formClassId).queryFormInstances(tx);
+        Iterator<Resource> iterator = workspace.getResource(formClassId).getFormInstances();
 
         return new HrdCursor(iterator);
     }
 
     @Override
     public Resource get(ResourceId formClassId) throws Exception {
-        WorkspaceTransaction tx = getTransactionFor(formClassId);
-        Workspace workspace = tx.getWorkspace();
+        WorkspaceQuery tx = getWorkspaceOf(formClassId);
 
-        return workspace.getLatestContent(formClassId).get(tx);
+        return tx.getResource(formClassId).asUserResource().getResource();
     }
 
     @Override
