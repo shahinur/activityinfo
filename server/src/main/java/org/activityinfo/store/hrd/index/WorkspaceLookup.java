@@ -1,25 +1,30 @@
 package org.activityinfo.store.hrd.index;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.memcache.Expiration;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.common.base.Optional;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.store.hrd.entity.LatestContent;
-import org.activityinfo.store.hrd.entity.Workspace;
+import org.activityinfo.store.hrd.dao.Interceptor;
+import org.activityinfo.store.hrd.dao.UpdateInterceptor;
+import org.activityinfo.store.hrd.entity.workspace.*;
+import org.activityinfo.store.hrd.tx.ReadTx;
+import org.activityinfo.store.hrd.tx.ReadWriteTx;
 
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Cached lookup of the workspace of resource ids.
  */
-public class WorkspaceLookup {
+public class WorkspaceLookup extends Interceptor {
 
     private static final Logger LOGGER = Logger.getLogger(WorkspaceLookup.class.getName());
 
@@ -41,10 +46,10 @@ public class WorkspaceLookup {
             });
     }
 
-    private ResourceId lookupWorkspace(ResourceId key) {
+    private ResourceId lookupWorkspace(ResourceId resourceId) {
         // First try memcache
         try {
-            String workspaceId = (String) memcacheService.get(key.asString());
+            String workspaceId = (String) memcacheService.get(resourceId.asString());
             if(workspaceId != null) {
                 return ResourceId.valueOf(workspaceId);
             }
@@ -54,33 +59,25 @@ public class WorkspaceLookup {
         }
 
         // Then query from the datastore
-        Query query = new Query(LatestContent.KIND)
-            .setKeysOnly()
-            .setFilter(new Query.FilterPredicate(LatestContent.RESOURCE_ID_PROPERTY,
-                                    Query.FilterOperator.EQUAL, key.asString()));
-
-        Iterator<Entity> indexEntry = datastore.prepare(query).asIterator();
-
-        // Check to see if the resource is a workspace in parallel
-        if(isWorkspace(key)) {
-            return key;
+        Optional<LatestVersionKey> latestVersionKey = ReadTx.outsideTransaction().query(LatestVersion.ofResource(resourceId));
+        if(latestVersionKey.isPresent()) {
+            return latestVersionKey.get().getWorkspace().getWorkspaceId();
         }
 
-        if(indexEntry.hasNext()) {
-            return LatestContent.workspaceFromKey(indexEntry.next().getKey());
+        // It is possible for the resource to be committed but not yet appear in the index of all
+        // resources. So before giving up, try looking up directly by key.
+
+        if(isWorkspace(resourceId)) {
+            return resourceId;
         }
 
         // Give up
-        throw new ResourceNotFound(key);
+        throw new ResourceNotFound(resourceId);
     }
 
     private boolean isWorkspace(ResourceId key)  {
-        try {
-            datastore.get(null, new Workspace(key).getLatestContent(key).getKey());
-            return true;
-        } catch (EntityNotFoundException e) {
-            return false;
-        }
+        Optional<CurrentVersion> workspaceVersion = ReadTx.outsideTransaction().getIfExists(new CurrentVersionKey(key));
+        return workspaceVersion.isPresent();
     }
 
     private void memcache(ResourceId resourceId, ResourceId workspaceId) {
@@ -91,16 +88,28 @@ public class WorkspaceLookup {
         }
     }
 
-    public Workspace lookup(ResourceId resourceId) {
+
+    public WorkspaceEntityGroup lookupGroup(ResourceId resourceId) {
         try {
-            return new Workspace(cache.get(resourceId));
+            return new WorkspaceEntityGroup(cache.get(resourceId));
         } catch (Exception e) {
-            return new Workspace(lookupWorkspace(resourceId));
+            return new WorkspaceEntityGroup(lookupWorkspace(resourceId));
         }
     }
 
-    public void cache(ResourceId id, Workspace workspace) {
-        memcache(id, workspace.getWorkspaceId());
-        cache.put(id, workspace.getWorkspaceId());
+
+    public void cache(ResourceId id, ResourceId workspaceId) {
+        memcache(id, workspaceId);
+        cache.put(id, workspaceId);
+    }
+
+    @Override
+    public UpdateInterceptor createUpdateInterceptor(WorkspaceEntityGroup entityGroup, AuthenticatedUser user, ReadWriteTx transaction) {
+        return new UpdateInterceptor() {
+            @Override
+            public void onResourceCreated(LatestVersion latestVersion) {
+                cache(latestVersion.getResourceId(), latestVersion.getWorkspaceId());
+            }
+        };
     }
 }
