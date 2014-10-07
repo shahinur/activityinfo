@@ -4,8 +4,9 @@ import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.expr.eval.FieldReader;
+import org.activityinfo.model.expr.eval.PartialEvaluator;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -13,7 +14,6 @@ import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.views.ConstantColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
-import org.activityinfo.model.type.FieldType;
 import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.tables.views.*;
 
@@ -34,18 +34,18 @@ public class TableScan {
     private FormClass formClass;
 
     private Optional<PrimaryKeyMapBuilder> primaryKeyMapBuilder = Optional.absent();
-    private Map<String, ColumnViewBuilder> columnMap = Maps.newHashMap();
+    private Map<String, ColumnScanner> columnMap = Maps.newHashMap();
     private Map<String, ForeignKeyBuilder> foreignKeyMap = Maps.newHashMap();
 
     private Optional<Integer> rowCount = Optional.absent();
 
-    private FormEvalContext formEvalContext;
+    private PartialEvaluator partialEvaluator;
 
     public TableScan(StoreAccessor resourceStore, FormClass formClass) {
         this.store = resourceStore;
         this.formClass = formClass;
         this.classId = formClass.getId();
-        this.formEvalContext = new FormEvalContext(formClass);
+        this.partialEvaluator = new PartialEvaluator(formClass);
     }
 
     public Supplier<ColumnView> fetchColumn(ResourceId fieldId) {
@@ -57,14 +57,14 @@ public class TableScan {
         if(columnMap.containsKey(columnKey)) {
             return columnMap.get(columnKey);
         } else {
-            FormField field = formEvalContext.getField(fieldId);
-            FieldType fieldType = formEvalContext.resolveFieldType(fieldId);
-            ColumnViewBuilder builder = ViewBuilderFactory.get(field, fieldType);
+            FormField field = partialEvaluator.getField(fieldId);
+            FieldReader reader = partialEvaluator.partiallyEvaluate(field);
+            ColumnViewBuilder builder = ViewBuilderFactory.get(field, reader.getType());
             if(builder != null) {
-                columnMap.put(columnKey, builder);
+                columnMap.put(columnKey, new FieldScanner(reader, builder));
                 return builder;
             } else {
-                LOGGER.log(Level.SEVERE, "Column " + fieldId + " has unsupported type: " + fieldType);
+                LOGGER.log(Level.SEVERE, "Column " + fieldId + " has unsupported type: " + reader.getType());
                 //throw new UnsupportedOperationException("Unsupported type for column " + field.getLabel() + ": " + fieldType);
                 return fetchEmptyColumn(ColumnType.STRING);
             }
@@ -75,7 +75,7 @@ public class TableScan {
     public Supplier<ColumnView> fetchPrimaryKeyColumn() {
         String columnKey = "__id";
 
-        IdColumnBuilder builder = (IdColumnBuilder) columnMap.get(columnKey);
+        ColumnScanner builder = columnMap.get(columnKey);
         if(builder == null) {
             builder = new IdColumnBuilder();
             columnMap.put(columnKey, builder);
@@ -115,7 +115,8 @@ public class TableScan {
         // create the key builder if it doesn't exist
         ForeignKeyBuilder builder = foreignKeyMap.get(fieldName);
         if(builder == null) {
-            builder = new ForeignKeyBuilder(fieldName);
+            FormField field = partialEvaluator.getField(fieldName);
+            builder = new ForeignKeyBuilder(partialEvaluator.partiallyEvaluate(field));
             foreignKeyMap.put(fieldName, builder);
         }
 
@@ -132,22 +133,22 @@ public class TableScan {
      */
     public void execute() throws Exception {
 
-        FormSink[] builders = builderArray();
+        InstanceSink[] builders = builderArray();
 
         int rowCount = 0;
 
         Iterator<Resource> cursor = store.openCursor(classId);
         while(cursor.hasNext()) {
-            formEvalContext.setInstance(cursor.next());
+            Resource resource = cursor.next();
 
             for(int i=0;i!=builders.length;++i) {
-                builders[i].accept(formEvalContext);
+                builders[i].accept(resource.getId(), resource.getValue());
             }
             rowCount ++ ;
         }
 
         // finalize
-        for(ColumnViewBuilder builder : columnMap.values()) {
+        for(ColumnScanner builder : columnMap.values()) {
             builder.finalizeView();
         }
 
@@ -155,13 +156,46 @@ public class TableScan {
         this.rowCount = Optional.of(rowCount);
     }
 
-    private FormSink[] builderArray() {
-        Iterable<FormSink> sinks = Iterables.<FormSink>concat(
+    private InstanceSink[] builderArray() {
+        Iterable<InstanceSink> sinks = Iterables.<InstanceSink>concat(
                 primaryKeyMapBuilder.asSet(),
                 columnMap.values(),
                 foreignKeyMap.values());
 
-        return Iterables.toArray(sinks, FormSink.class);
+        return Iterables.toArray(sinks, InstanceSink.class);
     }
 
+
+    private static class FieldBinding implements ColumnBinding {
+        private FieldReader reader;
+        private ColumnViewBuilder builder;
+
+        private FieldBinding(FieldReader reader, ColumnViewBuilder builder) {
+            this.reader = reader;
+            this.builder = builder;
+        }
+
+        @Override
+        public ColumnView get() {
+            return builder.get();
+        }
+
+        @Override
+        public void finalizeView() {
+            builder.finalizeView();
+        }
+    }
+
+    private static class IdBinding implements ColumnBinding {
+
+        @Override
+        public void finalizeView() {
+
+        }
+
+        @Override
+        public ColumnView get() {
+            return null;
+        }
+    }
 }

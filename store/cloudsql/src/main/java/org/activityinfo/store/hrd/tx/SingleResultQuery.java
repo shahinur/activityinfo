@@ -33,11 +33,11 @@ public class SingleResultQuery<T> {
     }
 
     public static <T extends IsEntity> SingleResultQuery<T> create(Query query, Class<T> clazz) {
-        return new SingleResultQuery<>(query, Transforms.entityWrapper(clazz));
+        return new SingleResultQuery<>(query, Mapping.entityWrapper(clazz));
     }
 
     public static <T extends IsKey> SingleResultQuery<T> createKeysOnly(Query query, Class<T> clazz) {
-        return new SingleResultQuery<>(query, Transforms.keyWrapper(clazz));
+        return new SingleResultQuery<>(query, Mapping.keyWrapper(clazz));
     }
 
     public static <T> SingleResultQuery<Snapshot> empty(Class<T> clazz) {

@@ -81,6 +81,10 @@ public final class Resource {
         return this;
     }
 
+    public ResourceId getClassId() {
+        return value.getClassId();
+    }
+
     public long getVersion() {
         return version;
     }
@@ -130,4 +134,5 @@ public final class Resource {
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }
+
 }

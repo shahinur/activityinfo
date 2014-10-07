@@ -22,7 +22,7 @@ public class LccaImport {
         try(JsonWriter writer = new JsonWriter()) {
             // The package open is instantaneous, as it should be.
             OPCPackage p = OPCPackage.open(xlsxFile.getPath(), PackageAccess.READ);
-            ExcelStreamingImporter xlsx2csv = new ExcelStreamingImporter(p, options, writer);
+            ExcelStreamingImporter xlsx2csv = new ExcelStreamingImporter(p, writer);
             xlsx2csv.process();
         }
     }

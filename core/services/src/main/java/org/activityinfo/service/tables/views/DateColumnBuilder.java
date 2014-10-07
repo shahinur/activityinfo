@@ -1,10 +1,8 @@
 package org.activityinfo.service.tables.views;
 
 import com.google.common.base.Optional;
-import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.type.ErrorValue;
 import org.activityinfo.model.type.FieldValue;
 
 import java.util.ArrayList;
@@ -26,11 +24,7 @@ public class DateColumnBuilder implements ColumnViewBuilder {
     }
 
     @Override
-    public void accept(FormEvalContext instance) {
-        FieldValue fieldValue = instance.getFieldValue(fieldId);
-        if(fieldValue instanceof ErrorValue) {
-            ((ErrorValue) fieldValue).getException().printStackTrace();
-        }
+    public void accept(FieldValue fieldValue) {
         values.add(reader.readDate(fieldValue));
     }
 

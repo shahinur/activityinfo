@@ -7,7 +7,6 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.service.store.FormImportOptions;
 import org.activityinfo.service.store.ImportWriter;
 import org.activityinfo.service.store.InstanceWriter;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
@@ -30,7 +29,6 @@ public class ExcelStreamingImporter {
 
 
     private OPCPackage xlsxPackage;
-    private FormImportOptions options;
     private ImportWriter writer;
 
 
@@ -38,12 +36,10 @@ public class ExcelStreamingImporter {
      * Creates a new XLSX -> CSV converter
      *
      * @param pkg        The XLSX package to process
-     * @param options
      * @param writer
      */
-    public ExcelStreamingImporter(OPCPackage pkg, FormImportOptions options, ImportWriter writer) {
+    public ExcelStreamingImporter(OPCPackage pkg, ImportWriter writer) {
         this.xlsxPackage = pkg;
-        this.options = options;
         this.writer = writer;
     }
 

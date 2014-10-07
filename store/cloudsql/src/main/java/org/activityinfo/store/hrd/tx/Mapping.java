@@ -1,18 +1,24 @@
 package org.activityinfo.store.hrd.tx;
 
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.*;
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-public class Transforms {
+import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
+
+class Mapping {
 
     /**
      * Creates a {@code Function} that wraps a datastore Entity as an instance of {@code IsKey}
      *
-     * @param K a class implementing {@link IsKey} with a
+     * @param clazz a class implementing {@link IsKey} with a
      *          constructor accepting a single argument of {@link com.google.appengine.api.datastore.Key}
      * @throws java.lang.IllegalArgumentException if the class does not have the required constructor
      */
@@ -36,8 +42,7 @@ public class Transforms {
 
     /**
      * Creates a {@code Function} that wraps a datastore Entity as an instance of {@code IsEntity}
-     *
-     * @param T a class implementing {@link IsEntity} with a
+     * @param clazz a class implementing {@link IsEntity} with a
      *          constructor accepting a single argument of {@link com.google.appengine.api.datastore.Entity}
      * @throws java.lang.IllegalArgumentException if the class does not have the required constructor
      */
@@ -48,7 +53,7 @@ public class Transforms {
             @Override
             public T apply(Entity input) {
                 try {
-                    return constructor.newInstance(input.getKey());
+                    return constructor.newInstance(input);
                 } catch (InstantiationException | IllegalAccessException e ) {
                     throw new UnsupportedOperationException("Failed to invoke constructor " + constructor, e);
                 } catch (InvocationTargetException e) {
@@ -64,6 +69,57 @@ public class Transforms {
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(String.format("Class %s has no constructor taking %s",
                 clazz.getName(), argumentClass.getName()));
+        }
+    }
+
+    public static <T extends IsEntity> T getOrThrow(DatastoreService datastore, Transaction transaction, IsKey<T> key) {
+        Entity entity;
+        try {
+            entity = datastore.get(transaction, key.unwrap());
+        } catch (EntityNotFoundException e) {
+            throw new IllegalStateException("Entity " + key + " does not exist");
+        }
+
+        return key.wrapEntity(entity);
+    }
+
+    public static <T extends IsEntity> Optional<T> getIfExists(DatastoreService datastore, Transaction transaction, IsKey<T> key) {
+        Entity entity;
+        try {
+            entity = datastore.get(transaction, key.unwrap());
+        } catch (EntityNotFoundException e) {
+            return Optional.absent();
+        }
+
+        return Optional.of(key.wrapEntity(entity));
+    }
+
+    public static <T extends IsEntity> Iterable<T> getList(DatastoreService datastore, Transaction transaction, List<? extends IsKey<T>> keys) {
+        List<Key> unwrappedKeys = Lists.newArrayList();
+        for(IsKey<T> key : keys) {
+            unwrappedKeys.add(key.unwrap());
+        }
+        List<T> wrapped = Lists.newArrayList();
+        Map<Key, Entity> keyEntityMap = datastore.get(transaction, unwrappedKeys);
+        for(IsKey<T> key : keys) {
+            Entity entity = keyEntityMap.get(key.unwrap());
+            if(entity != null) {
+                wrapped.add(key.wrapEntity(entity));
+            }
+        }
+        return wrapped;
+    }
+
+    public static <T> Optional<T> query(DatastoreService datastore, Transaction transaction, SingleResultQuery<T> query) {
+        if(query.isEmpty()) {
+            return Optional.absent();
+        } else {
+            Iterator<Entity> results = datastore.prepare(transaction, query.getDatastoreQuery()).asIterator(withLimit(1));
+            if(results.hasNext()) {
+                return Optional.of(query.transform(results.next()));
+            } else {
+                return Optional.absent();
+            }
         }
     }
 }

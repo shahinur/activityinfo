@@ -13,7 +13,7 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.store.EntityDeletedException;
+import org.activityinfo.store.ResourceDeletedException;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -262,7 +262,7 @@ public class HrdResourceTest {
             if (!deleted) {
                 return;
             }
-        } catch (EntityDeletedException | IllegalStateException e) {
+        } catch (ResourceDeletedException | IllegalStateException e) {
             if (deleted) {
                 return; // as expected we got "deleted" exception
             }

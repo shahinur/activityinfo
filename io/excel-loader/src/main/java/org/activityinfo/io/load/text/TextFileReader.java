@@ -1,6 +1,5 @@
 package org.activityinfo.io.load.text;
 
-import org.activityinfo.service.store.FormImportOptions;
 import org.activityinfo.service.store.FormImportReader;
 import org.activityinfo.service.store.ImportWriter;
 
@@ -11,7 +10,7 @@ public class TextFileReader implements FormImportReader {
 
 
     @Override
-    public void load(FormImportOptions options, InputStream inputStream, ImportWriter writer) throws IOException {
+    public void load(InputStream inputStream, ImportWriter writer) throws IOException {
 
     }
 }

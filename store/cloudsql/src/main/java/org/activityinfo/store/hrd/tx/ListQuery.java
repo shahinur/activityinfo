@@ -10,11 +10,11 @@ public class ListQuery<T> {
     private final Function<Entity, T> transformer;
 
     public static <T extends IsEntity> ListQuery<T> create(Query query, Class<T> clazz) {
-        return new ListQuery<>(query, Transforms.entityWrapper(clazz));
+        return new ListQuery<>(query, Mapping.entityWrapper(clazz));
     }
 
     public static <T extends IsKey> ListQuery<T> createKeysOnly(Query query, Class<T> clazz) {
-        return new ListQuery<>(query, Transforms.keyWrapper(clazz));
+        return new ListQuery<>(query, Mapping.keyWrapper(clazz));
     }
 
     public ListQuery(Query query, Function<Entity, T> transformer) {

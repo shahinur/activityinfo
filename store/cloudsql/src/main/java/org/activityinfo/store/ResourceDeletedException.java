@@ -27,9 +27,9 @@ import javax.ws.rs.core.Response;
 /**
  * @author yuriyz on 9/30/14.
  */
-public class EntityDeletedException extends WebApplicationException {
+public class ResourceDeletedException extends WebApplicationException {
 
-    public EntityDeletedException() {
+    public ResourceDeletedException() {
         super(Response.Status.GONE);
     }
 }

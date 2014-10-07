@@ -1,9 +1,11 @@
 package org.activityinfo.service.tasks;
 
+import com.google.common.io.ByteSource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.ResourceCursor;
+import org.activityinfo.service.store.StoreLoader;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -21,5 +23,9 @@ public interface TaskContext {
     UserResource getResource(ResourceId resourceId) throws Exception;
 
     ResourceCursor openCursor(ResourceId formClassId) throws Exception;
+
+    StoreLoader beginLoad(ResourceId parentId) throws Exception;
+
+    ByteSource getBlob(BlobId blobId);
 
 }

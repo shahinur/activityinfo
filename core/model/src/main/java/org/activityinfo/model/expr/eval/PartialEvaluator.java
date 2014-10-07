@@ -9,6 +9,7 @@ import org.activityinfo.model.expr.diagnostic.ExprSyntaxException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
@@ -53,6 +54,14 @@ public class PartialEvaluator {
         } catch(ExprException e) {
             return new ConstantReader(new ErrorValue(e), ErrorType.INSTANCE);
         }
+    }
+
+    public FormField getField(ResourceId fieldId) {
+        return symbolTable.resolveFieldById(fieldId.asString());
+    }
+
+    public FormField getField(String fieldName) {
+        return symbolTable.resolveFieldById(fieldName);
     }
 
 
@@ -189,7 +198,7 @@ public class PartialEvaluator {
 
         @Override
         public FieldReader visitGroup(GroupExpr expr) {
-            return expr.accept(this);
+            return expr.getExpr().accept(this);
         }
 
         @Override

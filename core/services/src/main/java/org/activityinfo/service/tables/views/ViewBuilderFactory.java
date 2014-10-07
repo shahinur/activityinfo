@@ -1,6 +1,5 @@
 package org.activityinfo.service.tables.views;
 
-import org.activityinfo.model.expr.ExprParser;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.*;
@@ -100,7 +99,7 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitCalculatedField(FormField field, CalculatedFieldType type) {
-        return new CalcColumnBuilder(ExprParser.parse(type.getExpression()));
+        throw new IllegalArgumentException("calculated field types should resolve to something else!");
     }
 
     @Override

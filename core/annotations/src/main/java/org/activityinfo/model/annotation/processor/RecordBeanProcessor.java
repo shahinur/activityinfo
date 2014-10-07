@@ -145,7 +145,6 @@ public class RecordBeanProcessor extends AbstractProcessor {
 
     private void writeSourceFile(String className, String text, TypeElement originatingType) {
         try {
-            note(text);
             JavaFileObject sourceFile =
                 processingEnv.getFiler().createSourceFile(className, originatingType);
             Writer writer = sourceFile.openWriter();

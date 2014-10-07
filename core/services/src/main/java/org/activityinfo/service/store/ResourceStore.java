@@ -71,5 +71,6 @@ public interface ResourceStore {
 
     List<Resource> getUpdates(AuthenticatedUser user, ResourceId workspaceId, long version);
 
+    StoreLoader beginLoad(AuthenticatedUser user, ResourceId parentId);
 
 }

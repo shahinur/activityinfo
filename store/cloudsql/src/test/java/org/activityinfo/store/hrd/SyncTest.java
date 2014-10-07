@@ -18,7 +18,7 @@ public class SyncTest {
     @Rule
     public final TestingEnvironment testingEnvironment = new TestingEnvironment();
 
-    private HrdResourceStore hrdResourceStore = new HrdResourceStore();
+    private HrdResourceStore hrdResourceStore;
     private AuthenticatedUser user = new AuthenticatedUser();
 
     @Before

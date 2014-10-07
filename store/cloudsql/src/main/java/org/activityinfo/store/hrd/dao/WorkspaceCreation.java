@@ -8,9 +8,11 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.store.hrd.StoreContext;
 import org.activityinfo.store.hrd.auth.Authorization;
 import org.activityinfo.store.hrd.auth.Authorizer;
 import org.activityinfo.store.hrd.auth.IsOwner;
+import org.activityinfo.store.hrd.entity.user.UserWorkspace;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersionKey;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
@@ -25,9 +27,12 @@ public class WorkspaceCreation {
 
     public static final long INITIAL_VERSION = 1L;
 
+    private final StoreContext context;
     private final AuthenticatedUser user;
 
-    public WorkspaceCreation(AuthenticatedUser user) {
+
+    public WorkspaceCreation(StoreContext context, AuthenticatedUser user) {
+        this.context = context;
         this.user = user;
     }
 
@@ -47,11 +52,15 @@ public class WorkspaceCreation {
             throw new WebApplicationException(UNAUTHORIZED);
         }
 
+        WorkspaceEntityGroup workspace = new WorkspaceEntityGroup(resource.getId());
+
         try(ReadWriteTx tx = ReadWriteTx.serializedCrossGroup()) {
 
             assertWorkspaceDoesNotAlreadyExist(tx, resource);
 
-            WorkspaceUpdate workspaceUpdate = new WorkspaceUpdate.Builder(resource.getId(), user)
+            WorkspaceUpdate workspaceUpdate = WorkspaceUpdate.newBuilder(context)
+                .setWorkspace(workspace)
+                .setUser(user)
                 .setAuthorizer(new NewlyCreatedWorkspaceAuthorizer())
                 .setTransaction(tx)
                 .setUpdateVersion(INITIAL_VERSION)
@@ -65,10 +74,18 @@ public class WorkspaceCreation {
             ownerRule.setOwner(true);
             workspaceUpdate.updateAcr(ownerRule);
 
+
+            // Add an entry to the user's list of workspaces
+            // So that we can find it back.
+            UserWorkspace entry = new UserWorkspace(user, workspace);
+            entry.setOwned(true);
+            tx.put(entry);
+
             workspaceUpdate.flush();
             tx.commit();
         }
     }
+
 
     public void assertWorkspaceDoesNotAlreadyExist(ReadWriteTx tx, Resource resource) {
         Optional<LatestVersion> existing = tx.getIfExists(new LatestVersionKey(
