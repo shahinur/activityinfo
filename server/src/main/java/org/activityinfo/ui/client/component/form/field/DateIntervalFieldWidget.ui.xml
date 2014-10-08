@@ -7,11 +7,11 @@
   <g:HTMLPanel>
     <div class="field-element">
       <label class="control-label"><ui:text from="{i18n.startDate}"/></label>
-      <date:DatePicker ui:field="startDateBox" styleName="form-control"/>
+      <date:DateBox ui:field="startDateBox" styleName="form-control"/>
     </div>
     <div class="field-element">
       <label class="control-label"><ui:text from="{i18n.endDate}"/></label>
-      <date:DatePicker ui:field="endDateBox" styleName="form-control"/>
+      <date:DateBox ui:field="endDateBox" styleName="form-control"/>
     </div>
   </g:HTMLPanel>
 </ui:UiBinder>
