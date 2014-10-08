@@ -102,7 +102,11 @@ public class PivotSitesHandler implements CommandHandlerAsync<PivotSites, PivotS
                     if (errors.isEmpty()) {
                         remaining.remove(workItem);
                         if (remaining.isEmpty()) {
-                            callback.onSuccess(new PivotResult(queryContext.getBuckets()));
+                            try {
+                                callback.onSuccess(new PivotResult(queryContext.getBuckets()));
+                            } catch (Throwable e) {
+                                callback.onFailure(e);
+                            }
                         }
                     }
                 }

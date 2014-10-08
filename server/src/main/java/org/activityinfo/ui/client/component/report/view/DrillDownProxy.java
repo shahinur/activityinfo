@@ -3,6 +3,7 @@ package org.activityinfo.ui.client.component.report.view;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.PivotSites;
@@ -58,14 +59,12 @@ public class DrillDownProxy extends RpcProxy<List<DrillDownRow>> {
 
             @Override
             public void onSuccess(PivotSites.PivotResult result) {
-                List<DrillDownRow> rows;
                 try {
-                    rows = toRows(result);
+                    callback.onSuccess(toRows(result));
                 } catch (Throwable caught) {
+                    Log.error(caught.getMessage(), caught);
                     callback.onFailure(caught);
-                    return;
                 }
-                callback.onSuccess(rows);
             }
         });
     }
