@@ -8,7 +8,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.DatePicker;
+import com.google.gwt.user.datepicker.client.DateBox;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.model.type.time.LocalDateInterval;
@@ -27,8 +27,10 @@ public class DateIntervalFieldWidget implements FormFieldWidget<LocalDateInterva
 
     private final HTMLPanel rootElement;
 
-    @UiField DatePicker startDateBox;
-    @UiField DatePicker endDateBox;
+    @UiField
+    DateBox startDateBox;
+    @UiField
+    DateBox endDateBox;
 
     private boolean readOnly;
     private ValueUpdater<LocalDateInterval> valueUpdater;
