@@ -11,8 +11,12 @@ import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HrdStoreAccessor implements StoreAccessor {
+
+    private static final Logger LOGGER = Logger.getLogger(HrdResourceStore.class.getName());
 
     private final StoreContext context;
     private final AuthenticatedUser user;
@@ -56,6 +60,12 @@ public class HrdStoreAccessor implements StoreAccessor {
 
     @Override
     public void close() {
-
+        for(WorkspaceQuery query : transactions.values()) {
+            try {
+                query.close();
+            } catch(Exception e) {
+                LOGGER.log(Level.SEVERE, "Exception thrown while closing Workspace Query", e);
+            }
+        }
     }
 }
