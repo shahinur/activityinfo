@@ -7,10 +7,9 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.service.tasks.TaskContext;
-import org.activityinfo.store.tasks.HrdUserTaskService;
-import org.activityinfo.store.tasks.TaskContextProvider;
-import org.activityinfo.store.tasks.TestingTaskContext;
+import org.activityinfo.service.tasks.appengine.AppEngineUserTaskService;
+import org.activityinfo.service.tasks.appengine.TaskExecutors;
+import org.activityinfo.service.tasks.appengine.TaskStore;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 
@@ -22,7 +21,7 @@ public class TestingEnvironment extends TestWatcher {
 
 
     private HrdResourceStore store;
-    private HrdUserTaskService taskService;
+    private AppEngineUserTaskService taskService;
     private AuthenticatedUser user;
     private CuidGenerator cuidGenerator;
     private StoreContext storeContext;
@@ -32,12 +31,7 @@ public class TestingEnvironment extends TestWatcher {
         helper.setUp();
         storeContext = new StoreContext();
         store = new HrdResourceStore(storeContext);
-        taskService = new HrdUserTaskService(new TaskContextProvider() {
-            @Override
-            public TaskContext create(AuthenticatedUser user) {
-                return new TestingTaskContext(TestingEnvironment.this);
-            }
-        });
+        taskService = new AppEngineUserTaskService(new TaskStore(), new TaskExecutors());
         user = new AuthenticatedUser("XYZ", 1, "test@test.org");
         cuidGenerator = new CuidGenerator(1, System.currentTimeMillis());
 
@@ -61,7 +55,7 @@ public class TestingEnvironment extends TestWatcher {
         return user;
     }
 
-    public HrdUserTaskService getTaskService() { return taskService; }
+    public AppEngineUserTaskService getTaskService() { return taskService; }
 
     public ResourceId generateId() {
         return cuidGenerator.generateResourceId();

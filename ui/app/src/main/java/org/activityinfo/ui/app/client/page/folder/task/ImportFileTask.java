@@ -4,9 +4,11 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.service.tasks.LoadTaskModel;
+import org.activityinfo.service.tasks.LoadTaskModelClass;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.request.BlobUploader;
-import org.activityinfo.ui.app.client.request.ImportRequest;
+import org.activityinfo.ui.app.client.request.StartTask;
 import org.activityinfo.ui.app.client.request.UploadResult;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.Icon;
@@ -40,7 +42,10 @@ public class ImportFileTask implements Task {
 
             @Override
             public void onSuccess(UploadResult result) {
-                application.getRequestDispatcher().execute(new ImportRequest(ownerId, result.getBlobId()));
+                LoadTaskModel taskModel = new LoadTaskModel();
+                taskModel.setBlobId(result.getBlobId().asString());
+                taskModel.setFolderId(ownerId);
+                application.getRequestDispatcher().execute(new StartTask(taskModel, LoadTaskModelClass.INSTANCE));
             }
         });
     }

@@ -31,6 +31,11 @@ public class TestUserBlobService implements UserBlobService {
     }
 
     @Override
+    public BlobMetadata getBlobMetadata(AuthenticatedUser user, BlobId blobId) {
+        throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
+    }
+
+    @Override
     public Response serveBlob(AuthenticatedUser user, BlobId blobId) {
         throw new WebApplicationException(Response.Status.SERVICE_UNAVAILABLE);
     }

@@ -99,19 +99,6 @@ public class RemoteStoreServiceImpl implements RemoteStoreService {
     }
 
     @Override
-    public Promise<UserTask> startImport(ResourceId ownerId, BlobId blobId) {
-        return service
-                .resolve("load")
-                .postUrlEncoded("ownerId=" + ownerId.asString() + "&blobId=" + blobId)
-                .then(new Function<Response, UserTask>() {
-                    @Override
-                    public UserTask apply(Response input) {
-                        return UserTask.fromRecord(ResourceParser.parseRecord(input.getText()));
-                    }
-                });
-    }
-
-    @Override
     public Promise<List<UserTask>> getTasks() {
         return service
                 .resolve("tasks")

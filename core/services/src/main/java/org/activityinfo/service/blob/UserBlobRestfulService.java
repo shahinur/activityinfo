@@ -6,6 +6,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 /**
@@ -34,6 +35,7 @@ public final class UserBlobRestfulService {
      * @return a set of credentials that the browser can use to upload the files
      */
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
     public UploadCredentials startUpload(
         @InjectParam AuthenticatedUser user,
         @FormParam("blobId") BlobId blobId,

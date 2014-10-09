@@ -3,7 +3,13 @@ package org.activityinfo.store.hrd.tx;
 import com.google.appengine.api.datastore.*;
 import com.google.common.base.Optional;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ReadWriteTx implements WritableTx, AutoCloseable {
+
+    private static final Logger LOGGER = Logger.getLogger(ReadWriteTx.class.getName());
+
     private final DatastoreService datastore;
     private final Transaction transaction;
 
@@ -32,8 +38,9 @@ public class ReadWriteTx implements WritableTx, AutoCloseable {
     }
 
     public void commit() {
+        LOGGER.info("Committing " + transaction.getId() + "...");
         transaction.commit();
-    }
+        LOGGER.info("Transaction " + transaction.getId() + "committed.");    }
 
     public void rollback() {
         transaction.rollback();
@@ -41,8 +48,14 @@ public class ReadWriteTx implements WritableTx, AutoCloseable {
 
     @Override
     public void close() {
-        if(transaction.isActive()) {
+        if (transaction.isActive()) {
+            LOGGER.info("Rolling back uncommitted transaction... " + transaction.getId());
+        }
+
+        try {
             transaction.rollback();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Exception thrown while rolling back transaction " + transaction.getId(), e);
         }
     }
 }

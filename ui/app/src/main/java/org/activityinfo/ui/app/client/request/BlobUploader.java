@@ -101,6 +101,9 @@ public class BlobUploader {
 
 
     private void requestUploadUrl() {
+
+        LOGGER.info("Requesting permission to upload from " + UPLOAD_REQUEST_URL);
+
         RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, UPLOAD_REQUEST_URL);
         requestBuilder.setHeader("Content-type", "application/x-www-form-urlencoded");
         requestBuilder.setRequestData("blobId=" + currentBlobId.asString() + "&filename=" + URL.encode(fileUpload.getFilename()));
@@ -108,6 +111,9 @@ public class BlobUploader {
             @Override
             public void onResponseReceived(com.google.gwt.http.client.Request request, Response response) {
                 if(response.getStatusCode() != 200) {
+                    LOGGER.severe("Failed to obtain upload permission from " + UPLOAD_REQUEST_URL + ", status code = "
+                    + response.getStatusCode() + ", text = " + response.getStatusText());
+
                     currentRequest.reject(new StatusCodeException(response.getStatusCode()));
                 } else {
                     JSONObject credentials = JSONParser.parseStrict(response.getText()).isObject();
@@ -148,7 +154,7 @@ public class BlobUploader {
         }
 
         formPanel.setAction(credentials.get("url").isString().stringValue());
-        formPanel.setMethod(credentials.get("method").isString().stringValue());
+        formPanel.setMethod(credentials.get("method").isString().   stringValue());
     }
 
     private void onUploadComplete() {

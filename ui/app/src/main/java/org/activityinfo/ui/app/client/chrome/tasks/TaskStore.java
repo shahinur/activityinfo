@@ -10,7 +10,6 @@ import org.activityinfo.ui.app.client.action.NotificationHandler;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
 import org.activityinfo.ui.app.client.page.folder.task.Task;
 import org.activityinfo.ui.app.client.request.FetchTaskRequest;
-import org.activityinfo.ui.app.client.request.ImportRequest;
 import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.app.client.request.StartTask;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
@@ -85,11 +84,7 @@ public class TaskStore extends AbstractStore implements RemoteUpdateHandler, Not
 
     @Override
     public <R> void processUpdate(Request<R> request, R response) {
-        if(request instanceof ImportRequest || request instanceof StartTask) {
-            UserTask task = (UserTask) response;
-            tasks.put(task.getId(), task);
-            fireChange();
-        } else if(request instanceof FetchTaskRequest) {
+        if(request instanceof FetchTaskRequest) {
             List<UserTask> result = (List<UserTask>) response;
             for(UserTask updatedTask : result) {
                 UserTask task = tasks.get(updatedTask.getId());
