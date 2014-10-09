@@ -116,8 +116,8 @@ class UserBlob {
     public Entity toEntity() {
         Entity entity = new Entity(metadataKey(blobId));
         entity.setProperty(USER_PROPERTY, userId);
-        entity.setUnindexedProperty(CONTENT_DISPOSITION_PROPERTY, metadata.getBlobId());
-        entity.setUnindexedProperty(CONTENT_TYPE_PROPERTY, metadata.getContentType());
+        entity.setUnindexedProperty(CONTENT_DISPOSITION_PROPERTY, metadata.getContentDisposition().toString());
+        entity.setUnindexedProperty(CONTENT_TYPE_PROPERTY, metadata.getContentType().toString());
         entity.setUnindexedProperty(CREATION_TIME_PROPERTY, creationTime.toDate());
         if(size == UNKNOWN_SIZE) {
             entity.setProperty(SIZE_PROPERTY, UNKNOWN_SIZE);

@@ -20,10 +20,10 @@ class MetadataTransaction implements AutoCloseable {
     private final Transaction tx;
 
     public MetadataTransaction() {
-        LOGGER.info("Beginning metadata tx...");
+        LOGGER.fine("Beginning metadata tx...");
         datastore = DatastoreServiceFactory.getDatastoreService();
         tx = datastore.beginTransaction();
-        LOGGER.info("Transaction " + tx.getId() + " is begun.");
+        LOGGER.fine("Transaction " + tx.getId() + " is begun.");
 
     }
 
@@ -47,16 +47,16 @@ class MetadataTransaction implements AutoCloseable {
     }
 
     public void commit() {
-        LOGGER.info("Committing " + tx.getId() + "...");
+        LOGGER.fine("Committing " + tx.getId() + "...");
         tx.commit();
-        LOGGER.info("Transaction " + tx.getId() + "committed.");
+        LOGGER.fine("Transaction " + tx.getId() + "committed.");
 
     }
 
     @Override
     public void close()  {
-
         if(tx.isActive()) {
+            LOGGER.fine("Rolling back uncommitted transaction " + tx.getId() + "...");
             tx.rollback();
         }
     }
