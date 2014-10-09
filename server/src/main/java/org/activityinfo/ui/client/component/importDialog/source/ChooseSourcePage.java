@@ -51,14 +51,31 @@ public class ChooseSourcePage extends ResizeComposite implements ImportPage {
     }
 
     public void fireStateChanged() {
-        if (isValid()) {
-            final PastedTable source = new PastedTable(textArea.getValue());
-            source.guessColumnsType(JsConverterFactory.get());
-            model.setSource(source);
+
+        // validate
+        boolean valid = false;
+        PastedTable pastedTable = null;
+        try {
+            pastedTable = new PastedTable(textArea.getValue());
+            valid = !pastedTable.getRows().isEmpty();
+        } catch (Exception e) {
+            // ignore : text is not valid
+        }
+
+        if (valid) {
+            pastedTable.guessColumnsType(JsConverterFactory.get());
+            model.setSource(pastedTable);
             eventBus.fireEvent(new PageChangedEvent(true, ""));
         } else {
-            eventBus.fireEvent(new PageChangedEvent(false, I18N.CONSTANTS.pleaseProvideCommaSeparatedText()));
+            eventBus.fireEvent(new PageChangedEvent(false, errorMessage(pastedTable)));
         }
+    }
+
+    private String errorMessage(PastedTable pastedTable) {
+        if (pastedTable != null && pastedTable.getFirstInvalidRow() > 0) {
+            return I18N.MESSAGES.pleaseProvideCommaSeparatedText(pastedTable.getFirstInvalidRow());
+        }
+        return I18N.CONSTANTS.pleaseProvideCommaSeparatedText();
     }
 
     @UiHandler("textArea")

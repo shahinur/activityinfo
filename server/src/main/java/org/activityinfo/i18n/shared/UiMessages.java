@@ -22,6 +22,7 @@ package org.activityinfo.i18n.shared;
  * #L%
  */
 
+import com.google.gwt.i18n.client.Constants;
 import com.google.gwt.safehtml.shared.SafeHtml;
 
 import java.util.Date;
@@ -350,4 +351,7 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("{0} code does not exist.")
     String doesNotExist(String placeholder);
+
+    @Constants.DefaultStringValue("Please provide valid comma separated text. Column count doesn't match in row number {0}.")
+    String pleaseProvideCommaSeparatedText(int rowNumber);
 }
