@@ -211,7 +211,7 @@ public class CalculatedIndicatorsQuery implements WorkItem {
 
 
         for (Dimension dim : query.getDimensions()) {
-            if (dim.getType() != DimensionType.Indicator && dim.getType() != DimensionType.Site) {
+            if (dim.getType() != DimensionType.Indicator) {
                 dimAccessors.add(createAccessor(dim));
             }
         }
@@ -269,8 +269,10 @@ public class CalculatedIndicatorsQuery implements WorkItem {
         } else if(dim.getType() == DimensionType.Location) {
             return new LocationAccessor(dim);
 
-        } else if(dim.getType() == DimensionType.Partner) {
+        } else if (dim.getType() == DimensionType.Partner) {
             return new PartnerAccessor(dim);
+        } else if (dim.getType() == DimensionType.Site) {
+            return new SiteAccessor(dim);
         }
         throw new UnsupportedOperationException("dim: " + dim);
     }
