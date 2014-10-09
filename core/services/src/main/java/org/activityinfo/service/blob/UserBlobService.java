@@ -72,6 +72,8 @@ public interface UserBlobService {
      */
     ByteSource getContent(AuthenticatedUser user, BlobId blobId);
 
+    BlobMetadata getBlobMetadata(AuthenticatedUser user, BlobId blobId);
+
 
     /**
      * Redirects the client to a temporary, signed URL via which the user can access this blob

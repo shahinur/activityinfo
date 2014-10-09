@@ -7,17 +7,24 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.common.base.Optional;
 import org.activityinfo.service.blob.BlobId;
 
+import java.util.logging.Logger;
+
 /**
  * Handles storage of Blob Metadata using the AppEngine datastore
  */
 class MetadataTransaction implements AutoCloseable {
 
+    private final Logger LOGGER = Logger.getLogger(MetadataTransaction.class.getName());
+
     private final DatastoreService datastore;
     private final Transaction tx;
 
     public MetadataTransaction() {
+        LOGGER.info("Beginning metadata tx...");
         datastore = DatastoreServiceFactory.getDatastoreService();
         tx = datastore.beginTransaction();
+        LOGGER.info("Transaction " + tx.getId() + " is begun.");
+
     }
 
     public Optional<UserBlob> get(BlobId blobId) {
@@ -32,12 +39,6 @@ class MetadataTransaction implements AutoCloseable {
         datastore.put(tx, userBlob.toEntity());
     }
 
-    @Override
-    public void close()  {
-        if(tx.isActive()) {
-            tx.rollback();
-        }
-    }
 
     public static Optional<UserBlob> getUserBlob(BlobId blobId) {
         try (MetadataTransaction tx = new MetadataTransaction()) {
@@ -46,6 +47,17 @@ class MetadataTransaction implements AutoCloseable {
     }
 
     public void commit() {
+        LOGGER.info("Committing " + tx.getId() + "...");
         tx.commit();
+        LOGGER.info("Transaction " + tx.getId() + "committed.");
+
+    }
+
+    @Override
+    public void close()  {
+
+        if(tx.isActive()) {
+            tx.rollback();
+        }
     }
 }

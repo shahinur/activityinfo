@@ -1,5 +1,6 @@
 package org.activityinfo.ui.app.client.chrome.tasks;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.service.tasks.UserTask;
@@ -7,22 +8,35 @@ import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.action.AcknowledgeNotification;
 import org.activityinfo.ui.flux.store.Store;
 import org.activityinfo.ui.flux.store.StoreChangeListener;
-import org.activityinfo.ui.style.Badges;
 import org.activityinfo.ui.style.ClickHandler;
 import org.activityinfo.ui.style.DropdownButton;
 import org.activityinfo.ui.style.DropdownMenuItem;
 import org.activityinfo.ui.style.icons.FontAwesome;
 import org.activityinfo.ui.vdom.shared.html.HtmlTag;
-import org.activityinfo.ui.vdom.shared.tree.*;
+import org.activityinfo.ui.vdom.shared.tree.PropMap;
+import org.activityinfo.ui.vdom.shared.tree.VComponent;
+import org.activityinfo.ui.vdom.shared.tree.VNode;
+import org.activityinfo.ui.vdom.shared.tree.VTree;
+
+import java.util.List;
 
 import static org.activityinfo.ui.vdom.shared.html.H.t;
 
 public class TaskDropdownMenu extends VComponent implements StoreChangeListener {
 
     private final Application application;
+    private final TaskIcon taskIcon;
+    private final TaskBadge taskBadge;
+    private DropdownButton dropdownButton;
 
     public TaskDropdownMenu(Application application) {
         this.application = application;
+        taskIcon = new TaskIcon(application.getTaskStore());
+        taskBadge = new TaskBadge(application.getTaskStore());
+        dropdownButton = new DropdownButton();
+        dropdownButton.getToggle().setContent(taskIcon, taskBadge);
+        dropdownButton.getMenu().setTitle(I18N.CONSTANTS.tasks());
+        dropdownButton.getMenu().updateItems(renderTaskMenuItems());
     }
 
     @Override
@@ -32,7 +46,9 @@ public class TaskDropdownMenu extends VComponent implements StoreChangeListener 
 
     @Override
     public void onStoreChanged(Store store) {
-        refresh();
+        taskIcon.refresh();
+        taskBadge.refresh();
+        dropdownButton.getMenu().updateItems(renderTaskMenuItems());
     }
 
     @Override
@@ -42,11 +58,12 @@ public class TaskDropdownMenu extends VComponent implements StoreChangeListener 
 
     @Override
     protected VTree render() {
-        DropdownButton button = new DropdownButton();
-        button.getToggle().setContent(toggleButton());
-        button.getMenu().setTitle(I18N.CONSTANTS.tasks());
+        return dropdownButton;
+    }
 
+    private List<DropdownMenuItem> renderTaskMenuItems() {
         TaskStore taskStore = application.getTaskStore();
+        List<DropdownMenuItem> menuItems = Lists.newArrayList();
         for(final UserTask task : taskStore.getTasks()) {
             try {
                 final TaskView taskView = TaskViews.get(task);
@@ -63,12 +80,12 @@ public class TaskDropdownMenu extends VComponent implements StoreChangeListener 
                         application.getDispatcher().dispatch(new AcknowledgeNotification(task.getId()));
                     }
                 });
-                button.getMenu().add(menuItem);
+                menuItems.add(menuItem);
             } catch(Throwable caught) {
                 GWT.log("Exception caught while rendering task", caught);
             }
         }
-        return button;
+        return menuItems;
     }
 
     private VTree taskIcon(TaskView taskView, UserTask task) {
@@ -87,26 +104,4 @@ public class TaskDropdownMenu extends VComponent implements StoreChangeListener 
         return TaskViews.get(task).getMessage(task);
     }
 
-    private VNode[] toggleButton() {
-        int newCount = application.getTaskStore().getNewCount();
-        if(newCount == 0) {
-            return new VNode[] { icon() };
-        } else {
-            return new VNode[] { icon(), Badges.badge(newCount)};
-        }
-    }
-
-    private VNode icon() {
-        if(application.getTaskStore().getRunningCount() > 0) {
-            return spinningCog();
-        } else {
-            return new VNode(HtmlTag.SPAN, PropMap
-                .withClasses("fa fa-cog")
-                .setStyle(new Style().set("color", "#BBB")));
-        }
-    }
-
-    private VNode spinningCog() {
-        return new VNode(HtmlTag.SPAN, PropMap.withClasses("fa fa-cog fa-spin"));
-    }
 }

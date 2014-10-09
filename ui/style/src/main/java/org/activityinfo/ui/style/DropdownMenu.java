@@ -36,6 +36,12 @@ public class DropdownMenu extends VComponent {
         refresh();
     }
 
+    public void updateItems(List<DropdownMenuItem> menuItems) {
+        items.clear();
+        items.addAll(menuItems);
+        refresh();
+    }
+
     @Override
     protected VTree render() {
         return div(PropMap.withClasses(BaseStyles.DROPDOWN_MENU + " " + BaseStyles.DROPDOWN_MENU_HEAD + " " + BaseStyles.PULL_RIGHT),

@@ -159,6 +159,11 @@ public class GcsUserBlobService implements UserBlobService {
     }
 
     @Override
+    public BlobMetadata getBlobMetadata(AuthenticatedUser user, BlobId blobId) {
+        return getBlobAndAssertAuthorized(user, blobId).getMetadata();
+    }
+
+    @Override
     public Response serveBlob(AuthenticatedUser user, BlobId blobId) {
         URI signedUrl = getStorageObjectAndAssertAuthorized(user, blobId)
             .getSignedUrl();

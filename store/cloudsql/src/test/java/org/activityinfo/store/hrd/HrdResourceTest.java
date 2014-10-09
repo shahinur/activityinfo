@@ -1,6 +1,5 @@
 package org.activityinfo.store.hrd;
 
-import com.google.common.base.Stopwatch;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -23,7 +22,6 @@ import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.*;
@@ -58,23 +56,10 @@ public class HrdResourceTest {
 
         assertThat(divACreationResult, hasProperty("status", equalTo(CommitStatus.COMMITTED)));
 
-        Resource resource = environment.getStore().get(environment.getUser(), divA.getId()).getResource();
+        Resource resource = environment.getResource(divA.getId()).getResource();
         assertThat(resource.getValue().getString(FolderClass.LABEL_FIELD_ID.asString()), equalTo("Division A"));
         assertThat(resource.getVersion(), equalTo(divACreationResult.getNewVersion()));
 
-        // Ensure that this stuff gets cached
-        Stopwatch stopwatch = Stopwatch.createStarted();
-        int requestCount = 10;
-        for (int i = 0; i != requestCount; ++i) {
-            FolderProjection tree = environment.getStore().queryTree(
-                    environment.getUser(),
-                    new FolderRequest(divA.getId()));
-            assertThat(tree.getRootNode().getId(), equalTo(divA.getId()));
-            assertThat(tree.getRootNode().getLabel(), equalTo("Division A"));
-            assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
-            //assertThat(tree.getRootNode().getSubTreeVersion(), equalTo(divACreationResult.getNewVersion()));
-        }
-        System.out.println((requestCount / (double) stopwatch.elapsed(TimeUnit.SECONDS)) + " requests per second");
 
         // Create form class
 
@@ -98,6 +83,8 @@ public class HrdResourceTest {
                 environment.getUser(),
                 new FolderRequest(divA.getId()));
         assertThat(tree.getRootNode().getVersion(), equalTo(divACreationResult.getNewVersion()));
+        assertThat(tree.getRootNode().getClassId(), equalTo(FolderClass.CLASS_ID));
+
         assertThat(tree.getRootNode().getId(), Matchers.equalTo(divA.getId()));
         assertThat(tree.getRootNode().getChildren().get(0).getId(), Matchers.equalTo(formClass.getId()));
         assertThat(tree.getRootNode().getChildren().get(0).getOwnerId(), Matchers.equalTo(divA.getId()));

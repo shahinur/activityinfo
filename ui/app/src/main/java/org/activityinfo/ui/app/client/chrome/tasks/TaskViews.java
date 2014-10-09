@@ -15,9 +15,10 @@ public class TaskViews {
 
     private TaskViews() {
         addTask(new ExportFormTaskView());
+        addTask(new LoadTaskView());
     }
 
-    private void addTask(ExportFormTaskView ui) {
+    private void addTask(TaskView ui) {
         models.put(ui.getBeanClass().getClassId(), ui);
     }
 

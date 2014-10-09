@@ -33,8 +33,6 @@ public class WorkspaceUpdate implements AutoCloseable {
 
     private boolean committed = false;
 
-    private boolean dirty;
-
     WorkspaceUpdate(StoreContext context, WorkspaceEntityGroup workspace, AuthenticatedUser user,
                     Authorizer auth, WritableTx tx, long updateVersion, Clock clock,
                     FormInstanceIndexer formInstanceIndexer) {
@@ -84,7 +82,6 @@ public class WorkspaceUpdate implements AutoCloseable {
 
         formIndexer.onResourceCreated(resource);
 
-        dirty = true;
     }
 
     /**
@@ -98,7 +95,6 @@ public class WorkspaceUpdate implements AutoCloseable {
         updateLatestVersion(resource);
         writeSnapshot(resource);
 
-        dirty = true;
     }
 
     private void writeSnapshot(Resource resource) {

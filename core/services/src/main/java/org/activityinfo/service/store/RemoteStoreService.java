@@ -33,11 +33,6 @@ public interface RemoteStoreService {
     Promise<UpdateResult> create(Resource resource);
 
     /**
-     * Starts an import of a datafile to a Form
-     */
-    Promise<UserTask> startImport(ResourceId ownerId, BlobId blobId);
-
-    /**
      *
      * @return a list of tasks running on behalf of the user
      */

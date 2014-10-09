@@ -51,11 +51,6 @@ public class TestRemoteStoreService implements RemoteStoreService {
     }
 
     @Override
-    public Promise<UserTask> startImport(ResourceId ownerId, BlobId blobId) {
-        return Promise.rejected(new UnsupportedOperationException());
-    }
-
-    @Override
     public Promise<List<UserTask>> getTasks() {
         return Promise.rejected(new UnsupportedOperationException());
     }

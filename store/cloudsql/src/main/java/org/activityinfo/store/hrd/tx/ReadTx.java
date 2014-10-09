@@ -5,8 +5,12 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Iterables;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ReadTx implements ReadableTx, AutoCloseable {
+
+    private static final Logger LOGGER = Logger.getLogger(ReadTx.class.getName());
 
     private final DatastoreService datastore;
     private final Transaction transaction;
@@ -15,6 +19,10 @@ public class ReadTx implements ReadableTx, AutoCloseable {
     private ReadTx(DatastoreService datastore, Transaction transaction) {
         this.datastore = datastore;
         this.transaction = transaction;
+
+        if(transaction != null) {
+            LOGGER.info("Transaction " + transaction.getId() + " begun.");
+        }
     }
 
     /**
@@ -59,6 +67,7 @@ public class ReadTx implements ReadableTx, AutoCloseable {
      * @param datastore the datastore service to wrap
      */
     public static ReadTx withSerializableConsistency(DatastoreService datastore) {
+        LOGGER.info("Beginning serialized read transaction...");
         Transaction tx = datastore.beginTransaction();
         return new ReadTx(datastore, tx);
     }
@@ -119,8 +128,18 @@ public class ReadTx implements ReadableTx, AutoCloseable {
 
     @Override
     public void close() {
-        if(this.transaction != null) {
-            this.transaction.rollback();
+
+        if(transaction != null) {
+            LOGGER.info("Closing transaction " + transaction.getId() + ": active = " + transaction.isActive());
+        }
+
+        if(this.transaction != null && this.transaction.isActive()) {
+            try {
+                // Both commit and rollback are no-ops for read only txs
+                this.transaction.commit();
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Exception thrown while closing read transaction " + transaction.getId(), e);
+            }
         }
     }
 

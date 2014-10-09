@@ -163,26 +163,6 @@ public class BulkLoaderTest {
             }
         }
     }
-//
-//    private class FormReaderStub implements FormImportReader {
-//
-//        @Override
-//        public void load(FormImportOptions options, InputStream inputStream, ImportWriter importWriter) throws IOException {
-//            FormClass form = new FormClass(formClassId);
-//            form.setOwnerId(options.getOwnerId());
-//            form.setLabel("My Form");
-//            FormField nameField = new FormField(nameFieldId).setLabel("Name").setType(TextType.INSTANCE);
-//            form.addElement(nameField);
-//
-//            InstanceWriter writer = importWriter.createFormClass(form);
-//
-//            for(int i=0;i!=10;++i) {
-//                FormInstance instance = new FormInstance(Resources.generateId(), form.getId());
-//                instance.set(nameField.getId(), "N" + i);
-//                writer.write(instance);
-//            }
-//        }
-//    }
 
 
 }

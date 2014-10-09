@@ -4,6 +4,7 @@ import com.google.common.io.ByteSource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.blob.BlobMetadata;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreLoader;
 
@@ -28,4 +29,5 @@ public interface TaskContext {
 
     ByteSource getBlob(BlobId blobId);
 
+    BlobMetadata getBlobMetadata(BlobId blobId);
 }
