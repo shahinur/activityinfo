@@ -61,6 +61,7 @@ public class ResourceQuery {
         node.setOwnerId(latestVersion.getOwnerId());
         node.setVersion(versionOf(latestVersion));
         node.setLabel(latestVersion.getLabel());
+        node.setClassId(latestVersion.getClassId());
         node.setOwner(authorization.isOwner());
         node.setEditAllowed(authorization.canEdit());
         return node;
