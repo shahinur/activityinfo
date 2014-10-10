@@ -38,6 +38,9 @@ public class AccessControlRule implements IsResource {
         this.principalId = principalId;
     }
 
+    public static boolean isAcrId(ResourceId id) {
+        return id.asString().startsWith("_acr-");
+    }
 
     public ResourceId getId() {
         return id;
