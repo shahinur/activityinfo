@@ -40,7 +40,7 @@ public class AppEngineUserTaskService implements UserTaskService {
 
         // Kick off task
         QueueFactory.getDefaultQueue().add(null, TaskOptions.Builder
-            .withUrl("/service/tasks/run")
+            .withUrl("/service/executeTask")
             .param("userId", Integer.toString(user.getId()))
             .param("taskId", task.getId()));
 
@@ -81,7 +81,6 @@ public class AppEngineUserTaskService implements UserTaskService {
             throw new WebApplicationException(Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @GET
     @Override

@@ -7,12 +7,11 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.service.tasks.*;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Path("/service/task/run")
+@Path("/service/executeTask")
 public class TaskRunner {
 
     private static final Logger LOGGER = Logger.getLogger(TaskRunner.class.getName());
@@ -33,7 +32,6 @@ public class TaskRunner {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response run(@HeaderParam(TASK_NAME_HEADER) String taskName,
                         @FormParam("userId") int userId,
                         @FormParam("taskId") String taskId) {
