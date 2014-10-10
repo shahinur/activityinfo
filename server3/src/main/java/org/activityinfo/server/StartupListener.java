@@ -39,6 +39,7 @@ import org.activityinfo.server.util.config.ConfigModule;
 import org.activityinfo.server.util.jaxrs.JaxRsModule;
 import org.activityinfo.server.util.locale.LocaleModule;
 import org.activityinfo.server.util.logging.LoggingModule;
+import org.activityinfo.service.tasks.appengine.AppEngineUserTaskModule;
 import org.activityinfo.store.blob.GcsUserBlobServiceModule;
 import org.activityinfo.store.hrd.HrdResourceStoreModule;
 
@@ -80,6 +81,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new JaxRsModule(),
                 new OdkModule(),
                 new GcsUserBlobServiceModule(),
+                new AppEngineUserTaskModule(),
                 new ServiceModule(),
                 new TestModule()));
 
