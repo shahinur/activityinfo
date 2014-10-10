@@ -2,6 +2,7 @@ package org.activityinfo.server.endpoint.test;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
@@ -25,7 +26,9 @@ public class TestEndpoint {
 
     @Inject
     public TestEndpoint(DeploymentConfiguration deploymentConfiguration, Provider<UserDAO> userDAO) {
-        if ("enabled".equals(deploymentConfiguration.getProperty(TEST_MODE)) || "enabled".equals(System.getProperty(TEST_MODE))) {
+        if ("enabled".equals(deploymentConfiguration.getProperty(TEST_MODE)) ||
+            "enabled".equals(System.getProperty(TEST_MODE)) ||
+                DeploymentEnvironment.isAppEngineDevelopment()) {
             this.userDAO = userDAO;
         } else {
             this.userDAO = null;
