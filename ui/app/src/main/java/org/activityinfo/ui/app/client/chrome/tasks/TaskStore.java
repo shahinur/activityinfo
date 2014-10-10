@@ -86,6 +86,7 @@ public class TaskStore extends AbstractStore implements RemoteUpdateHandler, Not
     public <R> void processUpdate(Request<R> request, R response) {
         if(request instanceof FetchTaskRequest) {
             List<UserTask> result = (List<UserTask>) response;
+            boolean changed = false;
             for(UserTask updatedTask : result) {
                 UserTask task = tasks.get(updatedTask.getId());
                 // consider this task newly complete if we've previously seen this task
@@ -94,10 +95,24 @@ public class TaskStore extends AbstractStore implements RemoteUpdateHandler, Not
                     task.getStatus() != UserTaskStatus.COMPLETE &&
                     updatedTask.getStatus() == UserTaskStatus.COMPLETE) {
                     newlyCompleted.add(updatedTask.getId());
+                    changed = true;
                 }
-                tasks.put(updatedTask.getId(), updatedTask);
+                if(updateTask(task, updatedTask)) {
+                    changed = true;
+                }
             }
-            fireChange();
+            if(changed) {
+                fireChange();
+            }
+        }
+    }
+
+    private boolean updateTask(UserTask task, UserTask updatedTask) {
+        if(task.getStatus() != updatedTask.getStatus()) {
+            task.setStatus(updatedTask.getStatus());
+            return true;
+        } else {
+            return false;
         }
     }
 

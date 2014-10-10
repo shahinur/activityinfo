@@ -115,7 +115,9 @@ public class WorkspaceUpdate implements AutoCloseable {
     }
 
     public void updateAcr(AccessControlRule rule) {
+        writeSnapshot(rule.asResource());
         AcrEntry acr = new AcrEntry(workspace, rule);
+        acr.setVersion(updateVersion);
         tx.put(acr);
     }
 
