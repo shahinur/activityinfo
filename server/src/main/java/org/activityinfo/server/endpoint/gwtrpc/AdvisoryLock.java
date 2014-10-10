@@ -22,6 +22,9 @@ package org.activityinfo.server.endpoint.gwtrpc;
  */
 
 import com.google.common.base.Preconditions;
+import org.activityinfo.legacy.shared.exception.CommandException;
+import org.activityinfo.legacy.shared.exception.CommandTimeoutException;
+import org.activityinfo.legacy.shared.exception.UnexpectedCommandException;
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManager;
 
@@ -80,11 +83,22 @@ public class AdvisoryLock {
         try {
             Query query = entityManager.getSession().createSQLQuery(sql);
             Object result = query.uniqueResult();
-            if (result instanceof BigInteger && ((BigInteger) result).intValue() == 1) {
-                return new AdvisoryLock(entityManager);
-            } else {
-                LOGGER.log(Level.SEVERE, "Failed to obtain advisory lock, sql:" + sql + ", result: " + result);
+
+            if (result == null) {
+                throw new UnexpectedCommandException("Error occurred while trying to obtain advisory lock.");
             }
+
+            int resultCode = ((BigInteger) result).intValue();
+            if (resultCode == 1) { // success
+                return new AdvisoryLock(entityManager);
+            } else if (resultCode == 0) { // time out
+                throw new CommandTimeoutException();
+            }
+
+            return new AdvisoryLock(entityManager);
+
+        } catch (CommandException e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Exception during getting advisory lock, sql:" + sql, e);
         }
