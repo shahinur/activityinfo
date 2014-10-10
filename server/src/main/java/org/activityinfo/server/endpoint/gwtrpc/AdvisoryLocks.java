@@ -104,7 +104,7 @@ public class AdvisoryLocks {
         } else if (command instanceof BatchCommand) {
             BatchCommand batchCommand = (BatchCommand) command;
             for (Command innerCommand : batchCommand.getCommands()) {
-                if (innerCommand instanceof MutatingCommand) {
+                if (hasMutatingCommand(innerCommand)) {
                     return true;
                 }
             }
