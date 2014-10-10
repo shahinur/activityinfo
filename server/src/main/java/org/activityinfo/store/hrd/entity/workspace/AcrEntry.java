@@ -19,17 +19,27 @@ public class AcrEntry implements IsEntity {
     public static final String VIEW_PROPERTY = "view";
     public static final String EDIT_PROPERTY = "edit";
     public static final String OWNER_PROPERTY = "owner";
+    public static final String VERSION_PROPERTY = "version";
 
     private final AcrEntryKey key;
     private boolean owner;
     private String viewCondition;
     private String editCondition;
+    private long version;
 
     public AcrEntry(AcrEntryKey key, Entity entity) {
         this.key = key;
         this.owner = (Boolean)entity.getProperty(OWNER_PROPERTY);
         this.viewCondition = (String) entity.getProperty(VIEW_PROPERTY);
         this.editCondition = (String) entity.getProperty(EDIT_PROPERTY);
+
+        if (entity.hasProperty(VERSION_PROPERTY)) {
+            this.version = (Long)entity.getProperty(VERSION_PROPERTY);
+        } else {
+            // version was not stored earlier, but in those cases
+            // all should be for the workspace owner, created in version 1
+            this.version = 1L;
+        }
     }
 
     public AcrEntry(Entity entity) {
@@ -47,6 +57,14 @@ public class AcrEntry implements IsEntity {
             this.editCondition = rule.getEditCondition().getExpression();
             this.viewCondition = rule.getViewCondition().getExpression();
         }
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
     }
 
     public boolean isOwner() {
@@ -87,6 +105,7 @@ public class AcrEntry implements IsEntity {
         entity.setUnindexedProperty(OWNER_PROPERTY, owner);
         entity.setUnindexedProperty(VIEW_PROPERTY, viewCondition);
         entity.setUnindexedProperty(EDIT_PROPERTY, editCondition);
+        entity.setUnindexedProperty(VERSION_PROPERTY, version);
         return entity;
     }
 

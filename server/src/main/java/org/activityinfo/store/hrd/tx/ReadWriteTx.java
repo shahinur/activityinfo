@@ -40,7 +40,8 @@ public class ReadWriteTx implements WritableTx, AutoCloseable {
     public void commit() {
         LOGGER.info("Committing " + transaction.getId() + "...");
         transaction.commit();
-        LOGGER.info("Transaction " + transaction.getId() + "committed.");    }
+        LOGGER.info("Transaction " + transaction.getId() + "committed.");
+    }
 
     public void rollback() {
         transaction.rollback();
@@ -49,13 +50,12 @@ public class ReadWriteTx implements WritableTx, AutoCloseable {
     @Override
     public void close() {
         if (transaction.isActive()) {
-            LOGGER.info("Rolling back uncommitted transaction... " + transaction.getId());
-        }
-
-        try {
-            transaction.rollback();
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Exception thrown while rolling back transaction " + transaction.getId(), e);
+            try {
+                LOGGER.info("Rolling back uncommitted transaction... " + transaction.getId());
+                transaction.rollback();
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Exception thrown while rolling back transaction " + transaction.getId(), e);
+            }
         }
     }
 }
