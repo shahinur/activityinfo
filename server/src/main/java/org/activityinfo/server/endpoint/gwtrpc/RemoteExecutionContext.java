@@ -31,6 +31,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.legacy.shared.command.BatchCommand;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.MutatingCommand;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
@@ -61,7 +62,6 @@ public class RemoteExecutionContext implements ExecutionContext {
     private SyncTransactionAdapter tx;
     private HibernateEntityManager entityManager;
     private JdbcScheduler scheduler;
-    private AdvisoryLocks advisoryLocks;
 
     private ServerEventBus serverEventBus;
 
@@ -73,7 +73,6 @@ public class RemoteExecutionContext implements ExecutionContext {
         this.scheduler = new JdbcScheduler();
         this.scheduler.allowNestedProcessing();
         this.serverEventBus = injector.getInstance(ServerEventBus.class);
-        this.advisoryLocks = new AdvisoryLocks(entityManager);
     }
 
     @Override
@@ -100,7 +99,7 @@ public class RemoteExecutionContext implements ExecutionContext {
     }
 
     public static boolean inProgress() {
-        return CURRENT.get() != null /*|| CURRENT.get().advisoryLocks.hasAdvisoryLock()*/;
+        return CURRENT.get() != null;
     }
 
     /**
@@ -112,12 +111,10 @@ public class RemoteExecutionContext implements ExecutionContext {
             throw new IllegalStateException("Command execution context already in progress");
         }
 
-        if (advisoryLocks.hasAdvisoryLock()) {
-            // todo - we need to throw exception if advisory lock is already obtains
-            //throw new IllegalStateException("Advisory lock is already in use. Please try again later.");
+        AdvisoryLock lock = null;
+        if (hasMutatingCommand(command)) {
+            lock = AdvisoryLock.tryLock(entityManager);
         }
-
-        boolean advisoryLockTaken = advisoryLocks.takeAdvisoryLock(command);
 
         try {
             CURRENT.set(this);
@@ -178,8 +175,8 @@ public class RemoteExecutionContext implements ExecutionContext {
 
         } finally {
             CURRENT.remove();
-            if (advisoryLockTaken) {
-                advisoryLocks.releaseAdvisoryLock();
+            if (lock != null) {
+                lock.unlock();
             }
         }
     }
@@ -374,5 +371,19 @@ public class RemoteExecutionContext implements ExecutionContext {
             }
             this.result = result;
         }
+    }
+
+    public static boolean hasMutatingCommand(Command command) {
+        if (command instanceof MutatingCommand) {
+            return true;
+        } else if (command instanceof BatchCommand) {
+            BatchCommand batchCommand = (BatchCommand) command;
+            for (Command innerCommand : batchCommand.getCommands()) {
+                if (hasMutatingCommand(innerCommand)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
