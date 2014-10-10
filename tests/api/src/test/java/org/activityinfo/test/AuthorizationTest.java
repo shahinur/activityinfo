@@ -12,15 +12,9 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static javax.ws.rs.core.Response.Status.CONFLICT;
-import static javax.ws.rs.core.Response.Status.GONE;
-import static javax.ws.rs.core.Response.Status.NOT_FOUND;
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+import static javax.ws.rs.core.Response.Status.*;
 import static org.activityinfo.model.resource.Resources.ROOT_ID;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class AuthorizationTest {
     final private ResourceId workspaceId = Resources.generateId();
@@ -78,7 +72,7 @@ public class AuthorizationTest {
         Resource folder = Resources.createResource();
         folder.setId(resourceId);
         folder.setOwnerId(workspaceId);
-        folder.setVersion(3);
+        folder.setVersion(2);
         folder.setValue(Records.builder(FolderClass.CLASS_ID)
                 .set(FolderClass.LABEL_FIELD_ID.asString(), "Folder")
                 .build());
