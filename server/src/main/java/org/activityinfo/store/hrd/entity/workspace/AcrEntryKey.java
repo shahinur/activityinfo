@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.search.checkers.Preconditions;
+import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 
@@ -26,6 +27,10 @@ public class AcrEntryKey implements WorkspaceEntityGroupKey<AcrEntry> {
 
     public AcrEntryKey(LatestVersionKey parent, AuthenticatedUser user) {
         this(parent, user.getUserResourceId());
+    }
+
+    public AcrEntryKey(WorkspaceEntityGroup workspace, AccessControlRule rule) {
+        this(new LatestVersionKey(workspace, rule.getResourceId()), rule.getPrincipalId());
     }
 
     public AcrEntryKey(WorkspaceEntityGroup workspace, ResourceId resourceId, AuthenticatedUser user) {

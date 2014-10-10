@@ -52,6 +52,11 @@ public class Authorization {
 
     private AccessControlRule findRule(ReadTx tx, ResourceId resourceId) {
 
+        if(AccessControlRule.isAcrId(resourceId)) {
+            // todo: not quite right
+            return null;
+        }
+
         while(!ROOT_ID.equals(resourceId)) {
             LatestVersionKey resourceKey = new LatestVersionKey(workspace, resourceId);
             Optional<AcrEntry> rule = tx.getIfExists(new AcrEntryKey(resourceKey, authenticatedUser));
@@ -61,7 +66,7 @@ public class Authorization {
 
             // ACRs are inherited from the owner, so if we don't find an ACR here,
             // ascend to this resource's owner in search of an applicable rule.
-            resourceId = tx.getOrThrow(resourceKey).getResourceId();
+            resourceId = tx.getOrThrow(resourceKey).getOwnerId();
         }
         return null;
     }

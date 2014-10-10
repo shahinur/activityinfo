@@ -43,6 +43,10 @@ public class Snapshot implements IsEntity {
         this.value = SerializedRecord.fromEntity(entity);
     }
 
+    public Snapshot(Entity entity) {
+        this(new SnapshotKey(entity.getKey()), entity);
+    }
+
     public Snapshot(WorkspaceEntityGroup workspace, long version, ResourceId id) {
         this.key = new SnapshotKey(new VersionKey(workspace, version), id);
     }
