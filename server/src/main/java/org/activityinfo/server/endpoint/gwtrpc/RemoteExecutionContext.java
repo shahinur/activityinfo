@@ -61,6 +61,7 @@ public class RemoteExecutionContext implements ExecutionContext {
     private SyncTransactionAdapter tx;
     private HibernateEntityManager entityManager;
     private JdbcScheduler scheduler;
+    private AdvisoryLocks advisoryLocks;
 
     private ServerEventBus serverEventBus;
 
@@ -72,6 +73,7 @@ public class RemoteExecutionContext implements ExecutionContext {
         this.scheduler = new JdbcScheduler();
         this.scheduler.allowNestedProcessing();
         this.serverEventBus = injector.getInstance(ServerEventBus.class);
+        this.advisoryLocks = new AdvisoryLocks(entityManager);
     }
 
     @Override
@@ -98,7 +100,7 @@ public class RemoteExecutionContext implements ExecutionContext {
     }
 
     public static boolean inProgress() {
-        return CURRENT.get() != null;
+        return CURRENT.get() != null /*|| CURRENT.get().advisoryLocks.hasAdvisoryLock()*/;
     }
 
     /**
@@ -109,6 +111,13 @@ public class RemoteExecutionContext implements ExecutionContext {
         if (CURRENT.get() != null) {
             throw new IllegalStateException("Command execution context already in progress");
         }
+
+        if (advisoryLocks.hasAdvisoryLock()) {
+            // todo - we need to throw exception if advisory lock is already obtains
+            //throw new IllegalStateException("Advisory lock is already in use. Please try again later.");
+        }
+
+        boolean advisoryLockTaken = advisoryLocks.takeAdvisoryLock(command);
 
         try {
             CURRENT.set(this);
@@ -169,6 +178,9 @@ public class RemoteExecutionContext implements ExecutionContext {
 
         } finally {
             CURRENT.remove();
+            if (advisoryLockTaken) {
+                advisoryLocks.releaseAdvisoryLock();
+            }
         }
     }
 
