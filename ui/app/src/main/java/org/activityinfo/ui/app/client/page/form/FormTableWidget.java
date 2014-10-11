@@ -6,16 +6,18 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import org.activityinfo.service.store.ResourceLocator;
-import org.activityinfo.service.store.ResourceLocatorAdaptor;
-import org.activityinfo.ui.app.client.AppEntryPoint;
+import org.activityinfo.ui.app.client.Application;
+import org.activityinfo.ui.app.client.request.ResourceLocatorAdapter;
 import org.activityinfo.ui.component.table.TablePage;
 import org.activityinfo.ui.vdom.shared.tree.VWidget;
 
 class FormTableWidget extends VWidget {
 
+    private Application application;
     private FormPage formPage;
 
-    FormTableWidget(FormPage formPage) {
+    FormTableWidget(Application application, FormPage formPage) {
+        this.application = application;
         this.formPage = formPage;
     }
 
@@ -32,8 +34,8 @@ class FormTableWidget extends VWidget {
 
             @Override
             public void onSuccess() {
-                ResourceLocator adapter = new ResourceLocatorAdaptor(AppEntryPoint.service);
-                TablePage tablePage = new TablePage(adapter, formPage.getApplication());
+                ResourceLocator adapter = new ResourceLocatorAdapter(application);
+                TablePage tablePage = new TablePage(adapter);
                 tablePage.show(formPage.getResourceId());
                 flowPanel.clear();
                 flowPanel.add(tablePage);

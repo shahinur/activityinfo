@@ -52,7 +52,7 @@ public class NewHeaderAction implements TableHeaderAction {
         final FormClass formClass = table.getRootFormClass();
         final ResourceId instanceId = Resources.generateId();
         FormInstance newInstance = new FormInstance(instanceId, formClass.getId());
-        FormDialog dialog = new FormDialog(table.getResourceLocator(), table.getTableView().getApplication());
+        FormDialog dialog = new FormDialog(table.getResourceLocator());
         dialog.setDialogTitle(I18N.CONSTANTS.addInstance());
         dialog.show(newInstance, new FormDialogCallback() {
             @Override

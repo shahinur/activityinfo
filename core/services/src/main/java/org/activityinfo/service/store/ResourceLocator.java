@@ -48,21 +48,11 @@ public interface ResourceLocator {
      * @deprecated Use {@link ResourceLocator#queryTable(org.activityinfo.model.table.TableModel)} instead
      */
     @Deprecated
-    Promise<List<FormInstance>> queryInstances(Criteria criteria);
-
-    /**
-     * @deprecated Use {@link ResourceLocator#queryTable(org.activityinfo.model.table.TableModel)} instead
-     */
-    @Deprecated
     Promise<List<Projection>> query(InstanceQuery query);
 
     Promise<Void> remove(Collection<ResourceId> resources);
 
     Promise<QueryResult> queryProjection(InstanceQuery query);
-
-    Promise<FolderProjection> getTree(ResourceId rootId);
-
-    Promise<List<org.activityinfo.model.resource.ResourceNode>> getRoots();
 
     Promise<InstanceLabelTable> queryFormList();
 

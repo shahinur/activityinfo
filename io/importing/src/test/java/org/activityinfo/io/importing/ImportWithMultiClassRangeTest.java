@@ -15,22 +15,27 @@ import org.activityinfo.model.formTree.FormTreePrettyPrinter;
 import org.activityinfo.model.hierarchy.Hierarchy;
 import org.activityinfo.model.hierarchy.HierarchyPrettyPrinter;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.InstanceQuery;
+import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.legacy.criteria.ClassCriteria;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.converter.JvmConverterFactory;
 import org.activityinfo.service.store.AsyncFormTreeBuilder;
 import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.store.test.TestResourceStore;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
 import static com.google.common.io.Resources.getResource;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertThat;
 
 public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
@@ -65,7 +70,7 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
     public static final ResourceId GROUPEMENT_LAMBO_KATENGA = CuidAdapter.entity(148235);
     public static final ResourceId ZONE_SANTE_NYEMBA = CuidAdapter.entity(212931);
 
-    private List<FormInstance> instances;
+    private List<Projection> instances;
 
 
     private ResourceLocator resourceLocator;
@@ -182,22 +187,24 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
 
         assertResolves(importer.persist(importModel));
 
-        instances = assertResolves(resourceLocator.queryInstances(new ClassCriteria(SCHOOL_FORM_CLASS)));
+        instances = assertResolves(resourceLocator.queryProjection(
+                new InstanceQuery(Arrays.asList(new FieldPath(ADMIN_FIELD)), new ClassCriteria(SCHOOL_FORM_CLASS))))
+                .getProjections();
         assertThat(instances.size(), equalTo(8)); // we have 8 rows in school-import.csv
 
-        assertThat(school("P"), equalTo(set(PROVINCE_KATANGA)));
-        assertThat(school("D"), equalTo(set(DISTRICT_TANGANIKA)));
-        assertThat(school("T"), equalTo(set(TERRITOIRE_KALEMIE)));
-        assertThat(school("S"), equalTo(set(SECTEUR_TUMBWE)));
-        assertThat(school("G"), equalTo(set(GROUPEMENT_LAMBO_KATENGA)));
-        assertThat(school("GZ"), equalTo(set(GROUPEMENT_LAMBO_KATENGA, ZONE_SANTE_NYEMBA)));
-        assertThat(school("TZ"), equalTo(set(TERRITOIRE_KALEMIE, ZONE_SANTE_NYEMBA)));
+        assertThat(adminFieldOfSchool("P"), contains(PROVINCE_KATANGA));
+        assertThat(adminFieldOfSchool("D"), contains(DISTRICT_TANGANIKA));
+        assertThat(adminFieldOfSchool("T"), contains(TERRITOIRE_KALEMIE));
+        assertThat(adminFieldOfSchool("S"), contains(SECTEUR_TUMBWE));
+        assertThat(adminFieldOfSchool("G"), contains(GROUPEMENT_LAMBO_KATENGA));
+        assertThat(adminFieldOfSchool("GZ"), contains(GROUPEMENT_LAMBO_KATENGA, ZONE_SANTE_NYEMBA));
+        assertThat(adminFieldOfSchool("TZ"), contains(TERRITOIRE_KALEMIE, ZONE_SANTE_NYEMBA));
     }
 
-    private Set<ResourceId> school(String name) {
-        for(FormInstance instance : instances) {
-            if(name.equals(instance.getString(CuidAdapter.getNameFieldId(SCHOOL_FORM_CLASS)))) {
-                Set<ResourceId> references = instance.getReferences(ADMIN_FIELD);
+    private Set<ResourceId> adminFieldOfSchool(String name) {
+        for(Projection instance : instances) {
+            if(name.equals(instance.getStringValue(CuidAdapter.getNameFieldId(SCHOOL_FORM_CLASS)))) {
+                Set<ResourceId> references = instance.getReferenceValue(ADMIN_FIELD);
                 System.out.println(name +", references: " + references);
                 return references;
             }
