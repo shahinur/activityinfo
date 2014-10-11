@@ -10,7 +10,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>activityinfo-app</artifactId>
+  <artifactId>activityinfo-widget29</artifactId>
 
   <dependencies>
     <dependency>
@@ -18,82 +18,45 @@
       <artifactId>gwt-user</artifactId>
       <version>${gwtVersion}</version>
     </dependency>
-
     <dependency>
       <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-virtual-dom</artifactId>
+      <artifactId>activityinfo-model</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-widget29</artifactId>
+      <artifactId>activityinfo-services</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-flux</artifactId>
+      <artifactId>activityinfo-importing</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-style</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
-      <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-remote-store</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.allen-sauer.gwt.dnd</groupId>
+      <artifactId>gwt-dnd</artifactId>
+      <version>3.3.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-testing-store</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-i18n</artifactId>
+      <artifactId>activityinfo-barcode-scanner</artifactId>
       <version>${project.version}</version>
     </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.activityinfo</groupId>
-      <artifactId>unit-testing-tools</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
   </dependencies>
-
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/java</directory>
-        <includes>
-          <include>**/*.less</include>
-          <include>**/*.css</include>
-        </includes>
-      </resource>
-      <resource>
-        <directory>src/main/resources</directory>
-        <includes>
-          <include>**/*.less</include>
-          <include>**/*.css</include>
-          <include>**/*.png</include>
-          <include>**/*.gif</include>
-        </includes>
-      </resource>
-    </resources>
     <plugins>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
@@ -108,9 +71,7 @@
           </execution>
         </executions>
       </plugin>
-
     </plugins>
-
   </build>
 
 </project>

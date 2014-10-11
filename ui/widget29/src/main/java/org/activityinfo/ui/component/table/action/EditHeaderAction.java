@@ -48,7 +48,7 @@ public class EditHeaderAction implements TableHeaderAction {
     @Override
     public void execute() {
         final Projection selectedProjection = table.getSelectionModel().getSelectedSet().iterator().next();
-        final FormDialog dialog = new FormDialog(table.getResourceLocator(), table.getTableView().getApplication());
+        final FormDialog dialog = new FormDialog(table.getResourceLocator());
         dialog.setDialogTitle(I18N.CONSTANTS.editInstance());
         dialog.show(selectedProjection.getRootInstanceId(), new FormDialogCallback() {
             @Override

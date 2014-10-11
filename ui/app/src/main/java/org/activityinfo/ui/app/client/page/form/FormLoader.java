@@ -1,4 +1,4 @@
-package org.activityinfo.ui.component;
+package org.activityinfo.ui.app.client.page.form;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -6,9 +6,8 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.ResourceLocator;
-import org.activityinfo.service.store.ResourceLocatorAdaptor;
 import org.activityinfo.ui.app.client.AppEntryPoint;
-import org.activityinfo.ui.component.formdesigner.FormDesigner;
+import org.activityinfo.ui.app.client.request.ResourceLocatorAdapter;
 import org.activityinfo.ui.component.formdesigner.FormDesignerPanel;
 
 public class FormLoader {
@@ -25,7 +24,7 @@ public class FormLoader {
             public void onSuccess() {
                 Widget panel;
                 try {
-                    ResourceLocator adapter = new ResourceLocatorAdaptor(AppEntryPoint.service);
+                    ResourceLocator adapter = new ResourceLocatorAdapter(AppEntryPoint.app);
                     FormDesignerPanel formDesignerPanel = new FormDesignerPanel(adapter, formClass);
                     panel = formDesignerPanel.asWidget();
                 } catch(Throwable caught) {

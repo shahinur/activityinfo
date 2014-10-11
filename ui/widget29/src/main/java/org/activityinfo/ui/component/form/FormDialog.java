@@ -31,8 +31,6 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.ui.app.client.Application;
-import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.widget.loading.ExceptionOracle;
@@ -53,16 +51,14 @@ public class FormDialog {
 
     private FormDialogCallback callback;
 
-    private final Application application;
     private final ResourceLocator resourceLocator;
 
     private final ModalDialog dialog;
     private final SimpleFormPanel formPanel;
     private final LoadingPanel<FormInstance> loadingPanel;
 
-    public FormDialog(ResourceLocator resourceLocator, Application application) {
+    public FormDialog(ResourceLocator resourceLocator) {
         this.resourceLocator = resourceLocator;
-        this.application = application;
 
         //ModalStylesheet.INSTANCE.ensureInjected();
 
@@ -118,7 +114,7 @@ public class FormDialog {
         dialog.getStatusLabel().setText(I18N.CONSTANTS.saving());
         dialog.getPrimaryButton().setEnabled(false);
 
-        application.getRequestDispatcher().execute(new SaveRequest(formPanel.getInstance())).then(new AsyncCallback<UpdateResult>() {
+        resourceLocator.persist(formPanel.getInstance()).then(new AsyncCallback<Void>() {
             @Override
             public void onFailure(Throwable caught) {
                 LOGGER.log(Level.SEVERE, "Save failed", caught);
@@ -127,7 +123,7 @@ public class FormDialog {
             }
 
             @Override
-            public void onSuccess(UpdateResult result) {
+            public void onSuccess(Void result) {
                 dialog.hide();
                 callback.onPersisted(formPanel.getInstance());
             }

@@ -30,7 +30,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.ui.app.client.chrome.FailureDescription;
+import org.activityinfo.ui.widget.loading.ExceptionOracle;
 import org.activityinfo.ui.widget.modal.ModalDialog;
 import org.activityinfo.ui.style.ButtonStyle;
 
@@ -188,7 +188,7 @@ public class ConfirmDialog  {
             case FAILED:
                 updateMessages(action.getFailureMessages());
                 failedMessageContainer.setHTML(Templates.WARNING_MESSAGE_TEMPLATE.html(
-                        FailureDescription.of(caught).getDescription()));
+                        ExceptionOracle.getExplanation(caught)));
                 break;
 
             case PROGRESS:

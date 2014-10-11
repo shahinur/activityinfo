@@ -105,7 +105,7 @@ public class FormPage extends PageView implements StoreChangeListener {
                 return new FormOverview(application, resourceId);
 
             case TABLE:
-                return new FormTableWidget(this);
+                return new FormTableWidget(application, this);
         }
     }
 

@@ -25,9 +25,9 @@ public class AppEntryPoint implements EntryPoint {
 
     private static final Logger LOGGER = Logger.getLogger("");
 
+    public static Application app;
     public static RemoteStoreServiceImpl service;
     private VDomWidget widget;
-    private Application app;
 
     @Override
     public void onModuleLoad() {

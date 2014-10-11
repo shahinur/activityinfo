@@ -4,7 +4,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.component.FormLoader;
 import org.activityinfo.ui.vdom.shared.tree.VWidget;
 
 class FormDesignerWidget extends VWidget {

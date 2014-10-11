@@ -119,6 +119,7 @@
     <module>tools/unit-testing</module>
     <module>clients/java</module>
     <module>tests/api</module>
+    <module>ui/widget29</module>
   </modules>
 
   <dependencies>
