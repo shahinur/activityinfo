@@ -456,10 +456,19 @@
     "id" : "a1f12",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Date",
+    "label" : "Start Date",
     "required" : true,
     "type" : {
-      "typeClass" : "localDateInterval"
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a1f13",
+    "visible" : true,
+    "primaryKey" : false,
+    "label" : "End Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
     }
   }, {
     "id" : "a1f11",

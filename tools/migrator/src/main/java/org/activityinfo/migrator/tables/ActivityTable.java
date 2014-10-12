@@ -28,6 +28,7 @@ import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
+import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.model.type.time.MonthType;
 
 import java.sql.Connection;
@@ -371,9 +372,14 @@ public class ActivityTable extends ResourceMigrator {
         if(reportingFrequency == ONCE) {
             siteForm.addElement(
                 new FormField(field(classId, START_DATE_FIELD))
-                    .setLabel("Date")
-                    .setType(LocalDateIntervalType.INSTANCE)
+                    .setLabel("Start Date")
+                    .setType(LocalDateType.INSTANCE)
                     .setRequired(true));
+            siteForm.addElement(
+                    new FormField(field(classId, END_DATE_FIELD))
+                            .setLabel("End Date")
+                            .setType(LocalDateType.INSTANCE)
+                            .setRequired(true));
         }
 
         FormField locationField = new FormField(field(classId, LOCATION_FIELD))

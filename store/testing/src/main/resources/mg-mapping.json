@@ -1253,10 +1253,19 @@
     "id" : "a2509f12",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Date",
+    "label" : "Start Date",
     "required" : true,
     "type" : {
-      "typeClass" : "localDateInterval"
+      "typeClass" : "LOCAL_DATE"
+    }
+  }, {
+    "id" : "a2509f13",
+    "visible" : true,
+    "primaryKey" : false,
+    "label" : "End Date",
+    "required" : true,
+    "type" : {
+      "typeClass" : "LOCAL_DATE"
     }
   }, {
     "id" : "a2509f11",
