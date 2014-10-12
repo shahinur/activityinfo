@@ -25,7 +25,7 @@ package org.activityinfo.server.util.logging;
 import com.google.inject.Inject;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.Message;
-import org.activityinfo.server.util.config.DeploymentConfiguration;
+import org.activityinfo.service.DeploymentConfiguration;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 

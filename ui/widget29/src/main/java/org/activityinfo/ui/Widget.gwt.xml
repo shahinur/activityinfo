@@ -29,7 +29,6 @@
   <inherits name="com.google.gwt.i18n.I18N"/>
 
   <inherits name="org.activityinfo.ui.Style"/>
-  <inherits name="org.activityinfo.ui.store.remote.RemoteStore"/>
 
 
   <!-- Include generated sources -->

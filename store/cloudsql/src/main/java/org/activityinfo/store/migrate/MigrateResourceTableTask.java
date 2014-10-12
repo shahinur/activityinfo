@@ -6,10 +6,12 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.json.ObjectMapperFactory;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.system.Folder;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.store.hrd.StoreContext;
@@ -40,15 +42,11 @@ public class MigrateResourceTableTask {
 
     private final ObjectMapper objectMapper = ObjectMapperFactory.get();
 
-    private ResourceId folderId;
     private int databaseId;
+    private StoreContext context = new StoreContext();
 
     public MigrateResourceTableTask(DeploymentConfiguration config) {
         this.config = config;
-    }
-
-    public void setFolderId(ResourceId folderId) {
-        this.folderId = folderId;
     }
 
     public void setDatabaseId(int databaseId) {
@@ -57,23 +55,37 @@ public class MigrateResourceTableTask {
 
     public int run() {
 
-        WorkspaceCache workspaceLookup = new WorkspaceCache();
-
-        WorkspaceEntityGroup workspace;
-        try {
-            workspace = workspaceLookup.lookup(folderId);
-        } catch(ResourceNotFound e) {
-            LOGGER.log(Level.SEVERE, "Folder " + folderId + " does not exist.");
-            return 0;
-        }
 
         int count = 0;
 
         try(Connection connection = openConnection()) {
 
+            WorkspaceEntityGroup workspace = new WorkspaceEntityGroup(CuidAdapter.databaseId(databaseId));
             long lastMigratedVersion = queryLastMigratedVersion(workspace);
 
             LOGGER.log(Level.INFO, "Last version migrated = " + lastMigratedVersion);
+
+            if(lastMigratedVersion == 0) {
+
+                PreparedStatement ownerQuery = connection.prepareStatement(
+                        "select name, ownerUserId from userdatabase where databaseid = ?");
+                ownerQuery.setInt(1, databaseId);
+                ResultSet resultSet = ownerQuery.executeQuery();
+
+                Preconditions.checkState(resultSet.next());
+                int ownerUserId = resultSet.getInt("ownerUserId");
+
+                Folder folder = new Folder();
+                folder.setLabel(resultSet.getString("name"));
+
+                Resource db = Resources.createResource();
+                db.setId(workspace.getWorkspaceId());
+                db.setOwnerId(Resources.ROOT_ID);
+                db.setValue(folder.asRecord());
+
+                WorkspaceCreation creation = new WorkspaceCreation(context, new AuthenticatedUser(ownerUserId));
+                creation.createWorkspace(db);
+            }
 
             PreparedStatement statement = connection.prepareStatement(
                 "select * from resource_version" +
@@ -93,9 +105,6 @@ public class MigrateResourceTableTask {
                 LOGGER.info("Migrating " + resultSet.getString("id")  + " version " + resultSet.getLong("version"));
 
                 String ownerId = resultSet.getString("owner_id");
-                if(ownerId.equals(databaseResourceId)) {
-                    ownerId = folderId.asString();
-                }
 
                 if(update(workspace, ResourceId.valueOf(ownerId), resultSet)) {
                     count++;
@@ -149,7 +158,7 @@ public class MigrateResourceTableTask {
         Date commitDate = resultSet.getDate("commit_time");
         Clock sourceClock = new HistoricalClock(commitDate);
 
-        try(WorkspaceUpdate update = WorkspaceUpdate.newBuilder(new StoreContext(), workspace, user)
+        try(WorkspaceUpdate update = WorkspaceUpdate.newBuilder(context, workspace, user)
                 .setClock(sourceClock)
                 .begin()) {
 

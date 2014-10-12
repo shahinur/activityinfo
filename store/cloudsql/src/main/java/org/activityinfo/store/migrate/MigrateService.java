@@ -38,13 +38,11 @@ public class MigrateService {
 
     @GET
     @Path("resources")
-    public Response startMigration(@InjectParam AuthenticatedUser user,
-                                   @QueryParam("databaseId") int databaseId,
-                                   @QueryParam("folderId") String folderId) {
+    public Response startResourcesMigration(@InjectParam AuthenticatedUser user,
+                                   @QueryParam("databaseId") int databaseId) {
 
         QueueFactory.getQueue("migrate").add(TaskOptions.Builder.withUrl("/service/migrate/tasks/migrateResources")
-            .param("databaseId", Integer.toString(databaseId))
-            .param("folderId", folderId));
+            .param("databaseId", Integer.toString(databaseId)));
 
         return Response.ok("Task started").build();
     }
@@ -63,14 +61,12 @@ public class MigrateService {
     @POST
     @Path("tasks/migrateResources")
     public void runMigrateTable(@HeaderParam(TASK_NAME_HEADER) String taskName,
-                                @FormParam("databaseId") int databaseId,
-                                @FormParam("folderId") ResourceId folderId) {
+                                @FormParam("databaseId") int databaseId) {
 
         assertValidTaskInvocation(taskName);
 
         MigrateResourceTableTask task = new MigrateResourceTableTask(config);
         task.setDatabaseId(databaseId);
-        task.setFolderId(folderId);
         task.run();
     }
 

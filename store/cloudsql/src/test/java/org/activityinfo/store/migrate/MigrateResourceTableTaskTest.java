@@ -45,7 +45,6 @@ public class MigrateResourceTableTaskTest {
     }
 
     @Test
-    @Ignore("Requires local db")
     public void runMigration() {
         Properties properties = new Properties();
         properties.setProperty(MigrateResourceTableTask.DRIVER_CLASS_PROPERTY, Driver.class.getName());
@@ -65,7 +64,6 @@ public class MigrateResourceTableTaskTest {
 
         MigrateResourceTableTask task = new MigrateResourceTableTask(new DeploymentConfiguration(properties));
         task.setDatabaseId(524);
-        task.setFolderId(folderResource.getId());
 
         int count = task.run();
         System.out.println("count = " + count);

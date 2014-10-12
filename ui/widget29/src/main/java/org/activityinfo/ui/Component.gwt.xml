@@ -32,12 +32,10 @@
 
   <inherits name="org.activityinfo.i18n.I18n"/>
   <inherits name="org.activityinfo.ui.Style"/>
-  <inherits name="org.activityinfo.ui.store.remote.RemoteStore"/>
 
   <inherits name="org.activityinfo.ui.Widget"/>
 
   <inherits name="org.activityinfo.io.Importing"/>
-  <inherits name="org.activityinfo.ui.app.ActivityInfoApp"/>
 
   <!-- Include generated sources -->
   <source path='component'/>

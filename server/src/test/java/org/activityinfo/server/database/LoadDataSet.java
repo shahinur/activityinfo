@@ -70,13 +70,13 @@ public class LoadDataSet extends Statement {
     @Override
     public void evaluate() throws Throwable {
 
-   //     JdbcScheduler.get().forceCleanup();
+        JdbcScheduler.get().forceCleanup();
 
         LOGGER.info("Removing all rows");
- //       removeAllRows();
-//
-//        LOGGER.info("DBUnit: loading " + name + " into the database.");
-//        IDataSet data = loadDataSet();
+        removeAllRows();
+
+        LOGGER.info("DBUnit: loading " + name + " into the database.");
+        IDataSet data = loadDataSet();
 
         LOGGER.info("Loading resources...");
         store.load(jsonFile());
