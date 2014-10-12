@@ -24,36 +24,17 @@ package org.activityinfo.server.command;
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
-import org.activityinfo.core.client.InstanceQuery;
-import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.application.ApplicationProperties;
-import org.activityinfo.core.shared.application.FolderClass;
-import org.activityinfo.core.shared.criteria.ClassCriteria;
-import org.activityinfo.core.shared.criteria.CriteriaIntersection;
-import org.activityinfo.core.shared.criteria.ParentCriteria;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.core.shared.form.FormInstance;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.promise.Promise;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
-import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.List;
-
-import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.activityinfo.core.client.PromiseMatchers.resolvesTo;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
@@ -210,49 +191,4 @@ public class GetSchemaTest extends CommandTestCase2 {
         System.out.println(writer.toString());
     }
 
-    @Test
-    public void newApiTest() {
-
-        ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
-
-        Promise<FormClass> userForm = locator.getFormClass(CuidAdapter.activityFormClass(1));
-
-        assertThat(userForm, resolvesTo(CoreMatchers.<FormClass>notNullValue()));
-    }
-
-    @Test
-    public void folderTest() {
-        ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
-        List<FormInstance> folders = assertResolves(locator.queryInstances(
-                new CriteriaIntersection(
-                    ParentCriteria.isChildOf(ResourceId.create("home")),
-                    new ClassCriteria(FolderClass.CLASS_ID))));
-
-        for(FormInstance folder : folders) {
-            System.out.println(folder.getId() + " " + folder.getString(FolderClass.LABEL_FIELD_ID));
-        }
-
-        assertThat(folders.size(), equalTo(3));
-    }
-
-    @Test
-    public void childFolderTest() {
-        ResourceLocator locator = new ResourceLocatorAdaptor(getDispatcher());
-
-        InstanceQuery query = InstanceQuery
-                .select(ApplicationProperties.LABEL_PROPERTY,
-                        ApplicationProperties.DESCRIPTION_PROPERTY,
-                        ApplicationProperties.CLASS_PROPERTY)
-                .where(ParentCriteria.isChildOf(CuidAdapter.cuid(CuidAdapter.DATABASE_DOMAIN, 1)))
-                .build();
-
-        List<Projection> children = assertResolves(locator.query(query));
-
-        System.out.println("Results: ");
-        for(Projection child : children) {
-            System.out.println(child.getStringValue(ApplicationProperties.LABEL_PROPERTY));
-        }
-
-        assertThat(children.size(), equalTo(2));
-    }
 }

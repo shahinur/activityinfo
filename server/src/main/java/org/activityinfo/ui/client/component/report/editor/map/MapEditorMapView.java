@@ -31,7 +31,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.core.shared.model.AiLatLng;
+import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;

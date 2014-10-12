@@ -25,8 +25,7 @@ package org.activityinfo.server.command;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
-import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
+import org.activityinfo.legacy.client.remote.DispatchingResourceLocator;
 import org.activityinfo.legacy.shared.command.BatchCommand;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
@@ -37,15 +36,16 @@ import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.database.hibernate.entity.Activity;
-import org.activityinfo.server.database.hibernate.entity.AttributeGroup;
+import org.activityinfo.service.store.ResourceLocator;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -55,7 +55,8 @@ import org.junit.runner.RunWith;
 import java.util.*;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.activityinfo.legacy.shared.adapter.CuidAdapter.activityFormClass;
+import static org.activityinfo.model.legacy.CuidAdapter.activityFormClass;
+import static org.activityinfo.model.legacy.CuidAdapter.resourceId;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.Matchers.contains;
@@ -69,9 +70,16 @@ import static org.junit.Assert.assertTrue;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class ActivityTest extends CommandTestCase2 {
 
+    ResourceLocator resourceLocator;
+
     @Before
     public void setUser() {
         setUser(1);
+    }
+
+    @Before
+    public void createResourceLocator() {
+        resourceLocator = new DispatchingResourceLocator(getDispatcher());
     }
 
     @Test
@@ -165,24 +173,23 @@ public class ActivityTest extends CommandTestCase2 {
         CreateResult createResult = execute(CreateEntity.Activity(db, act));
         ResourceId classId = activityFormClass(createResult.getNewId());
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(classId));
 
         // create three new fields with an order that mixes "attributes" and "indicators"
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(Resources.generateId());
         newField.setLabel("How old are you?");
         newField.setType(new QuantityType().setUnits("years"));
         formClass.addElement(newField);
 
-        FormField newGenderField = new FormField(ResourceId.generateId());
+        FormField newGenderField = new FormField(Resources.generateId());
         newGenderField.setLabel("Gender");
-        EnumValue male = new EnumValue(ResourceId.generateId(), "Male");
-        EnumValue female = new EnumValue(ResourceId.generateId(), "Female");
+        EnumValue male = new EnumValue(Resources.generateId(), "Male");
+        EnumValue female = new EnumValue(Resources.generateId(), "Female");
         newGenderField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(male, female)));
         formClass.addElement(newGenderField);
 
-        FormField newTextField = new FormField(ResourceId.generateId());
+        FormField newTextField = new FormField(Resources.generateId());
         newTextField.setLabel("What is your name?");
         newTextField.setType(TextType.INSTANCE);
         formClass.addElement(newTextField);
@@ -216,15 +223,14 @@ public class ActivityTest extends CommandTestCase2 {
         CreateResult createResult = execute(CreateEntity.Activity(db, act));
         ResourceId classId = activityFormClass(createResult.getNewId());
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(classId));
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(Resources.generateId());
         newField.setLabel("How old are you?");
         newField.setType(new QuantityType().setUnits("years"));
         formClass.addElement(newField);
 
-        FormField newTextField = new FormField(ResourceId.generateId());
+        FormField newTextField = new FormField(Resources.generateId());
         newTextField.setLabel("What is your name?");
         newTextField.setType(TextType.INSTANCE);
         formClass.addElement(newTextField);
@@ -243,20 +249,19 @@ public class ActivityTest extends CommandTestCase2 {
         assertThat(reform.getFields(), hasSize(8));
 
         List<EnumValue> values = Lists.newArrayList();
-        values.add(new EnumValue(ResourceId.generateId(), "Option 1"));
-        values.add(new EnumValue(ResourceId.generateId(), "Option 2"));
+        values.add(new EnumValue(Resources.generateId(), "Option 1"));
+        values.add(new EnumValue(Resources.generateId(), "Option 2"));
     }
 
     @Test
     public void createAttributeGroup() {
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
-        FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(activityFormClass(1)));
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(Resources.generateId());
         newField.setLabel("New Group");
-        EnumValue yes = new EnumValue(ResourceId.generateId(), "Yes");
-        EnumValue no = new EnumValue(ResourceId.generateId(), "No");
+        EnumValue yes = new EnumValue(Resources.generateId(), "Yes");
+        EnumValue no = new EnumValue(Resources.generateId(), "No");
         newField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(yes, no)));
 
         formClass.getElements().add(newField);
@@ -294,8 +299,7 @@ public class ActivityTest extends CommandTestCase2 {
     @Test
     public void updateIndicator() {
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
-        FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(activityFormClass(1)));
 
         FormField beneficiaries = find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
         beneficiaries.setLabel("Number of benes");
@@ -309,8 +313,7 @@ public class ActivityTest extends CommandTestCase2 {
     @Test
     public void updateIndicatorWithLongUnits() {
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
-        FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(activityFormClass(1)));
 
         FormField beneficiaries = find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
         QuantityType updatedType = new QuantityType().setUnits("imperial tonne with very long qualifying text");
@@ -367,8 +370,7 @@ public class ActivityTest extends CommandTestCase2 {
     @Test
     public void deleteAttributeGroup() {
 
-        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
-        FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(activityFormClass(1)));
 
         int numFields = formClass.getElements().size();
 

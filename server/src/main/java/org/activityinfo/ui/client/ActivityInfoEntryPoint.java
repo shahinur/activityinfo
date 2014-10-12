@@ -77,7 +77,6 @@ public class ActivityInfoEntryPoint implements EntryPoint {
         injector.createDataEntryLoader();
         injector.createReportLoader();
         injector.createConfigLoader();
-        injector.createFolderPageLoader();
 
         injector.getUsageTracker();
 
@@ -85,7 +84,7 @@ public class ActivityInfoEntryPoint implements EntryPoint {
 
         injector.createOfflineController();
 
-        // hold off on this until it's possilbe to
+        // hold off on this until it's possible to
         // turn off
         // injector.createPromptOfflineDialog();
 

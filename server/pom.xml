@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.activityinfo</groupId>
     <artifactId>activityinfo-parent</artifactId>
-    <version>2.8.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -21,6 +21,22 @@
       <version>${project.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-widget29</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-i18n</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-odk</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- GWT deps (from central repo) -->
     <dependency>
@@ -313,13 +329,6 @@
     </dependency>
 
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.hamcrest</groupId>
       <artifactId>hamcrest-library</artifactId>
       <version>1.3</version>
@@ -569,7 +578,6 @@
               <compileReport>true</compileReport>
               <modules>
                 <module>org.activityinfo.ui.ActivityInfoCI</module>
-                <module>org.activityinfo.ui.AI</module>
               </modules>
             </configuration>
           </plugin>
@@ -594,7 +602,6 @@
             <configuration>
               <modules>
                 <module>org.activityinfo.ui.ActivityInfoRelease</module>
-                <module>org.activityinfo.ui.AI</module>
                 <module>org.activityinfo.ui.embed.Embed</module>
               </modules>
             </configuration>

@@ -64,7 +64,7 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
         LocationDTO location = LocationDTOs.newLocation();
         executeLocally(new CreateLocation(location));
 
-        newSite.setLocation(location);
+        newSite.setLocationId(location.getId());
         // create command
 
         CreateSite cmd = new CreateSite(newSite);

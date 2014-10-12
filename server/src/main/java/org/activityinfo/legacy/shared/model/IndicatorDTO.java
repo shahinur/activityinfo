@@ -24,13 +24,14 @@ package org.activityinfo.legacy.shared.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.model.type.NarrativeType;
-import org.activityinfo.model.type.TextType;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -333,11 +334,10 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         FormField field = new FormField(CuidAdapter.indicatorField(getId()));
         field.setLabel(getName());
         field.setDescription(getDescription());
-        field.setCalculation(getExpression());
-        field.setNameInExpression(getNameInExpression());
-        field.setCalculateAutomatically(getCalculatedAutomatically());
-
-        if(getType() == TextType.INSTANCE) {
+        field.setCode(getExpression());
+        if(isCalculated()) {
+            field.setType(new CalculatedFieldType(getExpression()));
+        } else if(getType() == TextType.INSTANCE) {
             field.setType(TextType.INSTANCE);
 
         } else if(getType() == NarrativeType.INSTANCE) {

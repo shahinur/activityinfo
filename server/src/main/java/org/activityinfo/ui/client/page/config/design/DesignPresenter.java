@@ -62,7 +62,6 @@ import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
-import org.activityinfo.ui.client.page.instance.InstancePlace;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -218,16 +217,18 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                 }
             });
         } else if(UIActions.EDIT.equals(actionId)) {
-            IsFormClass formClass = (IsFormClass) view.getSelection();
-            eventBus.fireEvent(new NavigationEvent(
-                    NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClass.getResourceId(), "design")));
+//            IsFormClass formClass = (IsFormClass) view.getSelection();
+//            eventBus.fireEvent(new NavigationEvent(
+//                    NavigationHandler.NAVIGATION_REQUESTED,
+//                    new InstancePlace(formClass.getResourceId(), "design")));
+            Window.alert("todo");
 
         } else if(UIActions.OPEN_TABLE.equals(actionId)) {
-            IsFormClass formClass = (IsFormClass) view.getSelection();
-            eventBus.fireEvent(new NavigationEvent(
-                    NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClass.getResourceId())));
+//            IsFormClass formClass = (IsFormClass) view.getSelection();
+//            eventBus.fireEvent(new NavigationEvent(
+//                    NavigationHandler.NAVIGATION_REQUESTED,
+//                    new InstancePlace(formClass.getResourceId())));
+            Window.alert("todo");
         }
     }
 

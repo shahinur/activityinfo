@@ -31,8 +31,8 @@ import com.bedatadriven.rebar.sql.client.util.RowHandler;
 import com.google.common.base.Functions;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.Types;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.GetSchema;
@@ -499,7 +499,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     IndicatorDTO indicator = new IndicatorDTO();
                     indicator.setId(rs.getInt("indicatorId"));
                     indicator.setName(rs.getString("name"));
-                    indicator.setType(FormFieldType.valueOf(rs.getString("type")));
+                    indicator.setType(Types.fromString(rs.getString("type")));
                     indicator.setExpression(rs.getString("expression"));
                     indicator.setNameInExpression(rs.getString("nameInExpression"));
                     indicator.setCalculatedAutomatically(rs.getBoolean("calculatedAutomatically"));

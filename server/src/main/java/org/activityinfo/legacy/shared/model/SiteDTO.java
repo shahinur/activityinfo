@@ -25,8 +25,8 @@ package org.activityinfo.legacy.shared.model;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 
 import java.util.*;
 
@@ -277,15 +277,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         return get(AdminLevelDTO.getPropertyName(levelId));
     }
 
-    public Object getAdminEntityName(int levelId) {
-        AdminEntityDTO entity = getAdminEntity(levelId);
-        if (entity == null) {
-            return null;
-        }
-
-        return entity.getName();
-    }
-
     /**
      * Sets the X (longitudinal) coordinate of this Site
      *
@@ -471,30 +462,8 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         set("project", project);
     }
 
-    /**
-     * Returns the location in the format of [LocationName (LocationAxe)]
-     */
-    public String getPrettyLocationName() {
-        return getLocationName() + getLocationAxe() != null ? " (" + getLocationAxe() + ")" : "";
-    }
-
     public void setLocationId(int locationId) {
         set("locationId", locationId);
-    }
-
-    public void setLocation(LocationDTO location) {
-        setLocationId(location.getId());
-        setLocationName(location.getName());
-        setLocationAxe(location.getAxe());
-        setY(location.getLatitude());
-        setX(location.getLongitude());
-        // TODO: think of better construct for this mess
-        for (String admin : location.getPropertyNames()) {
-            if (admin.startsWith(AdminLevelDTO.PROPERTY_PREFIX)) {
-                int id = Integer.parseInt(admin.substring(admin.length() - 1));
-                setAdminEntity(id, location.getAdminEntity(id));
-            }
-        }
     }
 
     /**

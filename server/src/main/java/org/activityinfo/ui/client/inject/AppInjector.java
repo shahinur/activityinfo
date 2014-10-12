@@ -27,7 +27,6 @@ package org.activityinfo.ui.client.inject;
 
 import com.google.gwt.inject.client.GinModules;
 import com.google.gwt.inject.client.Ginjector;
-import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.legacy.client.remote.cache.AdminEntityCache;
 import org.activityinfo.legacy.client.remote.cache.SchemaCache;
 import org.activityinfo.ui.client.EventBus;
@@ -42,16 +41,9 @@ import org.activityinfo.ui.client.page.config.ConfigModule;
 import org.activityinfo.ui.client.page.dashboard.DashboardLoader;
 import org.activityinfo.ui.client.page.entry.DataEntryLoader;
 import org.activityinfo.ui.client.page.entry.EntryModule;
-import org.activityinfo.ui.client.page.home.PageLoader;
 import org.activityinfo.ui.client.page.report.ReportLoader;
 import org.activityinfo.ui.client.page.report.ReportModule;
 
-/**
- * GIN injector.
- * <p/>                                     ap
- * TODO: having this number of explicit entries is probably not ideal, try to
- * make better use of injection and injecting Provider<>s
- */
 @GinModules({AppModule.class,
         ReportModule.class,
         EntryModule.class,
@@ -74,8 +66,6 @@ public interface AppInjector extends Ginjector {
     UsageTracker getUsageTracker();
 
     DashboardLoader createDashboardLoader();
-
-    PageLoader createFolderPageLoader();
 
     SchemaCache createSchemaCache();
 

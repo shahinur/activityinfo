@@ -37,7 +37,6 @@ import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.model.LockedPeriodSet;
-import org.activityinfo.ui.client.page.entry.location.LocationDialog;
 
 public class SiteDialogLauncher {
 
@@ -63,15 +62,7 @@ public class SiteDialogLauncher {
                 public void onSuccess(ActivityDTO activity) {
                     Log.trace("adding site for activity " + activity + ", locationType = " + activity.getLocationType());
 
-                    if (activity.getLocationType().isAdminLevel()) {
-                        addNewSiteWithBoundLocation(activity, callback);
-
-                    } else if (activity.getLocationType().isNationwide()) {
-                        addNewSiteWithNoLocation(activity, callback);
-
-                    } else {
-                        chooseLocationThenAddSite(activity, callback);
-                    }
+                    addNewSiteWithBoundLocation(activity, callback);
                 }
             });
         }
@@ -105,24 +96,6 @@ public class SiteDialogLauncher {
         });
     }
 
-    private void chooseLocationThenAddSite(final ActivityDTO activity, final SiteDialogCallback callback) {
-        LocationDialog dialog = new LocationDialog(dispatcher,
-                activity.getLocationType());
-
-        dialog.show(new LocationDialog.Callback() {
-
-            @Override
-            public void onSelected(LocationDTO location, boolean isNew) {
-                SiteDTO newSite = new SiteDTO();
-                newSite.setActivityId(activity.getId());
-                newSite.setLocation(location);
-
-                SiteDialog dialog = new SiteDialog(dispatcher, activity);
-                dialog.showNew(newSite, location, isNew, callback);
-            }
-        });
-    }
-
     private void addNewSiteWithBoundLocation(ActivityDTO activity, SiteDialogCallback callback) {
         SiteDTO newSite = new SiteDTO();
         newSite.setActivityId(activity.getId());
@@ -132,18 +105,7 @@ public class SiteDialogLauncher {
         location.setLocationTypeId(activity.getLocationTypeId());
 
         SiteDialog dialog = new SiteDialog(dispatcher, activity);
-        dialog.showNew(newSite, location, true, callback);
+        dialog.showNew(newSite, callback);
     }
 
-    private void addNewSiteWithNoLocation(ActivityDTO activity, SiteDialogCallback callback) {
-        SiteDTO newSite = new SiteDTO();
-        newSite.setActivityId(activity.getId());
-
-        LocationDTO location = new LocationDTO();
-        location.setId(activity.getLocationTypeId());
-        location.setLocationTypeId(activity.getLocationTypeId());
-
-        SiteDialog dialog = new SiteDialog(dispatcher, activity);
-        dialog.showNew(newSite, location, true, callback);
-    }
 }

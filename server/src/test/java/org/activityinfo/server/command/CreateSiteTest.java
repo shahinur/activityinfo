@@ -54,7 +54,8 @@ public class CreateSiteTest extends CommandTestCase2 {
         execute(new CreateLocation(location));
 
         SiteDTO newSite = SiteDTOs.newSite();
-        newSite.setLocation(location);
+        newSite.setLocationId(location.getId());
+
 
         CreateSite cmd = new CreateSite(newSite);
         setUser(1);

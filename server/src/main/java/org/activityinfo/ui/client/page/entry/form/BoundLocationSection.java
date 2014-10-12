@@ -124,7 +124,7 @@ public class BoundLocationSection extends FormSectionWithFormLayout<SiteDTO> imp
 
     @Override
     public void updateModel(SiteDTO m) {
-        m.setLocation(location);
+        m.setLocationId(location.getId());
     }
 
     @Override

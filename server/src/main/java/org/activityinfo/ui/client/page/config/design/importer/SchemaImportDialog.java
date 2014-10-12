@@ -18,13 +18,12 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+import org.activityinfo.io.importing.data.PastedTable;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.ui.client.component.importDialog.data.PastedTable;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter.ProgressListener;
-import org.activityinfo.ui.client.style.BaseStylesheet;
-import org.activityinfo.ui.client.widget.ModalDialog;
-import org.activityinfo.ui.client.widget.ProgressBar;
+import org.activityinfo.ui.widget.modal.ModalDialog;
+import org.activityinfo.ui.widget.ProgressBar;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -108,8 +107,6 @@ public class SchemaImportDialog {
 
     public SchemaImportDialog(SchemaImporter importer) {
         this.importer = importer;
-
-        BaseStylesheet.INSTANCE.ensureInjected();
 
         Widget content = uiBinder.createAndBindUi(this);
 

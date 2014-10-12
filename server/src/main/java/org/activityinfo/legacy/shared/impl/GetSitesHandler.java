@@ -42,8 +42,8 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.Types;
 import org.activityinfo.promise.Promise;
 
 import java.util.ArrayList;
@@ -676,7 +676,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 Log.trace("Received results for join indicators");
 
                 for (final SqlResultSetRow row : results.getRows()) {
-                    FieldTypeClass indicatorType = FormFieldType.valueOf(row.getString("Type"));
+                    FieldTypeClass indicatorType = Types.fromString(row.getString("Type"));
                     String expression = row.getString("Expression");
                     boolean isCalculatedIndicator = !Strings.isNullOrEmpty(expression);
                     Object indicatorValue = null;
@@ -722,54 +722,12 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 Log.trace("Done populating dtos for join indicators");
 
                 // after normal indicators are evaluated try to calculate indicators with expression
-                joinCalculatedIndicatorValues(complete, tx, siteMap);
+                complete.onSuccess(null);
             }
         });
         return complete;
     }
 
-    private void joinCalculatedIndicatorValues(final Promise<Void> complete, SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
-        Log.trace("Starting joinIndicatorValues()");
-
-        final Set<Integer> activityIds = Sets.newHashSet();
-        for (SiteDTO siteDTO : siteMap.values()) {
-            activityIds.add(siteDTO.getActivityId());
-        }
-
-        SqlQuery query = SqlQuery.select()
-                .appendColumn("I.IndicatorId")
-                .appendColumn("I.ActivityId")
-                .appendColumn("I.Type")
-                .appendColumn("I.Expression")
-                .appendColumn("I.nameInExpression")
-                .appendColumn("I.calculatedAutomatically")
-                .from(Tables.INDICATOR, "I")
-                .where("I.ActivityId")
-                .in(activityIds)
-                .and("I.dateDeleted IS NULL")
-                .orderBy("I.SortOrder");
-        //                .and("I.Expression IS NOT NULL");
-
-        Log.info(query.toString());
-
-        query.execute(tx, new SqlResultCallback() {
-            @Override
-            public void onSuccess(SqlTransaction tx, final SqlResultSet results) {
-                Log.trace("Received results for join indicators");
-                for(int activityId : activityIds) {
-                    IndicatorSymbolResolver symbolResolver = new IndicatorSymbolResolver(activityId, results);
-                    for (SiteDTO site : siteMap.values()) {
-                        if (site.getActivityId() == symbolResolver.getActivityId()) {
-                            symbolResolver.setSite(site);
-                            symbolResolver.populateCalculatedIndicators();
-                        }
-                    }
-                }
-
-                complete.onSuccess(null);
-            }
-        });
-    }
 
     private Promise<Void> joinAttributeValues(GetSites command, SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
 

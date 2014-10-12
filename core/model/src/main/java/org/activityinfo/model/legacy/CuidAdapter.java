@@ -232,4 +232,8 @@ public class CuidAdapter {
     public static ResourceId getNameFieldId(ResourceId classId) {
         return field(classId, NAME_FIELD);
     }
+
+    public static ResourceId cuid(char domain, int id) {
+        return resourceId(domain, id);
+    }
 }

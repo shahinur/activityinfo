@@ -22,7 +22,7 @@ package org.activityinfo.legacy.shared.reports.util.mapping;
  * #L%
  */
 
-import org.activityinfo.core.shared.model.AiLatLng;
+import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.reports.content.Point;
 
 /**
@@ -75,7 +75,7 @@ public final class TileMath {
      * Projects a geographic X (longitude) coordinate forward into the Googlian
      * screen pixel coordinate system, based on a given zoom level
      *
-     * @param lng
+     * @param latlng
      * @param zoom
      * @return
      */

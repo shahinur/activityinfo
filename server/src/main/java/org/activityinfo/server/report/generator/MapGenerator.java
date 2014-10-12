@@ -25,9 +25,7 @@ package org.activityinfo.server.report.generator;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import org.activityinfo.model.form.FormFieldType;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.core.shared.model.AiLatLng;
+import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetBaseMaps;
@@ -43,6 +41,7 @@ import org.activityinfo.legacy.shared.reports.model.MapReportElement;
 import org.activityinfo.legacy.shared.reports.model.layers.*;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.activityinfo.legacy.shared.reports.util.mapping.TileMath;
+import org.activityinfo.model.type.Types;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.dao.IndicatorDAO;
 import org.activityinfo.server.database.hibernate.entity.Country;
@@ -185,7 +184,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
             IndicatorDTO indicatorDTO = new IndicatorDTO();
             indicatorDTO.setId(indicator.getId());
             indicatorDTO.setName(indicator.getName());
-            indicatorDTO.setType(FormFieldType.valueOf(indicator.getType()));
+            indicatorDTO.setType(Types.fromString(indicator.getType()));
             indicatorDTO.setExpression(indicator.getExpression());
 
             indicatorDTOs.add(indicatorDTO);

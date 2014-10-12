@@ -166,10 +166,9 @@ public class SiteDialog extends Window {
         getButtonBar().add(finishButton);
     }
 
-    public void showNew(SiteDTO site, LocationDTO location, boolean locationIsNew, SiteDialogCallback callback) {
+    public void showNew(SiteDTO site, SiteDialogCallback callback) {
         this.newSite = true;
         this.callback = callback;
-        locationForm.updateForm(location, locationIsNew);
         updateForms(site, true);
         show();
     }

@@ -1,5 +1,9 @@
 package org.activityinfo.model.type;
 
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.time.LocalDateType;
+
 /**
  * Defines a class of Field Types.
  *
@@ -13,6 +17,11 @@ package org.activityinfo.model.type;
  *
  */
 public interface FieldTypeClass {
+
+    FieldTypeClass FREE_TEXT = TextType.TYPE_CLASS;
+    FieldTypeClass NARRATIVE = NarrativeType.TYPE_CLASS;
+    FieldTypeClass QUANTITY = QuantityType.TYPE_CLASS;
+    FieldTypeClass LOCAL_DATE = LocalDateType.TYPE_CLASS;
 
     /**
      *

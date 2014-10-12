@@ -29,11 +29,12 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
-import org.activityinfo.core.shared.expr.*;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.i18n.shared.UiConstants;
-import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
+import org.activityinfo.model.expr.*;
+import org.activityinfo.model.expr.diagnostic.ExprSyntaxException;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
@@ -195,12 +196,12 @@ class IndicatorForm extends AbstractDesignForm {
 
             // expr node is created, expression is parsable
             // try to check variable names
-            List<PlaceholderExpr> placeholderExprList = Lists.newArrayList();
-            gatherPlaceholderExprs(expr, placeholderExprList);
+            List<SymbolExpr> symbolList = Lists.newArrayList();
+            gatherPlaceholderExprs(expr, symbolList);
             List<String> existingIndicatorCodes = existingIndicatorCodes();
-            for (PlaceholderExpr placeholderExpr : placeholderExprList) {
-                if (!existingIndicatorCodes.contains(placeholderExpr.getPlaceholder())) {
-                    return I18N.MESSAGES.doesNotExist(placeholderExpr.getPlaceholder());
+            for (SymbolExpr placeholderExpr : symbolList) {
+                if (!existingIndicatorCodes.contains(placeholderExpr.getName())) {
+                    return I18N.MESSAGES.doesNotExist(placeholderExpr.getName());
                 }
             }
             return null;
@@ -213,9 +214,9 @@ class IndicatorForm extends AbstractDesignForm {
         return constants.calculationExpressionIsInvalid();
     }
 
-    private void gatherPlaceholderExprs(ExprNode node, List<PlaceholderExpr> placeholderExprList) {
-        if (node instanceof PlaceholderExpr) {
-            placeholderExprList.add((PlaceholderExpr) node);
+    private void gatherPlaceholderExprs(ExprNode node, List<SymbolExpr> placeholderExprList) {
+        if (node instanceof SymbolExpr) {
+            placeholderExprList.add((SymbolExpr) node);
         } else if (node instanceof FunctionCallNode) {
             FunctionCallNode functionCallNode = (FunctionCallNode) node;
             List<ExprNode> arguments = functionCallNode.getArguments();

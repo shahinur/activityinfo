@@ -3,7 +3,9 @@ package org.activityinfo.model.type;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.number.Quantity;
+import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.primitive.TextValue;
 
 public class Types {
@@ -54,4 +56,15 @@ public class Types {
         return ResourceId.valueOf("_type:" + typeClass.getId());
     }
 
+    public static FieldTypeClass fromString(String type) {
+        switch(type) {
+            case "QUANTITY":
+                return QuantityType.TYPE_CLASS;
+            case "FREE_TEXT":
+                return TextType.TYPE_CLASS;
+            case "NARRATIVE":
+                return NarrativeType.TYPE_CLASS;
+        }
+        throw new IllegalArgumentException(type);
+    }
 }

@@ -25,6 +25,7 @@ package org.activityinfo.server;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.servlet.GuiceServletContextListener;
+import org.activityinfo.io.odk.OdkModule;
 import org.activityinfo.server.attachment.AttachmentModule;
 import org.activityinfo.server.authentication.AuthenticationModule;
 import org.activityinfo.server.branding.BrandingModule;
@@ -36,7 +37,6 @@ import org.activityinfo.server.endpoint.export.ExportModule;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.endpoint.jsonrpc.JsonRpcModule;
 import org.activityinfo.server.endpoint.kml.KmlModule;
-import org.activityinfo.server.endpoint.odk.ODKModule;
 import org.activityinfo.server.endpoint.rest.RestApiModule;
 import org.activityinfo.server.event.EventModule;
 import org.activityinfo.server.geo.GeometryModule;
@@ -96,7 +96,7 @@ public class StartupListener extends GuiceServletContextListener {
                 new LocaleModule(),
                 new JaxRsModule(),
                 new RestApiModule(),
-                new ODKModule());
+                new OdkModule());
     }
 
 }

@@ -14,10 +14,10 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name='com.extjs.gxt.ui.GXT'/>
 
-  <inherits name='org.activityinfo.core.Core'/>
   <inherits name="com.bedatadriven.rebar.sql.Sql"/>
   <inherits name="org.activityinfo.i18n.I18n"/>
   <inherits name="org.activityinfo.model.Model"/>
+  <inherits name="org.activityinfo.service.Service"/>
 
   <source path='client'/>
   <source path='shared'/>

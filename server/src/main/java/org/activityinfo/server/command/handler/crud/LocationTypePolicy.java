@@ -23,9 +23,8 @@ package org.activityinfo.server.command.handler.crud;
  */
 
 import com.google.inject.Inject;
-import org.activityinfo.core.shared.workflow.Workflow;
+import org.activityinfo.legacy.shared.model.Workflow;
 import org.activityinfo.server.command.handler.PermissionOracle;
-import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
 import org.activityinfo.server.database.hibernate.entity.Activity;
 import org.activityinfo.server.database.hibernate.entity.LocationType;
 import org.activityinfo.server.database.hibernate.entity.User;
