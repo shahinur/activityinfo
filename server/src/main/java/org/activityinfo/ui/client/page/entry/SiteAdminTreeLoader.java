@@ -70,7 +70,7 @@ class SiteAdminTreeLoader extends BaseTreeLoader<ModelData> implements SiteTreeL
         if (model instanceof AdminEntityDTO) {
             return "A" + ((AdminEntityDTO) model).getId();
         } else if (model instanceof SiteDTO) {
-            return "S" + ((SiteDTO) model).getId();
+            return "S" + ((SiteDTO) model).getLegacyId();
         } else {
             return "X" + model.hashCode();
         }

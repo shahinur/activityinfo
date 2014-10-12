@@ -1,18 +1,29 @@
 [ {
+  "@id" : "d1",
+  "@owner" : "_root",
+  "@version" : 0,
+  "@class" : "_folder",
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c360"
+  },
+  "label" : "Geodb"
+}, {
   "@id" : "_geodb",
   "@owner" : "_root",
   "@version" : 0,
-  "classId" : "_folder",
-  "_folder_label" : "Geodatabase"
+  "@class" : "_folder",
+  "label" : "Geographic Reference"
 }, {
   "@id" : "_country",
   "@owner" : "_geodb",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Country",
   "elements" : [ {
     "id" : "_countryf1",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Name",
     "required" : true,
     "type" : {
@@ -22,6 +33,7 @@
     "id" : "_countryf3",
     "visible" : true,
     "description" : "ISO 3166-1 alpha-2 code",
+    "primaryKey" : false,
     "label" : "Code",
     "required" : true,
     "type" : {
@@ -32,18 +44,19 @@
   "@id" : "c360",
   "@owner" : "_country",
   "@version" : 0,
+  "@class" : "_country",
   "_countryf3" : "JO",
-  "_countryf1" : "Jordan",
-  "classId" : "_country"
+  "_countryf1" : "Jordan"
 }, {
   "@id" : "E1360",
   "@owner" : "c360",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Governorate",
   "elements" : [ {
     "id" : "E1360f2",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_parent"
@@ -52,11 +65,11 @@
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "E1520"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -64,6 +77,7 @@
   }, {
     "id" : "E1360f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -76,6 +90,7 @@
   }, {
     "id" : "E1360f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -86,11 +101,12 @@
   "@id" : "E1520",
   "@owner" : "c360",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Region",
   "elements" : [ {
     "id" : "E1520f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -103,6 +119,7 @@
   }, {
     "id" : "E1520f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -113,11 +130,12 @@
   "@id" : "E1525",
   "@owner" : "c360",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "District",
   "elements" : [ {
     "id" : "E1525f2",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_parent"
@@ -126,11 +144,11 @@
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "E1360"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -138,6 +156,7 @@
   }, {
     "id" : "E1525f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -150,6 +169,7 @@
   }, {
     "id" : "E1525f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -160,11 +180,12 @@
   "@id" : "E1526",
   "@owner" : "c360",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Subdistrict",
   "elements" : [ {
     "id" : "E1526f2",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_parent"
@@ -173,11 +194,11 @@
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "E1525"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -185,6 +206,7 @@
   }, {
     "id" : "E1526f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -197,6 +219,7 @@
   }, {
     "id" : "E1526f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -207,11 +230,12 @@
   "@id" : "E1527",
   "@owner" : "c360",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Refugee Camps",
   "elements" : [ {
     "id" : "E1527f2",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_parent"
@@ -220,11 +244,11 @@
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "E1360"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -232,6 +256,7 @@
   }, {
     "id" : "E1527f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -244,6 +269,7 @@
   }, {
     "id" : "E1527f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -254,11 +280,12 @@
   "@id" : "E1528",
   "@owner" : "c360",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Camp Districts",
   "elements" : [ {
     "id" : "E1528f2",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_parent"
@@ -267,11 +294,11 @@
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "E1527"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -279,6 +306,7 @@
   }, {
     "id" : "E1528f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -291,6 +319,7 @@
   }, {
     "id" : "E1528f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -301,7 +330,7 @@
   "@id" : "z1701",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323215"
@@ -311,7 +340,7 @@
   "@id" : "z1702",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323216"
@@ -321,7 +350,7 @@
   "@id" : "z1703",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323217"
@@ -331,7 +360,7 @@
   "@id" : "z1704",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323217"
@@ -341,7 +370,7 @@
   "@id" : "z1705",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323216"
@@ -351,7 +380,7 @@
   "@id" : "z1706",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323217"
@@ -361,7 +390,7 @@
   "@id" : "z1707",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323215"
@@ -371,7 +400,7 @@
   "@id" : "z1708",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323215"
@@ -381,7 +410,7 @@
   "@id" : "z1709",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323217"
@@ -391,7 +420,7 @@
   "@id" : "z1710",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323216"
@@ -401,7 +430,7 @@
   "@id" : "z1711",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323215"
@@ -411,7 +440,7 @@
   "@id" : "z1712",
   "@owner" : "E1360",
   "@version" : 0,
-  "classId" : "E1360",
+  "@class" : "E1360",
   "E1360f2" : {
     "@type" : "REFERENCE",
     "value" : "z323216"
@@ -421,535 +450,535 @@
   "@id" : "z323215",
   "@owner" : "E1520",
   "@version" : 0,
-  "classId" : "E1520",
+  "@class" : "E1520",
   "E1520f1" : "North"
 }, {
   "@id" : "z323216",
   "@owner" : "E1520",
   "@version" : 0,
-  "classId" : "E1520",
+  "@class" : "E1520",
   "E1520f1" : "Central"
 }, {
   "@id" : "z323217",
   "@owner" : "E1520",
   "@version" : 0,
-  "classId" : "E1520",
+  "@class" : "E1520",
   "E1520f1" : "South"
 }, {
   "@id" : "z325550",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1702"
   },
-  "classId" : "E1525",
   "E1525f1" : "Ash Shuna Al Janoubyah"
 }, {
   "@id" : "z325551",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1704"
   },
-  "classId" : "E1525",
   "E1525f1" : "Aghwar Janoobiyah"
 }, {
   "@id" : "z325552",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "Bani Kinana"
 }, {
   "@id" : "z325553",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1702"
   },
-  "classId" : "E1525",
   "E1525f1" : "Mahis Wa Al Fuhays"
 }, {
   "@id" : "z325554",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1701"
   },
-  "classId" : "E1525",
   "E1525f1" : "Kufranja"
 }, {
   "@id" : "z325555",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1709"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Petra"
 }, {
   "@id" : "z325556",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1709"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Husayniyya"
 }, {
   "@id" : "z325557",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Mwaqqar"
 }, {
   "@id" : "z325558",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Jamiah"
 }, {
   "@id" : "z325559",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1712"
   },
-  "classId" : "E1525",
   "E1525f1" : "Ar Rusayfa"
 }, {
   "@id" : "z325560",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat Amman"
 }, {
   "@id" : "z325561",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Wastiyya"
 }, {
   "@id" : "z325562",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1704"
   },
-  "classId" : "E1525",
   "E1525f1" : "Ayy"
 }, {
   "@id" : "z325563",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Mazar Ash Shamali"
 }, {
   "@id" : "z325564",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1706"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat At Tafilah"
 }, {
   "@id" : "z325565",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1702"
   },
-  "classId" : "E1525",
   "E1525f1" : "Ayn Al Basha"
 }, {
   "@id" : "z325566",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1702"
   },
-  "classId" : "E1525",
   "E1525f1" : "Deir Alla"
 }, {
   "@id" : "z325567",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1702"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat As Salt"
 }, {
   "@id" : "z325568",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "Bani Obayd"
 }, {
   "@id" : "z325569",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Jiza"
 }, {
   "@id" : "z325570",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1712"
   },
-  "classId" : "E1525",
   "E1525f1" : "Zarqa Qasabah"
 }, {
   "@id" : "z325571",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1706"
   },
-  "classId" : "E1525",
   "E1525f1" : "Busayrah"
 }, {
   "@id" : "z325572",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Sahab"
 }, {
   "@id" : "z325573",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1711"
   },
-  "classId" : "E1525",
   "E1525f1" : "Badiah Shamaliyah Gharbiyah"
 }, {
   "@id" : "z325574",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat Irbid"
 }, {
   "@id" : "z325575",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1703"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat Al Aqabah"
 }, {
   "@id" : "z325576",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "At Tayba"
 }, {
   "@id" : "z325577",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1703"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Quwayra"
 }, {
   "@id" : "z325578",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1706"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Hasa"
 }, {
   "@id" : "z325579",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Aghwar Al Shamalyah"
 }, {
   "@id" : "z325580",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1709"
   },
-  "classId" : "E1525",
   "E1525f1" : "Ash Shobak"
 }, {
   "@id" : "z325581",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1704"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Qasr"
 }, {
   "@id" : "z325582",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1704"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Mazar Al janoubi"
 }, {
   "@id" : "z325583",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1704"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Qatrana"
 }, {
   "@id" : "z325584",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Marka"
 }, {
   "@id" : "z325585",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Koura"
 }, {
   "@id" : "z325586",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Wadi As Sir"
 }, {
   "@id" : "z325587",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Naur"
 }, {
   "@id" : "z325588",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1711"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al-ruwaished"
 }, {
   "@id" : "z325589",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1705"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al Quaysmh"
 }, {
   "@id" : "z325590",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1704"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat Al Karak"
 }, {
   "@id" : "z325591",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1707"
   },
-  "classId" : "E1525",
   "E1525f1" : "Ar Ramtha"
 }, {
   "@id" : "z325592",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1709"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat Ma'an"
 }, {
   "@id" : "z325593",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1710"
   },
-  "classId" : "E1525",
   "E1525f1" : "Theeban"
 }, {
   "@id" : "z325594",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1708"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat Jarash"
 }, {
   "@id" : "z325595",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1712"
   },
-  "classId" : "E1525",
   "E1525f1" : "Al-Hashimiya"
 }, {
   "@id" : "z325596",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1710"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat Madaba"
 }, {
   "@id" : "z325597",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1704"
   },
-  "classId" : "E1525",
   "E1525f1" : "Fqou"
 }, {
   "@id" : "z325598",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1701"
   },
-  "classId" : "E1525",
   "E1525f1" : "Qasabat  Ajloun"
 }, {
   "@id" : "z325599",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1711"
   },
-  "classId" : "E1525",
   "E1525f1" : "Badiah Shamaliyah"
 }, {
   "@id" : "z325600",
   "@owner" : "E1525",
   "@version" : 0,
+  "@class" : "E1525",
   "E1525f2" : {
     "@type" : "REFERENCE",
     "value" : "z1711"
   },
-  "classId" : "E1525",
   "E1525f1" : "Mafraq Qasabah"
 }, {
   "@id" : "z325601",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325550"
@@ -959,7 +988,7 @@
   "@id" : "z325602",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325588"
@@ -969,7 +998,7 @@
   "@id" : "z325603",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325594"
@@ -979,7 +1008,7 @@
   "@id" : "z325604",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325592"
@@ -989,7 +1018,7 @@
   "@id" : "z325605",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325599"
@@ -999,7 +1028,7 @@
   "@id" : "z325606",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325551"
@@ -1009,7 +1038,7 @@
   "@id" : "z325607",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325551"
@@ -1019,7 +1048,7 @@
   "@id" : "z325608",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325560"
@@ -1029,7 +1058,7 @@
   "@id" : "z325609",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325590"
@@ -1039,7 +1068,7 @@
   "@id" : "z325610",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325577"
@@ -1049,7 +1078,7 @@
   "@id" : "z325611",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325592"
@@ -1059,7 +1088,7 @@
   "@id" : "z325612",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325592"
@@ -1069,7 +1098,7 @@
   "@id" : "z325613",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325550"
@@ -1079,7 +1108,7 @@
   "@id" : "z325614",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325566"
@@ -1089,7 +1118,7 @@
   "@id" : "z325615",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325558"
@@ -1099,7 +1128,7 @@
   "@id" : "z325616",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325551"
@@ -1109,7 +1138,7 @@
   "@id" : "z325617",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325600"
@@ -1119,7 +1148,7 @@
   "@id" : "z325618",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325570"
@@ -1129,7 +1158,7 @@
   "@id" : "z325619",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325582"
@@ -1139,7 +1168,7 @@
   "@id" : "z325620",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325600"
@@ -1149,7 +1178,7 @@
   "@id" : "z325621",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325582"
@@ -1159,7 +1188,7 @@
   "@id" : "z325622",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325569"
@@ -1169,7 +1198,7 @@
   "@id" : "z325623",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325587"
@@ -1179,7 +1208,7 @@
   "@id" : "z325624",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325579"
@@ -1189,7 +1218,7 @@
   "@id" : "z325625",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325563"
@@ -1199,7 +1228,7 @@
   "@id" : "z325626",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325594"
@@ -1209,7 +1238,7 @@
   "@id" : "z325627",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325575"
@@ -1219,7 +1248,7 @@
   "@id" : "z325628",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325592"
@@ -1229,7 +1258,7 @@
   "@id" : "z325629",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325584"
@@ -1239,7 +1268,7 @@
   "@id" : "z325630",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325569"
@@ -1249,7 +1278,7 @@
   "@id" : "z325631",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325589"
@@ -1259,7 +1288,7 @@
   "@id" : "z325632",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325593"
@@ -1269,7 +1298,7 @@
   "@id" : "z325633",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325580"
@@ -1279,7 +1308,7 @@
   "@id" : "z325634",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325593"
@@ -1289,7 +1318,7 @@
   "@id" : "z325635",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325598"
@@ -1299,7 +1328,7 @@
   "@id" : "z325636",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325568"
@@ -1309,7 +1338,7 @@
   "@id" : "z325637",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325573"
@@ -1319,7 +1348,7 @@
   "@id" : "z325638",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325573"
@@ -1329,7 +1358,7 @@
   "@id" : "z325639",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325598"
@@ -1339,7 +1368,7 @@
   "@id" : "z325640",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325596"
@@ -1349,7 +1378,7 @@
   "@id" : "z325641",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325599"
@@ -1359,7 +1388,7 @@
   "@id" : "z325642",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325600"
@@ -1369,7 +1398,7 @@
   "@id" : "z325643",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325593"
@@ -1379,7 +1408,7 @@
   "@id" : "z325644",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325599"
@@ -1389,7 +1418,7 @@
   "@id" : "z325645",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325586"
@@ -1399,7 +1428,7 @@
   "@id" : "z325646",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325553"
@@ -1409,7 +1438,7 @@
   "@id" : "z325647",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325574"
@@ -1419,7 +1448,7 @@
   "@id" : "z325648",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325567"
@@ -1429,7 +1458,7 @@
   "@id" : "z325649",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325565"
@@ -1439,7 +1468,7 @@
   "@id" : "z325650",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325557"
@@ -1449,7 +1478,7 @@
   "@id" : "z325651",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325597"
@@ -1459,7 +1488,7 @@
   "@id" : "z325652",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325587"
@@ -1469,7 +1498,7 @@
   "@id" : "z325653",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325583"
@@ -1479,7 +1508,7 @@
   "@id" : "z325654",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325575"
@@ -1489,7 +1518,7 @@
   "@id" : "z325655",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325577"
@@ -1499,7 +1528,7 @@
   "@id" : "z325656",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325570"
@@ -1509,7 +1538,7 @@
   "@id" : "z325657",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325554"
@@ -1519,7 +1548,7 @@
   "@id" : "z325658",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325595"
@@ -1529,7 +1558,7 @@
   "@id" : "z325659",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325576"
@@ -1539,7 +1568,7 @@
   "@id" : "z325660",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325571"
@@ -1549,7 +1578,7 @@
   "@id" : "z325661",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325561"
@@ -1559,7 +1588,7 @@
   "@id" : "z325662",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325573"
@@ -1569,7 +1598,7 @@
   "@id" : "z325663",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325599"
@@ -1579,7 +1608,7 @@
   "@id" : "z325664",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325557"
@@ -1589,7 +1618,7 @@
   "@id" : "z325665",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325598"
@@ -1599,7 +1628,7 @@
   "@id" : "z325666",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325596"
@@ -1609,7 +1638,7 @@
   "@id" : "z325667",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325564"
@@ -1619,7 +1648,7 @@
   "@id" : "z325668",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325567"
@@ -1629,7 +1658,7 @@
   "@id" : "z325669",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325567"
@@ -1639,7 +1668,7 @@
   "@id" : "z325670",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325591"
@@ -1649,7 +1678,7 @@
   "@id" : "z325671",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325556"
@@ -1659,7 +1688,7 @@
   "@id" : "z325672",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325592"
@@ -1669,7 +1698,7 @@
   "@id" : "z325673",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325594"
@@ -1679,7 +1708,7 @@
   "@id" : "z325674",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325578"
@@ -1689,7 +1718,7 @@
   "@id" : "z325675",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325587"
@@ -1699,7 +1728,7 @@
   "@id" : "z325676",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325585"
@@ -1709,7 +1738,7 @@
   "@id" : "z325677",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325573"
@@ -1719,7 +1748,7 @@
   "@id" : "z325678",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325581"
@@ -1729,7 +1758,7 @@
   "@id" : "z325679",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325567"
@@ -1739,7 +1768,7 @@
   "@id" : "z325680",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325562"
@@ -1749,7 +1778,7 @@
   "@id" : "z325681",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325555"
@@ -1759,7 +1788,7 @@
   "@id" : "z325682",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325600"
@@ -1769,7 +1798,7 @@
   "@id" : "z325683",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325596"
@@ -1779,7 +1808,7 @@
   "@id" : "z325684",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325552"
@@ -1789,7 +1818,7 @@
   "@id" : "z325685",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325572"
@@ -1799,7 +1828,7 @@
   "@id" : "z325686",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325596"
@@ -1809,7 +1838,7 @@
   "@id" : "z325687",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325570"
@@ -1819,7 +1848,7 @@
   "@id" : "z325688",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325599"
@@ -1829,7 +1858,7 @@
   "@id" : "z325689",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325581"
@@ -1839,7 +1868,7 @@
   "@id" : "z325690",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325559"
@@ -1849,7 +1878,7 @@
   "@id" : "z325691",
   "@owner" : "E1526",
   "@version" : 0,
-  "classId" : "E1526",
+  "@class" : "E1526",
   "E1526f2" : {
     "@type" : "REFERENCE",
     "value" : "z325570"
@@ -1859,7 +1888,7 @@
   "@id" : "z325692",
   "@owner" : "E1527",
   "@version" : 0,
-  "classId" : "E1527",
+  "@class" : "E1527",
   "E1527f1" : "Emirati Jordanian Camp (EJC)",
   "E1527f2" : {
     "@type" : "REFERENCE",
@@ -1869,7 +1898,7 @@
   "@id" : "z325693",
   "@owner" : "E1527",
   "@version" : 0,
-  "classId" : "E1527",
+  "@class" : "E1527",
   "E1527f1" : "Zaatari Camp",
   "E1527f2" : {
     "@type" : "REFERENCE",
@@ -1879,7 +1908,7 @@
   "@id" : "z325694",
   "@owner" : "E1527",
   "@version" : 0,
-  "classId" : "E1527",
+  "@class" : "E1527",
   "E1527f1" : "Cyber City Camp",
   "E1527f2" : {
     "@type" : "REFERENCE",
@@ -1889,7 +1918,7 @@
   "@id" : "z325695",
   "@owner" : "E1527",
   "@version" : 0,
-  "classId" : "E1527",
+  "@class" : "E1527",
   "E1527f1" : "King Abdullah Park Camp",
   "E1527f2" : {
     "@type" : "REFERENCE",
@@ -1899,7 +1928,7 @@
   "@id" : "z325696",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1909,7 +1938,7 @@
   "@id" : "z325697",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1919,7 +1948,7 @@
   "@id" : "z325698",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1929,7 +1958,7 @@
   "@id" : "z325699",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1939,7 +1968,7 @@
   "@id" : "z325700",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1949,7 +1978,7 @@
   "@id" : "z325701",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1959,7 +1988,7 @@
   "@id" : "z325702",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1969,7 +1998,7 @@
   "@id" : "z325703",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1979,7 +2008,7 @@
   "@id" : "z325704",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1989,7 +2018,7 @@
   "@id" : "z325705",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -1999,7 +2028,7 @@
   "@id" : "z325706",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -2009,7 +2038,7 @@
   "@id" : "z325707",
   "@owner" : "E1528",
   "@version" : 0,
-  "classId" : "E1528",
+  "@class" : "E1528",
   "E1528f2" : {
     "@type" : "REFERENCE",
     "value" : "z325693"
@@ -2019,7 +2048,7 @@
   "@id" : "z329177",
   "@owner" : "E1527",
   "@version" : 0,
-  "classId" : "E1527",
+  "@class" : "E1527",
   "E1527f1" : "Azraq",
   "E1527f2" : {
     "@type" : "REFERENCE",
@@ -2029,7 +2058,7 @@
   "@id" : "z329178",
   "@owner" : "E1527",
   "@version" : 0,
-  "classId" : "E1527",
+  "@class" : "E1527",
   "E1527f1" : "Emirati Jordan Camp",
   "E1527f2" : {
     "@type" : "REFERENCE",
@@ -2039,11 +2068,12 @@
   "@id" : "L50505",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Camp or host community",
   "elements" : [ {
     "id" : "L50505f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -2056,6 +2086,7 @@
   }, {
     "id" : "L50505f4",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Alternate Name",
     "required" : false,
     "type" : {
@@ -2064,15 +2095,16 @@
   }, {
     "id" : "L50505f6",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Administrative Unit",
     "required" : false,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : [ "E1520", "E1360", "E1525", "E1526", "E1527", "E1528" ]
         },
-        "classId" : "_type:ref",
         "cardinality" : "MULTIPLE"
       },
       "typeClass" : "REFERENCE"
@@ -2080,6 +2112,7 @@
   }, {
     "id" : "L50505f5",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Geographic Position",
     "required" : false,
     "type" : {
@@ -2087,42 +2120,15 @@
     }
   } ]
 }, {
-  "@id" : "U1",
-  "@owner" : "_users",
-  "@version" : 0,
-  "email" : "admin@gmail.com",
-  "name" : "admin",
-  "locale" : "en",
-  "password" : "XYZ"
-}, {
-  "@id" : "d1",
-  "@owner" : "_root",
-  "@version" : 0,
-  "_classf11" : {
-    "@type" : "REFERENCE",
-    "value" : "c360"
-  },
-  "classId" : "_folder",
-  "_folder_label" : "Geodb"
-}, {
-  "@id" : "_acr:d1:U1",
-  "@owner" : "d1",
-  "@version" : 0,
-  "principal" : {
-    "@type" : "REFERENCE",
-    "value" : "U1"
-  },
-  "classId" : "_acr",
-  "owner" : true
-}, {
   "@id" : "P1",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Partners",
   "elements" : [ {
     "id" : "P1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -2135,6 +2141,7 @@
   }, {
     "id" : "P1f10",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_description"

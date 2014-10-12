@@ -1,18 +1,29 @@
 [ {
+  "@id" : "d1",
+  "@owner" : "_root",
+  "@version" : 0,
+  "@class" : "_folder",
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "label" : "PEAR"
+}, {
   "@id" : "_geodb",
   "@owner" : "_root",
   "@version" : 0,
-  "classId" : "_folder",
-  "_folder_label" : "Geodatabase"
+  "@class" : "_folder",
+  "label" : "Geographic Reference"
 }, {
   "@id" : "_country",
   "@owner" : "_geodb",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Country",
   "elements" : [ {
     "id" : "_countryf1",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Name",
     "required" : true,
     "type" : {
@@ -22,6 +33,7 @@
     "id" : "_countryf3",
     "visible" : true,
     "description" : "ISO 3166-1 alpha-2 code",
+    "primaryKey" : false,
     "label" : "Code",
     "required" : true,
     "type" : {
@@ -32,17 +44,18 @@
   "@id" : "c1",
   "@owner" : "_country",
   "@version" : 0,
-  "_countryf1" : "Rdc",
-  "classId" : "_country"
+  "@class" : "_country",
+  "_countryf1" : "Rdc"
 }, {
   "@id" : "E1",
   "@owner" : "c1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Province",
   "elements" : [ {
     "id" : "E1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -55,6 +68,7 @@
   }, {
     "id" : "E1f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -65,11 +79,12 @@
   "@id" : "E2",
   "@owner" : "c1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Territoire",
   "elements" : [ {
     "id" : "E2f2",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_parent"
@@ -78,11 +93,11 @@
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "E1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -90,6 +105,7 @@
   }, {
     "id" : "E2f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -102,6 +118,7 @@
   }, {
     "id" : "E2f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -112,35 +129,35 @@
   "@id" : "z1",
   "@owner" : "E1",
   "@version" : 0,
-  "classId" : "E1",
+  "@class" : "E1",
   "E1f1" : "Kinshasa",
   "E1f3" : "10"
 }, {
   "@id" : "z2",
   "@owner" : "E1",
   "@version" : 0,
-  "classId" : "E1",
+  "@class" : "E1",
   "E1f1" : "Sud Kivu",
   "E1f3" : "20"
 }, {
   "@id" : "z3",
   "@owner" : "E1",
   "@version" : 0,
-  "classId" : "E1",
+  "@class" : "E1",
   "E1f1" : "Nord Kivu",
   "E1f3" : "30"
 }, {
   "@id" : "z4",
   "@owner" : "E1",
   "@version" : 0,
-  "classId" : "E1",
+  "@class" : "E1",
   "E1f1" : "Ituri",
   "E1f3" : "40"
 }, {
   "@id" : "z10",
   "@owner" : "E2",
   "@version" : 0,
-  "classId" : "E2",
+  "@class" : "E2",
   "E2f3" : "203",
   "E2f1" : "Bukavu",
   "E2f2" : {
@@ -151,7 +168,7 @@
   "@id" : "z11",
   "@owner" : "E2",
   "@version" : 0,
-  "classId" : "E2",
+  "@class" : "E2",
   "E2f3" : "201",
   "E2f1" : "Walungu",
   "E2f2" : {
@@ -162,7 +179,7 @@
   "@id" : "z12",
   "@owner" : "E2",
   "@version" : 0,
-  "classId" : "E2",
+  "@class" : "E2",
   "E2f3" : "202",
   "E2f1" : "Shabunda",
   "E2f2" : {
@@ -173,7 +190,7 @@
   "@id" : "z13",
   "@owner" : "E2",
   "@version" : 0,
-  "classId" : "E2",
+  "@class" : "E2",
   "E2f3" : "203",
   "E2f1" : "Kalehe",
   "E2f2" : {
@@ -184,7 +201,7 @@
   "@id" : "z21",
   "@owner" : "E2",
   "@version" : 0,
-  "classId" : "E2",
+  "@class" : "E2",
   "E2f3" : "203",
   "E2f1" : "Irumu",
   "E2f2" : {
@@ -195,11 +212,12 @@
   "@id" : "L1",
   "@owner" : "c1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "localite",
   "elements" : [ {
     "id" : "L1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -212,6 +230,7 @@
   }, {
     "id" : "L1f4",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Alternate Name",
     "required" : false,
     "type" : {
@@ -220,15 +239,16 @@
   }, {
     "id" : "L1f6",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Administrative Unit",
     "required" : false,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : [ "E2", "E1" ]
         },
-        "classId" : "_type:ref",
         "cardinality" : "MULTIPLE"
       },
       "typeClass" : "REFERENCE"
@@ -236,6 +256,7 @@
   }, {
     "id" : "L1f5",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Geographic Position",
     "required" : false,
     "type" : {
@@ -246,11 +267,12 @@
   "@id" : "L2",
   "@owner" : "c1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Health Center",
   "elements" : [ {
     "id" : "L2f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -263,6 +285,7 @@
   }, {
     "id" : "L2f4",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Alternate Name",
     "required" : false,
     "type" : {
@@ -271,15 +294,16 @@
   }, {
     "id" : "L2f6",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Administrative Unit",
     "required" : false,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : [ "E2", "E1" ]
         },
-        "classId" : "_type:ref",
         "cardinality" : "MULTIPLE"
       },
       "typeClass" : "REFERENCE"
@@ -287,6 +311,7 @@
   }, {
     "id" : "L2f5",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Geographic Position",
     "required" : false,
     "type" : {
@@ -294,42 +319,15 @@
     }
   } ]
 }, {
-  "@id" : "U1",
-  "@owner" : "_users",
-  "@version" : 0,
-  "email" : "akbertram@gmail.com",
-  "name" : "Alex",
-  "locale" : "fr",
-  "password" : "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-}, {
-  "@id" : "d1",
-  "@owner" : "_root",
-  "@version" : 0,
-  "_classf11" : {
-    "@type" : "REFERENCE",
-    "value" : "c1"
-  },
-  "classId" : "_folder",
-  "_folder_label" : "PEAR"
-}, {
-  "@id" : "_acr:d1:U1",
-  "@owner" : "d1",
-  "@version" : 0,
-  "principal" : {
-    "@type" : "REFERENCE",
-    "value" : "U1"
-  },
-  "classId" : "_acr",
-  "owner" : true
-}, {
   "@id" : "P1",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Partners",
   "elements" : [ {
     "id" : "P1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -342,6 +340,7 @@
   }, {
     "id" : "P1f10",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_description"
@@ -356,52 +355,38 @@
   "@id" : "a1",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "NFI Distribution",
   "elements" : [ {
     "id" : "a1f7",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Partner",
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "P1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
     }
   }, {
-    "id" : "a1f12",
-    "visible" : true,
-    "label" : "Start Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a1f13",
-    "visible" : true,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
     "id" : "a1f11",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "localite",
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "L1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -409,10 +394,53 @@
   }, {
     "id" : "a1f14",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Comments",
     "required" : false,
     "type" : {
       "typeClass" : "NARRATIVE"
+    }
+  } ]
+}, {
+  "@id" : "m1",
+  "@owner" : "d1",
+  "@version" : 0,
+  "@class" : "_class",
+  "_class_label" : "NFI Distribution - Monthly Reports",
+  "elements" : [ {
+    "id" : "m1f16",
+    "visible" : true,
+    "primaryKey" : true,
+    "label" : "Site",
+    "required" : true,
+    "type" : {
+      "parameters" : {
+        "@class" : "_type:REFERENCE",
+        "range" : {
+          "@type" : "REFERENCE",
+          "value" : "a1"
+        },
+        "cardinality" : "SINGLE"
+      },
+      "typeClass" : "REFERENCE"
+    }
+  }, {
+    "id" : "m1f9",
+    "visible" : true,
+    "primaryKey" : true,
+    "label" : "Month",
+    "required" : true,
+    "type" : {
+      "typeClass" : "month"
+    }
+  }, {
+    "id" : "m1f15",
+    "visible" : true,
+    "primaryKey" : true,
+    "label" : "Year",
+    "required" : true,
+    "type" : {
+      "typeClass" : "FREE_TEXT"
     }
   } ]
 } ]

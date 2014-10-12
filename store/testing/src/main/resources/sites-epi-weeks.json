@@ -1,18 +1,29 @@
 [ {
+  "@id" : "d1",
+  "@owner" : "_root",
+  "@version" : 0,
+  "@class" : "_folder",
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "label" : "PEAR"
+}, {
   "@id" : "_geodb",
   "@owner" : "_root",
   "@version" : 0,
-  "classId" : "_folder",
-  "_folder_label" : "Geodatabase"
+  "@class" : "_folder",
+  "label" : "Geographic Reference"
 }, {
   "@id" : "_country",
   "@owner" : "_geodb",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Country",
   "elements" : [ {
     "id" : "_countryf1",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Name",
     "required" : true,
     "type" : {
@@ -22,6 +33,7 @@
     "id" : "_countryf3",
     "visible" : true,
     "description" : "ISO 3166-1 alpha-2 code",
+    "primaryKey" : false,
     "label" : "Code",
     "required" : true,
     "type" : {
@@ -32,17 +44,18 @@
   "@id" : "c1",
   "@owner" : "_country",
   "@version" : 0,
-  "_countryf1" : "Rdc",
-  "classId" : "_country"
+  "@class" : "_country",
+  "_countryf1" : "Rdc"
 }, {
   "@id" : "L1",
   "@owner" : "c1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "localite",
   "elements" : [ {
     "id" : "L1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -55,6 +68,7 @@
   }, {
     "id" : "L1f4",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Alternate Name",
     "required" : false,
     "type" : {
@@ -63,6 +77,7 @@
   }, {
     "id" : "L1f5",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Geographic Position",
     "required" : false,
     "type" : {
@@ -73,7 +88,7 @@
   "@id" : "g1",
   "@owner" : "L1",
   "@version" : 0,
-  "classId" : "L1",
+  "@class" : "L1",
   "L1f1" : "Penekusu",
   "L1f5" : {
     "@type" : "GEOGRAPHIC_POINT",
@@ -84,7 +99,7 @@
   "@id" : "g2",
   "@owner" : "L1",
   "@version" : 0,
-  "classId" : "L1",
+  "@class" : "L1",
   "L1f1" : "Ngshwe",
   "L1f5" : {
     "@type" : "GEOGRAPHIC_POINT",
@@ -95,7 +110,7 @@
   "@id" : "g3",
   "@owner" : "L1",
   "@version" : 0,
-  "classId" : "L1",
+  "@class" : "L1",
   "L1f1" : "Boga",
   "L1f5" : {
     "@type" : "GEOGRAPHIC_POINT",
@@ -103,42 +118,15 @@
     "latitude" : 27.232
   }
 }, {
-  "@id" : "U1",
-  "@owner" : "_users",
-  "@version" : 0,
-  "email" : "akbertram@gmail.com",
-  "name" : "Alex",
-  "locale" : "fr",
-  "password" : "$2a$10$zc7fiaYWXwIN7w4LtFQL7u1ng3vbSNaJ7X24hzISDRMpWpvOHZu1."
-}, {
-  "@id" : "d1",
-  "@owner" : "_root",
-  "@version" : 0,
-  "_classf11" : {
-    "@type" : "REFERENCE",
-    "value" : "c1"
-  },
-  "classId" : "_folder",
-  "_folder_label" : "PEAR"
-}, {
-  "@id" : "_acr:d1:U1",
-  "@owner" : "d1",
-  "@version" : 0,
-  "principal" : {
-    "@type" : "REFERENCE",
-    "value" : "U1"
-  },
-  "classId" : "_acr",
-  "owner" : true
-}, {
   "@id" : "P1",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Partners",
   "elements" : [ {
     "id" : "P1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -151,6 +139,7 @@
   }, {
     "id" : "P1f10",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_description"
@@ -165,26 +154,27 @@
   "@id" : "d1p1",
   "@owner" : "P1",
   "@version" : 0,
-  "classId" : "P1",
+  "@class" : "P1",
   "P1f1" : "NRC"
 }, {
   "@id" : "a1",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "NFI",
   "elements" : [ {
     "id" : "a1f7",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Partner",
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "P1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -192,31 +182,25 @@
   }, {
     "id" : "a1f12",
     "visible" : true,
-    "label" : "Start Date",
+    "primaryKey" : false,
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a1f13",
-    "visible" : true,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "typeClass" : "localDateInterval"
     }
   }, {
     "id" : "a1f11",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "localite",
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "L1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -226,14 +210,15 @@
     "label" : "inputs",
     "type" : "section",
     "elements" : [ {
-      "id" : "i1",
+      "id" : "I1",
       "visible" : true,
       "description" : "falling in lve",
+      "primaryKey" : false,
       "label" : "beneficiaries",
       "required" : false,
       "type" : {
         "parameters" : {
-          "classId" : "_type:quantity",
+          "@class" : "_type:QUANTITY",
           "units" : "menages"
         },
         "typeClass" : "QUANTITY"
@@ -242,6 +227,7 @@
   }, {
     "id" : "a1f14",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Comments",
     "required" : false,
     "type" : {
@@ -252,11 +238,12 @@
   "@id" : "s1",
   "@owner" : "a1",
   "@version" : 0,
-  "a1f13" : {
-    "@type" : "LOCAL_DATE",
-    "value" : "2009-01-02"
+  "@class" : "a1",
+  "a1f9" : {
+    "start" : "2009-01-01",
+    "@type" : "localDateInterval",
+    "end" : "2009-01-02"
   },
-  "classId" : "a1",
   "a1f7" : {
     "@type" : "REFERENCE",
     "value" : "d1p1"
@@ -265,11 +252,7 @@
     "@type" : "REFERENCE",
     "value" : "g1"
   },
-  "a1f12" : {
-    "@type" : "LOCAL_DATE",
-    "value" : "2009-01-01"
-  },
-  "i1" : {
+  "I1" : {
     "@type" : "QUANTITY",
     "value" : 1500.0,
     "units" : "menages"
@@ -278,11 +261,12 @@
   "@id" : "s2",
   "@owner" : "a1",
   "@version" : 0,
-  "a1f13" : {
-    "@type" : "LOCAL_DATE",
-    "value" : "2009-01-16"
+  "@class" : "a1",
+  "a1f9" : {
+    "start" : "2009-01-15",
+    "@type" : "localDateInterval",
+    "end" : "2009-01-16"
   },
-  "classId" : "a1",
   "a1f7" : {
     "@type" : "REFERENCE",
     "value" : "d1p1"
@@ -291,11 +275,7 @@
     "@type" : "REFERENCE",
     "value" : "g2"
   },
-  "a1f12" : {
-    "@type" : "LOCAL_DATE",
-    "value" : "2009-01-15"
-  },
-  "i1" : {
+  "I1" : {
     "@type" : "QUANTITY",
     "value" : 3600.0,
     "units" : "menages"
@@ -304,11 +284,12 @@
   "@id" : "s3",
   "@owner" : "a1",
   "@version" : 0,
-  "a1f13" : {
-    "@type" : "LOCAL_DATE",
-    "value" : "2008-10-06"
+  "@class" : "a1",
+  "a1f9" : {
+    "start" : "2008-10-05",
+    "@type" : "localDateInterval",
+    "end" : "2008-10-06"
   },
-  "classId" : "a1",
   "a1f7" : {
     "@type" : "REFERENCE",
     "value" : "d1p1"
@@ -317,11 +298,7 @@
     "@type" : "REFERENCE",
     "value" : "g3"
   },
-  "a1f12" : {
-    "@type" : "LOCAL_DATE",
-    "value" : "2008-10-05"
-  },
-  "i1" : {
+  "I1" : {
     "@type" : "QUANTITY",
     "value" : 10000.0,
     "units" : "menages"

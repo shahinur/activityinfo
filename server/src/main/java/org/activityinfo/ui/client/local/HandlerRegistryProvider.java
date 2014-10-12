@@ -34,7 +34,7 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
 
     @Inject
     public HandlerRegistryProvider(GetSchemaHandler schemaHandler,
-                                   GetSitesHandler sitesHandler,
+                                   GetSitesHandlerAsync sitesHandler,
                                    GetMonthlyReportsHandlerAsync getMonthlyReportsHandler,
                                    GetAdminEntitiesHandler adminHandler,
                                    GetPartnersDimensionHandler partnersDimensionHandler,

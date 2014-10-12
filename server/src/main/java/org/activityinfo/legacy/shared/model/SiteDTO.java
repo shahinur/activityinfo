@@ -40,11 +40,9 @@ import java.util.*;
  *
  * @author Alex Bertram
  */
-public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminEntityValues {
+public final class SiteDTO extends BaseModelData {
 
     public static final String ENTITY_NAME = "Site";
-
-    public static final char CUID_DOMAIN = 's';
 
     // ensure that serializer/deserializer is generated for LocalDate
     private LocalDate date;
@@ -54,7 +52,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
     private Map<String, List<String>> attributeDisplayMap;
 
     public SiteDTO() {
-        set("name", " ");
     }
 
     /**
@@ -64,7 +61,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
      */
     public SiteDTO(int id) {
         setId(id);
-        set("name", " ");
     }
 
     /**
@@ -85,16 +81,23 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         set("id", id);
     }
 
+    public void setId(ResourceId id) {
+        set("id", id.asString());
+    }
+
     /**
      * @return this site's id
      */
-    @Override
-    public int getId() {
-        return (Integer) get("id");
+    public int getLegacyId() {
+        return CuidAdapter.getLegacyId(getId());
+    }
+
+    public ResourceId getId() {
+        return ResourceId.valueOf(this.<String>get("id"));
     }
 
     public ResourceId getInstanceId() {
-        return CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, getId());
+        return CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, getLegacyId());
     }
 
 
@@ -272,8 +275,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
         set(AdminLevelDTO.getPropertyName(levelId), value);
     }
 
-    @Override
-    public AdminEntityDTO getAdminEntity(int levelId) {
+    public String getAdminEntity(int levelId) {
         return get(AdminLevelDTO.getPropertyName(levelId));
     }
 
@@ -428,7 +430,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
             return false;
         }
         SiteDTO siteModel = (SiteDTO) o;
-        if (getId() != siteModel.getId()) {
+        if (getLegacyId() != siteModel.getLegacyId()) {
             return false;
         }
         if (!Objects.equals(get("reportingPeriodId"), siteModel.get("reportingPeriodId"))) {
@@ -439,7 +441,7 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 
     @Override
     public int hashCode() {
-        return getId();
+        return getLegacyId();
     }
 
     /**
@@ -447,11 +449,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
      */
     public boolean hasId() {
         return get("id") != null;
-    }
-
-    @Override
-    public String getEntityName() {
-        return ENTITY_NAME;
     }
 
     public ProjectDTO getProject() {
@@ -486,20 +483,6 @@ public final class SiteDTO extends BaseModelData implements EntityDTO, HasAdminE
 
     public Integer getLocationId() {
         return get("locationId");
-    }
-
-    @Override
-    public String getName() {
-        // TODO Leave unimplemented for now. A site with a name?
-        return null;
-    }
-
-    public List<Integer> getAttachmentIds() {
-        return (List<Integer>) get("attachmentIds");
-    }
-
-    public void setAttachmentIds(List<Integer> ids) {
-        set("attachmentIds", ids);
     }
 
     public int getPartnerId() {

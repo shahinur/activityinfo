@@ -73,4 +73,5 @@ public interface ResourceStore {
 
     StoreLoader beginLoad(AuthenticatedUser user, ResourceId parentId);
 
+    StoreAccessor createAccessor(AuthenticatedUser user);
 }

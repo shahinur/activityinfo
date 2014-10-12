@@ -87,7 +87,7 @@ public class ReportingPeriodTable extends ResourceMigrator {
                     resource.set(field(classId, DATE_FIELD), new MonthValue(date.getYear(), date.getMonthOfYear()));
                     resource.set(field(classId, YEAR_FIELD), TextValue.valueOf(Integer.toString(date.getYear())));
 
-                        periods.put(reportingPeriodId, resource);
+                    periods.put(reportingPeriodId, resource);
                 }
             }
         }

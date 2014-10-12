@@ -29,6 +29,8 @@ import com.google.inject.Module;
 import com.google.inject.name.Names;
 import org.activityinfo.server.database.LoadDataSet;
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.store.test.TestResourceStore;
 import org.junit.AfterClass;
 import org.junit.internal.runners.statements.RunAfters;
 import org.junit.runner.notification.RunNotifier;
@@ -138,7 +140,9 @@ public class InjectionSupport extends BlockJUnit4ClassRunner {
         }
 
         return ods == null ? statement :
-                new LoadDataSet(injector.getProvider(Connection.class), statement,
+                new LoadDataSet(injector.getProvider(Connection.class),
+                        injector.getInstance(ResourceStore.class),
+                        statement,
                         ods.value(), target);
     }
 

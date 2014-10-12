@@ -65,7 +65,7 @@ public class GetSitePointsHandler implements CommandHandlerAsync<GetSitePoints, 
         List<SitePointDTO> points = new ArrayList<SitePointDTO>(sites.size());
         for (SiteDTO site : sites) {
             if (site.hasLatLong()) {
-                points.add(new SitePointDTO(site.getId(), site.getLongitude(), site.getLatitude()));
+                points.add(new SitePointDTO(site.getLegacyId(), site.getLongitude(), site.getLatitude()));
                 bounds.grow(site.getLatitude(), site.getLongitude());
             }
         }

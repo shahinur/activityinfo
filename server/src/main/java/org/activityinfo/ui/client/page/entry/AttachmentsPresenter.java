@@ -72,7 +72,7 @@ public class AttachmentsPresenter implements ActionListener {
         view.setSelectionTitle(currentSite.getLocationName());
         view.setActionEnabled(UIActions.UPLOAD, true);
         view.setActionEnabled(UIActions.DELETE, false);
-        view.setAttachmentStore(currentSite.getId());
+        view.setAttachmentStore(currentSite.getLegacyId());
     }
 
     @Override
@@ -105,7 +105,7 @@ public class AttachmentsPresenter implements ActionListener {
         dialog.show(new FormDialogCallback() {
             @Override
             public void onValidated() {
-                form.setAction("/ActivityInfo/attachment?blobId=" + blobid + "&siteId=" + currentSite.getId());
+                form.setAction("/ActivityInfo/attachment?blobId=" + blobid + "&siteId=" + currentSite.getLegacyId());
                 form.submit();
                 dialog.getSaveButton().setEnabled(false);
             }
@@ -116,7 +116,7 @@ public class AttachmentsPresenter implements ActionListener {
             @Override
             public void handleEvent(FormEvent event) {
                 dialog.hide();
-                view.setAttachmentStore(currentSite.getId());
+                view.setAttachmentStore(currentSite.getLegacyId());
             }
         });
 
@@ -136,7 +136,7 @@ public class AttachmentsPresenter implements ActionListener {
             @Override
             public void onSuccess(VoidResult result) {
                 view.setActionEnabled(UIActions.DELETE, false);
-                view.setAttachmentStore(currentSite.getId());
+                view.setAttachmentStore(currentSite.getLegacyId());
             }
         });
     }

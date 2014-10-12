@@ -67,7 +67,7 @@ public class SiteTimeTreeLoader extends BaseTreeLoader<ModelData> implements Sit
         } else if (model instanceof MonthModel) {
             return ((MonthModel) model).getKey();
         } else if (model instanceof SiteDTO) {
-            return "S" + ((SiteDTO) model).getId();
+            return "S" + ((SiteDTO) model).getLegacyId();
         } else {
             return "X" + model.hashCode();
         }

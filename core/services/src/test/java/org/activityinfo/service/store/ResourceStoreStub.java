@@ -206,4 +206,9 @@ public class ResourceStoreStub implements ResourceStore {
         throw new UnsupportedOperationException();
     }
 
+    @Override
+    public StoreAccessor createAccessor(AuthenticatedUser user) {
+        throw new UnsupportedOperationException();
+    }
+
 }

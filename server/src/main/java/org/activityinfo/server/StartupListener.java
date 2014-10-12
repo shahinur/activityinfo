@@ -74,6 +74,7 @@ public class StartupListener extends GuiceServletContextListener {
 
         return Guice.createInjector(new HibernateModule(),
                 new ConfigModule(),
+                new HrdResourceStoreModule(),
                 new LoggingModule(),
                 new TemplateModule(),
                 new MailModule(),

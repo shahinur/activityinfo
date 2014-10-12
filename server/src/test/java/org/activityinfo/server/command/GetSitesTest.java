@@ -33,12 +33,14 @@ import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.server.database.OnDataSet;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.assertThat;
@@ -55,7 +57,8 @@ public class GetSitesTest extends CommandTestCase2 {
 
         GetSites cmd = new GetSites();
         cmd.filter().onActivity(1);
-        cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
+        String date2 = field(activityFormClass(1), END_DATE_FIELD).asString();
+        cmd.setSortInfo(new SortInfo(date2, SortDir.DESC));
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
 
@@ -66,22 +69,21 @@ public class GetSitesTest extends CommandTestCase2 {
         // result.getData().get(0).getActivity());
 
         // assure sorted
-        Assert.assertEquals("sorted", 2, result.getData().get(0).getId());
-        Assert.assertEquals("sorted", 1, result.getData().get(1).getId());
-        Assert.assertEquals("sorted", 3, result.getData().get(2).getId());
+        Assert.assertEquals("sorted", 2, result.getData().get(0).getLegacyId());
+        Assert.assertEquals("sorted", 1, result.getData().get(1).getLegacyId());
+        Assert.assertEquals("sorted", 3, result.getData().get(2).getLegacyId());
 
         // assure indicators are present (site id=3)
         SiteDTO s = result.getData().get(2);
 
-        Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1)
-                .getName());
-        Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
+        Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1));
+       // Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
         Assert.assertThat("indicator", (Double) s.getIndicatorValue(1), equalTo(10000.0));
         Assert.assertNull("site x", s.getX());
 
         // assure project is present
         SiteDTO s1 = result.getData().get(1);
-        assertThat(s1.getId(), equalTo(1));
+        assertThat(s1.getLegacyId(), equalTo(1));
         assertThat(s1.getProject().getId(), equalTo(1));
 
     }
@@ -219,7 +221,7 @@ public class GetSitesTest extends CommandTestCase2 {
         SiteResult result = execute(new GetSites(filter));
 
         assertThat(result.getData().size(), equalTo(1));
-        assertThat(result.getData().get(0).getId(), equalTo(9));
+        assertThat(result.getData().get(0).getLegacyId(), equalTo(9));
     }
 
     @Test
@@ -240,7 +242,7 @@ public class GetSitesTest extends CommandTestCase2 {
         Assert.assertEquals("second page returned", 2, result.getOffset());
         Assert.assertEquals("rows on this page", 1, result.getData().size());
         Assert.assertEquals("correct site returned", 1, result.getData().get(0)
-                .getId());
+                .getLegacyId());
     }
 
     @Test
@@ -262,22 +264,20 @@ public class GetSitesTest extends CommandTestCase2 {
         // result.getData().get(0).getActivity());
 
         // assure sorted
-        Assert.assertEquals("sorted", 2, result.getData().get(0).getId());
-        Assert.assertEquals("sorted", 1, result.getData().get(1).getId());
-        Assert.assertEquals("sorted", 3, result.getData().get(2).getId());
+        Assert.assertEquals("sorted", 2, result.getData().get(0).getLegacyId());
+        Assert.assertEquals("sorted", 1, result.getData().get(1).getLegacyId());
+        Assert.assertEquals("sorted", 3, result.getData().get(2).getLegacyId());
 
         // assure indicators are present (site id=3)
         SiteDTO s = result.getData().get(2);
 
-        Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1)
-                .getName());
-        Assert.assertNotNull("admin bounds", s.getAdminEntity(1).getBounds());
+        Assert.assertEquals("entityName", "Ituri", s.getAdminEntity(1));
         Assert.assertThat("indicator", (Double) s.getIndicatorValue(1), equalTo(10000.0));
         Assert.assertNull("site x", s.getX());
 
         // assure project is present
         SiteDTO s1 = result.getData().get(1);
-        assertThat(s1.getId(), equalTo(1));
+        assertThat(s1.getLegacyId(), equalTo(1));
         assertThat(s1.getProject().getId(), equalTo(1));
     }
 
@@ -287,6 +287,7 @@ public class GetSitesTest extends CommandTestCase2 {
 
         GetSites cmd = new GetSites();
         cmd.filter().addRestriction(DimensionType.Project, 2);
+        cmd.getFilter().addRestriction(DimensionType.Activity, 1);
 
         SiteResult result = execute(cmd);
 
@@ -311,12 +312,12 @@ public class GetSitesTest extends CommandTestCase2 {
         System.out.println(site1.getProperties());
         System.out.println(site2.getProperties());
 
-        assertThat(site1.getId(), equalTo(1));
+        assertThat(site1.getLegacyId(), equalTo(1));
         assertThat(site1.getLocationName(), equalTo("Penekusu Kivu"));
         assertThat(site1.getActivityId(), equalTo(1));
         assertThat((Double) site1.getIndicatorValue(1), equalTo(1500d));
 
-        assertThat(site2.getId(), equalTo(2));
+        assertThat(site2.getLegacyId(), equalTo(2));
         assertThat(site2.getLocationName(), equalTo("Penekusu Kivu 2"));
         assertThat(site2.getActivityId(), equalTo(1));
         assertThat((Double) site2.getIndicatorValue(1), equalTo(400d));
@@ -340,12 +341,12 @@ public class GetSitesTest extends CommandTestCase2 {
         System.out.println(site1.getProperties());
         System.out.println(site2.getProperties());
 
-        assertThat(site1.getId(), equalTo(1));
+        assertThat(site1.getLegacyId(), equalTo(1));
         assertThat(site1.getLocationName(), equalTo("Penekusu Kivu"));
         assertThat(site1.getActivityId(), equalTo(1));
         assertThat((Double) site1.getIndicatorValue(1), equalTo(1500d));
 
-        assertThat(site2.getId(), equalTo(2));
+        assertThat(site2.getLegacyId(), equalTo(2));
         assertThat(site2.getLocationName(), equalTo("Penekusu Kivu 2"));
         assertThat(site2.getActivityId(), equalTo(1));
         assertThat((Double) site2.getIndicatorValue(1), equalTo(400d));

@@ -81,10 +81,9 @@ public class AdminColumnRenderer implements GridCellRenderer<ModelData> {
         int summaryLines = 0;
 
         for (AdminLevelDTO level : levels) {
-            AdminEntityDTO entity = model.getAdminEntity(level.getId());
+            String name = model.getAdminEntity(level.getId());
 
-            if (entity != null) {
-                String name = entity.getName();
+            if (name != null) {
                 if (qtip.length() > 0) {
                     qtip.append("<br>");
                 }

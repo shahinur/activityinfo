@@ -64,7 +64,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         newSite.setId(result.getNewId());
         assertThat(result.getNewId(), not(equalTo(0)));
         PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite
-                .getId()));
+                .getLegacyId()));
         Assert.assertEquals(1, loadResult.getData().size());
         SiteDTO secondRead = loadResult.getData().get(0);
         SiteDTOs.validateNewSite(secondRead);
@@ -117,7 +117,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         // try to retrieve what we've created
 
         PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite
-                .getId()));
+                .getLegacyId()));
 
         Assert.assertEquals(1, loadResult.getData().size());
 
@@ -161,7 +161,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         // try to retrieve what we've created
 
         PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite
-                .getId()));
+                .getLegacyId()));
 
         Assert.assertEquals(1, loadResult.getData().size());
 

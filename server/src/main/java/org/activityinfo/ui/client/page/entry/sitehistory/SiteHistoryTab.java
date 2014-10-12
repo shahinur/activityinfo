@@ -61,7 +61,7 @@ public class SiteHistoryTab extends TabItem {
     public void setSite(final SiteDTO site) {
         renderLoading();
 
-        dispatcher.execute(new GetSiteHistory(site.getId()), new AsyncCallback<GetSiteHistoryResult>() {
+        dispatcher.execute(new GetSiteHistory(site.getLegacyId()), new AsyncCallback<GetSiteHistoryResult>() {
             @Override
             public void onFailure(Throwable caught) {
                 renderNotAvailable(site);

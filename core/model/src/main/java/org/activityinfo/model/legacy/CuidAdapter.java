@@ -25,7 +25,7 @@ public class CuidAdapter {
 
     public static final char PARTNER_FORM_CLASS_DOMAIN = 'P';
 
-    public static final char INDICATOR_DOMAIN = 'i';
+    public static final char INDICATOR_DOMAIN = 'I';
 
     public static final char ATTRIBUTE_GROUP_DOMAIN = 'A';
 
@@ -235,5 +235,9 @@ public class CuidAdapter {
 
     public static ResourceId cuid(char domain, int id) {
         return resourceId(domain, id);
+    }
+
+    public static int getLegacyId(ResourceId id) {
+        return Integer.parseInt(id.asString().substring(1));
     }
 }

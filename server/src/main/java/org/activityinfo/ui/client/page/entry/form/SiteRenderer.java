@@ -58,11 +58,11 @@ public class SiteRenderer {
             html.append("</td></tr>");
         }
         for (AdminLevelDTO level : activity.getAdminLevels()) {
-            AdminEntityDTO entity = site.getAdminEntity(level.getId());
+            String entity = site.getAdminEntity(level.getId());
             if (entity != null) {
                 html.append("<tr><td>");
                 html.append(level.getName()).append(":</td><td>");
-                html.append(entity.getName());
+                html.append(entity);
                 html.append("</td></tr>");
             }
         }

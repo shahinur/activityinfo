@@ -23,7 +23,10 @@ package org.activityinfo.server.database;
  */
 
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
+import com.google.common.base.Preconditions;
 import com.google.inject.Provider;
+import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.store.test.TestResourceStore;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.DataSetException;
@@ -33,7 +36,7 @@ import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.mssql.InsertIdentityOperation;
 import org.dbunit.ext.mysql.MySqlConnection;
 import org.dbunit.operation.DatabaseOperation;
-import org.junit.internal.runners.model.MultipleFailureException;
+import org.junit.runners.model.MultipleFailureException;
 import org.junit.runners.model.Statement;
 
 import java.io.IOException;
@@ -49,13 +52,15 @@ public class LoadDataSet extends Statement {
 
     private static final Logger LOGGER = Logger.getLogger(LoadDataSet.class.getName());
 
+    private TestResourceStore store;
     private final Statement next;
     private final Object target;
     private final Provider<Connection> connectionProvider;
     private final String name;
 
-    public LoadDataSet(Provider<Connection> connectionProvider, Statement next,
+    public LoadDataSet(Provider<Connection> connectionProvider, ResourceStore store, Statement next,
                        String name, Object target) {
+        this.store = (TestResourceStore) store;
         this.next = next;
         this.target = target;
         this.connectionProvider = connectionProvider;
@@ -65,23 +70,34 @@ public class LoadDataSet extends Statement {
     @Override
     public void evaluate() throws Throwable {
 
-        JdbcScheduler.get().forceCleanup();
+   //     JdbcScheduler.get().forceCleanup();
 
         LOGGER.info("Removing all rows");
-        removeAllRows();
+ //       removeAllRows();
+//
+//        LOGGER.info("DBUnit: loading " + name + " into the database.");
+//        IDataSet data = loadDataSet();
 
-        LOGGER.info("DBUnit: loading " + name + " into the database.");
-        IDataSet data = loadDataSet();
+        LOGGER.info("Loading resources...");
+        store.load(jsonFile());
 
         List<Throwable> errors = new ArrayList<Throwable>();
         errors.clear();
         try {
-            populate(data);
+       //     populate(data);
             next.evaluate();
         } catch (Throwable e) {
             errors.add(e);
         }
         MultipleFailureException.assertEmpty(errors);
+    }
+
+    private String jsonFile() {
+        Preconditions.checkState(name.startsWith("/dbunit/"));
+        Preconditions.checkState(name.endsWith(".db.xml"));
+
+        return name.substring("/dbunit/".length(), name.length() - ".db.xml".length()) + ".json";
+
     }
 
     private IDataSet loadDataSet() throws IOException, DataSetException {

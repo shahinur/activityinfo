@@ -121,7 +121,7 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
                             point == null ? null : rectCalculator.iconRect(point),
                             getValue(site, layer.getIndicatorIds())));
                 } else {
-                    content.getUnmappedSites().add(site.getId());
+                    content.getUnmappedSites().add(site.getLegacyId());
                 }
             }
         }
@@ -148,7 +148,7 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
             marker.setIndicatorId(layer.getIndicatorIds().get(0));
 
             for (PointValue pv : cluster.getPointValues()) {
-                marker.getSiteIds().add(pv.getSite().getId());
+                marker.getSiteIds().add(pv.getSite().getLegacyId());
             }
             content.getMarkers().add(marker);
         }

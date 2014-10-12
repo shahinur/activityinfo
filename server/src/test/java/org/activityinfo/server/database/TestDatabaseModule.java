@@ -25,6 +25,9 @@ package org.activityinfo.server.database;
 import com.bedatadriven.rebar.sql.client.query.MySqlDialect;
 import com.bedatadriven.rebar.sql.client.query.SqlDialect;
 import com.google.inject.AbstractModule;
+import com.google.inject.Singleton;
+import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.store.test.TestResourceStore;
 
 import java.sql.Connection;
 
@@ -34,6 +37,7 @@ public class TestDatabaseModule extends AbstractModule {
     protected void configure() {
         bind(Connection.class).toProvider(TestConnectionProvider.class);
         bind(SqlDialect.class).to(MySqlDialect.class);
+        bind(ResourceStore.class).to(TestResourceStore.class).in(Singleton.class);
     }
 
 }

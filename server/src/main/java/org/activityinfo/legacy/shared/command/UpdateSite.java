@@ -52,8 +52,8 @@ public class UpdateSite implements MutatingCommand<VoidResult>, SiteCommand {
     }
 
     public UpdateSite(SiteDTO original, SiteDTO updated) {
-        assert original.getId() == updated.getId();
-        this.siteId = updated.getId();
+        assert original.getLegacyId() == updated.getLegacyId();
+        this.siteId = updated.getLegacyId();
         changes = new RpcMap();
         for (String property : updated.getProperties().keySet()) {
             Object newValue = updated.get(property);

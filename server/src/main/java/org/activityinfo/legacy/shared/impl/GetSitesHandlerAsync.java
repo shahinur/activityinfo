@@ -51,13 +51,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult> {
+public class GetSitesHandlerAsync implements CommandHandlerAsync<GetSites, SiteResult> {
 
     private final SqlDialect dialect;
 
 
     @Inject
-    public GetSitesHandler(SqlDialect dialect) {
+    public GetSitesHandlerAsync(SqlDialect dialect) {
         super();
         this.dialect = dialect;
     }
@@ -122,7 +122,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 for (SqlResultSetRow row : results.getRows()) {
                     SiteDTO site = toSite(command, row);
                     sites.add(site);
-                    siteMap.put(site.getId(), site);
+                    siteMap.put(site.getLegacyId(), site);
 
                     if(command.isFetchAllReportingPeriods()) {
                         reportingPeriods.put(row.getInt("PeriodId"), site);

@@ -133,7 +133,7 @@ public class MonthlyReportsPanel extends ContentPanel implements ActionListener 
     }
 
     public void load(final SiteDTO site) {
-        this.currentSiteId = site.getId();
+        this.currentSiteId = site.getLegacyId();
         this.grid.getStore().removeAll();
 
         service.execute(new GetSchema(),
@@ -159,7 +159,7 @@ public class MonthlyReportsPanel extends ContentPanel implements ActionListener 
         grid.setLockedPredicate(createLockPredicate(new LockedPeriodSet(activity)));
         grid.updateMonthColumns(startMonth);
         proxy.setStartMonth(startMonth);
-        proxy.setSiteId(site.getId());
+        proxy.setSiteId(site.getLegacyId());
         loader.load();
     }
 

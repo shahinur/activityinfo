@@ -2,6 +2,7 @@ package org.activityinfo.store.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
@@ -69,6 +70,11 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
             }
         }
         return new Cursor(resources.iterator());
+    }
+
+    @Override
+    public StoreAccessor createAccessor(AuthenticatedUser user) {
+        return this;
     }
 
     public Resource get(ResourceId resourceId) {
@@ -175,7 +181,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     private ResourceNode createNode(FolderRequest request, Resource resource) {
         ResourceId classId = getClassId(resource);
         ResourceNode node = new ResourceNode(resource.getId(), classId);
-        node.setLabel(getLabel(resource, classId));
+        node.setLabel(Preconditions.checkNotNull(getLabel(resource, classId), resource.getId() + " has no label set"));
 
         // add children
         for(Resource child : resourceMap.values()) {
@@ -204,9 +210,9 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     private String getLabel(Resource resource, ResourceId classId) {
         if(FormClass.CLASS_ID.equals(classId)) {
-            return resource.getValue().getString(FormClass.LABEL_FIELD_ID);
+            return resource.getValue().isString(FormClass.LABEL_FIELD_ID);
         } else if(FolderClass.CLASS_ID.equals(classId)) {
-            return resource.getValue().getString(FolderClass.LABEL_FIELD_ID.asString());
+            return resource.getValue().isString(FolderClass.LABEL_FIELD_ID.asString());
         } else {
             return classId == null ? resource.getId().asString() : classId.asString();
         }

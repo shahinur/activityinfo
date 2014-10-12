@@ -1,18 +1,39 @@
 [ {
+  "@id" : "d1",
+  "@owner" : "_root",
+  "@version" : 0,
+  "@class" : "_folder",
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "label" : "PEAR"
+}, {
+  "@id" : "d2",
+  "@owner" : "_root",
+  "@version" : 0,
+  "@class" : "_folder",
+  "_classf11" : {
+    "@type" : "REFERENCE",
+    "value" : "c1"
+  },
+  "label" : "RRM"
+}, {
   "@id" : "_geodb",
   "@owner" : "_root",
   "@version" : 0,
-  "classId" : "_folder",
-  "_folder_label" : "Geodatabase"
+  "@class" : "_folder",
+  "label" : "Geographic Reference"
 }, {
   "@id" : "_country",
   "@owner" : "_geodb",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Country",
   "elements" : [ {
     "id" : "_countryf1",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Name",
     "required" : true,
     "type" : {
@@ -22,6 +43,7 @@
     "id" : "_countryf3",
     "visible" : true,
     "description" : "ISO 3166-1 alpha-2 code",
+    "primaryKey" : false,
     "label" : "Code",
     "required" : true,
     "type" : {
@@ -32,17 +54,18 @@
   "@id" : "c1",
   "@owner" : "_country",
   "@version" : 0,
-  "_countryf1" : "Rdc",
-  "classId" : "_country"
+  "@class" : "_country",
+  "_countryf1" : "Rdc"
 }, {
   "@id" : "E1",
   "@owner" : "c1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Province",
   "elements" : [ {
     "id" : "E1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -55,6 +78,7 @@
   }, {
     "id" : "E1f3",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Code",
     "required" : false,
     "type" : {
@@ -65,11 +89,12 @@
   "@id" : "L1",
   "@owner" : "c1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "localite",
   "elements" : [ {
     "id" : "L1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -82,6 +107,7 @@
   }, {
     "id" : "L1f4",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Alternate Name",
     "required" : false,
     "type" : {
@@ -90,15 +116,16 @@
   }, {
     "id" : "L1f6",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Administrative Unit",
     "required" : false,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "E1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "MULTIPLE"
       },
       "typeClass" : "REFERENCE"
@@ -106,6 +133,7 @@
   }, {
     "id" : "L1f5",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Geographic Position",
     "required" : false,
     "type" : {
@@ -113,75 +141,15 @@
     }
   } ]
 }, {
-  "@id" : "U1",
-  "@owner" : "_users",
-  "@version" : 0,
-  "email" : "user1@user.com",
-  "name" : "Alex",
-  "locale" : "fr"
-}, {
-  "@id" : "U2",
-  "@owner" : "_users",
-  "@version" : 0,
-  "email" : "bavon@nrcdrc.org",
-  "name" : "Bavon",
-  "locale" : "fr"
-}, {
-  "@id" : "U3",
-  "@owner" : "_users",
-  "@version" : 0,
-  "email" : "stefan@irc.org",
-  "name" : "Stefan",
-  "locale" : "fr"
-}, {
-  "@id" : "d1",
-  "@owner" : "_root",
-  "@version" : 0,
-  "_classf11" : {
-    "@type" : "REFERENCE",
-    "value" : "c1"
-  },
-  "classId" : "_folder",
-  "_folder_label" : "PEAR"
-}, {
-  "@id" : "_acr:d1:U1",
-  "@owner" : "d1",
-  "@version" : 0,
-  "principal" : {
-    "@type" : "REFERENCE",
-    "value" : "U1"
-  },
-  "classId" : "_acr",
-  "owner" : true
-}, {
-  "@id" : "d2",
-  "@owner" : "_root",
-  "@version" : 0,
-  "_classf11" : {
-    "@type" : "REFERENCE",
-    "value" : "c1"
-  },
-  "classId" : "_folder",
-  "_folder_label" : "RRM"
-}, {
-  "@id" : "_acr:d2:U1",
-  "@owner" : "d2",
-  "@version" : 0,
-  "principal" : {
-    "@type" : "REFERENCE",
-    "value" : "U1"
-  },
-  "classId" : "_acr",
-  "owner" : true
-}, {
   "@id" : "P1",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Partners",
   "elements" : [ {
     "id" : "P1f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -194,6 +162,7 @@
   }, {
     "id" : "P1f10",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_description"
@@ -208,11 +177,12 @@
   "@id" : "P2",
   "@owner" : "d2",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "Partners",
   "elements" : [ {
     "id" : "P2f1",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "label"
@@ -225,6 +195,7 @@
   }, {
     "id" : "P2f10",
     "visible" : true,
+    "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
       "value" : "_description"
@@ -239,26 +210,27 @@
   "@id" : "d1p1",
   "@owner" : "P1",
   "@version" : 0,
-  "classId" : "P1",
+  "@class" : "P1",
   "P1f1" : "NRC"
 }, {
   "@id" : "a1",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "NFI",
   "elements" : [ {
     "id" : "a1f7",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Partner",
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "P1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -266,31 +238,25 @@
   }, {
     "id" : "a1f12",
     "visible" : true,
-    "label" : "Start Date",
+    "primaryKey" : false,
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a1f13",
-    "visible" : true,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "typeClass" : "localDateInterval"
     }
   }, {
     "id" : "a1f11",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "localite",
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "L1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -300,14 +266,15 @@
     "label" : "outputs",
     "type" : "section",
     "elements" : [ {
-      "id" : "i2",
+      "id" : "I2",
       "visible" : true,
       "description" : "desc",
+      "primaryKey" : false,
       "label" : "kits",
       "required" : false,
       "type" : {
         "parameters" : {
-          "classId" : "_type:quantity",
+          "@class" : "_type:QUANTITY",
           "units" : "menages"
         },
         "typeClass" : "QUANTITY"
@@ -316,10 +283,12 @@
   }, {
     "id" : "Q1",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Cause",
     "required" : false,
     "type" : {
       "parameters" : {
+        "@class" : "_type:enumerated",
         "values" : [ {
           "id" : "t2",
           "@type" : "enumerated",
@@ -329,7 +298,6 @@
           "@type" : "enumerated",
           "label" : "Retour"
         } ],
-        "classId" : "_type:enum",
         "cardinality" : "MULTIPLE"
       },
       "typeClass" : "enumerated"
@@ -339,14 +307,15 @@
     "label" : "inputs",
     "type" : "section",
     "elements" : [ {
-      "id" : "i1",
+      "id" : "I1",
       "visible" : true,
       "description" : "falling in lve",
+      "primaryKey" : false,
       "label" : "beneficiaries",
       "required" : false,
       "type" : {
         "parameters" : {
-          "classId" : "_type:quantity",
+          "@class" : "_type:QUANTITY",
           "units" : "menages^2"
         },
         "typeClass" : "QUANTITY"
@@ -355,6 +324,7 @@
   }, {
     "id" : "a1f14",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Comments",
     "required" : false,
     "type" : {
@@ -365,20 +335,21 @@
   "@id" : "a2",
   "@owner" : "d1",
   "@version" : 0,
-  "classId" : "_class",
+  "@class" : "_class",
   "_class_label" : "empty activity",
   "elements" : [ {
     "id" : "a2f7",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Partner",
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "P1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -386,31 +357,25 @@
   }, {
     "id" : "a2f12",
     "visible" : true,
-    "label" : "Start Date",
+    "primaryKey" : false,
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a2f13",
-    "visible" : true,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "typeClass" : "localDateInterval"
     }
   }, {
     "id" : "a2f11",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "localite",
     "required" : true,
     "type" : {
       "parameters" : {
+        "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
           "value" : "L1"
         },
-        "classId" : "_type:ref",
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
@@ -418,6 +383,7 @@
   }, {
     "id" : "a2f14",
     "visible" : true,
+    "primaryKey" : false,
     "label" : "Comments",
     "required" : false,
     "type" : {

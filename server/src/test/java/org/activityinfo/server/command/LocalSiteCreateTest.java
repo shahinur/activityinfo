@@ -78,7 +78,7 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
 
         // try to retrieve what we've created FROM OUR CLIENT SIDE DATABASE
 
-        SiteResult loadResult = executeLocally(GetSites.byId(newSite.getId()));
+        SiteResult loadResult = executeLocally(GetSites.byId(newSite.getLegacyId()));
 
         Assert.assertEquals(1, loadResult.getData().size());
 
@@ -158,10 +158,10 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
 
         // Verify that there is still a label for this partner
 
-        SiteResult sites = executeLocally(GetSites.byId(site.getId()));
+        SiteResult sites = executeLocally(GetSites.byId(site.getLegacyId()));
 
         assertThat(sites.getTotalLength(), equalTo(1));
-        assertThat(sites.getData().get(0).getName(), equalTo(site.getName()));
+        assertThat(sites.getData().get(0).getPartnerName(), equalTo(site.getPartnerName()));
 
     }
 

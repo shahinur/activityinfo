@@ -24,11 +24,6 @@ public class AdminAccessor implements DimAccessor {
 
     @Override
     public DimensionCategory getCategory(SiteDTO siteDTO) {
-        AdminEntityDTO entityDTO = siteDTO.getAdminEntity(adminLevelId);
-        if(entityDTO == null) {
-            return null;
-        } else {
-            return new EntityCategory(entityDTO.getId(), entityDTO.getName());
-        }
+        throw new UnsupportedOperationException();
     }
 }

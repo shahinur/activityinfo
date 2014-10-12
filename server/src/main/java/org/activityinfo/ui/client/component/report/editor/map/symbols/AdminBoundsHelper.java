@@ -49,29 +49,6 @@ public final class AdminBoundsHelper {
      * {@link org.activityinfo.legacy.shared.model.CountryDTO#getBounds()}
      *
      * @param activity
-     * @param site
-     * @return the normative lat/lng bounds
-     */
-    public static Extents calculate(ActivityDTO activity, final SiteDTO site) {
-        return calculate(activity, new HasAdminEntityValues() {
-            @Override
-            public AdminEntityDTO getAdminEntity(int levelId) {
-                return site.getAdminEntity(levelId);
-            }
-        });
-    }
-
-    /**
-     * Calculates the normative lat/lng bounds for a given site as function of
-     * AdminEntity entity membership.
-     * <p/>
-     * For example, if a site is marked as being within Country A, the Province
-     * B and Health Zone C, the method will return the intersection of the
-     * bounds for A, B, and C, which are provided by
-     * {@link org.activityinfo.legacy.shared.model.AdminEntityDTO#getBounds()} and
-     * {@link org.activityinfo.legacy.shared.model.CountryDTO#getBounds()}
-     *
-     * @param activity
      * @param entityAccessor an adapter class that provides AdminEntity membership for some
      *                       representation of a site.
      * @return the normative lat/lng bounds
@@ -114,24 +91,6 @@ public final class AdminBoundsHelper {
         }
 
         return bounds;
-    }
-
-    /**
-     * Computes a human-readable name for bounding box returned by the
-     * <code>calculate()</code> methods
-     *
-     * @param activity
-     * @param bounds
-     * @param site
-     * @return
-     */
-    public static String name(ActivityDTO activity, Extents bounds, final SiteDTO site) {
-        return name(bounds, activity.getAdminLevels(), new HasAdminEntityValues() {
-            @Override
-            public AdminEntityDTO getAdminEntity(int levelId) {
-                return site.getAdminEntity(levelId);
-            }
-        });
     }
 
     /**

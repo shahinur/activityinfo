@@ -56,7 +56,7 @@ public class UpdateSiteTest extends CommandTestCase {
         SiteDTO original = result.getData().get(0);
         SiteDTO modified = original.copy();
 
-        assertThat(modified.getId(), equalTo(original.getId()));
+        assertThat(modified.getLegacyId(), equalTo(original.getLegacyId()));
 
         // modify and generate command
         modified.setComments("NEW <b>Commentaire</b>");
@@ -100,7 +100,7 @@ public class UpdateSiteTest extends CommandTestCase {
         SiteDTO original = result.getData().get(0);
         SiteDTO modified = original.copy();
 
-        assertThat(modified.getId(), equalTo(original.getId()));
+        assertThat(modified.getLegacyId(), equalTo(original.getLegacyId()));
 
         // modify and generate command
         // note that the character sequence below is two characters:
@@ -151,8 +151,8 @@ public class UpdateSiteTest extends CommandTestCase {
         SiteResult result = execute(GetSites.byId(1));
         SiteDTO secondRead = result.getData().get(0);
 
-        assertThat(secondRead.getAdminEntity(1).getId(), equalTo(2));
-        assertThat(secondRead.getAdminEntity(2).getId(), equalTo(12));
+        assertThat(secondRead.getAdminEntity(1), equalTo("Sud Kivu"));
+        assertThat(secondRead.getAdminEntity(2), equalTo("Shabunda"));
     }
 
     @Test

@@ -8,6 +8,8 @@ import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.BlobMetadata;
 import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.service.store.ResourceCursor;
+import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.store.StoreLoader;
 import org.activityinfo.service.tasks.TaskContext;
 import org.activityinfo.store.hrd.HrdResourceStore;
@@ -18,12 +20,12 @@ import java.io.OutputStream;
 
 public class AppEngineTaskContext implements TaskContext {
 
-    private final HrdStoreAccessor accessor;
-    private HrdResourceStore store;
+    private final StoreAccessor accessor;
+    private ResourceStore store;
     private UserBlobService blobService;
     private final AuthenticatedUser user;
 
-    public AppEngineTaskContext(HrdResourceStore store, UserBlobService blobService, AuthenticatedUser user) {
+    public AppEngineTaskContext(ResourceStore store, UserBlobService blobService, AuthenticatedUser user) {
         this.store = store;
         this.blobService = blobService;
         this.user = user;

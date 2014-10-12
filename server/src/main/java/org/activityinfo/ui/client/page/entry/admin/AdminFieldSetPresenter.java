@@ -32,10 +32,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.Log;
-import org.activityinfo.legacy.shared.model.AdminEntityDTO;
-import org.activityinfo.legacy.shared.model.AdminLevelDTO;
-import org.activityinfo.legacy.shared.model.CountryDTO;
-import org.activityinfo.legacy.shared.model.HasAdminEntityValues;
+import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.activityinfo.ui.client.component.report.editor.map.symbols.AdminBoundsHelper;
 
@@ -45,6 +42,7 @@ import java.util.*;
  * Presenter which drives the selection of a set of heirarchial admin levels.
  */
 public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEntityValues {
+
 
 
     private class Level {
@@ -266,6 +264,11 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
         }
         updateBounds();
         fireEvent(new AdminSelectionChangedEvent());
+    }
+
+
+    public void setSelection(SiteDTO site) {
+        throw new UnsupportedOperationException();
     }
 
     public Map<String, AdminEntityDTO> getPropertyMap() {

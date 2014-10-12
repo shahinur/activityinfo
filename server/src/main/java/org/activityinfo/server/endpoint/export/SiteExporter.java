@@ -321,7 +321,7 @@ public class SiteExporter {
         Row row = sheet.createRow(rowIndex);
         int column = 0;
 
-        createCell(row, column++, Integer.toString(site.getId()));
+        createCell(row, column++, Integer.toString(site.getLegacyId()));
         createCell(row, column++, site.getDateCreated());
 
         createCell(row, column++, site.getDate1());
@@ -345,10 +345,10 @@ public class SiteExporter {
         }
 
         for (Integer levelId : levels) {
-            AdminEntityDTO entity = site.getAdminEntity(levelId);
+            String entity = site.getAdminEntity(levelId);
             if (entity != null) {
                 createCell(row, column, "");
-                createCell(row, column + 1, entity.getName());
+                createCell(row, column + 1, entity);
             }
             column += 2;
         }

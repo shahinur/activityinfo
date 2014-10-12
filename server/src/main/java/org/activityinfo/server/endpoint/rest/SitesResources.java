@@ -3,7 +3,6 @@ package org.activityinfo.server.endpoint.rest;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.MonthlyReportResult;
@@ -86,7 +85,7 @@ public class SitesResources {
 
         for (SiteDTO site : sites) {
             json.writeStartObject();
-            json.writeNumberField("id", site.getId());
+            json.writeNumberField("id", site.getLegacyId());
             json.writeNumberField("activity", site.getActivityId());
             json.writeNumberField("timestamp", site.getTimeEdited());
 
@@ -170,7 +169,7 @@ public class SitesResources {
             if (site.hasLatLong()) {
                 json.writeStartObject();
                 json.writeStringField("type", "Feature");
-                json.writeNumberField("id", site.getId());
+                json.writeNumberField("id", site.getLegacyId());
                 //                json.writeNumberField("timestamp", site.getTimeEdited());
 
                 final ActivityDTO activity = schemaDTO.getActivityById(site.getActivityId());

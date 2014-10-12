@@ -25,6 +25,7 @@ package org.activityinfo.server.command;
 import com.extjs.gxt.ui.client.data.ModelData;
 import junit.framework.Assert;
 import org.activityinfo.legacy.shared.command.Delete;
+import org.activityinfo.legacy.shared.command.DeleteSite;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.PagingResult;
@@ -55,7 +56,7 @@ public class DeleteTest extends CommandTestCase {
     public void testDeleteSite() throws CommandException {
 
         PagingResult<SiteDTO> sites = execute(GetSites.byId(3));
-        execute(new Delete(sites.getData().get(0)));
+        execute(new DeleteSite(sites.getData().get(0).getLegacyId()));
 
         sites = execute(GetSites.byId(3));
         Assert.assertEquals(0, sites.getData().size());
