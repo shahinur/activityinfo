@@ -22,17 +22,17 @@ package org.activityinfo.server.command;
  */
 
 import com.google.api.client.repackaged.com.google.common.base.Joiner;
+import com.google.inject.Inject;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.server.endpoint.gwtrpc.AdvisoryLock;
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManager;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
@@ -44,20 +44,23 @@ import java.util.concurrent.TimeUnit;
 @RunWith(InjectionSupport.class)
 public class AdvisoryLockTest extends CommandTestCase2 {
 
-    public void reset(HibernateEntityManager entityManager) {
+    @Inject
+    protected EntityManagerFactory serverEntityManagerFactory;
+
+    public void reset() {
+
         String sql = String.format("SELECT RELEASE_LOCK('%s')", AdvisoryLock.ADVISORY_LOCK_NAME);
 
-        Query query = entityManager.getSession().createSQLQuery(sql);
+        Query query = createEntityManager().getSession().createSQLQuery(sql);
         query.uniqueResult();
+
     }
 
     @Test
-    @Ignore
     public void lockTest() throws CommandException, InterruptedException {
         int workCount = 5;
 
-        final HibernateEntityManager entityManager = (HibernateEntityManager) injector.getInstance(EntityManager.class);
-        reset(entityManager);
+        reset();
 
         final List<Integer> startedWork = new CopyOnWriteArrayList<>();
         final List<Integer> finishedWork = new CopyOnWriteArrayList<>();
@@ -67,7 +70,7 @@ public class AdvisoryLockTest extends CommandTestCase2 {
             Executors.newSingleThreadExecutor().execute(new Runnable() {
                 @Override
                 public void run() {
-                    try (AdvisoryLock lock = new AdvisoryLock(entityManager)) {
+                    try (AdvisoryLock lock = new AdvisoryLock(createEntityManager())) {
                         // if added to started then lock is obtained
                         startedWork.add(workNumber);
                         System.out.println("Started work: " + Joiner.on(",").join(startedWork));
@@ -87,7 +90,12 @@ public class AdvisoryLockTest extends CommandTestCase2 {
                 }
             });
         }
-        Thread.sleep(TimeUnit.SECONDS.toMillis(20 * workCount));
+        Thread.sleep(TimeUnit.SECONDS.toMillis(workCount));
         Assert.assertEquals(finishedWork.size(), workCount);
     }
+
+    private HibernateEntityManager createEntityManager() {
+        return (HibernateEntityManager) serverEntityManagerFactory.createEntityManager();
+    }
+
 }
