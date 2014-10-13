@@ -22,11 +22,13 @@ package org.activityinfo.server.endpoint.gwtrpc;
  */
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Stopwatch;
 import org.activityinfo.legacy.shared.exception.CommandTimeoutException;
 import org.activityinfo.legacy.shared.exception.UnexpectedCommandException;
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManager;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,10 +39,10 @@ public class AdvisoryLock implements AutoCloseable {
 
     private static final Logger LOGGER = Logger.getLogger(AdvisoryLock.class.getName());
 
-    private static final String ADVISORY_LOCK_NAME = "activityinfo.remote_execution_context";
+    public static final String ADVISORY_LOCK_NAME = "activityinfo.remote_execution_context";
 
     private static final int ADVISORY_GET_LOCK_TIMEOUT = 20;
-    private static final int SUCCESS_CODE = 1;
+    public static final int SUCCESS_CODE = 1;
     private static final int TIMEOUT_CODE = 0;
 
     private final HibernateEntityManager entityManager;
@@ -51,6 +53,8 @@ public class AdvisoryLock implements AutoCloseable {
         this.entityManager = entityManager;
 
         try {
+            Stopwatch stopwatch = Stopwatch.createStarted();
+
             String sql = String.format("SELECT GET_LOCK('%s', %s)", ADVISORY_LOCK_NAME, ADVISORY_GET_LOCK_TIMEOUT);
 
             Query query = entityManager.getSession().createSQLQuery(sql);
@@ -70,6 +74,9 @@ public class AdvisoryLock implements AutoCloseable {
                 LOGGER.severe("Failed to acquire lock, result code: " + resultCode);
                 throw new RuntimeException("Failed to acquire lock, result code: " + resultCode);
             }
+
+            stopwatch.stop();
+            LOGGER.finest("Acquire lock takes: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms");
         } catch (Exception e) {
             throw new RuntimeException("Exception caught while trying to acquire update lock", e);
         }
@@ -77,6 +84,7 @@ public class AdvisoryLock implements AutoCloseable {
 
     @Override
     public void close() throws Exception {
+        Stopwatch stopwatch = Stopwatch.createStarted();
         String sql = String.format("SELECT RELEASE_LOCK('%s')", ADVISORY_LOCK_NAME);
 
         Query query = entityManager.getSession().createSQLQuery(sql);
@@ -85,6 +93,9 @@ public class AdvisoryLock implements AutoCloseable {
         if (resultCode != SUCCESS_CODE) {
             throw new RuntimeException("Failed to release lock, result code: " + resultCode);
         }
+
+        stopwatch.stop();
+        LOGGER.finest("Release lock takes: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms");
     }
 
     public void closeQuietly() {
