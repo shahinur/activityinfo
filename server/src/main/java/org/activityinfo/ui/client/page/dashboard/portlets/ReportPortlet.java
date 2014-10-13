@@ -186,8 +186,7 @@ public class ReportPortlet extends Portlet {
             gridPanel.setHeaderVisible(false);
             return gridPanel;
         } else if (element instanceof MapReportElement) {
-            MapReportView mapView = new MapReportView();
-            return mapView;
+            return new MapReportView();
         } else {
             return null;
         }
