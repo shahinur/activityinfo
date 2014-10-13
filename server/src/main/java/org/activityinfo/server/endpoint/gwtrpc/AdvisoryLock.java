@@ -22,65 +22,36 @@ package org.activityinfo.server.endpoint.gwtrpc;
  */
 
 import com.google.common.base.Preconditions;
-import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.exception.CommandTimeoutException;
 import org.activityinfo.legacy.shared.exception.UnexpectedCommandException;
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManager;
 
-import java.math.BigInteger;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * @author yuriyz on 10/10/2014.
  */
-public class AdvisoryLock {
+public class AdvisoryLock implements AutoCloseable {
 
     private static final Logger LOGGER = Logger.getLogger(AdvisoryLock.class.getName());
 
     private static final String ADVISORY_LOCK_NAME = "activityinfo.remote_execution_context";
-    private static final int ADVISORY_GET_LOCK_TIMEOUT = 10;
+
+    private static final int ADVISORY_GET_LOCK_TIMEOUT = 20;
+    private static final int SUCCESS_CODE = 1;
+    private static final int TIMEOUT_CODE = 0;
 
     private final HibernateEntityManager entityManager;
 
-    private AdvisoryLock(HibernateEntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    public void unlock() {
-        String sql = String.format("SELECT RELEASE_LOCK('%s')", ADVISORY_LOCK_NAME);
-        try {
-            Query query = entityManager.getSession().createSQLQuery(sql);
-            Object result = query.uniqueResult();
-            if (result instanceof BigInteger && ((BigInteger) result).intValue() == 1) {
-                return; // released successfully
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Exception during releasing advisory lock, sql:" + sql, e);
-        }
-        LOGGER.log(Level.SEVERE, "Failed to releasing advisory lock, sql:" + sql);
-    }
-
-//    private boolean hasAdvisoryLock() {
-//        String sql = String.format("SELECT IS_USED_LOCK('%s')", ADVISORY_LOCK_NAME);
-//        try {
-//            Query query = entityManager.getSession().createSQLQuery(sql);
-//            Object result = query.uniqueResult();
-//            if (result instanceof String) {
-//                return !((String)result).isEmpty();
-//            }
-//        } catch (Exception e) {
-//            LOGGER.log(Level.SEVERE, "Exception during checking advisory lock, sql:" + sql, e);
-//        }
-//        return false;
-//    }
-
-    public static AdvisoryLock tryLock(HibernateEntityManager entityManager) {
+    public AdvisoryLock(HibernateEntityManager entityManager) {
         Preconditions.checkNotNull(entityManager);
 
-        String sql = String.format("SELECT GET_LOCK('%s', %s)", ADVISORY_LOCK_NAME, ADVISORY_GET_LOCK_TIMEOUT);
+        this.entityManager = entityManager;
+
         try {
+            String sql = String.format("SELECT GET_LOCK('%s', %s)", ADVISORY_LOCK_NAME, ADVISORY_GET_LOCK_TIMEOUT);
+
             Query query = entityManager.getSession().createSQLQuery(sql);
             Object result = query.uniqueResult();
 
@@ -88,20 +59,38 @@ public class AdvisoryLock {
                 throw new UnexpectedCommandException("Error occurred while trying to obtain advisory lock.");
             }
 
-            int resultCode = ((BigInteger) result).intValue();
-            if (resultCode == 1) { // success
-                return new AdvisoryLock(entityManager);
-            } else if (resultCode == 0) { // time out
+            int resultCode = ((Number) result).intValue();
+            if (resultCode == TIMEOUT_CODE) { // time out
+                LOGGER.severe("Timed out waiting for write lock.");
                 throw new CommandTimeoutException();
             }
 
-            return new AdvisoryLock(entityManager);
-
-        } catch (CommandException e) {
-            throw e;
+            if (resultCode != SUCCESS_CODE) { // not success
+                LOGGER.severe("Failed to acquire lock, result code: " + resultCode);
+                throw new RuntimeException("Failed to acquire lock, result code: " + resultCode);
+            }
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Exception during getting advisory lock, sql:" + sql, e);
+            throw new RuntimeException("Exception caught while trying to acquire update lock", e);
         }
-        return null;
+    }
+
+    @Override
+    public void close() throws Exception {
+        String sql = String.format("SELECT RELEASE_LOCK('%s')", ADVISORY_LOCK_NAME);
+
+        Query query = entityManager.getSession().createSQLQuery(sql);
+        Object result = query.uniqueResult();
+        int resultCode = ((Number) result).intValue();
+        if (resultCode != SUCCESS_CODE) {
+            throw new RuntimeException("Failed to release lock, result code: " + resultCode);
+        }
+    }
+
+    public void closeWithRuntime() {
+        try {
+            close();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to release lock.", e);
+        }
     }
 }

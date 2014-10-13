@@ -36,7 +36,6 @@ import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.MutatingCommand;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.exception.UnexpectedCommandException;
 import org.activityinfo.legacy.shared.impl.AuthorizationHandler;
 import org.activityinfo.legacy.shared.impl.CommandHandlerAsync;
 import org.activityinfo.legacy.shared.impl.ExecutionContext;
@@ -114,10 +113,7 @@ public class RemoteExecutionContext implements ExecutionContext {
 
         AdvisoryLock lock = null;
         if (hasMutatingCommand(command)) {
-            lock = AdvisoryLock.tryLock(entityManager);
-            if (lock == null) {
-                throw new UnexpectedCommandException("Failed to obtain advisory lock.");
-            }
+            lock = new AdvisoryLock(entityManager);
         }
 
         try {
@@ -180,7 +176,7 @@ public class RemoteExecutionContext implements ExecutionContext {
         } finally {
             CURRENT.remove();
             if (lock != null) {
-                lock.unlock();
+                lock.closeWithRuntime();
             }
         }
     }
