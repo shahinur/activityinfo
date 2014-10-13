@@ -175,9 +175,7 @@ public class RemoteExecutionContext implements ExecutionContext {
 
         } finally {
             CURRENT.remove();
-            if (lock != null) {
-                lock.closeWithRuntime();
-            }
+            AdvisoryLock.closeQuietly(lock);
         }
     }
 

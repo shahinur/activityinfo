@@ -27,6 +27,7 @@ import org.activityinfo.legacy.shared.exception.UnexpectedCommandException;
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManager;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -86,11 +87,17 @@ public class AdvisoryLock implements AutoCloseable {
         }
     }
 
-    public void closeWithRuntime() {
+    public void closeQuietly() {
         try {
             close();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to release lock.", e);
+            LOGGER.log(Level.SEVERE, "Failed to release lock.", e);
+        }
+    }
+
+    public static void closeQuietly(AdvisoryLock lock) {
+        if (lock != null) {
+            lock.closeQuietly();
         }
     }
 }
