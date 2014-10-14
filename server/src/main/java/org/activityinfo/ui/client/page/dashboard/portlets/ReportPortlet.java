@@ -22,7 +22,11 @@ package org.activityinfo.ui.client.page.dashboard.portlets;
  * #L%
  */
 
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.IconButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MenuEvent;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -34,14 +38,16 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.command.GenerateElement;
-import org.activityinfo.legacy.shared.command.GetReportModel;
 import org.activityinfo.legacy.shared.command.UpdateReportSubscription;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ReportDTO;
 import org.activityinfo.legacy.shared.model.ReportMetadataDTO;
 import org.activityinfo.legacy.shared.reports.content.Content;
-import org.activityinfo.legacy.shared.reports.model.*;
+import org.activityinfo.legacy.shared.reports.model.MapReportElement;
+import org.activityinfo.legacy.shared.reports.model.PivotChartReportElement;
+import org.activityinfo.legacy.shared.reports.model.PivotTableReportElement;
+import org.activityinfo.legacy.shared.reports.model.Report;
+import org.activityinfo.legacy.shared.reports.model.ReportElement;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.component.report.view.ChartOFCView;
 import org.activityinfo.ui.client.component.report.view.MapReportView;
@@ -55,15 +61,20 @@ import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 public class ReportPortlet extends Portlet {
 
     private final Dispatcher dispatcher;
-    private final ReportMetadataDTO metadata;
     private final EventBus eventBus;
 
-    public ReportPortlet(Dispatcher dispatcher, EventBus eventBus, ReportMetadataDTO report) {
+    private final ReportDTO report;
+    private final ReportMetadataDTO metadata;
+    private final Content content;
+
+    public ReportPortlet(Dispatcher dispatcher, EventBus eventBus, ReportDTO report, Content content) {
         this.dispatcher = dispatcher;
         this.eventBus = eventBus;
-        this.metadata = report;
+        this.report = report;
+        this.metadata = report.getReportMetadataDTO();
+        this.content = content;
 
-        setHeadingText(report.getTitle());
+        setHeadingText(metadata.getTitle());
         setHeight(275);
         setLayout(new FitLayout());
 
@@ -71,8 +82,7 @@ public class ReportPortlet extends Portlet {
         addCloseButton();
 
         add(new Label(I18N.CONSTANTS.loading()));
-
-        loadModel();
+        addContent();
     }
 
     private void addOptionsMenu() {
@@ -126,24 +136,8 @@ public class ReportPortlet extends Portlet {
         }));
     }
 
-    private void loadModel() {
-        dispatcher.execute(new GetReportModel(metadata.getId()), new AsyncCallback<ReportDTO>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onSuccess(ReportDTO dto) {
-                onModelLoad(dto);
-            }
-        });
-    }
-
-    private void onModelLoad(ReportDTO dto) {
-        Report report = dto.getReport();
+    private void addContent() {
+        Report report = this.report.getReport();
         if (report.getElements().isEmpty()) {
             removeAll();
             add(new Label("The report is empty"));
@@ -154,28 +148,16 @@ public class ReportPortlet extends Portlet {
 
         if (view == null) {
             removeAll();
-            add(new Label("Unsupport report type"));
+            add(new Label("Unsupported report type"));
             layout();
             return;
         }
 
-        dispatcher.execute(new GenerateElement<Content>(element), new AsyncCallback<Content>() {
-
-            @Override
-            public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onSuccess(Content result) {
-                element.setContent(result);
-                view.show(element);
-                removeAll();
-                add(view.asComponent());
-                layout();
-            }
-        });
+        element.setContent(content);
+        view.show(element);
+        removeAll();
+        add(view.asComponent());
+        layout();
     }
 
     private ReportView createView(ReportElement element) {

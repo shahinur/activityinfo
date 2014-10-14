@@ -49,21 +49,17 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
 
     private static final int ROW_INDENT = 15;
 
-    private PivotReportElement element;
     private Grid<PivotTableRow> grid;
     private ListStore<PivotTableRow> store;
     private Map<PivotTableData.Axis, String> propertyMap;
     private Map<Integer, PivotTableData.Axis> columnMap;
 
     private ColumnModel columnModel;
-    private Dispatcher dispatcher;
     private DrillDownEditor drillDownEditor;
 
     public PivotGridPanel(Dispatcher dispatcher) {
-        this.dispatcher = dispatcher;
         this.drillDownEditor = new DrillDownEditor(dispatcher);
         setLayout(new FitLayout());
-
     }
 
     @SuppressWarnings("GwtInconsistentSerializableClass")
@@ -95,8 +91,6 @@ public class PivotGridPanel extends ContentPanel implements ReportView<PivotRepo
         if (grid != null) {
             removeAll();
         }
-
-        this.element = element;
 
         PivotTableData data = element.getContent().getData();
 
