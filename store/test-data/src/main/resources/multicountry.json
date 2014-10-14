@@ -1,0 +1,31 @@
+[ {
+  "userId" : 9999,
+  "workspace" : {
+    "@id" : "G1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "Rdc"
+  },
+  "resources" : [ ]
+}, {
+  "userId" : 9999,
+  "workspace" : {
+    "@id" : "G2",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "Haiti"
+  },
+  "resources" : [ ]
+}, {
+  "userId" : 9999,
+  "workspace" : {
+    "@id" : "G3",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "Azerbaijan"
+  },
+  "resources" : [ ]
+} ]

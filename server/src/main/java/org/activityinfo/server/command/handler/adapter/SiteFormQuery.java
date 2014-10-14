@@ -25,6 +25,7 @@ import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalClass;
@@ -43,12 +44,21 @@ public class SiteFormQuery {
     private final StoreReader reader;
     private final ResourceId formClassId;
     private final FormTree formTree;
+    private boolean fetchIndicators;
 
     public SiteFormQuery(GetSites query, StoreReader reader, ResourceId formClassId) {
         this.reader = reader;
         this.query = query;
         this.formClassId = formClassId;
         this.formTree = reader.getFormTree(formClassId);
+    }
+
+    public boolean isFetchIndicators() {
+        return fetchIndicators;
+    }
+
+    public void setFetchIndicators(boolean fetchIndicators) {
+        this.fetchIndicators = fetchIndicators;
     }
 
     private TableModel buildQuery() {
@@ -58,16 +68,18 @@ public class SiteFormQuery {
         FormTreePrettyPrinter.print(tree);
 
         TableModel tableModel = new TableModel(formClassId);
+        tableModel.setFilter(filterExpr());
         tableModel.selectResourceId().as("id");
-        tableModel.selectExpr(filterExpr());
+
 
         Set<ResourceId> referencedClassIds = Sets.newHashSet();
 
         // Add root fields first
         for(FormTree.Node field : tree.getRootFields()) {
-            if(basicType(field.getType())) {
-                tableModel.selectField(field.getFieldId());
-
+            if(isIndicator(field.getType())) {
+                if(fetchIndicators) {
+                    tableModel.selectField(field.getFieldId());
+                }
             } else if(field.getType() instanceof RecordFieldType) {
                 RecordFieldType fieldType = (RecordFieldType) field.getType();
                 if(fieldType.getClassId().equals(LocalDateIntervalClass.CLASS_ID)) {
@@ -90,9 +102,9 @@ public class SiteFormQuery {
         return tableModel;
     }
 
-    private String filterExpr() {
+    private ExprValue filterExpr() {
         return new SiteFilterAdapter(reader, formTree)
-                .buildExpression(query.getFilter()).asExpression();
+                .buildExpression(query.getFilter());
     }
 
     private String referenceColumnId(ResourceId classId) {
@@ -179,10 +191,13 @@ public class SiteFormQuery {
         }
     }
 
-    private boolean basicType(FieldType type) {
+    private boolean isAttribute(FieldType type) {
+        return type instanceof EnumType;
+    }
+
+    private boolean isIndicator(FieldType type) {
         return type instanceof QuantityType ||
                 type instanceof TextType ||
-                type instanceof EnumType ||
                 type instanceof BarcodeType;
     }
 

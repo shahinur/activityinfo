@@ -1,10 +1,10 @@
 package org.activityinfo.ui.client.page.entry.form;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
-import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.server.endpoint.kml.JreIndicatorValueFormatter;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,13 +32,13 @@ public class SiteRendererTest {
         IndicatorDTO indicator1 = new IndicatorDTO();
         indicator1.setId(1);
         indicator1.setAggregation(IndicatorDTO.AGGREGATE_SUM);
-        indicator1.setName("First indicator");
+        indicator1.setLabel("First indicator");
         indicator1.setCategory("First group");
 
         IndicatorDTO indicator2 = new IndicatorDTO();
         indicator2.setAggregation(IndicatorDTO.AGGREGATE_SUM);
         indicator2.setId(2);
-        indicator2.setName("Second indicator");
+        indicator2.setLabel("Second indicator");
         indicator2.setCategory("Second group");
 
 
@@ -46,7 +46,7 @@ public class SiteRendererTest {
         indicator3.setAggregation(IndicatorDTO.AGGREGATE_SUM);
         indicator3.setType(FieldTypeClass.NARRATIVE);
         indicator3.setId(3);
-        indicator3.setName("Third indicator");
+        indicator3.setLabel("Third indicator");
         indicator3.setCategory("Second group");
 
 

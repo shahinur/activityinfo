@@ -44,7 +44,7 @@ public class Geodatabase extends ResourceMigrator {
 
         Preconditions.checkNotNull(resource.getId());
 
-        writer.writeResource(resource, null, null);
+        writer.writeResource(0, resource, null, null);
     }
 
     private void writeCountryForm(ResourceWriter writer) throws Exception {
@@ -64,6 +64,6 @@ public class Geodatabase extends ResourceMigrator {
                 .setType(TextType.INSTANCE)
                 .setRequired(true));
 
-        writer.writeResource(countryForm.asResource(), null, null);
+        writer.writeResource(0, countryForm.asResource(), null, null);
     }
 }

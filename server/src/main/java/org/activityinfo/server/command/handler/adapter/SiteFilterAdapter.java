@@ -15,6 +15,7 @@ import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.service.store.StoreReader;
 
 import java.util.Set;
@@ -35,7 +36,7 @@ public class SiteFilterAdapter {
         this.formTree = formTree;
     }
 
-    public ExprNode buildExpression(Filter query) {
+    public ExprValue buildExpression(Filter query) {
         SetBuilder intersection = new SetBuilder(AndFunction.INSTANCE);
 
         if(query.isRestricted(DimensionType.Partner)) {
@@ -47,7 +48,7 @@ public class SiteFilterAdapter {
         } else if(query.isRestricted(DimensionType.AdminLevel)) {
             intersection.add(adminFilter(query.getRestrictions(DimensionType.AdminLevel)));
         }
-        return intersection.build();
+        return intersection.buildFieldValue();
     }
 
     private ExprNode partnerFilter(Set<Integer> partnerIds) {
@@ -71,7 +72,6 @@ public class SiteFilterAdapter {
         }
         return union.build();
     }
-
 
     private ExprNode adminFilter(Set<Integer> entityIds) {
 
@@ -130,6 +130,13 @@ public class SiteFilterAdapter {
             }
         }
 
+        public ExprValue buildFieldValue() {
+            if(set == null) {
+                return null;
+            } else {
+                return new ExprValue(set.asExpression());
+            }
+        }
     }
 
 

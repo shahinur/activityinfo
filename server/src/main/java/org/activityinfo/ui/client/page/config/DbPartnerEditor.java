@@ -127,7 +127,7 @@ public class DbPartnerEditor extends AbstractGridPresenter<PartnerDTO> implement
                         } else {
                             Log.debug("DbPartnerEditor added new partner '" + newPartner.getName() +
                                       "' to database " + db.getId());
-                            newPartner.setId(result.getNewId());
+                            newPartner.setId(result.getNewResourceId());
                             store.add(newPartner);
                             eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
                             dlg.hide();

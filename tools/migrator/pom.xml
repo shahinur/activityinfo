@@ -44,5 +44,11 @@
       <version>2.6</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-test-data</artifactId>
+      <version>3.0.0-SNAPSHOT</version>
+    </dependency>
+
   </dependencies>
 </project>

@@ -22,6 +22,8 @@ package org.activityinfo.legacy.shared.command.result;
  * #L%
  */
 
+import org.activityinfo.model.resource.ResourceId;
+
 /**
  * Result of commands which create a new entity.
  *
@@ -55,6 +57,10 @@ public class CreateResult implements CommandResult {
 
     public void setNewId(int newId) {
         this.newId = newId;
+    }
+
+    public ResourceId getNewResourceId() {
+        throw new UnsupportedOperationException();
     }
 
 }

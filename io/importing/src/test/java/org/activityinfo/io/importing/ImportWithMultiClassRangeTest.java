@@ -8,7 +8,6 @@ import org.activityinfo.io.importing.data.PastedTable;
 import org.activityinfo.io.importing.model.ImportModel;
 import org.activityinfo.io.importing.strategy.FieldImportStrategies;
 import org.activityinfo.io.importing.validation.ValidatedRowTable;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.formTree.FormTreePrettyPrinter;
@@ -23,7 +22,6 @@ import org.activityinfo.model.type.converter.JvmConverterFactory;
 import org.activityinfo.service.store.AsyncFormTreeBuilder;
 import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.store.test.TestResourceStore;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -78,9 +76,8 @@ public class ImportWithMultiClassRangeTest extends AbstractImporterTest {
 
     @Before
     public void setUp() throws IOException {
-        resourceLocator = new TestResourceStore()
-                .load("nfi-import.json")
-                .createLocator();
+        resourceLocator = TestResourceStore
+                .createLocator("nfi-import.json");
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
 
         LocaleProxy.initialize();

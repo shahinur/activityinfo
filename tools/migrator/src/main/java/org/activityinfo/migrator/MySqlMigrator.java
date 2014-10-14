@@ -30,7 +30,7 @@ public class MySqlMigrator {
 
     public MySqlMigrator(MigrationContext context) {
         migrators.add(new UserDatabaseTable(context));
-        migrators.add(new Geodatabase(context));
+     //   migrators.add(new Geodatabase(context));
         migrators.add(new CountryTable(context));
         migrators.add(new AdminLevelTable(context));
         migrators.add(new AdminEntityTable(context));
@@ -73,8 +73,6 @@ public class MySqlMigrator {
             }
         }
         writer.endResources();
-
-        writer.writeUserIndex(queryUserIndex(connection));
 
         writer.close();
     }

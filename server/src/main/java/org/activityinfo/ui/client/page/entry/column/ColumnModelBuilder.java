@@ -30,10 +30,10 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.ui.client.page.common.columns.EditableLocalDateColumn;
 import org.activityinfo.ui.client.page.common.columns.ReadTextColumn;
 import org.activityinfo.ui.client.util.GwtUtil;
@@ -276,7 +276,7 @@ public class ColumnModelBuilder {
     }
 
     public ColumnModelBuilder addPartnerColumn() {
-        ColumnConfig column = new ColumnConfig("partner", I18N.CONSTANTS.partner(), 100);
+        ColumnConfig column = new ColumnConfig("partnerName", I18N.CONSTANTS.partner(), 100);
         column.setToolTip(I18N.CONSTANTS.partner());
         column.setRenderer(new StringWithTooltipRenderer());
         columns.add(column);

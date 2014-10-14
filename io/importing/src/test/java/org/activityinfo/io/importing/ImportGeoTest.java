@@ -33,7 +33,7 @@ public class ImportGeoTest extends AbstractImporterTest {
 
     @Before
     public void setUp() throws IOException {
-        resourceLocator = new TestResourceStore().load("somalia-admin.json").createLocator();
+        resourceLocator = TestResourceStore.createLocator("somalia-admin.json");
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
     }
 

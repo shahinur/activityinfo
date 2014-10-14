@@ -440,7 +440,7 @@ public final class SiteDTO extends BaseModelData {
 
     @Override
     public int hashCode() {
-        return getLegacyId();
+        return getId().hashCode();
     }
 
     /**

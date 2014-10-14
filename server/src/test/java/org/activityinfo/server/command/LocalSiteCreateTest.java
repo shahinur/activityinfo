@@ -22,6 +22,9 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.fixtures.MockHibernateModule;
+import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
@@ -29,9 +32,6 @@ import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.fixtures.MockHibernateModule;
-import org.activityinfo.fixtures.Modules;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.util.logging.LoggingModule;
@@ -132,7 +132,7 @@ public class LocalSiteCreateTest extends LocalHandlerTestCase {
         iom.setName("IOM");
 
         CreateResult result = executeRemotely(new AddPartner(databaseId, iom));
-        iom.setId(result.getNewId());
+        iom.setId(result.getNewResourceId());
 
         // Now U2 synchronizes, and adds a new site with this partner
 

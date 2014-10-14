@@ -40,7 +40,7 @@ public class ImportSimpleTest extends AbstractImporterTest {
 
     @Before
     public void setUp() throws IOException {
-        resourceLocator = new TestResourceStore().load("brac-import.json").createLocator();
+        resourceLocator = TestResourceStore.createLocator("brac-import.json");
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
     }
 

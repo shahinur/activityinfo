@@ -57,7 +57,7 @@ public class DimensionPrunerTest {
         ActivityDTO dist = new ActivityDTO(1, "Distribution");
         IndicatorDTO nbMenages = new IndicatorDTO();
         nbMenages.setId(NB_MENAGES_INDICATOR_ID);
-        nbMenages.setName("Nb Menages");
+        nbMenages.setLabel("Nb Menages");
         dist.getIndicators().add(nbMenages);
 
         AttributeGroupDTO distFunding = new AttributeGroupDTO(NFI_FUNDING_GROUP_ID);
@@ -73,7 +73,7 @@ public class DimensionPrunerTest {
 
         IndicatorDTO voucherValue = new IndicatorDTO();
         voucherValue.setId(VOUCHER_INDICATOR_ID);
-        voucherValue.setName("Voucher Value");
+        voucherValue.setLabel("Voucher Value");
         fairs.getIndicators().add(voucherValue);
 
         UserDatabaseDTO nfi = new UserDatabaseDTO(1, "NFI");

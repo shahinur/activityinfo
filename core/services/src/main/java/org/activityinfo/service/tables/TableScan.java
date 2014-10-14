@@ -166,6 +166,4 @@ public class TableScan {
 
         return Iterables.toArray(sinks, InstanceSink.class);
     }
-
-
 }

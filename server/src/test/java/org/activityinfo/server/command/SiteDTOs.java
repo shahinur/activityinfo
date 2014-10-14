@@ -22,10 +22,10 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.legacy.shared.model.ProjectDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.legacy.client.KeyGenerator;
 import org.junit.Assert;
 
 import java.util.GregorianCalendar;
@@ -38,7 +38,7 @@ public class SiteDTOs {
         newSite.setId(new KeyGenerator().generateInt());
         newSite.setActivityId(1);
         newSite.setLocationId(1);
-        newSite.setPartner(new PartnerDTO(1, "Foobar"));
+        newSite.setPartner(new PartnerDTO(1, 1, "Foobar"));
         newSite.setReportingPeriodId(new KeyGenerator().generateInt());
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());

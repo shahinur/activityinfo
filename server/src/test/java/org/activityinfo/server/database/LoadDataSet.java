@@ -60,7 +60,7 @@ public class LoadDataSet extends Statement {
 
     public LoadDataSet(Provider<Connection> connectionProvider, ResourceStore store, Statement next,
                        String name, Object target) {
-        this.store = (TestResourceStore) store;
+        this.store = (TestResourceStore)store;
         this.next = next;
         this.target = target;
         this.connectionProvider = connectionProvider;
@@ -79,6 +79,7 @@ public class LoadDataSet extends Statement {
         IDataSet data = loadDataSet();
 
         LOGGER.info("Loading resources...");
+        store.setUp();
         store.load(jsonFile());
 
         List<Throwable> errors = new ArrayList<Throwable>();
@@ -88,6 +89,8 @@ public class LoadDataSet extends Statement {
             next.evaluate();
         } catch (Throwable e) {
             errors.add(e);
+        } finally {
+            store.tearDown();
         }
         MultipleFailureException.assertEmpty(errors);
     }

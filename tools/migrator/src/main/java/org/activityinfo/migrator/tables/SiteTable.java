@@ -115,7 +115,7 @@ public class SiteTable extends ResourceMigrator {
         populateBoundAdminLevels(connection, sites, activityId);
 
         for(FormInstance site : sites.values()) {
-            writer.writeResource(site.asResource(), null, null);
+            writer.writeResource(0, site.asResource(), null, null);
         }
     }
 

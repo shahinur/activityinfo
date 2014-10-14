@@ -2,17 +2,14 @@ package org.activityinfo.migrator;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Multimap;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
-import java.util.Map;
 
 public class MySqlResourceWriter implements ResourceWriter {
 
@@ -53,7 +50,7 @@ public class MySqlResourceWriter implements ResourceWriter {
 
 
     @Override
-    public void writeResource(Resource resource, Date dateCreated, Date dateDeleted) throws SQLException, JsonProcessingException {
+    public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted) throws SQLException, JsonProcessingException {
 
         if(resource == null) {
             throw new NullPointerException("resource");
@@ -83,23 +80,6 @@ public class MySqlResourceWriter implements ResourceWriter {
         statement.executeBatch();
         statement.close();
         connection.commit();
-    }
-
-    @Override
-    public void writeUserIndex(Multimap<ResourceId, ResourceId> index) throws Exception {
-        this.statement = connection.prepareStatement(
-                "INSERT INTO user_root_index (user_id, resource_id) " +
-                "VALUES (?, ?)");
-
-        for (Map.Entry<ResourceId, ResourceId> entry : index.entries()) {
-            statement.setString(1, entry.getKey().asString());
-            statement.setString(2, entry.getValue().asString());
-            statement.addBatch();
-        }
-        statement.executeBatch();
-        statement.close();
-        connection.commit();
-
     }
 
     public void close() throws SQLException {

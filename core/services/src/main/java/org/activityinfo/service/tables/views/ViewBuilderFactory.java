@@ -97,7 +97,7 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitBooleanField(FormField field, BooleanType type) {
-        return new BooleanColumnBuilder(field.getId());
+        return new BooleanColumnBuilder();
     }
 
     @Override

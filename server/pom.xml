@@ -39,8 +39,23 @@
     </dependency>
     <dependency>
       <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-cloudsql-store</artifactId>
+      <artifactId>activityinfo-hrd-store</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-testing-store</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-test-data</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
 
 

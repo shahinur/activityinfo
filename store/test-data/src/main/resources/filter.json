@@ -1,0 +1,570 @@
+[ {
+  "userId" : 1,
+  "workspace" : {
+    "@id" : "d1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "_classf11" : {
+      "@type" : "REFERENCE",
+      "value" : "G1"
+    },
+    "label" : "PEAR"
+  },
+  "resources" : [ {
+    "@id" : "P1",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Partners",
+    "elements" : [ {
+      "id" : "P1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "P1f10",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_description"
+      },
+      "label" : "Full Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "d1p1",
+    "@owner" : "P1",
+    "@version" : 0,
+    "@class" : "P1",
+    "P1f1" : "NRC"
+  }, {
+    "@id" : "d1p2",
+    "@owner" : "P1",
+    "@version" : 0,
+    "@class" : "P1",
+    "P1f1" : "Solidarites"
+  }, {
+    "@id" : "d1p3",
+    "@owner" : "P1",
+    "@version" : 0,
+    "@class" : "P1",
+    "P1f1" : "IRC"
+  }, {
+    "@id" : "a1",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "NFI",
+    "elements" : [ {
+      "id" : "a1f7",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Partner",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "P1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "a1f9",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Date",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:record",
+          "formClass" : {
+            "@type" : "REFERENCE",
+            "value" : "_localDateInterval"
+          }
+        },
+        "typeClass" : "record"
+      }
+    }, {
+      "id" : "a1f11",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "localite",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "L1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "a1f14",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Comments",
+      "required" : false,
+      "type" : {
+        "typeClass" : "NARRATIVE"
+      }
+    } ]
+  }, {
+    "@id" : "s1",
+    "@owner" : "a1",
+    "@version" : 0,
+    "@class" : "a1",
+    "a1f9" : {
+      "@class" : "_localDateInterval",
+      "startDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2009-01-01"
+      },
+      "endDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2009-01-02"
+      }
+    },
+    "a1f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "a1f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g1"
+    }
+  }, {
+    "@id" : "s2",
+    "@owner" : "a1",
+    "@version" : 0,
+    "@class" : "a1",
+    "a1f9" : {
+      "@class" : "_localDateInterval",
+      "startDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2009-01-15"
+      },
+      "endDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2009-01-16"
+      }
+    },
+    "a1f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p3"
+    },
+    "a1f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g2"
+    }
+  }, {
+    "@id" : "s3",
+    "@owner" : "a1",
+    "@version" : 0,
+    "@class" : "a1",
+    "a1f9" : {
+      "@class" : "_localDateInterval",
+      "startDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2008-10-05"
+      },
+      "endDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2008-10-06"
+      }
+    },
+    "a1f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p2"
+    },
+    "a1f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g3"
+    }
+  }, {
+    "@id" : "s4",
+    "@owner" : "a1",
+    "@version" : 0,
+    "@class" : "a1",
+    "a1f9" : {
+      "@class" : "_localDateInterval",
+      "startDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2008-10-05"
+      },
+      "endDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2008-10-06"
+      }
+    },
+    "a1f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p3"
+    },
+    "a1f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g3"
+    }
+  } ]
+}, {
+  "userId" : 9999,
+  "workspace" : {
+    "@id" : "G1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "Rdc"
+  },
+  "resources" : [ {
+    "@id" : "E1",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Province",
+    "elements" : [ {
+      "id" : "E1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E1f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "E2",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Territoire",
+    "elements" : [ {
+      "id" : "E2f2",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_parent"
+      },
+      "label" : "Province",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "E1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "E2f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E2f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "z1",
+    "@owner" : "E1",
+    "@version" : 0,
+    "@class" : "E1",
+    "E1f1" : "Kinshasa",
+    "E1f3" : "10"
+  }, {
+    "@id" : "z2",
+    "@owner" : "E1",
+    "@version" : 0,
+    "@class" : "E1",
+    "E1f1" : "Sud Kivu",
+    "E1f3" : "20"
+  }, {
+    "@id" : "z3",
+    "@owner" : "E1",
+    "@version" : 0,
+    "@class" : "E1",
+    "E1f1" : "Nord Kivu",
+    "E1f3" : "30"
+  }, {
+    "@id" : "z4",
+    "@owner" : "E1",
+    "@version" : 0,
+    "@class" : "E1",
+    "E1f1" : "Ituri",
+    "E1f3" : "40"
+  }, {
+    "@id" : "z10",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "203",
+    "E2f1" : "Bukavu",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z4"
+    }
+  }, {
+    "@id" : "z11",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "201",
+    "E2f1" : "Walungu",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "z12",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "202",
+    "E2f1" : "Shabunda",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "z13",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "203",
+    "E2f1" : "Kalehe",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "z21",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "203",
+    "E2f1" : "Irumu",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z4"
+    }
+  }, {
+    "@id" : "L1",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "localite",
+    "elements" : [ {
+      "id" : "L1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L1f4",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Alternate Name",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L1f6",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Administrative Unit",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : [ "E2", "E1" ]
+          },
+          "cardinality" : "MULTIPLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "L1f5",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Geographic Position",
+      "required" : false,
+      "type" : {
+        "typeClass" : "GEOGRAPHIC_POINT"
+      }
+    } ]
+  }, {
+    "@id" : "L2",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Health Center",
+    "elements" : [ {
+      "id" : "L2f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L2f4",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Alternate Name",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L2f6",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Administrative Unit",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : [ "E2", "E1" ]
+          },
+          "cardinality" : "MULTIPLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "L2f5",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Geographic Position",
+      "required" : false,
+      "type" : {
+        "typeClass" : "GEOGRAPHIC_POINT"
+      }
+    } ]
+  }, {
+    "@id" : "g1",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Penekusu",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 1.532,
+      "latitude" : 27.323
+    },
+    "L1f6" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "g2",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Ngshwe",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 1.323,
+      "latitude" : 28.232
+    },
+    "L1f6" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "g3",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Boga",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 3.323,
+      "latitude" : 27.232
+    },
+    "L1f6" : {
+      "@type" : "REFERENCE",
+      "value" : "z4"
+    }
+  }, {
+    "@id" : "g4",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Mushinga",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 3.323,
+      "latitude" : 27.232
+    },
+    "L1f6" : {
+      "@type" : "REFERENCE",
+      "value" : "z3"
+    }
+  } ]
+} ]

@@ -1,9 +1,6 @@
 package org.activityinfo.service.tables;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
+import com.google.common.base.*;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.expr.*;
 import org.activityinfo.model.expr.diagnostic.AmbiguousSymbolException;
@@ -23,6 +20,7 @@ import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.model.type.time.TemporalValue;
 import org.activityinfo.service.tables.function.ColumnFunctions;
+import org.activityinfo.service.tables.views.ColumnFilter;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -105,6 +103,14 @@ public class RowSetBuilder {
 
             return batchBuilder.addEmptyColumn(rootFormClass);
 
+        }
+    }
+
+    public Function<ColumnView, ColumnView> filter(ExprValue filter) {
+        if(filter == null) {
+            return Functions.identity();
+        } else {
+            return new ColumnFilter(fetch(filter.getExpression()));
         }
     }
 

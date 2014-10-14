@@ -25,10 +25,10 @@ package org.activityinfo.server.report.generator.map;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.shared.command.GenerateElement;
+import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.reports.content.*;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
@@ -118,7 +118,7 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
 
         IndicatorDTO indicator = new IndicatorDTO();
         indicator.setId(1);
-        indicator.setName("Indicator Test");
+        indicator.setLabel("Indicator Test");
 
         content.getIndicators().add(indicator);
 

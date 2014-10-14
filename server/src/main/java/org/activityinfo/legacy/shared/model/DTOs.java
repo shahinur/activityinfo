@@ -23,8 +23,12 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.legacy.shared.command.result.*;
+import org.activityinfo.legacy.shared.command.result.AdminEntityResult;
+import org.activityinfo.legacy.shared.command.result.BaseMapResult;
+import org.activityinfo.legacy.shared.command.result.ListResult;
+import org.activityinfo.legacy.shared.command.result.UserResult;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.legacy.CuidAdapter;
 
 import java.util.*;
 
@@ -157,7 +161,7 @@ public class DTOs {
 
             SITE_WITH_NO_ADMIN_LEVELS = new SiteDTO(5);
             SITE_WITH_NO_ADMIN_LEVELS.setActivityId(NFI_DISTRIBUTION.getId());
-            SITE_WITH_NO_ADMIN_LEVELS.setPartner(new PartnerDTO(89, "AVSI"));
+            SITE_WITH_NO_ADMIN_LEVELS.setPartner(new PartnerDTO(CuidAdapter.partnerInstanceId(DATABASE.getId(), 89), "AVSI"));
             SITE_WITH_NO_ADMIN_LEVELS.setLocationName("Boise Idahao");
 
             SITES = Lists.newArrayList();
@@ -210,25 +214,6 @@ public class DTOs {
     public static Map<Integer, SiteDTO> pearSites() {
         throw new UnsupportedOperationException();
 
-    }
-
-    public static SiteResult pearSitesManyResults(int count) {
-        List<SiteDTO> sites = new ArrayList<SiteDTO>();
-        for (int i = 0; i != count; ++i) {
-            SiteDTO fargo = new SiteDTO(i);
-            fargo.setActivityId(91);
-            fargo.setPartner(new PartnerDTO(88, "NRC"));
-            fargo.setLocationName("Fargo");
-            fargo.setAdminEntity(3, WATALINA);
-            fargo.setAdminEntity(2, BENI);
-            fargo.setAdminEntity(1, NORD_KIVU);
-            sites.add(fargo);
-        }
-        return new SiteResult(sites);
-    }
-
-    public static SiteResult pearSitesResults() {
-        return new SiteResult(new ArrayList<SiteDTO>(pearSites().values()));
     }
 
     public static ListResult<AdminEntityDTO> getProvinces() {

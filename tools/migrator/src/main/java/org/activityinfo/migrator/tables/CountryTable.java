@@ -1,40 +1,52 @@
 package org.activityinfo.migrator.tables;
 
+import org.activityinfo.migrator.ResourceMigrator;
+import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.system.FolderClass;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Statement;
 
-import static org.activityinfo.migrator.tables.Geodatabase.COUNTRY_FORM_CLASS_ID;
-import static org.activityinfo.model.legacy.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.COUNTRY_DOMAIN;
 
-public class CountryTable extends SimpleTableMigrator {
+public class CountryTable extends ResourceMigrator {
+
+    public static final int GEO_ADMIN_USER_ID = 9999;
+    private MigrationContext context;
 
     public CountryTable(MigrationContext context) {
-        super(context);
+        this.context = context;
     }
 
     @Override
-    protected String query() {
-        return "select * from country WHERE " + filter.countryFilter();
+    public void getResources(Connection connection, ResourceWriter writer) throws Exception {
+        String sql = "select * from country WHERE " + context.filter().countryFilter();
+        try(Statement stmt = connection.createStatement()) {
+            try(ResultSet rs = stmt.executeQuery(sql)) {
+                while(rs.next()) {
+                    writeCountry(rs, writer);
+                }
+            }
+        }
     }
 
-    @Override
-    protected void writeFormClass() {
-        super.writeFormClass();
-    }
 
-    @Override
-    public Resource toResource(ResultSet rs) throws SQLException {
+    public void writeCountry(ResultSet rs, ResourceWriter writer) throws Exception {
         ResourceId id = context.resourceId(COUNTRY_DOMAIN, rs.getInt("CountryId"));
-        return new FormInstance(id, context.getIdStrategy().countryFormClassId())
-        .set(field(COUNTRY_FORM_CLASS_ID, CODE_FIELD), rs.getString("iso2"))
-        .set(field(COUNTRY_FORM_CLASS_ID, NAME_FIELD), rs.getString("Name"))
-        .asResource();
+        Resource workspace = new FormInstance(id, FolderClass.CLASS_ID)
+                .setOwnerId(Resources.ROOT_ID)
+                        //.set(FolderClass.LABEL_FIELD_ID, rs.getString("iso2"))
+                .set(FolderClass.LABEL_FIELD_ID, rs.getString("Name"))
+                .asResource();
 
-        // TODO : geometry;
+        writer.writeResource(GEO_ADMIN_USER_ID, workspace, null, null);
+      //  writer.writeResource(GEO_ADMIN_USER_ID, acr.asResource(), null, null);
     }
+
 }

@@ -341,19 +341,19 @@ public class ItextReportRendererTest {
         IndicatorDTO indicator101 = new IndicatorDTO();
         indicator101.setId(101);
         indicator101
-                .setName("Nombre de salles de classe fonctionnelles (construites, rehabilitees, equipees) "
+                .setLabel("Nombre de salles de classe fonctionnelles (construites, rehabilitees, equipees) "
                         +
                         "pour l'education formelle et non formelle.");
 
         IndicatorDTO indicator102 = new IndicatorDTO();
         indicator102.setId(102);
         indicator102
-                .setName("Nombre d'enfants ayant beneficie de kits scolaires, recreatifs et didactiques");
+                .setLabel("Nombre d'enfants ayant beneficie de kits scolaires, recreatifs et didactiques");
 
         IndicatorDTO indicator103 = new IndicatorDTO();
         indicator103.setId(103);
         indicator103
-                .setName("Pourcentage des ménages qui utilsent la moustiquaire rationnellement");
+                .setLabel("Pourcentage des ménages qui utilsent la moustiquaire rationnellement");
 
         MapContent mapContent = new MapContent();
         mapContent.setFilterDescriptions(Collections.EMPTY_LIST);

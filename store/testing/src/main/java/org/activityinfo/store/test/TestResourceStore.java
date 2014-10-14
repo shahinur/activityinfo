@@ -1,54 +1,66 @@
 package org.activityinfo.store.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.legacy.InstanceQuery;
 import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.legacy.QueryResult;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.ApplicationClassProvider;
-import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.store.*;
-import org.activityinfo.service.tables.StoreAccessor;
-import org.activityinfo.service.tables.TableBuilder;
-import org.activityinfo.service.tree.FormClassProvider;
-import org.activityinfo.service.tree.FormTreeBuilder;
+import org.activityinfo.store.hrd.HrdResourceStore;
+import org.activityinfo.store.hrd.StoreContext;
+import org.activityinfo.store.hrd.dao.WorkspaceCreation;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("GwtClientClassFromNonInheritedModule")
-public class TestResourceStore implements ResourceStore, StoreAccessor, StoreReader, FormClassProvider {
+public class TestResourceStore implements ResourceStore {
 
-    private ApplicationClassProvider applicationClassProvider = new ApplicationClassProvider();
+    private HrdResourceStore store;
 
-    private final Map<ResourceId, Resource> resourceMap = Maps.newHashMap();
+    private AuthenticatedUser currentUser = new AuthenticatedUser(1);
 
-    private AuthenticatedUser currentUser = new AuthenticatedUser();
-
-    private int currentVersion = 1;
+    private final LocalServiceTestHelper helper =
+            new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
+                    .setApplyAllHighRepJobPolicy());
 
     private Resource lastUpdated;
+    private final StoreContext storeContext;
+
+    public void setUp() {
+        helper.setUp();
+    }
+
+    public void tearDown() {
+//        helper.tearDown();
+    }
+
+    public TestResourceStore() {
+        storeContext = new StoreContext();
+        store = new HrdResourceStore(storeContext);
+    }
 
     /**
      * Loads a set of resources from a json resource on the classpath
@@ -59,272 +71,97 @@ public class TestResourceStore implements ResourceStore, StoreAccessor, StoreRea
     public TestResourceStore load(String resourceName) throws IOException {
         ObjectMapper mapper = ObjectMapperFactory.get();
         URL resourceURL = Resources.getResource(resourceName);
-        Resource[] resources = mapper.readValue(resourceURL, Resource[].class);
-        for(int i=0;i!=resources.length;++i) {
-            resources[i].setVersion(currentVersion++);
-            resourceMap.put(resources[i].getId(), resources[i]);
+        TestWorkspace[] workspaces = mapper.readValue(resourceURL, TestWorkspace[].class);
+
+        for(int i=0;i!=workspaces.length;++i) {
+            TestWorkspace workspace = workspaces[i];
+            AuthenticatedUser user = new AuthenticatedUser(workspace.getUserId());
+            WorkspaceCreation workspaceCreation = new WorkspaceCreation(storeContext, user);
+            workspaceCreation.createWorkspace(workspace.getWorkspace(), workspace.getResources());
         }
         return this;
     }
 
-    @Override
-    public ResourceCursor openCursor(ResourceId formClassId) {
-        List<Resource> resources = Lists.newArrayList();
-        for(Resource resource : resourceMap.values()) {
-            if(formClassId.equals(resource.getValue().getClassId())) {
-                resources.add(resource);
-            }
+
+    public static ResourceLocator createLocator(String resourceName) {
+        try {
+            return new LocatorAdapter(new TestRemoteStoreService(new TestResourceStore().load(resourceName)));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return new Cursor(resources.iterator());
     }
 
-    @Override
-    public List<ResourceNode> getOwnedOrSharedWorkspaces() {
-        return getOwnedOrSharedWorkspaces(currentUser);
-    }
-
-    @Override
-    public StoreReader openReader(AuthenticatedUser user) {
-        return this;
-    }
-
-    public Resource get(ResourceId resourceId) {
-        if(resourceId.isApplicationDefined()) {
-            return applicationClassProvider.get(resourceId).asResource();
-        }
-        Resource resource = resourceMap.get(resourceId);
-        if(resource == null) {
-            throw new ResourceNotFound(resourceId);
-        }
-        return resource.copy();
-    }
-
-    @Override
-    public UserResource getResource(ResourceId resourceId) {
-        return new UserResource(get(resourceId), true, true);
-    }
-
-    @Override
-    public ResourceNode getResourceNode(ResourceId resourceId) {
-        return new ResourceNode(getResource(resourceId).getResource());
-    }
-
-    @Override
-    public Iterable<ResourceNode> getFolderItems(ResourceId parentId) {
-        return null;
-    }
-
-    @Override
-    public FormTree getFormTree(ResourceId formClassId) {
-        return new FormTreeBuilder(this).queryTree(formClassId);
-    }
-
-    @Override
-    public Map<ResourceId, UserResource> getResources(Set<ResourceId> resourceIds) {
-        Map<ResourceId, UserResource> map = Maps.newHashMap();
-        for(ResourceId id : resourceIds) {
-            try {
-                map.put(id, getResource(id));
-            } catch(ResourceNotFound e) {
-                // ignore
-            }
-        }
-        return map;
-    }
-
-    @Override
-    public TableData getTable(TableModel tableModel) {
-        return queryTable(currentUser, tableModel);
+    public ResourceLocator createLocator() {
+        return new LocatorAdapter(new TestRemoteStoreService(store));
     }
 
     @Override
     public UserResource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
-        return UserResource.userResource(get(resourceId));
+        return store.get(user, resourceId);
     }
 
     @Override
-    public FolderProjection queryTree(AuthenticatedUser user, FolderRequest request) {
-        ResourceNode root = createNode(request, get(request.getRootId()));
-        return new FolderProjection(root);
-    }
-
-    private UpdateResult put(AuthenticatedUser user, ResourceId id, Resource resource) {
-        lastUpdated = resource.copy();
-        lastUpdated.setVersion(currentVersion++);
-        put(lastUpdated);
-        return UpdateResult.committed(id, lastUpdated.getVersion());
+    public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+        return store.getAccessControlRules(user, resourceId);
     }
 
     @Override
+    @DELETE
+    @Path("resource/{id}")
+    @Consumes("application/json")
+    @Produces("application/json")
     public UpdateResult delete(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
-        Resource resource = resourceMap.get(resourceId);
-        if (resource != null) {
-            long version = resource.getVersion() + 1;
-            resourceMap.remove(resourceId);
-            return UpdateResult.committed(resourceId, version);
-        } else {
-            return UpdateResult.rejected(resourceId);
-        }
-    }
-
-    @Override
-    public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
-        List<ResourceNode> nodes = Lists.newArrayList();
-        for(Resource resource : all()) {
-            if(resource.getOwnerId().equals(org.activityinfo.model.resource.Resources.ROOT_ID)) {
-                nodes.add(newNode(resource));
-            }
-        }
-        return nodes;
-    }
-
-    private ResourceNode newNode(Resource resource) {
-        ResourceId classId = resource.getValue().getClassId();
-        ResourceNode node = new ResourceNode(resource.getId(), classId);
-        node.setOwnerId(resource.getOwnerId());
-
-        if(classId.equals(FormClass.CLASS_ID)) {
-            node.setLabel(resource.getValue().isString(FormClass.LABEL_FIELD_ID));
-        } else if(classId.equals(FolderClass.CLASS_ID)) {
-            node.setLabel(resource.getValue().isString(FolderClass.LABEL_FIELD_NAME));
-        }
-        return node;
-    }
-
-    private TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
-        TableBuilder builder = new TableBuilder(this);
-        try {
-            return builder.buildTable(tableModel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
-    public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
-        try {
-            return new CubeBuilder(this).buildCube(tableModel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return store.delete(user, resourceId);
     }
 
     @Override
     public UpdateResult put(AuthenticatedUser user, Resource resource) {
-        return put(currentUser, resource.getId(), resource);
+        this.lastUpdated = resource.copy();
+        return store.put(user, resource);
     }
 
     @Override
     public UpdateResult create(AuthenticatedUser user, Resource resource) {
-        if (resourceMap.get(resource.getId()) == null) return put(user, resource);
-        else return UpdateResult.rejected();
+        this.lastUpdated = resource.copy();
+        return store.create(user, resource);
     }
 
     @Override
-    public void close() {
-
-    }
-
-    private ResourceNode createNode(FolderRequest request, Resource resource) {
-        ResourceId classId = getClassId(resource);
-        ResourceNode node = new ResourceNode(resource.getId(), classId);
-        node.setLabel(Preconditions.checkNotNull(getLabel(resource, classId), resource.getId() + " has no label set"));
-
-        // add children
-        for(Resource child : resourceMap.values()) {
-            if(child.getOwnerId().equals(resource.getId()) && request.getFormClassIds().contains(classId)) {
-                node.getChildren().add(createNode(request, child));
-            }
-        }
-        return node;
+    public FolderProjection queryTree(@InjectParam AuthenticatedUser user, FolderRequest request) {
+        return store.queryTree(user, request);
     }
 
     @Override
-    public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
-                                                @PathParam("id") ResourceId resourceId) {
-        throw new UnsupportedOperationException();
+    @POST
+    @Path("query/cube")
+    @Consumes("application/json")
+    @Produces("application/json")
+    public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
+        return store.queryCube(user, tableModel);
+    }
+
+    @Override
+    public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {
+        return store.getOwnedOrSharedWorkspaces(user);
     }
 
     @Override
     public List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceId workspaceId, long version) {
-        throw new UnsupportedOperationException();
+        return store.getUpdates(user, workspaceId, version);
     }
 
     @Override
     public StoreLoader beginLoad(AuthenticatedUser user, ResourceId parentId) {
-        throw new UnsupportedOperationException();
-    }
-
-    private String getLabel(Resource resource, ResourceId classId) {
-        if(FormClass.CLASS_ID.equals(classId)) {
-            return resource.getValue().isString(FormClass.LABEL_FIELD_ID);
-        } else if(FolderClass.CLASS_ID.equals(classId)) {
-            return resource.getValue().isString(FolderClass.LABEL_FIELD_ID.asString());
-        } else {
-            return classId == null ? resource.getId().asString() : classId.asString();
-        }
-    }
-
-    private ResourceId getClassId(Resource resource) {
-        return resource.getValue().getClassId();
-    }
-
-    public void put(Resource resource) {
-        resourceMap.put(resource.getId(), resource.copy());
-    }
-
-    public Iterable<Resource> all() {
-        return resourceMap.values();
-    }
-
-    public void remove(ResourceId id) {
-        resourceMap.remove(id);
-    }
-
-    public Resource getLastUpdated() {
-        return lastUpdated.copy();
-    }
-
-    public ResourceLocator createLocator() {
-        return new LocatorAdapter(new TestRemoteStoreService(this));
-    }
-
-    public static ResourceLocator createLocator(String jsonResourceName) throws IOException {
-        return new TestResourceStore().load(jsonResourceName).createLocator();
+        return store.beginLoad(user, parentId);
     }
 
     @Override
-    public FormClass getFormClass(ResourceId resourceId) {
-        return FormClass.fromResource(getResource(resourceId).getResource());
+    public StoreReader openReader(AuthenticatedUser user) {
+        return store.openReader(user);
     }
 
-    private class Cursor implements ResourceCursor {
-
-        private Iterator<Resource> iterator;
-
-        private Cursor(Iterator<Resource> iterator) {
-            this.iterator = iterator;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return iterator.hasNext();
-        }
-
-        @Override
-        public Resource next() {
-            return iterator.next().copy();
-        }
-
-        @Override
-        public void remove() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public void close() throws Exception {
-
-        }
+    public Resource getLastUpdated() {
+        return lastUpdated;
     }
 
     /**

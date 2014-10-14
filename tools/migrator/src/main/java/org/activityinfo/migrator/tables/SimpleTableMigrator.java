@@ -29,7 +29,7 @@ public abstract class SimpleTableMigrator extends ResourceMigrator {
                 while(rs.next()) {
                     Resource resource = toResource(rs);
                     try {
-                        writer.writeResource(resource, null, null);
+                        writer.writeResource(getOwnerUser(rs), resource, null, null);
                     } catch(Exception e) {
                         throw new RuntimeException(getClass().getSimpleName() +  ": Exception writing resource "  +
                             resource, e);
@@ -37,6 +37,10 @@ public abstract class SimpleTableMigrator extends ResourceMigrator {
                 }
             }
         }
+    }
+
+    protected int getOwnerUser(ResultSet rs) {
+        return 0;
     }
 
     protected void writeFormClass() {

@@ -1,0 +1,307 @@
+[ {
+  "userId" : 1,
+  "workspace" : {
+    "@id" : "d1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "_classf11" : {
+      "@type" : "REFERENCE",
+      "value" : "G1"
+    },
+    "label" : "PEAR"
+  },
+  "resources" : [ {
+    "@id" : "P1",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Partners",
+    "elements" : [ {
+      "id" : "P1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "P1f10",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_description"
+      },
+      "label" : "Full Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "d1p1",
+    "@owner" : "P1",
+    "@version" : 0,
+    "@class" : "P1",
+    "P1f1" : "NRC"
+  }, {
+    "@id" : "a1",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "NFI",
+    "elements" : [ {
+      "id" : "a1f7",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Partner",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "P1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "a1f9",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Date",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:record",
+          "formClass" : {
+            "@type" : "REFERENCE",
+            "value" : "_localDateInterval"
+          }
+        },
+        "typeClass" : "record"
+      }
+    }, {
+      "id" : "a1f11",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "localite",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "L1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "a0000000001-1183866391",
+      "label" : "inputs",
+      "type" : "section",
+      "elements" : [ {
+        "id" : "I1",
+        "visible" : true,
+        "description" : "falling in lve",
+        "primaryKey" : false,
+        "label" : "beneficiaries",
+        "required" : false,
+        "type" : {
+          "parameters" : {
+            "@class" : "_type:QUANTITY",
+            "units" : "menages"
+          },
+          "typeClass" : "QUANTITY"
+        }
+      } ]
+    }, {
+      "id" : "a1f14",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Comments",
+      "required" : false,
+      "type" : {
+        "typeClass" : "NARRATIVE"
+      }
+    } ]
+  }, {
+    "@id" : "s1",
+    "@owner" : "a1",
+    "@version" : 0,
+    "@class" : "a1",
+    "a1f9" : {
+      "@class" : "_localDateInterval",
+      "startDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2009-01-01"
+      },
+      "endDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2009-01-02"
+      }
+    },
+    "a1f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "a1f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g1"
+    },
+    "I1" : {
+      "@type" : "QUANTITY",
+      "value" : 1500.0,
+      "units" : "menages"
+    }
+  }, {
+    "@id" : "s2",
+    "@owner" : "a1",
+    "@version" : 0,
+    "@class" : "a1",
+    "a1f9" : {
+      "@class" : "_localDateInterval",
+      "startDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2009-01-15"
+      },
+      "endDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2009-01-16"
+      }
+    },
+    "a1f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "a1f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g2"
+    },
+    "I1" : {
+      "@type" : "QUANTITY",
+      "value" : 3600.0,
+      "units" : "menages"
+    }
+  }, {
+    "@id" : "s3",
+    "@owner" : "a1",
+    "@version" : 0,
+    "@class" : "a1",
+    "a1f9" : {
+      "@class" : "_localDateInterval",
+      "startDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2008-10-05"
+      },
+      "endDate" : {
+        "@type" : "LOCAL_DATE",
+        "value" : "2008-10-06"
+      }
+    },
+    "a1f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "a1f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g3"
+    },
+    "I1" : {
+      "@type" : "QUANTITY",
+      "value" : 10000.0,
+      "units" : "menages"
+    }
+  } ]
+}, {
+  "userId" : 9999,
+  "workspace" : {
+    "@id" : "G1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "Rdc"
+  },
+  "resources" : [ {
+    "@id" : "L1",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "localite",
+    "elements" : [ {
+      "id" : "L1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L1f4",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Alternate Name",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L1f5",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Geographic Position",
+      "required" : false,
+      "type" : {
+        "typeClass" : "GEOGRAPHIC_POINT"
+      }
+    } ]
+  }, {
+    "@id" : "g1",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Penekusu",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 1.532,
+      "latitude" : 27.323
+    }
+  }, {
+    "@id" : "g2",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Ngshwe",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 1.323,
+      "latitude" : 28.232
+    }
+  }, {
+    "@id" : "g3",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Boga",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 3.323,
+      "latitude" : 27.232
+    }
+  } ]
+} ]

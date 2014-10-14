@@ -11,7 +11,7 @@ import org.activityinfo.model.resource.Resources;
  */
 public class CuidAdapter {
 
-    public static final char COUNTRY_DOMAIN = 'c';
+    public static final char COUNTRY_DOMAIN = 'G';
 
     public static final char SITE_DOMAIN = 's';
 
@@ -32,7 +32,6 @@ public class CuidAdapter {
     public static final char ATTRIBUTE_GROUP_FIELD_DOMAIN = 'Q';
 
     public static final char MONTHLY_REPORT_CLASS_DOMAIN = 'm';
-
 
     public static final char MONTHLY_REPORT_INSTANCE_DOMAIN = 'M';
 

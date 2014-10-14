@@ -1,0 +1,614 @@
+[ {
+  "userId" : 1,
+  "workspace" : {
+    "@id" : "d1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "_classf11" : {
+      "@type" : "REFERENCE",
+      "value" : "G1"
+    },
+    "label" : "QIS Database"
+  },
+  "resources" : [ {
+    "@id" : "P1",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Partners",
+    "elements" : [ {
+      "id" : "P1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "P1f10",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_description"
+      },
+      "label" : "Full Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "d1p1",
+    "@owner" : "P1",
+    "@version" : 0,
+    "@class" : "P1",
+    "P1f1" : "BRAC"
+  }, {
+    "@id" : "a1",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Household Survey",
+    "elements" : [ {
+      "id" : "a1f7",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Partner",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "P1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "a1f9",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Date",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:record",
+          "formClass" : {
+            "@type" : "REFERENCE",
+            "value" : "_localDateInterval"
+          }
+        },
+        "typeClass" : "record"
+      }
+    }, {
+      "id" : "a1f11",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Upzilla",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "E3"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "I1",
+      "visible" : true,
+      "description" : "Number of adult female members of household",
+      "primaryKey" : false,
+      "label" : "NumAdultFemale",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:QUANTITY",
+          "units" : "women"
+        },
+        "typeClass" : "QUANTITY"
+      }
+    }, {
+      "id" : "I2",
+      "visible" : true,
+      "description" : "Number of adult male members of household",
+      "primaryKey" : false,
+      "label" : "NumAdultMale",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:QUANTITY",
+          "units" : "men"
+        },
+        "typeClass" : "QUANTITY"
+      }
+    }, {
+      "id" : "a1f14",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Comments",
+      "required" : false,
+      "type" : {
+        "typeClass" : "NARRATIVE"
+      }
+    } ]
+  }, {
+    "@id" : "a2",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Training",
+    "elements" : [ {
+      "id" : "a2f7",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Partner",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "P1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "a2f9",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Date",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:record",
+          "formClass" : {
+            "@type" : "REFERENCE",
+            "value" : "_localDateInterval"
+          }
+        },
+        "typeClass" : "record"
+      }
+    }, {
+      "id" : "a2f11",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Village",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "L2"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "I3",
+      "visible" : true,
+      "description" : "Number of people trained",
+      "primaryKey" : false,
+      "label" : "NumberTrained",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:QUANTITY",
+          "units" : "individuals"
+        },
+        "typeClass" : "QUANTITY"
+      }
+    }, {
+      "id" : "a2f14",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Comments",
+      "required" : false,
+      "type" : {
+        "typeClass" : "NARRATIVE"
+      }
+    } ]
+  } ]
+}, {
+  "userId" : 9999,
+  "workspace" : {
+    "@id" : "G1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "Bangladesh"
+  },
+  "resources" : [ {
+    "@id" : "E1",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Division",
+    "elements" : [ {
+      "id" : "E1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E1f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "E2",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "District",
+    "elements" : [ {
+      "id" : "E2f2",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_parent"
+      },
+      "label" : "Division",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "E1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "E2f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E2f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "E3",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Upzilla",
+    "elements" : [ {
+      "id" : "E3f2",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_parent"
+      },
+      "label" : "District",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "E2"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "E3f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E3f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "z1",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Bogra"
+  }, {
+    "@id" : "z2",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Chittagong"
+  }, {
+    "@id" : "z3",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Comilla"
+  }, {
+    "@id" : "z4",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Gazipur"
+  }, {
+    "@id" : "z5",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Gopalgonj"
+  }, {
+    "@id" : "z6",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Kishoregonj"
+  }, {
+    "@id" : "z7",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Kushtia"
+  }, {
+    "@id" : "z8",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Mymensingh"
+  }, {
+    "@id" : "z9",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Netrakona"
+  }, {
+    "@id" : "z10",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Rajbari"
+  }, {
+    "@id" : "z11",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Satkhira"
+  }, {
+    "@id" : "z12",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f1" : "Tangail"
+  }, {
+    "@id" : "z13",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z1"
+    },
+    "E3f1" : "Sonatoal"
+  }, {
+    "@id" : "z14",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    },
+    "E3f1" : "Fatickchari"
+  }, {
+    "@id" : "z15",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z3"
+    },
+    "E3f1" : "Burichong"
+  }, {
+    "@id" : "z16",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z4"
+    },
+    "E3f1" : "Kaligonj"
+  }, {
+    "@id" : "z17",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z5"
+    },
+    "E3f1" : "Tungipara"
+  }, {
+    "@id" : "z18",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z6"
+    },
+    "E3f1" : "Bhairab"
+  }, {
+    "@id" : "z19",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z7"
+    },
+    "E3f1" : "Kushtia Sadar"
+  }, {
+    "@id" : "z20",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z8"
+    },
+    "E3f1" : "Bhaluka"
+  }, {
+    "@id" : "z21",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z9"
+    },
+    "E3f1" : "Purbadhala"
+  }, {
+    "@id" : "z22",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z10"
+    },
+    "E3f1" : "Baliakandi"
+  }, {
+    "@id" : "z23",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z11"
+    },
+    "E3f1" : "Tala"
+  }, {
+    "@id" : "z24",
+    "@owner" : "E3",
+    "@version" : 0,
+    "@class" : "E3",
+    "E3f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z12"
+    },
+    "E3f1" : "Modhupur"
+  }, {
+    "@id" : "L2",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Village",
+    "elements" : [ {
+      "id" : "L2f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L2f4",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Alternate Name",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L2f6",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Administrative Unit",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : [ "E2", "E1", "E3" ]
+          },
+          "cardinality" : "MULTIPLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "L2f5",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Geographic Position",
+      "required" : false,
+      "type" : {
+        "typeClass" : "GEOGRAPHIC_POINT"
+      }
+    } ]
+  } ]
+} ]

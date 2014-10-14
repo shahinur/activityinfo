@@ -234,7 +234,7 @@ class IndicatorForm extends AbstractDesignForm {
                 IndicatorDTO indicatorDTO = (IndicatorDTO) model;
                 result.add(CuidAdapter.indicatorField(indicatorDTO.getId()).asString());
 
-                String nameInExpression = indicatorDTO.getNameInExpression();
+                String nameInExpression = indicatorDTO.getCode();
                 if (!Strings.isNullOrEmpty(nameInExpression)) {
                     result.add(nameInExpression);
                 }

@@ -48,7 +48,7 @@ public class UserDatabaseTable extends ResourceMigrator {
         .set(CuidAdapter.field(FormClass.CLASS_ID, LOCATION_FIELD),
                 new ReferenceValue(context.resourceId(COUNTRY_DOMAIN, rs.getInt("CountryId"))));
 
-        writer.writeResource(database.asResource(), null, null);
+        writer.writeResource(rs.getInt("ownerUserId"), database.asResource(), null, null);
 
 //        ResourceId ownerId = resourceId(USER_DOMAIN, rs.getInt("OwnerUserId"));
 //        AccessControlRule rule = new AccessControlRule(database.getId(), ownerId);

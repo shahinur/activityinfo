@@ -33,12 +33,7 @@ import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * One-to-one DTO for the Activity table.
@@ -68,7 +63,6 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
     private LocationTypeDTO locationType;
 
     public ActivityDTO() {
-        setAssessment(false);
         setReportingFrequency(REPORT_ONCE);
     }
 
@@ -208,10 +202,6 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
         this.attributeGroups = attributes;
     }
 
-    public void setAssessment(boolean value) {
-        set("assessment", value);
-    }
-
     /**
      * Sets the ReportingFrequency of this Activity, either
      * <code>REPORT_ONCE</code> or <code>REPORT_MONTHLY</code>
@@ -283,7 +273,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
      */
     public IndicatorDTO getIndicatorById(int indicatorId) {
         for (IndicatorDTO indicator : indicators) {
-            if (indicator.getId() == indicatorId) {
+            if (indicator.getFieldId().equals(CuidAdapter.indicatorField(indicatorId))) {
                 return indicator;
             }
         }
@@ -334,20 +324,6 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
             group.addIndicator(indicator);
         }
         return groups;
-    }
-
-    /**
-     * @return the id of the MapIcon associated with this Activity
-     */
-    public String getMapIcon() {
-        return get("mapIcon");
-    }
-
-    /**
-     * Sets the id of the MapIcon to be associated with this Activity
-     */
-    public void setMapIcon(String mapIcon) {
-        set("mapIcon", mapIcon);
     }
 
     @Override

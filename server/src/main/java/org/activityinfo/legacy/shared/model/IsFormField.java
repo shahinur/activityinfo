@@ -1,7 +1,5 @@
 package org.activityinfo.legacy.shared.model;
 
-import org.activityinfo.model.form.FormField;
-
 public interface IsFormField {
 
     /**
@@ -15,9 +13,6 @@ public interface IsFormField {
      * @return the defined sort order index of the form field.
      */
     int getSortOrder();
-
-
-    FormField asFormField();
 
 
 }

@@ -25,11 +25,11 @@ package org.activityinfo.server.report.generator;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetBaseMaps;
 import org.activityinfo.legacy.shared.command.result.BaseMapResult;
+import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.BaseMap;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.TileBaseMap;
@@ -183,7 +183,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         for (Indicator indicator : indicators) {
             IndicatorDTO indicatorDTO = new IndicatorDTO();
             indicatorDTO.setId(indicator.getId());
-            indicatorDTO.setName(indicator.getName());
+            indicatorDTO.setLabel(indicator.getName());
             indicatorDTO.setType(Types.fromString(indicator.getType()));
             indicatorDTO.setExpression(indicator.getExpression());
 

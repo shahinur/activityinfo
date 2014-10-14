@@ -3,6 +3,8 @@ package org.activityinfo.migrator.tables;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.migrator.filter.MigrationContext;
+import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.auth.UserPermission;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 
@@ -11,8 +13,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
-import static org.activityinfo.model.legacy.CuidAdapter.FULL_NAME_FIELD;
-import static org.activityinfo.model.legacy.CuidAdapter.field;
 
 public class UserPermissionTable extends ResourceMigrator {
 
@@ -41,7 +41,12 @@ public class UserPermissionTable extends ResourceMigrator {
                     instance.set(field(classId, NAME_FIELD), rs.getString("name"));
                     instance.set(field(classId, FULL_NAME_FIELD), rs.getString("fullName"));
 
-                    writer.writeResource(instance.asResource(), null, null);
+                    writer.writeResource(0, instance.asResource(), null, null);
+
+                    AuthenticatedUser user = new AuthenticatedUser(rs.getInt("userId"));
+                    UserPermission up = new UserPermission(classId, user.getUserResourceId());
+                    up.setView(rs.getBoolean("view"));
+                    // TODO
                 }
             }
         }

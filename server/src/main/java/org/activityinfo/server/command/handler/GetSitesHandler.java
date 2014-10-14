@@ -25,6 +25,7 @@ import org.activityinfo.service.store.StoreReader;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class GetSitesHandler implements CommandHandler<GetSites> {
@@ -103,8 +104,11 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
 
     private List<SiteFormQuery> getForms(StoreReader storeReader, GetSites cmd) {
         List<SiteFormQuery> forms = Lists.newArrayList();
-        for(ResourceId classId : SiteQueryAdapter.getFormClasses(storeReader, cmd.getFilter())) {
-            forms.add(new SiteFormQuery(cmd, storeReader, classId));
+        Set<ResourceId> formClasses = SiteQueryAdapter.getFormClasses(storeReader, cmd.getFilter());
+        for(ResourceId classId : formClasses) {
+            SiteFormQuery form = new SiteFormQuery(cmd, storeReader, classId);
+            form.setFetchIndicators(formClasses.size() == 1);
+            forms.add(form);
         }
         return forms;
     }

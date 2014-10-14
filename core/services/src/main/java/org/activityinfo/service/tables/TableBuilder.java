@@ -1,5 +1,6 @@
 package org.activityinfo.service.tables;
 
+import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.expr.diagnostic.ExprException;
@@ -37,8 +38,9 @@ public class TableBuilder {
 
         RowSetBuilder rowSetBuilder = new RowSetBuilder(formClass.getId(), batch);
 
-        Map<String, Supplier<ColumnView>> columnViews = Maps.newHashMap();
+        Function<ColumnView, ColumnView> filter = rowSetBuilder.filter(table.getFilter());
 
+        Map<String, Supplier<ColumnView>> columnViews = Maps.newHashMap();
         for(ColumnModel column : table.getColumns()) {
             Supplier<ColumnView> view;
             try {
@@ -53,11 +55,11 @@ public class TableBuilder {
         // Now execute the batch
         batch.execute();
 
+        // Package the results
         int numRows = -1;
-
         Map<String, ColumnView> dataMap = Maps.newHashMap();
         for(Map.Entry<String, Supplier<ColumnView>> entry : columnViews.entrySet()) {
-            ColumnView view = entry.getValue().get();
+            ColumnView view = filter.apply(entry.getValue().get());
             if(numRows == -1) {
                 numRows = view.numRows();
             } else {
@@ -65,6 +67,7 @@ public class TableBuilder {
                     throw new IllegalStateException("Columns are of unequal length: " + dataMap);
                 }
             }
+
             dataMap.put(entry.getKey(), view);
         }
 

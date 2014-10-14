@@ -33,6 +33,7 @@ import org.activityinfo.legacy.shared.command.result.PartnerResult;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.legacy.shared.reports.content.EntityCategory;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
+import org.activityinfo.model.legacy.CuidAdapter;
 
 import java.util.*;
 
@@ -52,11 +53,12 @@ public class GetPartnersDimensionHandler implements CommandHandlerAsync<GetPartn
             return;
         }
 
-        final Dimension dimension = new Dimension(DimensionType.Partner);
+        final Dimension partnerDim = new Dimension(DimensionType.Partner);
+        final Dimension databaseDim = new Dimension(DimensionType.Database);
 
         PivotSites query = new PivotSites();
         query.setFilter(cmd.getFilter());
-        query.setDimensions(dimension);
+        query.setDimensions(partnerDim, databaseDim);
         query.setValueType(ValueType.DIMENSION);
         context.execute(query, new AsyncCallback<PivotSites.PivotResult>() {
 
@@ -66,13 +68,14 @@ public class GetPartnersDimensionHandler implements CommandHandlerAsync<GetPartn
                 Set<PartnerDTO> partners = new HashSet<PartnerDTO>();
 
                 for (Bucket bucket : result.getBuckets()) {
-                    EntityCategory category = (EntityCategory) bucket.getCategory(dimension);
-                    if (category == null) {
+                    EntityCategory databaseCategory = (EntityCategory) bucket.getCategory(databaseDim);
+                    EntityCategory partnerCategory = (EntityCategory) bucket.getCategory(partnerDim);
+                    if (partnerCategory == null) {
                         Log.debug("Partner is null: " + bucket.toString());
                     } else {
                         PartnerDTO partner = new PartnerDTO();
-                        partner.setId(category.getId());
-                        partner.setName(category.getLabel());
+                        partner.setId(CuidAdapter.partnerInstanceId(databaseCategory.getId(), partnerCategory.getId()));
+                        partner.setName(partnerCategory.getLabel());
                         partners.add(partner);
                     }
                 }

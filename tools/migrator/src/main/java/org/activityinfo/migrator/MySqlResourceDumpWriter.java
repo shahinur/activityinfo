@@ -1,7 +1,6 @@
 package org.activityinfo.migrator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Multimap;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * Writes resources out as an SQL dump file
@@ -41,7 +39,7 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
 
 
     @Override
-    public void writeResource(Resource resource, Date dateCreated, Date dateDeleted) throws IOException {
+    public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted) throws IOException {
 
         if(writtenCount > 0) {
             append(',');
@@ -69,27 +67,6 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
 
     @Override
     public void endResources() throws Exception {
-        append(";\n");
-    }
-
-    @Override
-    public void writeUserIndex(Multimap<ResourceId, ResourceId> resources) throws Exception {
-        this.append("INSERT INTO user_root_index" +
-                          " (user_id, resource_id)" +
-                          " VALUES\n");
-
-        boolean needsComma = false;
-        for (Map.Entry<ResourceId, ResourceId> entry : resources.entries()) {
-            if(needsComma) {
-                append(",\n");
-            }
-            append("(");
-            appendParameter(entry.getKey());
-            append(',');
-            appendParameter(entry.getValue());
-            append(")");
-            needsComma=true;
-        }
         append(";\n");
     }
 

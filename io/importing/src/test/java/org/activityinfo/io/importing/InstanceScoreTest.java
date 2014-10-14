@@ -63,7 +63,7 @@ public class InstanceScoreTest extends AbstractImporterTest {
 
     @Before
     public void setUp() throws IOException {
-        resourceLocator = new TestResourceStore().load("nfi-import.json").createLocator();
+        resourceLocator = TestResourceStore.createLocator("nfi-import.json");
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
     }
 

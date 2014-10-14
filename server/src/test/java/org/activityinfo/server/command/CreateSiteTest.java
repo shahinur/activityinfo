@@ -23,6 +23,8 @@ package org.activityinfo.server.command;
  */
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.GetSites;
@@ -30,9 +32,7 @@ import org.activityinfo.legacy.shared.command.exception.NotAuthorizedException;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.legacy.client.KeyGenerator;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -47,6 +47,10 @@ import static org.junit.Assert.assertThat;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class CreateSiteTest extends CommandTestCase2 {
+    private static final int PEAR_DB_ID = 1;
+    public static final int PEAR_PLUS_DB_ID = 2;
+
+    private static final int SOLIDARITES = 2;
 
     @Test
     public void test() throws CommandException {
@@ -63,8 +67,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         CreateResult result = execute(cmd);
         newSite.setId(result.getNewId());
         assertThat(result.getNewId(), not(equalTo(0)));
-        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite
-                .getLegacyId()));
+        PagingLoadResult<SiteDTO> loadResult = execute(GetSites.byId(newSite.getLegacyId()));
         Assert.assertEquals(1, loadResult.getData().size());
         SiteDTO secondRead = loadResult.getData().get(0);
         SiteDTOs.validateNewSite(secondRead);
@@ -74,7 +77,7 @@ public class CreateSiteTest extends CommandTestCase2 {
     public void unauthorized() throws CommandException {
         // create a new detached, client model
         SiteDTO newSite = SiteDTOs.newSite();
-        newSite.setPartner(new PartnerDTO(2, "Not NRC"));
+        newSite.setPartner(new PartnerDTO(PEAR_PLUS_DB_ID, SOLIDARITES, "Not NRC"));
         // create command
         CreateSite cmd = new CreateSite(newSite);
 
@@ -91,7 +94,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         SiteDTO newSite = new SiteDTO();
 
         newSite.setActivityId(4);
-        newSite.setPartner(new PartnerDTO(1, "Foobar"));
+        newSite.setPartner(new PartnerDTO(PEAR_DB_ID, 1, "Foobar"));
         newSite.setDate1((new GregorianCalendar(2008, 12, 1)).getTime());
         newSite.setDate2((new GregorianCalendar(2009, 1, 3)).getTime());
         newSite.setAdminEntity(1, new AdminEntityDTO(1, 2, "Sud Kivu"));

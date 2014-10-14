@@ -23,6 +23,8 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -49,8 +51,22 @@ public final class PartnerDTO extends BaseModelData implements DTO, ProvidesKey 
         setName(name);
     }
 
+    public PartnerDTO(ResourceId id, String name) {
+        setId(id);
+        setName(name);
+
+    }
+
+    public PartnerDTO(int databaseId, int partnerId, String name) {
+        this(CuidAdapter.partnerInstanceId(databaseId, partnerId), name);
+    }
+
     public void setId(int id) {
         set("id", id);
+    }
+
+    public void setId(ResourceId id) {
+        set("id", id.asString());
     }
 
     @JsonProperty @JsonView(DTOViews.Schema.class)

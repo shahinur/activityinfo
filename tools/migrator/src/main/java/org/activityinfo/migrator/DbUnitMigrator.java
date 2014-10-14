@@ -65,7 +65,7 @@ public class DbUnitMigrator {
     private void migrate(Connection jdbcConnection, File file) throws Exception {
 
         File projectDir = new File(file.getParent() + "../../../../../../").getCanonicalFile();
-        File resourcesDir = new File(projectDir + "/store/testing/src/main/resources").getCanonicalFile();
+        File resourcesDir = new File(projectDir + "/store/test-data/src/main/resources").getCanonicalFile();
 
         if(!resourcesDir.exists()) {
             throw new IllegalStateException("No such dir: " + resourcesDir.getAbsolutePath());

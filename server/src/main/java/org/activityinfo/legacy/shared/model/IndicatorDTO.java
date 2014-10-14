@@ -24,14 +24,9 @@ package org.activityinfo.legacy.shared.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.command.Month;
-import org.activityinfo.model.type.NarrativeType;
-import org.activityinfo.model.type.expr.CalculatedFieldType;
-import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldTypeClass;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -88,6 +83,15 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         return (Integer) get("id");
     }
 
+
+    public ResourceId getFieldId() {
+        return ResourceId.valueOf(this.<String>get("id"));
+    }
+
+    public void setFieldId(ResourceId id) {
+        set("id", id.asString());
+    }
+
     /**
      * Sets the Indicator's id
      */
@@ -98,8 +102,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * Sets the Indicator's name
      */
-    public void setName(String name) {
-        set("name", name);
+    public void setLabel(String label) {
+        set("label", label);
     }
 
     /**
@@ -107,7 +111,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
      */
     @Override @JsonProperty @JsonView(DTOViews.Schema.class)
     public String getName() {
-        return get("name");
+        return get("label");
     }
 
     /**
@@ -169,21 +173,12 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     }
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
-    public String getNameInExpression() {
-        return get("nameInExpression");
+    public String getCode() {
+        return get("code");
     }
 
-    public void setNameInExpression(String nameInExpression) {
-        set("nameInExpression", nameInExpression);
-    }
-
-    @JsonProperty @JsonView(DTOViews.Schema.class)
-    public Boolean getCalculatedAutomatically() {
-        return get("calculatedAutomatically");
-    }
-
-    public void setCalculatedAutomatically(Boolean calculatedAutomatically) {
-        set("calculatedAutomatically", calculatedAutomatically);
+    public void setCode(String code) {
+        set("code", code);
     }
 
 
@@ -201,12 +196,12 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     }
 
     public void setMandatory(boolean mandatory) {
-        set("mandatory", mandatory);
+        set("required", mandatory);
     }
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public boolean isMandatory() {
-        return get("mandatory", false);
+        return get("required", false);
     }
 
     /**
@@ -240,14 +235,6 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
             category = null;
         }
         set("category", category);
-    }
-
-    public int getActivityId() {
-        return get("activityId");
-    }
-
-    public void setActivityId(int id) {
-        set("activityId", id);
     }
 
     /**
@@ -329,31 +316,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         return get("sortOrder", 0);
     }
 
-    @Override
-    public FormField asFormField() {
-        FormField field = new FormField(CuidAdapter.indicatorField(getId()));
-        field.setLabel(getName());
-        field.setDescription(getDescription());
-        field.setCode(getExpression());
-        if(isCalculated()) {
-            field.setType(new CalculatedFieldType(getExpression()));
-        } else if(getType() == TextType.INSTANCE) {
-            field.setType(TextType.INSTANCE);
-
-        } else if(getType() == NarrativeType.INSTANCE) {
-            field.setType(NarrativeType.INSTANCE);
-
-        } else {
-            String units = getUnits();
-            if(Strings.isNullOrEmpty(units)) {
-                units = "units";
-            }
-            field.setType(new QuantityType().setUnits(units));
-        }
-        return field;
-    }
-
     public void setSortOrder(int sortOrder) {
         set("sortOrder", sortOrder);
     }
+
 }

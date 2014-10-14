@@ -121,6 +121,7 @@
     <module>clients/java</module>
     <module>tests/api</module>
     <module>ui/widget29</module>
+    <module>store/test-data</module>
 
   </modules>
 

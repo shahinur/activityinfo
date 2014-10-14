@@ -8,7 +8,8 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.Types;
+import org.activityinfo.model.type.expr.ExprFieldType;
+import org.activityinfo.model.type.expr.ExprValue;
 
 /**
  * A system-level resource which describes a rule that is used to determine
@@ -26,14 +27,11 @@ public class AccessControlRule implements IsResource {
     private ResourceId principalId;
 
     private boolean owner;
-    private boolean edit;
-    private boolean editAll;
-    private boolean view;
-    private boolean viewAll;
-    private boolean design;
-    private boolean manageUsers;
-    private boolean manageAllUsers;
-    private ResourceId userGroup;
+
+    private ExprValue viewCondition;
+
+    private ExprValue editCondition;
+
 
     public AccessControlRule(ResourceId resourceId, ResourceId principalId) {
         this.id = calculateId(resourceId.asString(), principalId.asString());
@@ -82,68 +80,30 @@ public class AccessControlRule implements IsResource {
         this.resourceId = resourceId;
     }
 
-    public boolean isEdit() {
-        return edit;
+    /**
+     *
+     * @return the boolean expression that determines whether the principal is authorized
+     * too view a given resource.
+     */
+    public ExprValue getViewCondition() {
+        return viewCondition;
     }
 
-    public void setEdit(boolean edit) {
-        this.edit = edit;
+    public void setViewCondition(ExprValue viewCondition) {
+        this.viewCondition = viewCondition;
     }
 
-    public boolean isEditAll() {
-        return editAll;
+    /**
+     *
+     * @return the boolean expression that determines whether the principal is authorized
+     * to modify a given resource, or create new resources which are owned by this resource.
+     */
+    public ExprValue getEditCondition() {
+        return editCondition;
     }
 
-    public void setEditAll(boolean editAll) {
-        this.editAll = editAll;
-    }
-
-    public boolean isView() {
-        return view;
-    }
-
-    public void setView(boolean view) {
-        this.view = view;
-    }
-
-    public boolean isViewAll() {
-        return viewAll;
-    }
-
-    public void setViewAll(boolean viewAll) {
-        this.viewAll = viewAll;
-    }
-
-    public boolean isDesign() {
-        return design;
-    }
-
-    public void setDesign(boolean design) {
-        this.design = design;
-    }
-
-    public boolean isManageUsers() {
-        return manageUsers;
-    }
-
-    public void setManageUsers(boolean manageUsers) {
-        this.manageUsers = manageUsers;
-    }
-
-    public boolean isManageAllUsers() {
-        return manageAllUsers;
-    }
-
-    public void setManageAllUsers(boolean manageAllUsers) {
-        this.manageAllUsers = manageAllUsers;
-    }
-
-    public ResourceId getUserGroup() {
-        return userGroup;
-    }
-
-    public void setUserGroup(ResourceId userGroup) {
-        this.userGroup = userGroup;
+    public void setEditCondition(ExprValue editCondition) {
+        this.editCondition = editCondition;
     }
 
     @Override
@@ -154,14 +114,8 @@ public class AccessControlRule implements IsResource {
             record.set("owner", true);
         } else {
             record.set("owner", false);
-            record.set("view", view);
-            record.set("viewAll", viewAll);
-            record.set("edit", edit);
-            record.set("editAll", editAll);
-            record.set("manageUsers", manageUsers);
-            record.set("manageAllUsers", manageAllUsers);
-            record.set("design", design);
-            record.set("userGroup", new ReferenceValue(userGroup));
+            record.set("view", viewCondition.asRecord());
+            record.set("edit", editCondition.asRecord());
         }
 
         Resource resource = Resources.createResource();
@@ -174,50 +128,25 @@ public class AccessControlRule implements IsResource {
 
     public static AccessControlRule fromResource(Resource resource) {
         ResourceId resourceId = resource.getOwnerId();
-        Record record = resource.getValue();
-        ReferenceValue principal = ReferenceValue.fromRecord(record.getRecord("principal"));
+        ReferenceValue principal = ReferenceValue.fromRecord(resource.getValue().getRecord("principal"));
 
-        return fromRecord(resourceId, principal.getResourceId(), record);
+        return fromRecord(resourceId, principal.getResourceId(), resource.getValue());
     }
 
-    public static AccessControlRule fromRecord(ResourceId resourceId, ResourceId principalId, Record record) {
-        AccessControlRule rule = new AccessControlRule(resourceId, principalId);
-        rule.setResourceId(resourceId);
-        if (record.getBoolean("owner")) {
-            rule.setOwner(true);
-        } else {
-            rule.setOwner(false);
-            rule.view = record.getBoolean("view", false);
-            rule.viewAll = record.getBoolean("viewAll", false);
-            rule.edit = record.getBoolean("edit", false);
-            rule.editAll = record.getBoolean("editAll", false);
-            rule.design = record.getBoolean("design", false);
-            rule.manageUsers = record.getBoolean("manageUsers", false);
-            rule.manageAllUsers = record.getBoolean("manageAllUsers", false);
-            rule.userGroup = Types.readReference(record, "userGroup");
-        }
-        return rule;
-    }
 
     public static ResourceId calculateId(String resourceId, String principalId) {
         return ResourceId.valueOf("_acr-" + resourceId + "-" + principalId);
     }
 
-    @Override
-    public String toString() {
-        return "AccessControlRule{" +
-                "id=" + id +
-                ", resourceId=" + resourceId +
-                ", principalId=" + principalId +
-                ", owner=" + owner +
-                ", edit=" + edit +
-                ", editAll=" + editAll +
-                ", view=" + view +
-                ", viewAll=" + viewAll +
-                ", design=" + design +
-                ", manageUsers=" + manageUsers +
-                ", manageAllUsers=" + manageAllUsers +
-                ", userGroup=" + userGroup +
-                '}';
+    public static AccessControlRule fromRecord(ResourceId resourceId, ResourceId principalId, Record record) {
+        AccessControlRule rule = new AccessControlRule(resourceId, principalId);
+        if (record.getBoolean("owner")) {
+            rule.setOwner(true);
+        } else {
+            rule.setOwner(false);
+            rule.setViewCondition(ExprFieldType.TYPE_CLASS.deserialize(record.getRecord("view")));
+            rule.setEditCondition(ExprFieldType.TYPE_CLASS.deserialize(record.getRecord("edit")));
+        }
+        return rule;
     }
 }

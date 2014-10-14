@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.activityinfo.model.annotation.RecordBean;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.expr.ExprValue;
 
 import java.util.List;
 
@@ -16,6 +17,9 @@ public class TableModel {
 
     private final List<RowSource> rowSources = Lists.newArrayList();
     private final List<ColumnModel> columns = Lists.newArrayList();
+
+    private ExprValue filter;
+
 
     public TableModel() {
     }
@@ -74,6 +78,14 @@ public class TableModel {
         column.setExpression(fieldId.asString());
         columns.add(column);
         return column;
+    }
+
+    public ExprValue getFilter() {
+        return filter;
+    }
+
+    public void setFilter(ExprValue filter) {
+        this.filter = filter;
     }
 
     public void addColumn(ColumnModel criteriaColumn) {

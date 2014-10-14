@@ -1,6 +1,5 @@
 package org.activityinfo.service.tables.views;
 
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
@@ -9,13 +8,11 @@ import java.util.BitSet;
 
 public class BooleanColumnBuilder implements ColumnViewBuilder {
 
-    private final ResourceId fieldId;
     private BitSet values = new BitSet();
     private BitSet missing = new BitSet();
     private int index = 0;
 
-    public BooleanColumnBuilder(ResourceId fieldId) {
-        this.fieldId = fieldId;
+    public BooleanColumnBuilder() {
     }
 
     @Override
@@ -35,6 +32,11 @@ public class BooleanColumnBuilder implements ColumnViewBuilder {
 
     @Override
     public ColumnView get() {
-        return null;
+        int numRows = index;
+        if(missing.isEmpty()) {
+            return new BitSetColumnView(numRows, values);
+        } else {
+            return new BitSetWithMissingView(numRows, values, missing);
+        }
     }
 }

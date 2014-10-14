@@ -154,6 +154,8 @@ public class GetSitesTest extends CommandTestCase2 {
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
 
+        System.out.println(result.getData());
+
         Assert.assertEquals("rows", 3, result.getData().size());
         Assert.assertNotNull("activityId", result.getData().get(0)
                 .getActivityId());
