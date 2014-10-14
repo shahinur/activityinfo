@@ -21,8 +21,8 @@ package org.activityinfo.io.importing.strategy;
  * #L%
  */
 
-import org.activityinfo.model.legacy.criteria.FormClassSet;
 import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.legacy.criteria.FormClassSet;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,7 @@ public class HierarchyReferenceStrategy implements FieldImportStrategy {
 
     @Override
     public boolean accept(FormTree.Node fieldNode) {
-        return fieldNode.isReference() && FormClassSet.of(fieldNode.getRange()).getElements().size() > 1;
+        return fieldNode.hasChildren() && FormClassSet.of(fieldNode.getRange()).getElements().size() > 1;
     }
 
     @Override

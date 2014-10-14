@@ -6,7 +6,7 @@ import org.activityinfo.model.type.FieldValue;
 
 public class ConstantValue implements ValueSource {
 
-    private FieldValue value;
+    private final FieldValue value;
 
     public ConstantValue(FieldValue value) {
         this.value = value;

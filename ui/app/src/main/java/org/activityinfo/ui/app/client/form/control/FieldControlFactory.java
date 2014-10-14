@@ -4,6 +4,7 @@ import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -14,7 +15,10 @@ import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.*;
+import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.time.MissingFieldType;
+import org.activityinfo.model.type.time.MonthType;
+import org.activityinfo.model.type.time.YearType;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.vdom.shared.tree.VComponent;
 
@@ -78,11 +82,6 @@ public class FieldControlFactory implements FormClassVisitor<VComponent> {
     }
 
     @Override
-    public VComponent visitLocalDateIntervalField(FormField field, LocalDateIntervalType type) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public VComponent visitExprField(FormField field, ExprFieldType type) {
         throw new UnsupportedOperationException();
     }
@@ -109,6 +108,11 @@ public class FieldControlFactory implements FormClassVisitor<VComponent> {
 
     @Override
     public VComponent visitMissingField(FormField field, MissingFieldType missingFieldType) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public VComponent visitSubForm(FormField field, RecordFieldType recordFieldType) {
         throw new UnsupportedOperationException();
     }
 }

@@ -20,6 +20,7 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -27,8 +28,7 @@ import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.LocalDateIntervalType;
-import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.time.LocalDateIntervalClass;
 import org.activityinfo.model.type.time.MonthType;
 
 import java.sql.Connection;
@@ -365,21 +365,17 @@ public class ActivityTable extends ResourceMigrator {
         if(databasesWithProjects.contains(databaseId)) {
             FormField projectField = new FormField(field(classId, PROJECT_FIELD))
                 .setLabel("Project")
-                .setType(ReferenceType.single(context.resourceId(PROJECT_DOMAIN, databaseId)));
+                .setType(ReferenceType.single(context.resourceId(PROJECT_CLASS_DOMAIN, databaseId)));
             siteForm.addElement(projectField);
         }
 
         if(reportingFrequency == ONCE) {
             siteForm.addElement(
-                new FormField(field(classId, START_DATE_FIELD))
-                    .setLabel("Start Date")
-                    .setType(LocalDateType.INSTANCE)
+                new FormField(field(classId, DATE_FIELD))
+                    .setLabel("Date")
+                    .setType(new RecordFieldType(LocalDateIntervalClass.CLASS_ID))
                     .setRequired(true));
-            siteForm.addElement(
-                    new FormField(field(classId, END_DATE_FIELD))
-                            .setLabel("End Date")
-                            .setType(LocalDateType.INSTANCE)
-                            .setRequired(true));
+
         }
 
         FormField locationField = new FormField(field(classId, LOCATION_FIELD))

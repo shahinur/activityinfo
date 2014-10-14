@@ -4,17 +4,17 @@ import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.expr.eval.FieldReader;
+import org.activityinfo.model.expr.eval.FieldBinding;
 import org.activityinfo.model.expr.eval.PartialEvaluator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.views.ConstantColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
-import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.tables.views.*;
 
 import java.util.Iterator;
@@ -41,6 +41,7 @@ public class TableScan {
 
     private PartialEvaluator partialEvaluator;
 
+
     public TableScan(StoreAccessor resourceStore, FormClass formClass) {
         this.store = resourceStore;
         this.formClass = formClass;
@@ -48,29 +49,27 @@ public class TableScan {
         this.partialEvaluator = new PartialEvaluator(formClass);
     }
 
-    public Supplier<ColumnView> fetchColumn(ResourceId fieldId) {
+    public Supplier<ColumnView> fetchColumn(FieldPath fieldPath) {
 
         // compose a unique key for this column (we don't want to fetch twice!)
-        String columnKey = columnKey(fieldId);
+        String columnKey = columnKey(fieldPath);
 
         // create the column builder if it doesn't exist
         if(columnMap.containsKey(columnKey)) {
             return columnMap.get(columnKey);
         } else {
-            FormField field = partialEvaluator.getField(fieldId);
-            FieldReader reader = partialEvaluator.partiallyEvaluate(field);
-            ColumnViewBuilder builder = ViewBuilderFactory.get(field, reader.getType());
+            FieldBinding fieldBinding = partialEvaluator.bind(fieldPath);
+            ColumnViewBuilder builder = ViewBuilderFactory.get(fieldBinding.getField(), fieldBinding.getType());
             if(builder != null) {
-                columnMap.put(columnKey, new FieldScanner(reader, builder));
+                columnMap.put(columnKey, new FieldScanner(fieldBinding.getReader(), builder));
                 return builder;
             } else {
-                LOGGER.log(Level.SEVERE, "Column " + fieldId + " has unsupported type: " + reader.getType());
+                LOGGER.log(Level.SEVERE, "Column " + fieldPath + " has unsupported type: " + fieldBinding.getType());
                 //throw new UnsupportedOperationException("Unsupported type for column " + field.getLabel() + ": " + fieldType);
                 return fetchEmptyColumn(ColumnType.STRING);
             }
         }
     }
-
 
     public Supplier<ColumnView> fetchPrimaryKeyColumn() {
         String columnKey = "__id";
@@ -83,6 +82,9 @@ public class TableScan {
         return builder;
     }
 
+    public Supplier<ColumnView> fetchColumn(ResourceId fieldId) {
+        return fetchColumn(new FieldPath(fieldId));
+    }
 
     public Supplier<ColumnView> fetchEmptyColumn(final ColumnType type) {
         return new Supplier<ColumnView>() {
@@ -123,8 +125,8 @@ public class TableScan {
         return builder;
     }
 
-    private String columnKey(ResourceId fieldId) {
-        return fieldId.asString();
+    private String columnKey(FieldPath fieldId) {
+        return fieldId.toString();
     }
 
 
@@ -166,36 +168,4 @@ public class TableScan {
     }
 
 
-    private static class FieldBinding implements ColumnBinding {
-        private FieldReader reader;
-        private ColumnViewBuilder builder;
-
-        private FieldBinding(FieldReader reader, ColumnViewBuilder builder) {
-            this.reader = reader;
-            this.builder = builder;
-        }
-
-        @Override
-        public ColumnView get() {
-            return builder.get();
-        }
-
-        @Override
-        public void finalizeView() {
-            builder.finalizeView();
-        }
-    }
-
-    private static class IdBinding implements ColumnBinding {
-
-        @Override
-        public void finalizeView() {
-
-        }
-
-        @Override
-        public ColumnView get() {
-            return null;
-        }
-    }
 }

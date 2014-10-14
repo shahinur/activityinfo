@@ -36,7 +36,6 @@ public class WorkspaceAuthDAO implements Authorizer {
         return workspaceAcr.isPresent() && workspaceAcr.get().isOwner();
     }
 
-
     @Override
     public Authorization forResource(ResourceId resourceId) {
         if(isWorkspaceOwner()) {

@@ -7,6 +7,7 @@ import org.activityinfo.model.expr.eval.PartialEvaluator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.barcode.BarcodeValue;
@@ -159,11 +160,6 @@ class ColumnListBuilder implements FormClassVisitor<List<Column>> {
     }
 
     @Override
-    public List<Column> visitLocalDateIntervalField(FormField field, LocalDateIntervalType type) {
-        return Arrays.asList();
-    }
-
-    @Override
     public List<Column> visitExprField(FormField field, ExprFieldType type) {
         return Arrays.asList();
     }
@@ -216,4 +212,27 @@ class ColumnListBuilder implements FormClassVisitor<List<Column>> {
     public List<Column> visitMissingField(FormField field, MissingFieldType missingFieldType) {
         throw new IllegalStateException();
     }
+
+    @Override
+    public List<Column> visitSubForm(FormField field, RecordFieldType fieldType) {
+        if(fieldType.getClassId().equals(LocalDateIntervalClass.CLASS_ID)) {
+            return Arrays.asList(
+                    new Column(I18N.CONSTANTS.startDate(), new FieldValueConverter<Record>() {
+
+                        @Override
+                        public Object convertValue(@Nonnull Record fieldValue) {
+                            return Types.read(fieldValue, LocalDateIntervalClass.START_DATE_FIELD_NAME, LocalDateType.TYPE_CLASS);
+                        }
+                    }),
+                    new Column(I18N.CONSTANTS.endDate(), new FieldValueConverter<Record>() {
+
+                        @Override
+                        public Object convertValue(@Nonnull Record fieldValue) {
+                            return Types.read(fieldValue,  LocalDateIntervalClass.END_DATE_FIELD_NAME, LocalDateType.TYPE_CLASS);
+                        }
+                    }));
+        } else {
+            return null;
+        }
+     }
 }

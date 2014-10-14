@@ -254,7 +254,7 @@ public class RemoteExecutionContext implements ExecutionContext {
 
     private User retrieveUserEntity() {
         User user = new User();
-        user.setId(user.getId());
+        user.setId(this.user.getId());
         return user;
         //return  entityManager.find(User.class, user.getId());
     }

@@ -11,13 +11,15 @@ public class ForeignKeyColumn {
      * Maps row index to ResourceId of related entity
      */
     private Multimap<Integer, ResourceId> keys;
+    private int numRows;
 
-    public ForeignKeyColumn(Multimap<Integer, ResourceId> keys) {
+    public ForeignKeyColumn(int numRows, Multimap<Integer, ResourceId> keys) {
+        this.numRows = numRows;
         this.keys = keys;
     }
 
     public int getNumRows() {
-        return keys.keys().size();
+        return numRows;
     }
 
     public Collection<ResourceId> getKeys(int rowIndex) {

@@ -60,7 +60,7 @@ public class ReportingPeriodTable extends ResourceMigrator {
                         "RP.Date1, " +
                         "RP.Date2 " +
                      "FROM site S " +
-                     "LEFT JOIN reportingperiod RP ON (S.siteId=RP.siteId) " +
+                     "INNER JOIN reportingperiod RP ON (S.siteId=RP.siteId) " +
                      "WHERE S.dateDeleted is null and " +
                         " RP.dateDeleted is null and " +
                         " S.activityId = " + activityId;

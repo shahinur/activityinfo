@@ -30,7 +30,7 @@ public class JoinedColumnView implements ColumnView {
         if(right != -1) {
             return columnView.get(right);
         }
-        return Double.NaN;
+        return null;
     }
 
     @Override

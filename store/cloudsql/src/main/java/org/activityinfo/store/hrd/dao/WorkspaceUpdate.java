@@ -8,6 +8,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.store.hrd.StoreContext;
+import org.activityinfo.store.hrd.auth.AuthorizationAsserter;
 import org.activityinfo.store.hrd.auth.Authorizer;
 import org.activityinfo.store.hrd.auth.WorkspaceAuthDAO;
 import org.activityinfo.store.hrd.entity.workspace.*;
@@ -27,7 +28,7 @@ public class WorkspaceUpdate implements AutoCloseable {
     private final AuthenticatedUser user;
     private final WritableTx tx;
     private final long updateVersion;
-    private final Authorizer auth;
+    private final AuthorizationAsserter auth;
     private Clock clock;
     private final FormInstanceIndexer formIndexer;
 
@@ -41,7 +42,7 @@ public class WorkspaceUpdate implements AutoCloseable {
         this.user = user;
         this.tx = tx;
         this.updateVersion = updateVersion;
-        this.auth = auth;
+        this.auth = new AuthorizationAsserter(user, auth);
         this.clock = clock;
         this.formIndexer = formInstanceIndexer;
     }
@@ -90,7 +91,7 @@ public class WorkspaceUpdate implements AutoCloseable {
      */
     public void updateResource(Resource resource) {
 
-        auth.forResource(resource.getId()).assertCanEdit();
+        auth.assertCanUpdate(resource.getId());
 
         updateLatestVersion(resource);
         writeSnapshot(resource);

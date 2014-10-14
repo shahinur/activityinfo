@@ -1,42 +1,26 @@
 package org.activityinfo.store.hrd;
 
 import com.google.appengine.api.datastore.DatastoreService;
-import com.google.apphosting.api.ApiProxy;
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.analysis.PivotTableModel;
-import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.cubes.CubeBuilder;
-import org.activityinfo.service.store.FolderRequest;
-import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.service.store.StoreLoader;
-import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.service.tables.TableBuilder;
+import org.activityinfo.service.store.*;
+import org.activityinfo.service.tables.StoreAccessor;
 import org.activityinfo.store.hrd.cache.WorkspaceCache;
 import org.activityinfo.store.hrd.dao.*;
-import org.activityinfo.store.hrd.entity.workspace.*;
+import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.tx.ReadTx;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 public class HrdResourceStore implements ResourceStore {
-    private final static long TIME_LIMIT_MILLISECONDS = 10 * 1000L;
-
     private final StoreContext context;
     private final DatastoreService datastore;
     private final WorkspaceCache workspaceLookup;
@@ -159,7 +143,7 @@ public class HrdResourceStore implements ResourceStore {
 
             ResourceQuery resource = query.getResource(request.getRootId());
             ResourceNode rootNode = resource.asResourceNode();
-            for(ResourceNode child : resource.queryFolderItems()) {
+            for(ResourceNode child : resource.getFolderItems()) {
                 rootNode.getChildren().add(child);
             }
 
@@ -167,31 +151,13 @@ public class HrdResourceStore implements ResourceStore {
         }
     }
 
-    @Override
-    public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
-        TableBuilder builder = new TableBuilder(new HrdStoreAccessor(context, user));
-        try {
-            return builder.buildTable(tableModel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public HrdStoreAccessor createAccessor(AuthenticatedUser user) {
-        return new HrdStoreAccessor(context, user);
-    }
 
     @POST
     @Path("query/cube")
     @Consumes("application/json")
     @Produces("application/json")
     public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
-        CubeBuilder builder = new CubeBuilder(new HrdStoreAccessor(context, user));
-        try {
-            return builder.buildCube(tableModel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        throw new UnsupportedOperationException();
     }
 
 
@@ -202,65 +168,7 @@ public class HrdResourceStore implements ResourceStore {
 
     @Override
     public List<Resource> getUpdates(@InjectParam AuthenticatedUser user, ResourceId workspaceId, long version) {
-
-        ApiProxy.Environment environment = ApiProxy.getCurrentEnvironment();
-        Map<ResourceId, SnapshotKey> snapshots = Maps.newLinkedHashMap();
-        Map<ResourceId, Authorization> authorizations = Maps.newHashMap();
-        WorkspaceEntityGroup workspace = new WorkspaceEntityGroup(workspaceId);
-
-        if (version < 0) version = 0;
-
-        try (ReadTx tx = ReadTx.withSerializableConsistency(datastore)) {
-
-            for (SnapshotKey snapshot : tx.query(Snapshot.afterVersion(workspace, version))) {
-                ResourceId resourceId = snapshot.getResourceId();
-
-                // We want the linked list to be sorted based on the most recent insertion of a resource
-                snapshots.remove(resourceId);
-                snapshots.put(resourceId, snapshot);
-
-                if (authorizations.get(resourceId) == null) {
-                    authorizations.put(resourceId, new Authorization(workspace, user, resourceId, tx));
-                }
-
-                if (environment.getRemainingMillis() < TIME_LIMIT_MILLISECONDS) {
-                    break;
-                }
-            }
-
-            List<Resource> resources = Lists.newArrayListWithCapacity(snapshots.size());
-
-            for (SnapshotKey snapshot : snapshots.values()) {
-                final Authorization authorization;
-                Resource resource = tx.getOrThrow(snapshot).toResource();
-
-                if (AccessControlRule.CLASS_ID.equals(resource.getValue().getClassId())) {
-                    final Optional<Authorization> oldAuthorization;
-                    final Optional<Snapshot> optionalSnapshot = tx.query(Snapshot.asOf(workspace, resource.getId(), version));
-
-                    authorization = new Authorization(user, resource);
-
-                    if (optionalSnapshot.isPresent()) {
-                        oldAuthorization = Optional.of(new Authorization(user, optionalSnapshot.get().toResource()));
-                    } else {
-                        oldAuthorization = Optional.absent();
-                    }
-
-                    // TODO Deal with the effects of changed authorizations correctly
-                    for (Resource newlyAuthorizedResource : applyAuthorization(null, workspace, oldAuthorization, authorization, tx)) {
-                        if (!snapshots.keySet().contains(newlyAuthorizedResource.getId())) {
-                            resources.add(newlyAuthorizedResource);
-                        }
-                    }
-                } else {
-                    authorization = authorizations.get(resource.getId());
-                }
-
-                if (authorization.canView()) resources.add(resource);
-            }
-
-            return resources;
-        }
+        return new SyncBuilder(workspaceId, user).getUpdates(version);
     }
 
     @Override
@@ -271,45 +179,12 @@ public class HrdResourceStore implements ResourceStore {
             .begin();
     }
 
-    private static Collection<Resource> applyAuthorization(AuthenticatedUser authenticatedUser, WorkspaceEntityGroup workspace,
-                                                           Optional<Authorization> oldAuthorization,
-                                                           Authorization newAuthorization, ReadTx tx) {
-        if (newAuthorization.canViewNowButNotAsOf(oldAuthorization)) {
-            ResourceId resourceId = newAuthorization.getResourceId();
-
-            if (resourceId != null) {
-                final Collection<Resource> result = Lists.newArrayList();
-
-                LatestVersionKey parentKey = new LatestVersionKey(workspace, resourceId);
-
-                for (LatestVersionKey element : descendIdTree(authenticatedUser, parentKey, newAuthorization, tx)) {
-                    result.add(tx.getOrThrow(element).toResource());
-                }
-
-                return result;
-            }
-        }
-
-        return Collections.emptySet();
+    @Override
+    public StoreReader openReader(AuthenticatedUser user) {
+        return new HrdStoreReader(context, user);
     }
 
-    // This method recursively descends the ID tree of a resource node, including only nodes with the same authorization
-    private static List<LatestVersionKey> descendIdTree(AuthenticatedUser authenticatedUser, LatestVersionKey parentKey, Authorization parentAuth, ReadTx tx) {
-        final List<LatestVersionKey> result = Lists.newArrayList(parentKey);
-
-        if (parentAuth != null && parentKey.getResourceId() != null && tx != null) {
-            ResourceId authorizationId = parentAuth.getId();
-
-            if (authorizationId != null) {
-                for (LatestVersionKey child : tx.query(LatestVersion.queryChildKeys(parentKey))) {
-                    Authorization childAuth = new Authorization(parentKey.getWorkspace(), authenticatedUser, child.getResourceId(), tx);
-                    if (authorizationId.equals(childAuth.getId())) {
-                        result.addAll(descendIdTree(authenticatedUser, child, parentAuth, tx));
-                    }
-                }
-            }
-        }
-        return result;
+    public StoreAccessor createAccessor(AuthenticatedUser user) {
+        return null;
     }
-
 }

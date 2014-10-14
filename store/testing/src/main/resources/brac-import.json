@@ -485,22 +485,20 @@
       "typeClass" : "REFERENCE"
     }
   }, {
-    "id" : "a1f12",
+    "id" : "a1f9",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Start Date",
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a1f13",
-    "visible" : true,
-    "primaryKey" : false,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "parameters" : {
+        "@class" : "_type:record",
+        "formClass" : {
+          "@type" : "REFERENCE",
+          "value" : "_localDateInterval"
+        }
+      },
+      "typeClass" : "record"
     }
   }, {
     "id" : "a1f11",
@@ -581,22 +579,20 @@
       "typeClass" : "REFERENCE"
     }
   }, {
-    "id" : "a2f12",
+    "id" : "a2f9",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Start Date",
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a2f13",
-    "visible" : true,
-    "primaryKey" : false,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "parameters" : {
+        "@class" : "_type:record",
+        "formClass" : {
+          "@type" : "REFERENCE",
+          "value" : "_localDateInterval"
+        }
+      },
+      "typeClass" : "record"
     }
   }, {
     "id" : "a2f11",

@@ -3,11 +3,11 @@ package org.activityinfo.store.hrd.entity.workspace;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.store.hrd.tx.IsEntity;
 import org.activityinfo.store.hrd.tx.ListQuery;
 
@@ -16,22 +16,21 @@ import org.activityinfo.store.hrd.tx.ListQuery;
  */
 public class AcrEntry implements IsEntity {
 
-    public static final String VIEW_PROPERTY = "view";
-    public static final String EDIT_PROPERTY = "edit";
     public static final String OWNER_PROPERTY = "owner";
     public static final String VERSION_PROPERTY = "version";
 
     private final AcrEntryKey key;
     private boolean owner;
-    private String viewCondition;
-    private String editCondition;
     private long version;
+    private SerializedRecord record;
 
     public AcrEntry(AcrEntryKey key, Entity entity) {
         this.key = key;
         this.owner = (Boolean)entity.getProperty(OWNER_PROPERTY);
-        this.viewCondition = (String) entity.getProperty(VIEW_PROPERTY);
-        this.editCondition = (String) entity.getProperty(EDIT_PROPERTY);
+
+        if(!this.owner) {
+            this.record = Preconditions.checkNotNull(SerializedRecord.fromEntity(entity));
+        }
 
         if (entity.hasProperty(VERSION_PROPERTY)) {
             this.version = (Long)entity.getProperty(VERSION_PROPERTY);
@@ -54,8 +53,7 @@ public class AcrEntry implements IsEntity {
         this.key = new AcrEntryKey(new LatestVersionKey(workspace, rule.getResourceId()), rule.getPrincipalId());
         this.owner = rule.isOwner();
         if(!this.owner) {
-            this.editCondition = rule.getEditCondition().getExpression();
-            this.viewCondition = rule.getViewCondition().getExpression();
+            this.record = SerializedRecord.of(rule.asResource().getValue());
         }
     }
 
@@ -75,37 +73,21 @@ public class AcrEntry implements IsEntity {
         this.owner = owner;
     }
 
-    public String getViewCondition() {
-        return viewCondition;
-    }
-
-    public void setViewCondition(String viewCondition) {
-        this.viewCondition = viewCondition;
-    }
-
-    public String getEditCondition() {
-        return editCondition;
-    }
-
-    public void setEditCondition(String editCondition) {
-        this.editCondition = editCondition;
-    }
-
     public AccessControlRule toAccessControlRule() {
-        AccessControlRule rule = new AccessControlRule(key.getParent().getResourceId(), key.getPrincipalId());
-        rule.setOwner(owner);
-        rule.setViewCondition(ExprValue.valueOf(viewCondition));
-        rule.setEditCondition(ExprValue.valueOf(editCondition));
-        return rule;
+        return AccessControlRule.fromRecord(
+                key.getParent().getResourceId(),
+                key.getPrincipalId(),
+                record.get());
     }
 
     @Override
     public Entity toEntity() {
         Entity entity = new Entity(key.unwrap());
         entity.setUnindexedProperty(OWNER_PROPERTY, owner);
-        entity.setUnindexedProperty(VIEW_PROPERTY, viewCondition);
-        entity.setUnindexedProperty(EDIT_PROPERTY, editCondition);
         entity.setUnindexedProperty(VERSION_PROPERTY, version);
+        if(!owner) {
+            record.writeToEntity(entity);
+        }
         return entity;
     }
 

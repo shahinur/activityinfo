@@ -18,10 +18,13 @@ import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.model.type.time.*;
 
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     private static final ViewBuilderFactory INSTANCE = new ViewBuilderFactory();
+    private static final Logger LOGGER = Logger.getLogger(ViewBuilderFactory.class.getName());
 
     private ViewBuilderFactory() {}
 
@@ -32,7 +35,7 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitTextField(FormField field, TextType type) {
-        return new StringColumnBuilder(field.getId(), new StringReader() {
+        return new StringColumnBuilder(new StringReader() {
             @Override
             public String readString(FieldValue value) {
                 if(value instanceof TextValue) {
@@ -60,7 +63,7 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitReferenceField(FormField field, ReferenceType type) {
-        return new StringColumnBuilder(field.getId(), new StringReader() {
+        return new StringColumnBuilder(new StringReader() {
             @Override
             public String readString(FieldValue value) {
                 if(value instanceof ReferenceValue) {
@@ -81,7 +84,7 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitBarcodeField(FormField field, BarcodeType type) {
-        return new StringColumnBuilder(field.getId(), new StringReader() {
+        return new StringColumnBuilder(new StringReader() {
             @Override
             public String readString(FieldValue value) {
                 if(value instanceof BarcodeValue) {
@@ -104,30 +107,17 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitGeoPointField(FormField field, GeoPointType type) {
-        return null;
+        return unsupported(type);
     }
 
     @Override
     public ColumnViewBuilder visitImageField(FormField field, ImageType type) {
-        return null;
-    }
-
-    @Override
-    public ColumnViewBuilder visitLocalDateIntervalField(FormField field, LocalDateIntervalType type) {
-        return new DateColumnBuilder(field.getId(), new DateReader() {
-            @Override
-            public Date readDate(FieldValue value) {
-                if(value instanceof LocalDateInterval) {
-                    return ((LocalDateInterval) value).getEndDate().atMidnightInMyTimezone();
-                }
-                return null;
-            }
-        });
+        return unsupported(type);
     }
 
     @Override
     public ColumnViewBuilder visitExprField(FormField field, ExprFieldType type) {
-        return null;
+        return unsupported(type);
     }
 
     @Override
@@ -177,6 +167,17 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
 
     @Override
     public ColumnViewBuilder visitMissingField(FormField field, MissingFieldType missingFieldType) {
+        return unsupported(missingFieldType);
+    }
+    @Override
+    public ColumnViewBuilder visitSubForm(FormField field, RecordFieldType recordFieldType) {
+        return unsupported(recordFieldType);
+    }
+
+    private ColumnViewBuilder unsupported(FieldType type) {
+        LOGGER.log(Level.SEVERE, "Unsupported type: " + type);
         return null;
     }
+
+
 }

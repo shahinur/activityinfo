@@ -282,7 +282,7 @@
     "primaryKey" : false,
     "superProperties" : {
       "@type" : "REFERENCE",
-      "value" : "label"
+      "value" : "_description"
     },
     "label" : "Description",
     "required" : true,
@@ -331,29 +331,27 @@
         "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
-          "value" : "r1"
+          "value" : "R1"
         },
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
     }
   }, {
-    "id" : "a1f12",
+    "id" : "a1f9",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Start Date",
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a1f13",
-    "visible" : true,
-    "primaryKey" : false,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "parameters" : {
+        "@class" : "_type:record",
+        "formClass" : {
+          "@type" : "REFERENCE",
+          "value" : "_localDateInterval"
+        }
+      },
+      "typeClass" : "record"
     }
   }, {
     "id" : "a1f11",
@@ -416,29 +414,27 @@
         "@class" : "_type:REFERENCE",
         "range" : {
           "@type" : "REFERENCE",
-          "value" : "r1"
+          "value" : "R1"
         },
         "cardinality" : "SINGLE"
       },
       "typeClass" : "REFERENCE"
     }
   }, {
-    "id" : "a2f12",
+    "id" : "a2f9",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Start Date",
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a2f13",
-    "visible" : true,
-    "primaryKey" : false,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "parameters" : {
+        "@class" : "_type:record",
+        "formClass" : {
+          "@type" : "REFERENCE",
+          "value" : "_localDateInterval"
+        }
+      },
+      "typeClass" : "record"
     }
   }, {
     "id" : "a2f11",
@@ -473,9 +469,19 @@
   "@version" : 0,
   "@class" : "a1",
   "a1f9" : {
-    "start" : "2009-01-01",
-    "@type" : "localDateInterval",
-    "end" : "2009-01-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2009-01-01"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2009-01-02"
+    }
+  },
+  "a1f8" : {
+    "@type" : "REFERENCE",
+    "value" : "r1"
   },
   "a1f7" : {
     "@type" : "REFERENCE",
@@ -490,14 +496,24 @@
   "@owner" : "a2",
   "@version" : 0,
   "@class" : "a2",
+  "a2f8" : {
+    "@type" : "REFERENCE",
+    "value" : "r1"
+  },
   "a2f7" : {
     "@type" : "REFERENCE",
     "value" : "d1p1"
   },
   "a2f9" : {
-    "start" : "2009-01-01",
-    "@type" : "localDateInterval",
-    "end" : "2009-01-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2009-01-01"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2009-01-02"
+    }
   },
   "a2f11" : {
     "@type" : "REFERENCE",

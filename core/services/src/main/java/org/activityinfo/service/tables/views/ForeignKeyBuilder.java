@@ -33,6 +33,6 @@ public class ForeignKeyBuilder implements InstanceSink, Supplier<ForeignKeyColum
     }
 
     public ForeignKeyColumn get() {
-        return new ForeignKeyColumn(keys);
+        return new ForeignKeyColumn(rowIndex, keys);
     }
 }

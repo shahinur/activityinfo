@@ -3,7 +3,8 @@ package org.activityinfo.store.hrd.dao;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.store.hrd.StoreContext;
-import org.activityinfo.store.hrd.auth.Authorization;
+import org.activityinfo.store.hrd.auth.AuthorizationAsserter;
+import org.activityinfo.store.hrd.auth.ResourceAsserter;
 import org.activityinfo.store.hrd.auth.WorkspaceAuthDAO;
 import org.activityinfo.store.hrd.cache.CommitStatusCache;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
@@ -15,7 +16,7 @@ public class ReadContext {
     private WorkspaceEntityGroup workspace;
     private AuthenticatedUser user;
     private CommitStatusCache.TransactionLevel commitStatusCache;
-    private WorkspaceAuthDAO authDAO;
+    private AuthorizationAsserter auth;
 
     public ReadContext(StoreContext store, WorkspaceEntityGroup workspace, AuthenticatedUser user, ReadTx tx) {
         this.store = store;
@@ -24,7 +25,7 @@ public class ReadContext {
         this.tx = tx;
 
         this.commitStatusCache = store.getCommitStatusCache().begin(workspace, tx);
-        this.authDAO = new WorkspaceAuthDAO(workspace, user, tx);
+        this.auth = new AuthorizationAsserter(user, new WorkspaceAuthDAO(workspace, user, tx));
     }
 
     public AuthenticatedUser getUser() {
@@ -47,7 +48,7 @@ public class ReadContext {
         return workspace;
     }
 
-    public Authorization authorizationFor(ResourceId id) {
-        return authDAO.forResource(id);
+    public ResourceAsserter authorizationFor(ResourceId id) {
+        return auth.forResource(id);
     }
 }

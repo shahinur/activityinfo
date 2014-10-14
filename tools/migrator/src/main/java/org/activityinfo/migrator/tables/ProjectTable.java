@@ -76,7 +76,7 @@ public class ProjectTable extends ResourceMigrator {
         form.addElement(new FormField(field(formClassId, FULL_NAME_FIELD))
             .setType(TextType.INSTANCE)
             .setLabel("Description")
-            .setSuperProperty(ApplicationProperties.LABEL_PROPERTY)
+            .setSuperProperty(ApplicationProperties.DESCRIPTION_PROPERTY)
             .setRequired(true));
 
         return form.asResource();

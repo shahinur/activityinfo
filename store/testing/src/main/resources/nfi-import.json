@@ -95963,22 +95963,20 @@
       "typeClass" : "REFERENCE"
     }
   }, {
-    "id" : "a33f12",
+    "id" : "a33f9",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Start Date",
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a33f13",
-    "visible" : true,
-    "primaryKey" : false,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "parameters" : {
+        "@class" : "_type:record",
+        "formClass" : {
+          "@type" : "REFERENCE",
+          "value" : "_localDateInterval"
+        }
+      },
+      "typeClass" : "record"
     }
   }, {
     "id" : "a33f11",

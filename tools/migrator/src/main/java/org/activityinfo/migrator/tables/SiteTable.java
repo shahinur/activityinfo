@@ -8,6 +8,7 @@ import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.migrator.filter.MigrationFilter;
 import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
@@ -15,6 +16,7 @@ import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.model.type.time.LocalDateInterval;
+import org.activityinfo.model.type.time.LocalDateIntervalClass;
 
 import java.sql.*;
 import java.util.List;
@@ -83,13 +85,19 @@ public class SiteTable extends ResourceMigrator {
                     resource.set(field(classId, PARTNER_FIELD), new ReferenceValue(
                             context.getIdStrategy().partnerInstanceId(rs.getInt("databaseId"), rs.getInt("partnerId"))));
 
+                    int projectId = rs.getInt("projectId");
+                    if(!rs.wasNull()) {
+                        resource.set(field(classId, PROJECT_FIELD), new ReferenceValue(
+                                CuidAdapter.cuid(PROJECT_DOMAIN, projectId)));
+                    }
+
                     int reportingFrequency = rs.getInt("ReportingFrequency");
                     if(reportingFrequency == ActivityTable.ONCE) {
                         LocalDateInterval date = dateInterval(rs);
                         if(date == null) {
                             continue;
                         }
-                        resource.set(field(classId, DATE_FIELD), date);
+                        resource.set(field(classId, DATE_FIELD), LocalDateIntervalClass.INSTANCE.toRecord(date));
                     }
 
                     if(!isAdminBound(rs)) {

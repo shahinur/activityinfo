@@ -56,7 +56,7 @@ public class TargetCollector {
         for (FormTree.Node child : referenceField.getChildren()) {
             if (child.getType() instanceof TextType) {
                 addTargetField(child);
-            } else if (child.isReference()) {
+            } else if (child.hasChildren()) {
                 collectTargetFields(child);
             }
         }

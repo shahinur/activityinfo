@@ -187,7 +187,7 @@
 
 
   <project projectId="1" name="Project X" description="A project"
-           databaseId="3"/>
+           databaseId="1"/>
 
   <!-- PEAR PLUS Activity #1 - Support to health centers (monthly reporting) -->
 

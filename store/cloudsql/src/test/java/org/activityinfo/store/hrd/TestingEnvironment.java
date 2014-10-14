@@ -5,7 +5,10 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
+import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.FolderRequest;
+import org.activityinfo.service.store.StoreReader;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tasks.appengine.AppEngineUserTaskService;
 import org.activityinfo.service.tasks.appengine.TaskExecutors;
@@ -75,5 +78,12 @@ public class TestingEnvironment extends TestWatcher {
 
     public FolderProjection queryTree(ResourceId parentId) {
         return store.queryTree(getUser(), new FolderRequest(parentId));
+    }
+
+    public TableData queryTable(TableModel tableModel) {
+
+        try(StoreReader reader = store.openReader(user)) {
+            return reader.getTable(tableModel);
+        }
     }
 }

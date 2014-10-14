@@ -57,7 +57,7 @@ public class TablePage implements DisplayWidget<ResourceId> {
     }
     private void enumerateColumns(List<FormTree.Node> fields) {
         for (FormTree.Node node : fields) {
-            if (node.isReference()) {
+            if (node.hasChildren()) {
                 enumerateColumns(node.getChildren());
             } else {
                 if (columnMap.containsKey(node.getFieldId())) {

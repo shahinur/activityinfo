@@ -3,6 +3,7 @@ package org.activityinfo.model.table.views;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class DoubleArrayColumnView implements ColumnView {
@@ -57,5 +58,13 @@ public class DoubleArrayColumnView implements ColumnView {
         } else {
             return TRUE;
         }
+    }
+
+    @Override
+    public String toString() {
+        if(numRows() > 10) {
+            return "[ double, num rows =  " + numRows() + "]";
+        }
+        return Arrays.toString(values);
     }
 }

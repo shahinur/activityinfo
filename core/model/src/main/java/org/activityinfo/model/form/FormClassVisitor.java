@@ -1,6 +1,7 @@
 package org.activityinfo.model.form;
 
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -11,7 +12,10 @@ import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.*;
+import org.activityinfo.model.type.time.LocalDateType;
+import org.activityinfo.model.type.time.MissingFieldType;
+import org.activityinfo.model.type.time.MonthType;
+import org.activityinfo.model.type.time.YearType;
 
 public interface FormClassVisitor<T> {
 
@@ -33,8 +37,6 @@ public interface FormClassVisitor<T> {
 
     T visitImageField(FormField field, ImageType type);
 
-    T visitLocalDateIntervalField(FormField field, LocalDateIntervalType type);
-
     T visitExprField(FormField field, ExprFieldType type);
 
     T visitLocalDateField(FormField field, LocalDateType localDateType);
@@ -46,5 +48,7 @@ public interface FormClassVisitor<T> {
     T visitYearField(FormField field, YearType yearType);
 
     T visitMissingField(FormField field, MissingFieldType missingFieldType);
+
+    T visitSubForm(FormField field, RecordFieldType recordFieldType);
 
 }

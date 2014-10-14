@@ -33,22 +33,22 @@ import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.server.database.OnDataSet;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.activityinfo.model.legacy.CuidAdapter.*;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetSitesTest extends CommandTestCase2 {
     private static final int DATABASE_OWNER = 1;
+    public static final int NFI_ACTIVITY_ID = 1;
 
     @Test
     public void testActivityQueryBasic() throws CommandException {
@@ -57,10 +57,11 @@ public class GetSitesTest extends CommandTestCase2 {
 
         GetSites cmd = new GetSites();
         cmd.filter().onActivity(1);
-        String date2 = field(activityFormClass(1), END_DATE_FIELD).asString();
-        cmd.setSortInfo(new SortInfo(date2, SortDir.DESC));
+        cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
+
+        System.out.println(result.getData());
 
         Assert.assertEquals("totalLength", 3, result.getData().size());
         Assert.assertEquals("totalLength", 3, result.getTotalLength());
@@ -84,9 +85,9 @@ public class GetSitesTest extends CommandTestCase2 {
         // assure project is present
         SiteDTO s1 = result.getData().get(1);
         assertThat(s1.getLegacyId(), equalTo(1));
-        assertThat(s1.getProject().getId(), equalTo(1));
-
+        assertThat(s1.getProjectName(), equalTo("Project X"));
     }
+
 
     @Test
     public void testIndicatorSort() throws CommandException {
@@ -94,7 +95,7 @@ public class GetSitesTest extends CommandTestCase2 {
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
-        cmd.filter().onActivity(1);
+        cmd.filter().onActivity(NFI_ACTIVITY_ID);
         cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1), SortDir.DESC));
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
@@ -187,19 +188,6 @@ public class GetSitesTest extends CommandTestCase2 {
         Assert.assertEquals("rows", 3, result.getData().size());
     }
 
-    @Test
-    public void testAll() throws CommandException {
-
-        setUser(DATABASE_OWNER);
-
-        GetSites cmd = new GetSites();
-
-        PagingLoadResult<SiteDTO> result = execute(cmd);
-
-        Assert.assertEquals("rows", 8, result.getData().size());
-        Assert.assertNotNull("activityId", result.getData().get(0)
-                .getActivityId());
-    }
 
     @Test
     public void testAllWithRemovedUser() throws CommandException {
@@ -216,6 +204,7 @@ public class GetSitesTest extends CommandTestCase2 {
         setUser(1);
 
         Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, NFI_ACTIVITY_ID);
         filter.addRestriction(DimensionType.Indicator, 5);
 
         SiteResult result = execute(new GetSites(filter));
@@ -231,7 +220,7 @@ public class GetSitesTest extends CommandTestCase2 {
         setUser(DATABASE_OWNER);
 
         GetSites cmd = new GetSites();
-        cmd.filter().onActivity(1);
+        cmd.filter().onActivity(NFI_ACTIVITY_ID);
         cmd.setSortInfo(new SortInfo(IndicatorDTO.getPropertyName(1),
                 SortDir.DESC));
         cmd.setLimit(2);
@@ -252,7 +241,7 @@ public class GetSitesTest extends CommandTestCase2 {
         setUser(anonnoymsUserID);
 
         GetSites cmd = new GetSites();
-        cmd.filter().onActivity(1);
+        cmd.filter().onActivity(NFI_ACTIVITY_ID);
         cmd.setSortInfo(new SortInfo("date2", SortDir.DESC));
 
         PagingLoadResult<SiteDTO> result = execute(cmd);
@@ -264,9 +253,13 @@ public class GetSitesTest extends CommandTestCase2 {
         // result.getData().get(0).getActivity());
 
         // assure sorted
-        Assert.assertEquals("sorted", 2, result.getData().get(0).getLegacyId());
-        Assert.assertEquals("sorted", 1, result.getData().get(1).getLegacyId());
-        Assert.assertEquals("sorted", 3, result.getData().get(2).getLegacyId());
+        assertThat(result.getData(), contains(
+                hasProperty("legacyId", Matchers.equalTo(2)),
+                hasProperty("legacyId", Matchers.equalTo(1)),
+                hasProperty("legacyId", Matchers.equalTo(3))));
+//        Assert.assertEquals("sorted", 2, result.getData().get(0).getLegacyId());
+//        Assert.assertEquals("sorted", 1, result.getData().get(1).getLegacyId());
+//        Assert.assertEquals("sorted", 3, result.getData().get(2).getLegacyId());
 
         // assure indicators are present (site id=3)
         SiteDTO s = result.getData().get(2);
@@ -275,10 +268,12 @@ public class GetSitesTest extends CommandTestCase2 {
         Assert.assertThat("indicator", (Double) s.getIndicatorValue(1), equalTo(10000.0));
         Assert.assertNull("site x", s.getX());
 
+        System.out.println(result.getData());
+
         // assure project is present
         SiteDTO s1 = result.getData().get(1);
         assertThat(s1.getLegacyId(), equalTo(1));
-        assertThat(s1.getProject().getId(), equalTo(1));
+        assertThat(s1.getProjectName(), equalTo("Project X"));
     }
 
     @Test
@@ -329,6 +324,7 @@ public class GetSitesTest extends CommandTestCase2 {
         setUser(1);
 
         GetSites cmd = new GetSites();
+        cmd.filter().addRestriction(DimensionType.Activity, NFI_ACTIVITY_ID);
         cmd.filter().addRestriction(DimensionType.Indicator, 1);
         cmd.setSortInfo(new SortInfo("locationName", SortDir.ASC));
 

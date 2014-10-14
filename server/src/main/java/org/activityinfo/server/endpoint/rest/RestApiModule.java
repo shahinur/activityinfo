@@ -22,6 +22,7 @@ package org.activityinfo.server.endpoint.rest;
  * #L%
  */
 
+import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
 public class RestApiModule extends AbstractRestModule {
@@ -30,6 +31,7 @@ public class RestApiModule extends AbstractRestModule {
     protected void configureResources() {
         bindResource(RootResource.class);
         bindResource(TileResource.class, "/tile/*");
+        filter("/service/*").through(GuiceContainer.class);
     }
 
 }

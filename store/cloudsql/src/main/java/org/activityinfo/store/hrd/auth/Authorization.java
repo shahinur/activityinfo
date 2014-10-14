@@ -1,33 +1,15 @@
 package org.activityinfo.store.hrd.auth;
 
-import javax.ws.rs.WebApplicationException;
+/**
+ * Created by alex on 10/13/14.
+ */
+public interface Authorization {
+    boolean isOwner();
 
-import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
+    boolean canUpdate();
 
-public abstract class Authorization {
+    boolean canView();
 
-    public abstract boolean isOwner();
+    boolean canCreateChildren();
 
-    public abstract boolean canEdit();
-
-    public abstract boolean canView();
-
-
-    public void assertCanEdit() {
-        if(!canEdit()) {
-            throw new WebApplicationException(UNAUTHORIZED);
-        }
-    }
-
-    public void assertCanView() {
-        if (!canView()) {
-            throw new WebApplicationException(UNAUTHORIZED);
-        }
-    }
-
-    public void assertIsOwner() {
-        if (!isOwner()) {
-            throw new WebApplicationException(UNAUTHORIZED);
-        }
-    }
 }

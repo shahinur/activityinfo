@@ -37,13 +37,13 @@ public class FormTreePrettyPrinter {
 
         // print data fields first
         for(FormTree.Node node : nodes) {
-            if(!node.isReference() && node.getDefiningFormClass().getId().equals(formClassId)) {
+            if(!node.hasChildren() && node.getDefiningFormClass().getId().equals(formClassId)) {
                 println(indent, "." + node.getFieldId() + ": " + node.getField().getLabel());
             }
         }
 
         for(FormTree.Node node : nodes) {
-            if(node.isReference() && node.getDefiningFormClass().getId().equals(formClassId)) {
+            if(node.hasChildren() && node.getDefiningFormClass().getId().equals(formClassId)) {
                 String fieldLabel = "." + node.getFieldId() + ": " + node.getField().getLabel() + " = ";
                 print(indent, fieldLabel);
                 prettyPrintNodes(indent + fieldLabel.length(), node.getChildren());

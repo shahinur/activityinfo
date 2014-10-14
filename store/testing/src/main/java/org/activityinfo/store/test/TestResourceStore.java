@@ -11,6 +11,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.legacy.InstanceQuery;
 import org.activityinfo.model.legacy.Projection;
@@ -25,7 +26,10 @@ import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.cubes.CubeBuilder;
 import org.activityinfo.service.store.*;
+import org.activityinfo.service.tables.StoreAccessor;
 import org.activityinfo.service.tables.TableBuilder;
+import org.activityinfo.service.tree.FormClassProvider;
+import org.activityinfo.service.tree.FormTreeBuilder;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.PathParam;
@@ -34,7 +38,9 @@ import java.net.URL;
 import java.util.*;
 
 @SuppressWarnings("GwtClientClassFromNonInheritedModule")
-public class TestResourceStore implements ResourceStore, StoreAccessor {
+public class TestResourceStore implements ResourceStore, StoreAccessor, StoreReader, FormClassProvider {
+
+    private ApplicationClassProvider applicationClassProvider = new ApplicationClassProvider();
 
     private final Map<ResourceId, Resource> resourceMap = Maps.newHashMap();
 
@@ -73,25 +79,67 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
     }
 
     @Override
-    public StoreAccessor createAccessor(AuthenticatedUser user) {
+    public List<ResourceNode> getOwnedOrSharedWorkspaces() {
+        return getOwnedOrSharedWorkspaces(currentUser);
+    }
+
+    @Override
+    public StoreReader openReader(AuthenticatedUser user) {
         return this;
     }
 
     public Resource get(ResourceId resourceId) {
+        if(resourceId.isApplicationDefined()) {
+            return applicationClassProvider.get(resourceId).asResource();
+        }
         Resource resource = resourceMap.get(resourceId);
         if(resource == null) {
-            throw new IllegalArgumentException("no such resource: " + resourceId);
+            throw new ResourceNotFound(resourceId);
         }
         return resource.copy();
     }
 
     @Override
-    public UserResource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
-        return UserResource.userResource(get(resourceId));
+    public UserResource getResource(ResourceId resourceId) {
+        return new UserResource(get(resourceId), true, true);
     }
 
-    private Set<Resource> get(AuthenticatedUser user, Set<ResourceId> resourceIds) {
-        throw new UnsupportedOperationException();
+    @Override
+    public ResourceNode getResourceNode(ResourceId resourceId) {
+        return new ResourceNode(getResource(resourceId).getResource());
+    }
+
+    @Override
+    public Iterable<ResourceNode> getFolderItems(ResourceId parentId) {
+        return null;
+    }
+
+    @Override
+    public FormTree getFormTree(ResourceId formClassId) {
+        return new FormTreeBuilder(this).queryTree(formClassId);
+    }
+
+    @Override
+    public Map<ResourceId, UserResource> getResources(Set<ResourceId> resourceIds) {
+        Map<ResourceId, UserResource> map = Maps.newHashMap();
+        for(ResourceId id : resourceIds) {
+            try {
+                map.put(id, getResource(id));
+            } catch(ResourceNotFound e) {
+                // ignore
+            }
+        }
+        return map;
+    }
+
+    @Override
+    public TableData getTable(TableModel tableModel) {
+        return queryTable(currentUser, tableModel);
+    }
+
+    @Override
+    public UserResource get(@InjectParam AuthenticatedUser user, ResourceId resourceId) {
+        return UserResource.userResource(get(resourceId));
     }
 
     @Override
@@ -143,8 +191,7 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
         return node;
     }
 
-    @Override
-    public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
+    private TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
         TableBuilder builder = new TableBuilder(this);
         try {
             return builder.buildTable(tableModel);
@@ -244,6 +291,11 @@ public class TestResourceStore implements ResourceStore, StoreAccessor {
 
     public static ResourceLocator createLocator(String jsonResourceName) throws IOException {
         return new TestResourceStore().load(jsonResourceName).createLocator();
+    }
+
+    @Override
+    public FormClass getFormClass(ResourceId resourceId) {
+        return FormClass.fromResource(getResource(resourceId).getResource());
     }
 
     private class Cursor implements ResourceCursor {

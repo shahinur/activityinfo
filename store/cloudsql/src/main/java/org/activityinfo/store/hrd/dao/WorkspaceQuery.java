@@ -4,10 +4,9 @@ import com.google.common.base.Optional;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.service.store.ResourceDeletedException;
 import org.activityinfo.service.store.ResourceNotFound;
-import org.activityinfo.store.ResourceDeletedException;
 import org.activityinfo.store.hrd.StoreContext;
-import org.activityinfo.store.hrd.auth.Authorization;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersionKey;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
@@ -41,13 +40,12 @@ public class WorkspaceQuery implements AutoCloseable {
         assertCommitted(latestVersion.get());
 
         // Ensure that the user has access to the resource
-        Authorization authorization = context.authorizationFor(id);
-        authorization.assertCanView();
+        context.authorizationFor(id).assertCanView();
 
         // Check to see if the resource has been deleted.
         assertNotDeleted(latestVersion.get());
 
-        return new ResourceQuery(context, latestVersion.get(), authorization, tx);
+        return new ResourceQuery(context, latestVersion.get(), context.authorizationFor(id), tx);
     }
 
     private void assertCommitted(LatestVersion latestVersion) {

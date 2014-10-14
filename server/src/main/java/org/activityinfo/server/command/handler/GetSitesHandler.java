@@ -2,38 +2,34 @@ package org.activityinfo.server.command.handler;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.SortInfo;
-import com.google.api.client.util.Lists;
-import com.google.common.base.Joiner;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.inject.Inject;
-import org.activityinfo.legacy.shared.command.DimensionType;
-import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.TableModel;
-import org.activityinfo.server.command.handler.table.QueryBuilder;
+import org.activityinfo.server.command.handler.adapter.SiteFormQuery;
+import org.activityinfo.server.command.handler.adapter.SiteQueryAdapter;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.service.store.StoreReader;
 
-import java.util.Collection;
+import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Logger;
 
 public class GetSitesHandler implements CommandHandler<GetSites> {
+
+    private static final Logger LOGGER = Logger.getLogger(GetSitesHandler.class.getName());
 
     private final ResourceStore store;
 
@@ -46,118 +42,107 @@ public class GetSitesHandler implements CommandHandler<GetSites> {
     public CommandResult execute(GetSites cmd, User userEntity) throws CommandException {
 
         AuthenticatedUser user = new AuthenticatedUser(userEntity.getId());
+        try(StoreReader storeReader = store.openReader(user)) {
 
-        // We can operate only per-form class here.
-        List<ResourceId> formClassIds = queryFormClassesFromFilter(user, cmd.getFilter());
+            // We can operate only per-form class here.
+            List<SiteFormQuery> forms = getForms(storeReader, cmd);
 
-        // Start reading from table store
+            // Normalize messy SortInfo
+            Optional<SortInfo> sort = isSorted(cmd);
 
-        List<SiteDTO> results = Lists.newArrayList();
-        for(ResourceId formClass : formClassIds) {
-            results.addAll(queryForm(cmd, user, formClass));
-        }
-        return new SiteResult(results);
-    }
+            // Start reading from table store
+            boolean sorted = sort.isPresent();
+            boolean paged = isPaged(cmd);
+            boolean singleForm = (forms.size() == 1);
 
-    private List<ResourceId> queryFormClassesFromFilter(AuthenticatedUser user, Filter filter) {
-        List<ResourceId> formClasses = Lists.newArrayList();
-        if(filter.isRestricted(DimensionType.Activity)) {
-            for(Integer activityId : filter.getRestrictions(DimensionType.Activity)) {
-                formClasses.add(CuidAdapter.activityFormClass(activityId));
-            }
-        } else if(filter.isRestricted(DimensionType.Database)) {
-            for(Integer databaseId : filter.getRestrictions(DimensionType.Database)) {
-                findForms(user, CuidAdapter.databaseId(databaseId), formClasses);
-            }
-        } else {
-            for (ResourceNode resourceNode : store.getOwnedOrSharedWorkspaces(user)) {
-                findForms(user, resourceNode, formClasses);
-            }
-            throw new UnsupportedOperationException("filter = " + filter);
-        }
-        return formClasses;
-    }
+            if (singleForm) {
+                // simplest case, just perform any sorting/page on the single form
+                return forms.get(0).executeQuery(cmd.getOffset(), cmd.getLimit(), sort);
 
-    private void findForms(AuthenticatedUser user, ResourceId parent, List<ResourceId> formClasses) {
-        FolderProjection result = store.queryTree(user, new FolderRequest(parent));
-        findForms(user, result.getRootNode(), formClasses);
-    }
+            } else if (paged && !sorted) {
 
-    private void findForms(AuthenticatedUser user, ResourceNode parent, List<ResourceId> formClasses) {
-        for (ResourceNode resourceNode : parent.getChildren()) {
-            if(resourceNode.getClassId().equals(FormClass.CLASS_ID)) {
-                formClasses.add(resourceNode.getClassId());
-            } else if(resourceNode.getClassId().equals(FolderClass.CLASS_ID)) {
-                findForms(user, resourceNode.getId(), formClasses);
-            }
-        }
-    }
+                // if we're not sorting, we can apply the slicing in page at a time
+                int offset = cmd.getOffset();
+                int limit = cmd.getLimit();
+                int totalCount = 0;
+                List<SiteDTO> sites = Lists.newArrayList();
+                for (SiteFormQuery form : forms) {
+                    SiteResult formResult = form.executeQuery(offset, limit, sort);
+                    sites.addAll(formResult.getData());
 
-    private Collection<SiteDTO> queryForm(GetSites cmd, AuthenticatedUser user, ResourceId formClassId) {
-        FormClass formClass = FormClass.fromResource(store.get(user, formClassId).getResource());
-        TableModel tableModel = QueryBuilder.build(formClass);
-        TableData tableData = store.queryTable(user, tableModel);
-
-        int numColumns = tableData.getColumns().size();
-        String columnIds[] = new String[numColumns];
-        ColumnView views[] = new ColumnView[numColumns];
-
-        int j = 0;
-        for (Map.Entry<String, ColumnView> entry : tableData.getColumns().entrySet()) {
-            columnIds[j] = entry.getKey();
-            views[j] = entry.getValue();
-            j++;
-        }
-
-        int[] order = computeOrder(cmd.getSortInfo(), tableData);
-
-        List<SiteDTO> sites = Lists.newArrayList();
-        for (int i = 0; i != tableData.getNumRows(); ++i) {
-            SiteDTO dto = new SiteDTO();
-            int ii;
-            if(order == null) {
-                ii = i;
-            } else {
-                ii = order[i];
-            }
-            for (j = 0; j < numColumns; ++j) {
-                dto.set(columnIds[j], views[j].get(ii));
-            }
-            sites.add(dto);
-        }
-        return sites;
-    }
-
-    private int[] computeOrder(SortInfo sortInfo, TableData tableData) {
-        if(Strings.isNullOrEmpty(sortInfo.getSortField()) || sortInfo.getSortDir() == Style.SortDir.NONE) {
-            return null;
-        } else {
-            ColumnView columnView = tableData.getColumnView(sortInfo.getSortField());
-            if (columnView == null) {
-                throw new UnsupportedOperationException("Unknown sort key [" + sortInfo.getSortField() + "] " +
-                    "columns: " + Joiner.on(", ").join(tableData.getColumns().keySet()));
-            }
-
-            int[] order = new int[tableData.getNumRows()];
-            for (int i = 0; i != order.length; ++i) {
-                order[i] = i;
-            }
-
-            Ordering ordering = Ordering.natural();
-            if(sortInfo.getSortDir() == Style.SortDir.DESC) {
-                ordering = ordering.reverse();
-            }
-
-            for (int i = 0; i < order.length; i++) {
-                for (int j = i; j > 0
-                        && ordering.compare(columnView.get(order[j - 1]), columnView.get(order[j])) > 0; j--) {
-                    final int b = j - 1;
-                    final int t = order[j];
-                    order[j] = order[b];
-                    order[b] = t;
+                    int numRows = formResult.getData().size();
+                    totalCount += formResult.getTotalLength();
+                    offset += numRows;
+                    limit = Math.min(0, limit - numRows);
                 }
+                return new SiteResult(sites, cmd.getOffset(), totalCount);
+
+            } else {
+
+                // if we need to sort, then copy everything into dtos first, then sort and page
+                List<SiteDTO> sites = Lists.newArrayList();
+                for (SiteFormQuery form : forms) {
+                    SiteResult formResult = form.executeQuery(0, -1, Optional.<SortInfo>absent());
+                    sites.addAll(formResult.getData());
+                }
+                int totalCount = sites.size();
+
+                if (sorted) {
+                    sort(sites, cmd.getSortInfo());
+                }
+                int start = Math.max(0, cmd.getOffset());
+                int end = totalCount;
+                if (cmd.getLimit() > 0) {
+                    end = Math.min(totalCount, start + cmd.getLimit());
+                }
+
+                return new SiteResult(sites.subList(start, end), 0, totalCount);
             }
-            return order;
         }
+    }
+
+    private List<SiteFormQuery> getForms(StoreReader storeReader, GetSites cmd) {
+        List<SiteFormQuery> forms = Lists.newArrayList();
+        for(ResourceId classId : SiteQueryAdapter.getFormClasses(storeReader, cmd.getFilter())) {
+            forms.add(new SiteFormQuery(cmd, storeReader, classId));
+        }
+        return forms;
+    }
+
+    private void sort(List<SiteDTO> sites, SortInfo sortInfo) {
+
+        final String fieldName = sortInfo.getSortField();
+        Preconditions.checkArgument(fieldName != null, "fieldName is null");
+        Ordering<SiteDTO> ordering = Ordering.natural().onResultOf(new Function<SiteDTO, Comparable>() {
+            @Nullable
+            @Override
+            public Comparable apply(SiteDTO input) {
+                return input.get(fieldName);
+            }
+        });
+
+        if(sortInfo.getSortDir() == Style.SortDir.DESC) {
+            ordering = ordering.reverse();
+        }
+
+        Collections.sort(sites, ordering);
+    }
+
+    private boolean isPaged(GetSites cmd) {
+        return cmd.getOffset() > 0 || cmd.getLimit() > 0;
+    }
+
+    private Optional<SortInfo> isSorted(GetSites query) {
+        SortInfo info = query.getSortInfo();
+        if(info == null) {
+            return Optional.absent();
+        }
+        if(Strings.isNullOrEmpty(info.getSortField())) {
+            return Optional.absent();
+        }
+        if(info.getSortDir() == Style.SortDir.NONE) {
+            return Optional.absent();
+        }
+        return Optional.of(info);
     }
 }

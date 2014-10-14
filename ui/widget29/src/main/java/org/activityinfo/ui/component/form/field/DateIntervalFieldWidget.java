@@ -9,14 +9,16 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.model.type.time.LocalDateInterval;
+import org.activityinfo.model.type.time.LocalDateIntervalClass;
 import org.activityinfo.promise.Promise;
 
 import java.util.Date;
 
-public class DateIntervalFieldWidget implements FormFieldWidget<LocalDateInterval> {
+public class DateIntervalFieldWidget implements FormFieldWidget<Record> {
 
 
     interface DateIntervalFieldWidgetUiBinder extends UiBinder<HTMLPanel, DateIntervalFieldWidget> {
@@ -69,7 +71,8 @@ public class DateIntervalFieldWidget implements FormFieldWidget<LocalDateInterva
     }
 
     @Override
-    public Promise<Void> setValue(LocalDateInterval value) {
+    public Promise<Void> setValue(Record recordValue) {
+        LocalDateInterval value = LocalDateIntervalClass.INSTANCE.toBean(recordValue);
         startDateBox.setValue(value.getStartDate().atMidnightInMyTimezone());
         endDateBox.setValue(value.getEndDate().atMidnightInMyTimezone());
         return Promise.done();

@@ -50,7 +50,9 @@ import org.activityinfo.server.util.jaxrs.JaxRsModule;
 import org.activityinfo.server.util.locale.LocaleModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.server.util.monitoring.MonitoringModule;
+import org.activityinfo.store.blob.GcsUserBlobServiceModule;
 import org.activityinfo.store.hrd.HrdResourceStoreModule;
+
 import javax.servlet.ServletContextEvent;
 import java.util.logging.Logger;
 
@@ -74,8 +76,8 @@ public class StartupListener extends GuiceServletContextListener {
 
         return Guice.createInjector(new HibernateModule(),
                 new ConfigModule(),
-                new org.activityinfo.store.hrd.HrdResourceStoreModule(),
-                new org.activityinfo.store.blob.GcsUserBlobServiceModule(),
+                new HrdResourceStoreModule(),
+                new GcsUserBlobServiceModule(),
                 new LoggingModule(),
                 new TemplateModule(),
                 new MailModule(),

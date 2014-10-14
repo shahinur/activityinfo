@@ -1,16 +1,15 @@
 package org.activityinfo.server.command.handler.table;
 
-import com.google.common.collect.Iterables;
-import org.activityinfo.model.annotation.Reference;
 import org.activityinfo.model.expr.eval.FieldReader;
 import org.activityinfo.model.expr.eval.PartialEvaluator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -22,7 +21,6 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.*;
-import org.activityinfo.service.store.ResourceStore;
 
 public class QueryBuilder implements FormClassVisitor<Void> {
 
@@ -97,11 +95,6 @@ public class QueryBuilder implements FormClassVisitor<Void> {
     }
 
     @Override
-    public Void visitLocalDateIntervalField(FormField field, LocalDateIntervalType type) {
-        return null;
-    }
-
-    @Override
     public Void visitExprField(FormField field, ExprFieldType type) {
         return null;
     }
@@ -129,6 +122,14 @@ public class QueryBuilder implements FormClassVisitor<Void> {
 
     @Override
     public Void visitMissingField(FormField field, MissingFieldType missingFieldType) {
+        return null;
+    }
+
+    @Override
+    public Void visitSubForm(FormField field, RecordFieldType fieldType) {
+        if(fieldType.getClassId().equals(LocalDateIntervalClass.CLASS_ID)) {
+            tableModel.selectField(new FieldPath(field.getId(), LocalDateIntervalClass.END_DATE_FIELD_ID)).as("date2");
+        }
         return null;
     }
 }

@@ -4,8 +4,6 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.TableModel;
 
 import java.util.List;
 
@@ -54,11 +52,6 @@ public interface ResourceStore {
     FolderProjection queryTree(AuthenticatedUser user, FolderRequest request);
 
 
-    /**
-     * Fetches an outline of Resources, returning only their id and label.
-     */
-    TableData queryTable(AuthenticatedUser user, TableModel tableModel);
-
     List<Bucket> queryCube(AuthenticatedUser user, PivotTableModel tableModel);
 
 
@@ -73,5 +66,6 @@ public interface ResourceStore {
 
     StoreLoader beginLoad(AuthenticatedUser user, ResourceId parentId);
 
-    StoreAccessor createAccessor(AuthenticatedUser user);
+    StoreReader openReader(AuthenticatedUser user);
+
 }

@@ -48,6 +48,14 @@ public class TableModel {
         return column;
     }
 
+    public ColumnModel selectExpr(String expression) {
+        ColumnModel column = new ColumnModel();
+        column.setId("_expr" + (columns.size()+1));
+        column.setExpression(expression);
+        columns.add(column);
+        return column;
+    }
+
     public ColumnModel selectField(FieldPath path) {
         ColumnModel column = new ColumnModel();
         column.setId(path.getLeafId().asString());
@@ -94,5 +102,18 @@ public class TableModel {
         return columnModel;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("SELECT ");
+        boolean needsComma = false;
+        for(ColumnModel column : columns) {
+            if(needsComma) {
+                sb.append(", ");
+            }
+            sb.append("(").append(column.getExpression().getExpression()).append(") as ").append(column.getId());
+            needsComma = true;
+        }
+        return sb.toString();
+    }
 }
 

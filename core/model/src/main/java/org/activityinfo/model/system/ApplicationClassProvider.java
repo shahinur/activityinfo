@@ -8,7 +8,9 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.ParametrizedFieldTypeClass;
 import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.time.LocalDateIntervalClass;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -23,7 +25,7 @@ public class ApplicationClassProvider {
         classMap.put(FormClass.CLASS_ID, createFormClassClass());
         classMap.put(FolderClass.CLASS_ID, FolderClass.INSTANCE.get());
         classMap.put(PivotTableModelClass.CLASS_ID, PivotTableModelClass.INSTANCE.get());
-
+        classMap.put(LocalDateIntervalClass.CLASS_ID, LocalDateIntervalClass.INSTANCE.get());
 
         for (FieldTypeClass fieldTypeClass : TypeRegistry.get().getTypeClasses()) {
             if(fieldTypeClass instanceof ParametrizedFieldTypeClass) {
@@ -31,6 +33,10 @@ public class ApplicationClassProvider {
                 classMap.put(parameterFormClass.getId(), parameterFormClass);
             }
         }
+    }
+
+    public Map<ResourceId, FormClass> asMap() {
+        return Collections.unmodifiableMap(classMap);
     }
 
     private FormClass createFormClassClass() {

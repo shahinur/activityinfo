@@ -1,10 +1,12 @@
 package org.activityinfo.service.tables;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.expr.*;
-import org.activityinfo.model.expr.diagnostic.ExprException;
+import org.activityinfo.model.expr.diagnostic.AmbiguousSymbolException;
 import org.activityinfo.model.expr.diagnostic.SymbolNotFoundException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -14,6 +16,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnModel;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
@@ -42,6 +45,45 @@ public class RowSetBuilder {
 
     private final ColumnExprVisitor columnVisitor = new ColumnExprVisitor();
 
+    /**
+     * Represents a field matched by a symbol, along
+     * with (optionally) a restriction on which value of the field to choose.
+     */
+    private static class FieldMatch {
+        private FormTree.Node field;
+
+        private Predicate<FormTree.Node> childPredicate;
+
+        private FieldMatch(FormTree.Node field, Predicate<FormTree.Node> childPredicate) {
+            this.field = field;
+            this.childPredicate = childPredicate;
+        }
+
+        public FieldMatch(FormTree.Node field) {
+            this.field = field;
+            this.childPredicate = Predicates.alwaysTrue();
+        }
+
+        @Override
+        public String toString() {
+            return field.toString();
+        }
+    }
+
+    private static class FormClassPredicate implements Predicate<FormTree.Node> {
+
+        private final ResourceId formClassId;
+
+        private FormClassPredicate(ResourceId formClassId) {
+            this.formClassId = formClassId;
+        }
+
+        @Override
+        public boolean apply(FormTree.Node input) {
+            return input.getDefiningFormClass().getId().equals(formClassId);
+        }
+    }
+
     public RowSetBuilder(ResourceId formClassId, TableQueryBatchBuilder batchBuilder) {
         this.formClassId = formClassId;
         this.batchBuilder = batchBuilder;
@@ -53,6 +95,7 @@ public class RowSetBuilder {
         ExprNode expr = ExprParser.parse(expression);
         try {
             return expr.accept(columnVisitor);
+
         } catch(SymbolNotFoundException e) {
             // TODO: I think we should be stricter here but we have unit tests that rely on
             // unmatched symbols mapping to empty columns
@@ -61,6 +104,7 @@ public class RowSetBuilder {
             FormTreePrettyPrinter.print(tree);
 
             return batchBuilder.addEmptyColumn(rootFormClass);
+
         }
     }
 
@@ -77,68 +121,85 @@ public class RowSetBuilder {
         return batchBuilder.addConstantColumn(rootFormClass, value);
     }
 
-    private FormTree.Node resolveSymbol(String name) {
+    private FieldMatch resolveSymbol(String name) {
         return resolveSymbol(tree.getRootFields(), name);
     }
 
-    private FormTree.Node resolveSymbol(List<FormTree.Node> fields, String name) {
+    private FieldMatch resolveSymbol(List<FormTree.Node> fields, String name) {
+        return resolveSymbol(fields, Predicates.<FormTree.Node>alwaysTrue(), name);
+    }
+
+    private FieldMatch resolveSymbol(List<FormTree.Node> fields, Predicate<FormTree.Node> predicate, String name) {
         // first try to resolve by id.
         for(FormTree.Node rootField : fields) {
             if(rootField.getFieldId().asString().equals(name)) {
-                return rootField;
+                return new FieldMatch(rootField);
             }
         }
 
         // then try to resolve the field by the code or label
-        List<FormTree.Node> matching = Lists.newArrayList();
-        matchSymbol(fields, name, matching);
+        List<FieldMatch> matching = Lists.newArrayList();
+        matchSymbol(fields, predicate, name, matching);
 
         if(matching.size() == 1) {
             return matching.get(0);
+
         } else if(matching.isEmpty()) {
             throw new SymbolNotFoundException(name);
+
         } else {
-            throw new ExprException("Ambiguous symbol [" + name + "] : Could refer to : " +
+            throw new AmbiguousSymbolException(name, "Could refer to : " +
                 Joiner.on(", ").join(matching));
         }
     }
 
-    private void matchSymbol(List<FormTree.Node> fields, String symbolName, List<FormTree.Node> matching) {
+    private void matchSymbol(List<FormTree.Node> fields, Predicate<FormTree.Node> predicate, String symbolName, List<FieldMatch> matching) {
         boolean matched = false;
-        for(FormTree.Node rootField : fields) {
-            if (matches(symbolName, rootField.getField())) {
-                matching.add(rootField);
-                matched = true;
+        for(FormTree.Node fieldNode : fields) {
+            if (predicate.apply(fieldNode)) {
+                FieldMatch match = matches(symbolName, fieldNode);
+                if(match != null) {
+                    matching.add(match);
+                    matched = true;
+                }
             }
         }
         // if we do not have a direct match, consider descendants
         if(!matched) {
             for(FormTree.Node field : fields) {
-                matchSymbol(field.getChildren(), symbolName, matching);
+                matchSymbol(field.getChildren(), predicate, symbolName, matching);
             }
         }
     }
 
-    private boolean matches(String symbolName, FormField field) {
-        if(symbolName.equalsIgnoreCase(field.getCode()) ||
-           symbolName.equalsIgnoreCase(field.getLabel())) {
-            return true;
+    private FieldMatch matches(String symbolName, FormTree.Node fieldNode) {
+        if(symbolName.equalsIgnoreCase(fieldNode.getField().getCode()) ||
+           symbolName.equalsIgnoreCase(fieldNode.getField().getLabel())) {
+            return new FieldMatch(fieldNode);
         }
-        if(symbolName.equals(field.getId().asString())) {
-            return true;
+        if(symbolName.equals(fieldNode.getFieldId().asString())) {
+            return new FieldMatch(fieldNode);
         }
-        for(ResourceId superProperty : field.getSuperProperties()) {
+        for(ResourceId superProperty : fieldNode.getField().getSuperProperties()) {
             if(symbolName.equals(superProperty.asString())) {
-                return true;
+                return new FieldMatch(fieldNode);
             }
         }
-        return false;
+        if(fieldNode.getType() instanceof ReferenceType) {
+            ReferenceType fieldType = (ReferenceType) fieldNode.getType();
+            for(ResourceId formClassId : fieldType.getRange()) {
+                if(formClassId.asString().equals(symbolName)) {
+                    return new FieldMatch(fieldNode, new FormClassPredicate(formClassId));
+                }
+            }
+        }
+        return null;
     }
 
-    private FormTree.Node resolveCompoundExpr(List<FormTree.Node> fields, CompoundExpr expr) {
+    private FieldMatch resolveCompoundExpr(List<FormTree.Node> fields, CompoundExpr expr) {
         if(expr.getValue() instanceof SymbolExpr) {
-            FormTree.Node parentField = resolveSymbol(fields, ((SymbolExpr) expr.getValue()).getName());
-            return resolveSymbol(parentField.getChildren(), expr.getField().getName());
+            FieldMatch parentField = resolveSymbol(fields, ((SymbolExpr) expr.getValue()).getName());
+            return resolveSymbol(parentField.field.getChildren(), parentField.childPredicate, expr.getField().getName());
 
         } else if(expr.getValue() instanceof CompoundExpr) {
             return resolveCompoundExpr(fields, (CompoundExpr) expr.getValue());
@@ -173,7 +234,8 @@ public class RowSetBuilder {
             } else if(symbolExpr.getName().equals(ColumnModel.CLASS_SYMBOL)) {
                 return batchBuilder.addConstantColumn(rootFormClass, rootFormClass.getId().asString());
             }
-            return batchBuilder.addColumn(resolveSymbol(symbolExpr.getName()));
+            FieldMatch fieldMatch = resolveSymbol(symbolExpr.getName());
+            return batchBuilder.addColumn(fieldMatch.field);
         }
 
         @Override
@@ -183,7 +245,9 @@ public class RowSetBuilder {
 
         @Override
         public Supplier<ColumnView> visitCompoundExpr(CompoundExpr compoundExpr) {
-            return batchBuilder.addColumn(resolveCompoundExpr(tree.getRootFields(), compoundExpr));
+            FieldMatch match = resolveCompoundExpr(tree.getRootFields(), compoundExpr);
+            LOGGER.info("Resolved expr '" + compoundExpr + "' to " + match.field.debugPath());
+            return batchBuilder.addColumn(match.field);
         }
 
         @Override

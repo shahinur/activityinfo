@@ -1,9 +1,10 @@
 package org.activityinfo.model.type.time;
 
 import com.bedatadriven.rebar.time.CalendricalException;
+import org.activityinfo.model.annotation.ValueOf;
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.Records;
-import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -12,6 +13,7 @@ import java.util.Date;
 /**
  * {@code FieldValue} of type {@code LocalDateType}
  */
+@ValueOf(LocalDateType.class)
 public class LocalDate implements FieldValue, IsRecord {
 
     private int year;

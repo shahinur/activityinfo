@@ -8,7 +8,9 @@ import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 
-public class RecordFieldType implements FieldType {
+public class RecordFieldType implements ParametrizedFieldType {
+
+
 
     public interface TypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass<Record> {}
 
@@ -21,7 +23,7 @@ public class RecordFieldType implements FieldType {
 
         @Override
         public RecordFieldType deserializeType(Record parameters) {
-            return new RecordFieldType(Types.readReference(parameters, "class"));
+            return new RecordFieldType(Types.readReference(parameters, "formClass"));
         }
 
         @Override
@@ -51,13 +53,29 @@ public class RecordFieldType implements FieldType {
         return TYPE_CLASS;
     }
 
+    public ResourceId getClassId() {
+        return classId;
+    }
+
     @Override
     public <T> T accept(FormField field, FormClassVisitor<T> visitor) {
-        throw new UnsupportedOperationException();
+        return visitor.visitSubForm(field, this);
+    }
+
+    @Override
+    public Record getParameters() {
+        return Records.builder(getTypeClass())
+                .set("formClass", new ReferenceValue(classId))
+                .build();
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
     }
 
     @Override
     public Record asRecord() {
-        return Records.builder().set("class", new ReferenceValue(classId).asRecord()).build();
+        return TypeFieldType.asRecord(this);
     }
 }

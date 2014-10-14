@@ -8,6 +8,7 @@ import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.service.store.StoreReader;
 
 import javax.inject.Provider;
 
@@ -28,8 +29,9 @@ public class InstanceTableProvider {
         tableModel.selectResourceId().as("id");
         tableModel.selectField(ApplicationProperties.LABEL_PROPERTY).as("label");
 
-        TableData table = store.queryTable(user.get(), tableModel);
-
-        return new InstanceLabelTable(table.getColumnView("id"), table.getColumnView("label"));
+        try(StoreReader reader = store.openReader(user.get())) {
+            TableData table = reader.getTable(tableModel);
+            return new InstanceLabelTable(table.getColumnView("id"), table.getColumnView("label"));
+        }
     }
 }

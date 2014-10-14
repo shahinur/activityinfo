@@ -5,7 +5,7 @@ import org.activityinfo.model.analysis.MeasureModel;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.service.store.StoreAccessor;
+import org.activityinfo.service.tables.StoreAccessor;
 import org.activityinfo.service.tables.TableQueryBatchBuilder;
 
 import java.util.List;

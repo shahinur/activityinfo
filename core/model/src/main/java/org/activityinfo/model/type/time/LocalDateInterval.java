@@ -1,22 +1,24 @@
 package org.activityinfo.model.type.time;
 
-import org.activityinfo.model.record.Record;
-import org.activityinfo.model.record.Records;
+import org.activityinfo.model.annotation.RecordBean;
 import org.activityinfo.model.record.IsRecord;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.record.Record;
 
 import javax.annotation.Nonnull;
 
 /**
- * {@code FieldValue} of type {@link org.activityinfo.model.type.time.LocalDateIntervalType} describing
+ * Record that describes
  * a continuous interval between two {@link org.activityinfo.model.type.time.LocalDate}s,
  * starting on {@code startDate}, inclusive, and ending on {@code endDate}, inclusive.
  */
-public class LocalDateInterval implements FieldValue, IsRecord {
+@RecordBean(classId = "_localDateInterval")
+public class LocalDateInterval implements IsRecord {
 
-    private final LocalDate startDate;
-    private final LocalDate endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    LocalDateInterval() {
+    }
 
     public LocalDateInterval(@Nonnull LocalDate startDate, @Nonnull LocalDate endDate) {
         this.startDate = startDate;
@@ -38,24 +40,12 @@ public class LocalDateInterval implements FieldValue, IsRecord {
         return endDate;
     }
 
-    @Override
-    public FieldTypeClass getTypeClass() {
-        return LocalDateIntervalType.TYPE_CLASS;
+    void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    @Override
-    public Record asRecord() {
-        return Records.builder()
-            .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
-            .set("start", getStartDate().toString())
-            .set("end", getEndDate().toString())
-            .build();
-    }
-
-    public static LocalDateInterval fromRecord(Record record) {
-        return new LocalDateInterval(
-            LocalDate.fromRecord(record.getRecord("start")),
-            LocalDate.fromRecord(record.getRecord("end")));
+    void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     @Override
@@ -76,5 +66,10 @@ public class LocalDateInterval implements FieldValue, IsRecord {
         int result = startDate != null ? startDate.hashCode() : 0;
         result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public Record asRecord() {
+        return LocalDateIntervalClass.INSTANCE.toRecord(this);
     }
 }

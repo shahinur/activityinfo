@@ -18,17 +18,20 @@ import java.util.Map;
  */
 public class FormSymbolTable {
 
+    private final FormClass formClass;
     private Map<String, FormField> idMap = Maps.newHashMap();
     private Multimap<String, FormField> codeMap = HashMultimap.create();
     private Multimap<String, FormField> labelMap = HashMultimap.create();
 
 
     public FormSymbolTable(FormClass formClass) {
+        this.formClass = formClass;
         for (FormField field : formClass.getFields()) {
 
             // ID has first priority
             FormField prevValue = idMap.put(field.getId().asString(), field);
             assert prevValue == null : "Duplicated id [" + field.getId() + "] in FormClass " + formClass.getId();
+
 
             // Then we try codes
             if(field.hasCode()) {
@@ -43,7 +46,8 @@ public class FormSymbolTable {
     public FormField resolveFieldById(String id) {
         FormField field = idMap.get(id);
         if(field == null) {
-            throw new IllegalArgumentException(id);
+            throw new IllegalArgumentException("Could not find field with id " + id + " in class " +
+                    formClass.getLabel() + " [" + formClass.getId() + "]");
         }
         return field;
     }

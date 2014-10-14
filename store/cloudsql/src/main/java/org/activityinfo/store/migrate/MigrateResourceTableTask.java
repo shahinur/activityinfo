@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -13,9 +14,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.Folder;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.activityinfo.service.store.ResourceNotFound;
 import org.activityinfo.store.hrd.StoreContext;
-import org.activityinfo.store.hrd.cache.WorkspaceCache;
+import org.activityinfo.store.hrd.auth.NullAuthorizer;
 import org.activityinfo.store.hrd.dao.Clock;
 import org.activityinfo.store.hrd.dao.WorkspaceCreation;
 import org.activityinfo.store.hrd.dao.WorkspaceUpdate;
@@ -43,6 +43,7 @@ public class MigrateResourceTableTask {
     private final ObjectMapper objectMapper = ObjectMapperFactory.get();
 
     private int databaseId;
+    private WorkspaceEntityGroup workspace;
     private StoreContext context = new StoreContext();
 
     public MigrateResourceTableTask(DeploymentConfiguration config) {
@@ -51,7 +52,9 @@ public class MigrateResourceTableTask {
 
     public void setDatabaseId(int databaseId) {
         this.databaseId = databaseId;
+        this.workspace = new WorkspaceEntityGroup(CuidAdapter.databaseId(databaseId));
     }
+
 
     public int run() {
 
@@ -65,33 +68,19 @@ public class MigrateResourceTableTask {
 
             LOGGER.log(Level.INFO, "Last version migrated = " + lastMigratedVersion);
 
+            AuthenticatedUser dbOwner = queryOwner(connection);
+
             if(lastMigratedVersion == 0) {
-
-                PreparedStatement ownerQuery = connection.prepareStatement(
-                        "select name, ownerUserId from userdatabase where databaseid = ?");
-                ownerQuery.setInt(1, databaseId);
-                ResultSet resultSet = ownerQuery.executeQuery();
-
-                Preconditions.checkState(resultSet.next());
-                int ownerUserId = resultSet.getInt("ownerUserId");
-
-                Folder folder = new Folder();
-                folder.setLabel(resultSet.getString("name"));
-
-                Resource db = Resources.createResource();
-                db.setId(workspace.getWorkspaceId());
-                db.setOwnerId(Resources.ROOT_ID);
-                db.setValue(folder.asRecord());
-
-                WorkspaceCreation creation = new WorkspaceCreation(context, new AuthenticatedUser(ownerUserId));
-                creation.createWorkspace(db);
+                createWorkspace(dbOwner, connection);
             }
 
+            writeAcrs(dbOwner, connection);
+
             PreparedStatement statement = connection.prepareStatement(
-                "select * from resource_version" +
-                    " where (owner_id = ? or owner_id in (select id from resource where owner_id = ?)) " +
-                    " and version > ? " +
-                    " order by version");
+                    "select * from resource_version" +
+                            " where (owner_id = ? or owner_id in (select id from resource where owner_id = ?)) " +
+                            " and version > ? " +
+                            " order by version");
 
             String databaseResourceId = "d" + databaseId;
             statement.setString(1, databaseResourceId);
@@ -118,6 +107,80 @@ public class MigrateResourceTableTask {
         return count;
     }
 
+    private void writeAcrs(AuthenticatedUser owner, Connection connection) throws SQLException {
+        try( PreparedStatement query = connection.prepareStatement(
+                "select * from userpermission where databaseid = ? order by version")) {
+
+            query.setInt(1, databaseId);
+
+            try( ResultSet resultSet = query.executeQuery() ) {
+                while (resultSet.next()) {
+
+                    try (WorkspaceUpdate update = WorkspaceUpdate.newBuilder(context, workspace, owner)
+                            .setClock(new HistoricalClock(resultSet.getLong("version")))
+                            .begin()) {
+
+                        AuthenticatedUser user = new AuthenticatedUser(resultSet.getInt("userId"));
+                        AccessControlRule rule = new AccessControlRule(workspace.getWorkspaceId(), user.getUserResourceId());
+                        rule.setOwner(false);
+                        rule.setDesign(resultSet.getBoolean("AllowDesign"));
+                        rule.setView(resultSet.getBoolean("AllowView"));
+                        rule.setViewAll(resultSet.getBoolean("AllowViewAll"));
+                        rule.setEdit(resultSet.getBoolean("AllowEdit"));
+                        rule.setEditAll(resultSet.getBoolean("AllowEditAll"));
+                        rule.setManageUsers(resultSet.getBoolean("AllowManageUsers"));
+                        rule.setManageAllUsers(resultSet.getBoolean("AllowManageAllUsers"));
+                        rule.setUserGroup(CuidAdapter.partnerInstanceId(databaseId, resultSet.getInt("partnerId")));
+
+                        System.out.println(rule);
+
+                        update.updateAcr(rule);
+                        update.commit();
+                    }
+                }
+            }
+        }
+    }
+
+    private void createWorkspace(AuthenticatedUser dbOwner, Connection connection) throws SQLException {
+
+        String databaseName;
+        String fullName;
+        try( PreparedStatement ownerQuery = connection.prepareStatement(
+                "select name, fullName from userdatabase where databaseid = ?")) {
+            ownerQuery.setInt(1, databaseId);
+            try( ResultSet rs = ownerQuery.executeQuery()) {
+                Preconditions.checkState(rs.next());
+                databaseName = rs.getString("name");
+                fullName = rs.getString("fullName");
+            }
+        }
+
+        Folder folder = new Folder();
+        folder.setLabel(databaseName);
+        folder.setDescription(fullName);
+
+        Resource db = Resources.createResource();
+        db.setId(workspace.getWorkspaceId());
+        db.setOwnerId(Resources.ROOT_ID);
+        db.setValue(folder.asRecord());
+
+        WorkspaceCreation creation = new WorkspaceCreation(context, dbOwner);
+        creation.createWorkspace(db);
+    }
+
+    private AuthenticatedUser queryOwner(Connection connection) throws SQLException {
+        try( PreparedStatement ownerQuery = connection.prepareStatement(
+                "select name, ownerUserId from userdatabase where databaseid = ?")) {
+            ownerQuery.setInt(1, databaseId);
+            try( ResultSet rs = ownerQuery.executeQuery()) {
+                Preconditions.checkState(rs.next());
+                int userId = rs.getInt("ownerUserId");
+                return new AuthenticatedUser(userId);
+            }
+        }
+    }
+
     private long queryLastMigratedVersion(WorkspaceEntityGroup workspace) {
         try(ReadTx tx = ReadTx.withSerializableConsistency()) {
             return queryLastMigratedVersion(workspace, tx);
@@ -141,6 +204,10 @@ public class MigrateResourceTableTask {
             this.time = commitDate.getTime();
         }
 
+        public HistoricalClock(long time) {
+            this.time = time;
+        }
+
         @Override
         public long getTime() {
             return time;
@@ -160,6 +227,7 @@ public class MigrateResourceTableTask {
 
         try(WorkspaceUpdate update = WorkspaceUpdate.newBuilder(context, workspace, user)
                 .setClock(sourceClock)
+                .setAuthorizer(new NullAuthorizer())
                 .begin()) {
 
             // check again, this time within the transaction, that this source version hasn't been applied
@@ -206,5 +274,6 @@ public class MigrateResourceTableTask {
         Class.forName(driverClass);
         return DriverManager.getConnection(connectionUrl);
     }
+
 
 }

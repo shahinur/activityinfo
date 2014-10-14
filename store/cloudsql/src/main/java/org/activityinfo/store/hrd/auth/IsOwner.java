@@ -1,6 +1,6 @@
 package org.activityinfo.store.hrd.auth;
 
-public class IsOwner extends Authorization {
+public class IsOwner implements Authorization {
 
     @Override
     public boolean isOwner() {
@@ -8,12 +8,17 @@ public class IsOwner extends Authorization {
     }
 
     @Override
-    public boolean canEdit() {
+    public boolean canUpdate() {
         return true;
     }
 
     @Override
     public boolean canView() {
+        return true;
+    }
+
+    @Override
+    public boolean canCreateChildren() {
         return true;
     }
 }

@@ -21,7 +21,7 @@ public class SingleResultQuery<T> {
     }
 
     public boolean isEmpty() {
-        return query != null;
+        return query == null;
     }
 
     public Query getDatastoreQuery() {

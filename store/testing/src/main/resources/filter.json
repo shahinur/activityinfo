@@ -453,22 +453,20 @@
       "typeClass" : "REFERENCE"
     }
   }, {
-    "id" : "a1f12",
+    "id" : "a1f9",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Start Date",
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a1f13",
-    "visible" : true,
-    "primaryKey" : false,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "parameters" : {
+        "@class" : "_type:record",
+        "formClass" : {
+          "@type" : "REFERENCE",
+          "value" : "_localDateInterval"
+        }
+      },
+      "typeClass" : "record"
     }
   }, {
     "id" : "a1f11",
@@ -503,9 +501,15 @@
   "@version" : 0,
   "@class" : "a1",
   "a1f9" : {
-    "start" : "2009-01-01",
-    "@type" : "localDateInterval",
-    "end" : "2009-01-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2009-01-01"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2009-01-02"
+    }
   },
   "a1f7" : {
     "@type" : "REFERENCE",
@@ -521,9 +525,15 @@
   "@version" : 0,
   "@class" : "a1",
   "a1f9" : {
-    "start" : "2009-01-15",
-    "@type" : "localDateInterval",
-    "end" : "2009-01-16"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2009-01-15"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2009-01-16"
+    }
   },
   "a1f7" : {
     "@type" : "REFERENCE",
@@ -539,9 +549,15 @@
   "@version" : 0,
   "@class" : "a1",
   "a1f9" : {
-    "start" : "2008-10-05",
-    "@type" : "localDateInterval",
-    "end" : "2008-10-06"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2008-10-05"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2008-10-06"
+    }
   },
   "a1f7" : {
     "@type" : "REFERENCE",
@@ -557,9 +573,15 @@
   "@version" : 0,
   "@class" : "a1",
   "a1f9" : {
-    "start" : "2008-10-05",
-    "@type" : "localDateInterval",
-    "end" : "2008-10-06"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2008-10-05"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2008-10-06"
+    }
   },
   "a1f7" : {
     "@type" : "REFERENCE",

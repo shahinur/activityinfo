@@ -105,12 +105,15 @@ public final class SiteDTO extends BaseModelData {
      * @return the id of the Activity to which this Site belongs
      */
     public int getActivityId() {
-        return (Integer) get("activityId");
+        return CuidAdapter.getLegacyId(getFormClassId());
     }
 
-
     public ResourceId getFormClassId() {
-        return CuidAdapter.cuid(CuidAdapter.ACTIVITY_DOMAIN, getActivityId());
+        return ResourceId.valueOf(this.<String>get("classId"));
+    }
+
+    public void setFormClassId(ResourceId classId) {
+        set("classId", classId.asString());
     }
 
     /**
@@ -119,7 +122,7 @@ public final class SiteDTO extends BaseModelData {
      * @param id
      */
     public void setActivityId(int id) {
-        set("activityId", id);
+       setFormClassId(CuidAdapter.activityFormClass(id));
     }
 
     /**
@@ -216,10 +219,6 @@ public final class SiteDTO extends BaseModelData {
         }
 
         return partner.getName();
-    }
-
-    public String getProjectName() {
-        return getProject() == null ? "" : getProject().getName();
     }
 
     /**
@@ -455,6 +454,10 @@ public final class SiteDTO extends BaseModelData {
         return (ProjectDTO) get("project");
     }
 
+    public String getProjectName() {
+        return get("projectName");
+    }
+
     public void setProject(ProjectDTO project) {
         set("project", project);
     }
@@ -530,4 +533,8 @@ public final class SiteDTO extends BaseModelData {
         return attributeDisplayMap != null && !attributeDisplayMap.isEmpty();
     }
 
+    @Override
+    public String toString() {
+        return this.getProperties().toString();
+    }
 }

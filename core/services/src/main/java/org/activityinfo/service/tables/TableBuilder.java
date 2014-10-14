@@ -2,6 +2,7 @@ package org.activityinfo.service.tables;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.expr.diagnostic.ExprException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
@@ -9,7 +10,6 @@ import org.activityinfo.model.table.ColumnModel;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.tree.FormTreeBuilder;
 
 import java.util.Map;
@@ -40,7 +40,13 @@ public class TableBuilder {
         Map<String, Supplier<ColumnView>> columnViews = Maps.newHashMap();
 
         for(ColumnModel column : table.getColumns()) {
-            Supplier<ColumnView> view = rowSetBuilder.fetch(column.getExpression().getExpression());
+            Supplier<ColumnView> view;
+            try {
+                view = rowSetBuilder.fetch(column.getExpression().getExpression());
+            } catch(ExprException e) {
+                throw new QuerySyntaxException("Syntax error in column " + column.getId() +
+                        " '" + column.getExpression().getExpression() + "' : " + e.getMessage(), e);
+            }
             columnViews.put(column.getId(), view);
         }
 
@@ -55,7 +61,9 @@ public class TableBuilder {
             if(numRows == -1) {
                 numRows = view.numRows();
             } else {
-                assert numRows == view.numRows();
+                if(numRows != view.numRows()) {
+                    throw new IllegalStateException("Columns are of unequal length: " + dataMap);
+                }
             }
             dataMap.put(entry.getKey(), view);
         }

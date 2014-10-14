@@ -2,6 +2,7 @@ package org.activityinfo.model.formTree;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
@@ -9,6 +10,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.ReferenceType;
 
 import java.util.*;
@@ -17,6 +19,7 @@ import java.util.*;
  * Contains a tree of fields based on references to other {@code FormClasses}
  */
 public class FormTree {
+
 
 
     public class Node {
@@ -33,12 +36,17 @@ public class FormTree {
             return parent == null;
         }
 
-        public boolean isReference() {
-            return field.getType() instanceof ReferenceType;
+        public boolean isLinked() {
+            return parent != null && (parent.isLinked() || parent.getType() instanceof ReferenceType);
+        }
+
+        public boolean hasChildren() {
+            return field.getType() instanceof ReferenceType ||
+                    field.getType() instanceof RecordFieldType;
         }
 
         public Node addChild(FormClass declaringClass, FormField field) {
-            assert isReference() : "only reference fields can have children";
+            assert hasChildren() : "only reference fields can have children";
 
             FormTree.Node childNode = new FormTree.Node();
             childNode.parent = this;
@@ -187,6 +195,14 @@ public class FormTree {
             list.addFirst(node);
             return list;
         }
+
+        public FormClass getRootFormClass() {
+            if(isRoot()) {
+                return getDefiningFormClass();
+            } else {
+                return getParent().getRootFormClass();
+            }
+        }
     }
 
     public enum SearchOrder {
@@ -226,6 +242,12 @@ public class FormTree {
         }
         return map;
     }
+
+
+    public ResourceId getRootClassId() {
+        return Iterables.getOnlyElement(getRootFormClasses().values()).getId();
+    }
+
 
     public Node getNodeByPath(FieldPath path) {
         Node node = nodeMap.get(path);

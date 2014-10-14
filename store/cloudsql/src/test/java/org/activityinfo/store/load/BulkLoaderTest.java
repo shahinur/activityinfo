@@ -131,7 +131,7 @@ public class BulkLoaderTest {
         TableModel tableModel = new TableModel(form.formClass.getId());
         tableModel.selectField("age").as("C1");
 
-        TableData data = environment.getStore().queryTable(environment.getUser(), tableModel);
+        TableData data = environment.queryTable(tableModel);
         assertThat(data.getNumRows(), equalTo(20));
 
         // Now try to update one of the form instances

@@ -238,6 +238,9 @@ public class CuidAdapter {
     }
 
     public static int getLegacyId(ResourceId id) {
+        if(id == null) {
+            throw new IllegalArgumentException("resourceId is null");
+        }
         return Integer.parseInt(id.asString().substring(1));
     }
 }

@@ -1,11 +1,12 @@
 package org.activityinfo.store.hrd.dao;
 
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.resource.UserResource;
-import org.activityinfo.store.hrd.auth.Authorization;
+import org.activityinfo.store.hrd.auth.ResourceAsserter;
 import org.activityinfo.store.hrd.entity.workspace.AcrEntry;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersionKey;
@@ -16,12 +17,12 @@ import java.util.List;
 
 public class ResourceQuery {
     private final LatestVersionKey key;
-    private final Authorization authorization;
+    private final ResourceAsserter authorization;
     private final ReadTx tx;
     private LatestVersion latestVersion;
     private ReadContext context;
 
-    ResourceQuery(ReadContext context, LatestVersion latestVersion, Authorization authorization, ReadTx tx) {
+    ResourceQuery(ReadContext context, LatestVersion latestVersion, ResourceAsserter authorization, ReadTx tx) {
         this.context = context;
         this.key = latestVersion.getKey();
         this.latestVersion = latestVersion;
@@ -40,8 +41,8 @@ public class ResourceQuery {
 
         UserResource userResource = new UserResource();
         userResource.setResource(resource);
-        userResource.setOwner(authorization.isOwner());
-        userResource.setEditAllowed(authorization.canEdit());
+        userResource.setOwner(authorization.get().isOwner());
+        userResource.setEditAllowed(authorization.get().canUpdate());
         return userResource;
     }
 
@@ -63,16 +64,17 @@ public class ResourceQuery {
         node.setVersion(versionOf(latestVersion));
         node.setLabel(latestVersion.getLabel());
         node.setClassId(latestVersion.getClassId());
-        node.setOwner(authorization.isOwner());
-        node.setEditAllowed(authorization.canEdit());
+        node.setOwner(authorization.get().isOwner());
+        node.setEditAllowed(authorization.get().canUpdate());
         return node;
     }
 
     public Iterator<Resource> getFormInstances() {
-        return tx.query(LatestVersion.formInstancesOf(key)).iterator();
+        FetchOptions options = FetchOptions.Builder.withChunkSize(250);
+        return tx.query(LatestVersion.formInstancesOf(key), options).iterator();
     }
 
-    public Iterable<ResourceNode> queryFolderItems() {
+    public Iterable<ResourceNode> getFolderItems() {
         List<ResourceNode> nodes = Lists.newArrayList();
         for (LatestVersion latestVersion : tx.query(LatestVersion.folderItemsOf(key))) {
             ResourceNode node = new ResourceNode(latestVersion.getResourceId());
@@ -95,12 +97,12 @@ public class ResourceQuery {
     public List<Resource> getAccessControlRules() {
 
         // Only owners can view the ACRs
-        authorization.assertIsOwner();
+        authorization.assertCanViewAcrs();
 
         return Lists.newArrayList(tx.query(AcrEntry.forResource(key)));
     }
 
     public void assertCanCreateChildren() {
-        authorization.assertCanEdit();
+        authorization.assertCanUpdate();
     }
 }

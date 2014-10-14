@@ -1250,22 +1250,20 @@
       "typeClass" : "REFERENCE"
     }
   }, {
-    "id" : "a2509f12",
+    "id" : "a2509f9",
     "visible" : true,
     "primaryKey" : false,
-    "label" : "Start Date",
+    "label" : "Date",
     "required" : true,
     "type" : {
-      "typeClass" : "LOCAL_DATE"
-    }
-  }, {
-    "id" : "a2509f13",
-    "visible" : true,
-    "primaryKey" : false,
-    "label" : "End Date",
-    "required" : true,
-    "type" : {
-      "typeClass" : "LOCAL_DATE"
+      "parameters" : {
+        "@class" : "_type:record",
+        "formClass" : {
+          "@type" : "REFERENCE",
+          "value" : "_localDateInterval"
+        }
+      },
+      "typeClass" : "record"
     }
   }, {
     "id" : "a2509f11",
@@ -1410,9 +1408,15 @@
     "value" : "z319635"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1463,9 +1467,15 @@
     "value" : "z319846"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1516,9 +1526,15 @@
     "value" : "z319584"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1569,9 +1585,15 @@
     "value" : "z319629"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1622,9 +1644,15 @@
     "value" : "z319977"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1675,9 +1703,15 @@
     "value" : "z319875"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1728,9 +1762,15 @@
     "value" : "z319995"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1781,9 +1821,15 @@
     "value" : "z319591"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1834,9 +1880,15 @@
     "value" : "z319631"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",
@@ -1887,9 +1939,15 @@
     "value" : "z319982"
   },
   "a2509f9" : {
-    "start" : "2013-12-02",
-    "@type" : "localDateInterval",
-    "end" : "2014-04-02"
+    "@class" : "_localDateInterval",
+    "startDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2013-12-02"
+    },
+    "endDate" : {
+      "@type" : "LOCAL_DATE",
+      "value" : "2014-04-02"
+    }
   },
   "I12445" : {
     "@type" : "QUANTITY",

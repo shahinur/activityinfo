@@ -40,7 +40,7 @@ public class ProjectTest extends CommandTestCase {
         filter.addRestriction(DimensionType.Site, 3);
         SiteResult sites = execute(new GetSites(filter));
 
-        assertThat(sites.getData().get(0).getProject(), is(nullValue()));
+        assertThat(sites.getData().get(0).getProjectName(), is(nullValue()));
 
         // and doesn't show up in pivoting...
         PivotSites pivot = new PivotSites();

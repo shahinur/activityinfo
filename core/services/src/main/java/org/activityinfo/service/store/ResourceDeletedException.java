@@ -1,4 +1,4 @@
-package org.activityinfo.store;
+package org.activityinfo.service.store;
 /*
  * #%L
  * ActivityInfo Server
@@ -25,7 +25,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 /**
- * @author yuriyz on 9/30/14.
+ * Thrown to indicate that the requested resource has been deleted.
  */
 public class ResourceDeletedException extends WebApplicationException {
 

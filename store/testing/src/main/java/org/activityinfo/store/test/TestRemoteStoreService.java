@@ -9,10 +9,7 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.service.store.FolderRequest;
-import org.activityinfo.service.store.RemoteStoreService;
-import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.service.store.UpdateResult;
+import org.activityinfo.service.store.*;
 import org.activityinfo.service.tasks.UserTask;
 
 import java.util.List;
@@ -28,7 +25,9 @@ public class TestRemoteStoreService implements RemoteStoreService {
     @Override
     public Promise<TableData> queryTable(TableModel tableModel) {
         try {
-            return Promise.resolved(store.queryTable(AuthenticatedUser.getAnonymous(), tableModel));
+            try(StoreReader reader = store.openReader(AuthenticatedUser.getAnonymous())) {
+                return Promise.resolved(reader.getTable(tableModel));
+            }
         } catch(Exception e) {
             return Promise.rejected(e);
         }

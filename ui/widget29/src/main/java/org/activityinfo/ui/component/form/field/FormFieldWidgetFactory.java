@@ -32,6 +32,7 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -42,7 +43,7 @@ import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.LocalDateIntervalType;
+import org.activityinfo.model.type.time.LocalDateIntervalClass;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.store.ResourceLocator;
@@ -107,9 +108,11 @@ public class FormFieldWidgetFactory {
         } else if (type instanceof LocalDateType) {
             return Promise.resolved(new DateFieldWidget(valueUpdater));
 
-        } else if (type instanceof LocalDateIntervalType) {
-            return Promise.resolved(new DateIntervalFieldWidget(valueUpdater));
-
+        } else if (type instanceof RecordFieldType) {
+            RecordFieldType recordType = (RecordFieldType) type;
+            if(recordType.getClassId().equals(LocalDateIntervalClass.CLASS_ID)) {
+                return Promise.resolved(new DateIntervalFieldWidget(valueUpdater));
+            }
         } else if (type instanceof GeoPointType) {
             return Promise.resolved(new GeographicPointWidget(valueUpdater));
 

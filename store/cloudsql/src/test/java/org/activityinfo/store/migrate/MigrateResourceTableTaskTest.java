@@ -44,6 +44,7 @@ public class MigrateResourceTableTaskTest {
         }
     }
 
+    @Ignore("requires local db")
     @Test
     public void runMigration() {
         Properties properties = new Properties();

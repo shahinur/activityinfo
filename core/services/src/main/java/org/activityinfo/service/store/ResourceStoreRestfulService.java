@@ -111,7 +111,9 @@ public final class ResourceStoreRestfulService {
     @Consumes("application/json")
     @Produces("application/json")
     public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
-        return service.queryTable(user, tableModel);
+        try(StoreReader reader = service.openReader(user)) {
+            return reader.getTable(tableModel);
+        }
     }
 
     @POST

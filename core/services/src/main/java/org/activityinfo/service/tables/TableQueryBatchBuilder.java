@@ -11,7 +11,6 @@ import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.tables.join.Join;
 import org.activityinfo.service.tables.join.JoinLink;
 import org.activityinfo.service.tables.views.ForeignKeyColumn;
@@ -79,15 +78,16 @@ public class TableQueryBatchBuilder {
      */
     public Supplier<ColumnView> addColumn(FormTree.Node node) {
 
-        if(node.isRoot()) {
-            // simple root column
-            return getDataColumn(node, node.getFieldId());
-
-        } else {
+        if (node.isLinked()) {
             // requires join
             return getNestedColumn(node);
+
+        } else {
+            // simple root column or embedded form
+            return getDataColumn(node.getRootFormClass(), node);
         }
     }
+
 
     /**
      * Adds a query to the batch for an empty column. It may still be required to hit the data store
@@ -115,7 +115,7 @@ public class TableQueryBatchBuilder {
         }
 
         // Schedule the actual column to be joined
-        Supplier<ColumnView> column = getDataColumn(node, node.getFieldId());
+        Supplier<ColumnView> column = getDataColumn(node.getDefiningFormClass(), node.getFieldId());
 
         return new Join(links, column);
     }
@@ -135,8 +135,8 @@ public class TableQueryBatchBuilder {
         return getTable(classId).fetchPrimaryKeyColumn();
     }
 
-    public Supplier<ColumnView> getDataColumn(FormTree.Node node, ResourceId fieldId) {
-        return getTable(node).fetchColumn(fieldId);
+    public Supplier<ColumnView> getDataColumn(FormClass formClass, FormTree.Node node) {
+        return getTable(formClass).fetchColumn(node.getPath());
     }
 
     public Supplier<ColumnView> getDataColumn(FormClass formClass, ResourceId fieldId) {

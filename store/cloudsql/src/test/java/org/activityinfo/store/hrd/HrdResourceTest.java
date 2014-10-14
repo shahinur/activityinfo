@@ -11,8 +11,8 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.FolderRequest;
+import org.activityinfo.service.store.ResourceDeletedException;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.store.ResourceDeletedException;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,6 +43,8 @@ public class HrdResourceTest {
         List<ResourceNode> workspaces = environment.getStore().getOwnedOrSharedWorkspaces(me);
         assertThat(workspaces, hasSize(1));
     }
+
+
 
     @Test
     public void simple() throws IOException, SQLException {

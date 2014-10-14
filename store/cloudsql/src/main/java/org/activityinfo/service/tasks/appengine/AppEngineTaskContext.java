@@ -9,18 +9,16 @@ import org.activityinfo.service.blob.BlobMetadata;
 import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.ResourceStore;
-import org.activityinfo.service.store.StoreAccessor;
 import org.activityinfo.service.store.StoreLoader;
+import org.activityinfo.service.store.StoreReader;
 import org.activityinfo.service.tasks.TaskContext;
-import org.activityinfo.store.hrd.HrdResourceStore;
-import org.activityinfo.store.hrd.HrdStoreAccessor;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class AppEngineTaskContext implements TaskContext {
 
-    private final StoreAccessor accessor;
+    private final StoreReader storeReader;
     private ResourceStore store;
     private UserBlobService blobService;
     private final AuthenticatedUser user;
@@ -29,7 +27,7 @@ public class AppEngineTaskContext implements TaskContext {
         this.store = store;
         this.blobService = blobService;
         this.user = user;
-        this.accessor = store.createAccessor(user);
+        this.storeReader = store.openReader(user);
     }
 
     @Override
@@ -44,7 +42,7 @@ public class AppEngineTaskContext implements TaskContext {
 
     @Override
     public ResourceCursor openCursor(ResourceId formClassId) throws Exception {
-        return store.createAccessor(user).openCursor(formClassId);
+        return storeReader.openCursor(formClassId);
     }
 
     @Override

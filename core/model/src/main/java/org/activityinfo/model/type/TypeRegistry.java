@@ -11,7 +11,6 @@ import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.model.type.time.MonthType;
 import org.activityinfo.model.type.time.YearType;
@@ -43,7 +42,6 @@ public class TypeRegistry {
         register(CalculatedFieldType.TYPE_CLASS);
         register(ExprFieldType.TYPE_CLASS);
         register(LocalDateType.TYPE_CLASS);
-        register(LocalDateIntervalType.TYPE_CLASS);
         register(MonthType.TYPE_CLASS);
         register(YearType.TYPE_CLASS);
         register(GeoPointType.TYPE_CLASS);

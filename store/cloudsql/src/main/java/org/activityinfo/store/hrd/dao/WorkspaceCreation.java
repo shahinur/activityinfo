@@ -5,13 +5,10 @@ import com.google.common.base.Preconditions;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.store.hrd.StoreContext;
-import org.activityinfo.store.hrd.auth.Authorization;
-import org.activityinfo.store.hrd.auth.Authorizer;
-import org.activityinfo.store.hrd.auth.IsOwner;
+import org.activityinfo.store.hrd.auth.NullAuthorizer;
 import org.activityinfo.store.hrd.entity.user.UserWorkspace;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersionKey;
@@ -61,7 +58,7 @@ public class WorkspaceCreation {
             WorkspaceUpdate workspaceUpdate = WorkspaceUpdate.newBuilder(context)
                 .setWorkspace(workspace)
                 .setUser(user)
-                .setAuthorizer(new NewlyCreatedWorkspaceAuthorizer())
+                .setAuthorizer(new NullAuthorizer())
                 .setTransaction(tx)
                 .setUpdateVersion(INITIAL_VERSION)
                 .begin();
@@ -108,11 +105,5 @@ public class WorkspaceCreation {
 //        }
     }
 
-    private static class NewlyCreatedWorkspaceAuthorizer implements Authorizer {
 
-        @Override
-        public Authorization forResource(ResourceId id) {
-            return new IsOwner();
-        }
-    }
 }

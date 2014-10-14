@@ -2,7 +2,6 @@ package org.activityinfo.service.tables.views;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.views.ConstantColumnView;
@@ -22,12 +21,10 @@ public class StringColumnBuilder implements ColumnViewBuilder {
 
     private Optional<ColumnView> result = Optional.absent();
 
-    private String fieldName;
     private StringReader reader;
 
-    public StringColumnBuilder(ResourceId fieldId, StringReader reader) {
+    public StringColumnBuilder(StringReader reader) {
         this.reader = reader;
-        this.fieldName = fieldId.asString();
     }
 
     @Override

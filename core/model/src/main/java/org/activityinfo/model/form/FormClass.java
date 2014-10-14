@@ -47,6 +47,7 @@ public class FormClass implements IsResource, FormElementContainer {
 
     public FormClass(ResourceId id) {
         Preconditions.checkNotNull(id);
+        this.ownerId = Resources.ROOT_ID;
         this.id = id;
     }
 

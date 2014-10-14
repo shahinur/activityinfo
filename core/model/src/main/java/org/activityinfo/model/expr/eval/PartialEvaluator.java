@@ -1,5 +1,6 @@
 package org.activityinfo.model.expr.eval;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.expr.*;
@@ -8,8 +9,10 @@ import org.activityinfo.model.expr.diagnostic.ExprException;
 import org.activityinfo.model.expr.diagnostic.ExprSyntaxException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
@@ -17,9 +20,7 @@ import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.primitive.TextValue;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Partially evaluates a field-level expression, expanding any calculated indicators
@@ -31,9 +32,23 @@ public class PartialEvaluator {
     private final Map<String, FieldReader> readers = Maps.newHashMap();
     private final LinkedList<FormField> stack = new LinkedList<>();
     private final PartiallyEvaluatingVisitor visitor = new PartiallyEvaluatingVisitor();
+    private final Map<ResourceId, PartialEvaluator> subFormEvaluators;
+    private final Map<ResourceId, FormClass> subFormMap;
+
+    public PartialEvaluator(FormClass formClass, Map<ResourceId, FormClass> subFormMap) {
+        this(formClass, subFormMap, new HashMap<ResourceId, PartialEvaluator>());
+    }
 
     public PartialEvaluator(FormClass formClass) {
+        this(formClass, new ApplicationClassProvider().asMap());
+    }
+
+    private PartialEvaluator(FormClass formClass,
+                             Map<ResourceId, FormClass> subFormMap,
+                             Map<ResourceId, PartialEvaluator> subFormEvaluators) {
+        this.subFormMap = subFormMap;
         this.symbolTable = new FormSymbolTable(formClass);
+        this.subFormEvaluators = subFormEvaluators;
     }
 
 
@@ -42,17 +57,50 @@ public class PartialEvaluator {
             return node.accept(visitor);
 
         } catch(ExprException e) {
-            return new ConstantReader(new ErrorValue(e), ErrorType.INSTANCE);
+            return new ConstantFieldReader(new ErrorValue(e), ErrorType.INSTANCE);
         }
     }
 
+    public FieldBinding bind(FieldPath fieldPath) {
+        // Get the root field
+        Iterator<ResourceId> path = fieldPath.iterator();
+        FormField field = getField(path.next());
+        FieldReader reader = partiallyEvaluate(field);
+
+        PartialEvaluator evaluator = this;
+
+        while(path.hasNext()) {
+            Preconditions.checkState(reader.getType() instanceof RecordFieldType,
+                    "cannot read sub field from " + field.getType());
+
+            evaluator = subFormEvaluator(reader.getType());
+            field = evaluator.getField(path.next());
+            reader = new SubFieldReader(reader, evaluator.partiallyEvaluate(field));
+        }
+        return new FieldBinding(field, reader);
+    }
+
+    private PartialEvaluator subFormEvaluator(FieldType type) {
+        RecordFieldType fieldType = (RecordFieldType) type;
+        ResourceId formClassId = fieldType.getClassId();
+        PartialEvaluator evaluator = subFormEvaluators.get(formClassId);
+        if(evaluator == null) {
+            FormClass formClass = subFormMap.get(formClassId);
+            if(formClass == null) {
+                throw new IllegalArgumentException(formClassId.asString());
+            }
+            evaluator = new PartialEvaluator(formClass, subFormMap, subFormEvaluators);
+            subFormEvaluators.put(formClassId, evaluator);
+        }
+        return evaluator;
+    }
 
     public FieldReader partiallyEvaluate(FormField field) {
         try {
             return visitor.fieldReader(field);
 
         } catch(ExprException e) {
-            return new ConstantReader(new ErrorValue(e), ErrorType.INSTANCE);
+            return new ConstantFieldReader(new ErrorValue(e), ErrorType.INSTANCE);
         }
     }
 
@@ -65,26 +113,6 @@ public class PartialEvaluator {
     }
 
 
-    private static class ConstantReader implements FieldReader {
-
-        private final FieldValue value;
-        private final FieldType type;
-
-        private ConstantReader(FieldValue value, FieldType type) {
-            this.value = value;
-            this.type = type;
-        }
-
-        @Override
-        public FieldValue readField(Record record) {
-            return value;
-        }
-
-        @Override
-        public FieldType getType() {
-            return type;
-        }
-    }
 
     private class PartiallyEvaluatingVisitor implements ExprVisitor<FieldReader> {
 
@@ -135,18 +163,18 @@ public class PartialEvaluator {
             if (stack.contains(field)) {
                 throw new CircularReferenceException(stack);
             }
-            stack.push(field);
+            stack.add(field);
             try {
                 CalculatedFieldType calculatedType = (CalculatedFieldType) field.getType();
                 ExprNode calculatedNode = ExprParser.parse(calculatedType.getExpression());
                 return calculatedNode.accept(this);
 
             } finally {
-                stack.pop();
+                stack.removeLast();
             }
         }
 
-        private FieldReader recordReader(FormField field) {
+        private FieldReader recordReader(final FormField field) {
             final String fieldName = field.getName();
             if (field.getType() instanceof TextType) {
                 return new FieldReader() {
@@ -177,6 +205,26 @@ public class PartialEvaluator {
                         return BooleanType.INSTANCE;
                     }
                 };
+            } else if (field.getType().getTypeClass() == RecordFieldType.TYPE_CLASS) {
+
+                final RecordFieldType type = (RecordFieldType) field.getType();
+                return new FieldReader() {
+                    @Override
+                    public FieldValue readField(Record record) {
+                        Record value = record.isRecord(fieldName);
+                        if(value != null && value.getClassId().equals(type.getClassId())) {
+                            return value;
+                        } else {
+                            return null;
+                        }
+                    }
+
+                    @Override
+                    public FieldType getType() {
+                        return field.getType();
+                    }
+                };
+
             } else if (field.getType().getTypeClass() instanceof RecordFieldTypeClass) {
                 final FieldType type = field.getType();
                 final RecordFieldTypeClass typeClass = (RecordFieldTypeClass) type.getTypeClass();
