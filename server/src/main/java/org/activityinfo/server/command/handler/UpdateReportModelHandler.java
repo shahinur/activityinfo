@@ -22,7 +22,10 @@ package org.activityinfo.server.command.handler;
  * #L%
  */
 
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.inject.Inject;
+import org.activityinfo.legacy.shared.command.GetReportModel;
 import org.activityinfo.legacy.shared.command.UpdateReportModel;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
@@ -35,8 +38,14 @@ import org.activityinfo.server.report.ReportParserJaxb;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.xml.bind.JAXBException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UpdateReportModelHandler implements CommandHandler<UpdateReportModel> {
+
+    private static final Logger LOGGER = Logger.getLogger(UpdateReportModelHandler.class.getName());
+
+    private final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
     private final EntityManager em;
 
@@ -65,8 +74,18 @@ public class UpdateReportModelHandler implements CommandHandler<UpdateReportMode
         }
 
         em.persist(result);
+        invalidateMemcache(cmd.getModel().getId());
 
         return null;
+    }
+
+    private void invalidateMemcache(Integer reportId) {
+        try {
+            memcacheService.delete(new GetReportModel(reportId, false));
+            memcacheService.delete(new GetReportModel(reportId, true));
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Failed to invalidate report cache", e);
+        }
     }
 
 }
