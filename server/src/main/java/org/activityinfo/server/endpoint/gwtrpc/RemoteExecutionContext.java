@@ -31,7 +31,6 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Injector;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
-import org.activityinfo.legacy.shared.command.BatchCommand;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.MutatingCommand;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
@@ -39,6 +38,7 @@ import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.impl.AuthorizationHandler;
 import org.activityinfo.legacy.shared.impl.CommandHandlerAsync;
 import org.activityinfo.legacy.shared.impl.ExecutionContext;
+import org.activityinfo.legacy.shared.util.Commands;
 import org.activityinfo.server.command.handler.CommandHandler;
 import org.activityinfo.server.command.handler.HandlerUtil;
 import org.activityinfo.server.database.hibernate.HibernateExecutor;
@@ -112,7 +112,7 @@ public class RemoteExecutionContext implements ExecutionContext {
         }
 
         AdvisoryLock lock = null;
-        if (hasMutatingCommand(command)) {
+        if (Commands.hasMutatingCommand(command)) {
             lock = new AdvisoryLock(entityManager);
         }
 
@@ -371,17 +371,4 @@ public class RemoteExecutionContext implements ExecutionContext {
         }
     }
 
-    public static boolean hasMutatingCommand(Command command) {
-        if (command instanceof MutatingCommand) {
-            return true;
-        } else if (command instanceof BatchCommand) {
-            BatchCommand batchCommand = (BatchCommand) command;
-            for (Command innerCommand : batchCommand.getCommands()) {
-                if (hasMutatingCommand(innerCommand)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 }

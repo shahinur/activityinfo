@@ -22,6 +22,7 @@ package org.activityinfo.legacy.client.remote;
  * #L%
  */
 
+import com.google.api.client.util.Maps;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -30,9 +31,13 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
+import org.activityinfo.legacy.shared.exception.CommandTimeoutException;
+import org.activityinfo.legacy.shared.exception.RetryCountExceedsLimitException;
+import org.activityinfo.legacy.shared.util.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An implementation of {@link org.activityinfo.legacy.client.Dispatcher} that
@@ -43,6 +48,12 @@ import java.util.List;
  * request GetSchema() or other basic information as they are loaded.
  */
 public class MergingDispatcher extends AbstractDispatcher {
+
+    /**
+     * In case CommandTimeOutException occurs (may happen if Advisory lock wasn't obtains during configurable time),
+     * dispatcher automatically retry command execution. With this constant it's possible to limit number of retry calls.
+     */
+    private static final int RETRY_COUNT_LIMIT_ON_TIMEOUT = 3;
 
     private Dispatcher dispatcher;
 
@@ -56,6 +67,8 @@ public class MergingDispatcher extends AbstractDispatcher {
      * yet received a response.
      */
     private List<CommandRequest> executingCommands = new ArrayList<CommandRequest>();
+
+    private Map<CommandRequest, Integer> retries = Maps.newHashMap();
 
     @Inject
     public MergingDispatcher(Dispatcher dispatcher, Scheduler scheduler) {
@@ -82,7 +95,7 @@ public class MergingDispatcher extends AbstractDispatcher {
 
         CommandRequest request = new CommandRequest(command, callback);
 
-        if (request.isMutating()) {
+        if (Commands.hasMutatingCommand(command)) {
             // mutating requests get queued immediately, don't try to merge them
             // into any pending/executing commands, it wouldn't be correct
 
@@ -93,7 +106,7 @@ public class MergingDispatcher extends AbstractDispatcher {
                 queue(request);
 
                 Log.debug("MergingDispatcher: Scheduled " + command.toString() + ", now " +
-                          pendingCommands.size() + " command(s) pending");
+                        pendingCommands.size() + " command(s) pending");
             }
         }
     }
@@ -111,21 +124,64 @@ public class MergingDispatcher extends AbstractDispatcher {
 
         if (!sent.isEmpty()) {
             for (final CommandRequest request : sent) {
-                dispatcher.execute(request.getCommand(), new AsyncCallback() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        executingCommands.remove(request);
-                        request.onFailure(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(Object result) {
-                        executingCommands.remove(request);
-                        request.onSuccess(result);
-                    }
-                });
+                executeCommand(request);
             }
         }
+    }
+
+    private void executeCommand(final CommandRequest request) {
+        dispatcher.execute(request.getCommand(), new AsyncCallback() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof CommandTimeoutException) {
+                    // todo do we want to let client know about each retry or timeout or both? via exception ?
+//                    request.onFailure(caught); // report about timeout
+//                    request.onFailure(new RetryCommandException()); // report about retry
+
+                    Log.debug("Request timed out, retring...");
+                    retry(request);
+                    return;
+                }
+                executingCommands.remove(request);
+                request.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(Object result) {
+                executingCommands.remove(request);
+                request.onSuccess(result);
+            }
+        });
+    }
+
+    private void retry(final CommandRequest request) {
+        try {
+            incrementRetryCounter(request);
+            executeCommand(request); // execute retry
+        } catch (Exception e) {
+            Log.error(e.getMessage(), e);
+            request.onFailure(e);
+        }
+    }
+
+    /**
+     * Increments current retry count and returns it.
+     *
+     * @param request command request
+     * @return current retry count
+     */
+    private int incrementRetryCounter(CommandRequest request) {
+        if (!retries.containsKey(request)) {
+            retries.put(request, 1);
+            return 1;
+        }
+        Integer count = retries.get(request);
+        count++;
+        if (count > RETRY_COUNT_LIMIT_ON_TIMEOUT) {
+            throw new RetryCountExceedsLimitException(); // we don't want to continue retry cycles
+        }
+        retries.put(request, count);
+        return count;
     }
 }
