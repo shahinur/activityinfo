@@ -77,7 +77,11 @@ public class DbUnitMigrator {
         MigrationContext context = new MigrationContext(new NullFilter());
 
         JsonTestUnitWriter writer = new JsonTestUnitWriter(migratedFile);
-        new MySqlMigrator(context).migrate(jdbcConnection, writer);
+        try {
+            new MySqlMigrator(context).migrate(jdbcConnection, writer);
+        } catch(Exception e) {
+            throw new RuntimeException("Exception migrating dbunit file " + file.getName(), e);
+        }
         writer.finish();
     }
 

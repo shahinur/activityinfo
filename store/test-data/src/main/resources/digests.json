@@ -12,6 +12,131 @@
     "label" : "PEAR"
   },
   "resources" : [ {
+    "@id" : "d1U3",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U3"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : false,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "view" : true,
+    "design" : false,
+    "editAll" : false
+  }, {
+    "@id" : "d1U4",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : false,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "view" : true,
+    "design" : false,
+    "editAll" : false
+  }, {
+    "@id" : "d1U5",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U5"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : false,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "view" : false,
+    "design" : true,
+    "editAll" : false
+  }, {
+    "@id" : "d1U6",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U6"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : false,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "view" : false,
+    "design" : true,
+    "editAll" : false
+  }, {
+    "@id" : "d1U7",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U7"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : false,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "view" : false,
+    "design" : false,
+    "editAll" : false
+  }, {
     "@id" : "P1",
     "@owner" : "d1",
     "@version" : 0,
@@ -368,6 +493,31 @@
     "label" : "Public"
   },
   "resources" : [ {
+    "@id" : "d3U100",
+    "@owner" : "d3",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d3"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U100"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : false,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d3p1"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : false
+  }, {
     "@id" : "P3",
     "@owner" : "d3",
     "@version" : 0,

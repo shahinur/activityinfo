@@ -12,6 +12,31 @@
     "label" : "PEAR"
   },
   "resources" : [ {
+    "@id" : "d1U2",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U2"
+    },
+    "manageUsers" : true,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "view" : true,
+    "design" : false,
+    "editAll" : false
+  }, {
     "@id" : "P1",
     "@owner" : "d1",
     "@version" : 0,

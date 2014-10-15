@@ -5,14 +5,16 @@ import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.auth.UserPermission;
-import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.auth.UserPermissionClass;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.Resources;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import static org.activityinfo.model.legacy.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.databaseId;
 
 public class UserPermissionTable extends ResourceMigrator {
 
@@ -25,28 +27,37 @@ public class UserPermissionTable extends ResourceMigrator {
     @Override
     public void getResources(Connection connection, ResourceWriter writer) throws Exception {
 
-        String sql = "SELECT P.*, PID.DatabaseId " +
+        String sql = "SELECT P.* " +
                      "FROM userpermission P " +
-                     "INNER JOIN userdatabase DB ON (P.DatabaseId=DB.DatabaseId)";
+                     "INNER JOIN userdatabase DB ON (P.DatabaseId=DB.DatabaseId) " +
+                     "WHERE DB.dateDeleted is null";
 
         try(Statement statement = connection.createStatement()) {
             try(ResultSet rs = statement.executeQuery(sql)) {
 
                 while(rs.next()) {
-                    ResourceId id = context.getIdStrategy()
-                        .partnerInstanceId(rs.getInt("DatabaseId"), rs.getInt("PartnerId"));
-                    ResourceId classId = context.resourceId(DATABASE_DOMAIN, rs.getInt("DatabaseId"));
-
-                    FormInstance instance = new FormInstance(id, classId);
-                    instance.set(field(classId, NAME_FIELD), rs.getString("name"));
-                    instance.set(field(classId, FULL_NAME_FIELD), rs.getString("fullName"));
-
-                    writer.writeResource(0, instance.asResource(), null, null);
+                    int databaseId = rs.getInt("databaseId");
 
                     AuthenticatedUser user = new AuthenticatedUser(rs.getInt("userId"));
-                    UserPermission up = new UserPermission(classId, user.getUserResourceId());
-                    up.setView(rs.getBoolean("view"));
-                    // TODO
+                    UserPermission rule = new UserPermission(
+                            databaseId(databaseId), user.getUserResourceId());
+                    rule.setOwner(false);
+                    rule.setDesign(rs.getBoolean("AllowDesign"));
+                    rule.setView(rs.getBoolean("AllowView"));
+                    rule.setViewAll(rs.getBoolean("AllowViewAll"));
+                    rule.setEdit(rs.getBoolean("AllowEdit"));
+                    rule.setEditAll(rs.getBoolean("AllowEditAll"));
+                    rule.setManageUsers(rs.getBoolean("AllowManageUsers"));
+                    rule.setManageAllUsers(rs.getBoolean("AllowManageAllUsers"));
+                    rule.setPartner(CuidAdapter.partnerInstanceId(databaseId, rs.getInt("partnerId")));
+
+                    System.out.println(rule);
+
+                    Resource resource = Resources.createResource();
+                    resource.setId(rule.getId());
+                    resource.setValue(UserPermissionClass.INSTANCE.toRecord(rule));
+                    resource.setOwnerId(databaseId(databaseId));
+                    writer.writeResource(0, resource, null, null);
                 }
             }
         }

@@ -104,8 +104,7 @@ public class GetSchemaTest extends CommandTestCase2 {
         setUser(1);
         SchemaDTO schema = execute(new GetSchema());
 
-        assertThat(schema.getProjectById(1).getLockedPeriods().size(),
-                equalTo(1));
+        assertThat(schema.getProjectById(1).getLockedPeriods().size(), equalTo(1));
 
         LockedPeriodSet locks = new LockedPeriodSet(schema);
         assertTrue(locks.isProjectLocked(1, new LocalDate(2009, 1, 1)));
@@ -113,7 +112,6 @@ public class GetSchemaTest extends CommandTestCase2 {
         assertTrue(locks.isProjectLocked(1, new LocalDate(2009, 1, 12)));
         assertFalse(locks.isProjectLocked(1, new LocalDate(2008, 1, 12)));
         assertFalse(locks.isProjectLocked(1, new LocalDate(2010, 1, 12)));
-
     }
 
     @Test

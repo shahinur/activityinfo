@@ -1,0 +1,691 @@
+[ {
+  "userId" : 1,
+  "workspace" : {
+    "@id" : "d1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "_classf11" : {
+      "@type" : "REFERENCE",
+      "value" : "G1"
+    },
+    "label" : "PEAR"
+  },
+  "resources" : [ {
+    "@id" : "P1",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Partners",
+    "elements" : [ {
+      "id" : "P1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "P1f10",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_description"
+      },
+      "label" : "Full Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "d1p1",
+    "@owner" : "P1",
+    "@version" : 0,
+    "@class" : "P1",
+    "P1f1" : "NRC"
+  }, {
+    "@id" : "C1c4a0524b",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "NFI Cluster"
+  }, {
+    "@id" : "a901",
+    "@owner" : "C1c4a0524b",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "NFI",
+    "elements" : [ {
+      "id" : "a901f7",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Partner",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "P1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "a901f11",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "localite",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "L1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "Q1",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "cause",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:enumerated",
+          "values" : [ {
+            "id" : "t602",
+            "@type" : "enumerated",
+            "label" : "A"
+          }, {
+            "id" : "t601",
+            "@type" : "enumerated",
+            "label" : "B"
+          } ],
+          "cardinality" : "MULTIPLE"
+        },
+        "typeClass" : "enumerated"
+      }
+    }, {
+      "id" : "a901f14",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Comments",
+      "required" : false,
+      "type" : {
+        "typeClass" : "NARRATIVE"
+      }
+    } ]
+  }, {
+    "@id" : "m901",
+    "@owner" : "C1c4a0524b",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "NFI - Monthly Reports",
+    "elements" : [ {
+      "id" : "m901f16",
+      "visible" : true,
+      "primaryKey" : true,
+      "label" : "Site",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "a901"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "m901f9",
+      "visible" : true,
+      "primaryKey" : true,
+      "label" : "Month",
+      "required" : true,
+      "type" : {
+        "typeClass" : "month"
+      }
+    }, {
+      "id" : "m901f15",
+      "visible" : true,
+      "primaryKey" : true,
+      "label" : "Year",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "I7002",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "women",
+      "code" : "B",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:QUANTITY",
+          "units" : "individuals"
+        },
+        "typeClass" : "QUANTITY"
+      }
+    }, {
+      "id" : "a0000000901-1203490700",
+      "label" : "benefciaries",
+      "type" : "section",
+      "elements" : [ {
+        "id" : "I7001",
+        "visible" : true,
+        "primaryKey" : false,
+        "label" : "men",
+        "code" : "A",
+        "required" : false,
+        "type" : {
+          "parameters" : {
+            "@class" : "_type:QUANTITY",
+            "units" : "individuals"
+          },
+          "typeClass" : "QUANTITY"
+        }
+      } ]
+    }, {
+      "id" : "a00000009010989127572",
+      "label" : "synthesis",
+      "type" : "section",
+      "elements" : [ {
+        "id" : "I7003",
+        "visible" : true,
+        "primaryKey" : false,
+        "label" : "total",
+        "required" : false,
+        "type" : {
+          "parameters" : {
+            "@class" : "_type:calculated",
+            "expression" : "{A}+{B}"
+          },
+          "typeClass" : "calculated"
+        }
+      } ]
+    } ]
+  }, {
+    "@id" : "s1",
+    "@owner" : "a901",
+    "@version" : 0,
+    "@class" : "a901",
+    "a901f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "Q1" : {
+      "@type" : "enumerated",
+      "value" : "t601"
+    },
+    "a901f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g401"
+    }
+  }, {
+    "@id" : "s2",
+    "@owner" : "a901",
+    "@version" : 0,
+    "@class" : "a901",
+    "a901f7" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "Q1" : {
+      "@type" : "enumerated",
+      "value" : "t602"
+    },
+    "a901f11" : {
+      "@type" : "REFERENCE",
+      "value" : "g402"
+    }
+  }, {
+    "@id" : "M21",
+    "@owner" : "m901",
+    "@version" : 0,
+    "@class" : "m901",
+    "I7002" : {
+      "@type" : "QUANTITY",
+      "value" : 26.0,
+      "units" : "individuals"
+    },
+    "m901f16" : {
+      "@type" : "REFERENCE",
+      "value" : "s2"
+    },
+    "m901f15" : "2009",
+    "m901f9" : {
+      "@type" : "month",
+      "month" : 1.0,
+      "year" : 2009.0
+    },
+    "I7001" : {
+      "@type" : "QUANTITY",
+      "value" : 11.0,
+      "units" : "individuals"
+    }
+  }, {
+    "@id" : "M22",
+    "@owner" : "m901",
+    "@version" : 0,
+    "@class" : "m901",
+    "I7002" : {
+      "@type" : "QUANTITY",
+      "value" : 55.0,
+      "units" : "individuals"
+    },
+    "m901f16" : {
+      "@type" : "REFERENCE",
+      "value" : "s2"
+    },
+    "m901f15" : "2009",
+    "m901f9" : {
+      "@type" : "month",
+      "month" : 2.0,
+      "year" : 2009.0
+    },
+    "I7001" : {
+      "@type" : "QUANTITY",
+      "value" : 99.0,
+      "units" : "individuals"
+    }
+  }, {
+    "@id" : "M11",
+    "@owner" : "m901",
+    "@version" : 0,
+    "@class" : "m901",
+    "I7002" : {
+      "@type" : "QUANTITY",
+      "value" : 300.0,
+      "units" : "individuals"
+    },
+    "m901f16" : {
+      "@type" : "REFERENCE",
+      "value" : "s1"
+    },
+    "m901f15" : "2009",
+    "m901f9" : {
+      "@type" : "month",
+      "month" : 1.0,
+      "year" : 2009.0
+    },
+    "I7001" : {
+      "@type" : "QUANTITY",
+      "value" : 200.0,
+      "units" : "individuals"
+    }
+  }, {
+    "@id" : "M12",
+    "@owner" : "m901",
+    "@version" : 0,
+    "@class" : "m901",
+    "I7002" : {
+      "@type" : "QUANTITY",
+      "value" : 330.0,
+      "units" : "individuals"
+    },
+    "m901f16" : {
+      "@type" : "REFERENCE",
+      "value" : "s1"
+    },
+    "m901f15" : "2009",
+    "m901f9" : {
+      "@type" : "month",
+      "month" : 2.0,
+      "year" : 2009.0
+    },
+    "I7001" : {
+      "@type" : "QUANTITY",
+      "value" : 150.0,
+      "units" : "individuals"
+    }
+  } ]
+}, {
+  "userId" : 9999,
+  "workspace" : {
+    "@id" : "G1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "Rdc"
+  },
+  "resources" : [ {
+    "@id" : "E1",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Province",
+    "elements" : [ {
+      "id" : "E1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E1f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "E2",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Territoire",
+    "elements" : [ {
+      "id" : "E2f2",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_parent"
+      },
+      "label" : "Province",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "E1"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "E2f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E2f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "z1",
+    "@owner" : "E1",
+    "@version" : 0,
+    "@class" : "E1",
+    "E1f1" : "Kinshasa",
+    "E1f3" : "10"
+  }, {
+    "@id" : "z2",
+    "@owner" : "E1",
+    "@version" : 0,
+    "@class" : "E1",
+    "E1f1" : "Sud Kivu",
+    "E1f3" : "20"
+  }, {
+    "@id" : "z3",
+    "@owner" : "E1",
+    "@version" : 0,
+    "@class" : "E1",
+    "E1f1" : "Nord Kivu",
+    "E1f3" : "30"
+  }, {
+    "@id" : "z4",
+    "@owner" : "E1",
+    "@version" : 0,
+    "@class" : "E1",
+    "E1f1" : "Ituri",
+    "E1f3" : "40"
+  }, {
+    "@id" : "z10",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "203",
+    "E2f1" : "Bukavu",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z4"
+    }
+  }, {
+    "@id" : "z11",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "201",
+    "E2f1" : "Walungu",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "z12",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "202",
+    "E2f1" : "Shabunda",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "z13",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "203",
+    "E2f1" : "Kalehe",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "z21",
+    "@owner" : "E2",
+    "@version" : 0,
+    "@class" : "E2",
+    "E2f3" : "203",
+    "E2f1" : "Irumu",
+    "E2f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z4"
+    }
+  }, {
+    "@id" : "L1",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "localite",
+    "elements" : [ {
+      "id" : "L1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L1f4",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Alternate Name",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L1f6",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Administrative Unit",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : [ "E2", "E1" ]
+          },
+          "cardinality" : "MULTIPLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "L1f5",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Geographic Position",
+      "required" : false,
+      "type" : {
+        "typeClass" : "GEOGRAPHIC_POINT"
+      }
+    } ]
+  }, {
+    "@id" : "L2",
+    "@owner" : "G1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Health Center",
+    "elements" : [ {
+      "id" : "L2f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L2f4",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Alternate Name",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L2f6",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Administrative Unit",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : [ "E2", "E1" ]
+          },
+          "cardinality" : "MULTIPLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "L2f5",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Geographic Position",
+      "required" : false,
+      "type" : {
+        "typeClass" : "GEOGRAPHIC_POINT"
+      }
+    } ]
+  }, {
+    "@id" : "g401",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Boga",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 3.323,
+      "latitude" : 27.232
+    },
+    "L1f6" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  }, {
+    "@id" : "g402",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Walungu",
+    "L1f6" : {
+      "@type" : "REFERENCE",
+      "value" : "z3"
+    }
+  }, {
+    "@id" : "g403",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Shabunda",
+    "L1f6" : {
+      "@type" : "REFERENCE",
+      "value" : "z3"
+    }
+  }, {
+    "@id" : "g404",
+    "@owner" : "L1",
+    "@version" : 0,
+    "@class" : "L1",
+    "L1f1" : "Penekusu Kivu",
+    "L1f5" : {
+      "@type" : "GEOGRAPHIC_POINT",
+      "longitude" : 1.532,
+      "latitude" : 27.323
+    },
+    "L1f6" : {
+      "@type" : "REFERENCE",
+      "value" : "z2"
+    }
+  } ]
+} ]

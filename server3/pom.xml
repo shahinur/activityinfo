@@ -53,7 +53,7 @@
 
     <dependency>
       <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-testing-store</artifactId>
+      <artifactId>activityinfo-test-store</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

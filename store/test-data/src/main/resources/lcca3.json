@@ -13,6 +13,256 @@
     "label" : "UNHCR LCCA"
   },
   "resources" : [ {
+    "@id" : "d1350U4095",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : true,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4095"
+    },
+    "manageUsers" : true,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1612"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U4099",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : true,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4099"
+    },
+    "manageUsers" : true,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1612"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U4100",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4100"
+    },
+    "manageUsers" : false,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1612"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U4143",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : true,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4143"
+    },
+    "manageUsers" : true,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1629"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U4144",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4144"
+    },
+    "manageUsers" : false,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1629"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U375",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : true,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U375"
+    },
+    "manageUsers" : true,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1629"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U4145",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : true,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4145"
+    },
+    "manageUsers" : true,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1612"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U4374",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4374"
+    },
+    "manageUsers" : false,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1612"
+    },
+    "view" : true,
+    "design" : false,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U165",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : true,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U165"
+    },
+    "manageUsers" : true,
+    "viewAll" : true,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1612"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1350U3955",
+    "@owner" : "d1350",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U3955"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1350p1612"
+    },
+    "view" : true,
+    "design" : false,
+    "editAll" : false
+  }, {
     "@id" : "P1350",
     "@owner" : "d1350",
     "@version" : 0,

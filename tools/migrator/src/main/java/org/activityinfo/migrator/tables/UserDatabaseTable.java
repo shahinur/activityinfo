@@ -13,10 +13,13 @@ import org.activityinfo.model.type.ReferenceValue;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.logging.Logger;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class UserDatabaseTable extends ResourceMigrator {
+
+    private static final Logger LOGGER = Logger.getLogger(UserDatabaseTable.class.getName());
 
     private final MigrationContext context;
 
@@ -49,6 +52,9 @@ public class UserDatabaseTable extends ResourceMigrator {
                 new ReferenceValue(context.resourceId(COUNTRY_DOMAIN, rs.getInt("CountryId"))));
 
         writer.writeResource(rs.getInt("ownerUserId"), database.asResource(), null, null);
+
+        LOGGER.info("Database " + id);
+
 
 //        ResourceId ownerId = resourceId(USER_DOMAIN, rs.getInt("OwnerUserId"));
 //        AccessControlRule rule = new AccessControlRule(database.getId(), ownerId);

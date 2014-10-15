@@ -36,6 +36,7 @@ public class MySqlMigrator {
         migrators.add(new AdminEntityTable(context));
         migrators.add(new LocationTypeTable(context));
         migrators.add(new LocationTable(context));
+        migrators.add(new UserPermissionTable(context));
     //    migrators.add(new UserLoginTable());
         migrators.add(new PartnerFormClass(context));
         migrators.add(new PartnerTable(context));

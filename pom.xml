@@ -101,8 +101,9 @@
     <module>core/model</module>
     <module>core/promises</module>
     <module>core/services</module>
-    <module>store/cloudsql</module>
-    <module>store/testing</module>
+    <module>store/hrd</module>
+    <module>store/test</module>
+    <module>store/test-data</module>
     <module>server</module>
     <module>tools/migrator</module>
     <module>io/importing</module>
@@ -116,12 +117,11 @@
     <module>ui/style-tools</module>
     <module>ui/virtual-dom</module>
     <module>ui/flux</module>
+    <module>ui/widget29</module>
     <module>i18n</module>
     <module>tools/unit-testing</module>
     <module>clients/java</module>
     <module>tests/api</module>
-    <module>ui/widget29</module>
-    <module>store/test-data</module>
 
   </modules>
 

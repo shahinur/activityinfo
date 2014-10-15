@@ -25,7 +25,7 @@ public class UserPermission {
     private boolean design;
     private boolean manageUsers;
     private boolean manageAllUsers;
-    private ResourceId userGroup;
+    private ResourceId partner;
 
     UserPermission() {
     }
@@ -134,11 +134,11 @@ public class UserPermission {
     }
 
     @Reference(range = FormClass.class)
-    public ResourceId getUserGroup() {
-        return userGroup;
+    public ResourceId getPartner() {
+        return partner;
     }
 
-    public void setUserGroup(ResourceId userGroup) {
-        this.userGroup = userGroup;
+    public void setPartner(ResourceId userGroup) {
+        this.partner = userGroup;
     }
 }

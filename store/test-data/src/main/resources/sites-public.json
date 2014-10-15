@@ -12,6 +12,106 @@
     "label" : "PEAR"
   },
   "resources" : [ {
+    "@id" : "d1U2",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : true,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U2"
+    },
+    "manageUsers" : true,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "view" : true,
+    "design" : false,
+    "editAll" : false
+  }, {
+    "@id" : "d1U5",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U5"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : false,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p1"
+    },
+    "view" : false,
+    "design" : false,
+    "editAll" : false
+  }, {
+    "@id" : "d1U3",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U3"
+    },
+    "manageUsers" : true,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : true,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p2"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
+    "@id" : "d1U4",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_userPermission",
+    "workspaceId" : {
+      "@type" : "REFERENCE",
+      "value" : "d1"
+    },
+    "manageAllUsers" : false,
+    "principalId" : {
+      "@type" : "REFERENCE",
+      "value" : "U4"
+    },
+    "manageUsers" : false,
+    "viewAll" : false,
+    "owner" : false,
+    "edit" : false,
+    "partner" : {
+      "@type" : "REFERENCE",
+      "value" : "d1p2"
+    },
+    "view" : true,
+    "design" : true,
+    "editAll" : true
+  }, {
     "@id" : "P1",
     "@owner" : "d1",
     "@version" : 0,

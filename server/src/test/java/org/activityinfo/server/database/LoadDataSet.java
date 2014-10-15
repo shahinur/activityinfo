@@ -85,7 +85,7 @@ public class LoadDataSet extends Statement {
         List<Throwable> errors = new ArrayList<Throwable>();
         errors.clear();
         try {
-       //     populate(data);
+            populate(data);
             next.evaluate();
         } catch (Throwable e) {
             errors.add(e);
