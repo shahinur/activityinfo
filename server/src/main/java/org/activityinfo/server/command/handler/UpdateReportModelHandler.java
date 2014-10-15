@@ -45,8 +45,6 @@ public class UpdateReportModelHandler implements CommandHandler<UpdateReportMode
 
     private static final Logger LOGGER = Logger.getLogger(UpdateReportModelHandler.class.getName());
 
-    private final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-
     private final EntityManager em;
 
     @Inject
@@ -79,8 +77,9 @@ public class UpdateReportModelHandler implements CommandHandler<UpdateReportMode
         return null;
     }
 
-    private void invalidateMemcache(Integer reportId) {
+    public static void invalidateMemcache(Integer reportId) {
         try {
+            final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
             memcacheService.delete(new GetReportModel(reportId, false));
             memcacheService.delete(new GetReportModel(reportId, true));
         } catch (Exception e) {
