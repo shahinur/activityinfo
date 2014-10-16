@@ -171,6 +171,16 @@ public final class RecordJsoImpl implements Record {
     }
 
     @Override
+    public boolean hasTag(ResourceId resourceId) {
+        return Tags.has(this, resourceId);
+    }
+
+    @Override
+    public ResourceId getTagReference(ResourceId resourceId) {
+        return Tags.getReference(this, resourceId);
+    }
+
+    @Override
     public Map<String, Object> asMap() {
         Map<String, Object> map = Maps.newHashMap();
         for(String fieldName : record.keySet()) {

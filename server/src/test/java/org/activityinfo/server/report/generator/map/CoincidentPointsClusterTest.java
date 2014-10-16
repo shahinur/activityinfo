@@ -22,11 +22,11 @@ package org.activityinfo.server.report.generator.map;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.Point;
 import org.activityinfo.legacy.shared.reports.model.MapSymbol;
 import org.activityinfo.legacy.shared.reports.model.PointValue;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
 import org.activityinfo.server.report.generator.map.cluster.genetic.BubbleFitnessFunctor;
 import org.activityinfo.server.report.generator.map.cluster.genetic.GeneticSolver;
@@ -94,7 +94,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
     public void testRealData() throws Exception {
 
         // Define projection for the test case
-        TiledMap map = new TiledMap(492, 690, new AiLatLng(2.293492496,
+        TiledMap map = new TiledMap(492, 690, new GeoPoint(2.293492496,
                 30.538372993), 9);
 
         // Read data
@@ -113,7 +113,7 @@ public class CoincidentPointsClusterTest extends GraphTest {
             double lng = Double.parseDouble(columns[1]);
 
             PointValue pv = new PointValue();
-            pv.setPx(map.fromLatLngToPixel(new AiLatLng(lat, lng)));
+            pv.setPx(map.fromLatLngToPixel(new GeoPoint(lat, lng)));
             pv.setValue(Double.parseDouble(columns[2]));
             pv.setSymbol(new MapSymbol());
             pv.setSite(new SiteDTO());

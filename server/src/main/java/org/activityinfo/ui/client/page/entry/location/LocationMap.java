@@ -30,11 +30,11 @@ import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.common.collect.Lists;
 import com.google.gwt.resources.client.ImageResource;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.reports.content.MapboxLayers;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
 import org.activityinfo.ui.client.util.LeafletUtil;
 import org.discotools.gwt.leaflet.client.LeafletResourceInjector;
@@ -80,7 +80,7 @@ public class LocationMap extends Html {
     protected void afterRender() {
         super.afterRender();
 
-        Extents countryBounds = searchPresenter.getCountryBounds();
+        GeoExtents countryBounds = searchPresenter.getCountryBounds();
 
         MapOptions mapOptions = new MapOptions();
         mapOptions.setCenter(new LatLng(countryBounds.getCenterY(), countryBounds.getCenterX()));
@@ -254,7 +254,7 @@ public class LocationMap extends Html {
 
                     @Override
                     public void handle(Event event) {
-                        newLocationPresenter.setLatLng(new AiLatLng(newLocationMarker.getLatLng().lat(),
+                        newLocationPresenter.setLatLng(new GeoPoint(newLocationMarker.getLatLng().lat(),
                                 newLocationMarker.getLatLng().lng()));
                     }
                 });
@@ -262,8 +262,8 @@ public class LocationMap extends Html {
         map.addLayer(newLocationMarker);
     }
 
-    private LatLng newLatLng(AiLatLng latLng) {
-        return new LatLng(latLng.getLat(), latLng.getLng());
+    private LatLng newLatLng(GeoPoint latLng) {
+        return new LatLng(latLng.getLatitude(), latLng.getLongitude());
     }
 
     private void onNewLocationPosChanged() {

@@ -1,26 +1,28 @@
 package org.activityinfo.store.migrate;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.taskqueue.QueueFactory;
-import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import org.activityinfo.migrator.MySqlMigrator;
 import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.migrator.filter.DatabaseFilter;
-import org.activityinfo.migrator.filter.FreshIdStrategy;
+import org.activityinfo.migrator.filter.LegacyIdStrategy;
 import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.migrator.filter.MigrationFilter;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.store.hrd.HrdResourceStore;
+import org.activityinfo.store.hrd.auth.NullAuthorizer;
+import org.activityinfo.store.hrd.dao.ConstantClock;
+import org.activityinfo.store.hrd.dao.WorkspaceCreation;
+import org.activityinfo.store.hrd.dao.WorkspaceUpdate;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 
 import java.sql.*;
 import java.util.Date;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +36,7 @@ public class MigrateDatabaseTask {
     public static final String MIGRATION_PASS = "migration.jdbc.password";
 
 
-    private final DatastoreService datastore;
+    private HrdResourceStore store;
     private DeploymentConfiguration config;
     private AuthenticatedUser user;
     private int databaseId;
@@ -44,12 +46,12 @@ public class MigrateDatabaseTask {
     private int countryId;
     private String databaseName;
 
-
-    public MigrateDatabaseTask(DeploymentConfiguration config,
+    public MigrateDatabaseTask(HrdResourceStore store,
+                               DeploymentConfiguration config,
                                AuthenticatedUser user) {
+        this.store = store;
         this.config = config;
         this.user = user;
-        this.datastore = DatastoreServiceFactory.getDatastoreService();
     }
 
     public void migrate(int databaseId) throws Exception {
@@ -60,32 +62,25 @@ public class MigrateDatabaseTask {
             fetchDatabaseProperties(connection);
             filter = new DatabaseFilter(databaseId, countryId);
 
-            FreshIdStrategy idStrategy = new FreshIdStrategy();
-            ResourceId workspaceId = idStrategy.resourceId(CuidAdapter.DATABASE_DOMAIN, databaseId);
-            WorkspaceEntityGroup workspace = new WorkspaceEntityGroup(workspaceId);
-
-            LOGGER.info("Workspace id = " + workspaceId);
-
+            LegacyIdStrategy idStrategy = new LegacyIdStrategy();
             MigrationContext context = new MigrationContext(idStrategy, filter);
             context.setRootId(Resources.ROOT_ID);
-            context.setGeoDbOwnerId(workspaceId);
-
-         //   MigrateTransaction tx = new MigrateTransaction(datastore, workspace, user);
 
             try {
                 MySqlMigrator migrator = new MySqlMigrator(context);
-                //migrator.migrate(connection, new HrdWriter(tx));
-                //tx.flush();
+                HrdWriter writer = new HrdWriter();
+                migrator.migrate(connection, writer);
+
             } catch(Exception e) {
                 LOGGER.log(Level.SEVERE, "Exception whilst migrating database " + databaseName +
                     " [" + databaseId + "]", e);
 
-                // Clean up the entities we've already created, after
-                // a suitable delay to make sure indices are caught up
-                QueueFactory.getDefaultQueue().add(TaskOptions.Builder
-                    .withCountdownMillis(20 * 1000)
-                    .url("/service/migrate/tasks/cleanup")
-                    .param("workspaceId", workspaceId.asString()));
+//                // Clean up the entities we've already created, after
+//                // a suitable delay to make sure indices are caught up
+//                QueueFactory.getDefaultQueue().add(TaskOptions.Builder
+//                    .withCountdownMillis(20 * 1000)
+//                    .url("/service/migrate/tasks/cleanup")
+//                    .param("workspaceId", workspaceId.asString()));
             }
         }
     }
@@ -133,13 +128,10 @@ public class MigrateDatabaseTask {
 
     private class HrdWriter implements ResourceWriter {
 
-        private final WorkspaceEntityGroup workspace;
+        private boolean closed = false;
 
-        private Resource workspaceResource;
-
-        public HrdWriter(WorkspaceEntityGroup workspace) {
-            this.workspace = workspace;
-        }
+        private Map<ResourceId, WorkspaceEntityGroup> workspaceMap = Maps.newHashMap();
+        private Map<ResourceId, AuthenticatedUser> workspaceOwner = Maps.newHashMap();
 
         @Override
         public void beginResources() throws Exception {
@@ -148,26 +140,55 @@ public class MigrateDatabaseTask {
 
         @Override
         public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted) throws Exception {
-            // Wait until all the other writes are complete before we write the
-//            // workspace and it becomes to the user
-//            if(resource.getId().equals(tx.getWorkspace().getWorkspaceId())) {
-//                workspaceResource = resource;
-//            } else {
-//
-//                //workspace.createResource(tx, resource);
-//            }
-        }
 
-        @Override
-        public void endResources() throws Exception {
-            if(workspaceResource != null) {
-                //workspace.createWorkspace(tx, workspaceResource);
+            if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
+                Preconditions.checkArgument(userId != 0, "workspace " + resource.getId() + " has no user set");
+                AuthenticatedUser user = new AuthenticatedUser(userId);
+                WorkspaceCreation creation = new WorkspaceCreation(store.getContext(), user);
+                creation.createWorkspace(resource);
+
+                workspaceMap.put(resource.getId(), new WorkspaceEntityGroup(resource.getId()));
+                workspaceOwner.put(resource.getId(), user);
+
+            } else {
+
+                WorkspaceEntityGroup workspace = workspaceMap.get(resource.getOwnerId());
+                Preconditions.checkNotNull(workspace, "No parent found : " + resource.getOwnerId());
+
+                AuthenticatedUser user;
+                if(userId != 0) {
+                    user = new AuthenticatedUser(userId);
+                } else {
+                    user = workspaceOwner.get(workspace.getWorkspaceId());
+                    Preconditions.checkState(user != null, "no user stored for " + workspace);
+                }
+
+                if(dateCreated == null) {
+                    dateCreated = new Date();
+                }
+
+                try( WorkspaceUpdate update = WorkspaceUpdate.newBuilder(store.getContext())
+                                    .setAuthorizer(new NullAuthorizer())
+                                    .setClock(new ConstantClock(dateCreated))
+                                    .setUser(user)
+                                    .setWorkspace(workspace)
+                                    .begin()) {
+
+                    update.createOrUpdateResource(resource);
+                    update.commit();
+                }
+                workspaceMap.put(resource.getId(), workspace);
             }
         }
 
         @Override
-        public void close() throws Exception {
+        public void endResources() throws Exception {
 
         }
+
+        @Override
+        public void close() throws Exception {
+        }
+
     }
 }

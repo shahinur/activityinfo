@@ -90,8 +90,7 @@ public class CuidAdapter {
     }
 
     public static ResourceId partnerInstanceId(int databaseId, int partnerId) {
-        return ResourceId.valueOf(String.valueOf(DATABASE_DOMAIN) + databaseId +
-                                  String.valueOf(PARTNER_DOMAIN) + partnerId);
+        return resourceId(PARTNER_DOMAIN, databaseId*10000+partnerId);
     }
 
     /**

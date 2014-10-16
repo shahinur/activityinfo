@@ -25,10 +25,10 @@ package org.activityinfo.ui.client.widget.coord;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.Listener;
-import org.activityinfo.legacy.shared.model.AiLatLng;
-import org.activityinfo.model.type.converter.CoordinateAxis;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.converter.CoordinateAxis;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 public class CoordinateFields {
     private CoordinateField latitudeField;
@@ -47,7 +47,7 @@ public class CoordinateFields {
         latitudeField.setToolTip(toolTip);
     }
 
-    public void setBounds(String name, Extents bounds) {
+    public void setBounds(String name, GeoExtents bounds) {
         longitudeField.setBounds(name, bounds.getMinLon(), bounds.getMaxLon());
         latitudeField.setBounds(name, bounds.getMinLat(), bounds.getMaxLat());
     }
@@ -60,22 +60,22 @@ public class CoordinateFields {
         return longitudeField;
     }
 
-    public void setValue(AiLatLng latLng) {
+    public void setValue(GeoPoint latLng) {
         if (latLng == null) {
             latitudeField.setValue(null);
             longitudeField.setValue(null);
         } else {
-            latitudeField.setValue(latLng.getLat());
-            longitudeField.setValue(latLng.getLng());
+            latitudeField.setValue(latLng.getLatitude());
+            longitudeField.setValue(latLng.getLongitude());
         }
     }
 
-    public AiLatLng getValue() {
+    public GeoPoint getValue() {
         if (latitudeField.getValue() == null
                 || longitudeField.getValue() == null) {
             return null;
         } else {
-            return new AiLatLng(latitudeField.getValue(),
+            return new GeoPoint(latitudeField.getValue(),
                     longitudeField.getValue());
         }
     }

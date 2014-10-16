@@ -301,7 +301,7 @@ public class RecordBeanProcessor extends AbstractProcessor {
     private FieldDescriptor doubleField(ExecutableElement getter) {
         FieldDescriptor field = new FieldDescriptor(getter);
         field.readExpression = "record.getDouble(" + quote(serializedNameFromGetter(getter)) + ")";
-        field.typeExpression = "new org.activityinfo.model.form.field.QuantityType()";
+        field.typeExpression = "new org.activityinfo.model.type.number.QuantityType()";
         return field;
     }
 

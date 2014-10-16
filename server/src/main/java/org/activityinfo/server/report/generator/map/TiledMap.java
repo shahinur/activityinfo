@@ -22,10 +22,10 @@ package org.activityinfo.server.report.generator.map;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.reports.content.Point;
 import org.activityinfo.legacy.shared.reports.util.mapping.Tile;
 import org.activityinfo.legacy.shared.reports.util.mapping.TileMath;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.report.renderer.image.TileHandler;
 
 public class TiledMap {
@@ -56,7 +56,7 @@ public class TiledMap {
 
     private Tile tileOrigin;
 
-    public TiledMap(int width, int height, AiLatLng geographicCenter, int zoom) {
+    public TiledMap(int width, int height, GeoPoint geographicCenter, int zoom) {
         this.width = width;
         this.height = height;
         this.zoom = zoom;
@@ -103,16 +103,16 @@ public class TiledMap {
         }
     }
 
-    public Point fromLatLngToPixel(AiLatLng latLng) {
+    public Point fromLatLngToPixel(GeoPoint latLng) {
         return TileMath.fromLatLngToPixel(latLng, this.zoom).translate(-origin.getDoubleX(), -origin.getDoubleY());
     }
 
 
-    public AiLatLng fromPixelToLatLng(Point px) {
+    public GeoPoint fromPixelToLatLng(Point px) {
         return TileMath.inverse(px.translate(origin.getDoubleX(), origin.getDoubleY()), this.zoom);
     }
 
-    public AiLatLng fromPixelToLatLng(double x, double y) {
+    public GeoPoint fromPixelToLatLng(double x, double y) {
         return fromPixelToLatLng(new Point(x, y));
     }
 

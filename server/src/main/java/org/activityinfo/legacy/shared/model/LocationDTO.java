@@ -26,6 +26,7 @@ import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 import java.util.List;
 
@@ -182,9 +183,9 @@ public class LocationDTO extends BaseModelData implements EntityDTO, HasAdminEnt
         return get("workflowStatusId");
     }
 
-    public AiLatLng getPoint() {
+    public GeoPoint getPoint() {
         if (hasCoordinates()) {
-            return new AiLatLng(getLatitude(), getLongitude());
+            return new GeoPoint(getLatitude(), getLongitude());
         }
         return null;
     }

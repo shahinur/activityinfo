@@ -1,7 +1,7 @@
 package org.activityinfo.ui.client.component.report.editor.map;
 
 import com.extjs.gxt.ui.client.widget.Html;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.activityinfo.ui.client.util.LeafletUtil;
 import org.discotools.gwt.leaflet.client.LeafletResourceInjector;
 import org.discotools.gwt.leaflet.client.map.Map;
@@ -36,7 +36,7 @@ public class LeafletMap extends Html {
         return map;
     }
 
-    public void fitBounds(Extents extents) {
+    public void fitBounds(GeoExtents extents) {
         map.fitBounds(LeafletUtil.newLatLngBounds(extents));
     }
 }

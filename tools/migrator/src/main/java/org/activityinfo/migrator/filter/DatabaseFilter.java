@@ -1,5 +1,7 @@
 package org.activityinfo.migrator.filter;
 
+import org.activityinfo.model.legacy.CuidAdapter;
+
 public class DatabaseFilter implements MigrationFilter {
 
     private int databaseId;
@@ -42,8 +44,8 @@ public class DatabaseFilter implements MigrationFilter {
     }
 
     @Override
-    public String databaseFilter() {
-        return "databaseId = " + databaseId;
+    public String databaseFilter(String databaseIdAlias) {
+        return databaseIdAlias + " = " + databaseId;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class DatabaseFilter implements MigrationFilter {
     }
 
     private String activityQuery() {
-        return "(select activityid from activity where " + databaseFilter() + ")";
+        return "(select activityid from activity where " + databaseFilter("databaseId") + ")";
     }
 
     @Override
@@ -77,6 +79,12 @@ public class DatabaseFilter implements MigrationFilter {
             "(select attributegroupid from attributegroupinactivity A WHERE " +
                     attributeGroupFilter("A") + ")";
 
+    }
+
+    @Override
+    public String resourceFilter() {
+        String id = "'" + CuidAdapter.databaseId(databaseId).asString() + "'";
+        return "(owner_id = " + id + " or owner_id in (select id from resource where owner_id = " + id + "))";
     }
 
     @Override

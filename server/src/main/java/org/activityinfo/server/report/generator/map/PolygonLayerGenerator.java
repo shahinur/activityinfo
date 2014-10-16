@@ -36,7 +36,7 @@ import org.activityinfo.legacy.shared.reports.content.EntityCategory;
 import org.activityinfo.legacy.shared.reports.content.MapContent;
 import org.activityinfo.legacy.shared.reports.model.AdminDimension;
 import org.activityinfo.legacy.shared.reports.model.layers.PolygonMapLayer;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.activityinfo.server.command.DispatcherSync;
 
 public class PolygonLayerGenerator implements LayerGenerator {
@@ -111,8 +111,8 @@ public class PolygonLayerGenerator implements LayerGenerator {
     }
 
     @Override
-    public Extents calculateExtents() {
-        Extents extents = Extents.emptyExtents();
+    public GeoExtents calculateExtents() {
+        GeoExtents extents = GeoExtents.emptyExtents();
         for (AdminMarker polygon : overlay.getPolygons()) {
             if (polygon.hasValue()) {
                 extents.grow(polygon.getExtents());

@@ -1,8 +1,8 @@
 package org.activityinfo.legacy.shared.impl.pivot.bundler;
 
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.command.result.Bucket;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 /**
  * Bundles the location's coordinates into the bucket, or if
@@ -15,15 +15,15 @@ public class LocationPointBundler implements Bundler {
     public void bundle(SqlResultSetRow row, Bucket bucket) {
         // Try first to get a point from the location
         if (!row.isNull("LX") && !row.isNull("LY")) {
-            bucket.setPoint(new AiLatLng(row.getDouble("LY"), row.getDouble("LX")));
+            bucket.setPoint(new GeoPoint(row.getDouble("LY"), row.getDouble("LX")));
 
             // Otherwise try from the admin levels
         } else if (!row.isNull("AX") && !row.isNull("AY")) {
-            bucket.setPoint(new AiLatLng(row.getDouble("AY"), row.getDouble("AX")));
+            bucket.setPoint(new GeoPoint(row.getDouble("AY"), row.getDouble("AX")));
 
             // if that fails, use the country's centroid
         } else if (!row.isNull("CX") && !row.isNull("CY")) {
-            bucket.setPoint(new AiLatLng(row.getDouble("CY"), row.getDouble("CX")));
+            bucket.setPoint(new GeoPoint(row.getDouble("CY"), row.getDouble("CX")));
         }
     }
 }

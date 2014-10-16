@@ -22,12 +22,12 @@ package org.activityinfo.server.report.renderer.ppt;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.BaseMap;
 import org.activityinfo.legacy.shared.model.TileBaseMap;
 import org.activityinfo.legacy.shared.reports.content.GoogleBaseMap;
 import org.activityinfo.legacy.shared.reports.content.MapContent;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.geo.TestGeometry;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,7 +94,7 @@ public class PPTMapRendererTest {
         MapContent content = new MapContent();
         content.setBaseMap(baseMap);
         content
-                .setCenter(new AiLatLng(-0.07965085325106624, 29.326629638671875));
+                .setCenter(new GeoPoint(-0.07965085325106624, 29.326629638671875));
         content.setZoomLevel(10);
         content.setIndicators(Collections.EMPTY_SET);
         content.setMarkers(Collections.EMPTY_LIST);

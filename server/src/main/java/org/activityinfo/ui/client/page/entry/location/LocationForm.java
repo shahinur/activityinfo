@@ -32,13 +32,13 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
 import com.google.gwt.user.client.Timer;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
+import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.ui.client.page.entry.admin.AdminComboBox;
 import org.activityinfo.ui.client.page.entry.admin.AdminFieldSetPresenter;
 import org.activityinfo.ui.client.page.entry.admin.AdminSelectionChangedEvent;
@@ -173,7 +173,7 @@ public class LocationForm extends LayoutContainer {
 
             @Override
             public void handleEvent(FieldEvent be) {
-                AiLatLng value = coordinateFields.getValue();
+                GeoPoint value = coordinateFields.getValue();
                 if (value != null) {
                     newLocationPresenter.setLatLng(value);
                 }

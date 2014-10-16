@@ -22,8 +22,8 @@ package org.activityinfo.legacy.shared.reports.util.mapping;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.reports.content.Point;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Test;
@@ -36,14 +36,14 @@ public class TileMathTest {
 
     @Test
     public void inverse() {
-        AiLatLng latlng = new AiLatLng(15, 30);
+        GeoPoint latlng = new GeoPoint(15, 30);
         Point px = TileMath.fromLatLngToPixel(latlng, 6);
 
-        AiLatLng inverse = TileMath.inverse(px, 6);
+        GeoPoint inverse = TileMath.inverse(px, 6);
 
-        assertThat("longitude", inverse.getLng(), equalTo(latlng.getLng()));
-        assertThat("latitude", inverse.getLat(),
-                closeTo(latlng.getLat(), 0.0001));
+        assertThat("longitude", inverse.getLongitude(), equalTo(latlng.getLongitude()));
+        assertThat("latitude", inverse.getLatitude(),
+                closeTo(latlng.getLatitude(), 0.0001));
     }
 
     private Matcher<Double> closeTo(final double x, final double epsilon) {

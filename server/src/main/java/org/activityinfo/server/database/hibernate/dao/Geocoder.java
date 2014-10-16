@@ -6,7 +6,7 @@ import com.google.inject.Provider;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
-import org.activityinfo.legacy.shared.model.AiLatLng;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.util.mapping.JtsUtil;
 import org.hibernate.Criteria;
@@ -56,10 +56,10 @@ public class Geocoder {
         return contains;
     }
 
-    public List<List<AdminEntity>> gecodeBatch(List<AiLatLng> points) {
+    public List<List<AdminEntity>> gecodeBatch(List<GeoPoint> points) {
         BatchGeocoder batchGeocoder = new BatchGeocoder(sessionProvider.get());
-        for (AiLatLng latLng : points) {
-            batchGeocoder.addPoint(latLng.getLng(), latLng.getLat());
+        for (GeoPoint latLng : points) {
+            batchGeocoder.addPoint(latLng.getLongitude(), latLng.getLatitude());
         }
         return batchGeocoder.geocode();
     }

@@ -22,7 +22,6 @@ package org.activityinfo.server.report.generator.map;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.*;
@@ -31,7 +30,8 @@ import org.activityinfo.legacy.shared.reports.model.MapSymbol;
 import org.activityinfo.legacy.shared.reports.model.PointValue;
 import org.activityinfo.legacy.shared.reports.model.layers.BubbleMapLayer;
 import org.activityinfo.legacy.shared.reports.model.layers.ScalingType;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
 import org.activityinfo.server.report.generator.map.cluster.Clusterer;
@@ -46,17 +46,17 @@ public class BubbleLayerGenerator extends PointLayerGenerator<BubbleMapLayer> {
     }
 
     @Override
-    public Extents calculateExtents() {
+    public GeoExtents calculateExtents() {
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
 
-        Extents extents = Extents.emptyExtents();
+        GeoExtents extents = GeoExtents.emptyExtents();
         for (SiteDTO site : sites) {
             if (hasValue(site, layer.getIndicatorIds())) {
                 if (site.hasLatLong()) {
                     extents.grow(site.getLatitude(), site.getLongitude());
                 } else {
-                    Extents siteExtents = getBounds(site);
+                    GeoExtents siteExtents = getBounds(site);
                     if (siteExtents != null) {
                         extents.grow(siteExtents);
                     }
@@ -111,7 +111,7 @@ public class BubbleLayerGenerator extends PointLayerGenerator<BubbleMapLayer> {
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
         for (Cluster cluster : clusters) {
             Point px = cluster.getPoint();
-            AiLatLng latlng = map.fromPixelToLatLng(px);
+            GeoPoint latlng = map.fromPixelToLatLng(px);
             BubbleMapMarker marker = new BubbleMapMarker();
 
             for (PointValue pv : cluster.getPointValues()) {
@@ -121,8 +121,8 @@ public class BubbleLayerGenerator extends PointLayerGenerator<BubbleMapLayer> {
             marker.setY(px.getY());
             marker.setValue(cluster.sumValues());
             marker.setRadius((int) cluster.getRadius());
-            marker.setLat(latlng.getLat());
-            marker.setLng(latlng.getLng());
+            marker.setLat(latlng.getLatitude());
+            marker.setLng(latlng.getLongitude());
             marker.setAlpha(layer.getAlpha());
             marker.setTitle(formatTitle(cluster));
             marker.setIndicatorIds(new HashSet<Integer>(layer.getIndicatorIds()));
@@ -185,7 +185,7 @@ public class BubbleLayerGenerator extends PointLayerGenerator<BubbleMapLayer> {
             if (hasValue(site, layer.getIndicatorIds())) {
 
                 Point px = null;
-                AiLatLng geoPoint = getPoint(site);
+                GeoPoint geoPoint = getPoint(site);
                 if (geoPoint != null) {
                     px = map.fromLatLngToPixel(geoPoint);
                 }

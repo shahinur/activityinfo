@@ -22,7 +22,6 @@ package org.activityinfo.server.report.generator.map;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.*;
 import org.activityinfo.legacy.shared.reports.model.MapSymbol;
@@ -30,7 +29,8 @@ import org.activityinfo.legacy.shared.reports.model.PointValue;
 import org.activityinfo.legacy.shared.reports.model.layers.PiechartMapLayer;
 import org.activityinfo.legacy.shared.reports.model.layers.PiechartMapLayer.Slice;
 import org.activityinfo.legacy.shared.reports.model.layers.ScalingType;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
 import org.activityinfo.server.report.generator.map.cluster.Clusterer;
@@ -46,11 +46,11 @@ public class PiechartLayerGenerator extends PointLayerGenerator<PiechartMapLayer
     }
 
     @Override
-    public Extents calculateExtents() {
+    public GeoExtents calculateExtents() {
 
         // PRE---PASS - calculate extents of sites WITH non-zero
         // values for this indicator
-        Extents extents = Extents.emptyExtents();
+        GeoExtents extents = GeoExtents.emptyExtents();
         for (SiteDTO site : sites) {
             if (site.hasLatLong() && hasValue(site, layer.getIndicatorIds())) {
                 extents.grow(site.getLatitude(), site.getLongitude());
@@ -96,7 +96,7 @@ public class PiechartLayerGenerator extends PointLayerGenerator<PiechartMapLayer
         List<BubbleMapMarker> markers = new ArrayList<BubbleMapMarker>();
         for (Cluster cluster : clusters) {
             Point px = cluster.getPoint();
-            AiLatLng latlng = map.fromPixelToLatLng(px);
+            GeoPoint latlng = map.fromPixelToLatLng(px);
             BubbleMapMarker marker = new PieMapMarker();
 
             sumSlices((PieMapMarker) marker, cluster.getPointValues());
@@ -107,8 +107,8 @@ public class PiechartLayerGenerator extends PointLayerGenerator<PiechartMapLayer
             marker.setY(px.getY());
             marker.setValue(cluster.sumValues());
             marker.setRadius((int) cluster.getRadius());
-            marker.setLat(latlng.getLat());
-            marker.setLng(latlng.getLng());
+            marker.setLat(latlng.getLatitude());
+            marker.setLng(latlng.getLongitude());
             marker.setAlpha(layer.getAlpha());
             marker.setIndicatorIds(new HashSet<Integer>(layer.getIndicatorIds()));
             marker.setClusterAmount(cluster.getPointValues().size());
@@ -142,7 +142,7 @@ public class PiechartLayerGenerator extends PointLayerGenerator<PiechartMapLayer
                 Point px = null;
 
                 if (site.hasLatLong()) {
-                    px = map.fromLatLngToPixel(new AiLatLng(site.getLatitude(), site.getLongitude()));
+                    px = map.fromLatLngToPixel(new GeoPoint(site.getLatitude(), site.getLongitude()));
                 }
 
                 Double value = getValue(site, layer.getIndicatorIds());

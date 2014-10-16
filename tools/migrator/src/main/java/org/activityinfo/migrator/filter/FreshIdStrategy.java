@@ -1,5 +1,6 @@
 package org.activityinfo.migrator.filter;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
@@ -35,6 +36,17 @@ public class FreshIdStrategy implements IdStrategy {
     @Override
     public ResourceId geoDbId() {
         return getOrCreateId("_geodb");
+    }
+
+    @Override
+    public ResourceId mapToLegacyId(char domain, ResourceId resourceId) {
+        return getOrCreateId(resourceId.asString());
+    }
+
+    @Override
+    public ResourceId mapToLegacyId(ResourceId id) {
+        Preconditions.checkState(map.containsKey(id.asString()), "Id %s has not been mapped yet", id.asString());
+        return map.get(id.asString());
     }
 
     @Override

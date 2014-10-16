@@ -25,8 +25,8 @@ package org.activityinfo.legacy.shared.model;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.base.Strings;
 import org.activityinfo.legacy.shared.command.Month;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.TypeRegistry;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -50,9 +50,6 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public static final int UNITS_MAX_LENGTH = 15;
     public static final int MAX_LIST_HEADER_LENGTH = 29;
     public static final int MAX_CATEGORY_LENGTH = 50;
-
-    // ensure that serializer/deserializer is generated for FormFieldType
-    private FieldTypeClass type;
 
     public IndicatorDTO() {
         super();
@@ -84,14 +81,6 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     }
 
 
-    public ResourceId getFieldId() {
-        return ResourceId.valueOf(this.<String>get("id"));
-    }
-
-    public void setFieldId(ResourceId id) {
-        set("id", id.asString());
-    }
-
     /**
      * Sets the Indicator's id
      */
@@ -102,8 +91,8 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     /**
      * Sets the Indicator's name
      */
-    public void setLabel(String label) {
-        set("label", label);
+    public void setName(String name) {
+        set("name", name);
     }
 
     /**
@@ -111,7 +100,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
      */
     @Override @JsonProperty @JsonView(DTOViews.Schema.class)
     public String getName() {
-        return get("label");
+        return get("name");
     }
 
     /**
@@ -188,20 +177,21 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public FieldTypeClass getType() {
-        return get("type");
+        String id = get("type");
+        return TypeRegistry.get().getTypeClass(id);
     }
 
     public void setType(FieldTypeClass type) {
-        set("type", type);
+        set("type", type.getId());
     }
 
     public void setMandatory(boolean mandatory) {
-        set("required", mandatory);
+        set("mandatory", mandatory);
     }
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public boolean isMandatory() {
-        return get("required", false);
+        return get("mandatory", false);
     }
 
     /**

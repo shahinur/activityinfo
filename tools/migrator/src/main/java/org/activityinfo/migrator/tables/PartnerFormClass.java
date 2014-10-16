@@ -20,7 +20,7 @@ public class PartnerFormClass extends SimpleTableMigrator {
 
     @Override
     protected String query() {
-        return "SELECT * FROM userdatabase WHERE " + filter.databaseFilter();
+        return "SELECT * FROM userdatabase WHERE " + filter.databaseFilter("databaseId");
     }
 
     @Override

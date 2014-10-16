@@ -22,8 +22,9 @@ package org.activityinfo.legacy.shared.reports.util.mapping;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.reports.content.Point;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 /**
  * Provides a series of utility functions useful for processing map tiles
@@ -79,13 +80,13 @@ public final class TileMath {
      * @param zoom
      * @return
      */
-    public static Point fromLatLngToPixel(AiLatLng latlng, int zoom) {
+    public static Point fromLatLngToPixel(GeoPoint latlng, int zoom) {
         double size = size(zoom);
         double radius = size / TWO_PI;
 
-        double x = (latlng.getLng() + 180.0) / 360.0 * size;
+        double x = (latlng.getLongitude() + 180.0) / 360.0 * size;
 
-        double lat = latlng.getLat() * D2R;
+        double lat = latlng.getLatitude() * D2R;
 
         if (Math.abs(Math.abs(lat) - HALF_PI) <= EPSLN) {
             throw new IllegalArgumentException("Too close to the poles to project");
@@ -98,7 +99,7 @@ public final class TileMath {
         return new Point(x, y);
     }
 
-    public static AiLatLng inverse(Point px, int zoom) {
+    public static GeoPoint inverse(Point px, int zoom) {
 
         double size = size(zoom);
         double radius = size / TWO_PI;
@@ -109,15 +110,15 @@ public final class TileMath {
         double y = (ty - px.getDoubleY()) / radius;
         double lat = Math.atan(Math.sinh(y)) * DEGREES_PER_RADIAN;
 
-        return new AiLatLng(lat, lng);
+        return new GeoPoint(lat, lng);
     }
 
-    public static Extents tileBounds(int zoom, int x, int y) {
+    public static GeoExtents tileBounds(int zoom, int x, int y) {
         Point upperLeft = pointForTile(new Tile(x, y));
         Point lowerRight = pointForTile(new Tile(x + 1, y + 1));
-        AiLatLng northWest = inverse(upperLeft, zoom);
-        AiLatLng southEast = inverse(lowerRight, zoom);
-        return new Extents(southEast.getLat(), northWest.getLat(), northWest.getLng(), southEast.getLng());
+        GeoPoint northWest = inverse(upperLeft, zoom);
+        GeoPoint southEast = inverse(lowerRight, zoom);
+        return new GeoExtents(southEast.getLatitude(), northWest.getLatitude(), northWest.getLongitude(), southEast.getLongitude());
     }
 
     /**
@@ -129,14 +130,14 @@ public final class TileMath {
      * @param mapHeight
      * @return
      */
-    public static int zoomLevelForExtents(Extents extent, int mapWidth, int mapHeight) {
+    public static int zoomLevelForExtents(GeoExtents extent, int mapWidth, int mapHeight) {
 
         int zoomLevel = 1;
 
         do {
 
-            Point upperLeft = fromLatLngToPixel(new AiLatLng(extent.getMaxLat(), extent.getMinLon()), zoomLevel);
-            Point lowerRight = fromLatLngToPixel(new AiLatLng(extent.getMinLat(), extent.getMaxLon()), zoomLevel);
+            Point upperLeft = fromLatLngToPixel(new GeoPoint(extent.getMaxLat(), extent.getMinLon()), zoomLevel);
+            Point lowerRight = fromLatLngToPixel(new GeoPoint(extent.getMinLat(), extent.getMaxLon()), zoomLevel);
 
             int extentWidth = lowerRight.getX() - upperLeft.getX();
 

@@ -22,7 +22,6 @@ package org.activityinfo.server.report.generator.map;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.IconLayerLegend;
 import org.activityinfo.legacy.shared.reports.content.IconMapMarker;
@@ -31,7 +30,8 @@ import org.activityinfo.legacy.shared.reports.content.Point;
 import org.activityinfo.legacy.shared.reports.model.MapIcon;
 import org.activityinfo.legacy.shared.reports.model.PointValue;
 import org.activityinfo.legacy.shared.reports.model.layers.IconMapLayer;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.activityinfo.server.report.generator.map.cluster.Cluster;
 import org.activityinfo.server.report.generator.map.cluster.Clusterer;
@@ -67,14 +67,14 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
     }
 
     @Override
-    public Extents calculateExtents() {
-        Extents extents = Extents.emptyExtents();
+    public GeoExtents calculateExtents() {
+        GeoExtents extents = GeoExtents.emptyExtents();
         for (SiteDTO site : sites) {
             if (meetsCriteria(site)) {
                 if (site.hasLatLong()) {
                     extents.grow(site.getLatitude(), site.getLongitude());
                 } else {
-                    Extents siteExtents = getBounds(site);
+                    GeoExtents siteExtents = getBounds(site);
                     if (siteExtents != null) {
                         extents.grow(siteExtents);
                     }
@@ -110,7 +110,7 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
 
         for (SiteDTO site : sites) {
             if (meetsCriteria(site)) {
-                AiLatLng geoPoint = getPoint(site);
+                GeoPoint geoPoint = getPoint(site);
                 if (geoPoint != null || clusterer.isMapped(site)) {
                     Point point = null;
                     if (geoPoint != null) {
@@ -140,9 +140,9 @@ public class IconLayerGenerator extends PointLayerGenerator<IconMapLayer> {
             IconMapMarker marker = new IconMapMarker();
             marker.setX(cluster.getPoint().getX());
             marker.setY(cluster.getPoint().getY());
-            AiLatLng latlng = map.fromPixelToLatLng(cluster.getPoint());
-            marker.setLat(latlng.getLat());
-            marker.setLng(latlng.getLng());
+            GeoPoint latlng = map.fromPixelToLatLng(cluster.getPoint());
+            marker.setLat(latlng.getLatitude());
+            marker.setLng(latlng.getLongitude());
             marker.setTitle(formatTitle(cluster));
             marker.setIcon(icon);
             marker.setIndicatorId(layer.getIndicatorIds().get(0));

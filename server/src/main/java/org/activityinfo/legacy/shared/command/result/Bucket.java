@@ -22,10 +22,10 @@ package org.activityinfo.legacy.shared.command.result;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.reports.content.DimensionCategory;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -39,7 +39,7 @@ public class Bucket implements Serializable {
     private double sum;
     private int count;
     private int aggregationMethod;
-    private AiLatLng point;
+    private GeoPoint point;
 
     private Map<Dimension, DimensionCategory> categories = new HashMap<Dimension, DimensionCategory>();
 
@@ -86,11 +86,11 @@ public class Bucket implements Serializable {
         this.count = count;
     }
 
-    public AiLatLng getPoint() {
+    public GeoPoint getPoint() {
         return point;
     }
 
-    public void setPoint(AiLatLng point) {
+    public void setPoint(GeoPoint point) {
         this.point = point;
     }
 

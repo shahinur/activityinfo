@@ -14,7 +14,7 @@ import java.util.Map;
 class RecordBuilderImpl implements RecordBuilder {
 
     private ResourceId classId;
-    private Map<String, Object> bag = new HashMap<>();
+    private Map<String, Object> properties = new HashMap<>();
 
     RecordBuilderImpl(ResourceId classId) {
         this.classId = classId;
@@ -22,7 +22,7 @@ class RecordBuilderImpl implements RecordBuilder {
 
     public RecordBuilderImpl(Record record) {
         this.classId = record.getClassId();
-        this.bag.putAll(record.asMap());
+        this.properties.putAll(record.asMap());
     }
 
     @Override
@@ -40,12 +40,12 @@ class RecordBuilderImpl implements RecordBuilder {
     @Override
     public RecordBuilder set(String fieldName, String value) {
         if(value == null) {
-            bag.remove(fieldName);
+            properties.remove(fieldName);
         } else {
             if(fieldName.equals("classId")) {
                 this.classId = ResourceId.valueOf(value);
             } else {
-                bag.put(fieldName, value);
+                properties.put(fieldName, value);
             }
         }
         return this;
@@ -53,22 +53,22 @@ class RecordBuilderImpl implements RecordBuilder {
 
     @Override
     public RecordBuilder set(String fieldName, double value) {
-        bag.put(fieldName, value);
+        properties.put(fieldName, value);
         return this;
     }
 
     @Override
     public RecordBuilder set(String fieldName, boolean value) {
-        bag.put(fieldName, value);
+        properties.put(fieldName, value);
         return this;
     }
 
     @Override
     public RecordBuilder set(String fieldName, Record record) {
         if(record == null) {
-            bag.remove(fieldName);
+            properties.remove(fieldName);
         } else {
-            bag.put(fieldName, record);
+            properties.put(fieldName, record);
         }
         return this;
     }
@@ -76,9 +76,9 @@ class RecordBuilderImpl implements RecordBuilder {
     @Override
     public RecordBuilder set(String fieldName, IsRecord record) {
         if(record == null) {
-            bag.remove(fieldName);
+            properties.remove(fieldName);
         } else {
-            bag.put(fieldName, record.asRecord());
+            properties.put(fieldName, record.asRecord());
         }
         return this;
     }
@@ -109,24 +109,34 @@ class RecordBuilderImpl implements RecordBuilder {
 
     @Override
     public RecordBuilder set(String fieldName, Iterable<?> value) {
-        bag.put(fieldName, ImmutableList.copyOf(value));
+        properties.put(fieldName, ImmutableList.copyOf(value));
         return this;
     }
 
     @Override
     public RecordBuilder set(String fieldName, ResourceId value) {
-        bag.put(fieldName, new ReferenceValue(value).asRecord());
+        properties.put(fieldName, new ReferenceValue(value).asRecord());
         return this;
     }
 
     @Override
     public RecordBuilder set(String fieldName, Enum<?> enumValue) {
-        bag.put(fieldName, enumValue.name());
+        properties.put(fieldName, enumValue.name());
         return this;
     }
 
     @Override
+    public RecordBuilder setTag(ResourceId formClassId, Record record) {
+        return set("#" + formClassId.asString(), record);
+    }
+
+    @Override
+    public RecordBuilder setTag(ResourceId formClassId, ResourceId resourceId) {
+        return set("#" + formClassId.asString(), new ReferenceValue(resourceId));
+    }
+
+    @Override
     public Record build() {
-        return new RecordImpl(classId, ImmutableMap.copyOf(bag));
+        return new RecordImpl(classId, ImmutableMap.copyOf(properties));
     }
 }

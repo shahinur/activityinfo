@@ -79,9 +79,9 @@ public class MapTest {
     // presenter.onMarkedMoved(new MarkerMovedEvent(900, 800));
     //
     // // The marker should not be placed beyond the edit bounds
-    // Assert.assertEquals("marker x clamped", 300.0, map.getValue().getLng(),
+    // Assert.assertEquals("marker x clamped", 300.0, map.getValue().getLongitude(),
     // DELTA);
-    // Assert.assertEquals("marker y clamped", 200.0, map.getValue().getLat(),
+    // Assert.assertEquals("marker y clamped", 200.0, map.getValue().getLatitude(),
     // DELTA);
     //
     // // The view should not be able to pan out of the viewing bounds

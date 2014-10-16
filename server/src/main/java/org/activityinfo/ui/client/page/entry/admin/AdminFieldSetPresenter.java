@@ -32,8 +32,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.Log;
-import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.legacy.shared.model.AdminEntityDTO;
+import org.activityinfo.legacy.shared.model.AdminLevelDTO;
+import org.activityinfo.legacy.shared.model.HasAdminEntityValues;
+import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.activityinfo.ui.client.component.report.editor.map.symbols.AdminBoundsHelper;
 
 import java.util.*;
@@ -170,14 +173,14 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
     }
 
     private final Dispatcher dispatcher;
-    private final Extents countryBounds;
+    private final GeoExtents countryBounds;
     private List<AdminLevelDTO> levels;
     private Map<Integer, Level> levelMap;
 
-    private Extents bounds;
+    private GeoExtents bounds;
     private String boundsName = "";
 
-    public AdminFieldSetPresenter(Dispatcher dispatcher, Extents countryBounds, List<AdminLevelDTO> levels) {
+    public AdminFieldSetPresenter(Dispatcher dispatcher, GeoExtents countryBounds, List<AdminLevelDTO> levels) {
         this.dispatcher = dispatcher;
         this.levels = Lists.newArrayList(sort(levels));
         this.levelMap = Maps.newHashMap();
@@ -284,7 +287,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
         fireEvent(event.getType(), event);
     }
 
-    public Extents getBounds() {
+    public GeoExtents getBounds() {
         return bounds;
     }
 
@@ -293,7 +296,7 @@ public class AdminFieldSetPresenter extends BaseObservable implements HasAdminEn
     }
 
     private void updateBounds() {
-        Extents oldBounds = bounds;
+        GeoExtents oldBounds = bounds;
         bounds = AdminBoundsHelper.calculate(countryBounds, levels, new HasAdminEntityValues() {
             @Override
             public AdminEntityDTO getAdminEntity(int levelId) {

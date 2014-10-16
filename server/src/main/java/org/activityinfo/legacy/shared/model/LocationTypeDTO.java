@@ -23,9 +23,9 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -45,10 +45,11 @@ import java.util.List;
 @JsonAutoDetect(JsonMethod.NONE)
 public final class LocationTypeDTO extends BaseModelData implements EntityDTO, IsFormClass {
 
+    public static final String NULL_LOCATION_TYPE_NAME = "Country";
     public static int NAME_MAX_LENGTH = 50;
     private Integer databaseId;
     private List<AdminLevelDTO> adminLevels;
-    private Extents countryBounds;
+    private GeoExtents countryBounds;
 
     public LocationTypeDTO() {
     }
@@ -89,7 +90,7 @@ public final class LocationTypeDTO extends BaseModelData implements EntityDTO, I
 
     public boolean isNationwide() {
         // hack!!
-        return "Country".equals(getName()) && getId() != 20301;
+        return NULL_LOCATION_TYPE_NAME.equals(getName()) && getId() != 20301;
     }
 
     @JsonProperty("adminLevelId") @JsonView(DTOViews.Schema.class)
@@ -129,11 +130,11 @@ public final class LocationTypeDTO extends BaseModelData implements EntityDTO, I
         this.adminLevels = adminLevels;
     }
 
-    public Extents getCountryBounds() {
+    public GeoExtents getCountryBounds() {
         return countryBounds;
     }
 
-    public void setCountryBounds(Extents countryBounds) {
+    public void setCountryBounds(GeoExtents countryBounds) {
         this.countryBounds = countryBounds;
     }
 

@@ -3,6 +3,7 @@ package org.activityinfo.ui.app.client.page.form;
 import org.activityinfo.model.form.FormClassVisitor;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.RecordFieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -105,6 +106,11 @@ public class FieldIconProvider implements FormClassVisitor<Icon> {
 
     @Override
     public Icon visitMissingField(FormField field, MissingFieldType missingFieldType) {
+        return DEFAULT;
+    }
+
+    @Override
+    public Icon visitSubForm(FormField field, RecordFieldType recordFieldType) {
         return DEFAULT;
     }
 }

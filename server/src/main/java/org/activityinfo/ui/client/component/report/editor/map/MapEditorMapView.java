@@ -31,7 +31,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
@@ -41,6 +40,7 @@ import org.activityinfo.legacy.shared.model.BaseMap;
 import org.activityinfo.legacy.shared.reports.content.AdminOverlay;
 import org.activityinfo.legacy.shared.reports.content.MapContent;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.component.report.editor.map.symbols.LeafletMarkerDrilldownEventHandler;
 import org.activityinfo.ui.client.component.report.editor.map.symbols.LeafletReportOverlays;
@@ -217,7 +217,7 @@ public class MapEditorMapView extends ContentPanel implements HasReportElement<M
         if (!zoomSet) {
             if (model.getZoomLevel() != -1 && model.getCenter() != null) {
                 map.getMap()
-                   .setView(new LatLng(model.getCenter().getLat(), model.getCenter().getLng()),
+                   .setView(new LatLng(model.getCenter().getLatitude(), model.getCenter().getLongitude()),
                            model.getZoomLevel(),
                            true);
             } else {
@@ -260,6 +260,6 @@ public class MapEditorMapView extends ContentPanel implements HasReportElement<M
     private void updateModelFromMap() {
         model.setZoomLevel(map.getMap().getZoom());
         LatLng center = map.getMap().getBounds().getCenter();
-        model.setCenter(new AiLatLng(center.lat(), center.lng()));
+        model.setCenter(new GeoPoint(center.lat(), center.lng()));
     }
 }

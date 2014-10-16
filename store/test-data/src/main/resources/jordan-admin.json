@@ -5,7 +5,7 @@
     "@owner" : "_root",
     "@version" : 0,
     "@class" : "_folder",
-    "_classf11" : {
+    "#_geo:within" : {
       "@type" : "REFERENCE",
       "value" : "G360"
     },

@@ -26,9 +26,9 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BaseObservable;
 import com.extjs.gxt.ui.client.event.EventType;
 import com.extjs.gxt.ui.client.event.Listener;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.LocationDTO;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 public class NewLocationPresenter extends BaseObservable {
 
@@ -37,18 +37,18 @@ public class NewLocationPresenter extends BaseObservable {
     public static final EventType BOUNDS_CHANGED = new EventType();
     public static final EventType ACCEPTED = new EventType();
 
-    private AiLatLng latLng;
+    private GeoPoint latLng;
     private boolean provisional;
     private boolean active;
-    private Extents bounds;
+    private GeoExtents bounds;
 
-    public NewLocationPresenter(Extents bounds) {
+    public NewLocationPresenter(GeoExtents bounds) {
         provisional = true;
         this.bounds = bounds;
         latLng = this.bounds.center();
     }
 
-    public AiLatLng getLatLng() {
+    public GeoPoint getLatLng() {
         return latLng;
     }
 
@@ -65,13 +65,13 @@ public class NewLocationPresenter extends BaseObservable {
         fireEvent(ACTIVE_STATE_CHANGED, new BaseEvent(ACTIVE_STATE_CHANGED));
     }
 
-    public void setLatLng(AiLatLng latLng) {
+    public void setLatLng(GeoPoint latLng) {
         this.latLng = latLng;
         this.provisional = false;
         fireEvent(POSITION_CHANGED, new BaseEvent(POSITION_CHANGED));
     }
 
-    public void setBounds(Extents bounds) {
+    public void setBounds(GeoExtents bounds) {
         this.bounds = bounds;
         if (!bounds.contains(latLng)) {
             latLng = bounds.center();
@@ -81,7 +81,7 @@ public class NewLocationPresenter extends BaseObservable {
         fireEvent(BOUNDS_CHANGED, new BaseEvent(BOUNDS_CHANGED));
     }
 
-    public Extents getBounds() {
+    public GeoExtents getBounds() {
         return bounds;
     }
 

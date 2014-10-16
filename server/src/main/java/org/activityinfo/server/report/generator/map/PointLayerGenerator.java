@@ -23,7 +23,6 @@ package org.activityinfo.server.report.generator.map;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
@@ -31,7 +30,8 @@ import org.activityinfo.legacy.shared.model.AdminEntityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.model.layers.PointMapLayer;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 
@@ -143,11 +143,11 @@ public abstract class PointLayerGenerator<T extends PointMapLayer> implements La
         return value;
     }
 
-    protected AiLatLng getPoint(SiteDTO site) {
+    protected GeoPoint getPoint(SiteDTO site) {
         if (site.hasLatLong()) {
-            return new AiLatLng(site.getLatitude(), site.getLongitude());
+            return new GeoPoint(site.getLatitude(), site.getLongitude());
         } else {
-            Extents bounds = getBounds(site);
+            GeoExtents bounds = getBounds(site);
 
             if (bounds != null) {
                 return bounds.center();
@@ -157,10 +157,10 @@ public abstract class PointLayerGenerator<T extends PointMapLayer> implements La
         }
     }
 
-    protected Extents getBounds(SiteDTO site) {
+    protected GeoExtents getBounds(SiteDTO site) {
         // if we don't have a lat/long point, get a centroid from the
         // bounds
-        Extents bounds = null;
+        GeoExtents bounds = null;
         for (AdminEntityDTO entity : site.getAdminEntities().values()) {
             if (entity.hasBounds()) {
                 if (bounds == null) {

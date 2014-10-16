@@ -41,7 +41,7 @@ public class Utf8JacksonJsonProvider extends JacksonJsonProvider {
 
     }
 
-    private static ObjectMapper createObjectMapper() {
+    public static ObjectMapper createObjectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT, true);
         mapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);

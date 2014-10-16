@@ -23,7 +23,7 @@ package org.activityinfo.legacy.shared.reports.content;
  */
 
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 
 import java.io.Serializable;
 
@@ -32,7 +32,7 @@ public class AdminMarker implements Serializable {
     private String name;
     private Double value;
     private String color;
-    private Extents bounds;
+    private GeoExtents bounds;
 
     public AdminMarker() {
 
@@ -68,11 +68,11 @@ public class AdminMarker implements Serializable {
         this.color = color;
     }
 
-    public Extents getExtents() {
+    public GeoExtents getExtents() {
         return bounds;
     }
 
-    public void setBounds(Extents bounds) {
+    public void setBounds(GeoExtents bounds) {
         this.bounds = bounds;
     }
 

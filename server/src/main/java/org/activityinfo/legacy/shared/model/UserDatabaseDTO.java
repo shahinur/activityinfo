@@ -407,4 +407,9 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, H
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return getProperties().toString();
+    }
 }

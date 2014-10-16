@@ -35,7 +35,7 @@ import org.activityinfo.legacy.shared.reports.model.PivotChartReportElement.Type
 import org.activityinfo.legacy.shared.reports.model.layers.BubbleMapLayer;
 import org.activityinfo.legacy.shared.reports.model.layers.IconMapLayer;
 import org.activityinfo.legacy.shared.reports.model.layers.PiechartMapLayer;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.activityinfo.server.geo.TestGeometry;
 import org.activityinfo.server.report.DummyPivotTableData;
 import org.activityinfo.server.report.output.StorageProvider;
@@ -130,7 +130,7 @@ public class ItextReportRendererTest {
         mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
         mapContent.setBaseMap(baseMap);
         mapContent.setZoomLevel(8);
-        mapContent.setCenter(new Extents(-2.2, -2.1, 28.85, 28.9).center());
+        mapContent.setCenter(new GeoExtents(-2.2, -2.1, 28.85, 28.9).center());
         mapContent.setMarkers(Arrays.asList((MapMarker) marker1));
 
         MapReportElement map = new MapReportElement();
@@ -216,7 +216,7 @@ public class ItextReportRendererTest {
             mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
             mapContent.setBaseMap(baseMap);
             mapContent.setZoomLevel(8);
-            mapContent.setCenter(new Extents(-2.2, -2.1, 28.85, 28.9).center());
+            mapContent.setCenter(new GeoExtents(-2.2, -2.1, 28.85, 28.9).center());
             mapContent.setMarkers(Arrays.asList((MapMarker) marker1));
 
             MapReportElement satelliteMap = new MapReportElement();
@@ -252,7 +252,7 @@ public class ItextReportRendererTest {
         mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
         mapContent.setBaseMap(baseMap);
         mapContent.setZoomLevel(8);
-        mapContent.setCenter(new Extents(-2.2, -2.1, 28.85, 28.9).center());
+        mapContent.setCenter(new GeoExtents(-2.2, -2.1, 28.85, 28.9).center());
         mapContent.setMarkers(Arrays.asList((MapMarker) marker1));
 
         MapReportElement map = new MapReportElement();
@@ -341,25 +341,25 @@ public class ItextReportRendererTest {
         IndicatorDTO indicator101 = new IndicatorDTO();
         indicator101.setId(101);
         indicator101
-                .setLabel("Nombre de salles de classe fonctionnelles (construites, rehabilitees, equipees) "
+                .setName("Nombre de salles de classe fonctionnelles (construites, rehabilitees, equipees) "
                         +
                         "pour l'education formelle et non formelle.");
 
         IndicatorDTO indicator102 = new IndicatorDTO();
         indicator102.setId(102);
         indicator102
-                .setLabel("Nombre d'enfants ayant beneficie de kits scolaires, recreatifs et didactiques");
+                .setName("Nombre d'enfants ayant beneficie de kits scolaires, recreatifs et didactiques");
 
         IndicatorDTO indicator103 = new IndicatorDTO();
         indicator103.setId(103);
         indicator103
-                .setLabel("Pourcentage des ménages qui utilsent la moustiquaire rationnellement");
+                .setName("Pourcentage des ménages qui utilsent la moustiquaire rationnellement");
 
         MapContent mapContent = new MapContent();
         mapContent.setFilterDescriptions(Collections.EMPTY_LIST);
         mapContent.setBaseMap(baseMap);
         mapContent.setZoomLevel(8);
-        mapContent.setCenter(new Extents(-2.2, -2.1, 28.85, 28.9).center());
+        mapContent.setCenter(new GeoExtents(-2.2, -2.1, 28.85, 28.9).center());
         mapContent.setMarkers(Arrays.asList((MapMarker) marker1));
         mapContent.getIndicators().addAll(Arrays.asList(
                 indicator101, indicator102, indicator103));

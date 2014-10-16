@@ -184,7 +184,7 @@ public class SchemaImporter {
                 DtoWrapper indicatorWrapper = new DtoWrapper(new IndicatorKey(activity.getName(), fieldName.get(row), fieldCategory.get(row)));
                 if (!newIndicators.contains(indicatorWrapper)) {
                     IndicatorDTO indicator = new IndicatorDTO();
-                    indicator.setLabel(fieldName.get(row));
+                    indicator.setName(fieldName.get(row));
                     indicator.setCategory(fieldCategory.get(row));
                     indicator.setDescription(fieldDescription.get(row));
                     indicator.setUnits(fieldUnits.get(row));

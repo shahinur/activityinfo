@@ -53,6 +53,10 @@ public interface Record extends FieldValue, IsRecord {
 
     public int getInt(String fieldName);
 
+    public boolean hasTag(ResourceId resourceId);
+
+    public ResourceId getTagReference(ResourceId resourceId);
+
     /**
      *
      * @return an immutable {@code Map} view of this {@code Record}

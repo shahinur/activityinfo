@@ -1,4 +1,4 @@
-package org.activityinfo.legacy.shared.reports.util.mapping;
+package org.activityinfo.model.type.geo;
 
 /*
  * #%L
@@ -22,7 +22,8 @@ package org.activityinfo.legacy.shared.reports.util.mapping;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
+import org.activityinfo.model.annotation.RecordBean;
+import org.activityinfo.model.annotation.Transient;
 
 import java.io.Serializable;
 
@@ -32,7 +33,8 @@ import java.io.Serializable;
  * This cannot be mapped 1:1 to a rectangle, since a lat/long combination is a coordinate on
  * a sphere as opposed to a coordinate on a 2D plane.
  */
-public class Extents implements Serializable {
+@RecordBean(classId = "_geo:extents")
+public class GeoExtents implements Serializable {
 
     private static final int LAT_MAX = 90;
     private static final int LNG_MAX = 180;
@@ -44,11 +46,11 @@ public class Extents implements Serializable {
     private double minLon;
     private double maxLon;
 
-    private Extents() {
+    GeoExtents() {
 
     }
 
-    public Extents(double minLat, double maxLat, double minLon, double maxLon) {
+    public GeoExtents(double minLat, double maxLat, double minLon, double maxLon) {
         super();
         this.minLat = minLat;
         this.maxLat = maxLat;
@@ -56,7 +58,7 @@ public class Extents implements Serializable {
         this.maxLon = maxLon;
     }
 
-    public Extents(Extents toCopy) {
+    public GeoExtents(GeoExtents toCopy) {
         super();
         this.minLat = toCopy.minLat;
         this.maxLat = toCopy.maxLat;
@@ -67,8 +69,8 @@ public class Extents implements Serializable {
     /**
      * @return maximum geographic bounds (-180, -90, 180, 90)s
      */
-    public static Extents maxGeoBounds() {
-        return new Extents(LAT_MIN, LAT_MAX, LNG_MIN, LNG_MAX);
+    public static GeoExtents maxGeoBounds() {
+        return new GeoExtents(LAT_MIN, LAT_MAX, LNG_MIN, LNG_MAX);
     }
 
     public double getMinLat() {
@@ -124,8 +126,8 @@ public class Extents implements Serializable {
      * @param b another Extents with which to intersect this Extents
      * @return the intersection of the two Extentss
      */
-    public Extents intersect(Extents b) {
-        return new Extents(Math.max(minLat, b.minLat),
+    public GeoExtents intersect(GeoExtents b) {
+        return new GeoExtents(Math.max(minLat, b.minLat),
                 Math.min(maxLat, b.maxLat),
                 Math.max(minLon, b.minLon),
                 Math.min(maxLon, b.maxLon));
@@ -134,11 +136,11 @@ public class Extents implements Serializable {
     /**
      * @return true if this Extents intersects with <code>b</code>
      */
-    public boolean intersects(Extents b) {
+    public boolean intersects(GeoExtents b) {
         return !(b.maxLon < minLon || b.minLon > maxLon || b.maxLat < minLat || b.minLat > maxLat);
     }
 
-    public void grow(Extents extents) {
+    public void grow(GeoExtents extents) {
 
         if (!extents.isEmpty()) {
             grow(extents.minLat, extents.minLon);
@@ -146,11 +148,11 @@ public class Extents implements Serializable {
         }
     }
 
-    public static Extents emptyExtents() {
-        return new Extents(+90.0, -90.0, +180.0, -180.0);
+    public static GeoExtents emptyExtents() {
+        return new GeoExtents(+90.0, -90.0, +180.0, -180.0);
     }
 
-    public static Extents empty() {
+    public static GeoExtents empty() {
         return emptyExtents();
     }
 
@@ -158,12 +160,12 @@ public class Extents implements Serializable {
      * @param b
      * @return true if this Extents contains <code>b</code>
      */
-    public boolean contains(Extents b) {
+    public boolean contains(GeoExtents b) {
         return b.minLon >= minLon && b.maxLon <= maxLon && b.minLat >= minLat && b.maxLat <= maxLat;
     }
 
-    public boolean contains(AiLatLng center) {
-        return contains(center.getLng(), center.getLat());
+    public boolean contains(GeoPoint center) {
+        return contains(center.getLongitude(), center.getLatitude());
     }
 
     /**
@@ -173,13 +175,14 @@ public class Extents implements Serializable {
         return x >= minLon && x <= maxLon && y >= minLat && y <= maxLat;
     }
 
-    public static Extents create(double x1, double y1, double x2, double y2) {
-        return new Extents(y1, y2, x1, x2);
+    public static GeoExtents create(double x1, double y1, double x2, double y2) {
+        return new GeoExtents(y1, y2, x1, x2);
     }
 
     /**
      * @return the x (longitude) coordinate of the Extents's centroid, (x1+x2)/2
      */
+    @Transient
     public double getCenterX() {
         return (minLon + maxLon) / 2;
     }
@@ -188,16 +191,18 @@ public class Extents implements Serializable {
      * @return the y (latitudinal) coordinate of the Extents's centroid,
      * (y1+y2)/2
      */
+    @Transient
     public double getCenterY() {
         return (minLat + maxLat) / 2;
     }
 
+    @Transient
     public boolean isEmpty() {
         return minLat > maxLat || minLon > maxLon;
     }
 
-    public AiLatLng center() {
-        return new AiLatLng((minLat + maxLat) / 2.0, (minLon + maxLon) / 2.0);
+    public GeoPoint center() {
+        return new GeoPoint((minLat + maxLat) / 2.0, (minLon + maxLon) / 2.0);
     }
 
     @Override
@@ -216,7 +221,7 @@ public class Extents implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        Extents other = (Extents) obj;
+        GeoExtents other = (GeoExtents) obj;
         return minLat == other.minLat &&
                maxLat == other.maxLat &&
                minLon == other.minLon &&

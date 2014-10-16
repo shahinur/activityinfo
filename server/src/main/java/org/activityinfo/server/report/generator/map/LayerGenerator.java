@@ -24,7 +24,7 @@ package org.activityinfo.server.report.generator.map;
 
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.reports.content.MapContent;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.activityinfo.server.command.DispatcherSync;
 
 public interface LayerGenerator {
@@ -37,7 +37,7 @@ public interface LayerGenerator {
      * @param sites
      * @return A geographic bounding box
      */
-    Extents calculateExtents();
+    GeoExtents calculateExtents();
 
     /**
      * Calculates the maximum potential margins (in pixels) outside of the

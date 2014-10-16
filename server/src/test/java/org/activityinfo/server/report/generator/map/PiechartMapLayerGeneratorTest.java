@@ -23,12 +23,12 @@ package org.activityinfo.server.report.generator.map;
  */
 
 import com.google.common.collect.Maps;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.MapContent;
 import org.activityinfo.legacy.shared.reports.content.PieMapMarker;
 import org.activityinfo.legacy.shared.reports.model.clustering.NoClustering;
 import org.activityinfo.legacy.shared.reports.model.layers.PiechartMapLayer;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.junit.Test;
 
@@ -60,7 +60,7 @@ public class PiechartMapLayerGeneratorTest {
         pcml.addIndicatorId(4);
         pcml.setClustering(new NoClustering());
 
-        TiledMap map = new TiledMap(500, 600, new AiLatLng(15.0, 0.0), 6);
+        TiledMap map = new TiledMap(500, 600, new GeoPoint(15.0, 0.0), 6);
 
         Map<Integer, Indicator> indicators = Maps.newHashMap();
         indicators.put(1, new Indicator());

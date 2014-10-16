@@ -4,6 +4,7 @@ import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.json.client.JSONObject;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 
 import javax.annotation.Nonnull;
@@ -78,6 +79,16 @@ final class RecordBuilderJsoImpl extends JavaScriptObject implements RecordBuild
     @Override
     public RecordBuilder set(String fieldName, IsRecord record) {
         return set(fieldName, record.asRecord());
+    }
+
+    @Override
+    public RecordBuilder setTag(ResourceId formClassId, Record record) {
+        return set("#" + formClassId.asString(), record);
+    }
+
+    @Override
+    public RecordBuilder setTag(ResourceId formClassId, ResourceId resourceId) {
+        return set("#" + formClassId.asString(), new ReferenceValue(resourceId));
     }
 
     @Override

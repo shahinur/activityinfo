@@ -91,6 +91,22 @@ public interface RecordBuilder {
 
     RecordBuilder set(String fieldName, Enum<?> enumValue);
 
+    /**
+     * Sets a "tag" for this record.
+     *
+     * @param formClassId the ResourceId of the formClass of the metadata to add
+     * @param record the value of the metadata
+     */
+    RecordBuilder setTag(ResourceId formClassId, Record record);
+
+    /**
+     * Sets a "tag" for this record.
+     *
+     * @param formClassId the ResourceId of the formClass of the metadata
+     * @param resourceId a reference to an instance of {@code formClassId}
+     */
+    RecordBuilder setTag(ResourceId formClassId, ResourceId resourceId);
+
     Record build();
 
 }

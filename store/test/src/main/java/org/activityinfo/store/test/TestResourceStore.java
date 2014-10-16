@@ -62,6 +62,10 @@ public class TestResourceStore implements ResourceStore {
         store = new HrdResourceStore(storeContext);
     }
 
+    public ResourceStore unwrap() {
+        return store;
+    }
+
     /**
      * Loads a set of resources from a json resource on the classpath
      * @param resourceName the name of the class path resource to load

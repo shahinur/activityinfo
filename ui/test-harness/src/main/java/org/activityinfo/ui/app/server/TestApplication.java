@@ -62,7 +62,7 @@ public class TestApplication extends DefaultResourceConfig {
         properties.setProperty(MigrateDatabaseTask.MIGRATION_SOURCE_URL, "jdbc:mysql://127.0.0.1:3306/activityinfo");
         properties.setProperty(MigrateDatabaseTask.MIGRATION_USER, "root");
         properties.setProperty(MigrateDatabaseTask.MIGRATION_PASS, "root");
-        return new MigrateService(new DeploymentConfiguration(properties));
+        return new MigrateService(store, new DeploymentConfiguration(properties));
     }
 
     @Override

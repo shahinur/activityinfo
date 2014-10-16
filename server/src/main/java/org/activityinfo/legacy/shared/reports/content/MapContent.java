@@ -23,10 +23,10 @@ package org.activityinfo.legacy.shared.reports.content;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.BaseMap;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 import java.util.*;
 
@@ -43,8 +43,8 @@ public class MapContent implements Content {
     private Set<IndicatorDTO> indicators = new HashSet<IndicatorDTO>();
     private List<AdminOverlay> adminOverlays = Lists.newArrayList();
     private int zoomLevel;
-    private AiLatLng center;
-    private Extents extents;
+    private GeoPoint center;
+    private GeoExtents extents;
 
     public MapContent() {
 
@@ -86,11 +86,11 @@ public class MapContent implements Content {
         return baseMap;
     }
 
-    public AiLatLng getCenter() {
+    public GeoPoint getCenter() {
         return center;
     }
 
-    public void setCenter(AiLatLng center) {
+    public void setCenter(GeoPoint center) {
         this.center = center;
     }
 
@@ -147,11 +147,11 @@ public class MapContent implements Content {
         return map;
     }
 
-    public Extents getExtents() {
+    public GeoExtents getExtents() {
         return extents;
     }
 
-    public void setExtents(Extents extents) {
+    public void setExtents(GeoExtents extents) {
         this.extents = extents;
     }
 

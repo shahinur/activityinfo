@@ -31,6 +31,7 @@ public class FormField extends FormElement {
     private boolean required;
     private boolean primaryKey;
     private FieldValue defaultValue;
+    private String listHeader;
 
     public FormField(ResourceId id) {
         checkNotNull(id);
@@ -199,6 +200,15 @@ public class FormField extends FormElement {
         return true;
     }
 
+    public String getListHeader() {
+        return listHeader;
+    }
+
+    public FormField setListHeader(String listHeader) {
+        this.listHeader = listHeader;
+        return this;
+    }
+
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
@@ -248,6 +258,7 @@ public class FormField extends FormElement {
         record.set("visible", visible);
         record.set("primaryKey", primaryKey);
         record.set("relevanceConditionExpression", relevanceConditionExpression);
+        record.set("listHeader", listHeader);
 
         if(defaultValue != null) {
             record.setFieldValue("defaultValue", defaultValue);
@@ -277,7 +288,8 @@ public class FormField extends FormElement {
             .setVisible(record.getBoolean("visible", true))
             .setPrimaryKey(record.getBoolean("primaryKey", false))
             .setRequired(record.getBoolean("required", false))
-            .setDefaultValue(Types.read(record, "defaultValue"));
+            .setDefaultValue(Types.read(record, "defaultValue"))
+            .setListHeader(record.isString("listHeader"));
 
         if (record.has("relevanceConditionExpression")) {
             formField.setRelevanceConditionExpression(record.getString("relevanceConditionExpression"));

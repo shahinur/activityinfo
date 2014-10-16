@@ -30,7 +30,7 @@ public class UserPermissionTable extends ResourceMigrator {
         String sql = "SELECT P.* " +
                      "FROM userpermission P " +
                      "INNER JOIN userdatabase DB ON (P.DatabaseId=DB.DatabaseId) " +
-                     "WHERE DB.dateDeleted is null";
+                     "WHERE DB.dateDeleted is null and " + context.filter().databaseFilter("P.databaseId");
 
         try(Statement statement = connection.createStatement()) {
             try(ResultSet rs = statement.executeQuery(sql)) {
@@ -50,8 +50,6 @@ public class UserPermissionTable extends ResourceMigrator {
                     rule.setManageUsers(rs.getBoolean("AllowManageUsers"));
                     rule.setManageAllUsers(rs.getBoolean("AllowManageAllUsers"));
                     rule.setPartner(CuidAdapter.partnerInstanceId(databaseId, rs.getInt("partnerId")));
-
-                    System.out.println(rule);
 
                     Resource resource = Resources.createResource();
                     resource.setId(rule.getId());

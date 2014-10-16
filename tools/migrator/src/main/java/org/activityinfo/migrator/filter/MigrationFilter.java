@@ -14,7 +14,7 @@ public interface MigrationFilter {
 
     String locationTypeFilter(String locationTypeTableAlias);
 
-    String databaseFilter();
+    String databaseFilter(String databaseIdAlias);
 
     String partnerFilter(String partnerTableAlias);
 
@@ -27,4 +27,6 @@ public interface MigrationFilter {
     String attributeGroupFilter(String attributeGroupInActivityTableAlias);
 
     String attributeFilter(String attributeGroupTableAlias);
+
+    String resourceFilter();
 }

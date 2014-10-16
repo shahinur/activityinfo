@@ -29,9 +29,8 @@ import org.activityinfo.legacy.shared.command.result.AdminEntityResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
-import org.activityinfo.legacy.shared.model.CountryDTO;
 import org.activityinfo.legacy.shared.model.DTOs.*;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.activityinfo.ui.client.dispatch.DispatcherStub;
 import org.junit.Before;
 import org.junit.Test;
@@ -268,7 +267,7 @@ public class AdminFieldSetPresenterTest {
         replay(levelStateChangeListener);
     }
 
-    private void expectBounds(Extents bounds, String name) {
+    private void expectBounds(GeoExtents bounds, String name) {
         resetToDefault(boundsListener);
         boundsListener.handleEvent(eq(new BoundsChangedEvent(bounds, name)));
         replay(boundsListener);

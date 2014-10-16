@@ -1,4 +1,5 @@
-package org.activityinfo.ui.component.table.renderer;
+package org.activityinfo.model.legacy;
+
 /*
  * #%L
  * ActivityInfo Server
@@ -21,18 +22,23 @@ package org.activityinfo.ui.component.table.renderer;
  * #L%
  */
 
-import org.activityinfo.model.type.geo.AiLatLng;
+import java.util.Random;
 
 /**
- * @author yuriyz on 3/28/14.
+ * Generates unique ids on the client side. Currently uses randomness.
+ *
+ * @author alex
  */
-public class GeographicPointRenderer implements ValueRenderer<AiLatLng> {
-    @Override
-    public String asString(AiLatLng value) {
-        return value != null ? build(value) : "";
-    }
+public class KeyGenerator {
 
-    private String build(AiLatLng value) {
-        return value.getLat() + ", " + value.getLng();
+    private final Random random = new Random();
+
+    private static final int MIN_KEY = 2 ^ 13;
+
+    /**
+     * @return a random 32-bit integer key
+     */
+    public int generateInt() {
+        return random.nextInt(Integer.MAX_VALUE - MIN_KEY) + MIN_KEY;
     }
 }

@@ -44,6 +44,7 @@ public class MySqlMigrator {
         migrators.add(new ActivityTable(context));
         migrators.add(new SiteTable(context));
         migrators.add(new ReportingPeriodTable(context));
+        migrators.add(new ResourcesTable(context));
     }
 
     public static void main(String[] args) throws Exception {

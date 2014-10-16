@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
@@ -181,15 +182,23 @@ public class LatestVersion implements IsEntity, ResourceVersion {
             entity.setUnindexedProperty(DELETED_PROPERTY, true);
             entity.setUnindexedProperty(OWNER_PROPERTY, ownerId.asString());
             entity.setUnindexedProperty(ROW_INDEX_PROPERTY, rowIndex);
+
         } else {
 
             Preconditions.checkState(record != null, "if not deleted, resource must have record value");
             Preconditions.checkState(record.get().getClassId() != null, "records must have class id");
 
-            entity.setProperty(OWNER_PROPERTY, ownerId.asString());
-            entity.setProperty(ROW_INDEX_PROPERTY, rowIndex);
-            entity.setProperty(LABEL_PROPERTY, label);
-            entity.setProperty(CLASS_PROPERTY, record.getClassId().asString());
+            if(AccessControlRule.isAcrId(key.getResourceId())) {
+                // do not include ACRs in indices
+                entity.setUnindexedProperty(OWNER_PROPERTY, ownerId.asString());
+                entity.setUnindexedProperty(CLASS_PROPERTY, record.getClassId().asString());
+
+            } else {
+                entity.setProperty(OWNER_PROPERTY, ownerId.asString());
+                entity.setProperty(ROW_INDEX_PROPERTY, rowIndex);
+                entity.setProperty(LABEL_PROPERTY, label);
+                entity.setProperty(CLASS_PROPERTY, record.getClassId().asString());
+            }
             entity.setProperty(TX_ID, transactionId);
             record.writeToEntity(entity);
         }

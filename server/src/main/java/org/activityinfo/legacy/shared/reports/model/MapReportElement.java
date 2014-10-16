@@ -23,9 +23,9 @@ package org.activityinfo.legacy.shared.reports.model;
  */
 
 import com.google.common.collect.Sets;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.reports.content.MapContent;
 import org.activityinfo.legacy.shared.reports.model.layers.*;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
@@ -44,7 +44,7 @@ public class MapReportElement extends ReportElement<MapContent> {
     private String baseMapId = AUTO_BASEMAP;
     private int width = 640;
     private int height = 480;
-    private AiLatLng center = null;
+    private GeoPoint center = null;
     private int zoomLevel = -1;
     private int maximumZoomLevel = 18;
 
@@ -124,11 +124,11 @@ public class MapReportElement extends ReportElement<MapContent> {
      * AdministrativeLevelClustering
      */
     @XmlElement(name = "center")
-    public AiLatLng getCenter() {
+    public GeoPoint getCenter() {
         return center;
     }
 
-    public void setCenter(AiLatLng center) {
+    public void setCenter(GeoPoint center) {
         this.center = center;
     }
 

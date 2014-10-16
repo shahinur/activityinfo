@@ -31,11 +31,11 @@ import com.google.code.appengine.awt.geom.Rectangle2D;
 import com.google.code.appengine.awt.image.BufferedImage;
 import com.google.code.appengine.imageio.ImageIO;
 import com.google.inject.Inject;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.BaseMap;
 import org.activityinfo.legacy.shared.model.TileBaseMap;
 import org.activityinfo.legacy.shared.reports.content.*;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.geo.AdminGeo;
 import org.activityinfo.server.geo.AdminGeometryProvider;
 import org.activityinfo.server.report.generator.MapIconPath;
@@ -292,7 +292,7 @@ public class ImageMapRenderer {
     }
 
     protected TiledMap createTileMap(MapReportElement element) {
-        AiLatLng center = element.getCenter() != null ? element.getCenter() : element.getContent().getCenter();
+        GeoPoint center = element.getCenter() != null ? element.getCenter() : element.getContent().getCenter();
         TiledMap map = new TiledMap(element.getWidth(),
                 element.getHeight(),
                 center,

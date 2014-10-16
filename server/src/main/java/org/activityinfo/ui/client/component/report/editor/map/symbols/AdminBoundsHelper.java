@@ -22,8 +22,11 @@ package org.activityinfo.ui.client.component.report.editor.map.symbols;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.AdminEntityDTO;
+import org.activityinfo.legacy.shared.model.AdminLevelDTO;
+import org.activityinfo.legacy.shared.model.HasAdminEntityValues;
+import org.activityinfo.model.type.geo.GeoExtents;
 
 import java.util.Collection;
 
@@ -53,7 +56,7 @@ public final class AdminBoundsHelper {
      *                       representation of a site.
      * @return the normative lat/lng bounds
      */
-    public static Extents calculate(ActivityDTO activity, HasAdminEntityValues entityAccessor) {
+    public static GeoExtents calculate(ActivityDTO activity, HasAdminEntityValues entityAccessor) {
         return calculate(activity.getBounds(), activity.getAdminLevels(), entityAccessor);
     }
 
@@ -73,14 +76,14 @@ public final class AdminBoundsHelper {
      *                       representation of a site.
      * @return the normative lat/lng bounds
      */
-    public static Extents calculate(Extents formClassBounds, Collection<AdminLevelDTO> levels,
+    public static GeoExtents calculate(GeoExtents formClassBounds, Collection<AdminLevelDTO> levels,
                                     HasAdminEntityValues entityAccessor) {
-        Extents bounds = null;
+        GeoExtents bounds = null;
         if (formClassBounds != null) {
-            bounds = new Extents(formClassBounds);
+            bounds = new GeoExtents(formClassBounds);
         }
         if (bounds == null) {
-            bounds = Extents.maxGeoBounds();
+            bounds = GeoExtents.maxGeoBounds();
         }
 
         for (AdminLevelDTO level : levels) {
@@ -99,7 +102,7 @@ public final class AdminBoundsHelper {
      * @param getter
      * @return
      */
-    public static String name(Extents bounds, Collection<AdminLevelDTO> levels, HasAdminEntityValues getter) {
+    public static String name(GeoExtents bounds, Collection<AdminLevelDTO> levels, HasAdminEntityValues getter) {
         // find the entities that are the limiting bounds.
         // E.g., if the user selects North Kivu, distict de North Kivu, and
         // territoire
@@ -112,7 +115,7 @@ public final class AdminBoundsHelper {
             for (AdminLevelDTO level : levels) {
                 AdminEntityDTO entity = getter.getAdminEntity(level.getId());
                 if (entity != null && entity.hasBounds()) {
-                    Extents b = entity.getBounds();
+                    GeoExtents b = entity.getBounds();
 
                     if (b != null && (!b.contains(bounds) || b.equals(bounds))) {
                         if (sb.length() != 0) {

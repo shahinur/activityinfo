@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.page.entry.admin;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.EventType;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 
 /**
  * Signals that the geographic bounds of the selection in the
@@ -34,20 +34,20 @@ public class BoundsChangedEvent extends BaseEvent {
 
     public static final EventType TYPE = new EventType();
 
-    private Extents bounds;
+    private GeoExtents bounds;
     private String name;
 
-    public BoundsChangedEvent(Extents bounds, String name) {
+    public BoundsChangedEvent(GeoExtents bounds, String name) {
         super(TYPE);
         this.bounds = bounds;
         this.name = name;
     }
 
-    public Extents getBounds() {
+    public GeoExtents getBounds() {
         return bounds;
     }
 
-    public void setBounds(Extents bounds) {
+    public void setBounds(GeoExtents bounds) {
         this.bounds = bounds;
     }
 

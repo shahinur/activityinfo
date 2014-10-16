@@ -28,11 +28,11 @@ import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.shared.command.GenerateElement;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.reports.content.*;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
 import org.activityinfo.legacy.shared.reports.model.layers.PolygonMapLayer;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
@@ -102,7 +102,7 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
         MapContent content = new MapContent();
         content.setZoomLevel(8);
         content.setBaseMap(GoogleBaseMap.ROADMAP);
-        content.setCenter(new AiLatLng(12.60500192642215, -7.98924994468689));
+        content.setCenter(new GeoPoint(12.60500192642215, -7.98924994468689));
         content.getAdminOverlays().add(overlay);
         content.setFilterDescriptions(new ArrayList<FilterDescription>());
 
@@ -118,7 +118,7 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
 
         IndicatorDTO indicator = new IndicatorDTO();
         indicator.setId(1);
-        indicator.setLabel("Indicator Test");
+        indicator.setName("Indicator Test");
 
         content.getIndicators().add(indicator);
 

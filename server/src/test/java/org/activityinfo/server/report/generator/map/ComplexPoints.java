@@ -22,11 +22,11 @@ package org.activityinfo.server.report.generator.map;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.model.PointValue;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.activityinfo.legacy.shared.reports.util.mapping.TileMath;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.report.generator.map.cluster.genetic.MarkerGraph;
 
 import java.io.BufferedReader;
@@ -44,21 +44,21 @@ import java.util.List;
  */
 public class ComplexPoints {
     public double originalSum;
-    public Extents extents;
+    public GeoExtents extents;
     public List<PointValue> points;
-    public List<AiLatLng> latlngs;
+    public List<GeoPoint> latlngs;
     public MarkerGraph graph;
 
     ComplexPoints() throws IOException {
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 GraphTest.class.getResourceAsStream("/msa-points.csv")));
 
-        extents = Extents.emptyExtents();
+        extents = GeoExtents.emptyExtents();
 
         originalSum = 0;
 
         points = new ArrayList<PointValue>();
-        latlngs = new ArrayList<AiLatLng>();
+        latlngs = new ArrayList<GeoPoint>();
         while (in.ready()) {
 
             String line = in.readLine();
@@ -77,7 +77,7 @@ public class ComplexPoints {
 
             originalSum += value;
 
-            latlngs.add(new AiLatLng(lat, lng));
+            latlngs.add(new GeoPoint(lat, lng));
 
             extents.grow(lat, lng);
 

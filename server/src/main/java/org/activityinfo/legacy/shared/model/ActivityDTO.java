@@ -25,9 +25,9 @@ package org.activityinfo.legacy.shared.model;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.model.LockedPeriodDTO.HasLockedPeriod;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -273,7 +273,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
      */
     public IndicatorDTO getIndicatorById(int indicatorId) {
         for (IndicatorDTO indicator : indicators) {
-            if (indicator.getFieldId().equals(CuidAdapter.indicatorField(indicatorId))) {
+            if (indicator.getId() == indicatorId) {
                 return indicator;
             }
         }
@@ -415,7 +415,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
         return database.getCountry();
     }
 
-    public Extents getBounds() {
+    public GeoExtents getBounds() {
         return database.getCountry().getBounds();
     }
 

@@ -71,6 +71,10 @@ public class WorkspaceAuthDAO implements Authorizer {
                 return rule;
             }
 
+            if(parentId.equals(workspace.getWorkspaceId())) {
+                break;
+            }
+
             // ACRs are inherited from the owner, so if we don't find an ACR here,
             // ascend to this resource's owner in search of an applicable rule.
             Optional<LatestVersion> latestVersion = tx.getIfExists(new LatestVersionKey(workspace, parentId));

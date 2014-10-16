@@ -23,12 +23,12 @@ package org.activityinfo.server.report.generator.map.cluster;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.Point;
 import org.activityinfo.legacy.shared.reports.model.PointValue;
 import org.activityinfo.legacy.shared.reports.model.clustering.AdministrativeLevelClustering;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.report.generator.map.RadiiCalculator;
 import org.activityinfo.server.report.generator.map.TiledMap;
 
@@ -108,7 +108,7 @@ public class AdminLevelClusterer implements Clusterer {
         if (entity.getBounds() == null) {
             return null;
         } else {
-            AiLatLng center = new AiLatLng((entity.getBounds().getMinLat() + entity.getBounds().getMaxLat()) / 2d,
+            GeoPoint center = new GeoPoint((entity.getBounds().getMinLat() + entity.getBounds().getMaxLat()) / 2d,
                     (entity.getBounds().getMinLon() + entity.getBounds().getMaxLon()) / 2d);
 
             return map.fromLatLngToPixel(center);

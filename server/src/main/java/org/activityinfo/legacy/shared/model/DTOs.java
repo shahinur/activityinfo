@@ -27,8 +27,8 @@ import org.activityinfo.legacy.shared.command.result.AdminEntityResult;
 import org.activityinfo.legacy.shared.command.result.BaseMapResult;
 import org.activityinfo.legacy.shared.command.result.ListResult;
 import org.activityinfo.legacy.shared.command.result.UserResult;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.type.geo.GeoExtents;
 
 import java.util.*;
 
@@ -43,7 +43,7 @@ public class DTOs {
 
     private static LocationTypeDTO createLocationType(int id, String name) {
         LocationTypeDTO type = new LocationTypeDTO(id, name);
-        type.setCountryBounds(Extents.maxGeoBounds());
+        type.setCountryBounds(GeoExtents.maxGeoBounds());
         type.setAdminLevels(Arrays.asList(PROVINCE, TERRITOIRE, SECTEUR));
         return type;
     }
@@ -55,12 +55,12 @@ public class DTOs {
 
     public static final AdminEntityDTO NORD_KIVU = rootEntity().atLevel(PROVINCE)
                                                                .named("North Kivu")
-                                                               .withBounds(Extents.create(0, 0, 100, 100))
+                                                               .withBounds(GeoExtents.create(0, 0, 100, 100))
                                                                .build();
 
     public static final AdminEntityDTO BENI = childOf(NORD_KIVU).atLevel(TERRITOIRE)
                                                                 .named("Beni")
-                                                                .withBounds(Extents.create(0, 0, 25, 25))
+                                                                .withBounds(GeoExtents.create(0, 0, 25, 25))
                                                                 .build();
 
     public static final AdminEntityDTO WATALINA = childOf(BENI).atLevel(SECTEUR).named("Watalina").build();
@@ -69,7 +69,7 @@ public class DTOs {
 
     public static final AdminEntityDTO MASISI = childOf(NORD_KIVU).atLevel(TERRITOIRE)
                                                                   .named("Masisi")
-                                                                  .withBounds(Extents.create(0, 25, 25, 50))
+                                                                  .withBounds(GeoExtents.create(0, 25, 25, 50))
                                                                   .build();
 
     public static final AdminEntityResult NORD_KIVU_TERRITOIRES = new AdminEntityResult(Lists.newArrayList(BENI,
@@ -77,7 +77,7 @@ public class DTOs {
 
     public static final AdminEntityDTO SUD_KIVU = rootEntity().atLevel(PROVINCE)
                                                               .named("Sud Kivu")
-                                                              .withBounds(Extents.create(0, 0, -100, -100))
+                                                              .withBounds(GeoExtents.create(0, 0, -100, -100))
                                                               .build();
 
     public static final AdminEntityDTO SHABUNDA = childOf(SUD_KIVU).atLevel(TERRITOIRE).named("Shabunda").build();
@@ -92,7 +92,7 @@ public class DTOs {
 
     static {
         DRC = new CountryDTO(1, "RDC");
-        DRC.setBounds(Extents.create(0, 0, 300, 300));
+        DRC.setBounds(GeoExtents.create(0, 0, 300, 300));
         DRC.setAdminLevels(Arrays.asList(PROVINCE, TERRITOIRE, SECTEUR));
         DRC.setLocationTypes(Arrays.asList(LOCALITE, ECOLE));
     }
@@ -326,7 +326,7 @@ public class DTOs {
             return this;
         }
 
-        public EntityBuilder withBounds(Extents bounds) {
+        public EntityBuilder withBounds(GeoExtents bounds) {
             entity.setBounds(bounds);
             return this;
         }

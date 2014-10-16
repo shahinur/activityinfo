@@ -30,10 +30,9 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.GetLocations;
 import org.activityinfo.legacy.shared.command.SearchLocations;
 import org.activityinfo.legacy.shared.command.result.LocationResult;
-import org.activityinfo.legacy.shared.model.CountryDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 
 import java.util.Collection;
 import java.util.List;
@@ -41,7 +40,7 @@ import java.util.List;
 public class LocationSearchPresenter extends BaseObservable {
 
     public static final EventType ACCEPTED = new EventType();
-    private final Extents countryBounds;
+    private final GeoExtents countryBounds;
 
     private Dispatcher dispatcher;
     private LocationTypeDTO locationType;
@@ -50,7 +49,7 @@ public class LocationSearchPresenter extends BaseObservable {
     private final ListStore<LocationDTO> store;
 
     private SearchLocations currentSearch;
-    private Extents searchBounds;
+    private GeoExtents searchBounds;
 
     private LocationDTO selection;
 
@@ -66,7 +65,7 @@ public class LocationSearchPresenter extends BaseObservable {
         loader.load();
     }
 
-    public Extents getCountryBounds() { return countryBounds; }
+    public GeoExtents getCountryBounds() { return countryBounds; }
 
     public LocationTypeDTO getLocationType() {
         return locationType;
@@ -76,12 +75,12 @@ public class LocationSearchPresenter extends BaseObservable {
         return store;
     }
 
-    public Extents getSearchBounds() {
+    public GeoExtents getSearchBounds() {
         return searchBounds;
     }
 
 
-    public void search(String name, Collection<Integer> collection, Extents bounds) {
+    public void search(String name, Collection<Integer> collection, GeoExtents bounds) {
         searchBounds = bounds;
         currentSearch = new SearchLocations().setName(name)
                                              .setAdminEntityIds(collection)

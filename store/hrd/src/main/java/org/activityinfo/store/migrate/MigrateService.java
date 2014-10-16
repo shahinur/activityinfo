@@ -8,6 +8,7 @@ import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.store.hrd.HrdResourceStore;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -17,10 +18,12 @@ public class MigrateService {
 
     public static final String TASK_NAME_HEADER = "X-AppEngine-TaskName";
 
+    private final HrdResourceStore store;
     private DeploymentConfiguration config;
 
     @Inject
-    public MigrateService(DeploymentConfiguration config) {
+    public MigrateService(HrdResourceStore store, DeploymentConfiguration config) {
+        this.store = store;
         this.config = config;
     }
 
@@ -55,20 +58,9 @@ public class MigrateService {
 
         assertValidTaskInvocation(taskName);
 
-        new MigrateDatabaseTask(config, new AuthenticatedUser("", userId, "")).migrate(databaseId);
+        new MigrateDatabaseTask(store, config, new AuthenticatedUser(userId)).migrate(databaseId);
     }
 
-    @POST
-    @Path("tasks/migrateResources")
-    public void runMigrateTable(@HeaderParam(TASK_NAME_HEADER) String taskName,
-                                @FormParam("databaseId") int databaseId) {
-
-        assertValidTaskInvocation(taskName);
-
-        MigrateResourceTableTask task = new MigrateResourceTableTask(config);
-        task.setDatabaseId(databaseId);
-        task.run();
-    }
 
     /**
      * Removes the resources created during a failed database import.

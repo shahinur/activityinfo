@@ -23,7 +23,7 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -44,7 +44,7 @@ public final class CountryDTO extends BaseModelData implements DTO {
 
     private List<AdminLevelDTO> adminLevels = new ArrayList<AdminLevelDTO>(0);
     private List<LocationTypeDTO> locationTypes = new ArrayList<LocationTypeDTO>(0);
-    private Extents bounds;
+    private GeoExtents bounds;
 
     public CountryDTO() {
     }
@@ -89,11 +89,11 @@ public final class CountryDTO extends BaseModelData implements DTO {
     }
 
     @JsonProperty @JsonView(DTOViews.Detail.class)
-    public Extents getBounds() {
+    public GeoExtents getBounds() {
         return bounds;
     }
 
-    public void setBounds(Extents bounds) {
+    public void setBounds(GeoExtents bounds) {
         this.bounds = bounds;
     }
 

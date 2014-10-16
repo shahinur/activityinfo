@@ -50,6 +50,10 @@ public class HrdResourceStore implements ResourceStore {
         }
     }
 
+    public StoreContext getContext() {
+        return context;
+    }
+
     @Override
     public List<Resource> getAccessControlRules(@InjectParam AuthenticatedUser user,
                                                 @PathParam("id") ResourceId resourceId) {

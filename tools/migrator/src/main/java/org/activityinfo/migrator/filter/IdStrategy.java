@@ -13,4 +13,8 @@ public interface IdStrategy {
     ResourceId partnerInstanceId(int databaseId, int partnerId);
 
     ResourceId geoDbId();
+
+    ResourceId mapToLegacyId(char domain, ResourceId resourceId);
+
+    ResourceId mapToLegacyId(ResourceId key);
 }

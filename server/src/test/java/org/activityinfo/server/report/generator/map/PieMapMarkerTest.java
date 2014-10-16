@@ -24,7 +24,6 @@ package org.activityinfo.server.report.generator.map;
 
 import com.google.common.collect.Maps;
 import junit.framework.Assert;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.MapContent;
@@ -32,6 +31,7 @@ import org.activityinfo.legacy.shared.reports.content.PieMapMarker;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
 import org.activityinfo.legacy.shared.reports.model.layers.PiechartMapLayer;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.database.hibernate.entity.Indicator;
 import org.junit.Test;
 
@@ -71,7 +71,7 @@ public class PieMapMarkerTest {
 
         MapContent content = new MapContent();
 
-        TiledMap map = new TiledMap(640, 480, new AiLatLng(0, 0), 6);
+        TiledMap map = new TiledMap(640, 480, new GeoPoint(0, 0), 6);
 
 
         Map<Integer, Indicator> indicators = Maps.newHashMap();

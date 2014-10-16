@@ -5,10 +5,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.RecordBuilder;
 import org.activityinfo.model.record.Records;
-import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
@@ -34,6 +34,10 @@ public class EnumFieldValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     public EnumFieldValue(Iterable<ResourceId> valueIds) {
         this.valueIds = ImmutableSet.copyOf(valueIds);
+    }
+
+    public EnumFieldValue(String name) {
+        this(ResourceId.valueOf(name));
     }
 
     public Set<ResourceId> getResourceIds() {

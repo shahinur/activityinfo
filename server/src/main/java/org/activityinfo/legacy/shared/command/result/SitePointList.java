@@ -22,11 +22,9 @@ package org.activityinfo.legacy.shared.command.result;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.model.SitePointDTO;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,23 +32,23 @@ import java.util.List;
  */
 public class SitePointList implements CommandResult {
 
-    private Extents bounds;
+    private GeoExtents bounds;
     private List<SitePointDTO> points;
 
     private SitePointList() {
 
     }
 
-    public SitePointList(Extents bounds, List<SitePointDTO> points) {
+    public SitePointList(GeoExtents bounds, List<SitePointDTO> points) {
         this.bounds = bounds;
         this.points = points;
     }
 
-    public Extents getBounds() {
+    public GeoExtents getBounds() {
         return bounds;
     }
 
-    public void setBounds(Extents bounds) {
+    public void setBounds(GeoExtents bounds) {
         this.bounds = bounds;
     }
 

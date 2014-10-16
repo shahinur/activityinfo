@@ -29,7 +29,6 @@ import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetBaseMaps;
 import org.activityinfo.legacy.shared.command.result.BaseMapResult;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.BaseMap;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.TileBaseMap;
@@ -39,9 +38,10 @@ import org.activityinfo.legacy.shared.reports.content.PredefinedBaseMaps;
 import org.activityinfo.legacy.shared.reports.model.DateRange;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
 import org.activityinfo.legacy.shared.reports.model.layers.*;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.activityinfo.legacy.shared.reports.util.mapping.TileMath;
 import org.activityinfo.model.type.Types;
+import org.activityinfo.model.type.geo.GeoExtents;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.dao.IndicatorDAO;
 import org.activityinfo.server.database.hibernate.entity.Country;
@@ -92,10 +92,10 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         // FIRST PASS: calculate extents and margins
         int width = element.getWidth();
         int height = element.getHeight();
-        AiLatLng center;
+        GeoPoint center;
         int zoom;
 
-        Extents extents = Extents.emptyExtents();
+        GeoExtents extents = GeoExtents.emptyExtents();
         Margins margins = new Margins(0);
         for (LayerGenerator layerGtor : layerGenerators) {
             extents.grow(layerGtor.calculateExtents());
@@ -183,7 +183,7 @@ public class MapGenerator extends ListGenerator<MapReportElement> {
         for (Indicator indicator : indicators) {
             IndicatorDTO indicatorDTO = new IndicatorDTO();
             indicatorDTO.setId(indicator.getId());
-            indicatorDTO.setLabel(indicator.getName());
+            indicatorDTO.setName(indicator.getName());
             indicatorDTO.setType(Types.fromString(indicator.getType()));
             indicatorDTO.setExpression(indicator.getExpression());
 

@@ -4,8 +4,8 @@ import com.google.code.appengine.awt.geom.GeneralPath;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.reports.content.Point;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.server.report.generator.map.TiledMap;
 
 public class PathUtils {
@@ -29,7 +29,7 @@ public class PathUtils {
         float lastX = Float.NaN;
         float lastY = Float.NaN;
         for (int j = 0; j != coordinates.length; ++j) {
-            Point point = map.fromLatLngToPixel(new AiLatLng(coordinates[j].y, coordinates[j].x));
+            Point point = map.fromLatLngToPixel(new GeoPoint(coordinates[j].y, coordinates[j].x));
             float x = point.getX();
             float y = point.getY();
 

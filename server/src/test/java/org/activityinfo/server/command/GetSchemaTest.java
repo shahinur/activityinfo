@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
@@ -70,8 +71,8 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         ActivityDTO nfi = schema.getDatabaseById(1).getActivities().get(0);
 
-        assertTrue("object graph is preserved (database-activity)",
-                schema.getDatabaseById(1) == nfi.getDatabase());
+        assertThat("object graph is preserved (database-activity)",
+                schema.getDatabaseById(1), is(nfi.getDatabase()));
         assertThat(nfi.getLocationTypeId(), equalTo(1));
         assertThat(nfi.<Integer>get("locationTypeId"), equalTo(1));
 

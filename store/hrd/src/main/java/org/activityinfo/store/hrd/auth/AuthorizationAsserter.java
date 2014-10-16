@@ -22,21 +22,26 @@ public final class AuthorizationAsserter {
     public void assertCanUpdate(ResourceId resourceId) {
         if(resourceId.asString().startsWith("_acr")) {
             assertCanModifyAcrs(resourceId);
-        }
 
-        // Users can't modify application resources!
-        // They're not store in the database at all...
-        assertNotApplicationDefined(resourceId);
+        } else {
 
-        if(!authorizer.forResource(resourceId).canUpdate()) {
-            throwUnauthorized(resourceId, "update");
+            // Users can't modify application resources!
+            // They're not store in the database at all...
+            assertNotApplicationDefined(resourceId);
+
+            if (!authorizer.forResource(resourceId).canUpdate()) {
+                throwUnauthorized(resourceId, "update");
+            }
         }
     }
 
     private void assertNotApplicationDefined(ResourceId resourceId) {
-        LOGGER.log(Level.SEVERE, String.format("User id=%d attempted to modify/store an application-defined resource %s",
-                user.getId(), resourceId));
-        throw new UnauthorizedException();
+        if(resourceId.isApplicationDefined()) {
+            LOGGER.log(Level.SEVERE, String.format("User id=%d attempted to modify/store an application-defined resource %s",
+                    user.getId(), resourceId));
+
+            throw new UnauthorizedException();
+        }
     }
 
     public void assertCanView(ResourceId resourceId) {

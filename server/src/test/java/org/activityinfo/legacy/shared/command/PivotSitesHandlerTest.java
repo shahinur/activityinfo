@@ -1014,8 +1014,8 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
             if (matchingBuckets.get(0).getPoint() == null) {
                 throw new AssertionError(description("non-null point for "));
             }
-            assertEquals(description("x"), x, matchingBuckets.get(0).getPoint().getLng(), 0.001);
-            assertEquals(description("y"), y, matchingBuckets.get(0).getPoint().getLat(), 0.001);
+            assertEquals(description("x"), x, matchingBuckets.get(0).getPoint().getLongitude(), 0.001);
+            assertEquals(description("y"), y, matchingBuckets.get(0).getPoint().getLatitude(), 0.001);
 
             return this;
         }

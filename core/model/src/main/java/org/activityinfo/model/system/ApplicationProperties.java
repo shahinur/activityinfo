@@ -32,6 +32,8 @@ public class ApplicationProperties {
 
     public static final ResourceId HIERARCHIAL = ResourceId.valueOf("_multiLevel");
 
+    public static final ResourceId WITHIN = ResourceId.valueOf("_geo:within");
+
 
     public static String getLabelPropertyName(ResourceId classId) {
         if (FormClass.CLASS_ID.equals(classId)) {

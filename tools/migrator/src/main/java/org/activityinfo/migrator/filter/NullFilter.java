@@ -35,7 +35,7 @@ public class NullFilter implements MigrationFilter {
     }
 
     @Override
-    public String databaseFilter() {
+    public String databaseFilter(String databaseIdAlias) {
         return NULL_CONDITION;
     }
 
@@ -66,6 +66,11 @@ public class NullFilter implements MigrationFilter {
 
     @Override
     public String attributeFilter(String attributeGroupTableAlias) {
+        return NULL_CONDITION;
+    }
+
+    @Override
+    public String resourceFilter() {
         return NULL_CONDITION;
     }
 }

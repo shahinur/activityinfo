@@ -34,7 +34,7 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetAdminEntities;
 import org.activityinfo.legacy.shared.command.result.AdminEntityResult;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -162,7 +162,7 @@ public class GetAdminEntitiesHandler implements CommandHandlerAsync<GetAdminEnti
         if (!row.isNull("adminEntityParentId")) {
             entity.setParentId(row.getInt("adminEntityParentId"));
         }
-        Extents bounds = Extents.empty();
+        GeoExtents bounds = GeoExtents.empty();
         if (!row.isNull("x1")) {
             bounds.setMinLon(row.getDouble("x1"));
             bounds.setMinLat(row.getDouble("y1"));

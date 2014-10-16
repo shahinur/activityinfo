@@ -10,7 +10,7 @@ import org.activityinfo.legacy.shared.reports.content.MapContent;
 import org.activityinfo.legacy.shared.reports.content.MapMarker;
 import org.activityinfo.legacy.shared.reports.content.MapboxLayers;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 import org.activityinfo.ui.client.util.LeafletUtil;
 import org.discotools.gwt.leaflet.client.Options;
 import org.discotools.gwt.leaflet.client.events.Event;
@@ -71,8 +71,8 @@ public class LeafletReportOverlays {
         }
     }
 
-    public Extents addMarkers(List<MapMarker> markers, EventHandler<Event> markerEventHandler) {
-        Extents extents = Extents.emptyExtents();
+    public GeoExtents addMarkers(List<MapMarker> markers, EventHandler<Event> markerEventHandler) {
+        GeoExtents extents = GeoExtents.emptyExtents();
         for (MapMarker marker : markers) {
             markerLayer.addLayer(LeafletMarkerFactory.create(marker, markerEventHandler));
             extents.grow(marker.getLat(), marker.getLng());

@@ -31,7 +31,7 @@ import org.activityinfo.legacy.shared.command.result.SitePointList;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.model.SitePointDTO;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +60,7 @@ public class GetSitePointsHandler implements CommandHandlerAsync<GetSitePoints, 
     }
 
     protected SitePointList toPointList(List<SiteDTO> sites) {
-        Extents bounds = Extents.empty();
+        GeoExtents bounds = GeoExtents.empty();
 
         List<SitePointDTO> points = new ArrayList<SitePointDTO>(sites.size());
         for (SiteDTO site : sites) {

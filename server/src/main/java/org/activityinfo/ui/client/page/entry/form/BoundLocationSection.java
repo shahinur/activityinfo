@@ -24,10 +24,10 @@ package org.activityinfo.ui.client.page.entry.form;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.ui.client.page.entry.admin.AdminComboBox;
 import org.activityinfo.ui.client.page.entry.admin.AdminComboBoxSet;
 import org.activityinfo.ui.client.page.entry.admin.AdminFieldSetPresenter;

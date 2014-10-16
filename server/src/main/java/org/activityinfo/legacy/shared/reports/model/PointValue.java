@@ -22,10 +22,10 @@ package org.activityinfo.legacy.shared.reports.model;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.model.AiLatLng;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.PieMapMarker;
 import org.activityinfo.legacy.shared.reports.content.Point;
+import org.activityinfo.model.type.geo.GeoPoint;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,9 +71,9 @@ public final class PointValue {
         return adminMemberships;
     }
 
-    public AiLatLng getLatLng() {
+    public GeoPoint getLatLng() {
         if (site.hasLatLong()) {
-            return new AiLatLng(site.getLatitude(), site.getLongitude());
+            return new GeoPoint(site.getLatitude(), site.getLongitude());
         } else {
             return null;
         }

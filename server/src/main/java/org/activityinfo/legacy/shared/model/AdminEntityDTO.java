@@ -23,7 +23,7 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
+import org.activityinfo.model.type.geo.GeoExtents;
 
 /**
  * One-to-one DTO for the
@@ -33,7 +33,7 @@ import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
  * @author Alex Bertram
  */
 public final class AdminEntityDTO extends BaseModelData implements EntityDTO {
-    private Extents bounds;
+    private GeoExtents bounds;
 
     public AdminEntityDTO() {
     }
@@ -68,7 +68,7 @@ public final class AdminEntityDTO extends BaseModelData implements EntityDTO {
      * @param name    the name of this AdminEntity
      * @param bounds  the geographing BoundingBox of this AdminEntity
      */
-    public AdminEntityDTO(int levelId, int id, String name, Extents bounds) {
+    public AdminEntityDTO(int levelId, int id, String name, GeoExtents bounds) {
         setId(id);
         setName(name);
         setLevelId(levelId);
@@ -82,7 +82,7 @@ public final class AdminEntityDTO extends BaseModelData implements EntityDTO {
      * @param name     the name of this AdminEntity
      * @param bounds   the geographing BoundingBox of this AdminEntity
      */
-    public AdminEntityDTO(int levelId, int id, int parentId, String name, Extents bounds) {
+    public AdminEntityDTO(int levelId, int id, int parentId, String name, GeoExtents bounds) {
         setId(id);
         setLevelId(levelId);
         setParentId(parentId);
@@ -170,14 +170,14 @@ public final class AdminEntityDTO extends BaseModelData implements EntityDTO {
     /**
      * @return the geographic Extents of this AdminEntity
      */
-    public Extents getBounds() {
+    public GeoExtents getBounds() {
         return bounds;
     }
 
     /**
      * Sets the Extents of this AdminEntity.
      */
-    public void setBounds(Extents bounds) {
+    public void setBounds(GeoExtents bounds) {
         this.bounds = bounds;
     }
 

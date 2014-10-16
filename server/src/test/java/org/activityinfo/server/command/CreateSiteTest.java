@@ -24,7 +24,6 @@ package org.activityinfo.server.command;
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.client.KeyGenerator;
 import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.GetSites;
@@ -32,6 +31,7 @@ import org.activityinfo.legacy.shared.command.exception.NotAuthorizedException;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.server.database.OnDataSet;
 import org.junit.Assert;
 import org.junit.Ignore;
