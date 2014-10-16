@@ -23,8 +23,8 @@ package org.activityinfo.legacy.client.remote;
 
 import org.activityinfo.legacy.shared.exception.RetryCountExceedsLimitException;
 import org.activityinfo.server.endpoint.gwtrpc.AdvisoryLock;
-import org.activityinfo.server.util.backoff.BackOff;
-import org.activityinfo.server.util.backoff.ExponentialBackOff;
+import org.activityinfo.legacy.shared.util.BackOff;
+import org.activityinfo.legacy.shared.util.ExponentialBackOff;
 
 
 /**

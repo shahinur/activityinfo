@@ -21,6 +21,8 @@ package org.activityinfo.server.util.backoff;
  * #L%
  */
 
+import org.activityinfo.legacy.shared.util.ExponentialBackOff;
+import org.activityinfo.legacy.shared.util.NanoClock;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -33,11 +35,19 @@ public class ExponentialBackOffTest {
 
     @Test
     public void test() throws IOException {
-        ExponentialBackOff defaultBackOff = new ExponentialBackOff();
+        NanoClock nanoClock = new NanoClock() {
+            @Override
+            public long nanoTime() {
+                return System.nanoTime();
+            }
+        };
+
+        ExponentialBackOff defaultBackOff = new ExponentialBackOff.Builder().setNanoClock(nanoClock).build();
 
         ExponentialBackOff backOff = new ExponentialBackOff.Builder()
                 .setInitialIntervalMillis(TimeUnit.SECONDS.toMillis(10))
                 .setMultiplier(2) // increase in 3 times
+                .setNanoClock(nanoClock)
                 .build();
         for (int i = 0; i < 10; i++) {
             System.out.println(defaultBackOff.nextBackOffMillis() + " " + backOff.nextBackOffMillis());

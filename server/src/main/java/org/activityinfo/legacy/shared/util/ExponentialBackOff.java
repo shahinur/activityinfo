@@ -1,4 +1,4 @@
-package org.activityinfo.server.util.backoff;
+package org.activityinfo.legacy.shared.util;
 /*
  * Copyright (c) 2011 Google Inc.
  *
@@ -13,11 +13,12 @@ package org.activityinfo.server.util.backoff;
  * the License.
  */
 
-import com.google.api.client.util.NanoClock;
 import com.google.common.base.Preconditions;
 
 /**
- * Implementation of {@link BackOff} that increases the back off period for each retry attempt using
+ * AI : adapted version of exponential back off to GWT (JS translatable)
+ *
+ * Implementation of {@link org.activityinfo.legacy.shared.util.BackOff} that increases the back off period for each retry attempt using
  * a randomization function that grows exponentially.
  * <p/>
  * <p>
@@ -43,7 +44,7 @@ import com.google.common.base.Preconditions;
  * <p>
  * If the time elapsed since an {@link ExponentialBackOff} instance is created goes past the
  * max_elapsed_time then the method {@link #nextBackOffMillis()} starts returning
- * {@link BackOff#STOP}. The elapsed time can be reset by calling {@link #reset()}.
+ * {@link org.activityinfo.legacy.shared.util.BackOff#STOP}. The elapsed time can be reset by calling {@link #reset()}.
  * </p>
  * <p/>
  * <p>
@@ -357,7 +358,7 @@ public class ExponentialBackOff implements BackOff {
         /**
          * Nano clock.
          */
-        NanoClock nanoClock = NanoClock.SYSTEM;
+        NanoClock nanoClock = NanoClock.GWT;
 
         public Builder() {
         }
@@ -517,7 +518,7 @@ public class ExponentialBackOff implements BackOff {
         }
 
         /**
-         * Sets the nano clock ({@link NanoClock#SYSTEM} by default).
+         * Sets the nano clock ({@link NanoClock#GWT} by default).
          * <p/>
          * <p>
          * Overriding is only supported for the purpose of calling the super implementation and changing

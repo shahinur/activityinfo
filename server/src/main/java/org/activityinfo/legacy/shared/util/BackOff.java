@@ -1,4 +1,4 @@
-package org.activityinfo.server.util.backoff;
+package org.activityinfo.legacy.shared.util;
 /*
  * Copyright (c) 2011 Google Inc.
  *
