@@ -38,6 +38,7 @@ import org.activityinfo.server.report.ReportParserJaxb;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.xml.bind.JAXBException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,8 +81,8 @@ public class UpdateReportModelHandler implements CommandHandler<UpdateReportMode
     public static void invalidateMemcache(Integer reportId) {
         try {
             final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
-            memcacheService.delete(new GetReportModel(reportId, false));
-            memcacheService.delete(new GetReportModel(reportId, true));
+            memcacheService.delete(new GetReportModel(reportId, false), TimeUnit.SECONDS.toMillis(1));
+            memcacheService.delete(new GetReportModel(reportId, true), TimeUnit.SECONDS.toMillis(1));
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Failed to invalidate report cache", e);
         }
