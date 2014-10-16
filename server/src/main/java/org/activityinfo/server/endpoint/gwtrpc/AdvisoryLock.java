@@ -41,7 +41,7 @@ public class AdvisoryLock implements AutoCloseable {
 
     public static final String ADVISORY_LOCK_NAME = "activityinfo.remote_execution_context";
 
-    private static final int ADVISORY_GET_LOCK_TIMEOUT = 20;
+    public static final int ADVISORY_GET_LOCK_TIMEOUT = 10;
     public static final int SUCCESS_CODE = 1;
     private static final int TIMEOUT_CODE = 0;
 
