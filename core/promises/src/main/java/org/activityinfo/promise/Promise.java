@@ -3,7 +3,6 @@ package org.activityinfo.promise;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -138,58 +137,23 @@ public final class Promise<T> implements AsyncCallback<T> {
         return this;
     }
 
-    /**
-     * Transforms a binary function {@code (T, U) → R} to a function which operates on the equivalent
-     * Promised values: {@code ( Promise<T>, Promise<U> ) → Promise<R> }
-     */
-    public static <T, U, R> BiFunction<Promise<T>, Promise<U>, Promise<R>> fmap(final BiFunction<T, U, R> function) {
-        return new BiFunction<Promise<T>, Promise<U>, Promise<R>>() {
-            @Override
-            public Promise<R> apply(final Promise<T> promiseT, final Promise<U> promiseU) {
-                Preconditions.checkNotNull(promiseT, "promise cannot be null");
-                return promiseT.join(new Function<T, Promise<R>>() {
-
-                    @Nullable
-                    @Override
-                    public Promise<R> apply(@Nullable T t) {
-                        return promiseU.then(function.apply(t));
-                    }
-                });
-            }
-        };
-    }
-
-
 
     public static <T, R> Promise<List<R>> map(Iterable<T> items, Function<T, Promise<R>> function) {
 
-        List<Promise<List<R>>> promisedItems = Lists.newArrayList();
+        final List<Promise<R>> promisedItems = Lists.newArrayList();
         for(T item : items) {
-
-            promisedItems.add(function.apply(item).then(Functions2.<R>singletonList()));
+            promisedItems.add(function.apply(item));
         }
+        return waitAll(promisedItems).then(new Function<Void, List<R>>() {
 
-        // we need a concat function that will take two [ Promise<List<R>> Promise<List<R>> -> Promise<List<R>> ]\
-        BiFunction<Promise<List<R>>, Promise<List<R>>, Promise<List<R>>> concatOp = fmap(new ConcatList<R>());
-        Promise<List<R>> initialValue = Promise.<List<R>>resolved(new ArrayList<R>());
-
-
-        return BiFunctions.foldLeft(initialValue, concatOp, promisedItems);
-    }
-
-    /**
-     * Convenience function for applying an fmap'd foldLeft to a list of Promises.
-     */
-    public static <T> Promise<T> foldLeft(T initialValue, BiFunction<T, T, T> operator, Iterable<Promise<T>> promises) {
-        return BiFunctions.foldLeft(Promise.resolved(initialValue), fmap(operator), promises);
-    }
-
-    /**
-     * Convenience function for concatenating a promised item with a promised list of items of the same type
-     */
-    public static <T> Promise<List<T>> prepend(Promise<T> a, Promise<List<T>> b) {
-        Promise<List<T>> aList = a.then(Functions2.<T>singletonList());
-        return fmap(new ConcatList<T>()).apply(aList, b);
+            public List<R> apply(@Nullable Void input) {
+                List<R> items = new ArrayList<R>();
+                for (Promise<R> promisedItem : promisedItems) {
+                    items.add(promisedItem.get());
+                }
+                return items;
+            }
+        });
     }
 
 

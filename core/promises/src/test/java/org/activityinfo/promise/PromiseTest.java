@@ -1,6 +1,8 @@
 package org.activityinfo.promise;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import javax.annotation.Nullable;
@@ -50,5 +52,17 @@ public class PromiseTest {
         };
 
         assertThat(promise.then(takeSquareRoot).get(), equalTo(8.0));
+    }
+
+    @Test
+    public void map() {
+
+        List<Double> numbers = Lists.newArrayList(4d,16d,256d);
+
+        Promise<List<Double>> result = Promise.map(numbers, new SqrtAsync());
+
+        assertThat(result.getState(), equalTo(Promise.State.FULFILLED));
+        assertThat(result.get(), Matchers.contains(2d, 4d, 16d));
+
     }
 }
