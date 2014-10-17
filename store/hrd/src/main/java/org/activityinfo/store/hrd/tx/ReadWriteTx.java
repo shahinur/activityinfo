@@ -32,7 +32,6 @@ public class ReadWriteTx implements WritableTx, AutoCloseable {
 
     public void put(IsEntity entity) {
         Entity datastoreEntity = entity.toEntity();
-        System.out.println(datastoreEntity.getKey());
         this.datastore.put(transaction, datastoreEntity);
     }
 

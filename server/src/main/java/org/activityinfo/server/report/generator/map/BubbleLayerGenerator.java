@@ -101,7 +101,7 @@ public class BubbleLayerGenerator extends PointLayerGenerator<BubbleMapLayer> {
 
         // add unmapped sites
         for (PointValue pv : unmapped) {
-            content.getUnmappedSites().add(pv.getSite().getLegacyId());
+            content.getUnmappedSites().add(pv.getSite().getId());
         }
 
         BubbleLayerLegend legend = new BubbleLayerLegend();
@@ -115,7 +115,7 @@ public class BubbleLayerGenerator extends PointLayerGenerator<BubbleMapLayer> {
             BubbleMapMarker marker = new BubbleMapMarker();
 
             for (PointValue pv : cluster.getPointValues()) {
-                marker.getSiteIds().add(pv.getSite().getLegacyId());
+                marker.getSiteIds().add(pv.getSite().getId());
             }
             marker.setX(px.getX());
             marker.setY(px.getY());

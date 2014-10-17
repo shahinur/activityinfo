@@ -47,7 +47,7 @@ public final class SitePointDTO implements DTO {
     }
 
     public static SitePointDTO fromSite(SiteDTO site) {
-        return new SitePointDTO(site.getLegacyId(),
+        return new SitePointDTO(site.getId(),
                 site.getX() == null ? 0 : site.getX(),
                 site.getY() == null ? 0 : site.getY());
     }

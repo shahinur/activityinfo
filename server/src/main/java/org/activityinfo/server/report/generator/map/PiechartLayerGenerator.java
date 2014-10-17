@@ -87,7 +87,7 @@ public class PiechartLayerGenerator extends PointLayerGenerator<PiechartMapLayer
 
         // add unmapped sites
         for (PointValue pv : unmapped) {
-            content.getUnmappedSites().add(pv.getSite().getLegacyId());
+            content.getUnmappedSites().add(pv.getSite().getId());
         }
 
         List<Cluster> clusters = clusterer.cluster(map, points);
@@ -101,7 +101,7 @@ public class PiechartLayerGenerator extends PointLayerGenerator<PiechartMapLayer
 
             sumSlices((PieMapMarker) marker, cluster.getPointValues());
             for (PointValue pv : cluster.getPointValues()) {
-                marker.getSiteIds().add(pv.getSite().getLegacyId());
+                marker.getSiteIds().add(pv.getSite().getId());
             }
             marker.setX(px.getX());
             marker.setY(px.getY());

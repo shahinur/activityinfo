@@ -105,7 +105,7 @@ public class UserDatabaseBuilder {
             PartnerDTO partner = new PartnerDTO();
             partner.setId(getLegacyId(resource.getId()));
             partner.setName(resource.getValue().getString(field(formId, NAME_FIELD).asString()));
-            partner.setFullName(resource.getValue().getString(field(formId, FULL_NAME_FIELD).asString()));
+            partner.setFullName(resource.getValue().isString(field(formId, FULL_NAME_FIELD).asString()));
 
             db.getPartners().add(partner);
         }

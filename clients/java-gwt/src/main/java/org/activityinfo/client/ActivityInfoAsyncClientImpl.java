@@ -40,6 +40,10 @@ public class ActivityInfoAsyncClientImpl implements ActivityInfoAsyncClient {
 
     private Random random = new Random();
 
+    public ActivityInfoAsyncClientImpl() {
+        this(new RestEndpoint("/service"));
+    }
+
     public ActivityInfoAsyncClientImpl(RestEndpoint service) {
         this.service = service;
         this.store = this.service.resolve("store");

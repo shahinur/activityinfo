@@ -45,7 +45,7 @@ public class CreateSite implements MutatingCommand<CreateResult>, SiteCommand {
     }
 
     public CreateSite(SiteDTO site) {
-        assert site.getLegacyId() != 0;
+        assert site.getId() != 0;
         assert site.getActivityId() != 0;
         assert site.getPartner() != null;
 

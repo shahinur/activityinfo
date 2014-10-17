@@ -158,7 +158,8 @@ public class ActivityTable extends ResourceMigrator {
                                         "SortOrder, " +
                                         "nameinexpression code, " +
                                         "calculatedautomatically ca, " +
-                                        "Expression expr " +
+                                        "Expression expr, " +
+                                        "Aggregation aggregation " +
                                     "FROM indicator " +
                                     "WHERE dateDeleted IS NULL AND " +
                                         filter.indicatorFilter("indicator") +
@@ -177,7 +178,8 @@ public class ActivityTable extends ResourceMigrator {
                                         "SortOrder, " +
                                         "NULL code, " +
                                         "NULL ca, " +
-                                        "NULL expr " +
+                                        "NULL expr, " +
+                                        "NULL aggregation " +
                                     "FROM attributegroup G " +
                                     "INNER JOIN attributegroupinactivity A on G.attributeGroupId = A.attributeGroupId " +
                                     "WHERE dateDeleted is null AND " +

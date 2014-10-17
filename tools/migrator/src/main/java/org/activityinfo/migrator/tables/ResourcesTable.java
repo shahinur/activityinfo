@@ -45,6 +45,10 @@ public class ResourcesTable extends ResourceMigrator {
     @Override
     public void getResources(Connection connection, ResourceWriter writer) throws Exception {
 
+        if(!resourceTablePresent(connection)) {
+            return;
+        }
+
         PreparedStatement statement = connection.prepareStatement(
                 "select * from resource_version" +
                         " where  " + context.filter().resourceFilter() +
@@ -73,6 +77,15 @@ public class ResourcesTable extends ResourceMigrator {
             resource = rewriteIds(resource);
 
             writer.writeResource(getUser(resultSet).getId(), resource, commitDate, null);
+        }
+    }
+
+    private boolean resourceTablePresent(Connection connection) throws SQLException {
+        DatabaseMetaData dbm = connection.getMetaData();
+        try( ResultSet tables = dbm.getTables(null, null, "resource_version", null)) {
+
+            boolean tableExists = tables.next();
+            return tableExists;
         }
     }
 

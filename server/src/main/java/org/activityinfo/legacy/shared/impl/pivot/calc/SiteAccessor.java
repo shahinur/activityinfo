@@ -44,6 +44,6 @@ public class SiteAccessor implements DimAccessor {
 
     @Override
     public DimensionCategory getCategory(SiteDTO siteDTO) {
-        return new EntityCategory(siteDTO.getLegacyId(), siteDTO.getLocationName());
+        return new EntityCategory(siteDTO.getId(), siteDTO.getLocationName());
     }
 }

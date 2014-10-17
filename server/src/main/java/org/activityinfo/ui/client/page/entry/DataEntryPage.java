@@ -418,7 +418,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     }
 
     private void delete() {
-        dispatcher.execute(new DeleteSite(gridPanel.getSelection().getLegacyId()),
+        dispatcher.execute(new DeleteSite(gridPanel.getSelection().getId()),
                 new MaskingAsyncMonitor(this, I18N.CONSTANTS.deleting()),
                 new AsyncCallback<VoidResult>() {
 

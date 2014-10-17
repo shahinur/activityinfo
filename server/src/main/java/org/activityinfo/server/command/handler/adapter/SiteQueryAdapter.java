@@ -29,10 +29,10 @@ public final class SiteQueryAdapter {
 
     private SiteQueryAdapter(StoreReader reader, Filter filter) {
         this.reader = reader;
-        findForms(filter);
+        findActivities(filter);
     }
 
-    private List<ResourceId> findForms(Filter filter) {
+    private List<ResourceId> findActivities(Filter filter) {
         List<ResourceId> formClasses = Lists.newArrayList();
         if(filter.isRestricted(DimensionType.Activity)) {
             for(Integer activityId : filter.getRestrictions(DimensionType.Activity)) {

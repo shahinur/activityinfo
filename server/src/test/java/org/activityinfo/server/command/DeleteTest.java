@@ -24,6 +24,7 @@ package org.activityinfo.server.command;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import junit.framework.Assert;
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.Delete;
 import org.activityinfo.legacy.shared.command.DeleteSite;
 import org.activityinfo.legacy.shared.command.GetSchema;
@@ -32,7 +33,6 @@ import org.activityinfo.legacy.shared.command.result.PagingResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.database.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +56,7 @@ public class DeleteTest extends CommandTestCase {
     public void testDeleteSite() throws CommandException {
 
         PagingResult<SiteDTO> sites = execute(GetSites.byId(3));
-        execute(new DeleteSite(sites.getData().get(0).getLegacyId()));
+        execute(new DeleteSite(sites.getData().get(0).getId()));
 
         sites = execute(GetSites.byId(3));
         Assert.assertEquals(0, sites.getData().size());

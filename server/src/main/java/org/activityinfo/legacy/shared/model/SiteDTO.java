@@ -81,23 +81,15 @@ public final class SiteDTO extends BaseModelData {
         set("id", id);
     }
 
-    public void setId(ResourceId id) {
-        set("id", id.asString());
-    }
-
     /**
      * @return this site's id
      */
-    public int getLegacyId() {
-        return CuidAdapter.getLegacyId(getId());
-    }
-
-    public ResourceId getId() {
-        return ResourceId.valueOf(this.<String>get("id"));
+    public int getId() {
+        return (Integer) get("id");
     }
 
     public ResourceId getInstanceId() {
-        return CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, getLegacyId());
+        return CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, getId());
     }
 
 
@@ -105,7 +97,7 @@ public final class SiteDTO extends BaseModelData {
      * @return the id of the Activity to which this Site belongs
      */
     public int getActivityId() {
-        return CuidAdapter.getLegacyId(getFormClassId());
+        return (Integer) get("activityId");
     }
 
     public ResourceId getFormClassId() {
@@ -122,7 +114,7 @@ public final class SiteDTO extends BaseModelData {
      * @param id
      */
     public void setActivityId(int id) {
-       setFormClassId(CuidAdapter.activityFormClass(id));
+        set("activityId", id);
     }
 
     /**
@@ -429,7 +421,7 @@ public final class SiteDTO extends BaseModelData {
             return false;
         }
         SiteDTO siteModel = (SiteDTO) o;
-        if (getLegacyId() != siteModel.getLegacyId()) {
+        if (getId() != siteModel.getId()) {
             return false;
         }
         if (!Objects.equals(get("reportingPeriodId"), siteModel.get("reportingPeriodId"))) {
@@ -440,7 +432,7 @@ public final class SiteDTO extends BaseModelData {
 
     @Override
     public int hashCode() {
-        return getId().hashCode();
+        return getId();
     }
 
     /**

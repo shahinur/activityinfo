@@ -41,6 +41,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.activityinfo.client.ActivityInfoAsyncClient;
+import org.activityinfo.client.ActivityInfoAsyncClientImpl;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.Filter;
@@ -54,6 +56,7 @@ import org.activityinfo.promise.Promise;
 public class ExportDialog extends Dialog {
 
     private final Dispatcher dispatcher;
+    private final ActivityInfoAsyncClient client;
     private ProgressBar bar;
     private Text downloadLink;
     private boolean canceled = false;
@@ -61,6 +64,7 @@ public class ExportDialog extends Dialog {
 
     public ExportDialog(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
+        this.client = new ActivityInfoAsyncClientImpl();
 
         setWidth(350);
         setHeight(175);

@@ -23,6 +23,7 @@ package org.activityinfo.server.command;
  */
 
 import com.google.common.collect.Maps;
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.command.UpdateSite;
@@ -30,7 +31,6 @@ import org.activityinfo.legacy.shared.command.result.ListResult;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.LockedPeriod;
 import org.activityinfo.server.database.hibernate.entity.Site;
@@ -56,7 +56,7 @@ public class UpdateSiteTest extends CommandTestCase {
         SiteDTO original = result.getData().get(0);
         SiteDTO modified = original.copy();
 
-        assertThat(modified.getLegacyId(), equalTo(original.getLegacyId()));
+        assertThat(modified.getId(), equalTo(original.getId()));
 
         // modify and generate command
         modified.setComments("NEW <b>Commentaire</b>");
@@ -100,7 +100,7 @@ public class UpdateSiteTest extends CommandTestCase {
         SiteDTO original = result.getData().get(0);
         SiteDTO modified = original.copy();
 
-        assertThat(modified.getLegacyId(), equalTo(original.getLegacyId()));
+        assertThat(modified.getId(), equalTo(original.getId()));
 
         // modify and generate command
         // note that the character sequence below is two characters:

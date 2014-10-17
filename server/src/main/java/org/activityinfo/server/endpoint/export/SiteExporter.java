@@ -321,7 +321,7 @@ public class SiteExporter {
         Row row = sheet.createRow(rowIndex);
         int column = 0;
 
-        createCell(row, column++, Integer.toString(site.getLegacyId()));
+        createCell(row, column++, Integer.toString(site.getId()));
         createCell(row, column++, site.getDateCreated());
 
         createCell(row, column++, site.getDate1());

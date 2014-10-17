@@ -6,7 +6,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.store.hrd.HrdResourceStore;
 
@@ -59,27 +58,6 @@ public class MigrateService {
         assertValidTaskInvocation(taskName);
 
         new MigrateDatabaseTask(store, config, new AuthenticatedUser(userId)).migrate(databaseId);
-    }
-
-
-    /**
-     * Removes the resources created during a failed database import.
-     */
-    @POST
-    @Path("/tasks/cleanup")
-    public void cleanupFailedMigration(@HeaderParam(TASK_NAME_HEADER) String taskName,
-                                       @FormParam("workspaceId") ResourceId workspaceId) throws Exception {
-
-        assertValidTaskInvocation(taskName);
-//
-//        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-//        Workspace workspace = new Workspace(workspaceId);
-//
-//        Query query = new Query(workspace.getRootKey()).setKeysOnly();
-//        Iterator<Entity> iterator = datastore.prepare(null, query).asIterator();
-//        while(iterator.hasNext()) {
-//            datastore.delete((Transaction)null, iterator.next().getKey());
-//        }
     }
 
 

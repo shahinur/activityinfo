@@ -67,7 +67,7 @@ public class TableGenerator extends ListGenerator<TableElement> {
 
             Map<Integer, String> siteLabels = element.getMap().getContent().siteLabelMap();
             for (SiteDTO row : data.getRows()) {
-                row.set("map", siteLabels.get(row.getLegacyId()));
+                row.set("map", siteLabels.get(row.getId()));
             }
         }
         element.setContent(content);

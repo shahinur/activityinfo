@@ -85,7 +85,7 @@ public class SitesResources {
 
         for (SiteDTO site : sites) {
             json.writeStartObject();
-            json.writeNumberField("id", site.getLegacyId());
+            json.writeNumberField("id", site.getId());
             json.writeNumberField("activity", site.getActivityId());
 
             // write start / end date if applicable
@@ -168,7 +168,7 @@ public class SitesResources {
             if (site.hasLatLong()) {
                 json.writeStartObject();
                 json.writeStringField("type", "Feature");
-                json.writeNumberField("id", site.getLegacyId());
+                json.writeNumberField("id", site.getId());
                 //                json.writeNumberField("timestamp", site.getTimeEdited());
 
                 final ActivityDTO activity = schemaDTO.getActivityById(site.getActivityId());
