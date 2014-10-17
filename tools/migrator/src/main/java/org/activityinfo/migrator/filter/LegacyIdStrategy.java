@@ -50,6 +50,9 @@ public class LegacyIdStrategy implements IdStrategy {
 
     @Override
     public ResourceId mapToLegacyId(ResourceId id) {
+        if(id.asString().equals("backupBlobId")) {
+            return ResourceId.valueOf("#importedFrom");
+        }
         Preconditions.checkState(revertedIds.containsKey(id), "Id %s has not yet been mapped", id.asString());
         return revertedIds.get(id);
     }

@@ -16,7 +16,6 @@ import java.util.Map;
 
 public class EnumType implements ParametrizedFieldType {
 
-
     public interface EnumTypeClass extends ParametrizedFieldTypeClass, RecordFieldTypeClass<EnumFieldValue> { }
 
     public static final EnumTypeClass TYPE_CLASS = new EnumTypeClass() {
@@ -124,4 +123,15 @@ public class EnumType implements ParametrizedFieldType {
         return labels;
     }
 
+    public static <T extends Enum<T>> T read(Record record, String fieldName, Class<T> enumClass, T defaultValue) {
+        EnumFieldValue fieldValue = Types.read(record, fieldName, TYPE_CLASS);
+        if(fieldValue != null) {
+            return Enum.valueOf(enumClass, fieldValue.getValueId().asString());
+        }
+        return defaultValue;
+    }
+
+    public static <T extends Enum<T>> T read(Record record, String fieldName, Class<T> enumClass) {
+        return EnumType.<T>read(record, fieldName, enumClass, null);
+    }
 }

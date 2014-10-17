@@ -49,7 +49,7 @@ public class ResourcesTable extends ResourceMigrator {
                 "select * from resource_version" +
                         " where  " + context.filter().resourceFilter() +
                         " and version > ? " +
-                        " order by version limit 100");
+                        " order by version");
 
         statement.setLong(1, 0);
 
@@ -103,7 +103,7 @@ public class ResourcesTable extends ResourceMigrator {
             FormInstance instance = FormInstance.fromResource(resource);
             ResourceId siteId = context.getIdStrategy().mapToLegacyId(CuidAdapter.SITE_DOMAIN, instance.getId());
             FormInstance rewritten = new FormInstance(siteId, instance.getClassId());
-            for (Map.Entry<ResourceId, FieldValue> entry : rewritten.getFieldValueMap().entrySet()) {
+            for (Map.Entry<ResourceId, FieldValue> entry : instance.getFieldValueMap().entrySet()) {
                 ResourceId legacyFieldId = context.getIdStrategy().mapToLegacyId(entry.getKey());
                 rewritten.set(legacyFieldId, entry.getValue());
             }

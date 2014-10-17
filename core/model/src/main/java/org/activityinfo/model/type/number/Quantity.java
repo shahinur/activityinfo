@@ -7,6 +7,7 @@ import org.activityinfo.model.record.Records;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumType;
 
 public class Quantity implements FieldValue, IsRecord {
 
@@ -14,7 +15,7 @@ public class Quantity implements FieldValue, IsRecord {
 
     private final double value;
     private String units;
-    private AggregationType aggregationType;
+    private AggregationType aggregationType = AggregationType.SUM;
 
     public Quantity(double value) {
         this(value, UNKNOWN_UNITS);
@@ -79,7 +80,9 @@ public class Quantity implements FieldValue, IsRecord {
     }
 
     public static Quantity fromRecord(Record record) {
-        return new Quantity(record.getDouble("value"), record.isString("units"));
+        Quantity quantityType = new Quantity(record.getDouble("value"), record.isString("units"));
+        quantityType.setAggregationType(EnumType.read(record, "aggregation", AggregationType.class, AggregationType.SUM));
+        return quantityType;
     }
 
     @Override

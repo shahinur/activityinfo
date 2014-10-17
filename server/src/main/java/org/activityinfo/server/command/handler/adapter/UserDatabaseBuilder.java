@@ -1,6 +1,7 @@
 package org.activityinfo.server.command.handler.adapter;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.auth.UserPermission;
@@ -244,6 +245,7 @@ public class UserDatabaseBuilder {
         LocationTypeDTO locationType = new LocationTypeDTO();
         locationType.setId(1);
         locationType.setName(LocationTypeDTO.NULL_LOCATION_TYPE_NAME);
+        locationType.setAdminLevels(Lists.<AdminLevelDTO>newArrayList());
         return locationType;
     }
 

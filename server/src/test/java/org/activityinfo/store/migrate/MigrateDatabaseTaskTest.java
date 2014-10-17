@@ -1,11 +1,12 @@
 package org.activityinfo.store.migrate;
 
 import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.model.DTOViews;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
+import org.activityinfo.legacy.shared.command.GetSites;
+import org.activityinfo.legacy.shared.command.result.SiteResult;
+import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.handler.GetSchemaHandler;
+import org.activityinfo.server.command.handler.GetSitesHandler;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
 import org.activityinfo.server.util.jaxrs.Utf8JacksonJsonProvider;
@@ -58,16 +59,42 @@ public class MigrateDatabaseTaskTest {
         assertThat(db.getName(), equalTo("QIS 3rd round "));
         assertThat(db.getPartners().size(), equalTo(1));
         assertThat(db.getPartners().get(0).get("id"), equalTo((Object)5240572));
-        assertThat(db.getActivities().get(0).getIndicators().get(0).getAggregation(), notNullValue());
+
+        ActivityDTO activity = db.getActivityById(1137);
+        assertThat(activity.getIndicators().get(0).getAggregation(), notNullValue());
+        assertThat(activity.getLocationType().getAdminLevels(), hasSize(0));
+
+        IndicatorDTO barcode = findIndicator(activity, "Barcode");
+
 
         SchemaCsvWriter writer = new SchemaCsvWriter();
         writer.write(db);
         System.out.println(writer.toString());
 
         ObjectMapper objectMapper = Utf8JacksonJsonProvider.createObjectMapper();
-        System.out.println(objectMapper
+        String schemaJson = objectMapper
                 .writerWithView(DTOViews.Schema.class)
-                .writeValueAsString(schema.getDatabases().get(0)));
+                .writeValueAsString(schema.getDatabases().get(0));
+       // System.out.println(schemaJson);
 
+        GetSitesHandler getSitesHandler = new GetSitesHandler(store);
+        SiteResult sites = (SiteResult) getSitesHandler.execute(GetSites.byActivity(1137), mithunEntity);
+
+        for(SiteDTO site : sites.getData()) {
+            System.out.println(site.get(barcode.getPropertyName()));
+        }
+
+
+
+
+    }
+
+    private IndicatorDTO findIndicator(ActivityDTO activity, String label) {
+        for(IndicatorDTO dto : activity.getIndicators()) {
+            if(dto.getLabel().equals(label)) {
+                return dto;
+            }
+        }
+        throw new IllegalArgumentException(label);
     }
 }

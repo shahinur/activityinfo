@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.activityinfo.i18n.shared.I18N;
@@ -322,6 +323,8 @@ public class ColumnModelBuilder {
             for (IndicatorDTO indicator : activity.getIndicators()) {
                 if (indicator.getListHeader() != null && !indicator.getListHeader().isEmpty()) {
                     columns.add(createIndicatorColumn(indicator, indicator.getListHeader()));
+                } else if(!Strings.isNullOrEmpty(indicator.getCode())) {
+                    columns.add(createIndicatorColumn(indicator, indicator.getCode()));
                 }
             }
         }
