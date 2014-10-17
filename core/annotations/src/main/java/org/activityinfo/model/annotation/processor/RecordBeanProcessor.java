@@ -112,7 +112,6 @@ public class RecordBeanProcessor extends AbstractProcessor {
         defineVarsForType(type, vars);
 
         String text = vars.toText();
-        System.out.println(text);
         writeSourceFile(generatedSubclassName(type), text, type);
     }
 
