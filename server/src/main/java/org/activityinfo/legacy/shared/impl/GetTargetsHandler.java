@@ -33,7 +33,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.shared.command.GetTargets;
 import org.activityinfo.legacy.shared.command.result.TargetResult;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.model.legacy.CuidAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +86,7 @@ public class GetTargetsHandler implements CommandHandlerAsync<GetTargets, Target
 
                             if (!row.isNull("PartnerId")) {
                                 PartnerDTO partner = new PartnerDTO();
-                                partner.setId(CuidAdapter.partnerInstanceId(databaseId, row.getInt("PartnerId")));
+                                partner.setId(row.getInt("PartnerId"));
                                 partner.setName(row.getString("partnerName"));
                                 target.setPartner(partner);
                             }

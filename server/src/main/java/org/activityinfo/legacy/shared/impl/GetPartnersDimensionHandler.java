@@ -33,7 +33,6 @@ import org.activityinfo.legacy.shared.command.result.PartnerResult;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.legacy.shared.reports.content.EntityCategory;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
-import org.activityinfo.model.legacy.CuidAdapter;
 
 import java.util.*;
 
@@ -74,7 +73,7 @@ public class GetPartnersDimensionHandler implements CommandHandlerAsync<GetPartn
                         Log.debug("Partner is null: " + bucket.toString());
                     } else {
                         PartnerDTO partner = new PartnerDTO();
-                        partner.setId(CuidAdapter.partnerInstanceId(databaseCategory.getId(), partnerCategory.getId()));
+                        partner.setId(partnerCategory.getId());
                         partner.setName(partnerCategory.getLabel());
                         partners.add(partner);
                     }

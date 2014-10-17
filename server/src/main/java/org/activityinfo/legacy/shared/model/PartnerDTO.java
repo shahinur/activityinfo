@@ -23,7 +23,6 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
@@ -58,7 +57,9 @@ public final class PartnerDTO extends BaseModelData implements DTO, ProvidesKey 
     }
 
     public PartnerDTO(int databaseId, int partnerId, String name) {
-        this(CuidAdapter.partnerInstanceId(databaseId, partnerId), name);
+        // ignoring the databaseId for the moment, but will eventually need
+        // it to repatriate partners
+        this(partnerId, name);
     }
 
     public void setId(int id) {

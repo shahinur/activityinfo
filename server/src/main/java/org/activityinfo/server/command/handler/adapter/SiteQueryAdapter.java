@@ -5,8 +5,10 @@ import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.service.store.StoreReader;
 
@@ -34,7 +36,12 @@ public final class SiteQueryAdapter {
 
     private List<ResourceId> findActivities(Filter filter) {
         List<ResourceId> formClasses = Lists.newArrayList();
-        if(filter.isRestricted(DimensionType.Activity)) {
+        if(filter.isRestricted(DimensionType.Site)) {
+            for(Integer siteId : filter.getRestrictions(DimensionType.Site)) {
+                UserResource resource = reader.getResource(CuidAdapter.resourceId(SITE_DOMAIN, siteId));
+                formClasses.add(resource.getResource().getClassId());
+            }
+        } else if(filter.isRestricted(DimensionType.Activity)) {
             for(Integer activityId : filter.getRestrictions(DimensionType.Activity)) {
                 forms.add(activityFormClass(activityId));
             }

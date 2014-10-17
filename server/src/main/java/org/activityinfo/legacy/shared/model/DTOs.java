@@ -27,7 +27,6 @@ import org.activityinfo.legacy.shared.command.result.AdminEntityResult;
 import org.activityinfo.legacy.shared.command.result.BaseMapResult;
 import org.activityinfo.legacy.shared.command.result.ListResult;
 import org.activityinfo.legacy.shared.command.result.UserResult;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.geo.GeoExtents;
 
 import java.util.*;
@@ -161,7 +160,7 @@ public class DTOs {
 
             SITE_WITH_NO_ADMIN_LEVELS = new SiteDTO(5);
             SITE_WITH_NO_ADMIN_LEVELS.setActivityId(NFI_DISTRIBUTION.getId());
-            SITE_WITH_NO_ADMIN_LEVELS.setPartner(new PartnerDTO(CuidAdapter.partnerInstanceId(DATABASE.getId(), 89), "AVSI"));
+            SITE_WITH_NO_ADMIN_LEVELS.setPartner(new PartnerDTO(89, "AVSI"));
             SITE_WITH_NO_ADMIN_LEVELS.setLocationName("Boise Idahao");
 
             SITES = Lists.newArrayList();
