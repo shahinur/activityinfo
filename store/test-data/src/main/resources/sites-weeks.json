@@ -45,7 +45,7 @@
       }
     } ]
   }, {
-    "@id" : "d1p1",
+    "@id" : "p10001",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
@@ -120,6 +120,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -153,13 +157,17 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g1"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 42.0,
       "units" : "menages"

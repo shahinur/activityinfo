@@ -31,7 +31,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "view" : true,
     "design" : false,
@@ -70,7 +70,7 @@
       }
     } ]
   }, {
-    "@id" : "d1p1",
+    "@id" : "p10001",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
@@ -145,6 +145,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -186,6 +190,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages^2"
           },
           "typeClass" : "QUANTITY"

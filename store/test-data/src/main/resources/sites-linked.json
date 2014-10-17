@@ -45,13 +45,13 @@
       }
     } ]
   }, {
-    "@id" : "d1p1",
+    "@id" : "p10001",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
     "P1f1" : "NRC"
   }, {
-    "@id" : "d1p2",
+    "@id" : "p10002",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
@@ -126,6 +126,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -145,6 +149,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -208,13 +216,17 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p2"
+      "value" : "p10002"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g2"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 400.0,
       "units" : "menages"
@@ -267,13 +279,13 @@
       }
     } ]
   }, {
-    "@id" : "d2p1",
+    "@id" : "p20001",
     "@owner" : "P2",
     "@version" : 0,
     "@class" : "P2",
     "P2f1" : "NRC"
   }, {
-    "@id" : "d2p2",
+    "@id" : "p20002",
     "@owner" : "P2",
     "@version" : 0,
     "@class" : "P2",
@@ -348,6 +360,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -396,7 +412,7 @@
     },
     "a2f7" : {
       "@type" : "REFERENCE",
-      "value" : "d2p1"
+      "value" : "p20001"
     },
     "Q1" : {
       "@type" : "enumerated",
@@ -414,6 +430,10 @@
       }
     },
     "I3" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1500.0,
       "units" : "menages"

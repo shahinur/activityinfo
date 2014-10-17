@@ -114,6 +114,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -151,13 +155,17 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g1"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1500.0,
       "units" : "menages"
@@ -184,13 +192,17 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g2"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 3600.0,
       "units" : "menages"
@@ -217,13 +229,17 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p2"
+      "value" : "p10002"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g3"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 10000.0,
       "units" : "menages"
@@ -250,13 +266,17 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p2"
+      "value" : "p10002"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g4"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 44.0,
       "units" : "menages"

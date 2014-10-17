@@ -45,7 +45,7 @@
       }
     } ]
   }, {
-    "@id" : "d1p1",
+    "@id" : "p10001",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
@@ -179,6 +179,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "individuals"
         },
         "typeClass" : "QUANTITY"
@@ -197,6 +201,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "individuals"
           },
           "typeClass" : "QUANTITY"
@@ -228,7 +236,7 @@
     "@class" : "a901",
     "a901f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "Q1" : {
       "@type" : "enumerated",
@@ -245,7 +253,7 @@
     "@class" : "a901",
     "a901f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "Q1" : {
       "@type" : "enumerated",
@@ -261,6 +269,10 @@
     "@version" : 0,
     "@class" : "m901",
     "I7002" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 26.0,
       "units" : "individuals"
@@ -276,6 +288,10 @@
       "year" : 2009.0
     },
     "I7001" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 11.0,
       "units" : "individuals"
@@ -286,6 +302,10 @@
     "@version" : 0,
     "@class" : "m901",
     "I7002" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 55.0,
       "units" : "individuals"
@@ -301,6 +321,10 @@
       "year" : 2009.0
     },
     "I7001" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 99.0,
       "units" : "individuals"
@@ -311,6 +335,10 @@
     "@version" : 0,
     "@class" : "m901",
     "I7002" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 300.0,
       "units" : "individuals"
@@ -326,6 +354,10 @@
       "year" : 2009.0
     },
     "I7001" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 200.0,
       "units" : "individuals"
@@ -336,6 +368,10 @@
     "@version" : 0,
     "@class" : "m901",
     "I7002" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 330.0,
       "units" : "individuals"
@@ -351,6 +387,10 @@
       "year" : 2009.0
     },
     "I7001" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 150.0,
       "units" : "individuals"

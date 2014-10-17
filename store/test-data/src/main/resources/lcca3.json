@@ -32,7 +32,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1612"
+      "value" : "p13501612"
     },
     "view" : true,
     "design" : true,
@@ -57,7 +57,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1612"
+      "value" : "p13501612"
     },
     "view" : true,
     "design" : true,
@@ -82,7 +82,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1612"
+      "value" : "p13501612"
     },
     "view" : true,
     "design" : true,
@@ -107,7 +107,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1629"
+      "value" : "p13501629"
     },
     "view" : true,
     "design" : true,
@@ -132,7 +132,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1629"
+      "value" : "p13501629"
     },
     "view" : true,
     "design" : true,
@@ -157,7 +157,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1629"
+      "value" : "p13501629"
     },
     "view" : true,
     "design" : true,
@@ -182,7 +182,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1612"
+      "value" : "p13501612"
     },
     "view" : true,
     "design" : true,
@@ -207,7 +207,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1612"
+      "value" : "p13501612"
     },
     "view" : true,
     "design" : false,
@@ -232,7 +232,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1612"
+      "value" : "p13501612"
     },
     "view" : true,
     "design" : true,
@@ -257,7 +257,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1350p1612"
+      "value" : "p13501612"
     },
     "view" : true,
     "design" : false,
@@ -296,13 +296,13 @@
       }
     } ]
   }, {
-    "@id" : "d1350p1612",
+    "@id" : "p13501612",
     "@owner" : "P1350",
     "@version" : 0,
     "@class" : "P1350",
     "P1350f1" : "IRC LCCA staff"
   }, {
-    "@id" : "d1350p1629",
+    "@id" : "p13501629",
     "@owner" : "P1350",
     "@version" : 0,
     "@class" : "P1350",
@@ -656,6 +656,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "Block number"
         },
         "typeClass" : "QUANTITY"
@@ -700,6 +704,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "COUNT"
+          },
           "units" : "Comm. number"
         },
         "typeClass" : "QUANTITY"
@@ -714,6 +722,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "minutes"
         },
         "typeClass" : "QUANTITY"
@@ -728,6 +740,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "people"
         },
         "typeClass" : "QUANTITY"
@@ -742,6 +758,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "peaces"
         },
         "typeClass" : "QUANTITY"
@@ -756,6 +776,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "peaces"
         },
         "typeClass" : "QUANTITY"
@@ -770,6 +794,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "peaces"
         },
         "typeClass" : "QUANTITY"
@@ -784,6 +812,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "peaces"
         },
         "typeClass" : "QUANTITY"
@@ -798,6 +830,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "peaces"
         },
         "typeClass" : "QUANTITY"
@@ -812,6 +848,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "pieces"
         },
         "typeClass" : "QUANTITY"
@@ -826,6 +866,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "peaces"
         },
         "typeClass" : "QUANTITY"
@@ -840,6 +884,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "liters"
         },
         "typeClass" : "QUANTITY"
@@ -854,6 +902,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "pieces"
         },
         "typeClass" : "QUANTITY"
@@ -868,6 +920,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "pieces"
         },
         "typeClass" : "QUANTITY"
@@ -882,6 +938,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "pieces"
         },
         "typeClass" : "QUANTITY"
@@ -896,6 +956,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "pieces"
         },
         "typeClass" : "QUANTITY"

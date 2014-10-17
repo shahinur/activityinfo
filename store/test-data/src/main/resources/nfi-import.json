@@ -46,548 +46,548 @@
       }
     } ]
   }, {
-    "@id" : "d4p1",
+    "@id" : "p40001",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "AAA"
   }, {
-    "@id" : "d4p2",
+    "@id" : "p40002",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Action Aid"
   }, {
-    "@id" : "d4p3",
+    "@id" : "p40003",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "ADRA",
     "P4f10" : "Adventist Development and Relief Agency"
   }, {
-    "@id" : "d4p6",
+    "@id" : "p40006",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CAFOD"
   }, {
-    "@id" : "d4p7",
+    "@id" : "p40007",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CARE",
     "P4f10" : "Cooperative for Assistance and Relief Everywhere"
   }, {
-    "@id" : "d4p8",
+    "@id" : "p40008",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas",
     "P4f10" : "Caritas"
   }, {
-    "@id" : "d4p9",
+    "@id" : "p40009",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CEH"
   }, {
-    "@id" : "d4p10",
+    "@id" : "p40010",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CEPAC"
   }, {
-    "@id" : "d4p11",
+    "@id" : "p40011",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CONCERN"
   }, {
-    "@id" : "d4p12",
+    "@id" : "p40012",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CRONGD"
   }, {
-    "@id" : "d4p13",
+    "@id" : "p40013",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CRS",
     "P4f10" : "Catholic Relief Service"
   }, {
-    "@id" : "d4p15",
+    "@id" : "p40015",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "HIA"
   }, {
-    "@id" : "d4p17",
+    "@id" : "p40017",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Islamic Relief"
   }, {
-    "@id" : "d4p21",
+    "@id" : "p40021",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "OCHA"
   }, {
-    "@id" : "d4p22",
+    "@id" : "p40022",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "OIM",
     "P4f10" : "Organisation International pour la Migration"
   }, {
-    "@id" : "d4p24",
+    "@id" : "p40024",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "PAP RDC"
   }, {
-    "@id" : "d4p25",
+    "@id" : "p40025",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Première Urgence"
   }, {
-    "@id" : "d4p27",
+    "@id" : "p40027",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "SCF"
   }, {
-    "@id" : "d4p29",
+    "@id" : "p40029",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "UNHCR",
     "P4f10" : "UN High Commissioner for Refugees"
   }, {
-    "@id" : "d4p30",
+    "@id" : "p40030",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "UNICEF",
     "P4f10" : "United Nations Children's Funds"
   }, {
-    "@id" : "d4p31",
+    "@id" : "p40031",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "World Vision"
   }, {
-    "@id" : "d4p33",
+    "@id" : "p40033",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "OXFAM-Q",
     "P4f10" : "Oxfam Quebec"
   }, {
-    "@id" : "d4p36",
+    "@id" : "p40036",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "AFEDEM",
     "P4f10" : "Appui de Femmes diminu"
   }, {
-    "@id" : "d4p37",
+    "@id" : "p40037",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CADE",
     "P4f10" : "Club des Amis de Developpement et l'Environnement"
   }, {
-    "@id" : "d4p38",
+    "@id" : "p40038",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "OXFAM-GB",
     "P4f10" : "OXFAM Grand Bretagne"
   }, {
-    "@id" : "d4p86",
+    "@id" : "p40086",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CARITAS Kindu",
     "P4f10" : "CARITAS Kindu"
   }, {
-    "@id" : "d4p89",
+    "@id" : "p40089",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CARITAS Kalemie",
     "P4f10" : "CARITAS Kalemie"
   }, {
-    "@id" : "d4p95",
+    "@id" : "p40095",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "ADSSE",
     "P4f10" : "ADSSE"
   }, {
-    "@id" : "d4p96",
+    "@id" : "p40096",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "VdE",
     "P4f10" : "Vision d'Espoir"
   }, {
-    "@id" : "d4p97",
+    "@id" : "p40097",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "ECC",
     "P4f10" : "Eglise du Christ au Congo"
   }, {
-    "@id" : "d4p112",
+    "@id" : "p40112",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "PNUD"
   }, {
-    "@id" : "d4p113",
+    "@id" : "p40113",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "UNOPS",
     "P4f10" : "United Nations Office for Project Services"
   }, {
-    "@id" : "d4p125",
+    "@id" : "p40125",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas Goma",
     "P4f10" : "Caritas Developpement Goma"
   }, {
-    "@id" : "d4p126",
+    "@id" : "p40126",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas Dungu",
     "P4f10" : "Caritas Dungu Doruma"
   }, {
-    "@id" : "d4p127",
+    "@id" : "p40127",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "SOL ITURI RRMP",
     "P4f10" : "Solidarites Ituri - RRMP"
   }, {
-    "@id" : "d4p128",
+    "@id" : "p40128",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "SOL HUBU RRMP",
     "P4f10" : "Solidarités Haut et Bas Uele"
   }, {
-    "@id" : "d4p129",
+    "@id" : "p40129",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "SOL KIVU RRMP",
     "P4f10" : "Solidarites Nord kivu - RRMP"
   }, {
-    "@id" : "d4p130",
+    "@id" : "p40130",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "NRC RRMP",
     "P4f10" : "NRC Nord Kivu RRMP"
   }, {
-    "@id" : "d4p131",
+    "@id" : "p40131",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "AVSI RRMP",
     "P4f10" : "AVSI SUD KIVU RRMP"
   }, {
-    "@id" : "d4p132",
+    "@id" : "p40132",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "IRC RRMP",
     "P4f10" : "IRC RRMP"
   }, {
-    "@id" : "d4p138",
+    "@id" : "p40138",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "ALDI",
     "P4f10" : "ALDI Enterprise"
   }, {
-    "@id" : "d4p146",
+    "@id" : "p40146",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "LWF",
     "P4f10" : "Lutherian World Federation"
   }, {
-    "@id" : "d4p147",
+    "@id" : "p40147",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "APETAMACO",
     "P4f10" : "APETAMACO "
   }, {
-    "@id" : "d4p148",
+    "@id" : "p40148",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CARITAS BUTEMBO",
     "P4f10" : "CARITAS BUTEMBO-BENI"
   }, {
-    "@id" : "d4p149",
+    "@id" : "p40149",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CICR",
     "P4f10" : "Comite International de la Croix Rouge"
   }, {
-    "@id" : "d4p150",
+    "@id" : "p40150",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Memisa Belgique",
     "P4f10" : "Memisa Belgique"
   }, {
-    "@id" : "d4p152",
+    "@id" : "p40152",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "FH",
     "P4f10" : "Food for the Hungry"
   }, {
-    "@id" : "d4p157",
+    "@id" : "p40157",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas Bunia",
     "P4f10" : "Caritas Diocese de Bunia"
   }, {
-    "@id" : "d4p198",
+    "@id" : "p40198",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Armée du Salut",
     "P4f10" : "Armée du Salut Katanga"
   }, {
-    "@id" : "d4p204",
+    "@id" : "p40204",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CARITAS KANANGA",
     "P4f10" : "CARITAS KANANGA"
   }, {
-    "@id" : "d4p211",
+    "@id" : "p40211",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CARITAS BUKAVU",
     "P4f10" : "CARITAS BUKAVU"
   }, {
-    "@id" : "d4p213",
+    "@id" : "p40213",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "AIDES",
     "P4f10" : "Action International pour le Developpement Social Katanga"
   }, {
-    "@id" : "d4p214",
+    "@id" : "p40214",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "GTZ Katanga"
   }, {
-    "@id" : "d4p215",
+    "@id" : "p40215",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "SOL Katanga",
     "P4f10" : "Solidarite"
   }, {
-    "@id" : "d4p216",
+    "@id" : "p40216",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CARITAS UVIRA",
     "P4f10" : "CARITAS UVIRA"
   }, {
-    "@id" : "d4p241",
+    "@id" : "p40241",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "SOL ITURI ARCC",
     "P4f10" : "Solidarités Ituri - ARCC"
   }, {
-    "@id" : "d4p242",
+    "@id" : "p40242",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "SOL KIVU ARCC",
     "P4f10" : "Solidarités Nord Kivu - ARCC"
   }, {
-    "@id" : "d4p243",
+    "@id" : "p40243",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "NRC ARCC",
     "P4f10" : "NRC Nord Kivu - ARCC"
   }, {
-    "@id" : "d4p244",
+    "@id" : "p40244",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CARITAS ARCC",
     "P4f10" : "CARITAS KINDU ARCC"
   }, {
-    "@id" : "d4p245",
+    "@id" : "p40245",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CRS ARCC",
     "P4f10" : "CRS KATANGA"
   }, {
-    "@id" : "d4p251",
+    "@id" : "p40251",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "ARAL",
     "P4f10" : "Arche d'Alliance"
   }, {
-    "@id" : "d4p260",
+    "@id" : "p40260",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CISP",
     "P4f10" : "Comitato Internazionale per lo Sviluppo dei Popoli"
   }, {
-    "@id" : "d4p267",
+    "@id" : "p40267",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "PIN",
     "P4f10" : "People In Need"
   }, {
-    "@id" : "d4p268",
+    "@id" : "p40268",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "OXFAM NOVIB",
     "P4f10" : "OXFAM NOVIB"
   }, {
-    "@id" : "d4p269",
+    "@id" : "p40269",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "AFG",
     "P4f10" : "Act For gender"
   }, {
-    "@id" : "d4p296",
+    "@id" : "p40296",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas Congo",
     "P4f10" : "Caritas Congo ASBL"
   }, {
-    "@id" : "d4p297",
+    "@id" : "p40297",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas Mbandaka",
     "P4f10" : "Caritas Mbandaka"
   }, {
-    "@id" : "d4p298",
+    "@id" : "p40298",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas Budjala",
     "P4f10" : "Caritas Budjala"
   }, {
-    "@id" : "d4p299",
+    "@id" : "p40299",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CRAIDI",
     "P4f10" : "CRAIDI (Kalemie/Katanga)"
   }, {
-    "@id" : "d4p300",
+    "@id" : "p40300",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas Kisantu",
     "P4f10" : "Caritas Kisantu"
   }, {
-    "@id" : "d4p301",
+    "@id" : "p40301",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Caritas Basakusu",
     "P4f10" : "Caritas Basankusu"
   }, {
-    "@id" : "d4p302",
+    "@id" : "p40302",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "LIZADEEL",
     "P4f10" : "Ligue de la Zone Afrique pour la Defense des droits des Enfants"
   }, {
-    "@id" : "d4p313",
+    "@id" : "p40313",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "RHA",
     "P4f10" : "Rebuilt Hope for Africa"
   }, {
-    "@id" : "d4p317",
+    "@id" : "p40317",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "ADE",
     "P4f10" : "Action d'espoir"
   }, {
-    "@id" : "d4p497",
+    "@id" : "p40497",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "DFID",
     "P4f10" : "Department for International Development"
   }, {
-    "@id" : "d4p498",
+    "@id" : "p40498",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "R.H.A",
     "P4f10" : "Rebuilt Hope for Africa"
   }, {
-    "@id" : "d4p521",
+    "@id" : "p40521",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "Femme Plus Tembo"
   }, {
-    "@id" : "d4p522",
+    "@id" : "p40522",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "CCPN"
   }, {
-    "@id" : "d4p523",
+    "@id" : "p40523",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "AJID"
   }, {
-    "@id" : "d4p630",
+    "@id" : "p40630",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
     "P4f1" : "IEDA",
     "P4f10" : "International Emergency and Developpement Aid"
   }, {
-    "@id" : "d4p634",
+    "@id" : "p40634",
     "@owner" : "P4",
     "@version" : 0,
     "@class" : "P4",
@@ -662,6 +662,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -675,6 +679,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -689,6 +697,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -702,6 +714,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -715,6 +731,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -728,6 +748,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -741,6 +765,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -760,6 +788,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "enfants"
           },
           "typeClass" : "QUANTITY"
@@ -774,6 +806,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "enfants"
           },
           "typeClass" : "QUANTITY"
@@ -788,6 +824,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "femme"
           },
           "typeClass" : "QUANTITY"
@@ -807,6 +847,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "kits"
           },
           "typeClass" : "QUANTITY"
@@ -820,6 +864,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -834,6 +882,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -852,6 +904,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -865,6 +921,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -878,6 +938,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -891,6 +955,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "familles"
           },
           "typeClass" : "QUANTITY"
@@ -904,6 +972,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -917,6 +989,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -930,6 +1006,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -948,6 +1028,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "personnes"
           },
           "typeClass" : "QUANTITY"
@@ -961,6 +1045,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "femmes"
           },
           "typeClass" : "QUANTITY"
@@ -974,6 +1062,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "hommes"
           },
           "typeClass" : "QUANTITY"
@@ -992,6 +1084,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -1005,6 +1101,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -1019,6 +1119,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -1032,6 +1136,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -1045,6 +1153,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -1058,6 +1170,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "ménages"
           },
           "typeClass" : "QUANTITY"
@@ -1071,6 +1187,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"

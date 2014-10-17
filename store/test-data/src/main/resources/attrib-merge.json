@@ -45,7 +45,7 @@
       }
     } ]
   }, {
-    "@id" : "d1p1",
+    "@id" : "p10001",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
@@ -137,6 +137,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "menages"
         },
         "typeClass" : "QUANTITY"
@@ -207,13 +211,17 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g1"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1500.0,
       "units" : "menages"
@@ -266,7 +274,7 @@
       }
     } ]
   }, {
-    "@id" : "d2p2",
+    "@id" : "p20002",
     "@owner" : "P2",
     "@version" : 0,
     "@class" : "P2",
@@ -336,6 +344,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "classroooms"
         },
         "typeClass" : "QUANTITY"
@@ -383,7 +395,7 @@
     "@class" : "a2",
     "a2f7" : {
       "@type" : "REFERENCE",
-      "value" : "d2p1"
+      "value" : "p20001"
     },
     "a2f9" : {
       "@class" : "_localDateInterval",
@@ -401,6 +413,10 @@
       "value" : "t6"
     },
     "I2" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 3600.0,
       "units" : "classroooms"

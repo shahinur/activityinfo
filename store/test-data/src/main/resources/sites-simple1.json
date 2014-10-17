@@ -31,7 +31,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "view" : true,
     "design" : false,
@@ -56,7 +56,7 @@
     "edit" : false,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "view" : false,
     "design" : false,
@@ -81,7 +81,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1p2"
+      "value" : "p10002"
     },
     "view" : true,
     "design" : true,
@@ -106,7 +106,7 @@
     "edit" : false,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d1p2"
+      "value" : "p10002"
     },
     "view" : true,
     "design" : true,
@@ -145,19 +145,19 @@
       }
     } ]
   }, {
-    "@id" : "d1p1",
+    "@id" : "p10001",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
     "P1f1" : "NRC"
   }, {
-    "@id" : "d1p2",
+    "@id" : "p10002",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
     "P1f1" : "Solidarites"
   }, {
-    "@id" : "d1p3",
+    "@id" : "p10003",
     "@owner" : "P1",
     "@version" : 0,
     "@class" : "P1",
@@ -313,6 +313,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -327,6 +331,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "COUNT"
+            },
             "units" : "distributions"
           },
           "typeClass" : "QUANTITY"
@@ -341,6 +349,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "COUNT"
+            },
             "units" : "distributions"
           },
           "typeClass" : "QUANTITY"
@@ -396,6 +408,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "menages"
           },
           "typeClass" : "QUANTITY"
@@ -432,6 +448,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "calculated"
         },
         "typeClass" : "QUANTITY"
@@ -573,18 +593,26 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g1"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1500.0,
       "units" : "menages"
     },
     "I2" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 500.0,
       "units" : "menages"
@@ -615,18 +643,26 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g2"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 3600.0,
       "units" : "menages"
     },
     "I2" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1200.0,
       "units" : "menages"
@@ -657,18 +693,26 @@
     },
     "a1f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p2"
+      "value" : "p10002"
     },
     "a1f11" : {
       "@type" : "REFERENCE",
       "value" : "g3"
     },
     "I1" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 10000.0,
       "units" : "menages"
     },
     "I2" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 500.0,
       "units" : "menages"
@@ -680,7 +724,7 @@
     "@class" : "a2",
     "a2f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p2"
+      "value" : "p10002"
     },
     "a2f9" : {
       "@class" : "_localDateInterval",
@@ -704,7 +748,7 @@
     "@class" : "a2",
     "a2f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1p1"
+      "value" : "p10001"
     },
     "a2f9" : {
       "@class" : "_localDateInterval",
@@ -755,7 +799,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d2p1"
+      "value" : "p20001"
     },
     "view" : true,
     "design" : false,
@@ -780,7 +824,7 @@
     "edit" : true,
     "partner" : {
       "@type" : "REFERENCE",
-      "value" : "d2p1"
+      "value" : "p20001"
     },
     "view" : true,
     "design" : false,
@@ -819,7 +863,7 @@
       }
     } ]
   }, {
-    "@id" : "d2p1",
+    "@id" : "p20001",
     "@owner" : "P2",
     "@version" : 0,
     "@class" : "P2",
@@ -929,6 +973,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "MEAN"
+            },
             "units" : "nc/hab/month"
           },
           "typeClass" : "QUANTITY"
@@ -1036,6 +1084,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "MEAN"
+          },
           "units" : "children"
         },
         "typeClass" : "QUANTITY"
@@ -1144,7 +1196,7 @@
     },
     "a3f7" : {
       "@type" : "REFERENCE",
-      "value" : "d2p1"
+      "value" : "p20001"
     }
   }, {
     "@id" : "s6",
@@ -1153,7 +1205,7 @@
     "@class" : "a4",
     "a4f7" : {
       "@type" : "REFERENCE",
-      "value" : "d2p1"
+      "value" : "p20001"
     },
     "a4f11" : {
       "@type" : "REFERENCE",
@@ -1166,7 +1218,7 @@
     "@class" : "a4",
     "a4f7" : {
       "@type" : "REFERENCE",
-      "value" : "d2p1"
+      "value" : "p20001"
     },
     "a4f11" : {
       "@type" : "REFERENCE",
@@ -1188,6 +1240,10 @@
       "year" : 2009.0
     },
     "I5" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.4,
       "units" : "nc/hab/month"
@@ -1208,6 +1264,10 @@
       "year" : 2009.0
     },
     "I5" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.3,
       "units" : "nc/hab/month"
@@ -1228,6 +1288,10 @@
       "year" : 2009.0
     },
     "I5" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.1,
       "units" : "nc/hab/month"
@@ -1248,6 +1312,10 @@
     },
     "m4f15" : "2009",
     "I6" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 35.0,
       "units" : "children"
@@ -1268,6 +1336,10 @@
     },
     "m4f15" : "2009",
     "I6" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 70.0,
       "units" : "children"

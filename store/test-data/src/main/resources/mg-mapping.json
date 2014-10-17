@@ -46,7 +46,7 @@
       }
     } ]
   }, {
-    "@id" : "d1026p30",
+    "@id" : "p10260030",
     "@owner" : "P1026",
     "@version" : 0,
     "@class" : "P1026",
@@ -127,6 +127,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "nombre"
           },
           "typeClass" : "QUANTITY"
@@ -140,6 +144,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "nombre"
           },
           "typeClass" : "QUANTITY"
@@ -153,6 +161,10 @@
         "type" : {
           "parameters" : {
             "@class" : "_type:QUANTITY",
+            "aggregation" : {
+              "@type" : "enumerated",
+              "value" : "SUM"
+            },
             "units" : "nombre"
           },
           "typeClass" : "QUANTITY"
@@ -167,6 +179,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "nombre"
         },
         "typeClass" : "QUANTITY"
@@ -180,6 +196,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "nombre"
         },
         "typeClass" : "QUANTITY"
@@ -193,6 +213,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "nombre"
         },
         "typeClass" : "QUANTITY"
@@ -206,6 +230,10 @@
       "type" : {
         "parameters" : {
           "@class" : "_type:QUANTITY",
+          "aggregation" : {
+            "@type" : "enumerated",
+            "value" : "SUM"
+          },
           "units" : "nombre"
         },
         "typeClass" : "QUANTITY"
@@ -226,11 +254,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 452.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 454.0,
       "units" : "nombre"
@@ -251,33 +287,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 906.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s2134793967",
@@ -285,11 +341,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 46.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 47.0,
       "units" : "nombre"
@@ -310,33 +374,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 93.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s1064376554",
@@ -344,11 +428,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 109.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 123.0,
       "units" : "nombre"
@@ -369,33 +461,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 232.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s593876266",
@@ -403,11 +515,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 117.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 95.0,
       "units" : "nombre"
@@ -428,33 +548,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 212.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s244391543",
@@ -462,11 +602,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 181.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 124.0,
       "units" : "nombre"
@@ -487,33 +635,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 305.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s1168757615",
@@ -521,11 +689,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 98.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 100.0,
       "units" : "nombre"
@@ -546,33 +722,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 198.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s371004579",
@@ -580,11 +776,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 117.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 118.0,
       "units" : "nombre"
@@ -605,33 +809,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 235.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s2033436440",
@@ -639,11 +863,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 96.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 58.0,
       "units" : "nombre"
@@ -664,33 +896,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 154.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s952592497",
@@ -698,11 +950,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 157.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 124.0,
       "units" : "nombre"
@@ -723,33 +983,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 281.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   }, {
     "@id" : "s824185149",
@@ -757,11 +1037,19 @@
     "@version" : 0,
     "@class" : "a2509",
     "I12447" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 191.0,
       "units" : "nombre"
     },
     "I12446" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 147.0,
       "units" : "nombre"
@@ -782,33 +1070,53 @@
       }
     },
     "I12445" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 338.0,
       "units" : "nombre"
     },
     "I12444" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 2.0,
       "units" : "nombre"
     },
     "I12443" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "I12442" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 1.0,
       "units" : "nombre"
     },
     "I12441" : {
+      "aggregation" : {
+        "@type" : "enumerated",
+        "value" : "SUM"
+      },
       "@type" : "QUANTITY",
       "value" : 0.0,
       "units" : "nombre"
     },
     "a2509f7" : {
       "@type" : "REFERENCE",
-      "value" : "d1026p30"
+      "value" : "p10260030"
     }
   } ]
 }, {

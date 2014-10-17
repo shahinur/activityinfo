@@ -1,1 +1,1040 @@
-[ ]
+[ {
+  "userId" : 1,
+  "workspace" : {
+    "@id" : "d1",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "#_geo:within" : {
+      "@type" : "REFERENCE",
+      "value" : "G1"
+    },
+    "label" : "Cluster"
+  },
+  "resources" : [ {
+    "@id" : "L1451",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Village",
+    "elements" : [ {
+      "id" : "L1451f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L1451f4",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Alternate Name",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "L1451f6",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Administrative Unit",
+      "required" : false,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : [ "E1451", "E1517" ]
+          },
+          "cardinality" : "MULTIPLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "L1451f5",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Geographic Position",
+      "required" : false,
+      "type" : {
+        "typeClass" : "GEOGRAPHIC_POINT"
+      }
+    } ]
+  }, {
+    "@id" : "P1",
+    "@owner" : "d1",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Partners",
+    "elements" : [ {
+      "id" : "P1f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "P1f10",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_description"
+      },
+      "label" : "Full Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  } ]
+}, {
+  "userId" : 9999,
+  "workspace" : {
+    "@id" : "G451",
+    "@owner" : "_root",
+    "@version" : 0,
+    "@class" : "_folder",
+    "label" : "Somalia"
+  },
+  "resources" : [ {
+    "@id" : "E1451",
+    "@owner" : "G451",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "Region",
+    "elements" : [ {
+      "id" : "E1451f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E1451f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "E1517",
+    "@owner" : "G451",
+    "@version" : 0,
+    "@class" : "_class",
+    "_class_label" : "District",
+    "elements" : [ {
+      "id" : "E1517f2",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "_parent"
+      },
+      "label" : "Region",
+      "required" : true,
+      "type" : {
+        "parameters" : {
+          "@class" : "_type:REFERENCE",
+          "range" : {
+            "@type" : "REFERENCE",
+            "value" : "E1451"
+          },
+          "cardinality" : "SINGLE"
+        },
+        "typeClass" : "REFERENCE"
+      }
+    }, {
+      "id" : "E1517f1",
+      "visible" : true,
+      "primaryKey" : false,
+      "superProperties" : {
+        "@type" : "REFERENCE",
+        "value" : "label"
+      },
+      "label" : "Name",
+      "required" : true,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    }, {
+      "id" : "E1517f3",
+      "visible" : true,
+      "primaryKey" : false,
+      "label" : "Code",
+      "required" : false,
+      "type" : {
+        "typeClass" : "FREE_TEXT"
+      }
+    } ]
+  }, {
+    "@id" : "z2688",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Awdal"
+  }, {
+    "@id" : "z2689",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Bakol (Bakool)"
+  }, {
+    "@id" : "z2690",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Bari (North East)"
+  }, {
+    "@id" : "z2691",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Bay"
+  }, {
+    "@id" : "z2692",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Banadir (Banaadir - Mogadishu)"
+  }, {
+    "@id" : "z2693",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Galgaduud (Galgadoud)"
+  }, {
+    "@id" : "z2694",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Gedo (Gedu)"
+  }, {
+    "@id" : "z2695",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Hiran (Hiiraan)"
+  }, {
+    "@id" : "z2696",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Jubbada Hoose (Lower Juba)"
+  }, {
+    "@id" : "z2697",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Shabeellaha Hoose (Lower Shabelle)"
+  }, {
+    "@id" : "z2698",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Jubbada Dhexe (Middle Juba)"
+  }, {
+    "@id" : "z2699",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Shabeellaha Dhexe (Middle Shabelle)"
+  }, {
+    "@id" : "z2700",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Mudug"
+  }, {
+    "@id" : "z2701",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Nugal (Nugaal)"
+  }, {
+    "@id" : "z2702",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Sanag (Sanaag)"
+  }, {
+    "@id" : "z2703",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Sool (Soul)"
+  }, {
+    "@id" : "z2704",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Toghdeer (Tojtier)"
+  }, {
+    "@id" : "z2705",
+    "@owner" : "E1451",
+    "@version" : 0,
+    "@class" : "E1451",
+    "E1451f1" : "Woqooyi Galbeed"
+  }, {
+    "@id" : "z322833",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2699"
+    },
+    "E1517f1" : "Aadan"
+  }, {
+    "@id" : "z322834",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2697"
+    },
+    "E1517f1" : "Afgooye (Afgoi)"
+  }, {
+    "@id" : "z322835",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2696"
+    },
+    "E1517f1" : "Afmadow"
+  }, {
+    "@id" : "z322836",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2694"
+    },
+    "E1517f1" : "Baar-Dheere"
+  }, {
+    "@id" : "z322837",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2696"
+    },
+    "E1517f1" : "Badhaadhe"
+  }, {
+    "@id" : "z322838",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2702"
+    },
+    "E1517f1" : "Badhan"
+  }, {
+    "@id" : "z322839",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2688"
+    },
+    "E1517f1" : "Baki"
+  }, {
+    "@id" : "z322840",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2699"
+    },
+    "E1517f1" : "Balcad"
+  }, {
+    "@id" : "z322841",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2690"
+    },
+    "E1517f1" : "Bander-Beyla (Benderbela)"
+  }, {
+    "@id" : "z322842",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2697"
+    },
+    "E1517f1" : "Baraawe"
+  }, {
+    "@id" : "z322843",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2691"
+    },
+    "E1517f1" : "Baydhabo"
+  }, {
+    "@id" : "z322844",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2695"
+    },
+    "E1517f1" : "Beled Weyn"
+  }, {
+    "@id" : "z322845",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2694"
+    },
+    "E1517f1" : "Beled Xaawo (Bula-hawa)"
+  }, {
+    "@id" : "z322846",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2705"
+    },
+    "E1517f1" : "Berbera"
+  }, {
+    "@id" : "z322847",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2688"
+    },
+    "E1517f1" : "Boorama"
+  }, {
+    "@id" : "z322848",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2690"
+    },
+    "E1517f1" : "Bosaaso"
+  }, {
+    "@id" : "z322849",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2698"
+    },
+    "E1517f1" : "Bu'aale"
+  }, {
+    "@id" : "z322850",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2704"
+    },
+    "E1517f1" : "Burao"
+  }, {
+    "@id" : "z322851",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2701"
+    },
+    "E1517f1" : "Burtinle"
+  }, {
+    "@id" : "z322852",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2704"
+    },
+    "E1517f1" : "Buuhoodle"
+  }, {
+    "@id" : "z322853",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2695"
+    },
+    "E1517f1" : "Buulo Burdo (Bulo-Burte)"
+  }, {
+    "@id" : "z322854",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2691"
+    },
+    "E1517f1" : "Buur Xakaba (Bur Hacaba)"
+  }, {
+    "@id" : "z322855",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2693"
+    },
+    "E1517f1" : "Caabudwaaq"
+  }, {
+    "@id" : "z322856",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2693"
+    },
+    "E1517f1" : "Cadaado"
+  }, {
+    "@id" : "z322857",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2699"
+    },
+    "E1517f1" : "Cadale"
+  }, {
+    "@id" : "z322858",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2690"
+    },
+    "E1517f1" : "Calawla (Alula)"
+  }, {
+    "@id" : "z322859",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2703"
+    },
+    "E1517f1" : "Caynabo"
+  }, {
+    "@id" : "z322860",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2689"
+    },
+    "E1517f1" : "Ceel Barde (El Barde)"
+  }, {
+    "@id" : "z322861",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2693"
+    },
+    "E1517f1" : "Ceel Buur (El Bur)"
+  }, {
+    "@id" : "z322862",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2693"
+    },
+    "E1517f1" : "Ceel Dheer (El Dere)"
+  }, {
+    "@id" : "z322863",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2694"
+    },
+    "E1517f1" : "Ceel Waaq (El Wak)"
+  }, {
+    "@id" : "z322864",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2702"
+    },
+    "E1517f1" : "Ceel-Afwein"
+  }, {
+    "@id" : "z322865",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2702"
+    },
+    "E1517f1" : "Ceerigaabo (Erigavo)"
+  }, {
+    "@id" : "z322866",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2693"
+    },
+    "E1517f1" : "Dhuusamareeb"
+  }, {
+    "@id" : "z322867",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2691"
+    },
+    "E1517f1" : "Diinsoor"
+  }, {
+    "@id" : "z322868",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2694"
+    },
+    "E1517f1" : "Dolow"
+  }, {
+    "@id" : "z322869",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2701"
+    },
+    "E1517f1" : "Eyl"
+  }, {
+    "@id" : "z322870",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2700"
+    },
+    "E1517f1" : "Gaalkacayo"
+  }, {
+    "@id" : "z322871",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2705"
+    },
+    "E1517f1" : "Gabiley"
+  }, {
+    "@id" : "z322872",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2694"
+    },
+    "E1517f1" : "Garbahaaray"
+  }, {
+    "@id" : "z322873",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2701"
+    },
+    "E1517f1" : "Garoowe"
+  }, {
+    "@id" : "z322874",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2700"
+    },
+    "E1517f1" : "Goldogob"
+  }, {
+    "@id" : "z322875",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2705"
+    },
+    "E1517f1" : "Hargeysa"
+  }, {
+    "@id" : "z322876",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2700"
+    },
+    "E1517f1" : "Hobyo"
+  }, {
+    "@id" : "z322877",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2690"
+    },
+    "E1517f1" : "Iskushuban"
+  }, {
+    "@id" : "z322878",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2695"
+    },
+    "E1517f1" : "Jalalaqsi"
+  }, {
+    "@id" : "z322879",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2696"
+    },
+    "E1517f1" : "Jamaame"
+  }, {
+    "@id" : "z322880",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2700"
+    },
+    "E1517f1" : "Jariiban"
+  }, {
+    "@id" : "z322881",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2699"
+    },
+    "E1517f1" : "Jawhar"
+  }, {
+    "@id" : "z322882",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2698"
+    },
+    "E1517f1" : "Jilib"
+  }, {
+    "@id" : "z322883",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2696"
+    },
+    "E1517f1" : "Kismaayo"
+  }, {
+    "@id" : "z322884",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2697"
+    },
+    "E1517f1" : "Kuntuwaaray"
+  }, {
+    "@id" : "z322885",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2703"
+    },
+    "E1517f1" : "Lascaanod (Lasanod)"
+  }, {
+    "@id" : "z322886",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2688"
+    },
+    "E1517f1" : "Lughaya"
+  }, {
+    "@id" : "z322887",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2694"
+    },
+    "E1517f1" : "Luuk"
+  }, {
+    "@id" : "z322888",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2697"
+    },
+    "E1517f1" : "Marka"
+  }, {
+    "@id" : "z322889",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2692"
+    },
+    "E1517f1" : "Mogadisho"
+  }, {
+    "@id" : "z322890",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2704"
+    },
+    "E1517f1" : "Oodweyne"
+  }, {
+    "@id" : "z322891",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2690"
+    },
+    "E1517f1" : "Qandala"
+  }, {
+    "@id" : "z322892",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2691"
+    },
+    "E1517f1" : "Qansax Dheere"
+  }, {
+    "@id" : "z322893",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2690"
+    },
+    "E1517f1" : "Qardho"
+  }, {
+    "@id" : "z322894",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2697"
+    },
+    "E1517f1" : "Qoryooley"
+  }, {
+    "@id" : "z322895",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2689"
+    },
+    "E1517f1" : "Rab Dhuure"
+  }, {
+    "@id" : "z322896",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2698"
+    },
+    "E1517f1" : "Saakow"
+  }, {
+    "@id" : "z322897",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2697"
+    },
+    "E1517f1" : "Sablale"
+  }, {
+    "@id" : "z322898",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2688"
+    },
+    "E1517f1" : "Saylac"
+  }, {
+    "@id" : "z322899",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2704"
+    },
+    "E1517f1" : "Sheekh"
+  }, {
+    "@id" : "z322900",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2703"
+    },
+    "E1517f1" : "Taleex"
+  }, {
+    "@id" : "z322901",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2689"
+    },
+    "E1517f1" : "Tiyeeglow"
+  }, {
+    "@id" : "z322902",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2689"
+    },
+    "E1517f1" : "Wajid"
+  }, {
+    "@id" : "z322903",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2697"
+    },
+    "E1517f1" : "Wanla Waeyn"
+  }, {
+    "@id" : "z322904",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2700"
+    },
+    "E1517f1" : "Xarardheere (Harardere)"
+  }, {
+    "@id" : "z322905",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2703"
+    },
+    "E1517f1" : "Xudun"
+  }, {
+    "@id" : "z322906",
+    "@owner" : "E1517",
+    "@version" : 0,
+    "@class" : "E1517",
+    "E1517f2" : {
+      "@type" : "REFERENCE",
+      "value" : "z2689"
+    },
+    "E1517f1" : "Xudur (Hudur)"
+  } ]
+} ]
