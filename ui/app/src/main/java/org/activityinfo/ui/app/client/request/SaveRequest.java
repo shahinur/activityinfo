@@ -1,10 +1,10 @@
 package org.activityinfo.ui.app.client.request;
 
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
 
 public class SaveRequest implements Request<UpdateResult> {
@@ -28,7 +28,7 @@ public class SaveRequest implements Request<UpdateResult> {
     }
 
     @Override
-    public Promise<UpdateResult> send(RemoteStoreService service) {
+    public Promise<UpdateResult> send(ActivityInfoAsyncClient service) {
         if(resource.getVersion() == 0) {
             return service.create(resource);
         } else {

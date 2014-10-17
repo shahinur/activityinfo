@@ -4,13 +4,13 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.client.AsyncFormTreeBuilder;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.legacy.criteria.ClassCriteria;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.AsyncFormTreeBuilder;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.ui.widget.loading.DisplayWidget;
 
 import java.util.List;

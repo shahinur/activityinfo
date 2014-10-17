@@ -21,11 +21,11 @@ package org.activityinfo.ui.app.client.chrome.connectivity;
  * #L%
  */
 
+import org.activityinfo.client.StatusCodeException;
 import org.activityinfo.ui.app.client.action.RemoteUpdateHandler;
 import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
-import org.activityinfo.ui.store.remote.client.StatusCodeException;
 
 /**
  * @author yuriyz on 9/8/14.

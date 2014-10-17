@@ -24,6 +24,7 @@ package org.activityinfo.ui.component.form.field;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.gwt.cell.client.ValueUpdater;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.system.ApplicationProperties;
@@ -46,7 +47,6 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalClass;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.ui.component.form.field.hierarchy.HierarchyFieldWidget;
 import org.activityinfo.ui.component.form.field.image.ImageUploadFieldWidget;
 

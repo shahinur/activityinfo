@@ -1,6 +1,6 @@
 package org.activityinfo.ui.app.client;
 
-import org.activityinfo.service.store.RemoteStoreService;
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivityStore;
 import org.activityinfo.ui.app.client.chrome.tasks.TaskStore;
 import org.activityinfo.ui.app.client.request.RequestDispatcher;
@@ -20,10 +20,10 @@ public class Application {
     private final ConnectivityStore connectivityStore;
     private final TaskStore taskStore;
 
-    private final RemoteStoreService remoteService;
+    private final ActivityInfoAsyncClient remoteService;
     private final RequestDispatcher requestDispatcher;
 
-    public Application(RemoteStoreService remoteStoreService) {
+    public Application(ActivityInfoAsyncClient client) {
         dispatcher = new Dispatcher();
 
         router = new Router(dispatcher);
@@ -35,7 +35,7 @@ public class Application {
         connectivityStore = new ConnectivityStore(dispatcher);
         taskStore = new TaskStore(dispatcher);
 
-        remoteService = remoteStoreService;
+        remoteService = client;
         requestDispatcher = new RequestDispatcher(dispatcher, remoteService);
     }
 
@@ -59,7 +59,7 @@ public class Application {
         return draftStore;
     }
 
-    public RemoteStoreService getRemoteService() {
+    public ActivityInfoAsyncClient getRemoteService() {
         return remoteService;
     }
 

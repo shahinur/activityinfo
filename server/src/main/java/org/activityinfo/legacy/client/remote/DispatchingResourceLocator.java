@@ -1,5 +1,6 @@
 package org.activityinfo.legacy.client.remote;
 
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
@@ -13,7 +14,6 @@ import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceLocator;
 
 import java.util.Collection;
 import java.util.List;

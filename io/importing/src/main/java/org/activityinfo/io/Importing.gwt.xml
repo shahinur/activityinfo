@@ -26,6 +26,8 @@
   <inherits name='com.google.gwt.user.User'/>
   <inherits name="org.activityinfo.model.Model"/>
   <inherits name="org.activityinfo.service.Service"/>
+  <inherits name="org.activityinfo.ActivityInfoClient"/>
+  <inherits name="com.google.common.base.Base"/>
 
   <source path="importing"/>
 

@@ -1,9 +1,9 @@
 package org.activityinfo.ui.app.client.request;
 
 import com.google.gwt.user.client.Window;
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.service.store.RemoteStoreService;
 
 public class DownloadBlobRequest implements Request {
 
@@ -14,7 +14,7 @@ public class DownloadBlobRequest implements Request {
     }
 
     @Override
-    public Promise send(RemoteStoreService service) {
+    public Promise send(ActivityInfoAsyncClient service) {
         Window.Location.assign(service.getBlobDownloadUrl(blobId));
         return new Promise<Void>();
     }

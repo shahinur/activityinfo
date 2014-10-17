@@ -12,9 +12,9 @@ import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.activityinfo.client.StatusCodeException;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.ui.store.remote.client.StatusCodeException;
 
 import java.util.Map;
 import java.util.logging.Level;

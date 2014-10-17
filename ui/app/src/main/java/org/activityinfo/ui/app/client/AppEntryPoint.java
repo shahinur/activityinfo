@@ -6,6 +6,8 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.shared.UmbrellaException;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.activityinfo.client.ActivityInfoAsyncClientImpl;
+import org.activityinfo.client.RestEndpoint;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.app.client.chrome.Chrome;
 import org.activityinfo.ui.app.client.chrome.connectivity.ConnectivitySensor;
@@ -13,8 +15,6 @@ import org.activityinfo.ui.app.client.chrome.tasks.TaskSensor;
 import org.activityinfo.ui.app.client.effects.Effects;
 import org.activityinfo.ui.app.client.page.WindowLocationHash;
 import org.activityinfo.ui.app.client.request.FetchWorkspaces;
-import org.activityinfo.ui.store.remote.client.RemoteStoreServiceImpl;
-import org.activityinfo.ui.store.remote.client.RestEndpoint;
 import org.activityinfo.ui.vdom.client.VDomWidget;
 import org.activityinfo.ui.vdom.shared.VDomLogger;
 
@@ -26,7 +26,7 @@ public class AppEntryPoint implements EntryPoint {
     private static final Logger LOGGER = Logger.getLogger("");
 
     public static Application app;
-    public static RemoteStoreServiceImpl service;
+    public static ActivityInfoAsyncClientImpl service;
     private VDomWidget widget;
 
     @Override
@@ -53,7 +53,7 @@ public class AppEntryPoint implements EntryPoint {
 
         I18N.init();
 
-        service = new RemoteStoreServiceImpl(
+        service = new ActivityInfoAsyncClientImpl(
                 new RestEndpoint("/service"));
 
         app = new Application(service);

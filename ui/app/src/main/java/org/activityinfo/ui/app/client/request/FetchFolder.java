@@ -1,9 +1,9 @@
 package org.activityinfo.ui.app.client.request;
 
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.model.resource.FolderProjection;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.RemoteStoreService;
 
 import javax.annotation.Nonnull;
 
@@ -23,7 +23,7 @@ public class FetchFolder implements Request<FolderProjection> {
     }
 
     @Override
-    public Promise<FolderProjection> send(RemoteStoreService service) {
+    public Promise<FolderProjection> send(ActivityInfoAsyncClient service) {
         return service.getFolder(folderId);
     }
 

@@ -106,10 +106,11 @@
     <module>store/test-data</module>
     <module>server</module>
     <module>tools/migrator</module>
+    <module>clients/java</module>
+    <module>clients/java-gwt</module>
     <module>io/importing</module>
     <module>io/excel-loader</module>
     <module>io/odk</module>
-    <module>ui/remote-store</module>
     <module>ui/test-harness</module>
     <module>ui/barcode-scanner</module>
     <module>ui/app</module>
@@ -120,7 +121,6 @@
     <module>ui/widget29</module>
     <module>i18n</module>
     <module>tools/unit-testing</module>
-    <module>clients/java</module>
     <module>tests/api</module>
 
   </modules>

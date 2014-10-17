@@ -1,10 +1,10 @@
 package org.activityinfo.ui.app.client.request;
 
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.RecordBeanClass;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.tasks.TaskModel;
 import org.activityinfo.service.tasks.UserTask;
 
@@ -25,7 +25,7 @@ public class StartTask implements Request<UserTask> {
     }
 
     @Override
-    public Promise<UserTask> send(RemoteStoreService service) {
+    public Promise<UserTask> send(ActivityInfoAsyncClient service) {
         return service.startTask(taskId, taskModelRecord);
     }
 

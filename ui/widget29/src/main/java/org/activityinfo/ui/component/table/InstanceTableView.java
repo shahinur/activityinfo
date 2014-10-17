@@ -10,10 +10,10 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.criteria.Criteria;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.ui.widget.AlertPanel;
 import org.activityinfo.ui.widget.Templates;
 

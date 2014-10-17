@@ -1,6 +1,7 @@
 package org.activityinfo.io.importing;
 
 import com.google.common.collect.Lists;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.io.importing.model.ImportModel;
 import org.activityinfo.io.importing.strategy.FieldImportStrategies;
 import org.activityinfo.io.importing.strategy.FieldImportStrategy;
@@ -9,7 +10,6 @@ import org.activityinfo.io.importing.validation.ValidatedRowTable;
 import org.activityinfo.io.importing.validation.ValidationResult;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceLocator;
 
 import java.util.List;
 

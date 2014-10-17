@@ -24,6 +24,7 @@ package org.activityinfo.server.command;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.client.remote.DispatchingResourceLocator;
 import org.activityinfo.legacy.shared.command.BatchCommand;
@@ -36,16 +37,14 @@ import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.service.store.ResourceLocator;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -56,15 +55,10 @@ import java.util.*;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.model.legacy.CuidAdapter.activityFormClass;
-import static org.activityinfo.model.legacy.CuidAdapter.resourceId;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/schema1.db.xml")

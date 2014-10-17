@@ -2,8 +2,8 @@ package org.activityinfo.ui.app.client.request;
 
 import com.google.common.collect.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.ui.app.client.action.RemoteUpdate;
 import org.activityinfo.ui.app.client.action.RequestFailed;
 import org.activityinfo.ui.app.client.action.RequestStarted;
@@ -26,11 +26,11 @@ public class RequestDispatcher {
     private static final Logger LOGGER = Logger.getLogger(Request.class.getName());
 
     private final Dispatcher dispatcher;
-    private final RemoteStoreService service;
+    private final ActivityInfoAsyncClient service;
 
     private final Map<Request, Promise<?>> pendingRequests = Maps.newHashMap();
 
-    public RequestDispatcher(Dispatcher dispatcher, RemoteStoreService service) {
+    public RequestDispatcher(Dispatcher dispatcher, ActivityInfoAsyncClient service) {
         this.dispatcher = dispatcher;
         this.service = service;
     }

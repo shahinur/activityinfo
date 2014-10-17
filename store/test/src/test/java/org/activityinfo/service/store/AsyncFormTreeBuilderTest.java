@@ -1,6 +1,8 @@
 package org.activityinfo.service.store;
 
 import com.teklabs.gwt.i18n.server.LocaleProxy;
+import org.activityinfo.client.AsyncFormTreeBuilder;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;

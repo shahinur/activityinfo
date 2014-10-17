@@ -1,7 +1,7 @@
 package org.activityinfo.ui.app.client.request;
 
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.RemoteStoreService;
 
 /**
  * Pings the server to test the connection
@@ -9,7 +9,7 @@ import org.activityinfo.service.store.RemoteStoreService;
 public class Ping implements Request<Void> {
 
     @Override
-    public Promise<Void> send(RemoteStoreService service) {
+    public Promise<Void> send(ActivityInfoAsyncClient service) {
         return service.ping();
     }
 }

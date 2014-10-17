@@ -3,6 +3,8 @@ package org.activityinfo.io.importing;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import org.activityinfo.client.AsyncFormTreeBuilder;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.io.importing.data.PastedTable;
 import org.activityinfo.io.importing.match.ColumnMappingGuesser;
 import org.activityinfo.io.importing.model.ImportModel;
@@ -15,8 +17,6 @@ import org.activityinfo.model.formTree.FormTreePrettyPrinter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.converter.JvmConverterFactory;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.AsyncFormTreeBuilder;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Test;

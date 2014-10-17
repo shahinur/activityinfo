@@ -2,15 +2,15 @@ package org.activityinfo.io.importing.strategy;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.legacy.InstanceQuery;
-import org.activityinfo.service.store.ResourceLocator;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.legacy.Projection;
-import org.activityinfo.model.legacy.criteria.ClassCriteria;
-import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.io.importing.source.SourceRow;
 import org.activityinfo.io.importing.validation.ValidationResult;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.legacy.InstanceQuery;
+import org.activityinfo.model.legacy.Projection;
+import org.activityinfo.model.legacy.criteria.ClassCriteria;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;

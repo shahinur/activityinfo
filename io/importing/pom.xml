@@ -30,9 +30,19 @@
 
     <dependency>
       <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-gwt-client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-test-store</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-gwt</artifactId>
     </dependency>
 
     <dependency>

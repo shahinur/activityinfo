@@ -1,19 +1,21 @@
 package org.activityinfo.ui.app.client.request;
 
 import com.google.common.base.Function;
+import org.activityinfo.client.ActivityInfoAsyncClient;
+import org.activityinfo.client.ProjectionAdapter;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.InstanceQuery;
 import org.activityinfo.model.legacy.Projection;
 import org.activityinfo.model.legacy.QueryResult;
-import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.InstanceLabelTable;
 import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ProjectionAdapter;
-import org.activityinfo.service.store.RemoteStoreService;
-import org.activityinfo.service.store.ResourceLocator;
 import org.activityinfo.ui.app.client.Application;
 
 import javax.annotation.Nullable;
@@ -25,7 +27,7 @@ import java.util.Set;
 public class ResourceLocatorAdapter implements ResourceLocator {
 
     private final Application application;
-    private final RemoteStoreService remoteSevice;
+    private final ActivityInfoAsyncClient remoteSevice;
     private RequestDispatcher requestDispatcher;
 
     public ResourceLocatorAdapter(Application application) {

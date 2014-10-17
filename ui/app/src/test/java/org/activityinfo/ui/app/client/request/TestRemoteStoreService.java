@@ -1,5 +1,7 @@
 package org.activityinfo.ui.app.client.request;
 
+import org.activityinfo.client.ActivityInfoAsyncClient;
+import org.activityinfo.client.StatusCodeException;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.record.Record;
@@ -9,14 +11,16 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.service.store.*;
+import org.activityinfo.service.store.FolderRequest;
+import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.service.store.StoreReader;
+import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskStatus;
-import org.activityinfo.ui.store.remote.client.StatusCodeException;
 
 import java.util.List;
 
-public class TestRemoteStoreService implements RemoteStoreService {
+public class TestRemoteStoreService implements ActivityInfoAsyncClient {
 
     private ResourceStore store;
     private AuthenticatedUser user;

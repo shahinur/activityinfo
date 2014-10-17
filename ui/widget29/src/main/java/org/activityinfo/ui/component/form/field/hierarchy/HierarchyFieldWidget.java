@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.hierarchy.Hierarchy;
@@ -14,10 +15,12 @@ import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.component.form.field.ReferenceFieldWidget;
-import org.activityinfo.service.store.ResourceLocator;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Widget for Reference fields which presents multi-level combo boxes

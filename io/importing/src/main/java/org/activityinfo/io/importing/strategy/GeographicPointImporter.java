@@ -1,10 +1,10 @@
 package org.activityinfo.io.importing.strategy;
 
-import org.activityinfo.service.store.ResourceLocator;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.io.importing.source.SourceRow;
 import org.activityinfo.io.importing.validation.ValidationResult;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.converter.CoordinateAxis;
 import org.activityinfo.model.type.converter.CoordinateFormatException;
 import org.activityinfo.model.type.converter.CoordinateParser;

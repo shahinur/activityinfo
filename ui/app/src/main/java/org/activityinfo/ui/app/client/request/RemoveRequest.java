@@ -21,9 +21,9 @@ package org.activityinfo.ui.app.client.request;
  * #L%
  */
 
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
 
 /**
@@ -42,7 +42,7 @@ public class RemoveRequest implements Request<UpdateResult> {
     }
 
     @Override
-    public Promise<UpdateResult> send(RemoteStoreService service) {
+    public Promise<UpdateResult> send(ActivityInfoAsyncClient service) {
         return service.remove(resource);
     }
 }

@@ -49,6 +49,11 @@
       <version>${gae.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.activityinfo</groupId>
+      <artifactId>activityinfo-gwt-client</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <dependency>
       <groupId>com.google.inject</groupId>

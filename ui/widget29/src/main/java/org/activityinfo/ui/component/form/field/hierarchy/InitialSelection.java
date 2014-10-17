@@ -3,6 +3,7 @@ package org.activityinfo.ui.component.form.field.hierarchy;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.hierarchy.Hierarchy;
 import org.activityinfo.model.hierarchy.Level;
 import org.activityinfo.model.hierarchy.Node;
@@ -10,7 +11,6 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceLocator;
 
 import java.util.List;
 import java.util.Map;

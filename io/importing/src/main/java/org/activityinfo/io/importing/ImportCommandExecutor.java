@@ -23,13 +23,13 @@ package org.activityinfo.io.importing;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.io.importing.model.ImportModel;
 import org.activityinfo.io.importing.strategy.ColumnAccessor;
 import org.activityinfo.io.importing.strategy.FieldImporter;
 import org.activityinfo.io.importing.strategy.FieldImporterColumn;
 import org.activityinfo.io.importing.strategy.TargetSiteId;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceLocator;
 
 import javax.annotation.Nullable;
 import java.util.List;

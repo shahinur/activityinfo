@@ -1,9 +1,9 @@
 package org.activityinfo.ui.app.client.request;
 
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.RemoteStoreService;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class FetchCube implements Request<List<Bucket>> {
     }
 
     @Override
-    public Promise<List<Bucket>> send(RemoteStoreService service) {
+    public Promise<List<Bucket>> send(ActivityInfoAsyncClient service) {
         return service.queryCube(cubeModel);
     }
 }

@@ -24,6 +24,7 @@ package org.activityinfo.io.importing.strategy;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.io.importing.source.SourceRow;
 import org.activityinfo.io.importing.validation.ValidationResult;
 import org.activityinfo.model.form.FormInstance;
@@ -37,7 +38,6 @@ import org.activityinfo.model.legacy.criteria.FormClassSet;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceLocator;
 
 import java.util.List;
 import java.util.Map;

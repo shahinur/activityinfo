@@ -5,7 +5,7 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
-import org.activityinfo.service.store.ResourceLocator;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.ui.app.client.Application;
 import org.activityinfo.ui.app.client.request.ResourceLocatorAdapter;
 import org.activityinfo.ui.component.table.TablePage;

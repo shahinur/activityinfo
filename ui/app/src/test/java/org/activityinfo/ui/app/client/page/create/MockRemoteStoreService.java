@@ -3,6 +3,7 @@ package org.activityinfo.ui.app.client.page.create;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.*;
@@ -11,7 +12,6 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.service.store.RemoteStoreService;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tasks.UserTask;
 
@@ -22,7 +22,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 
-public class MockRemoteStoreService implements RemoteStoreService {
+public class MockRemoteStoreService implements ActivityInfoAsyncClient {
 
     private List<Resource> createdResources = Lists.newArrayList();
 

@@ -3,6 +3,7 @@ package org.activityinfo.ui.app.client.chrome.tasks;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import org.activityinfo.client.StatusCodeException;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.service.tasks.UserTaskStatus;
@@ -14,7 +15,6 @@ import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.app.client.request.StartTask;
 import org.activityinfo.ui.flux.dispatcher.Dispatcher;
 import org.activityinfo.ui.flux.store.AbstractStore;
-import org.activityinfo.ui.store.remote.client.StatusCodeException;
 
 import java.util.Date;
 import java.util.List;

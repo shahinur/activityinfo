@@ -8,6 +8,7 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.hierarchy.Hierarchy;
 import org.activityinfo.model.hierarchy.Level;
 import org.activityinfo.model.hierarchy.Node;
@@ -19,7 +20,6 @@ import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.service.store.ResourceLocator;
 
 import javax.annotation.Nullable;
 import java.util.*;

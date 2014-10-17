@@ -4,10 +4,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.activityinfo.client.AsyncFormTreeBuilder;
+import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.AsyncFormTreeBuilder;
-import org.activityinfo.service.store.ResourceLocator;
 
 public class ImportLauncher {
 
