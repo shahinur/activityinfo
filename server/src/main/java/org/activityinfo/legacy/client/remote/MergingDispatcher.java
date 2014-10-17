@@ -30,6 +30,8 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
+import org.activityinfo.legacy.shared.exception.CommandTimeoutException;
+import org.activityinfo.legacy.shared.util.Commands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +84,7 @@ public class MergingDispatcher extends AbstractDispatcher {
 
         CommandRequest request = new CommandRequest(command, callback);
 
-        if (request.isMutating()) {
+        if (Commands.hasMutatingCommand(command)) {
             // mutating requests get queued immediately, don't try to merge them
             // into any pending/executing commands, it wouldn't be correct
 
@@ -93,7 +95,7 @@ public class MergingDispatcher extends AbstractDispatcher {
                 queue(request);
 
                 Log.debug("MergingDispatcher: Scheduled " + command.toString() + ", now " +
-                          pendingCommands.size() + " command(s) pending");
+                        pendingCommands.size() + " command(s) pending");
             }
         }
     }
@@ -111,21 +113,48 @@ public class MergingDispatcher extends AbstractDispatcher {
 
         if (!sent.isEmpty()) {
             for (final CommandRequest request : sent) {
-                dispatcher.execute(request.getCommand(), new AsyncCallback() {
-
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        executingCommands.remove(request);
-                        request.onFailure(caught);
-                    }
-
-                    @Override
-                    public void onSuccess(Object result) {
-                        executingCommands.remove(request);
-                        request.onSuccess(result);
-                    }
-                });
+                executeCommand(request, new RetryCountDown());
             }
+        }
+    }
+
+    private void executeCommand(final CommandRequest request, final RetryCountDown retryCountDown) {
+        dispatcher.execute(request.getCommand(), new AsyncCallback() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof CommandTimeoutException) {
+                    Log.debug("Request timed out, retrying...");
+                    retry(request, retryCountDown);
+                } else {
+                    executingCommands.remove(request);
+                    request.onFailure(caught);
+                }
+            }
+
+            @Override
+            public void onSuccess(Object result) {
+                executingCommands.remove(request);
+                request.onSuccess(result);
+            }
+        });
+    }
+
+    private void retry(final CommandRequest request, final RetryCountDown retryCountDown) {
+        try {
+            long waitPeriod = retryCountDown.countDownAndGetWaitPeriod();
+            Log.debug("Retry will run in " + waitPeriod + "ms.");
+            Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
+                @Override
+                public boolean execute() {
+                    executeCommand(request, retryCountDown);
+                    return false;
+                }
+            }, (int) waitPeriod);
+        } catch (Exception e) {
+            Log.error(e.getMessage(), e);
+            executingCommands.remove(request);
+            request.onFailure(e);
         }
     }
 }

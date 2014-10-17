@@ -27,6 +27,10 @@ import com.bedatadriven.rebar.sql.client.SqlResultSet;
 import com.bedatadriven.rebar.sql.client.SqlResultSetRow;
 import com.bedatadriven.rebar.sql.client.SqlTransaction;
 import com.bedatadriven.rebar.sql.client.query.SqlQuery;
+import com.google.appengine.api.memcache.Expiration;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -45,11 +49,14 @@ import org.activityinfo.server.report.ReportParserJaxb;
 import javax.persistence.EntityManager;
 import javax.xml.bind.JAXBException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel, ReportDTO> {
 
     private static final Logger LOGGER = Logger.getLogger(GetReportModelHandler.class.getName());
+
+    private final MemcacheService memcacheService = MemcacheServiceFactory.getMemcacheService();
 
     private final EntityManager em;
 
@@ -63,60 +70,70 @@ public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel
                         final ExecutionContext context,
                         final AsyncCallback<ReportDTO> callback) {
 
-        ReportDTO reportDTO = null;
-        Integer reportId = cmd.getReportId();
+        LOGGER.finest("Loading model for report id = " + cmd.getReportId());
+        Preconditions.checkNotNull(cmd.getReportId());
 
-        LOGGER.finest("Loading model for report id = " + reportId);
+        ReportDTO cachedReport = (ReportDTO) memcacheService.get(cmd);
+        if (cachedReport != null) {
+            callback.onSuccess(cachedReport);
+            return;
+        }
 
-        if (reportId != null) {
+        // always load report
+        ReportDefinition entity = em.find(ReportDefinition.class, cmd.getReportId());
+        Report report = parseReport(entity)
+                .setId(cmd.getReportId());
 
-            // always load report
-            ReportDefinition entity = em.find(ReportDefinition.class, reportId);
-            Report report = new Report();
 
-            try {
-                LOGGER.finest("Starting to parse xml (size = " + entity.getXml().length() + ")");
+        ReportDTO reportDTO = new ReportDTO(report);
 
-                report = ReportParserJaxb.parseXml(entity.getXml());
-
-                LOGGER.finest("Parsing complete");
-            } catch (JAXBException e) {
-                throw new UnexpectedCommandException(e);
-            }
-            report.setId(reportId);
-
-            reportDTO = new ReportDTO(report);
-
-            if (cmd.isLoadMetadata()) {
-                // load metadata if specified
-                loadMetadata(reportId, context, reportDTO, callback);
-            } else {
-                // exit handler with only the report object filled
-                callback.onSuccess(reportDTO);
-            }
+        if (cmd.isLoadMetadata()) {
+            loadMetadataAndCallback(cmd, context, reportDTO, callback);
+        } else {
+            // report object without metadata
+            memcache(cmd, reportDTO);
+            callback.onSuccess(reportDTO);
         }
     }
 
-    private void loadMetadata(final Integer reportId,
-                              final ExecutionContext context,
-                              final ReportDTO reportDTO,
-                              final AsyncCallback<ReportDTO> callback) {
+    private void memcache(GetReportModel cmd, ReportDTO report) {
+        try {
+            memcacheService.put(cmd, report, Expiration.byDeltaSeconds(60), MemcacheService.SetPolicy.ADD_ONLY_IF_NOT_PRESENT);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Exception putting report model to memcache", e);
+        }
+    }
+
+    private Report parseReport(ReportDefinition entity) {
+        try {
+            LOGGER.finest("Starting to parse xml (size = " + entity.getXml().length() + ")");
+
+            return ReportParserJaxb.parseXml(entity.getXml());
+        } catch (JAXBException e) {
+            throw new UnexpectedCommandException(e);
+        }
+    }
+
+    private void loadMetadataAndCallback(final GetReportModel cmd,
+                                         final ExecutionContext context,
+                                         final ReportDTO reportDTO,
+                                         final AsyncCallback<ReportDTO> callback) {
 
         final int userId = context.getUser().getId();
 
         SqlQuery mySubscriptions = SqlQuery.selectAll().from("reportsubscription").where("userId").equalTo(userId);
 
         SqlQuery myDatabases = SqlQuery.selectSingle("d.databaseid")
-                                       .from("userdatabase", "d")
-                                       .leftJoin(SqlQuery.selectAll()
-                                                         .from(Tables.USER_PERMISSION, "UserPermission")
-                                                         .where("UserPermission.UserId")
-                                                         .equalTo(userId), "p")
-                                       .on("p.DatabaseId = d.DatabaseId")
-                                       .where("d.ownerUserId")
-                                       .equalTo(userId)
-                                       .or("p.AllowView")
-                                       .equalTo(1);
+                .from("userdatabase", "d")
+                .leftJoin(SqlQuery.selectAll()
+                        .from(Tables.USER_PERMISSION, "UserPermission")
+                        .where("UserPermission.UserId")
+                        .equalTo(userId), "p")
+                .on("p.DatabaseId = d.DatabaseId")
+                .where("d.ownerUserId")
+                .equalTo(userId)
+                .or("p.AllowView")
+                .equalTo(1);
 
         SqlQuery.select()
                 .appendColumn("r.reportTemplateId", "reportId")
@@ -127,10 +144,10 @@ public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel
                 .appendColumn("s.emaildelivery", "emaildelivery")
                 .appendColumn("s.emailday", "emailday")
                 .appendColumn(SqlQuery.selectSingle("max(defaultDashboard)")
-                                      .from("reportvisibility", "v")
-                                      .where("v.databaseId")
-                                      .in(myDatabases)
-                                      .whereTrue("v.reportid = r.reportTemplateId"), "defaultDashboard")
+                        .from("reportvisibility", "v")
+                        .where("v.databaseId")
+                        .in(myDatabases)
+                        .whereTrue("v.reportid = r.reportTemplateId"), "defaultDashboard")
                 .from("reporttemplate", "r")
                 .leftJoin("userlogin o")
                 .on("o.userid = r.ownerUserId")
@@ -139,7 +156,7 @@ public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel
                 .where("r.ownerUserId")
                 .equalTo(userId)
                 .where("r.reportTemplateId")
-                .equalTo(reportId)
+                .equalTo(cmd.getReportId())
                 .execute(context.getTransaction(), new SqlResultCallback() {
 
                     @Override
@@ -172,7 +189,7 @@ public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel
 
                         if (dtos.size() == 0) {
                             ReportMetadataDTO dummy = new ReportMetadataDTO();
-                            dummy.setId(reportId);
+                            dummy.setId(cmd.getReportId());
                             dtos.add(dummy);
                         }
 
@@ -181,6 +198,7 @@ public class GetReportModelHandler implements CommandHandlerAsync<GetReportModel
 
                         // exit handler with both the report and metadata objects
                         // filled
+                        memcache(cmd, reportDTO);
                         callback.onSuccess(reportDTO);
                     }
                 });

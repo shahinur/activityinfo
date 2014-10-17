@@ -23,12 +23,13 @@ package org.activityinfo.ui.client.page.dashboard;
  */
 
 import com.extjs.gxt.ui.client.widget.custom.Portal;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.command.GetReports;
-import org.activityinfo.legacy.shared.command.result.ReportsResult;
-import org.activityinfo.legacy.shared.model.ReportMetadataDTO;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
+import org.activityinfo.legacy.shared.command.GetDashboard;
+import org.activityinfo.legacy.shared.command.result.DashboardResult;
+import org.activityinfo.legacy.shared.model.ReportDTO;
+import org.activityinfo.legacy.shared.reports.content.Content;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.page.NavigationCallback;
 import org.activityinfo.ui.client.page.Page;
@@ -38,6 +39,8 @@ import org.activityinfo.ui.client.page.dashboard.portlets.ChooseReportsPortlet;
 import org.activityinfo.ui.client.page.dashboard.portlets.GoogleEarthPortlet;
 import org.activityinfo.ui.client.page.dashboard.portlets.NewsPortlet;
 import org.activityinfo.ui.client.page.dashboard.portlets.ReportPortlet;
+
+import java.util.Map;
 
 public class DashboardPage extends Portal implements Page {
 
@@ -58,29 +61,22 @@ public class DashboardPage extends Portal implements Page {
 
         add(new NewsPortlet(), 1);
         add(new GoogleEarthPortlet(), 1);
-        loadReports();
+
+        loadDashboard();
 
     }
 
-    private void loadReports() {
-        dispatcher.execute(new GetReports(), new AsyncCallback<ReportsResult>() {
-
+    private void loadDashboard() {
+        dispatcher.execute(new GetDashboard(), new SuccessCallback<DashboardResult>() {
             @Override
-            public void onFailure(Throwable caught) {
-
-            }
-
-            @Override
-            public void onSuccess(ReportsResult result) {
-                boolean haveReports = false;
-                for (ReportMetadataDTO report : result.getData()) {
-                    if (report.isDashboard()) {
-                        add(new ReportPortlet(dispatcher, eventBus, report), 0);
-                        haveReports = true;
-                    }
-                }
-                if (!haveReports) {
+            public void onSuccess(DashboardResult result) {
+                Map<ReportDTO, Content> reports = result.getReportMap();
+                if (reports.isEmpty()) {
                     add(new ChooseReportsPortlet(), 0);
+                } else {
+                    for (Map.Entry<ReportDTO, Content> entry  : reports.entrySet()) {
+                        add(new ReportPortlet(dispatcher, eventBus, entry.getKey(), entry.getValue()), 0);
+                    }
                 }
                 layout();
             }
@@ -109,7 +105,6 @@ public class DashboardPage extends Portal implements Page {
 
     @Override
     public void shutdown() {
-
     }
 
     @Override

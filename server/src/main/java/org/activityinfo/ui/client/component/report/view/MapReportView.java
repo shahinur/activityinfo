@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.activityinfo.legacy.shared.reports.model.MapReportElement;
 import org.activityinfo.ui.client.component.report.editor.map.LeafletMap;
 import org.activityinfo.ui.client.component.report.editor.map.symbols.LeafletReportOverlays;
@@ -43,6 +44,7 @@ public class MapReportView extends ContentPanel implements ReportView<MapReportE
     public MapReportView() {
         LeafletResourceInjector.ensureInjected();
 
+        setLayout(new FitLayout());
         setHeaderVisible(false);
     }
 

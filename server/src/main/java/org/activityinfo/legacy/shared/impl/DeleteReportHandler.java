@@ -26,6 +26,7 @@ import com.bedatadriven.rebar.sql.client.query.SqlUpdate;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.shared.command.DeleteReport;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
+import org.activityinfo.server.command.handler.UpdateReportModelHandler;
 
 public class DeleteReportHandler implements CommandHandlerAsync<DeleteReport, VoidResult> {
 
@@ -40,6 +41,8 @@ public class DeleteReportHandler implements CommandHandlerAsync<DeleteReport, Vo
         SqlUpdate.delete(Tables.REPORT_VISIBILITY)
                  .where("reportId", command.getReportId())
                  .execute(context.getTransaction());
+
+        UpdateReportModelHandler.invalidateMemcache(command.getReportId());
 
         callback.onSuccess(null);
     }
