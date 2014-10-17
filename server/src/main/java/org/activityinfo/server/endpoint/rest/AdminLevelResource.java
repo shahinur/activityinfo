@@ -27,6 +27,7 @@ import com.google.common.base.Charsets;
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.api.view.Viewable;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.ParseException;
@@ -36,7 +37,6 @@ import org.activityinfo.server.endpoint.rest.model.*;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.util.DefaultPrettyPrinter;
-import org.hibernate.Session;
 
 import javax.inject.Provider;
 import javax.persistence.EntityManager;
@@ -142,7 +142,7 @@ public class AdminLevelResource {
                 json.writeEndObject();
 
                 json.writeFieldName("geometry");
-                geometrySerializer.writeGeometry(json, entity.getGeometry());
+                geometrySerializer.writeGeometry(json, asPolygonOrMultiPolygon(entity.getGeometry()));
                 json.writeEndObject();
             }
         }
@@ -152,6 +152,25 @@ public class AdminLevelResource {
         json.close();
 
         return Response.ok().entity(baos.toByteArray()).type(MediaType.APPLICATION_JSON).build();
+    }
+
+    private Geometry asPolygonOrMultiPolygon(Geometry geometry) {
+        if(geometry instanceof Polygon) {
+            return geometry;
+        } else if(geometry instanceof GeometryCollection) {
+            try {
+                GeometryCollection collection = (GeometryCollection) geometry;
+                Polygon[] polygons = new Polygon[collection.getNumGeometries()];
+                for (int i = 0; i != polygons.length; ++i) {
+                    polygons[i] = (Polygon) collection.getGeometryN(i);
+                }
+                return new MultiPolygon(polygons, collection.getFactory());
+            } catch(Exception e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     @PUT @Consumes(MediaType.APPLICATION_JSON)
