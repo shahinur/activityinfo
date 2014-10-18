@@ -112,6 +112,7 @@
     <module>io/excel-loader</module>
     <module>io/odk</module>
     <module>ui/test-harness</module>
+    <module>geoadmin</module>
     <module>ui/barcode-scanner</module>
     <module>ui/app</module>
     <module>ui/style</module>
