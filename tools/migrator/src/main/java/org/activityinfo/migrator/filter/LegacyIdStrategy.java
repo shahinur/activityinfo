@@ -1,5 +1,6 @@
 package org.activityinfo.migrator.filter;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -10,8 +11,17 @@ import java.util.Map;
 
 public class LegacyIdStrategy implements IdStrategy {
 
+    private final IdStore persistentMap;
     private Map<ResourceId, ResourceId> revertedIds = Maps.newHashMap();
     private KeyGenerator keyGenerator = new KeyGenerator();
+
+    public LegacyIdStrategy() {
+        this(new NullIdStore());
+    }
+
+    public LegacyIdStrategy(IdStore idStore) {
+        this.persistentMap = idStore;
+    }
 
     @Override
     public ResourceId resourceId(char domain, int id) {
@@ -38,22 +48,34 @@ public class LegacyIdStrategy implements IdStrategy {
         return ResourceId.valueOf("_geodb");
     }
 
-    @Override
-    public ResourceId mapToLegacyId(char domain, ResourceId resourceId) {
-        ResourceId legacyId = revertedIds.get(resourceId);
-        if(legacyId == null) {
-            legacyId = CuidAdapter.cuid(domain, keyGenerator.generateInt());
-            revertedIds.put(resourceId, legacyId);
+    private Optional<ResourceId> getRevertedId(ResourceId cuid) {
+        if(revertedIds.containsKey(cuid)) {
+            return Optional.of(revertedIds.get(cuid));
+        } else {
+            return persistentMap.getNewId(cuid);
         }
-        return legacyId;
     }
 
     @Override
-    public ResourceId mapToLegacyId(ResourceId id) {
-        if(id.asString().equals("backupBlobId")) {
+    public ResourceId mapToLegacyId(char domain, ResourceId cuid) {
+        Optional<ResourceId> storedId = getRevertedId(cuid);
+        if(storedId.isPresent()) {
+            return storedId.get();
+        } else {
+            ResourceId legacyId = CuidAdapter.cuid(domain, keyGenerator.generateInt());
+            revertedIds.put(cuid, legacyId);
+            persistentMap.putNewId(cuid, legacyId);
+            return legacyId;
+        }
+    }
+
+    @Override
+    public ResourceId mapToLegacyId(ResourceId cuid) {
+        if(cuid.asString().equals("backupBlobId")) {
             return ResourceId.valueOf("#importedFrom");
         }
-        Preconditions.checkState(revertedIds.containsKey(id), "Id %s has not yet been mapped", id.asString());
-        return revertedIds.get(id);
+        Optional<ResourceId> legacyId = getRevertedId(cuid);
+        Preconditions.checkState(legacyId.isPresent(), "Id %s has not yet been mapped", cuid.asString());
+        return legacyId.get();
     }
 }

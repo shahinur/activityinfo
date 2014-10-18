@@ -37,6 +37,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.activityinfo.model.legacy.CuidAdapter.getLegacyId;
+import static org.activityinfo.model.resource.ResourceId.valueOf;
+
 
 public class SiteFormQuery {
     private static final Logger LOGGER = Logger.getLogger(SiteFormQuery.class.getName());
@@ -69,7 +72,7 @@ public class SiteFormQuery {
 
         TableModel tableModel = new TableModel(formClassId);
         tableModel.setFilter(filterExpr());
-        tableModel.selectResourceId().as("id");
+        tableModel.selectResourceId().as("_id");
 
 
         Set<ResourceId> referencedClassIds = Sets.newHashSet();
@@ -111,7 +114,7 @@ public class SiteFormQuery {
         // Use legacy property names if applicable, mostly for unit tests
         switch(classId.getDomain()) {
             case CuidAdapter.ADMIN_ENTITY_DOMAIN:
-                return AdminEntityDTO.getPropertyName(CuidAdapter.getLegacyId(classId));
+                return AdminEntityDTO.getPropertyName(getLegacyId(classId));
             case CuidAdapter.PARTNER_FORM_CLASS_DOMAIN:
                 return "partnerName";
             case CuidAdapter.PROJECT_CLASS_DOMAIN:
@@ -146,19 +149,26 @@ public class SiteFormQuery {
             int[] order = computeOrder(tableData, sortInfo);
 
             // Prepare for copying by putting ids / views into arrays
-            int numColumns = tableData.getColumns().size();
+            int numColumns = tableData.getColumns().size() - 1;
+            ColumnView id = tableData.getColumnView("_id");
             String columnIds[] = new String[numColumns];
             ColumnView views[] = new ColumnView[numColumns];
             int j = 0;
             for (Map.Entry<String, ColumnView> entry : tableData.getColumns().entrySet()) {
-                columnIds[j] = entry.getKey();
-                views[j] = entry.getValue();
-                j++;
+                if(!entry.getKey().equals("_id")) {
+                    columnIds[j] = entry.getKey();
+                    views[j] = entry.getValue();
+                    j++;
+                }
             }
+
+            int activityId = getLegacyId(formClassId);
 
             // Copy the data into the SiteDTO objects
             for (int i = start; i < numRows; ++i) {
                 SiteDTO dto = new SiteDTO();
+                dto.setId(getLegacyId(valueOf(id.getString(i))));
+                dto.setActivityId(activityId);
                 dto.setFormClassId(formClassId);
 
                 int ii;

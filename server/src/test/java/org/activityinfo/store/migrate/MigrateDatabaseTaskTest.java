@@ -80,13 +80,11 @@ public class MigrateDatabaseTaskTest {
         GetSitesHandler getSitesHandler = new GetSitesHandler(store);
         SiteResult sites = (SiteResult) getSitesHandler.execute(GetSites.byActivity(1137), mithunEntity);
 
+        assertThat(sites.getData().get(0).getId(), instanceOf(Integer.class));
+
         for(SiteDTO site : sites.getData()) {
             System.out.println(site.get(barcode.getPropertyName()));
         }
-
-
-
-
     }
 
     private IndicatorDTO findIndicator(ActivityDTO activity, String label) {
