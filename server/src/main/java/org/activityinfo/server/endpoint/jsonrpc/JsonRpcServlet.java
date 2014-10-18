@@ -1,16 +1,15 @@
 package org.activityinfo.server.endpoint.jsonrpc;
 
 import com.extjs.gxt.ui.client.data.RpcMap;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.io.ByteStreams;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.server.command.DispatcherSync;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.module.SimpleModule;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -32,15 +31,16 @@ public class JsonRpcServlet extends HttpServlet {
     public JsonRpcServlet(DispatcherSync dispatcher) {
         this.dispatcher = dispatcher;
 
-        SimpleModule module = new SimpleModule("Command", new Version(1, 0, 0, null));
+        SimpleModule module = new SimpleModule();
         module.addDeserializer(Command.class, new CommandDeserializer());
         module.addDeserializer(RpcMap.class, new RpcMapDeserializer());
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(module);
 
+
         // to ensure that VoidResult is handled without error
-        objectMapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
+        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
     }
 
     @Override

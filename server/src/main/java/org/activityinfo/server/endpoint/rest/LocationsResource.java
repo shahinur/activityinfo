@@ -1,5 +1,7 @@
 package org.activityinfo.server.endpoint.rest;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.legacy.shared.command.GetLocations;
 import org.activityinfo.legacy.shared.command.result.LocationResult;
@@ -11,7 +13,6 @@ import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.Location;
 import org.activityinfo.server.database.hibernate.entity.LocationType;
 import org.activityinfo.server.endpoint.rest.model.NewLocation;
-import org.codehaus.jackson.JsonGenerator;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.*;
@@ -25,10 +26,12 @@ import java.util.List;
 
 public class LocationsResource {
 
-    private DispatcherSync dispatcher;
+    private final DispatcherSync dispatcher;
+    private final ObjectMapper objectMapper;
 
-    public LocationsResource(DispatcherSync dispatcher) {
+    public LocationsResource(DispatcherSync dispatcher, ObjectMapper objectMapper) {
         this.dispatcher = dispatcher;
+        this.objectMapper = objectMapper;
     }
 
     @GET @Produces(MediaType.APPLICATION_JSON)
@@ -41,7 +44,7 @@ public class LocationsResource {
 
 
         StringWriter writer = new StringWriter();
-        JsonGenerator json = Jackson.createJsonFactory(writer);
+        JsonGenerator json = objectMapper.getFactory().createGenerator(writer);
 
         json.writeStartArray();
         for (LocationDTO location : result.getData()) {

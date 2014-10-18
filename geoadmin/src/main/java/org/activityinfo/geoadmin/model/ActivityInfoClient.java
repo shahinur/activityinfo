@@ -1,15 +1,15 @@
 package org.activityinfo.geoadmin.model;
 
-import com.bedatadriven.geojson.GeoJsonModule;
+import com.bedatadriven.geojson.jackson2.GeoJsonModule;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
-import com.sun.jersey.api.json.JSONConfiguration;
 import com.vividsolutions.jts.geom.Point;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -49,12 +49,9 @@ public class ActivityInfoClient {
      *            User's plaintext password
      */
     public ActivityInfoClient(String endpoint, String username, String password) {
-        ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-        clientConfig.getClasses().add(ObjectMapperProvider.class);
-//        clientConfig.getProperties().put(com.sun.jersey.client.urlconnection.HTTPSProperties.PROPERTY_HTTPS_PROPERTIES,
-//                new HTTPSProperties(new ActivityInfoHostnameVerifier(), getSSLContext()));
-
+        ClientConfig clientConfig = new DefaultClientConfig(
+                JacksonJsonProvider.class,
+                ObjectMapperProvider.class);
 
         client = Client.create(clientConfig);
         client.addFilter(new HTTPBasicAuthFilter(username, password));

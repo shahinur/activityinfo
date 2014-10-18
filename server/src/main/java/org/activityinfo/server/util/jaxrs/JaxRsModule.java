@@ -1,7 +1,7 @@
 package org.activityinfo.server.util.jaxrs;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.google.inject.servlet.ServletModule;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 
 /**
  * Provides the basic configuration for the Jersey Container,

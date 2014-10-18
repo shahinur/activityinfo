@@ -22,6 +22,8 @@ package org.activityinfo.server.endpoint.rest;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import org.activityinfo.legacy.shared.command.GetCountries;
@@ -34,7 +36,6 @@ import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.database.hibernate.entity.Country;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.*;
@@ -47,6 +48,7 @@ import java.util.List;
 public class RootResource {
 
     private Provider<EntityManager> entityManager;
+    private ObjectMapper objectMapper;
     private DispatcherSync dispatcher;
     private DeploymentConfiguration config;
 
@@ -139,6 +141,6 @@ public class RootResource {
 
     @Path("/locations")
     public LocationsResource getLocations() {
-        return new LocationsResource(dispatcher);
+        return new LocationsResource(dispatcher, objectMapper);
     }
 }

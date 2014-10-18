@@ -22,7 +22,10 @@ package org.activityinfo.server.endpoint.rest;
  * #L%
  */
 
-import com.bedatadriven.geojson.GeometrySerializer;
+import com.bedatadriven.geojson.jackson2.GeometrySerializer;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.google.common.base.Charsets;
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.api.view.Viewable;
@@ -34,9 +37,6 @@ import com.vividsolutions.jts.io.ParseException;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.*;
 import org.activityinfo.server.endpoint.rest.model.*;
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.util.DefaultPrettyPrinter;
 
 import javax.inject.Provider;
 import javax.persistence.EntityManager;
@@ -102,7 +102,7 @@ public class AdminLevelResource {
 
     @GET @Path("/entities") @Produces(MediaType.APPLICATION_JSON)
     public List<AdminEntity> getEntities(@InjectParam EntityManager em) {
-        return em.createQuery("select e  from AdminEntity e where e.deleted = false and e.level = :level")
+        return em.createQuery("select e  from AdminEntity e where e.deleted = false and e.level = :level", AdminEntity.class)
                  .setParameter("level", level)
                  .getResultList();
     }
@@ -115,12 +115,12 @@ public class AdminLevelResource {
         OutputStreamWriter writer = new OutputStreamWriter(baos, Charsets.UTF_8);
 
         List<AdminEntity> entities = em.createQuery(
-                "select e  from AdminEntity e where e.deleted = false and e.level = :level")
+                "select e  from AdminEntity e where e.deleted = false and e.level = :level", AdminEntity.class)
                                        .setParameter("level", level)
                                        .getResultList();
 
         JsonFactory jfactory = new JsonFactory();
-        JsonGenerator json = jfactory.createJsonGenerator(writer);
+        JsonGenerator json = jfactory.createGenerator(writer);
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         json.setPrettyPrinter(prettyPrinter);
         json.writeStartObject();

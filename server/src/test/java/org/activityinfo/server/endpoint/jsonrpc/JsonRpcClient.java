@@ -22,15 +22,14 @@ package org.activityinfo.server.endpoint.jsonrpc;
  */
 
 import com.extjs.gxt.ui.client.data.RpcMap;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 import org.activityinfo.legacy.shared.command.Command;
-import org.codehaus.jackson.Version;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.module.SimpleModule;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -55,13 +54,13 @@ public class JsonRpcClient {
         this.username = username;
         this.password = password;
 
-        SimpleModule module = new SimpleModule("Command", new Version(1, 0, 0, null));
+        SimpleModule module = new SimpleModule();
         module.addDeserializer(Command.class, new CommandDeserializer());
         module.addDeserializer(RpcMap.class, new RpcMapDeserializer());
 
         objectMapper = new ObjectMapper();
         objectMapper.registerModule(module);
-        objectMapper.disable(SerializationConfig.Feature.FAIL_ON_EMPTY_BEANS);
+        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
         ClientConfig clientConfig = new DefaultClientConfig();
 //        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);

@@ -23,14 +23,13 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.Strings;
 import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.TypeRegistry;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonView;
 
 /**
  * One-to-one DTO for the
@@ -39,7 +38,8 @@ import org.codehaus.jackson.map.annotate.JsonView;
  *
  * @author Alex Bertram
  */
-@JsonAutoDetect(JsonMethod.NONE)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+
 public final class IndicatorDTO extends BaseModelData implements EntityDTO, ProvidesKey, IsFormField {
     public final static int AGGREGATE_SUM = 0;
     public final static int AGGREGATE_AVG = 1;

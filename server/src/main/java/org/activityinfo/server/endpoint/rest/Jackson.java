@@ -1,14 +1,13 @@
 package org.activityinfo.server.endpoint.rest;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.util.DefaultPrettyPrinter;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.AnnotationIntrospector;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -18,36 +17,10 @@ public class Jackson {
 
     static JsonGenerator createJsonFactory(StringWriter writer) throws IOException {
         JsonFactory jfactory = new JsonFactory();
-        JsonGenerator json = jfactory.createJsonGenerator(writer);
+        JsonGenerator json = jfactory.createGenerator(writer);
         DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
         json.setPrettyPrinter(prettyPrinter);
         return json;
-    }
-
-    public static String asJson(Object object) throws IOException {
-        final ObjectMapper mapper = createJsonMapper().configure(SerializationConfig.Feature.WRAP_ROOT_VALUE, false);
-        return mapper.writeValueAsString(object);
-    }
-
-    public static String asJsonSilently(Object object) {
-        try {
-            return asJson(object);
-        } catch (IOException e) {
-            return "";
-        }
-    }
-
-    /**
-     * Pretty json representation of object.
-     *
-     * @param object object to represent
-     * @return json as string
-     * @throws IOException
-     */
-    public static String asPrettyJson(Object object) throws IOException {
-        final ObjectMapper mapper = createJsonMapper().configure(SerializationConfig.Feature.WRAP_ROOT_VALUE, false);
-        final ObjectWriter writer = mapper.writer().withDefaultPrettyPrinter();
-        return writer.writeValueAsString(object);
     }
 
     /**
@@ -56,14 +29,13 @@ public class Jackson {
      * @return json mapper
      */
     public static ObjectMapper createJsonMapper() {
-        final AnnotationIntrospector jaxb = new JaxbAnnotationIntrospector();
+        final AnnotationIntrospector jaxb = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
         final AnnotationIntrospector jackson = new JacksonAnnotationIntrospector();
 
-        final AnnotationIntrospector pair = new AnnotationIntrospector.Pair(jackson, jaxb);
+        final AnnotationIntrospector pair = AnnotationIntrospector.pair(jackson, jaxb);
 
         final ObjectMapper mapper = new ObjectMapper();
-        mapper.getDeserializationConfig().withAnnotationIntrospector(pair);
-        mapper.getSerializationConfig().withAnnotationIntrospector(pair);
+        mapper.setAnnotationIntrospectors(jackson, jaxb);
         return mapper;
     }
 

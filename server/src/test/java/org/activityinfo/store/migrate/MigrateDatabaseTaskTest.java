@@ -1,5 +1,6 @@
 package org.activityinfo.store.migrate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
@@ -13,7 +14,6 @@ import org.activityinfo.server.util.jaxrs.Utf8JacksonJsonProvider;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.test.TestResourceStore;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
 
 import java.util.Properties;

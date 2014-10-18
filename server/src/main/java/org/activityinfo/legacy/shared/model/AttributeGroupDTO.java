@@ -23,10 +23,9 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonMethod;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonView;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,8 @@ import java.util.List;
  * {@link org.activityinfo.server.database.hibernate.entity.AttributeGroup}
  * domain object
  */
-@JsonAutoDetect(JsonMethod.NONE)
+@JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
+
 public final class AttributeGroupDTO extends BaseModelData implements EntityDTO, IsFormField {
     private static final long serialVersionUID = 7927425202152761370L;
     public static final String PROPERTY_PREFIX = "AG";

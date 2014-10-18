@@ -1,6 +1,7 @@
 package org.activityinfo.server.endpoint.rest;
 
 import com.bedatadriven.rebar.time.calendar.LocalDate;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -8,7 +9,6 @@ import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.MonthlyReportResult;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.server.command.DispatcherSync;
-import org.codehaus.jackson.JsonGenerator;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
