@@ -29,8 +29,9 @@
 
     <dependency>
       <groupId>org.activityinfo</groupId>
-      <artifactId>activityinfo-remote-store</artifactId>
+      <artifactId>activityinfo-gwt-client</artifactId>
       <version>${project.version}</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
