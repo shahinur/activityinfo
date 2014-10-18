@@ -29,7 +29,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.Date;
 
@@ -68,7 +67,7 @@ public class LocalDateColumn extends ReadTextColumn {
                 } else {
                     throw new RuntimeException("Don't know how to handle date as class " + value.getClass().getName());
                 }
-                return GwtUtil.valueWithTooltip(FORMAT.format(date));
+                return FORMAT.format(date);
             }
 
         });

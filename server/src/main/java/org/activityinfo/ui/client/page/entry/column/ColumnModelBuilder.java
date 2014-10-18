@@ -37,7 +37,6 @@ import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.ui.client.page.common.columns.EditableLocalDateColumn;
 import org.activityinfo.ui.client.page.common.columns.ReadTextColumn;
-import org.activityinfo.ui.client.util.GwtUtil;
 
 import java.util.List;
 
@@ -63,7 +62,7 @@ public class ColumnModelBuilder {
                                  Grid<SiteDTO> grid) {
 
                 ActivityDTO activity = database.getActivityById(model.getActivityId());
-                return GwtUtil.valueWithTooltip(activity == null ? "" : activity.getName());
+                return (activity == null ? "" : activity.getName());
             }
         });
         columns.add(config);
@@ -85,7 +84,7 @@ public class ColumnModelBuilder {
                                  Grid<SiteDTO> grid) {
 
                 ActivityDTO activity = schema.getActivityById(model.getActivityId());
-                return GwtUtil.valueWithTooltip(activity == null ? "" : activity.getName());
+                return (activity == null ? "" : activity.getName());
             }
         });
         columns.add(config);
@@ -107,7 +106,7 @@ public class ColumnModelBuilder {
                                  Grid<SiteDTO> grid) {
 
                 ActivityDTO activity = schema.getActivityById(model.getActivityId());
-                return GwtUtil.valueWithTooltip(activity == null ? "" : activity.getDatabaseName());
+                return (activity == null ? "" : activity.getDatabaseName());
             }
         });
         columns.add(config);
@@ -171,7 +170,7 @@ public class ColumnModelBuilder {
                                          Grid grid) {
                         Object value = model.get(property);
                         if (value instanceof Double && (Double) value != 0) {
-                            return GwtUtil.valueWithTooltip(IndicatorNumberFormat.INSTANCE.format((Double) value));
+                            return IndicatorNumberFormat.INSTANCE.format((Double) value);
                         } else {
                             return "";
                         }
@@ -188,7 +187,7 @@ public class ColumnModelBuilder {
                                          ListStore listStore,
                                          Grid grid) {
 
-                        return GwtUtil.valueWithTooltip("1"); // the value of a site count indicator a single site is always 1
+                        return "1"; // the value of a site count indicator a single site is always 1
                     }
                 });
             }
@@ -202,8 +201,7 @@ public class ColumnModelBuilder {
                                      int colIndex,
                                      ListStore listStore,
                                      Grid grid) {
-                    Object value = model.get(property);
-                    return value instanceof String ? GwtUtil.valueWithTooltip((String) value) : "";
+                    return model.get(property);
                 }
             });
         }
@@ -246,11 +244,8 @@ public class ColumnModelBuilder {
 
     public ColumnModelBuilder addAdminLevelColumns(List<AdminLevelDTO> adminLevels) {
         for (AdminLevelDTO level : adminLevels) {
-            ColumnConfig column = new ColumnConfig(AdminLevelDTO.getPropertyName(level.getId()), level.getName(), 100);
-            column.setRenderer(new StringWithTooltipRenderer());
-            columns.add(column);
+            columns.add(new ColumnConfig(AdminLevelDTO.getPropertyName(level.getId()), level.getName(), 100));
         }
-
         return this;
     }
 
@@ -274,9 +269,7 @@ public class ColumnModelBuilder {
     }
 
     public ColumnModelBuilder addPartnerColumn() {
-        ColumnConfig column = new ColumnConfig("partnerName", I18N.CONSTANTS.partner(), 100);
-        column.setRenderer(new StringWithTooltipRenderer());
-        columns.add(column);
+        columns.add(new ColumnConfig("partnerName", I18N.CONSTANTS.partner(), 100));
         return this;
     }
 

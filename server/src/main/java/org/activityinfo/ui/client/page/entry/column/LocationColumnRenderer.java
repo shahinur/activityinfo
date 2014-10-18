@@ -28,7 +28,6 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.ui.client.util.GwtUtil;
 
 public class LocationColumnRenderer implements GridCellRenderer<ModelData> {
 
@@ -54,7 +53,7 @@ public class LocationColumnRenderer implements GridCellRenderer<ModelData> {
         String axe = model.getLocationAxe();
 
         if (axe == null) {
-            return GwtUtil.valueWithTooltip(name);
+            return name;
         } else {
             return ColumnTemplates.INSTANCE.locationCell(model.getLocationName(), model.getLocationAxe()).asString();
         }

@@ -23,7 +23,6 @@ package org.activityinfo.ui.client.page.common.columns;
  */
 
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import org.activityinfo.ui.client.page.entry.column.StringWithTooltipRenderer;
 
 public class ReadTextColumn extends ColumnConfig {
     public ReadTextColumn(String property, String header, int width) {
@@ -32,7 +31,5 @@ public class ReadTextColumn extends ColumnConfig {
         setHeaderText(header);
         setId(property);
         setWidth(width);
-        setToolTip(header);
-        setRenderer(new StringWithTooltipRenderer());
     }
 }
