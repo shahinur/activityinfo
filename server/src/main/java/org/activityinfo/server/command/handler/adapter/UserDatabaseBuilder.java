@@ -150,6 +150,7 @@ public class UserDatabaseBuilder {
         activity.setName(formClass.getLabel());
         activity.setPublished(0);
         activity.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+        activity.setPartnerRange(db.getPartners());
 
         if(!parent.getId().equals(workspace.getId())) {
             activity.setCategory(parent.getLabel());

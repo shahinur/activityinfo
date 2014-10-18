@@ -149,7 +149,7 @@ public class ColumnModelBuilder {
         ColumnConfig indicatorColumn = new ColumnConfig(indicator.getPropertyName(),
                 columnName, 50);
 
-        indicatorColumn.setToolTip(columnName);
+        indicatorColumn.setToolTip(indicator.getName());
 
 
         indicatorColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
@@ -216,7 +216,8 @@ public class ColumnModelBuilder {
     }
 
     public ColumnModelBuilder maybeAddTwoLineLocationColumn(ActivityDTO activity) {
-        if (activity.getLocationType().getBoundAdminLevelId() == null) {
+        if (!activity.getLocationType().isAdminLevel() &&
+            !activity.getLocationType().isNationwide()) {
             ReadTextColumn column = new ReadTextColumn("locationName", activity.getLocationType().getName(), 100);
             column.setRenderer(new LocationColumnRenderer());
             columns.add(column);
@@ -225,7 +226,8 @@ public class ColumnModelBuilder {
     }
 
     public ColumnModelBuilder maybeAddSingleLineLocationColumn(ActivityDTO activity) {
-        if (activity.getLocationType().getBoundAdminLevelId() == null) {
+        if (!activity.getLocationType().isAdminLevel() &&
+            !activity.getLocationType().isNationwide()) {
             ReadTextColumn column = new ReadTextColumn("locationName", activity.getLocationType().getName(), 100);
             columns.add(column);
         }
@@ -242,18 +244,9 @@ public class ColumnModelBuilder {
         return addAdminLevelColumns(activity.getAdminLevels());
     }
 
-    public ColumnModelBuilder addSingleAdminColumn(ActivityDTO activity) {
-        ColumnConfig admin = new ColumnConfig("admin", I18N.CONSTANTS.location(), 100);
-        admin.setToolTip(I18N.CONSTANTS.location());
-        admin.setRenderer(new AdminColumnRenderer(activity.getAdminLevels()));
-        columns.add(admin);
-        return this;
-    }
-
     public ColumnModelBuilder addAdminLevelColumns(List<AdminLevelDTO> adminLevels) {
         for (AdminLevelDTO level : adminLevels) {
             ColumnConfig column = new ColumnConfig(AdminLevelDTO.getPropertyName(level.getId()), level.getName(), 100);
-            column.setToolTip(level.getName());
             column.setRenderer(new StringWithTooltipRenderer());
             columns.add(column);
         }
@@ -267,18 +260,21 @@ public class ColumnModelBuilder {
     }
 
     public ColumnModelBuilder maybeAddPartnerColumn(ActivityDTO activity) {
-        addPartnerColumn();
+        if(activity.getPartnerRange().size() > 1) {
+            addPartnerColumn();
+        }
         return this;
     }
 
-    public ColumnModelBuilder maybeAddPartnerColumn(UserDatabaseDTO activity) {
-        addPartnerColumn();
+    public ColumnModelBuilder maybeAddPartnerColumn(UserDatabaseDTO db) {
+        if(db.getPartners().size() > 1) {
+            addPartnerColumn();
+        }
         return this;
     }
 
     public ColumnModelBuilder addPartnerColumn() {
         ColumnConfig column = new ColumnConfig("partnerName", I18N.CONSTANTS.partner(), 100);
-        column.setToolTip(I18N.CONSTANTS.partner());
         column.setRenderer(new StringWithTooltipRenderer());
         columns.add(column);
         return this;
@@ -333,7 +329,6 @@ public class ColumnModelBuilder {
 
     public ColumnModelBuilder addTreeNameColumn() {
         ColumnConfig name = new ColumnConfig("name", I18N.CONSTANTS.location(), 200);
-        name.setToolTip(I18N.CONSTANTS.location());
         name.setRenderer(new TreeGridCellRenderer<ModelData>() {
 
             @Override
