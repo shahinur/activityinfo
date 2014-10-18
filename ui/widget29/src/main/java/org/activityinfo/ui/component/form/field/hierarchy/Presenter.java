@@ -14,9 +14,9 @@ import org.activityinfo.model.hierarchy.Level;
 import org.activityinfo.model.hierarchy.Node;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.RowSource;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
@@ -153,9 +153,9 @@ class Presenter {
         return new Supplier<Promise<List<Node>>>() {
             @Override
             public Promise<List<Node>> get() {
-                return locator.queryTable(tableModel).then(new Function<TableData, List<Node>>() {
+                return locator.queryTable(tableModel).then(new Function<ColumnSet, List<Node>>() {
                     @Override
-                    public List<Node> apply(TableData table) {
+                    public List<Node> apply(ColumnSet table) {
                         List<Node> nodes = Lists.newArrayList();
                         ColumnView id = table.getColumnView("id");
                         ColumnView label = table.getColumnView("label");

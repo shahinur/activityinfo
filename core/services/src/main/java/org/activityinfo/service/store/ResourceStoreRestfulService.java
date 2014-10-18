@@ -5,7 +5,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 
 import javax.inject.Inject;
@@ -110,9 +110,9 @@ public final class ResourceStoreRestfulService {
     @Path("query/table")
     @Consumes("application/json")
     @Produces("application/json")
-    public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
+    public ColumnSet queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
         try(StoreReader reader = service.openReader(user)) {
-            return reader.getTable(tableModel);
+            return reader.queryColumns(tableModel);
         }
     }
 

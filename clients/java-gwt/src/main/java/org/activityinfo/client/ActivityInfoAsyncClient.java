@@ -4,7 +4,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
@@ -39,14 +39,29 @@ public interface ActivityInfoAsyncClient {
      */
     Promise<List<UserTask>> getTasks();
 
-    Promise<UserTask> startTask(String taskId, Record taskModel);
+    /**
+     * Initiates a user task
+     *
+     * @param taskModel a record describing the task to be performed.
+     * For example: {@link org.activityinfo.service.tasks.ExportFormTaskModel}
+     * @return the initial status of the task.
+     */
+    Promise<UserTask> startTask(Record taskModel);
+
+    /**
+     * Initiates a user task, and polls the server until it has been completed.
+     * @param taskModel a record describing the task to be performed.
+     * For example: {@link org.activityinfo.service.tasks.ExportFormTaskModel}
+     * @return the final result of this task.
+     */
+    Promise<UserTask> executeTask(Record taskModel);
 
     /**
      * Retrieves the root resources that are owned or have been shared by the user
      */
     Promise<List<ResourceNode>> getWorkspaces();
 
-    Promise<TableData> queryTable(TableModel tableModel);
+    Promise<ColumnSet> queryColumns(TableModel tableModel);
 
     Promise<List<Bucket>> queryCube(PivotTableModel cubeModel);
 

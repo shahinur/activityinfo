@@ -29,7 +29,6 @@ import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.ui.client.EventBus;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,11 +40,9 @@ import java.util.List;
 public class RemoteDispatcher extends AbstractDispatcher {
     private final AuthenticatedUser auth;
     private final RemoteCommandServiceAsync service;
-    private EventBus eventBus;
 
     @Inject
-    public RemoteDispatcher(EventBus eventBus, AuthenticatedUser auth, RemoteCommandServiceAsync service) {
-        this.eventBus = eventBus;
+    public RemoteDispatcher(AuthenticatedUser auth, RemoteCommandServiceAsync service) {
         this.auth = auth;
         this.service = service;
     }

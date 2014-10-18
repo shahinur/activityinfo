@@ -69,7 +69,7 @@ public class RemoteDispatcherTest {
 
         dispatcher = new CachingDispatcher(proxyManager,
                 new MergingDispatcher(
-                        new RemoteDispatcher(new MockEventBus(), auth, service),
+                        new RemoteDispatcher(auth, service),
                         scheduler));
     }
 

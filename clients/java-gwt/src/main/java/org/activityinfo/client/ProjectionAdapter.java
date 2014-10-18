@@ -43,15 +43,15 @@ public class ProjectionAdapter {
             tableModel.addColumn(new ColumnModel().setId(path.toString()).setExpression(path));
         }
 
-        return client.queryTable(tableModel).then(new Function<TableData, QueryResult>() {
+        return client.queryColumns(tableModel).then(new Function<ColumnSet, QueryResult>() {
             @Override
-            public QueryResult apply(TableData table) {
+            public QueryResult apply(ColumnSet table) {
                 return tableToProjectionList(classId, table, query);
             }
         });
     }
 
-    private QueryResult tableToProjectionList(ResourceId classId, TableData table, InstanceQuery query) {
+    private QueryResult tableToProjectionList(ResourceId classId, ColumnSet table, InstanceQuery query) {
 
         List<Projection> projections = Lists.newArrayList();
 

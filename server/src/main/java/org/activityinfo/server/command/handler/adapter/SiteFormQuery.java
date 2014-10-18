@@ -17,8 +17,8 @@ import org.activityinfo.model.formTree.FormTreePrettyPrinter;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.RecordFieldType;
@@ -133,8 +133,8 @@ public class SiteFormQuery {
 
 
         TableModel tableModel = buildQuery();
-        TableData tableData = reader.getTable(tableModel);
-        int numRows = tableData.getNumRows();
+        ColumnSet columnSet = reader.queryColumns(tableModel);
+        int numRows = columnSet.getNumRows();
 
         // Calculate the beginning and ending row indices
         List<SiteDTO> sites = Lists.newArrayList();
@@ -146,15 +146,15 @@ public class SiteFormQuery {
         if(limit > 0) {
 
             // Compute the order of the row indices if we're sorting
-            int[] order = computeOrder(tableData, sortInfo);
+            int[] order = computeOrder(columnSet, sortInfo);
 
             // Prepare for copying by putting ids / views into arrays
-            int numColumns = tableData.getColumns().size() - 1;
-            ColumnView id = tableData.getColumnView("_id");
+            int numColumns = columnSet.getColumns().size() - 1;
+            ColumnView id = columnSet.getColumnView("_id");
             String columnIds[] = new String[numColumns];
             ColumnView views[] = new ColumnView[numColumns];
             int j = 0;
-            for (Map.Entry<String, ColumnView> entry : tableData.getColumns().entrySet()) {
+            for (Map.Entry<String, ColumnView> entry : columnSet.getColumns().entrySet()) {
                 if(!entry.getKey().equals("_id")) {
                     columnIds[j] = entry.getKey();
                     views[j] = entry.getValue();
@@ -211,19 +211,19 @@ public class SiteFormQuery {
                 type instanceof BarcodeType;
     }
 
-    private int[] computeOrder(TableData tableData, Optional<SortInfo> sort) {
+    private int[] computeOrder(ColumnSet columnSet, Optional<SortInfo> sort) {
         if(!sort.isPresent()) {
             return null;
         }
 
-        ColumnView columnView = tableData.getColumnView(sort.get().getSortField());
+        ColumnView columnView = columnSet.getColumnView(sort.get().getSortField());
         if (columnView == null) {
             LOGGER.log(Level.WARNING, "Unknown sort key [" + sort.get().getSortField() + "] " +
-                    "columns: " + Joiner.on(", ").join(tableData.getColumns().keySet()));
+                    "columns: " + Joiner.on(", ").join(columnSet.getColumns().keySet()));
             return null;
         }
 
-        int[] order = new int[tableData.getNumRows()];
+        int[] order = new int[columnSet.getNumRows()];
         for (int i = 0; i != order.length; ++i) {
             order[i] = i;
         }

@@ -5,7 +5,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
@@ -26,10 +26,10 @@ public class TestRemoteStoreService implements ActivityInfoAsyncClient {
     }
 
     @Override
-    public Promise<TableData> queryTable(TableModel tableModel) {
+    public Promise<ColumnSet> queryColumns(TableModel tableModel) {
         try {
             try(StoreReader reader = store.openReader(AuthenticatedUser.getAnonymous())) {
-                return Promise.resolved(reader.getTable(tableModel));
+                return Promise.resolved(reader.queryColumns(tableModel));
             }
         } catch(Exception e) {
             return Promise.rejected(e);
@@ -67,8 +67,13 @@ public class TestRemoteStoreService implements ActivityInfoAsyncClient {
     }
 
     @Override
-    public Promise<UserTask> startTask(String taskId, Record taskModel) {
+    public Promise<UserTask> startTask(Record taskModel) {
         return Promise.rejected(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Promise<UserTask> executeTask(Record taskModel) {
+        return startTask(taskModel);
     }
 
     @Override

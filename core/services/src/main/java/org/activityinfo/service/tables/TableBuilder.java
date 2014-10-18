@@ -8,8 +8,8 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnModel;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.tree.FormTreeBuilder;
 
@@ -25,7 +25,7 @@ public class TableBuilder {
         this.formTreeService = new FormTreeBuilder(resourceStore);
     }
 
-    public TableData buildTable(TableModel table) throws Exception {
+    public ColumnSet buildTable(TableModel table) throws Exception {
 
         ResourceId classId = table.getRowSources().get(0).getRootFormClass();
         FormTree tree = formTreeService.queryTree(classId);
@@ -71,7 +71,7 @@ public class TableBuilder {
             dataMap.put(entry.getKey(), view);
         }
 
-        return new TableData(numRows, dataMap);
+        return new ColumnSet(numRows, dataMap);
     }
 
 }

@@ -9,7 +9,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.ApplicationClassProvider;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.*;
 import org.activityinfo.service.tables.StoreAccessor;
@@ -93,7 +93,7 @@ public class HrdStoreReader implements StoreReader, FormClassProvider {
     }
 
     @Override
-    public TableData getTable(TableModel tableModel) {
+    public ColumnSet queryColumns(TableModel tableModel) {
         TableBuilder builder = new TableBuilder(new HrdAccessor());
         try {
             return builder.buildTable(tableModel);

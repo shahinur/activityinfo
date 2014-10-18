@@ -7,8 +7,8 @@ import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.barcode.BarcodeType;
@@ -96,7 +96,7 @@ public class TableQueryTest {
         tableModel.selectField(age).as("C2");
         tableModel.selectField(gender).as("C3");
 
-        TableData data = environment.queryTable(tableModel);
+        ColumnSet data = environment.queryTable(tableModel);
 
         assertThat(data.getNumRows(), equalTo(3));
         assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug"));
@@ -117,7 +117,7 @@ public class TableQueryTest {
         tableModel.selectField(dogYears).as("C2");
 
 
-        TableData data = environment.queryTable(tableModel);
+        ColumnSet data = environment.queryTable(tableModel);
 
         assertThat(data.getNumRows(), equalTo(3));
         assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug"));
@@ -136,7 +136,7 @@ public class TableQueryTest {
         tableModel.selectField(gender).as("C2");
 
 
-        TableData data = environment.queryTable(tableModel);
+        ColumnSet data = environment.queryTable(tableModel);
 
         assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine"));
         assertThat(data.getColumnView("C2"), hasValues(null, "Female"));
@@ -156,7 +156,7 @@ public class TableQueryTest {
         tableModel.selectField(name).as("C1");
         tableModel.selectField(dogYears).as("C2");
 
-        TableData data = environment.queryTable(tableModel);
+        ColumnSet data = environment.queryTable(tableModel);
 
         assertThat(data.getNumRows(), equalTo(3));
         assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug"));
@@ -175,7 +175,7 @@ public class TableQueryTest {
         tableModel.selectField(name).as("C1");
         tableModel.selectField(barcode).as("C2");
 
-        TableData data = environment.queryTable(tableModel);
+        ColumnSet data = environment.queryTable(tableModel);
 
         assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug", null));
         assertThat(data.getColumnView("C2"), hasValues("01010101", "XYZ123", "XOXOXO", null));

@@ -28,8 +28,8 @@ import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.InstanceLabelTable;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
@@ -178,9 +178,9 @@ public class FormFieldWidgetFactory {
             tableModel.selectResourceId().as("id");
             tableModel.selectField(ApplicationProperties.LABEL_PROPERTY).as("label");
 
-            return resourceLocator.queryTable(tableModel).then(new Function<TableData, InstanceLabelTable>() {
+            return resourceLocator.queryTable(tableModel).then(new Function<ColumnSet, InstanceLabelTable>() {
                 @Override
-                public InstanceLabelTable apply(TableData input) {
+                public InstanceLabelTable apply(ColumnSet input) {
                     return new InstanceLabelTable(input.getColumnView("id"), input.getColumnView("label"));
                 }
             });

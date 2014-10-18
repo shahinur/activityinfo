@@ -5,11 +5,13 @@ import com.google.common.collect.Lists;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArray;
 import com.google.gwt.core.client.JsonUtils;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.http.client.Response;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.client.cube.BucketOverlay;
 import org.activityinfo.client.resource.*;
 import org.activityinfo.client.table.JsTableDataBuilder;
@@ -18,13 +20,14 @@ import org.activityinfo.model.analysis.PivotTableModelClass;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableModelClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.UpdateResult;
 import org.activityinfo.service.tasks.UserTask;
+import org.activityinfo.service.tasks.UserTaskStatus;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -34,6 +37,8 @@ import java.util.logging.Logger;
 public class ActivityInfoAsyncClientImpl implements ActivityInfoAsyncClient {
 
     private static final Logger LOGGER = Logger.getLogger(ActivityInfoAsyncClientImpl.class.getName());
+
+    private static final int TASK_POLL_INTERVAL_MS = 2500;
 
     private final RestEndpoint service;
     private final RestEndpoint store;
@@ -60,7 +65,7 @@ public class ActivityInfoAsyncClientImpl implements ActivityInfoAsyncClient {
     }
 
     @Override
-    public Promise<TableData> queryTable(TableModel tableModel) {
+    public Promise<ColumnSet> queryColumns(TableModel tableModel) {
         return store.resolve("query").resolve("table")
                 .postJson(ResourceSerializer.toJson(TableModelClass.INSTANCE.toRecord(tableModel)))
                 .then(new JsTableDataBuilder());
@@ -119,15 +124,64 @@ public class ActivityInfoAsyncClientImpl implements ActivityInfoAsyncClient {
     }
 
     @Override
-    public Promise<UserTask> startTask(String taskId, Record taskModel) {
+    public Promise<UserTask> startTask(Record taskModel) {
         return service
         .resolve("tasks")
-        .resolve(taskId)
+        .resolve(generateTaskId())
         .postJson(ResourceSerializer.toJson(taskModel))
         .then(new Function<Response, UserTask>() {
             @Override
             public UserTask apply(Response input) {
                 return UserTask.fromRecord(ResourceParser.parseRecord(input.getText()));
+            }
+        });
+    }
+
+    public Promise<UserTask> getTask(String taskId) {
+        return service
+                .resolve("tasks")
+                .resolve(taskId)
+                .getJson()
+                .then(new Function<Response, UserTask>() {
+                    @Override
+                    public UserTask apply(Response input) {
+                        return UserTask.fromRecord(ResourceParser.parseRecord(input.getText()));
+                    }
+                });
+    }
+
+    @Override
+    public Promise<UserTask> executeTask(Record taskModel) {
+        Promise<UserTask> finalResult = new Promise<>();
+        waitForTask(startTask(taskModel), finalResult);
+        return finalResult;
+    }
+
+    private String generateTaskId() {
+        return Resources.generateId().asString();
+    }
+
+    private void waitForTask(Promise<UserTask> request, final Promise<UserTask> finalResult) {
+        request.then(new AsyncCallback<UserTask>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                finalResult.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(final UserTask result) {
+                if(result.getStatus() == UserTaskStatus.COMPLETE) {
+                    finalResult.onSuccess(result);
+                } else {
+                    Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
+                        @Override
+                        public boolean execute() {
+                            Promise<UserTask> updatedStatus = getTask(result.getId());
+                            waitForTask(updatedStatus, finalResult);
+                            return false;
+                        }
+                    }, TASK_POLL_INTERVAL_MS);
+                }
             }
         });
     }

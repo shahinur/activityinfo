@@ -11,8 +11,8 @@ import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.ApplicationClassProvider;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.InstanceLabelTable;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 
@@ -72,8 +72,8 @@ public class LocatorAdapter implements ResourceLocator {
     }
 
     @Override
-    public Promise<TableData> queryTable(TableModel tableModel) {
-        return client.queryTable(tableModel);
+    public Promise<ColumnSet> queryTable(TableModel tableModel) {
+        return client.queryColumns(tableModel);
     }
 
     @Override

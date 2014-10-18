@@ -37,21 +37,25 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.http.client.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.activityinfo.client.ActivityInfoAsyncClient;
 import org.activityinfo.client.ActivityInfoAsyncClientImpl;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.FilterUrlSerializer;
 import org.activityinfo.legacy.shared.command.RenderElement;
 import org.activityinfo.legacy.shared.command.RenderElement.Format;
 import org.activityinfo.legacy.shared.command.result.UrlResult;
 import org.activityinfo.legacy.shared.reports.model.ReportElement;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.service.blob.BlobId;
+import org.activityinfo.service.tasks.ExportFormTaskModel;
+import org.activityinfo.service.tasks.ExportFormTaskModelClass;
+import org.activityinfo.service.tasks.UserTask;
 
 public class ExportDialog extends Dialog {
 
@@ -156,77 +160,37 @@ public class ExportDialog extends Dialog {
 
     public void exportSites(Filter filter) {
 
+        if(filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
+            ResourceId formClassId = CuidAdapter.activityFormClass(filter.getRestrictedCategory(DimensionType.Activity));
+            exportForm(formClassId);
+        } else {
+            MessageBox.alert("Export", "You may only export one form at a time.", null);
+        }
+    }
+
+    private void exportForm(ResourceId formClassId) {
         showStartProgress();
 
-        RequestBuilder requestBuilder = new RequestBuilder(RequestBuilder.POST, "/ActivityInfo/export");
-        requestBuilder.setHeader("Content-type", "application/x-www-form-urlencoded");
-        requestBuilder.setRequestData("filter=" + FilterUrlSerializer.toUrlFragment(filter));
-        requestBuilder.setCallback(new RequestCallback() {
-            @Override
-            public void onResponseReceived(Request request, Response response) {
-                final String exportId = response.getText();
-                getDownloadUrl(exportId).then(new AsyncCallback<String>() {
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        showError();
-                    }
+        final BlobId exportBlobId = BlobId.generate();
 
-                    @Override
-                    public void onSuccess(String downloadUrl) {
-                        initiateDownload(downloadUrl);
-                    }
-                });
-            }
+        ExportFormTaskModel task = new ExportFormTaskModel();
+        task.setBlobId(exportBlobId);
+        task.setFormClassId(formClassId);
+        task.setFilename("Export.csv");
 
+        final ActivityInfoAsyncClient client = new ActivityInfoAsyncClientImpl();
+        Promise<UserTask> result = client.executeTask(ExportFormTaskModelClass.INSTANCE.toRecord(task));
+        result.then(new AsyncCallback<UserTask>() {
             @Override
-            public void onError(Request request, Throwable exception) {
+            public void onFailure(Throwable caught) {
                 showError();
             }
-        });
-        try {
-            requestBuilder.send();
-        } catch (RequestException e) {
-            showError();
-        }
-    }
 
-    private Promise<String> getDownloadUrl(String exportId) {
-        final Promise<String> url = new Promise<>();
-        schedulePoll(exportId, url);
-        return url;
-    }
-
-    private void schedulePoll(final String exportId, final Promise<String> downloadUrl) {
-        Scheduler.get().scheduleFixedDelay(new Scheduler.RepeatingCommand() {
             @Override
-            public boolean execute() {
-                pollServer(exportId, downloadUrl);
-                return false;
-            }
-        }, 1000);
-    }
-
-    private void pollServer(final String exportId, final Promise<String> downloadUrl) {
-        RequestBuilder request = new RequestBuilder(RequestBuilder.GET, "/ActivityInfo/export?id=" + exportId);
-        request.setCallback(new RequestCallback() {
-            @Override
-            public void onResponseReceived(Request request, Response response) {
-                if(response.getStatusCode() == 200) {
-                    downloadUrl.onSuccess(response.getText());
-                } else {
-                    schedulePoll(exportId, downloadUrl);
-                }
-            }
-            @Override
-            public void onError(Request request, Throwable exception) {
-                downloadUrl.onFailure(exception);
+            public void onSuccess(UserTask result) {
+               initiateDownload(client.getBlobDownloadUrl(exportBlobId));
             }
         });
-        try {
-            request.send();
-        } catch (RequestException e) {
-            downloadUrl.onFailure(e);
-        }
     }
 
     private void tryStartDownloadWithIframe(String url) {

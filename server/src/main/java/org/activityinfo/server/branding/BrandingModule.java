@@ -1,9 +1,9 @@
 package org.activityinfo.server.branding;
 
 import org.activityinfo.server.database.hibernate.entity.Domain;
-import org.activityinfo.server.endpoint.rest.RestApiModule;
+import org.activityinfo.server.util.jaxrs.AbstractRestModule;
 
-public class BrandingModule extends RestApiModule {
+public class BrandingModule extends AbstractRestModule {
 
     @Override
     protected void configureResources() {

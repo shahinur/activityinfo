@@ -9,8 +9,8 @@ import org.activityinfo.model.legacy.QueryResult;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.InstanceLabelTable;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 
@@ -32,7 +32,7 @@ public interface ResourceLocator {
 
     Promise<List<UserResource>> get(Set<ResourceId> resourceIds);
 
-    Promise<TableData> queryTable(TableModel tableModel);
+    Promise<ColumnSet> queryTable(TableModel tableModel);
 
     /**
      * Persists a resource to the server, creating or updating as necessary.

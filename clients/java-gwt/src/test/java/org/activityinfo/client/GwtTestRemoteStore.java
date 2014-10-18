@@ -12,8 +12,8 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.type.number.Quantity;
 
 import java.util.List;
@@ -167,21 +167,21 @@ public class GwtTestRemoteStore extends GWTTestCase {
                 .replace('\'', '"');
 
 
-        TableData tableData = new JsTableDataBuilder().build(jsonResponse);
-        assertEquals(3, tableData.getNumRows());
-        assertTrue(tableData.getColumns().containsKey("c1"));
-        assertTrue(tableData.getColumns().containsKey("c2"));
-        assertTrue(tableData.getColumns().containsKey("c3"));
+        ColumnSet columnSet = new JsTableDataBuilder().build(jsonResponse);
+        assertEquals(3, columnSet.getNumRows());
+        assertTrue(columnSet.getColumns().containsKey("c1"));
+        assertTrue(columnSet.getColumns().containsKey("c2"));
+        assertTrue(columnSet.getColumns().containsKey("c3"));
 
-        assertEquals("foo", tableData.getColumnView("c1").getString(2));
+        assertEquals("foo", columnSet.getColumnView("c1").getString(2));
 
-        ColumnView c2 = tableData.getColumnView("c2");
+        ColumnView c2 = columnSet.getColumnView("c2");
         assertEquals("a", c2.getString(0));
         assertEquals("b", c2.getString(1));
         assertEquals("c", c2.getString(2));
 
         // 91, Double.NaN, 92
-        ColumnView c3 = tableData.getColumnView("c3");
+        ColumnView c3 = columnSet.getColumnView("c3");
         assertEquals(91.0, c3.getDouble(0));
         assertTrue(Double.isNaN(c3.getDouble(1)));
         assertEquals(92.0, c3.getDouble(2));

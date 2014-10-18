@@ -3,18 +3,18 @@ package org.activityinfo.model.json;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.views.ConstantColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
 
 import java.io.IOException;
 import java.util.Map;
 
-public class TableDataSerializer extends JsonSerializer<TableData> {
+public class TableDataSerializer extends JsonSerializer<ColumnSet> {
 
     @Override
-    public void serialize(TableData result,
+    public void serialize(ColumnSet result,
                           JsonGenerator json,
                           SerializerProvider provider) throws IOException {
 
@@ -27,7 +27,7 @@ public class TableDataSerializer extends JsonSerializer<TableData> {
         json.flush();
     }
 
-    private void writeColumns(JsonGenerator json, TableData result) throws IOException {
+    private void writeColumns(JsonGenerator json, ColumnSet result) throws IOException {
         json.writeObjectFieldStart("columns");
         for(Map.Entry<String, ColumnView> column : result.getColumns().entrySet()) {
             json.writeFieldName(column.getKey());

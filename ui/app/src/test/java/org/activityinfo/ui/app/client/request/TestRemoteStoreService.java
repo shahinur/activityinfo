@@ -7,7 +7,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
@@ -57,12 +57,12 @@ public class TestRemoteStoreService implements ActivityInfoAsyncClient {
     }
 
     @Override
-    public Promise<UserTask> startTask(String taskId, Record taskModel) {
+    public Promise<UserTask> startTask(Record taskModel) {
         if(fail) {
             return Promise.rejected(new StatusCodeException(400));
         } else {
             UserTask task = new UserTask();
-            task.setId(taskId);
+            task.setId(Resources.generateId().asString());
             task.setTimeStarted(System.currentTimeMillis());
             task.setTaskModel(taskModel);
             task.setStatus(UserTaskStatus.RUNNING);
@@ -71,14 +71,19 @@ public class TestRemoteStoreService implements ActivityInfoAsyncClient {
     }
 
     @Override
+    public Promise<UserTask> executeTask(Record taskModel) {
+        return startTask(taskModel);
+    }
+
+    @Override
     public Promise<List<ResourceNode>> getWorkspaces() {
         return Promise.resolved(store.getOwnedOrSharedWorkspaces(AuthenticatedUser.getAnonymous()));
     }
 
     @Override
-    public Promise<TableData> queryTable(TableModel tableModel) {
+    public Promise<ColumnSet> queryColumns(TableModel tableModel) {
         try(StoreReader reader = store.openReader(user)) {
-            return Promise.resolved(reader.getTable(tableModel));
+            return Promise.resolved(reader.queryColumns(tableModel));
         }
     }
 

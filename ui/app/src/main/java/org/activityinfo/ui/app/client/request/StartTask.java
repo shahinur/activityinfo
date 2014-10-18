@@ -26,7 +26,7 @@ public class StartTask implements Request<UserTask> {
 
     @Override
     public Promise<UserTask> send(ActivityInfoAsyncClient service) {
-        return service.startTask(taskId, taskModelRecord);
+        return service.startTask(taskModelRecord);
     }
 
 

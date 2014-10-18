@@ -8,12 +8,12 @@ import java.util.Map;
 /**
  * Contains the data
  */
-public class TableData {
+public class ColumnSet {
 
     private final int numRows;
     private final Map<String, ColumnView> columnViews;
 
-    public TableData(int numRows, @Nonnull Map<String, ColumnView> columnViews) {
+    public ColumnSet(int numRows, @Nonnull Map<String, ColumnView> columnViews) {
         this.numRows = numRows;
         this.columnViews = columnViews;
     }

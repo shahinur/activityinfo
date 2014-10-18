@@ -9,7 +9,7 @@ import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.UserResource;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.model.table.TableModelClass;
 
@@ -43,8 +43,8 @@ public class ObjectMapperFactory {
 
             module.addDeserializer(PivotTableModel.class, new RecordBeanDeserializer<>(PivotTableModelClass.INSTANCE));
 
-            module.addSerializer(TableData.class, new TableDataSerializer());
-            module.addDeserializer(TableData.class, new TableDataDeserializer());
+            module.addSerializer(ColumnSet.class, new TableDataSerializer());
+            module.addDeserializer(ColumnSet.class, new TableDataDeserializer());
 
             mapper.registerModule(module);
             INSTANCE = mapper;

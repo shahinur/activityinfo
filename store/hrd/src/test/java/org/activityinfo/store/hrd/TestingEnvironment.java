@@ -5,7 +5,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.StoreReader;
@@ -80,10 +80,10 @@ public class TestingEnvironment extends TestWatcher {
         return store.queryTree(getUser(), new FolderRequest(parentId));
     }
 
-    public TableData queryTable(TableModel tableModel) {
+    public ColumnSet queryTable(TableModel tableModel) {
 
         try(StoreReader reader = store.openReader(user)) {
-            return reader.getTable(tableModel);
+            return reader.queryColumns(tableModel);
         }
     }
 }

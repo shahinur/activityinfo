@@ -4,9 +4,9 @@ import com.google.common.base.Function;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.core.client.JsonUtils;
 import com.google.gwt.http.client.Response;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.views.ConstantColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
 
@@ -16,15 +16,15 @@ import java.util.Map;
 /**
  * Creates a TableData and a set of ColumnViews that wrap a set of JavaScript arrays.
  */
-public class JsTableDataBuilder implements Function<Response, TableData> {
+public class JsTableDataBuilder implements Function<Response, ColumnSet> {
 
 
     @Override
-    public TableData apply(Response response) {
+    public ColumnSet apply(Response response) {
         return build(response.getText());
     }
 
-    public TableData build(String json) {
+    public ColumnSet build(String json) {
         Map<String, ColumnView> columnMap = new HashMap<>();
 
         TableDataOverlay overlay = JsonUtils.safeEval(json);
@@ -33,7 +33,7 @@ public class JsTableDataBuilder implements Function<Response, TableData> {
             String columnId = columns.get(i);
             columnMap.put(columnId, createView(overlay.getNumRows(), overlay.getColumn(columnId)));
         }
-        return new TableData(overlay.getNumRows(), columnMap);
+        return new ColumnSet(overlay.getNumRows(), columnMap);
     }
 
     private ColumnView createView(int numRows, ColumnViewOverlay column) {

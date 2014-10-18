@@ -7,7 +7,7 @@ import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.Folder;
 import org.activityinfo.model.system.FolderClass;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.CommitStatus;
 import org.activityinfo.service.store.ResourceNotFound;
@@ -131,7 +131,7 @@ public class BulkLoaderTest {
         TableModel tableModel = new TableModel(form.formClass.getId());
         tableModel.selectField("age").as("C1");
 
-        TableData data = environment.queryTable(tableModel);
+        ColumnSet data = environment.queryTable(tableModel);
         assertThat(data.getNumRows(), equalTo(20));
 
         // Now try to update one of the form instances

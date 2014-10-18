@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.InstanceLabelTable;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.StoreReader;
@@ -30,7 +30,7 @@ public class InstanceTableProvider {
         tableModel.selectField(ApplicationProperties.LABEL_PROPERTY).as("label");
 
         try(StoreReader reader = store.openReader(user.get())) {
-            TableData table = reader.getTable(tableModel);
+            ColumnSet table = reader.queryColumns(tableModel);
             return new InstanceLabelTable(table.getColumnView("id"), table.getColumnView("label"));
         }
     }

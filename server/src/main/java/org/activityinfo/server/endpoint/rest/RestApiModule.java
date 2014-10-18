@@ -24,6 +24,8 @@ package org.activityinfo.server.endpoint.rest;
 
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import org.activityinfo.server.util.jaxrs.AbstractRestModule;
+import org.activityinfo.service.store.ResourceStoreRestfulService;
+import org.activityinfo.service.tasks.UserTaskRestfulService;
 
 public class RestApiModule extends AbstractRestModule {
 
@@ -32,6 +34,9 @@ public class RestApiModule extends AbstractRestModule {
         bindResource(RootResource.class);
         bindResource(TileResource.class, "/tile/*");
         filter("/service/*").through(GuiceContainer.class);
+
+        bind(ResourceStoreRestfulService.class);
+        bind(UserTaskRestfulService.class);
     }
 
 }

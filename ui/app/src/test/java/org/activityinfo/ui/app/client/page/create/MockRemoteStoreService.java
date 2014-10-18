@@ -8,7 +8,7 @@ import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.service.blob.BlobId;
@@ -57,7 +57,12 @@ public class MockRemoteStoreService implements ActivityInfoAsyncClient {
     }
 
     @Override
-    public Promise<UserTask> startTask(String taskId, Record taskModel) {
+    public Promise<UserTask> startTask(Record taskModel) {
+        return Promise.rejected(new UnsupportedOperationException());
+    }
+
+    @Override
+    public Promise<UserTask> executeTask(Record taskModel) {
         return Promise.rejected(new UnsupportedOperationException());
     }
 
@@ -67,7 +72,7 @@ public class MockRemoteStoreService implements ActivityInfoAsyncClient {
     }
 
     @Override
-    public Promise<TableData> queryTable(TableModel tableModel) {
+    public Promise<ColumnSet> queryColumns(TableModel tableModel) {
         throw new UnsupportedOperationException();
     }
 

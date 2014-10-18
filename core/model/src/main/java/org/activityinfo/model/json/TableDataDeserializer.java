@@ -9,9 +9,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
-import org.activityinfo.model.table.TableData;
 import org.activityinfo.model.table.views.ConstantColumnView;
 import org.activityinfo.model.table.views.DoubleArrayColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
@@ -21,11 +21,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-public class TableDataDeserializer extends JsonDeserializer<TableData> {
+public class TableDataDeserializer extends JsonDeserializer<ColumnSet> {
 
 
     @Override
-    public TableData deserialize(JsonParser reader,
+    public ColumnSet deserialize(JsonParser reader,
                                   DeserializationContext ctxt) throws IOException {
 
         TreeNode tree = reader.readValueAsTree();
@@ -40,7 +40,7 @@ public class TableDataDeserializer extends JsonDeserializer<TableData> {
             ColumnView view = readView(rows, (ObjectNode) columns.get(columnId));
             columnMap.put(columnId, view);
         }
-        return new TableData(rows, columnMap);
+        return new ColumnSet(rows, columnMap);
     }
 
     private ColumnView readView(int rows, ObjectNode column) {
