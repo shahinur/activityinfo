@@ -35,8 +35,8 @@ public class TestApplication extends DefaultResourceConfig {
 
         JacksonJsonProvider jsonProvider = new JacksonJsonProvider(ObjectMapperFactory.get());
 
-        MigrateService migrateService = migrateService();
         HrdResourceStore store = new HrdResourceStore(new StoreContext());
+        MigrateService migrateService = migrateService(store);
 
         DevUserBlobService blobService = new DevUserBlobService();
 
@@ -56,7 +56,7 @@ public class TestApplication extends DefaultResourceConfig {
             new DevIoCProviderFactory());
     }
 
-    private MigrateService migrateService() {
+    private MigrateService migrateService(HrdResourceStore store) {
         Properties properties = new Properties();
         properties.setProperty(MigrateDatabaseTask.MIGRATION_DRIVER_CLASS, Driver.class.getName());
         properties.setProperty(MigrateDatabaseTask.MIGRATION_SOURCE_URL, "jdbc:mysql://127.0.0.1:3306/activityinfo");
