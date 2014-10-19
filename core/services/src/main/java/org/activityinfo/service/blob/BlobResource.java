@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 
 /**
  * SubResource representing a single user blob.
- *
  */
 public final class BlobResource {
 

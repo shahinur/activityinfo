@@ -7,5 +7,6 @@ public class AppEngineUserTaskModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(UserTaskService.class).to(AppEngineUserTaskService.class);
+        bind(TaskRunner.class);
     }
 }

@@ -25,7 +25,7 @@ package org.activityinfo.server.endpoint.rest;
 import com.google.common.collect.Lists;
 import com.sun.jersey.api.core.InjectParam;
 import com.sun.jersey.api.view.Viewable;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.database.hibernate.entity.Country;
@@ -41,7 +41,8 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.Set;
 
-@Path("/country") @Produces(MediaType.APPLICATION_JSON)
+@Path("/country")
+@Produces(MediaType.APPLICATION_JSON)
 public class CountryResource {
 
     private Country country;

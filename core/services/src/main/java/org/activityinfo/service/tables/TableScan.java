@@ -41,7 +41,6 @@ public class TableScan {
 
     private PartialEvaluator partialEvaluator;
 
-
     public TableScan(StoreAccessor resourceStore, FormClass formClass) {
         this.store = resourceStore;
         this.formClass = formClass;

@@ -22,7 +22,6 @@ package org.activityinfo.ui.client.inject;
  * #L%
  */
 
-import com.google.gwt.i18n.client.LocaleInfo;
 import com.google.gwt.inject.client.AbstractGinModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -30,8 +29,8 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.remote.RemoteDispatcher;
 import org.activityinfo.legacy.client.state.GxtStateProvider;
 import org.activityinfo.legacy.client.state.StateProvider;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.command.RemoteCommandServiceAsync;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.LoggingEventBus;
 
@@ -47,6 +46,6 @@ public class EmbedModule extends AbstractGinModule {
 
     @Provides
     public AuthenticatedUser provideAuth() {
-        return AuthenticatedUser.getAnonymous(LocaleInfo.getCurrentLocale());
+        return AuthenticatedUser.getAnonymous();
     }
 }

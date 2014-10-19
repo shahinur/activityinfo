@@ -13,7 +13,6 @@ public class SchemaCsvWriter {
         for (ActivityDTO activity : db.getActivities()) {
             writeActivity(activity);
         }
-
     }
 
     private void writeActivity(ActivityDTO activity) {

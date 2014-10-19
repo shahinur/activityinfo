@@ -37,7 +37,7 @@ public class ActivityInfoTestClient extends ActivityInfoClient {
 
         // Creating a test user requires a special endpoint to be enabled
         Status status = fromStatusCode(
-                root.path("test").path("createUser")
+                root.path("login").path("createUser")
                 .type(MediaType.APPLICATION_FORM_URLENCODED_TYPE)
                 .post(ClientResponse.class, form)
                 .getStatus());

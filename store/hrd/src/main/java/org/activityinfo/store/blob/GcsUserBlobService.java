@@ -1,12 +1,11 @@
 package org.activityinfo.store.blob;
 
-import com.google.appengine.api.appidentity.AppIdentityService;
-import com.google.appengine.api.appidentity.AppIdentityServiceFactory;
 import com.google.appengine.api.images.Image;
 import com.google.appengine.api.images.ImagesService;
 import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.images.Transform;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.io.ByteSource;
 import com.google.inject.Inject;
 import com.sun.jersey.core.header.ContentDisposition;
@@ -31,17 +30,16 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 
 public class GcsUserBlobService implements UserBlobService {
 
-    private static final Logger LOGGER = Logger.getLogger(GcsUserBlobService.class.getName());
+    public static final String BLOBSERVICE_GCS_BUCKET_NAME = "blobservice.gcs.bucket.name";
 
-    private final AppIdentityService appIdentityService = AppIdentityServiceFactory.getAppIdentityService();
+    private static final Logger LOGGER = Logger.getLogger(GcsUserBlobService.class.getName());
 
     private final String bucketName;
 
     @Inject
     public GcsUserBlobService(DeploymentConfiguration config) {
-        this.bucketName = config.getBlobServiceBucketName();
-
-        LOGGER.info("Service account: " + this.appIdentityService.getServiceAccountName());
+        this.bucketName = config.getProperty(BLOBSERVICE_GCS_BUCKET_NAME);
+        Preconditions.checkNotNull(bucketName, "Config property '%s' is not set.", BLOBSERVICE_GCS_BUCKET_NAME);
     }
 
     /**
@@ -183,5 +181,4 @@ public class GcsUserBlobService implements UserBlobService {
 
         return Response.ok(newImage.getImageData()).build();
     }
-
 }

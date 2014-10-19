@@ -24,12 +24,15 @@ package org.activityinfo.server.login;
 
 import com.google.inject.Inject;
 import com.sun.jersey.api.view.Viewable;
+import org.activityinfo.server.DeploymentEnvironment;
 import org.activityinfo.server.authentication.Authenticator;
+import org.activityinfo.server.database.hibernate.dao.Transactional;
 import org.activityinfo.server.database.hibernate.dao.UserDAO;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.login.exception.LoginException;
 import org.activityinfo.server.login.model.LoginPageModel;
 import org.activityinfo.server.util.logging.LogException;
+import org.activityinfo.service.DeploymentConfiguration;
 
 import javax.inject.Provider;
 import javax.ws.rs.*;
@@ -38,10 +41,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
+import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.FORBIDDEN;
+
+
 @Path(LoginController.ENDPOINT)
 public class LoginController {
 
     public static final String ENDPOINT = "/login";
+
+    private static final String TEST_MODE = "enable.test.user.creation";
+
+    @Inject
+    private DeploymentConfiguration deploymentConfiguration;
 
     @Inject
     private Provider<Authenticator> authenticator;
@@ -66,6 +79,28 @@ public class LoginController {
         checkPassword(password, user);
 
         return Response.ok().cookie(authTokenProvider.get().createNewAuthCookies(user)).build();
+    }
+
+
+    @POST
+    @Path("createUser")
+    @Consumes(APPLICATION_FORM_URLENCODED)
+    @Transactional
+    public Response createUser(@FormParam("email") String email, @FormParam("password") String password) {
+
+        if (DeploymentEnvironment.isAppEngineProduction() &&
+              !"enabled".equals(deploymentConfiguration.getProperty(TEST_MODE))) {
+            throw new WebApplicationException(FORBIDDEN);
+        }
+
+        User user = new User();
+        user.setName("Test user");
+        user.setEmail(email);
+        user.setLocale("POSIX");
+        user.changePassword(password);
+        userDAO.get().persist(user);
+
+        return Response.status(CREATED).build();
     }
 
     @POST

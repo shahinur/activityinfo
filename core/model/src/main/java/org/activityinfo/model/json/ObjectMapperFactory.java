@@ -1,6 +1,8 @@
 package org.activityinfo.model.json;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.analysis.PivotTableModelClass;
@@ -24,6 +26,9 @@ public class ObjectMapperFactory {
     public static ObjectMapper get() {
         if(INSTANCE == null) {
             ObjectMapper mapper = new ObjectMapper();
+            mapper.disable(SerializationFeature.WRITE_NULL_MAP_VALUES);
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
             SimpleModule module = new SimpleModule();
 
             module.addSerializer(Resource.class, new ResourceSerializer());

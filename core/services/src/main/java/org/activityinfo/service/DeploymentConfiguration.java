@@ -33,7 +33,6 @@ import java.util.Properties;
  */
 public class DeploymentConfiguration {
     public static final String BACKUPSERVICE_GCS_BUCKET_NAME = "backupservice.gcs.bucket.name";
-    public static final String BLOBSERVICE_GCS_BUCKET_NAME = "blobservice.gcs.bucket.name";
     public static final String SERVICE_ACCOUNT_EMAIL = "service.account.email";
 
     private final Properties properties;
@@ -62,14 +61,6 @@ public class DeploymentConfiguration {
 
     public boolean hasProperty(String key) {
         return !Strings.isNullOrEmpty(getProperty(key));
-    }
-
-    public String getBlobServiceBucketName() {
-        return getProperty(BLOBSERVICE_GCS_BUCKET_NAME);
-    }
-
-    public String getServiceAccountEmail() {
-        return getProperty(SERVICE_ACCOUNT_EMAIL);
     }
 
     public String getBackupServiceBucketName() {

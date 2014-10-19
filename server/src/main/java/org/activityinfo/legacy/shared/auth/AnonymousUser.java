@@ -1,4 +1,4 @@
-package org.activityinfo.legacy.shared.auth;
+package org.activityinfo.model.auth;
 
 /*
  * #%L
@@ -22,8 +22,6 @@ package org.activityinfo.legacy.shared.auth;
  * #L%
  */
 
-import com.google.gwt.user.client.Cookies;
-
 public final class AnonymousUser {
 
     public static final String AUTHTOKEN = "AnonymousUser";
@@ -32,12 +30,6 @@ public final class AnonymousUser {
 
     private AnonymousUser() {
 
-    }
-
-    public static void createCookiesForAnonymousUser() {
-        Cookies.setCookie("authToken", AUTHTOKEN);
-        Cookies.setCookie("userId", String.valueOf(USER_ID));
-        Cookies.setCookie("email", USER_EMAIL);
     }
 
 }
