@@ -62,7 +62,7 @@ public class MigrateDatabaseTask {
             fetchDatabaseProperties(connection);
             filter = new DatabaseFilter(databaseId, countryId);
 
-            LegacyIdStrategy idStrategy = new LegacyIdStrategy();
+            LegacyIdStrategy idStrategy = new LegacyIdStrategy(new HrdIdStore());
             MigrationContext context = new MigrationContext(idStrategy, filter);
             context.setRootId(Resources.ROOT_ID);
 

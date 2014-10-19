@@ -8,7 +8,7 @@ import org.activityinfo.model.resource.ResourceId;
 
 public class HrdIdStore implements IdStore {
 
-    private static final String KIND = "RevertedId";
+    private static final String KIND = "IdMap";
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
