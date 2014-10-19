@@ -22,10 +22,10 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.GetSiteHistory;
 import org.activityinfo.legacy.shared.command.GetSiteHistory.GetSiteHistoryResult;
 import org.activityinfo.legacy.shared.model.SiteHistoryDTO;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.database.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,6 @@ public class GetSiteHistoryTest extends CommandTestCase {
         assertEquals(2, result.getSiteHistories().size());
 
         SiteHistoryDTO dto1 = result.getSiteHistories().get(0);
-        assertEquals(1, dto1.getId());
         assertTrue(dto1.isInitial());
         Map<String, Object> map = dto1.getJsonMap();
         assertEquals(new Integer(1), map.get("id"));
@@ -57,7 +56,6 @@ public class GetSiteHistoryTest extends CommandTestCase {
         assertEquals("site 1 my first comment", map.get("comments"));
 
         SiteHistoryDTO dto2 = result.getSiteHistories().get(1);
-        assertEquals(2, dto2.getId());
         assertFalse(dto2.isInitial());
         map = dto2.getJsonMap();
         assertNull(map.get("id"));

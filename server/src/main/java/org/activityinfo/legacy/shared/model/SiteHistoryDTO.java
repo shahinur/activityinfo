@@ -26,30 +26,16 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.google.gson.JsonObject;
 import org.activityinfo.legacy.shared.util.JsonUtil;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
-public final class SiteHistoryDTO extends BaseModelData implements EntityDTO {
+public final class SiteHistoryDTO extends BaseModelData {
     private static final long serialVersionUID = 4951231064643225215L;
 
     public static final String ENTITY_NAME = "SiteHistory";
 
     public SiteHistoryDTO() {
-        set("name", " ");
-    }
-
-    public SiteHistoryDTO(int id) {
-        this();
-        setId(id);
-    }
-
-    @Override
-    public int getId() {
-        return (Integer) get("id");
-    }
-
-    public void setId(int id) {
-        set("id", id);
     }
 
     public String getUserName() {
@@ -85,7 +71,7 @@ public final class SiteHistoryDTO extends BaseModelData implements EntityDTO {
     }
 
     public Map<String, Object> getJsonMap() {
-        return JsonUtil.decodeMap(getJsonObject());
+        return Collections.emptyMap();
     }
 
     public void setJson(String json) {
@@ -112,16 +98,5 @@ public final class SiteHistoryDTO extends BaseModelData implements EntityDTO {
         SiteHistoryDTO copy = new SiteHistoryDTO();
         copy.setProperties(this.getProperties());
         return copy;
-    }
-
-    @Override
-    public String getEntityName() {
-        return ENTITY_NAME;
-    }
-
-    @Override
-    public String getName() {
-        // TODO Leave unimplemented for now
-        return null;
     }
 }

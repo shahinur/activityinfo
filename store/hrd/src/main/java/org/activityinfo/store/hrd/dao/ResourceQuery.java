@@ -2,16 +2,15 @@ package org.activityinfo.store.hrd.dao;
 
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.Resources;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.store.hrd.auth.ResourceAsserter;
 import org.activityinfo.store.hrd.entity.workspace.AcrEntry;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
 import org.activityinfo.store.hrd.entity.workspace.LatestVersionKey;
+import org.activityinfo.store.hrd.entity.workspace.Snapshot;
 import org.activityinfo.store.hrd.tx.ReadTx;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -104,5 +103,18 @@ public class ResourceQuery {
 
     public void assertCanCreateChildren() {
         authorization.assertCanUpdate();
+    }
+
+    public List<ResourceVersion> getSnapshots() {
+        List<ResourceVersion> resources = Lists.newArrayList();
+        for(Snapshot snapshot : tx.query(Snapshot.of(context.getWorkspace(), key.getResourceId()))) {
+            ResourceVersion version = new ResourceVersion();
+            version.setResourceId(snapshot.getResourceId());
+            version.setDateCommitted(new Date(snapshot.getTimestamp()));
+            version.setVersion(snapshot.getVersion());
+            version.setUserId((int) snapshot.getUserId());
+            resources.add(version);
+        }
+        return resources;
     }
 }

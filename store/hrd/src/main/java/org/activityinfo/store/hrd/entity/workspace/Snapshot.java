@@ -60,7 +60,7 @@ public class Snapshot implements IsEntity {
         return key.getResourceId();
     }
 
-    private long getVersion() {
+    public long getVersion() {
         return key.getParent().getVersion();
     }
 
@@ -177,6 +177,25 @@ public class Snapshot implements IsEntity {
             return SingleResultQuery.create(query, Snapshot.class);
         }
     }
+
+    /**
+     * Queries for the snapshot of a resource at a given workspace version.
+     * @param workspace
+     * @param id
+     * @param version
+     * @return
+     */
+    public static ListQuery<Snapshot> of(WorkspaceEntityGroup workspace, ResourceId id) {
+        Query.FilterPredicate filter = new Query.FilterPredicate(RESOURCE_ID_PROPERTY, EQUAL, id.asString());
+
+        Query query = new Query(SnapshotKey.KIND)
+                    .setFilter(filter)
+                    .setAncestor(workspace.getRootKey());
+
+        return ListQuery.create(query, Snapshot.class);
+
+    }
+
 
     public Resource toResource() {
         Resource resource = Resources.createResource();

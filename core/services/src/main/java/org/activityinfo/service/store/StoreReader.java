@@ -3,6 +3,7 @@ package org.activityinfo.service.store;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.ResourceVersion;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
@@ -32,6 +33,8 @@ public interface StoreReader extends AutoCloseable {
     ResourceCursor openCursor(ResourceId formClassId) throws Exception;
 
     List<ResourceNode> getOwnedOrSharedWorkspaces();
+
+    List<ResourceVersion> getSnapshots(ResourceId instanceId);
 
     @Override
     void close();

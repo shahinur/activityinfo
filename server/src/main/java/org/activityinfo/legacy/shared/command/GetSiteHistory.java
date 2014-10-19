@@ -26,23 +26,34 @@ import com.google.common.collect.Lists;
 import org.activityinfo.legacy.shared.command.GetSiteHistory.GetSiteHistoryResult;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.model.SiteHistoryDTO;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 
+import java.util.Collections;
 import java.util.List;
 
 public class GetSiteHistory implements Command<GetSiteHistoryResult> {
     private static final long serialVersionUID = 1475811548735657666L;
 
-    private int siteId;
+    private String resourceId;
 
     public GetSiteHistory() {
     }
 
     public GetSiteHistory(int siteId) {
-        this.siteId = siteId;
+        this.resourceId = CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, siteId).asString();
+    }
+
+    public GetSiteHistory(ResourceId id) {
+        this.resourceId = id.asString();
     }
 
     public int getSiteId() {
-        return siteId;
+        return CuidAdapter.getLegacyId(getResourceId());
+    }
+
+    public ResourceId getResourceId() {
+        return ResourceId.valueOf(resourceId);
     }
 
     public static class GetSiteHistoryResult implements CommandResult {
@@ -68,14 +79,7 @@ public class GetSiteHistory implements Command<GetSiteHistoryResult> {
         }
 
         public List<Integer> collectLocationIds() {
-            List<Integer> ids = Lists.newArrayList();
-            for (SiteHistoryDTO dto : getSiteHistories()) {
-                Object id = dto.getJsonMap().get("locationId");
-                if (id != null) {
-                    ids.add(Integer.parseInt(id.toString()));
-                }
-            }
-            return ids;
+            return Collections.emptyList();
         }
     }
 }

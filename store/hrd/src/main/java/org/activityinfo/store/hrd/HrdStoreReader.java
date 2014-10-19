@@ -4,10 +4,7 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceNode;
-import org.activityinfo.model.resource.UserResource;
+import org.activityinfo.model.resource.*;
 import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
@@ -77,6 +74,11 @@ public class HrdStoreReader implements StoreReader, FormClassProvider {
     @Override
     public List<ResourceNode> getOwnedOrSharedWorkspaces() {
         return WorkspaceIndex.queryUserWorkspaces(user);
+    }
+
+    @Override
+    public List<ResourceVersion> getSnapshots(ResourceId instanceId) {
+        return getWorkspaceOf(instanceId).getResource(instanceId).getSnapshots();
     }
 
     @Override
