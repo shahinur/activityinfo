@@ -3,12 +3,16 @@ package org.activityinfo.model.table.views;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class EmptyColumnView implements ColumnView {
+public class EmptyColumnView implements ColumnView, Serializable {
 
     private ColumnType type;
     private int rowCount;
+
+    protected EmptyColumnView() {
+    }
 
     public EmptyColumnView(int rowCount, ColumnType type) {
         this.type = type;

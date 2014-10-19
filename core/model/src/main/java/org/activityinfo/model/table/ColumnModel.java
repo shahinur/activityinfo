@@ -55,7 +55,6 @@ public class ColumnModel {
         return this;
     }
 
-
     public ColumnModel setExpression(ResourceId resourceId) {
         return setExpression(resourceId.asString());
     }

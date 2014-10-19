@@ -28,9 +28,11 @@ import java.util.logging.Logger;
 public class TableScan {
 
     private static final Logger LOGGER = Logger.getLogger(TableScan.class.getName());
+    public static final String PK_COLUMN_KEY = "__id";
 
     private ResourceId classId;
     private StoreAccessor store;
+    private ColumnCache cache;
     private FormClass formClass;
 
     private Optional<PrimaryKeyMapBuilder> primaryKeyMapBuilder = Optional.absent();
@@ -41,8 +43,9 @@ public class TableScan {
 
     private PartialEvaluator partialEvaluator;
 
-    public TableScan(StoreAccessor resourceStore, FormClass formClass) {
+    public TableScan(StoreAccessor resourceStore, ColumnCache cache, FormClass formClass) {
         this.store = resourceStore;
+        this.cache = cache;
         this.formClass = formClass;
         this.classId = formClass.getId();
         this.partialEvaluator = new PartialEvaluator(formClass);
@@ -60,8 +63,10 @@ public class TableScan {
             FieldBinding fieldBinding = partialEvaluator.bind(fieldPath);
             ColumnViewBuilder builder = ViewBuilderFactory.get(fieldBinding.getField(), fieldBinding.getType());
             if(builder != null) {
-                columnMap.put(columnKey, new FieldScanner(fieldBinding.getReader(), builder));
-                return builder;
+                FieldScanner fieldScanner = new FieldScanner(fieldBinding.getReader(), builder);
+                columnMap.put(columnKey, fieldScanner);
+                return fieldScanner;
+
             } else {
                 LOGGER.log(Level.SEVERE, "Column " + fieldPath + " has unsupported type: " + fieldBinding.getType());
                 //throw new UnsupportedOperationException("Unsupported type for column " + field.getLabel() + ": " + fieldType);
@@ -71,12 +76,10 @@ public class TableScan {
     }
 
     public Supplier<ColumnView> fetchPrimaryKeyColumn() {
-        String columnKey = "__id";
-
-        ColumnScanner builder = columnMap.get(columnKey);
+        ColumnScanner builder = columnMap.get(PK_COLUMN_KEY);
         if(builder == null) {
             builder = new IdColumnBuilder();
-            columnMap.put(columnKey, builder);
+            columnMap.put(PK_COLUMN_KEY, builder);
         }
         return builder;
     }
@@ -104,11 +107,11 @@ public class TableScan {
     }
 
     public Supplier<PrimaryKeyMap> fetchPrimaryKey() {
+
         if(!primaryKeyMapBuilder.isPresent()) {
             primaryKeyMapBuilder = Optional.of(new PrimaryKeyMapBuilder());
         }
         return primaryKeyMapBuilder.get();
-
     }
 
     public Supplier<ForeignKeyColumn> fetchForeignKey(String fieldName) {
@@ -134,10 +137,18 @@ public class TableScan {
      */
     public void execute() throws Exception {
 
+        // First try to retrieve as much as we can from the cache
+        resolveCached();
+
+        // Is there any work left to do after resolving from cache?
         InstanceSink[] builders = builderArray();
+        if(builders.length == 0) {
+            return;
+        }
 
         int rowCount = 0;
 
+        // Run the query
         Iterator<Resource> cursor = store.openCursor(classId);
         while(cursor.hasNext()) {
             Resource resource = cursor.next();
@@ -153,8 +164,30 @@ public class TableScan {
             builder.finalizeView();
         }
 
+        // put to cache
+        cache.put(formClass.getId(), columnMap);
+
         // update row count
         this.rowCount = Optional.of(rowCount);
+    }
+
+    private void resolveCached() {
+        Map<String, ColumnView> cachedViews = cache.getIfPresent(formClass.getId(), columnMap.keySet());
+
+        LOGGER.log(Level.INFO, "Loaded " + cachedViews.size() + " columns from cache");
+
+
+        if(!cachedViews.isEmpty()) {
+            for (Map.Entry<String, ColumnView> cachedEntry : cachedViews.entrySet()) {
+
+                LOGGER.log(Level.INFO, "Loaded " + cachedEntry.getKey() + " from cache");
+
+                ColumnView cachedView = cachedEntry.getValue();
+                columnMap.get(cachedEntry.getKey()).useCached(cachedView);
+                columnMap.remove(cachedEntry.getKey());
+            }
+            this.rowCount = Optional.of(cachedViews.values().iterator().next().numRows());
+        }
     }
 
     private InstanceSink[] builderArray() {

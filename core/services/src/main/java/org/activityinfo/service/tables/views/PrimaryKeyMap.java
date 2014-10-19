@@ -2,13 +2,14 @@ package org.activityinfo.service.tables.views;
 
 import org.activityinfo.model.resource.ResourceId;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 
 /**
  * Mapping from ResourceId -> row index
  */
-public class PrimaryKeyMap {
+public class PrimaryKeyMap implements Serializable {
 
     private final Map<ResourceId, Integer> map;
 

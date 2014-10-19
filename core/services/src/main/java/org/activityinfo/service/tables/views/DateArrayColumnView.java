@@ -3,10 +3,11 @@ package org.activityinfo.service.tables.views;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class DateArrayColumnView implements ColumnView {
+public class DateArrayColumnView implements ColumnView, Serializable {
 
     private List<Date> values;
 

@@ -3,6 +3,7 @@ package org.activityinfo.model.table.views;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -10,9 +11,12 @@ import java.util.List;
 /**
  * Simple Array of String values
  */
-public class StringArrayColumnView implements ColumnView {
+public class StringArrayColumnView implements ColumnView, Serializable {
 
     private String[] values;
+
+    protected StringArrayColumnView() {
+    }
 
     public StringArrayColumnView(String[] values) {
         this.values = values;

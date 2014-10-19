@@ -7,7 +7,6 @@ import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.BlobMetadata;
 import org.activityinfo.service.blob.UserBlobService;
-import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.StoreLoader;
 import org.activityinfo.service.store.StoreReader;
@@ -41,8 +40,8 @@ public class AppEngineTaskContext implements TaskContext {
     }
 
     @Override
-    public ResourceCursor openCursor(ResourceId formClassId) throws Exception {
-        return storeReader.openCursor(formClassId);
+    public StoreReader openStoreReader() throws Exception {
+        return store.openReader(user);
     }
 
     @Override

@@ -3,15 +3,19 @@ package org.activityinfo.model.table.views;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ConstantColumnView implements ColumnView {
+public class ConstantColumnView implements ColumnView, Serializable {
 
-    private final ColumnType type;
-    private final double doubleValue;
-    private final String stringValue;
-    private final boolean booleanValue;
-    private final int numRows;
+    private ColumnType type;
+    private double doubleValue;
+    private String stringValue;
+    private boolean booleanValue;
+    private int numRows;
+
+    protected ConstantColumnView() {
+    }
 
     public ConstantColumnView(int numRows, double doubleValue) {
         this.type = ColumnType.STRING;

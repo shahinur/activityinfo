@@ -49,6 +49,7 @@ public class UserDatabaseBuilder {
         this.db.setId(getLegacyId(workspace.getId()));
         this.db.setName(workspace.getLabel());
         this.country = countryProvider.getCountry(getCountryId());
+        this.db.setCountry(country);
 
         queryAccessRules();
         try {

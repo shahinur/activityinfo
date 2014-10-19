@@ -6,8 +6,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.BlobMetadata;
-import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreLoader;
+import org.activityinfo.service.store.StoreReader;
 import org.activityinfo.service.tasks.TaskContext;
 import org.activityinfo.store.hrd.TestingEnvironment;
 
@@ -40,8 +40,8 @@ public class TestingTaskContext implements TaskContext {
     }
 
     @Override
-    public ResourceCursor openCursor(ResourceId formClassId) throws Exception {
-        return environment.getStore().createAccessor(environment.getUser()).openCursor(formClassId);
+    public StoreReader openStoreReader() throws Exception {
+        return environment.getStore().openReader(environment.getUser());
     }
 
     @Override

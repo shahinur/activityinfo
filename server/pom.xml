@@ -87,6 +87,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-labs</artifactId>
+      <version>${gae.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.teklabs.gwt-i18n-server</groupId>
       <artifactId>gwt-i18n-server</artifactId>
       <version>0.7-bedatadriven2</version>

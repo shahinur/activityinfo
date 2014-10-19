@@ -2,12 +2,12 @@ package org.activityinfo.store.hrd.dao;
 
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.common.collect.Lists;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.*;
+import org.activityinfo.model.resource.ResourceVersion;
+import org.activityinfo.service.store.ResourceDeletedException;
 import org.activityinfo.store.hrd.auth.ResourceAsserter;
-import org.activityinfo.store.hrd.entity.workspace.AcrEntry;
-import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
-import org.activityinfo.store.hrd.entity.workspace.LatestVersionKey;
-import org.activityinfo.store.hrd.entity.workspace.Snapshot;
+import org.activityinfo.store.hrd.entity.workspace.*;
 import org.activityinfo.store.hrd.tx.ReadTx;
 
 import java.util.Date;
@@ -18,16 +18,18 @@ public class ResourceQuery {
     private final LatestVersionKey key;
     private final ResourceAsserter authorization;
     private final ReadTx tx;
-    private LatestVersion latestVersion;
+    private final LatestVersion latestVersion;
     private ReadContext context;
 
-    ResourceQuery(ReadContext context, LatestVersion latestVersion, ResourceAsserter authorization, ReadTx tx) {
+    public ResourceQuery(ReadContext context, LatestVersion latestVersion) {
         this.context = context;
+        this.tx = context.getTx();
         this.key = latestVersion.getKey();
         this.latestVersion = latestVersion;
-        this.authorization = authorization;
-        this.tx = tx;
+        this.authorization = context.authorizationFor(key.getResourceId());
+    }
 
+    public void assertCanView() {
         authorization.assertCanView();
     }
 
@@ -73,6 +75,13 @@ public class ResourceQuery {
         return tx.query(LatestVersion.formInstancesOf(key), options).iterator();
     }
 
+    public FormMetaEntry getFormMetadata() {
+        if(!latestVersion.getClassId().equals(FormClass.CLASS_ID)) {
+            throw new UnsupportedOperationException("FormMetadata only applies to resources of class " + FormClass.CLASS_ID);
+        }
+        return tx.getOrThrow(new FormMetaEntryKey(key));
+    }
+
     public Iterable<ResourceNode> getFolderItems() {
         List<ResourceNode> nodes = Lists.newArrayList();
         for (LatestVersion latestVersion : tx.query(LatestVersion.folderItemsOf(key))) {
@@ -116,5 +125,23 @@ public class ResourceQuery {
             resources.add(version);
         }
         return resources;
+    }
+
+    public void assertNotDeleted() {
+        if (latestVersion.isDeleted() || isAncestorDeleted(latestVersion)) {
+            throw new ResourceDeletedException();
+        }
+    }
+
+    private boolean isAncestorDeleted(LatestVersion latestVersion) {
+        if(latestVersion.getOwnerId().equals(Resources.ROOT_ID)) {
+            return false;
+        }
+        LatestVersion owner = tx.getOrThrow(latestVersion.getOwnerLatestVersionKey());
+        if(owner.isDeleted()) {
+            return true;
+        } else {
+            return isAncestorDeleted(owner);
+        }
     }
 }

@@ -7,7 +7,6 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.service.store.*;
-import org.activityinfo.service.tables.StoreAccessor;
 import org.activityinfo.store.hrd.cache.WorkspaceCache;
 import org.activityinfo.store.hrd.dao.*;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
@@ -186,7 +185,4 @@ public class HrdResourceStore implements ResourceStore {
         return new HrdStoreReader(context, user);
     }
 
-    public StoreAccessor createAccessor(AuthenticatedUser user) {
-        return null;
-    }
 }

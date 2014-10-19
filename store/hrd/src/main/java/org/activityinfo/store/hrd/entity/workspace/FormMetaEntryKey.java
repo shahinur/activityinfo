@@ -15,6 +15,10 @@ public class FormMetaEntryKey implements WorkspaceEntityGroupKey<FormMetaEntry> 
         this.key = KeyFactory.createKey(entityGroup.getRootKey(), KIND, formClassId.asString());
     }
 
+    public FormMetaEntryKey(LatestVersionKey key) {
+        this(key.getWorkspace(), key.getResourceId());
+    }
+
     @Override
     public Key unwrap() {
         return key;

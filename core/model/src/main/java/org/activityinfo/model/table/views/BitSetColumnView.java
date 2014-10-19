@@ -1,22 +1,23 @@
 package org.activityinfo.model.table.views;
 
+import com.google.gwt.core.shared.GwtIncompatible;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
-import java.util.BitSet;
 import java.util.Date;
 
+@GwtIncompatible("java.util.BitSet")
+@SuppressWarnings("NonJREEmulationClassesInClientCode")
 public class BitSetColumnView implements ColumnView {
     private int numRows;
-    private BitSet values;
-    private BitSet missing;
+    private java.util.BitSet values;
+    private java.util.BitSet missing;
 
-    public BitSetColumnView(int numRows, BitSet values, BitSet missing) {
+    public BitSetColumnView(int numRows, java.util.BitSet values, java.util.BitSet missing) {
         this.numRows = numRows;
         this.values = values;
         this.missing = missing;
     }
-
 
     @Override
     public ColumnType getType() {

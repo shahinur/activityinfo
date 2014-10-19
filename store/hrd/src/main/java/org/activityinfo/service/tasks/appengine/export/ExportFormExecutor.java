@@ -7,6 +7,7 @@ import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.RecordBeanClass;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.store.ResourceCursor;
+import org.activityinfo.service.store.StoreReader;
 import org.activityinfo.service.tasks.ExportFormTaskModel;
 import org.activityinfo.service.tasks.ExportFormTaskModelClass;
 import org.activityinfo.service.tasks.TaskContext;
@@ -47,8 +48,9 @@ public class ExportFormExecutor implements TaskExecutor<ExportFormTaskModel> {
         CsvWriter writer = new CsvWriter(fields, out);
 
         // Write data rows
-        ResourceCursor cursor = context.openCursor(task.getFormClassId());
-        while(cursor.hasNext()) {
+        try (StoreReader reader = context.openStoreReader();
+             ResourceCursor cursor = reader.openCursor(task.getFormClassId())) {
+
             Record record = cursor.next().getValue();
             writer.writeRow(record);
         }

@@ -462,18 +462,23 @@ public final class SiteDTO extends BaseModelData {
      * Returns a new location constructed from flattened properties of this site
      */
     public LocationDTO getLocation() {
-        LocationDTO location = new LocationDTO();
-        location.setId(getLocationId());
-        location.setName(getLocationName());
-        location.setAxe(getLocationAxe());
-        location.setLatitude(getY());
-        location.setLongitude(getX());
+        if(getLocationId() != null) {
+            LocationDTO location = new LocationDTO();
+            location.setId(getLocationId());
+            location.setName(getLocationName());
+            location.setAxe(getLocationAxe());
+            location.setLatitude(getY());
+            location.setLongitude(getX());
 
-        for (AdminEntityDTO entity : getAdminEntities().values()) {
-            location.setAdminEntity(entity.getLevelId(), entity);
+
+            for (AdminEntityDTO entity : getAdminEntities().values()) {
+                location.setAdminEntity(entity.getLevelId(), entity);
+            }
+
+            return location;
+        } else {
+            return null;
         }
-
-        return location;
     }
 
     public Integer getLocationId() {

@@ -5,8 +5,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.BlobMetadata;
-import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreLoader;
+import org.activityinfo.service.store.StoreReader;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,7 +23,7 @@ public interface TaskContext {
 
     UserResource getResource(ResourceId resourceId) throws Exception;
 
-    ResourceCursor openCursor(ResourceId formClassId) throws Exception;
+    StoreReader openStoreReader() throws Exception;
 
     StoreLoader beginLoad(ResourceId parentId) throws Exception;
 

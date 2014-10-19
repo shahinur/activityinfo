@@ -27,6 +27,7 @@ import java.util.Map;
 public class TableQueryBatchBuilder {
 
     private final StoreAccessor store;
+    private ColumnCache columnCache;
 
     /**
      * We want to do one pass over each FormClass so
@@ -35,8 +36,9 @@ public class TableQueryBatchBuilder {
     private Map<ResourceId, TableScan> tableMap = Maps.newHashMap();
 
 
-    public TableQueryBatchBuilder(StoreAccessor store) {
+    public TableQueryBatchBuilder(StoreAccessor store, ColumnCache columnCache) {
         this.store = store;
+        this.columnCache = columnCache;
     }
 
     /**
@@ -150,7 +152,7 @@ public class TableQueryBatchBuilder {
     private TableScan getTable(FormClass formClass) {
         TableScan tableScan = tableMap.get(formClass.getId());
         if(tableScan == null) {
-            tableScan = new TableScan(store, formClass);
+            tableScan = new TableScan(store, columnCache, formClass);
             tableMap.put(formClass.getId(), tableScan);
         }
         return tableScan;

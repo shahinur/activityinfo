@@ -9,11 +9,14 @@ import org.activityinfo.model.system.ApplicationClassProvider;
 import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.TableModel;
 import org.activityinfo.service.store.*;
+import org.activityinfo.service.tables.ColumnCache;
 import org.activityinfo.service.tables.StoreAccessor;
 import org.activityinfo.service.tables.TableBuilder;
 import org.activityinfo.service.tree.FormClassProvider;
 import org.activityinfo.service.tree.FormTreeBuilder;
+import org.activityinfo.store.hrd.cache.MemcacheColumnCache;
 import org.activityinfo.store.hrd.dao.WorkspaceQuery;
+import org.activityinfo.store.hrd.entity.workspace.FormMetaEntry;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 
@@ -96,7 +99,9 @@ public class HrdStoreReader implements StoreReader, FormClassProvider {
 
     @Override
     public ColumnSet queryColumns(TableModel tableModel) {
-        TableBuilder builder = new TableBuilder(new HrdAccessor());
+        Accessor accessor = new Accessor();
+        ColumnCache columnCache = new MemcacheColumnCache(accessor);
+        TableBuilder builder = new TableBuilder(accessor, columnCache);
         try {
             return builder.buildTable(tableModel);
         } catch (Exception e) {
@@ -133,7 +138,7 @@ public class HrdStoreReader implements StoreReader, FormClassProvider {
         }
     }
 
-    private class HrdAccessor implements StoreAccessor {
+    public class Accessor implements StoreAccessor {
 
         @Override
         public Resource get(ResourceId resourceId) {
@@ -150,6 +155,11 @@ public class HrdStoreReader implements StoreReader, FormClassProvider {
         @Override
         public FormClass getFormClass(ResourceId resourceId) {
             return HrdStoreReader.this.getFormClass(resourceId);
+        }
+
+        public FormMetaEntry getFormMetadata(ResourceId formClassId) {
+            WorkspaceQuery workspace = getWorkspaceOf(formClassId);
+            return workspace.getResource(formClassId).getFormMetadata();
         }
     }
 }

@@ -3,9 +3,10 @@ package org.activityinfo.service.tables.views;
 import com.google.common.collect.Multimap;
 import org.activityinfo.model.resource.ResourceId;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public class ForeignKeyColumn {
+public class ForeignKeyColumn implements Serializable {
 
     /**
      * Maps row index to ResourceId of related entity

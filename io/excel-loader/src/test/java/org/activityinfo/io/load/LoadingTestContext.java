@@ -11,8 +11,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.BlobMetadata;
-import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreLoader;
+import org.activityinfo.service.store.StoreReader;
 import org.activityinfo.service.tasks.TaskContext;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ public class LoadingTestContext implements TaskContext {
     }
 
     @Override
-    public ResourceCursor openCursor(ResourceId formClassId) throws Exception {
+    public StoreReader openStoreReader() throws Exception {
         throw new UnsupportedOperationException();
     }
 

@@ -160,6 +160,7 @@ public class BulkLoader implements StoreLoader {
 
             WorkspaceUpdate update = WorkspaceUpdate.newBuilder(context, workspace, user)
                 .setTransaction(transaction)
+                .setFormIndexer(formIndexer)
                 .begin();
 
             for (Resource resource : pendingResources) {

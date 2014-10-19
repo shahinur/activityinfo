@@ -82,6 +82,5 @@ public class ExportTest {
             "Picture"));
 
         assertThat(Iterators.size(iterator), equalTo(10));
-
     }
 }

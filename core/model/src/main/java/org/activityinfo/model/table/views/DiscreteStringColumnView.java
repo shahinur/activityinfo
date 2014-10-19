@@ -3,12 +3,16 @@ package org.activityinfo.model.table.views;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class DiscreteStringColumnView implements ColumnView {
+public class DiscreteStringColumnView implements ColumnView, Serializable {
 
     private String[] labels;
     private int[] values;
+
+    public DiscreteStringColumnView() {
+    }
 
     public DiscreteStringColumnView(String[] labels, int[] values) {
         this.labels = labels;

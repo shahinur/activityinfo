@@ -102,6 +102,9 @@ public class TableQueryTest {
         assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine", "Doug"));
         assertThat(data.getColumnView("C2"), hasValues(42, 10, 18));
         assertThat(data.getColumnView("C3"), hasValues("Male", "Female", "Male"));
+
+        // Ensure that caching does not introduce errors at least
+        ColumnSet cachedData = environment.queryTable(tableModel);
     }
 
     @Test
