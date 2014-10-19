@@ -38,7 +38,7 @@ public final class BlobResource {
      * @see org.activityinfo.service.blob.UserBlobService#serveBlob(org.activityinfo.model.auth.AuthenticatedUser, BlobId)
      */
     @GET
-    Response serveBlob() {
+    public Response serveBlob() {
         return service.serveBlob(user, blobId);
     }
 }
