@@ -2,7 +2,6 @@ package org.activityinfo.service.tasks.appengine.export;
 
 import com.google.common.base.Charsets;
 import org.activityinfo.model.record.Record;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.type.FieldValue;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -59,8 +58,7 @@ public class CsvWriter {
         writer.printRecord((Object[])row);
     }
 
-    public void writeRow(Resource resource) throws IOException {
-        Record record = resource.getValue();
+    public void writeRow(Record record) throws IOException {
 
         int columnIndex = 0;
         for(FieldColumnSet field : fields) {
