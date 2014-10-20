@@ -48,6 +48,10 @@ public class ImportForm extends JPanel {
         add(parentCodeCombo, "width 160!, wrap");
 
         importGeometryCheckBox = new JCheckBox("Import Geometry");
+        if(source.isMbrOnly()) {
+            importGeometryCheckBox.setText("Import Geometry (disabled: shape file > 5 mb)");
+            importGeometryCheckBox.setEnabled(false);
+        }
         add(importGeometryCheckBox);
     }
 

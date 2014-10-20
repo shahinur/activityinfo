@@ -1,5 +1,6 @@
 package org.activityinfo.geoadmin;
 
+import com.google.common.base.Strings;
 import org.activityinfo.geoadmin.util.JaroWinklerDistance;
 import org.apache.commons.lang3.StringUtils;
 
@@ -58,8 +59,11 @@ public class PlaceNames {
      * @return a value between 0-1 of the similarity
      */
     public static double similarity(final String string1, final String string2) {
+        if(Strings.isNullOrEmpty(string1) || Strings.isNullOrEmpty(string2)) {
+            return 0;
+        }
         if(string1.equals(string2)) {
-            return Double.MAX_VALUE;
+            return 1.0;
         }
     	String c1 = cleanName(string1);
 		String c2 = cleanName(string2);

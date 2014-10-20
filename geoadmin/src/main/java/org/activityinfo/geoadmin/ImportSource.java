@@ -2,9 +2,9 @@ package org.activityinfo.geoadmin;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
-import com.google.common.collect.UnmodifiableIterator;
 import com.google.common.io.Files;
-import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import org.activityinfo.geoadmin.model.Country;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.shapefile.ShapefileDataStore;
@@ -26,8 +26,8 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.channels.FileChannel.MapMode;
 import java.security.MessageDigest;
-import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * A set of features from a file to be imported into ActivityInfo's
@@ -35,11 +35,17 @@ import java.util.List;
  * 
  */
 public class ImportSource {
+
+    private static final Logger LOGGER = Logger.getLogger(ImportSource.class.getName());
+
+    private static final int IN_MEMORY_LIMIT_BYTES = 1024 * 1024 * 5;
+
     private List<PropertyDescriptor> attributes;
 
     private SimpleFeatureSource featureSource;
     private MathTransform transform;
     private File file;
+    private boolean mbrOnly;
 
     private List<ImportFeature> features = Lists.newArrayList();
 
@@ -47,6 +53,8 @@ public class ImportSource {
 
     public ImportSource(File shapefile) throws Exception {
         this.file = shapefile;
+        this.mbrOnly = this.file.length() > IN_MEMORY_LIMIT_BYTES;
+
 
         ShapefileDataStore ds = new ShapefileDataStore(shapefile.toURI().toURL());
 
@@ -55,6 +63,10 @@ public class ImportSource {
         transform = createTransform();
         loadFeatures();
         calculateHash();
+    }
+
+    public boolean isMbrOnly() {
+        return mbrOnly;
     }
 
     /**
@@ -94,6 +106,9 @@ public class ImportSource {
         try {
             Geometry geometry = (Geometry) feature.getDefaultGeometryProperty().getValue();
             Geometry geometryInWgs84 = JTS.transform(geometry, transform);
+            if(mbrOnly) {
+                geometryInWgs84 = geometryInWgs84.getEnvelope();
+            }
             return geometryInWgs84;
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -194,62 +209,6 @@ public class ImportSource {
 
     public File getFile() {
         return file;
-    }
-
-    public Iterable<Geometry> getGeometery() {
-        return new Iterable<Geometry>() {
-
-            @Override
-            public Iterator<Geometry> iterator() {
-                try {
-                    final SimpleFeatureIterator featureIt = featureSource.getFeatures().features();
-                    final MathTransform transform = createTransform();
-
-                    return new UnmodifiableIterator<Geometry>() {
-
-                        @Override
-                        public boolean hasNext() {
-                            return featureIt.hasNext();
-                        }
-
-                        @Override
-                        public Geometry next() {
-                            SimpleFeature feature = (SimpleFeature) featureIt.next();
-                            Geometry geometry = (Geometry) feature.getDefaultGeometryProperty().getValue();
-
-                            try {
-                                Geometry transformed = JTS.transform(geometry, transform);
-                                if (transformed instanceof Polygon || transformed instanceof MultiPolygon) {
-                                    return transformed;
-                                } else if (transformed instanceof GeometryCollection) {
-                                    return toMultiPolygon((GeometryCollection) transformed);
-                                } else {
-                                    throw new UnsupportedOperationException();
-                                }
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-
-                        private MultiPolygon toMultiPolygon(GeometryCollection gc) {
-                            List<Polygon> polygons = Lists.newArrayList();
-                            for (int i = 0; i != gc.getNumGeometries(); ++i) {
-                                Geometry part = gc.getGeometryN(i);
-                                if (part instanceof Polygon) {
-                                    polygons.add((Polygon) part);
-                                } else {
-                                    throw new UnsupportedOperationException();
-                                }
-                            }
-                            GeometryFactory gf = new GeometryFactory();
-                            return gf.createMultiPolygon(polygons.toArray(new Polygon[polygons.size()]));
-                        }
-                    };
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
     }
 
     public String getMetadata() throws IOException {

@@ -1,26 +1,35 @@
 package org.activityinfo.geoadmin.merge;
 
-import java.util.List;
-
-import org.activityinfo.geoadmin.ImportFeature;
-import org.activityinfo.geoadmin.ImportSource;
-import org.activityinfo.geoadmin.Join;
-import org.activityinfo.geoadmin.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.activityinfo.geoadmin.*;
 import org.activityinfo.geoadmin.model.ActivityInfoClient;
 import org.activityinfo.geoadmin.model.AdminEntity;
 import org.activityinfo.geoadmin.model.AdminLevel;
 
-import com.google.common.collect.Lists;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 
 public class MergeTreeBuilder {
 
+    private static final Logger LOGGER = Logger.getLogger(MergeTreeBuilder.class.getName());
+
     private ActivityInfoClient client;
     private List<AdminLevel> parentLevels = Lists.newArrayList();
+    private List<AdminLevel> levels = Lists.newArrayList();
+    private Map<Integer, List<AdminEntity>> levelMap = Maps.newHashMap();
+
+    /**
+     * Map from admin level id to the name attribute index
+     */
+    private Map<Integer, Integer> nameMap = Maps.newHashMap();
+    private Map<Integer, Integer> codeMap = Maps.newHashMap();
+
     private AdminLevel level;
     private ImportSource source;
 
-    public MergeTreeBuilder(ActivityInfoClient client, AdminLevel level,
-        ImportSource source) {
+    public MergeTreeBuilder(ActivityInfoClient client, AdminLevel level, ImportSource source) {
         this.client = client;
         this.level = level;
         this.source = source;
@@ -29,6 +38,8 @@ public class MergeTreeBuilder {
     public MergeNode build() {
 
         findParentLevels();
+        loadEntities();
+        findNameAttributes();
 
         MergeNode root = new MergeNode();
         if (parentLevels.isEmpty()) {
@@ -38,17 +49,73 @@ public class MergeTreeBuilder {
         }
 
         return root;
-
     }
 
-    private void addChildNodes(MergeNode parentNode, AdminLevel adminLevel,
-        List<ImportFeature> features) {
+    private void loadEntities() {
+        loadEntities(level);
+        for(AdminLevel levelId : parentLevels) {
+            loadEntities(levelId);
+        }
+    }
+
+    private void loadEntities(AdminLevel level) {
+        List<AdminEntity> entities = client.getAdminEntities(level);
+        levels.add(level);
+        levelMap.put(level.getId(), entities);
+    }
+
+    private void findNameAttributes() {
+
+        LOGGER.info("Finding name attributes");
+
+        int numLevels = levels.size();
+        int numAttributes = source.getAttributeCount();
+
+        ColumnMatchMatrix matrix = new ColumnMatchMatrix(numLevels, numAttributes);
+
+        for (int i = 0; i < levels.size(); i++) {
+            for(AdminEntity entity : levelMap.get(levels.get(i).getId())) {
+                String entityName = entity.getName();
+                String entityCode = entity.getCode();
+                for(ImportFeature feature : source.getFeatures()) {
+                    for(int j=0;j!=numAttributes;++j) {
+                        matrix.addScore(i, j, PlaceNames.similarity(entityName, isString(feature, j)));
+                    }
+                }
+            }
+        }
+
+        int[] match = matrix.solve();
+
+        for (int i = 0; i < match.length; i++) {
+            int bestMatch = match[i];
+            if(bestMatch >= 0) {
+                LOGGER.info("Matched name attribute for " + levels.get(i).getName() + " to " + source.getAttributeNames()[bestMatch]);
+                nameMap.put(levels.get(i).getId(), bestMatch);
+            } else {
+                LOGGER.info("Did not find acceptable match for name attribute for level " + level.getName());
+            }
+        }
+    }
+
+    private String isString(ImportFeature feature, int j) {
+        Object attributeValue = feature.getAttributeValue(j);
+        if(attributeValue instanceof String) {
+            return (String)attributeValue;
+        }
+        return null;
+    }
+
+    private void addChildNodes(MergeNode parentNode, AdminLevel adminLevel, List<ImportFeature> features) {
 
         AdminLevel childLevel = nextParent(adminLevel);
 
-        List<AdminEntity> parents = client.getAdminEntities(adminLevel);
+        List<AdminEntity> parents = levelMap.get(adminLevel.getId());
 
         Joiner joiner = new Joiner(parents, features);
+        if(nameMap.containsKey(adminLevel.getId())) {
+            joiner.setNameAttributeIndex(nameMap.get(adminLevel.getId()));
+        }
         List<AdminEntity> featureParents = joiner.joinParents();
 
         for (AdminEntity parent : parents) {
@@ -73,8 +140,7 @@ public class MergeTreeBuilder {
         }
     }
 
-    private void addLeafNodes(MergeNode parentNode, AdminEntity parent,
-        List<ImportFeature> features) {
+    private void addLeafNodes(MergeNode parentNode, AdminEntity parent, List<ImportFeature> features) {
 
         List<AdminEntity> entities = getChildEntities(level, parent);
 
@@ -98,9 +164,8 @@ public class MergeTreeBuilder {
         }
     }
 
-    private List<AdminEntity> getChildEntities(AdminLevel level,
-        AdminEntity parent) {
-        List<AdminEntity> entities = client.getAdminEntities(level);
+    private List<AdminEntity> getChildEntities(AdminLevel level, AdminEntity parent) {
+        List<AdminEntity> entities = levelMap.get(level.getId());
         List<AdminEntity> children = Lists.newArrayList();
         for (AdminEntity child : entities) {
             if (parent == null || child.getParentId() == parent.getId()) {

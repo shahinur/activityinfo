@@ -1,15 +1,14 @@
 package org.activityinfo.geoadmin;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.vividsolutions.jts.geom.Envelope;
+import org.activityinfo.geoadmin.model.AdminEntity;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-
-import org.activityinfo.geoadmin.model.AdminEntity;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Process for matching imported features to a set of existing administrative
@@ -29,6 +28,7 @@ public class Joiner {
 
     private List<AdminEntity> entities;
     private List<ImportFeature> features;
+    private int nameAttributeIndex = -1;
 
     public Joiner(List<AdminEntity> entities, List<ImportFeature> features) {
         this.entities = entities;
@@ -43,41 +43,12 @@ public class Joiner {
      *         matching parent for the corresponding item in the features list.
      */
     public List<AdminEntity> joinParents() {
-    	
-    	// do the features contain the parent's names at all?
-    	double nameWeight =
-    			probabilityThatFeaturesContainParentNames();
-    	
-    	System.out.println("Probability that features contain parent names = " + nameWeight);
-    	
         List<AdminEntity> parents = Lists.newArrayList();
         for (ImportFeature feature : features) {
-            parents.add(findBestMatchingParentEntity(feature, nameWeight));
+            parents.add(findBestMatchingParentEntity(feature));
         }
         return parents;
     }
-
-    private double probabilityThatFeaturesContainParentNames() {
-		double sum = 0;
-    	for(ImportFeature feature : features) {
-			
-			double bestMatch = 0;
-			for(AdminEntity parent : entities) {
-				double match = feature.similarity(parent.getName());
-				if(match > bestMatch) {
-					bestMatch = match;
-				}
-				if(bestMatch == 1.0) {
-					break;
-				}
-			}
-			if(bestMatch > 0.8) {
-				sum += bestMatch;
-			}
-			
-		}
-    	return sum / (double)features.size();
-	}
 
 	/**
      * Joins the imported features on a one-to-one basis with the list of admin
@@ -151,8 +122,7 @@ public class Joiner {
      * @param features
      * @return
      */
-    private ImportFeature findBestMatch(AdminEntity entity,
-        Iterable<ImportFeature> features) {
+    private ImportFeature findBestMatch(AdminEntity entity, Iterable<ImportFeature> features) {
         double bestScore = 0;
         ImportFeature bestFeature = null;
         for (ImportFeature feature : features) {
@@ -197,14 +167,14 @@ public class Joiner {
      * given the feature.
      * 
      * @param feature
-     * @param nameWeight 
      * @return
      */
-    private AdminEntity findBestMatchingParentEntity(ImportFeature feature, double nameWeight) {
+    private AdminEntity findBestMatchingParentEntity(ImportFeature feature) {
         double bestScore = 0;
         AdminEntity bestEntity = null;
+
         for (AdminEntity entity : entities) {
-            double score = scorePotentialParent(entity, feature, nameWeight);
+            double score = scorePotentialParent(entity, feature);
             if (score > bestScore) {
                 bestScore = score;
                 bestEntity = entity;
@@ -213,7 +183,7 @@ public class Joiner {
         return bestEntity;
     }
 
-    public double scorePotentialParent(AdminEntity entity, ImportFeature feature, double nameWeight) {
+    public double scorePotentialParent(AdminEntity entity, ImportFeature feature) {
         // calculate the proportion of this feature that is contained by the
     	// potential parent
         double geoScore = scoreContainment(feature, entity);
@@ -232,10 +202,20 @@ public class Joiner {
         }
 
         System.out.println(String.format("%s <> %s %.2f %.2f", entity.getName(),
-            feature.toString(),
+            featureName(feature),
             geoScore, nameSimilarity));
 
-        return (nameSimilarity * nameWeight) + geoScore;
+        return nameSimilarity + geoScore;
+    }
+
+    private String featureName(ImportFeature feature) {
+        if (nameAttributeIndex >= 0) {
+            Object featureName = feature.getAttributeValue(nameAttributeIndex);
+            if (featureName instanceof String) {
+                return (String)featureName;
+            }
+        }
+        return null;
     }
 
     /**
@@ -262,8 +242,17 @@ public class Joiner {
     	return areaOfIntersection(entity, feature) / feature.getEnvelope().getArea();
     }
 
-    public static double scoreName(AdminEntity entity, ImportFeature feature) {
-        return feature.similarity(entity.getName());
+    public double scoreName(AdminEntity entity, ImportFeature feature) {
+        if (nameAttributeIndex >= 0) {
+            Object featureName = feature.getAttributeValue(nameAttributeIndex);
+            if (featureName instanceof String) {
+                return PlaceNames.similarity((String) featureName, entity.getName());
+            }
+        }
+        return 0;
     }
 
+    public void setNameAttributeIndex(int attributeIndex) {
+        this.nameAttributeIndex = attributeIndex;
+    }
 }

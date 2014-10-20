@@ -17,11 +17,15 @@ import javax.ws.rs.ext.ContextResolver;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * ActivityInfo REST Client
  */
 public class ActivityInfoClient {
+
+    public static final Logger LOGGER = Logger.getLogger(ActivityInfoClient.class.getName());
+
     private Client client;
     private URI root;
 
@@ -168,6 +172,9 @@ public class ActivityInfoClient {
     }
 
     public List<AdminEntity> getAdminEntities(int levelId) {
+
+        LOGGER.info("Fetching admin entities for level " + levelId);
+
         URI uri = UriBuilder.fromUri(root)
             .path("adminLevel")
             .path(Integer.toString(levelId))
