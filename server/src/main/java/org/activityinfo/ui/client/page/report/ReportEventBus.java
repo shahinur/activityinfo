@@ -31,7 +31,7 @@ public class ReportEventBus {
     private HasReportElement source;
     private Listener<ReportChangeEvent> innerListener;
 
-    public ReportEventBus(EventBus eventBus, HasReportElement source) {
+    public ReportEventBus(final EventBus eventBus, final HasReportElement source) {
         this.eventBus = eventBus;
         this.source = source;
     }

@@ -51,8 +51,6 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>> imp
 
     private R elementModel;
 
-    private GenerateElement<C> lastRequest;
-
     public static <C extends Content, R extends ReportElement<C>> ReportViewBinder<C, R> create(EventBus eventBus,
                                                                                                 Dispatcher dispatcher,
                                                                                                 ReportView<R> view) {
