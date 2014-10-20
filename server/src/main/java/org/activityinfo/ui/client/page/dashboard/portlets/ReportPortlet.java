@@ -38,6 +38,8 @@ import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.legacy.shared.command.GenerateElement;
 import org.activityinfo.legacy.shared.command.UpdateReportSubscription;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ReportDTO;
@@ -65,14 +67,12 @@ public class ReportPortlet extends Portlet {
 
     private final ReportDTO report;
     private final ReportMetadataDTO metadata;
-    private final Content content;
 
-    public ReportPortlet(Dispatcher dispatcher, EventBus eventBus, ReportDTO report, Content content) {
+    public ReportPortlet(Dispatcher dispatcher, EventBus eventBus, ReportDTO report) {
         this.dispatcher = dispatcher;
         this.eventBus = eventBus;
         this.report = report;
         this.metadata = report.getReportMetadataDTO();
-        this.content = content;
 
         setHeadingText(metadata.getTitle());
         setHeight(275);
@@ -153,11 +153,22 @@ public class ReportPortlet extends Portlet {
             return;
         }
 
-        element.setContent(content);
-        view.show(element);
-        removeAll();
-        add(view.asComponent());
-        layout();
+        dispatcher.execute(new GenerateElement<Content>(element), new AsyncCallback<Content>() {
+
+            @Override
+            public void onFailure(Throwable caught) {
+                Log.error(caught.getMessage(), caught);
+            }
+
+            @Override
+            public void onSuccess(Content content) {
+                removeAll();
+                element.setContent(content);
+                view.show(element);
+                add(view.asComponent());
+                layout();
+            }
+        });
     }
 
     private ReportView createView(ReportElement element) {

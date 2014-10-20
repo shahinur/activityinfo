@@ -29,7 +29,6 @@ import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.shared.command.GetDashboard;
 import org.activityinfo.legacy.shared.command.result.DashboardResult;
 import org.activityinfo.legacy.shared.model.ReportDTO;
-import org.activityinfo.legacy.shared.reports.content.Content;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.page.NavigationCallback;
 import org.activityinfo.ui.client.page.Page;
@@ -40,7 +39,7 @@ import org.activityinfo.ui.client.page.dashboard.portlets.GoogleEarthPortlet;
 import org.activityinfo.ui.client.page.dashboard.portlets.NewsPortlet;
 import org.activityinfo.ui.client.page.dashboard.portlets.ReportPortlet;
 
-import java.util.Map;
+import java.util.List;
 
 public class DashboardPage extends Portal implements Page {
 
@@ -70,12 +69,12 @@ public class DashboardPage extends Portal implements Page {
         dispatcher.execute(new GetDashboard(), new SuccessCallback<DashboardResult>() {
             @Override
             public void onSuccess(DashboardResult result) {
-                Map<ReportDTO, Content> reports = result.getReportMap();
+                List<ReportDTO> reports = result.getReportList();
                 if (reports.isEmpty()) {
                     add(new ChooseReportsPortlet(), 0);
                 } else {
-                    for (Map.Entry<ReportDTO, Content> entry  : reports.entrySet()) {
-                        add(new ReportPortlet(dispatcher, eventBus, entry.getKey(), entry.getValue()), 0);
+                    for (ReportDTO report  : reports) {
+                        add(new ReportPortlet(dispatcher, eventBus, report), 0);
                     }
                 }
                 layout();

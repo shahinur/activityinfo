@@ -35,18 +35,11 @@ import org.activityinfo.legacy.shared.impl.CommandHandlerAsync;
 import org.activityinfo.legacy.shared.impl.ExecutionContext;
 import org.activityinfo.legacy.shared.model.ReportDTO;
 import org.activityinfo.legacy.shared.model.ReportMetadataDTO;
-import org.activityinfo.legacy.shared.reports.content.Content;
-import org.activityinfo.legacy.shared.reports.model.DateRange;
-import org.activityinfo.legacy.shared.reports.model.ReportElement;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
-import org.activityinfo.server.report.generator.ReportGenerator;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author yuriyz on 10/14/2014.
@@ -55,15 +48,13 @@ public class GetDashboardHandler implements CommandHandlerAsync<GetDashboard, Da
 
     private final GetReportsHandler reportsHandler;
     private final GetReportModelHandler reportModelHandler;
-    private final ReportGenerator generator;
     private final Injector injector;
 
     @Inject
-    public GetDashboardHandler(Injector injector, GetReportsHandler reportsHandler, GetReportModelHandler reportModelHandler, ReportGenerator generator) {
+    public GetDashboardHandler(Injector injector, GetReportsHandler reportsHandler, GetReportModelHandler reportModelHandler) {
         this.injector = injector;
         this.reportsHandler = reportsHandler;
         this.reportModelHandler = reportModelHandler;
-        this.generator = generator;
     }
 
     @Override
@@ -74,7 +65,6 @@ public class GetDashboardHandler implements CommandHandlerAsync<GetDashboard, Da
         final Promise<ReportsResult> promise = new Promise<>();
         promise.then(new FilterByDashboardFlag())
                 .then(new FetchReportDtoAndFillResults(dashboardResult, newContext))
-                .then(new GenerateContent(dashboardResult, newContext.retrieveUserEntity()))
                 .then(new Function<Object, Object>() {
                     @Nullable
                     @Override
@@ -85,30 +75,6 @@ public class GetDashboardHandler implements CommandHandlerAsync<GetDashboard, Da
                 });
         reportsHandler.execute(new GetReports(), context, promise);
 
-    }
-
-    private class GenerateContent implements Function<Promise<Void>, Void> {
-
-        private DashboardResult dashboardResult;
-        private User user;
-
-        private GenerateContent(DashboardResult dashboardResult, User user) {
-            this.dashboardResult = dashboardResult;
-            this.user = user;
-        }
-
-        @Nullable
-        @Override
-        public Void apply(@Nullable Promise<Void> input) {
-            Map<ReportDTO, Content> result = new HashMap<>();
-            for (ReportDTO report : dashboardResult.getReportMap().keySet()) {
-                ReportElement element = report.getReport().getElement(0);
-                Content content = generator.generateElement(user, element, null, new DateRange());
-                result.put(report, content);
-            }
-            dashboardResult.setReportMap(result);
-            return null;
-        }
     }
 
     private class FetchReportDtoAndFillResults implements Function<List<ReportMetadataDTO>, Promise<Void>> {
@@ -132,12 +98,11 @@ public class GetDashboardHandler implements CommandHandlerAsync<GetDashboard, Da
                     @Override
                     public ReportDTO apply(ReportDTO input) {
                         input.setReportMetadataDTO(metadata);
-                        dashboardResult.getReportMap().put(input, null);
+                        dashboardResult.getReportList().add(input);
                         return null;
                     }
                 });
                 reportModelPromises.add(newReportPromise);
-
 
                 reportModelHandler.execute(new GetReportModel(metadata.getId()), executionContext, newReportPromise);
             }

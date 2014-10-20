@@ -22,26 +22,25 @@ package org.activityinfo.legacy.shared.command.result;
  */
 
 import org.activityinfo.legacy.shared.model.ReportDTO;
-import org.activityinfo.legacy.shared.reports.content.Content;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yuriyz on 10/14/2014.
  */
 public class DashboardResult implements CommandResult {
 
-    private Map<ReportDTO, Content> reportList = new HashMap<>();
+    private List<ReportDTO> reportList = new ArrayList<>();
 
     public DashboardResult() {
     }
 
-    public Map<ReportDTO, Content> getReportMap() {
+    public List<ReportDTO> getReportList() {
         return reportList;
     }
 
-    public void setReportMap(Map<ReportDTO, Content> reportMap) {
-        this.reportList = reportMap;
+    public void setReportList(List<ReportDTO> reportList) {
+        this.reportList = reportList;
     }
 }
