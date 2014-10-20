@@ -99,7 +99,7 @@ public class ActivityTable extends ResourceMigrator {
                         ResourceId categoryId = context.getIdStrategy().activityCategoryId(databaseId, category);
                         ownerId = categoryId;
                         if(!categories.contains(categoryId)) {
-                            writer.writeResource(0, categoryResource(databaseResourceId, categoryId, category), null, null);
+                            writer.writeResource(0, categoryResource(databaseResourceId, categoryId, category), null, null, 0);
                             categories.add(categoryId);
                         }
                     }
@@ -423,7 +423,7 @@ public class ActivityTable extends ResourceMigrator {
 //                    .setType(ReferenceType.multiple(context.resourceId(MONTHLY_REPORT_CLASS_DOMAIN, activityId))));
 //        }
 
-        writer.writeResource(0, siteForm.asResource(), null, null);
+        writer.writeResource(0, siteForm.asResource(), null, null, 0);
     }
 
 
@@ -471,7 +471,7 @@ public class ActivityTable extends ResourceMigrator {
             }
         }
 
-        writer.writeResource(0, periodForm.asResource(), null, null);
+        writer.writeResource(0, periodForm.asResource(), null, null, 0);
     }
 
     private boolean isAttribute(FormElement field) {

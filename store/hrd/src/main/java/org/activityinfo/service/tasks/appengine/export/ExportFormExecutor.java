@@ -51,8 +51,10 @@ public class ExportFormExecutor implements TaskExecutor<ExportFormTaskModel> {
         try (StoreReader reader = context.openStoreReader();
              ResourceCursor cursor = reader.openCursor(task.getFormClassId())) {
 
-            Record record = cursor.next().getValue();
-            writer.writeRow(record);
+            while(cursor.next()) {
+                Record record = cursor.getRecord();
+                writer.writeRow(record);
+            }
         }
 
         // Note that we don't want to close if there is an exception thrown and we fail

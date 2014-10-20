@@ -50,7 +50,7 @@ public class MySqlResourceWriter implements ResourceWriter {
 
 
     @Override
-    public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted) throws SQLException, JsonProcessingException {
+    public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted, long snapshotVersion) throws SQLException, JsonProcessingException {
 
         if(resource == null) {
             throw new NullPointerException("resource");

@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import static org.activityinfo.model.legacy.CuidAdapter.*;
+
 /**
  * Created by alex on 10/16/14.
  */
@@ -52,13 +54,17 @@ public class ResourcesTable extends ResourceMigrator {
             return;
         }
 
-        PreparedStatement statement = connection.prepareStatement(
-                "select * from resource_version" +
-                        " where  " + context.filter().resourceFilter() +
-                        " and version > ? " +
-                        " order by version");
+        String sql = "select * from resource_version" +
+                " where  " + context.filter().resourceFilter() +
+                " and version > ? " +
+                " order by version";
 
-        statement.setLong(1, 0);
+        if(context.getMaxSnapshotCount() < Integer.MAX_VALUE) {
+            sql += " limit " + context.getMaxSnapshotCount();
+        }
+        PreparedStatement statement = connection.prepareStatement(sql);
+
+        statement.setLong(1, context.getSourceVersionMigrated());
 
         ResultSet resultSet = statement.executeQuery();
 
@@ -67,6 +73,7 @@ public class ResourcesTable extends ResourceMigrator {
             LOGGER.info("Migrating " + resultSet.getString("id")  + " version " + resultSet.getLong("version"));
 
             Date commitDate = resultSet.getDate("commit_time");
+            long version = resultSet.getLong("version");
 
             ResourceId resourceId = ResourceId.valueOf(resultSet.getString("id"));
             ResourceId ownerId = ResourceId.valueOf(resultSet.getString("owner_id"));
@@ -79,7 +86,7 @@ public class ResourcesTable extends ResourceMigrator {
             // Map BRAC data BACK to legacy ids
             resource = rewriteIds(resource);
 
-            writer.writeResource(getUser(resultSet).getId(), resource, commitDate, null);
+            writer.writeResource(getUser(resultSet).getId(), resource, commitDate, null, version);
         }
     }
 
@@ -87,17 +94,23 @@ public class ResourcesTable extends ResourceMigrator {
         DatabaseMetaData dbm = connection.getMetaData();
         try( ResultSet tables = dbm.getTables(null, null, "resource_version", null)) {
 
-            boolean tableExists = tables.next();
-            return tableExists;
+            return tables.next();
         }
     }
+
+
 
     private Resource rewriteIds(Resource resource) {
         if(resource.getClassId().equals(FormClass.CLASS_ID)) {
             FormClass formClass = FormClass.fromResource(resource);
-            FormClass reformClass = new FormClass(formClass.getId());
+
+            int activityId = CuidAdapter.getLegacyId(formClass.getId());
+            ResourceId formClassId = context.getIdStrategy().mapToLegacyId(ACTIVITY_DOMAIN, formClass.getId());
+            ResourceId ownerId = context.getIdStrategy().mapToLegacyId(DATABASE_DOMAIN, formClass.getOwnerId());
+
+            FormClass reformClass = new FormClass(formClassId);
             reformClass.setLabel(formClass.getLabel());
-            reformClass.setOwnerId(formClass.getOwnerId());
+            reformClass.setOwnerId(ownerId);
             reformClass.setDescription(formClass.getDescription());
 
             for(FormField field : formClass.getFields()) {
@@ -117,8 +130,10 @@ public class ResourcesTable extends ResourceMigrator {
 
         } else {
             FormInstance instance = FormInstance.fromResource(resource);
-            ResourceId siteId = context.getIdStrategy().mapToLegacyId(CuidAdapter.SITE_DOMAIN, instance.getId());
-            FormInstance rewritten = new FormInstance(siteId, instance.getClassId());
+            ResourceId siteId = context.getIdStrategy().mapToLegacyId(SITE_DOMAIN, instance.getId());
+            ResourceId classId = context.getIdStrategy().mapToLegacyId(ACTIVITY_DOMAIN, instance.getClassId());
+
+            FormInstance rewritten = new FormInstance(siteId, classId);
             for (Map.Entry<ResourceId, FieldValue> entry : instance.getFieldValueMap().entrySet()) {
                 ResourceId legacyFieldId = context.getIdStrategy().mapToLegacyId(entry.getKey());
                 FieldValue fieldValue = rewriteFieldValue(entry.getValue());
@@ -131,7 +146,6 @@ public class ResourcesTable extends ResourceMigrator {
     private FieldValue rewriteFieldValue(FieldValue value) {
         if(value instanceof EnumFieldValue) {
             EnumFieldValue enumValue = (EnumFieldValue) value;
-            Set<ResourceId> enumIds = Sets.newHashSet();
             Set<ResourceId> legacyEnumIds = Sets.newHashSet();
             for(ResourceId id : enumValue.getResourceIds()) {
                 legacyEnumIds.add(context.getIdStrategy().mapToLegacyId(id));

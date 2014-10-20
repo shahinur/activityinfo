@@ -26,6 +26,7 @@ public class ApplicationClassProvider {
         classMap.put(FolderClass.CLASS_ID, FolderClass.INSTANCE.get());
         classMap.put(PivotTableModelClass.CLASS_ID, PivotTableModelClass.INSTANCE.get());
         classMap.put(LocalDateIntervalClass.CLASS_ID, LocalDateIntervalClass.INSTANCE.get());
+        classMap.put(CreationClass.CLASS_ID, CreationClass.INSTANCE.get());
 
         for (FieldTypeClass fieldTypeClass : TypeRegistry.get().getTypeClasses()) {
             if(fieldTypeClass instanceof ParametrizedFieldTypeClass) {

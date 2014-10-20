@@ -34,6 +34,10 @@ public class ApplicationProperties {
 
     public static final ResourceId WITHIN = ResourceId.valueOf("_geo:within");
 
+    public static final ResourceId CREATOR = ResourceId.valueOf("_history:creator");
+    public static final ResourceId CREATION_TIME = ResourceId.valueOf("_history:creationTime");
+    public static final ResourceId LAST_UPDATE_TIME = ResourceId.valueOf("_history:lastUpdateTime");
+
 
     public static String getLabelPropertyName(ResourceId classId) {
         if (FormClass.CLASS_ID.equals(classId)) {

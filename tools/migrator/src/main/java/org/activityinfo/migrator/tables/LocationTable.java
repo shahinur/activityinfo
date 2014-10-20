@@ -56,7 +56,7 @@ public class LocationTable extends ResourceMigrator {
                     if(locationId != currentLocationId) {
                         if(location != null) {
                             location.set(field(location.getClassId(), ADMIN_FIELD), normalize(parentMap, adminUnits));
-                            writer.writeResource(0, location.asResource(), null, null);
+                            writer.writeResource(0, location.asResource(), null, null, 0);
                         }
                         currentLocationId = locationId;
                         location = newLocationFormInstance(rs);
@@ -70,7 +70,7 @@ public class LocationTable extends ResourceMigrator {
                 }
                 if(location != null) {
                     location.set(field(location.getClassId(), ADMIN_FIELD), normalize(parentMap, adminUnits));
-                    writer.writeResource(0, location.asResource(), null, null);
+                    writer.writeResource(0, location.asResource(), null, null, 0);
                 }
             }
         }

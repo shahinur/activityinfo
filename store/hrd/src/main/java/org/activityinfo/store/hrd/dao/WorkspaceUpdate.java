@@ -126,6 +126,7 @@ public class WorkspaceUpdate implements AutoCloseable {
     private void writeInitialLatestVersion(Resource resource) {
         LatestVersion latestVersion = new LatestVersion(workspace, resource);
         latestVersion.setVersion(updateVersion);
+        latestVersion.setInitialVersion(updateVersion);
         latestVersion.setRowIndex(formIndexer.nextInstanceIndex(resource));
         latestVersion.setLabel(FolderIndex.formItemLabel(resource));
         tx.put(latestVersion);
@@ -145,7 +146,13 @@ public class WorkspaceUpdate implements AutoCloseable {
         LatestVersion latestVersion = tx.getOrThrow(new LatestVersionKey(workspace, resource.getId()));
 
         if(!latestVersion.hasVersion()) {
-            writeInitialSnapshot(latestVersion);
+            CommitStatus commitStatus = fetchInitialVersion(latestVersion);
+            writeInitialSnapshot(latestVersion, commitStatus);
+            latestVersion.setInitialVersion(commitStatus.getCommitVersion());
+            latestVersion.setPreviousVersion(commitStatus.getCommitVersion());
+
+        } else {
+            latestVersion.setPreviousVersion(latestVersion.getVersion());
         }
 
         latestVersion.setOwnerId(resource.getOwnerId());
@@ -162,21 +169,31 @@ public class WorkspaceUpdate implements AutoCloseable {
      *
      * @param latestVersion
      */
-    private void writeInitialSnapshot(LatestVersion latestVersion) {
+    private void writeInitialSnapshot(LatestVersion latestVersion, CommitStatus commitStatus) {
 
+        Snapshot snapshot = new Snapshot(workspace, commitStatus.getCommitVersion(), latestVersion.getResourceId());
+        snapshot.setOwnerId(latestVersion.getOwnerId());
+        snapshot.setTimestamp(commitStatus.getCommitTime());
+        snapshot.setUserId(commitStatus.getUserId());
+        snapshot.setValue(latestVersion.getRecord());
+        tx.put(snapshot);
+    }
+
+    /**
+     *
+     * @param latestVersion
+     * @return the commit status of the resource created during a deferred transaction
+     * @throws org.activityinfo.service.store.ResourceNotFound if the transaction has not yet been successfully been
+     * committed
+     */
+    private CommitStatus fetchInitialVersion(LatestVersion latestVersion) {
         Optional<CommitStatus> status = tx.getIfExists(new CommitStatusKey(workspace, latestVersion.getTransactionId()));
         if(!status.isPresent()) {
             // tx is still in progress or has failed, so the resource
             // does not officially exist yet
             throw new ResourceNotFound(latestVersion.getResourceId());
         }
-
-        Snapshot snapshot = new Snapshot(workspace, status.get().getCommitVersion(), latestVersion.getResourceId());
-        snapshot.setOwnerId(latestVersion.getOwnerId());
-        snapshot.setTimestamp(status.get().getCommitTime());
-        snapshot.setUserId(status.get().getUserId());
-        snapshot.setValue(latestVersion.getRecord());
-        tx.put(snapshot);
+        return status.get();
     }
 
     public void delete(ResourceId resourceId) {

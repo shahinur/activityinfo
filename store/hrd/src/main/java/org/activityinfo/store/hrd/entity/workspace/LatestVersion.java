@@ -14,6 +14,8 @@ import org.activityinfo.store.hrd.tx.IsEntity;
 import org.activityinfo.store.hrd.tx.ListQuery;
 import org.activityinfo.store.hrd.tx.SingleResultQuery;
 
+import java.util.Date;
+
 import static com.google.appengine.api.datastore.Query.FilterOperator.EQUAL;
 
 /**
@@ -29,16 +31,25 @@ public class LatestVersion implements IsEntity, ResourceVersion {
     public static final String OWNER_PROPERTY = "O";
     public static final String VERSION_PROPERTY = "V";
     public static final String DELETED_PROPERTY = "D";
+    public static final String INITIAL_VERSION = "V0";
+    public static final String PREVIOUS_VERSION = "V-";
+    public static final String TIMESTAMP_PROPERTY = "t";
+
 
     private LatestVersionKey key;
     private ResourceId ownerId;
     private ResourceId classId;
     private boolean deleted;
     private Long transactionId;
-    private Long version;
     private Long rowIndex;
     private String label;
     private SerializedRecord record;
+
+    private Long version;
+    private Long initialVersion;
+    private Long previousVersion;
+
+    private Date timestamp;
 
     public LatestVersion(Entity entity) {
         this.key = new LatestVersionKey(entity.getKey());
@@ -46,8 +57,12 @@ public class LatestVersion implements IsEntity, ResourceVersion {
         this.ownerId = ResourceIds.valueOf(entity.getProperty(OWNER_PROPERTY));
         this.classId = ResourceIds.valueOf(entity.getProperty(CLASS_PROPERTY));
         this.label = (String)entity.getProperty(LABEL_PROPERTY);
-        this.version = (Long)entity.getProperty(VERSION_PROPERTY);
         this.rowIndex = (Long)entity.getProperty(ROW_INDEX_PROPERTY);
+
+        this.version = (Long)entity.getProperty(VERSION_PROPERTY);
+        this.initialVersion = (Long)entity.getProperty(INITIAL_VERSION);
+        this.previousVersion = (Long)entity.getProperty(PREVIOUS_VERSION);
+
         this.record = SerializedRecord.fromEntity(entity);
 
         if(entity.getProperty(TX_ID) != null) {
@@ -134,6 +149,22 @@ public class LatestVersion implements IsEntity, ResourceVersion {
         this.version = version;
     }
 
+    public Long getInitialVersion() {
+        return initialVersion;
+    }
+
+    public void setInitialVersion(Long initialVersion) {
+        this.initialVersion = initialVersion;
+    }
+
+    public Long getPreviousVersion() {
+        return previousVersion;
+    }
+
+    public void setPreviousVersion(Long previousVersion) {
+        this.previousVersion = previousVersion;
+    }
+
     public Long getRowIndex() {
         return rowIndex;
     }
@@ -171,6 +202,11 @@ public class LatestVersion implements IsEntity, ResourceVersion {
         // Version property is indexed so that we can retrieve it
         // using a projection query
         entity.setProperty(VERSION_PROPERTY, version);
+
+        // Record the initial version and the previous version of the resource
+        // to facilitate recall of key events
+        entity.setUnindexedProperty(INITIAL_VERSION, initialVersion);
+        entity.setUnindexedProperty(PREVIOUS_VERSION, previousVersion);
 
         // Store the resourceId as indexed property as well as in this key
         // so that we can query by resourceId to find its workspace
@@ -236,16 +272,16 @@ public class LatestVersion implements IsEntity, ResourceVersion {
         return ListQuery.createKeysOnly(query, LatestVersionKey.class);
     }
 
-    public static ListQuery<Resource> formInstancesOf(LatestVersionKey formClassKey) {
+    public static ListQuery<LatestVersion> formInstancesOf(LatestVersionKey formClassKey) {
         Query query = new Query(LatestVersionKey.KIND)
             .setFilter(ownerIs(formClassKey))
             .addSort(ROW_INDEX_PROPERTY)
             .setAncestor(formClassKey.getWorkspace().getRootKey());
 
-        return new ListQuery<>(query, new Function<Entity, Resource>() {
+        return new ListQuery<>(query, new Function<Entity, LatestVersion>() {
             @Override
-            public Resource apply(Entity input) {
-                return new LatestVersion(input).toResource();
+            public LatestVersion apply(Entity input) {
+                return new LatestVersion(input);
             }
         });
     }

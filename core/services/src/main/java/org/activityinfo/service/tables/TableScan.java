@@ -4,21 +4,19 @@ import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.expr.eval.FieldBinding;
 import org.activityinfo.model.expr.eval.FieldReader;
 import org.activityinfo.model.expr.eval.PartialEvaluator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.formTree.FieldPath;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.views.ConstantColumnView;
 import org.activityinfo.model.table.views.EmptyColumnView;
+import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.tables.views.*;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,8 +59,15 @@ public class TableScan {
         if(columnMap.containsKey(columnKey)) {
             return columnMap.get(columnKey);
         } else {
-            FieldBinding fieldBinding = partialEvaluator.bind(fieldPath);
-            return addColumn(columnKey, fieldBinding);
+// TODO:
+//            if(!fieldPath.isNested()) {
+//                ResourceId id = fieldPath.getRoot();
+//                if(id.equals(ApplicationProperties.CREATION_TIME)) {
+//
+//                }
+//            }
+            FieldReader reader = partialEvaluator.bind(fieldPath);
+            return addColumn(columnKey, reader);
         }
     }
 
@@ -167,12 +172,11 @@ public class TableScan {
         int rowCount = 0;
 
         // Run the query
-        Iterator<Resource> cursor = store.openCursor(classId);
-        while(cursor.hasNext()) {
-            Resource resource = cursor.next();
+        ResourceCursor cursor = store.openCursor(classId);
+        while(cursor.next()) {
 
             for(int i=0;i!=builders.length;++i) {
-                builders[i].accept(resource.getId(), resource.getValue());
+                builders[i].accept(cursor.getResourceId(), cursor.getRecord());
             }
             rowCount ++ ;
         }

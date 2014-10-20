@@ -96,14 +96,13 @@ public class UserDatabaseBuilder {
     private void addPartners(ResourceNode partnerFormClass) throws Exception {
         ResourceId formId = partnerFormClass.getId();
         ResourceCursor cursor = reader.openCursor(partnerFormClass.getId());
-        while(cursor.hasNext()) {
+        while(cursor.next()) {
 
-            Resource resource = cursor.next();
 
             PartnerDTO partner = new PartnerDTO();
-            partner.setId(getLegacyId(resource.getId()));
-            partner.setName(resource.getValue().getString(field(formId, NAME_FIELD).asString()));
-            partner.setFullName(resource.getValue().isString(field(formId, FULL_NAME_FIELD).asString()));
+            partner.setId(getLegacyId(cursor.getResourceId()));
+            partner.setName(cursor.getRecord().getString(field(formId, NAME_FIELD).asString()));
+            partner.setFullName(cursor.getRecord().isString(field(formId, FULL_NAME_FIELD).asString()));
 
             db.getPartners().add(partner);
         }

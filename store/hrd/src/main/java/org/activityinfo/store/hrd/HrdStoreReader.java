@@ -17,6 +17,7 @@ import org.activityinfo.service.tree.FormTreeBuilder;
 import org.activityinfo.store.hrd.cache.MemcacheColumnCache;
 import org.activityinfo.store.hrd.dao.WorkspaceQuery;
 import org.activityinfo.store.hrd.entity.workspace.FormMetaEntry;
+import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 
@@ -113,7 +114,7 @@ public class HrdStoreReader implements StoreReader, FormClassProvider {
     public ResourceCursor openCursor(ResourceId formClassId) throws Exception {
         WorkspaceQuery workspace = getWorkspaceOf(formClassId);
 
-        Iterator<Resource> iterator = workspace.getResource(formClassId).getFormInstances();
+        Iterator<LatestVersion> iterator = workspace.getResource(formClassId).getFormInstances();
 
         return new HrdCursor(iterator);
     }
@@ -148,7 +149,7 @@ public class HrdStoreReader implements StoreReader, FormClassProvider {
         @Override
         public ResourceCursor openCursor(ResourceId formClassId) throws Exception {
             WorkspaceQuery workspace = getWorkspaceOf(formClassId);
-            Iterator<Resource> iterator = workspace.getResource(formClassId).getFormInstances();
+            Iterator<LatestVersion> iterator = workspace.getResource(formClassId).getFormInstances();
             return new HrdCursor(iterator);
         }
 

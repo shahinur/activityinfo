@@ -146,6 +146,24 @@ public class TableQueryTest {
     }
 
 
+    @Test
+    public void creationFields() {
+
+        create(newInstance().set(name, "Bob").set(age, years(42)));
+        create(newInstance().set(name, "Francine").set(age, years(10)).set(gender, female));
+
+        TableModel tableModel = new TableModel(formClassId);
+        tableModel.selectField(name).as("C1");
+        tableModel.selectField(gender).as("C2");
+
+
+        ColumnSet data = environment.queryTable(tableModel);
+
+        assertThat(data.getColumnView("C1"), hasValues("Bob", "Francine"));
+        assertThat(data.getColumnView("C2"), hasValues(null, "Female"));
+    }
+
+
 
     @Test
     public void calculatedWithMissingColumn() {

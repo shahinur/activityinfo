@@ -16,6 +16,7 @@ import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.test.TestResourceStore;
 import org.activityinfo.ui.client.page.entry.form.SiteRenderer;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Properties;
@@ -25,28 +26,46 @@ import static org.hamcrest.Matchers.*;
 
 public class MigrateDatabaseTaskTest {
 
-    @Test
-    public void test() throws Exception {
+    public static final int DB_OWNER_ID = 11;
+    private TestResourceStore testStore;
+    private HrdResourceStore store;
+    private DeploymentConfiguration config;
 
-        TestResourceStore testStore = new TestResourceStore();
+    @Before
+    public void setup() {
+
+        testStore = new TestResourceStore();
         testStore.setUp();
-        HrdResourceStore store = (HrdResourceStore) testStore.unwrap();
+        store = (HrdResourceStore) testStore.unwrap();
 
         Properties properties = new Properties();
-       // properties.setProperty(MigrateDatabaseTask.MIGRATION_SOURCE_URL, "jdbc:mysql://173.194.241.81:3306/activityinfo");
+        // properties.setProperty(MigrateDatabaseTask.MIGRATION_SOURCE_URL, "jdbc:mysql://173.194.241.81:3306/activityinfo");
         properties.setProperty(MigrateDatabaseTask.MIGRATION_SOURCE_URL, "jdbc:mysql://localhost:3306/activityinfo");
         properties.setProperty(MigrateDatabaseTask.MIGRATION_USER, "root");
         properties.setProperty(MigrateDatabaseTask.MIGRATION_PASS, "root");
         properties.setProperty(MigrateDatabaseTask.MIGRATION_DRIVER_CLASS, "com.mysql.jdbc.Driver");
 
-        DeploymentConfiguration config = new DeploymentConfiguration(properties);
+        config = new DeploymentConfiguration(properties);
+    }
 
+    @Test
+    public void testUsers() {
         AuthenticatedUser mithun = new AuthenticatedUser(11);
         MigrateDatabaseTask migrator = new MigrateDatabaseTask(store, config, mithun);
-        migrator.migrate(524);
+        migrator.migrateUsers();
+    }
+
+    @Test
+    public void test() throws Exception {
+
+        runMigrator(config, store);
+
+        // verify that if we run again we get only updates
+        runMigrator(config, store);
+
 
         User mithunEntity = new User();
-        mithunEntity.setId(mithun.getId());
+        mithunEntity.setId(DB_OWNER_ID);
         GetSchemaHandler handler = new GetSchemaHandler(store);
         SchemaDTO schema = (SchemaDTO) handler.execute(new GetSchema(), mithunEntity);
 
@@ -57,12 +76,12 @@ public class MigrateDatabaseTaskTest {
         assertThat(schema.getDatabases(), hasSize(1));
 
         UserDatabaseDTO db = schema.getDatabases().get(0);
-        assertThat(db.getId(), equalTo(524));
+        assertThat(db.getId(), not(equalTo(524)));
         assertThat(db.getName(), equalTo("QIS 3rd round "));
         assertThat(db.getPartners().size(), equalTo(1));
         assertThat(db.getPartners().get(0).get("id"), equalTo((Object)5240572));
 
-        ActivityDTO activity = db.getActivityById(1137);
+        ActivityDTO activity = findActivity(db, "HH QIS 3rd round");
         assertThat(activity.getIndicators().get(0).getAggregation(), notNullValue());
         assertThat(activity.getLocationType().getAdminLevels(), hasSize(0));
 
@@ -81,7 +100,7 @@ public class MigrateDatabaseTaskTest {
        // System.out.println(schemaJson);
 
         GetSitesHandler getSitesHandler = new GetSitesHandler(store);
-        SiteResult sites = (SiteResult) getSitesHandler.execute(GetSites.byActivity(1137), mithunEntity);
+        SiteResult sites = (SiteResult) getSitesHandler.execute(GetSites.byActivity(activity.getId()), mithunEntity);
 
         assertThat(sites.getData().get(0).getId(), instanceOf(Integer.class));
 
@@ -94,6 +113,22 @@ public class MigrateDatabaseTaskTest {
 //                    ", " +
 //                    site.get(AttributeDTO.getPropertyName(sex.getAttributes().get(1))));
 //        }
+    }
+
+    private AuthenticatedUser runMigrator(DeploymentConfiguration config, HrdResourceStore store) throws Exception {
+        AuthenticatedUser mithun = new AuthenticatedUser(11);
+        MigrateDatabaseTask migrator = new MigrateDatabaseTask(store, config, mithun);
+        migrator.migrate(524);
+        return mithun;
+    }
+
+    private ActivityDTO findActivity(UserDatabaseDTO db, String label) {
+        for(ActivityDTO activity : db.getActivities()) {
+            if(activity.getName().equals(label)) {
+                return activity;
+            }
+        }
+        throw new IllegalArgumentException(label);
     }
 
     private AttributeGroupDTO findAttribute(ActivityDTO activity, String label) {

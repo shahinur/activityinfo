@@ -39,7 +39,7 @@ public class MySqlResourceDumpWriter implements ResourceWriter {
 
 
     @Override
-    public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted) throws IOException {
+    public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted, long snapshotVersion) throws IOException {
 
         if(writtenCount > 0) {
             append(',');

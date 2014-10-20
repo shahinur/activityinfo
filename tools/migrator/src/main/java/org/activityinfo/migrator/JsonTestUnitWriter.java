@@ -32,7 +32,7 @@ public class JsonTestUnitWriter implements ResourceWriter {
     }
 
     @Override
-    public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted) throws IOException {
+    public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted, long snapshotVersion) throws IOException {
 
         if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
             Preconditions.checkArgument(userId!=0, "user id for workspace " + resource.getId() + " is not set");

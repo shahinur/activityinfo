@@ -1,6 +1,7 @@
 package org.activityinfo.service.tasks.appengine.export;
 
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.NullFieldValue;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +26,10 @@ class Column {
     }
 
     public Object convert(FieldValue value) {
-        return converter.convertValue(value);
+        if(value == NullFieldValue.INSTANCE) {
+            return null;
+        } else {
+            return converter.convertValue(value);
+        }
     }
 }

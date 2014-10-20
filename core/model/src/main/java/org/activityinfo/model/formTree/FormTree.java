@@ -20,8 +20,6 @@ import java.util.*;
  */
 public class FormTree {
 
-
-
     public class Node {
 
         private Node parent;
@@ -214,7 +212,6 @@ public class FormTree {
     private Map<FieldPath, Node> nodeMap = Maps.newHashMap();
 
     public FormTree() {
-
     }
 
     public Iterable<Node> nodes() {

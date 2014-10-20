@@ -29,21 +29,23 @@ public class MySqlMigrator {
     private List<ResourceMigrator> migrators = Lists.newArrayList();
 
     public MySqlMigrator(MigrationContext context) {
-        migrators.add(new UserDatabaseTable(context));
-     //   migrators.add(new Geodatabase(context));
-        migrators.add(new CountryTable(context));
-        migrators.add(new AdminLevelTable(context));
-        migrators.add(new AdminEntityTable(context));
-        migrators.add(new LocationTypeTable(context));
-        migrators.add(new LocationTable(context));
-        migrators.add(new UserPermissionTable(context));
-    //    migrators.add(new UserLoginTable());
-        migrators.add(new PartnerFormClass(context));
-        migrators.add(new PartnerTable(context));
-        migrators.add(new ProjectTable(context));
-        migrators.add(new ActivityTable(context));
-        migrators.add(new SiteTable(context));
-        migrators.add(new ReportingPeriodTable(context));
+        if(context.getSourceVersionMigrated() <= 0) {
+            migrators.add(new UserDatabaseTable(context));
+            //   migrators.add(new Geodatabase(context));
+            migrators.add(new CountryTable(context));
+            migrators.add(new AdminLevelTable(context));
+            migrators.add(new AdminEntityTable(context));
+            migrators.add(new LocationTypeTable(context));
+            migrators.add(new LocationTable(context));
+            migrators.add(new UserPermissionTable(context));
+          ///  migrators.add(new UserLoginTable(context));
+            migrators.add(new PartnerFormClass(context));
+            migrators.add(new PartnerTable(context));
+            migrators.add(new ProjectTable(context));
+            migrators.add(new ActivityTable(context));
+            migrators.add(new SiteTable(context));
+            migrators.add(new ReportingPeriodTable(context));
+        }
         migrators.add(new ResourcesTable(context));
     }
 

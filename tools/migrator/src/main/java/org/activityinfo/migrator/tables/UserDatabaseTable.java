@@ -41,7 +41,6 @@ public class UserDatabaseTable extends ResourceMigrator {
         }
     }
 
-
     private void writeDatabase(ResourceWriter writer, ResultSet rs) throws Exception {
 
         ResourceId id = context.resourceId(DATABASE_DOMAIN, rs.getInt("DatabaseId"));
@@ -57,7 +56,7 @@ public class UserDatabaseTable extends ResourceMigrator {
         resource.setOwnerId(Resources.ROOT_ID);
         resource.setValue(database);
 
-        writer.writeResource(rs.getInt("ownerUserId"), resource, null, null);
+        writer.writeResource(rs.getInt("ownerUserId"), resource, null, null, 0);
 
         LOGGER.info("Database " + id);
 

@@ -73,7 +73,7 @@ public class LocationTypeTable extends ResourceMigrator {
                             .setRequired(false)
                             .setType(GeoPointType.INSTANCE);
 
-                    writer.writeResource(0, formClass.asResource(), null, null);
+                    writer.writeResource(0, formClass.asResource(), null, null, 0);
                 }
             }
         }

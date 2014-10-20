@@ -24,6 +24,13 @@ public class ReadWriteTx implements WritableTx, AutoCloseable {
         return new ReadWriteTx(datastore, tx);
     }
 
+    public static ReadWriteTx serialized() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Transaction tx = datastore.beginTransaction();
+        return new ReadWriteTx(datastore, tx);
+    }
+
+
     public static ReadWriteTx outsideTransaction() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         return new ReadWriteTx(datastore, null);

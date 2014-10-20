@@ -1,8 +1,18 @@
 package org.activityinfo.service.store;
 
-import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.resource.ResourceId;
 
-import java.util.Iterator;
+public interface ResourceCursor extends AutoCloseable {
 
-public interface ResourceCursor extends Iterator<Resource>, AutoCloseable {
+    boolean next();
+
+    ResourceId getResourceId();
+
+    Record getRecord();
+
+    long getVersion();
+
+    long getInitialVersion();
+
 }

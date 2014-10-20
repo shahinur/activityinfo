@@ -1,5 +1,6 @@
 package org.activityinfo.store.migrate;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.activityinfo.migrator.MySqlMigrator;
@@ -13,18 +14,26 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.service.identity.UserId;
+import org.activityinfo.service.identity.entity.UserAccount;
+import org.activityinfo.service.identity.entity.UserCredential;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.hrd.auth.NullAuthorizer;
+import org.activityinfo.store.hrd.cache.WorkspaceCache;
 import org.activityinfo.store.hrd.dao.ConstantClock;
 import org.activityinfo.store.hrd.dao.WorkspaceCreation;
 import org.activityinfo.store.hrd.dao.WorkspaceUpdate;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
+import org.activityinfo.store.hrd.tx.ReadTx;
+import org.activityinfo.store.hrd.tx.ReadWriteTx;
 
 import java.sql.*;
 import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static org.activityinfo.model.legacy.CuidAdapter.DATABASE_DOMAIN;
 
 public class MigrateDatabaseTask {
 
@@ -54,6 +63,33 @@ public class MigrateDatabaseTask {
         this.user = user;
     }
 
+    public void migrateUsers() {
+        try (Connection connection = openConnection();
+             Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery("select * from userlogin")) {
+
+            while(rs.next()) {
+                UserId userId = new UserId(rs.getInt("userid"));
+                UserAccount userAccount = new UserAccount(userId);
+                userAccount.setEmail(rs.getString("email"));
+                userAccount.setName(rs.getString("name"));
+
+                UserCredential userCredential = new UserCredential(userId);
+                userCredential.setHashedPassword(rs.getString("password"));
+
+                try(ReadWriteTx tx = ReadWriteTx.serialized()) {
+                    tx.put(userAccount);
+                    tx.put(userCredential);
+                    tx.commit();
+                }
+
+            }
+
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Exception migrating users: " + e.getMessage(), e);
+        }
+    }
+
     public void migrate(int databaseId) throws Exception {
         this.databaseId = databaseId;
         try(Connection connection = openConnection()) {
@@ -65,6 +101,17 @@ public class MigrateDatabaseTask {
             LegacyIdStrategy idStrategy = new LegacyIdStrategy(new HrdIdStore());
             MigrationContext context = new MigrationContext(idStrategy, filter);
             context.setRootId(Resources.ROOT_ID);
+           // context.setMaxSnapshotCount(100);
+
+            ResourceId workspaceId = idStrategy.resourceId(DATABASE_DOMAIN, databaseId);
+            WorkspaceEntityGroup workspace = new WorkspaceEntityGroup(workspaceId);
+
+            try (ReadTx tx = ReadTx.outsideTransaction()) {
+                Optional<MigrationStatus> status = tx.getIfExists(new MigrationStatusKey(workspace));
+                if(status.isPresent()) {
+                    context.setSourceVersionMigrated(status.get().getSourceVersionMigrated());
+                }
+            }
 
             try {
                 MySqlMigrator migrator = new MySqlMigrator(context);
@@ -130,8 +177,9 @@ public class MigrateDatabaseTask {
 
         private boolean closed = false;
 
-        private Map<ResourceId, WorkspaceEntityGroup> workspaceMap = Maps.newHashMap();
+        private WorkspaceCache workspaceCache = new WorkspaceCache();
         private Map<ResourceId, AuthenticatedUser> workspaceOwner = Maps.newHashMap();
+
 
         @Override
         public void beginResources() throws Exception {
@@ -139,46 +187,64 @@ public class MigrateDatabaseTask {
         }
 
         @Override
-        public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted) throws Exception {
+        public void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted,
+                                  long snapshotVersion) throws Exception {
 
-            if(resource.getOwnerId().equals(Resources.ROOT_ID)) {
+            if (resource.getOwnerId().equals(Resources.ROOT_ID)) {
                 Preconditions.checkArgument(userId != 0, "workspace " + resource.getId() + " has no user set");
                 AuthenticatedUser user = new AuthenticatedUser(userId);
                 WorkspaceCreation creation = new WorkspaceCreation(store.getContext(), user);
                 creation.createWorkspace(resource);
 
-                workspaceMap.put(resource.getId(), new WorkspaceEntityGroup(resource.getId()));
+                workspaceCache.cache(resource.getId(), new WorkspaceEntityGroup(resource.getId()));
                 workspaceOwner.put(resource.getId(), user);
 
             } else {
 
-                WorkspaceEntityGroup workspace = workspaceMap.get(resource.getOwnerId());
+                WorkspaceEntityGroup workspace = workspaceCache.lookup(resource.getOwnerId());
                 Preconditions.checkNotNull(workspace, "No parent found : " + resource.getOwnerId());
 
                 AuthenticatedUser user;
-                if(userId != 0) {
+                if (userId != 0) {
                     user = new AuthenticatedUser(userId);
                 } else {
                     user = workspaceOwner.get(workspace.getWorkspaceId());
                     Preconditions.checkState(user != null, "no user stored for " + workspace);
                 }
 
-                if(dateCreated == null) {
+                if (dateCreated == null) {
                     dateCreated = new Date();
                 }
 
-                try( WorkspaceUpdate update = WorkspaceUpdate.newBuilder(store.getContext())
-                                    .setAuthorizer(new NullAuthorizer())
-                                    .setClock(new ConstantClock(dateCreated))
-                                    .setUser(user)
-                                    .setWorkspace(workspace)
-                                    .begin()) {
+                try (ReadWriteTx tx = ReadWriteTx.serializedCrossGroup();
+                     WorkspaceUpdate update = WorkspaceUpdate.newBuilder(store.getContext())
+                             .setAuthorizer(new NullAuthorizer())
+                             .setClock(new ConstantClock(dateCreated))
+                             .setUser(user)
+                             .setTransaction(tx)
+                             .setWorkspace(workspace)
+                             .begin()) {
 
-                    update.createOrUpdateResource(resource);
-                    update.commit();
+                    if(!isAlreadyMigrated(workspace, tx, snapshotVersion)) {
+
+                        update.createOrUpdateResource(resource);
+                        if (snapshotVersion > 0) {
+                            MigrationStatus status = new MigrationStatus(workspace);
+                            status.setSourceVersionMigrated(snapshotVersion);
+                            tx.put(status);
+                        }
+                        update.commit();
+                    } else {
+                        tx.rollback();
+                    }
                 }
-                workspaceMap.put(resource.getId(), workspace);
+                workspaceCache.cache(resource.getId(), workspace);
             }
+        }
+
+        private boolean isAlreadyMigrated(WorkspaceEntityGroup workspace, ReadWriteTx tx, long snapshotVersion) {
+            Optional<MigrationStatus> previousStatus = tx.getIfExists(new MigrationStatusKey(workspace));
+            return previousStatus.isPresent() && previousStatus.get().getSourceVersionMigrated() >= snapshotVersion;
         }
 
         @Override

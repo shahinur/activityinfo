@@ -25,7 +25,14 @@ public class LegacyIdStrategy implements IdStrategy {
 
     @Override
     public ResourceId resourceId(char domain, int id) {
-        return CuidAdapter.resourceId(domain, id);
+        ResourceId resourceId = CuidAdapter.resourceId(domain, id);
+        switch(domain) {
+            case CuidAdapter.DATABASE_DOMAIN:
+            case CuidAdapter.ACTIVITY_DOMAIN:
+                resourceId = mapToLegacyId(domain, resourceId);
+                break;
+        }
+        return resourceId;
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import static org.activityinfo.model.legacy.CuidAdapter.DATABASE_DOMAIN;
 import static org.activityinfo.model.legacy.CuidAdapter.databaseId;
 
 public class UserPermissionTable extends ResourceMigrator {
@@ -54,8 +55,8 @@ public class UserPermissionTable extends ResourceMigrator {
                     Resource resource = Resources.createResource();
                     resource.setId(rule.getId());
                     resource.setValue(UserPermissionClass.INSTANCE.toRecord(rule));
-                    resource.setOwnerId(databaseId(databaseId));
-                    writer.writeResource(0, resource, null, null);
+                    resource.setOwnerId(context.getIdStrategy().resourceId(DATABASE_DOMAIN, databaseId));
+                    writer.writeResource(0, resource, null, null, 0);
                 }
             }
         }

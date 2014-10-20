@@ -40,7 +40,7 @@ public class PartnerTable extends ResourceMigrator {
                     instance.set(field(classId, NAME_FIELD), rs.getString("name"));
                     instance.set(field(classId, FULL_NAME_FIELD), rs.getString("fullName"));
 
-                    writer.writeResource(0, instance.asResource(), null, null);
+                    writer.writeResource(0, instance.asResource(), null, null, 0);
                 }
             }
         }

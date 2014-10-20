@@ -70,7 +70,7 @@ public class ResourceQuery {
         return node;
     }
 
-    public Iterator<Resource> getFormInstances() {
+    public Iterator<LatestVersion> getFormInstances() {
         FetchOptions options = FetchOptions.Builder.withChunkSize(250);
         return tx.query(LatestVersion.formInstancesOf(key), options).iterator();
     }

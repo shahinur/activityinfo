@@ -287,7 +287,11 @@ public class PartialEvaluator {
                     for (FieldReader argument : arguments) {
                         argumentValues.add(argument.readField(record));
                     }
-                    return functionCallNode.getFunction().apply(argumentValues);
+                    try {
+                        return functionCallNode.getFunction().apply(argumentValues);
+                    } catch(ExprException e) {
+                        return new ErrorValue(e);
+                    }
                 }
 
                 @Override

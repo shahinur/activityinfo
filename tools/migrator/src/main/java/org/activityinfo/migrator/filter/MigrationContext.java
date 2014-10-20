@@ -15,6 +15,8 @@ public class MigrationContext {
     private ResourceId geoDbOwnerId = Resources.ROOT_ID;
 
     private Map<Integer, Integer> databaseOwnerMap = Maps.newHashMap();
+    private long sourceVersionMigrated;
+    private int maxSnapshotCount = Integer.MAX_VALUE;
 
     public MigrationContext(MigrationFilter filter) {
         this.filter = filter;
@@ -59,5 +61,22 @@ public class MigrationContext {
 
     public void setDatabaseOwnerUser(int databaseId, int userId) {
         databaseOwnerMap.put(databaseId, userId);
+    }
+
+    public void setSourceVersionMigrated(long sourceVersionMigrated) {
+        this.sourceVersionMigrated = sourceVersionMigrated;
+    }
+
+
+    public long getSourceVersionMigrated() {
+        return sourceVersionMigrated;
+    }
+
+    public int getMaxSnapshotCount() {
+        return maxSnapshotCount;
+    }
+
+    public void setMaxSnapshotCount(int maxSnapshotCount) {
+        this.maxSnapshotCount = maxSnapshotCount;
     }
 }

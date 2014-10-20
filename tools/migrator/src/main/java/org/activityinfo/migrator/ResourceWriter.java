@@ -8,7 +8,7 @@ public interface ResourceWriter {
 
     void beginResources() throws Exception;
 
-    void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted) throws Exception;
+    void writeResource(int userId, Resource resource, Date dateCreated, Date dateDeleted, long snapshotVersion) throws Exception;
 
     void endResources() throws Exception;
 

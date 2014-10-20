@@ -45,7 +45,7 @@ public class CountryTable extends ResourceMigrator {
                 .set(FolderClass.LABEL_FIELD_ID, rs.getString("Name"))
                 .asResource();
 
-        writer.writeResource(GEO_ADMIN_USER_ID, workspace, null, null);
+        writer.writeResource(GEO_ADMIN_USER_ID, workspace, null, null, 0);
       //  writer.writeResource(GEO_ADMIN_USER_ID, acr.asResource(), null, null);
     }
 

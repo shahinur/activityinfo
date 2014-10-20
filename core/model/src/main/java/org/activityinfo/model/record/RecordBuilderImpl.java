@@ -115,7 +115,11 @@ class RecordBuilderImpl implements RecordBuilder {
 
     @Override
     public RecordBuilder set(String fieldName, ResourceId value) {
-        properties.put(fieldName, new ReferenceValue(value).asRecord());
+        if(value == null) {
+            properties.remove(fieldName);
+        } else {
+            properties.put(fieldName, new ReferenceValue(value).asRecord());
+        }
         return this;
     }
 

@@ -95,7 +95,7 @@ public class ReportingPeriodTable extends ResourceMigrator {
         populateIndicators(connection, periods, activityId);
 
         for(FormInstance site : periods.values()) {
-            writer.writeResource(0, site.asResource(), null, null);
+            writer.writeResource(0, site.asResource(), null, null, 0);
         }
     }
 
