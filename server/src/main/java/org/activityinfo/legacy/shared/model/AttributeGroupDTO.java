@@ -26,6 +26,8 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.enumerated.EnumType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -163,6 +165,26 @@ public final class AttributeGroupDTO extends BaseModelData implements EntityDTO,
 
     public int getSortOrder() {
         return get("sortOrder", 0);
+    }
+
+    @Override
+    public FieldTypeClass getTypeClass() {
+        return EnumType.TYPE_CLASS;
+    }
+
+    @Override
+    public boolean isRequired() {
+        return isMandatory();
+    }
+
+    @Override
+    public String getFieldId() {
+        return getPropertyName();
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
     }
 
     public void setSortOrder(int sortOrder) {

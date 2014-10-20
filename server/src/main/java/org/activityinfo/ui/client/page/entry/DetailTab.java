@@ -23,8 +23,16 @@ package org.activityinfo.ui.client.page.entry;
  */
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.TabItem;
+import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
@@ -36,24 +44,50 @@ import org.activityinfo.ui.client.page.entry.form.SiteRenderer;
 
 public class DetailTab extends TabItem {
 
+    private final ContentPanel panel;
     private final Html content;
     private final Dispatcher dispatcher;
+
+    private ToggleButton hideEmptyFieldsToggle;
+
+    private SiteDTO site;
+    private SchemaDTO schema;
 
     public DetailTab(Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
         setText(I18N.CONSTANTS.details());
+        setLayout(new FitLayout());
 
-        this.setScrollMode(Scroll.AUTO);
+        hideEmptyFieldsToggle = new ToggleButton(I18N.CONSTANTS.hideEmptyFields());
+        hideEmptyFieldsToggle.toggle(false);
+        hideEmptyFieldsToggle.setStateful(true);
+        hideEmptyFieldsToggle.setStateId("detailTab.hideEmptyFields");
+        hideEmptyFieldsToggle.addListener(Events.Toggle, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                render();
+            }
+        });
+
+        ToolBar toolBar = new ToolBar();
+        toolBar.add(hideEmptyFieldsToggle);
 
         content = new Html();
         content.setStyleName("details");
-        add(content);
 
+        panel = new ContentPanel();
+        panel.setHeaderVisible(false);
+        panel.setTopComponent(toolBar);
+        panel.add(content);
+        panel.setScrollMode(Scroll.AUTOY);
+        add(panel);
     }
 
     public void setSite(final SiteDTO site) {
+        this.site = site;
         content.setHtml(I18N.CONSTANTS.loading());
         dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+
 
             @Override
             public void onFailure(Throwable caught) {
@@ -63,14 +97,19 @@ public class DetailTab extends TabItem {
 
             @Override
             public void onSuccess(SchemaDTO result) {
-                render(result, site);
-
+                schema = result;
+                render();
             }
         });
     }
 
-    private void render(SchemaDTO schema, SiteDTO site) {
-        SiteRenderer renderer = new SiteRenderer(new IndicatorNumberFormat());
-        content.setHtml(renderer.renderSite(site, schema.getActivityById(site.getActivityId()), true));
+    private void render() {
+        if(site == null || schema == null) {
+            content.setHtml(SafeHtmlUtils.EMPTY_SAFE_HTML.asString());
+        } else {
+            SiteRenderer renderer = new SiteRenderer(new IndicatorNumberFormat());
+            renderer.setHideEmptyValues(hideEmptyFieldsToggle.isPressed());
+            content.setHtml(renderer.renderSite(site, schema.getActivityById(site.getActivityId()), true));
+        }
     }
 }

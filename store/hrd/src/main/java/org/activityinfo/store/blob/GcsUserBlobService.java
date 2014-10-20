@@ -17,12 +17,14 @@ import org.activityinfo.service.blob.UploadCredentials;
 import org.activityinfo.service.blob.UserBlobService;
 
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.text.ParseException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -176,9 +178,15 @@ public class GcsUserBlobService implements UserBlobService {
 
         ImagesService imagesService = ImagesServiceFactory.getImagesService();
         Image image = ImagesServiceFactory.makeImageFromBlob(blob.getBlobstoreKey());
-        Transform resize = ImagesServiceFactory.makeResize(width, height);
+        Transform resize = ImagesServiceFactory.makeResize(width, height, false);
         Image newImage = imagesService.applyTransform(resize, image);
 
-        return Response.ok(newImage.getImageData()).build();
+        CacheControl cacheControl = new CacheControl();
+        cacheControl.setPrivate(true);
+        cacheControl.setMaxAge((int) TimeUnit.DAYS.toMillis(365));
+
+        return Response.ok(newImage.getImageData())
+                .cacheControl(cacheControl)
+                .build();
     }
 }

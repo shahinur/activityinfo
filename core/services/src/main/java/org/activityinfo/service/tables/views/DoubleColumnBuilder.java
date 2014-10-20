@@ -1,7 +1,6 @@
 package org.activityinfo.service.tables.views;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.views.DoubleArrayColumnView;
 import org.activityinfo.model.type.FieldValue;
@@ -10,15 +9,13 @@ import java.util.List;
 
 public class DoubleColumnBuilder implements ColumnViewBuilder {
 
-    private final String fieldName;
     private final List<Double> values = Lists.newArrayList();
 
     private DoubleArrayColumnView result = null;
     private DoubleReader reader;
 
-    public DoubleColumnBuilder(ResourceId fieldId, DoubleReader reader) {
+    public DoubleColumnBuilder(DoubleReader reader) {
         this.reader = reader;
-        this.fieldName = fieldId.asString();
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.expr.eval.FieldBinding;
+import org.activityinfo.model.expr.eval.FieldReader;
 import org.activityinfo.model.expr.eval.PartialEvaluator;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
@@ -61,17 +62,34 @@ public class TableScan {
             return columnMap.get(columnKey);
         } else {
             FieldBinding fieldBinding = partialEvaluator.bind(fieldPath);
-            ColumnViewBuilder builder = ViewBuilderFactory.get(fieldBinding.getField(), fieldBinding.getType());
-            if(builder != null) {
-                FieldScanner fieldScanner = new FieldScanner(fieldBinding.getReader(), builder);
-                columnMap.put(columnKey, fieldScanner);
-                return fieldScanner;
+            return addColumn(columnKey, fieldBinding);
+        }
+    }
 
-            } else {
-                LOGGER.log(Level.SEVERE, "Column " + fieldPath + " has unsupported type: " + fieldBinding.getType());
-                //throw new UnsupportedOperationException("Unsupported type for column " + field.getLabel() + ": " + fieldType);
-                return fetchEmptyColumn(ColumnType.STRING);
-            }
+    public Supplier<ColumnView> fetchExpression(String expression) {
+
+        // compose a unique key for this column (we don't want to fetch twice!)
+        String columnKey = expression;
+
+        // create the column builder if it doesn't exist
+        if(columnMap.containsKey(columnKey)) {
+            return columnMap.get(columnKey);
+        } else {
+            FieldReader reader = partialEvaluator.partiallyEvaluate(expression);
+            return addColumn(columnKey, reader);
+        }
+    }
+
+    private Supplier<ColumnView> addColumn(String columnKey, FieldReader fieldBinding) {
+        ColumnViewBuilder builder = ViewBuilderFactory.get(fieldBinding.getType());
+        if(builder != null) {
+            FieldScanner fieldScanner = new FieldScanner(fieldBinding, builder);
+            columnMap.put(columnKey, fieldScanner);
+            return fieldScanner;
+
+        } else {
+            LOGGER.log(Level.SEVERE, "Column " + columnKey + " has unsupported type: " + fieldBinding.getType());
+            return fetchEmptyColumn(ColumnType.STRING);
         }
     }
 

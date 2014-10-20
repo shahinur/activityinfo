@@ -59,5 +59,14 @@ public interface SiteFormResources extends ClientBundle {
 
         String locationMarker();
 
+        String fieldLabel();
+
+        String fieldControl();
+
+        String fieldContainer();
+
+        String fieldGroup();
+
+        String helpText();
     }
 }

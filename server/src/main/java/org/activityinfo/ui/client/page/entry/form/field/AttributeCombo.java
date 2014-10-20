@@ -28,6 +28,7 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import org.activityinfo.legacy.shared.model.AttributeDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
 
 public class AttributeCombo extends ComboBox<AttributeDTO> implements AttributeField {
 
@@ -40,6 +41,7 @@ public class AttributeCombo extends ComboBox<AttributeDTO> implements AttributeF
             name += "*";
             this.setAllowBlank(false);
         }
+        this.addStyleName(SiteFormResources.INSTANCE.style().fieldControl());
         this.setFieldLabel(Format.htmlEncode(name));
         this.setDisplayField("name");
         this.setTriggerAction(TriggerAction.ALL);

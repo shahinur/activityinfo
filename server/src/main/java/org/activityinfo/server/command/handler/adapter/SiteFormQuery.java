@@ -10,6 +10,7 @@ import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
+import org.activityinfo.legacy.shared.model.AttributeDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
@@ -20,12 +21,12 @@ import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.table.ColumnSet;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.table.TableModel;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.RecordFieldType;
-import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.ExprValue;
+import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateIntervalClass;
@@ -80,9 +81,21 @@ public class SiteFormQuery {
         // Add root fields first
         for(FormTree.Node field : tree.getRootFields()) {
             if(isIndicator(field.getType())) {
-                if(fetchIndicators) {
+                if (fetchIndicators) {
                     tableModel.selectField(field.getFieldId());
                 }
+            } else if(isAttribute(field.getType())) {
+                EnumType enumType = (EnumType) field.getType();
+                for (EnumValue enumValue : enumType.getValues()) {
+                    int attributeId = CuidAdapter.getLegacyId(enumValue.getId());
+
+                    tableModel.selectExpr("containsAny(" + field.getFieldId() + ", \"" + enumValue.getId().asString() + "\")")
+                              .as(AttributeDTO.getPropertyName(attributeId));
+                }
+                if(enumType.getCardinality() == Cardinality.SINGLE) {
+                    tableModel.selectField(field.getFieldId()).as(field.getFieldId().asString());
+                }
+
             } else if(field.getType() instanceof RecordFieldType) {
                 RecordFieldType fieldType = (RecordFieldType) field.getType();
                 if(fieldType.getClassId().equals(LocalDateIntervalClass.CLASS_ID)) {
@@ -91,6 +104,8 @@ public class SiteFormQuery {
                 }
             } else if(field.getType() instanceof ReferenceType) {
                 findReferenceLabels(field, referencedClassIds);
+            } else if(field.getType() instanceof ImageType) {
+                tableModel.selectField(field.getFieldId()).as(field.getFieldId().asString());
             }
         }
 
@@ -208,6 +223,7 @@ public class SiteFormQuery {
     private boolean isIndicator(FieldType type) {
         return type instanceof QuantityType ||
                 type instanceof TextType ||
+                type instanceof NarrativeType ||
                 type instanceof BarcodeType;
     }
 

@@ -25,7 +25,6 @@ package org.activityinfo.ui.client.page.entry.column;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
 import com.google.common.base.Strings;
@@ -34,7 +33,10 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.barcode.BarcodeType;
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.ui.client.page.common.columns.EditableLocalDateColumn;
 import org.activityinfo.ui.client.page.common.columns.ReadTextColumn;
 
@@ -139,23 +141,14 @@ public class ColumnModelBuilder {
         return this;
     }
 
-    public ColumnConfig createIndicatorColumn(IndicatorDTO indicator, String header) {
+    public ColumnConfig createIndicatorColumn(IndicatorDTO indicator) {
 
-        NumberField indicatorField = new NumberField();
-        indicatorField.getPropertyEditor().setFormat(IndicatorNumberFormat.INSTANCE);
-
-        String columnName = SafeHtmlUtils.fromString(header).asString();
-        ColumnConfig indicatorColumn = new ColumnConfig(indicator.getPropertyName(),
-                columnName, 50);
-
+        ColumnConfig indicatorColumn = new ColumnConfig(indicator.getPropertyName(), indicatorHeader(indicator), 100);
         indicatorColumn.setToolTip(indicator.getName());
 
-
-        indicatorColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
-        indicatorColumn.setEditor(new CellEditor(indicatorField));
-        indicatorColumn.setAlignment(Style.HorizontalAlignment.RIGHT);
-
-        if (indicator.getType() == FieldTypeClass.QUANTITY) {
+        if (indicator.getType() == QuantityType.TYPE_CLASS) {
+            indicatorColumn.setAlignment(Style.HorizontalAlignment.RIGHT);
+            indicatorColumn.setNumberFormat(IndicatorNumberFormat.INSTANCE);
             // For SUM indicators, don't show ZEROs in the Grid
             // (it looks better if we don't)
             if (indicator.getAggregation() == IndicatorDTO.AGGREGATE_SUM) {
@@ -191,7 +184,12 @@ public class ColumnModelBuilder {
                     }
                 });
             }
-        } else if (indicator.getType() == FieldTypeClass.FREE_TEXT || indicator.getType() == FieldTypeClass.NARRATIVE) {
+            return indicatorColumn;
+
+        } else if (indicator.getType() == TextType.TYPE_CLASS ||
+                   indicator.getType() == NarrativeType.TYPE_CLASS ||
+                   indicator.getType() == BarcodeType.TYPE_CLASS) {
+
             indicatorColumn.setRenderer(new GridCellRenderer() {
                 @Override
                 public Object render(ModelData model,
@@ -204,12 +202,25 @@ public class ColumnModelBuilder {
                     return model.get(property);
                 }
             });
+            return indicatorColumn;
+
+        } else {
+            return null;
         }
-        return indicatorColumn;
+    }
+
+    private String indicatorHeader(IndicatorDTO indicator) {
+        if(!Strings.isNullOrEmpty(indicator.getListHeader())) {
+            return SafeHtmlUtils.htmlEscape(indicator.getListHeader());
+        } else if(!Strings.isNullOrEmpty(indicator.getCode())) {
+            return SafeHtmlUtils.htmlEscape(indicator.getCode());
+        } else {
+            return SafeHtmlUtils.htmlEscape(indicator.getName());
+        }
     }
 
     public ColumnModelBuilder addIndicatorColumn(IndicatorDTO indicator, String header) {
-        columns.add(createIndicatorColumn(indicator, header));
+        columns.add(createIndicatorColumn(indicator));
         return this;
     }
 
@@ -306,18 +317,42 @@ public class ColumnModelBuilder {
         return this;
     }
 
-    public ColumnModelBuilder maybeAddKeyIndicatorColumns(ActivityDTO activity) {
-        // Only add indicators that have a queries heading
+    public ColumnModelBuilder addFields(ActivityDTO activity) {
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-            for (IndicatorDTO indicator : activity.getIndicators()) {
-                if (indicator.getListHeader() != null && !indicator.getListHeader().isEmpty()) {
-                    columns.add(createIndicatorColumn(indicator, indicator.getListHeader()));
-                } else if(!Strings.isNullOrEmpty(indicator.getCode())) {
-                    columns.add(createIndicatorColumn(indicator, indicator.getCode()));
+            for (IsFormField field : activity.getFields()) {
+                if (field instanceof IndicatorDTO) {
+                    ColumnConfig indicatorColumn = createIndicatorColumn((IndicatorDTO) field);
+                    if(indicatorColumn != null) {
+                        columns.add(indicatorColumn);
+                    }
+                } else if(field instanceof AttributeGroupDTO) {
+                    AttributeGroupDTO group = (AttributeGroupDTO) field;
+                    if(!group.isMultipleAllowed()) {
+                        columns.add(createEnumColumn(group));
+                    }
                 }
             }
         }
         return this;
+    }
+
+    private ColumnConfig createEnumColumn(final AttributeGroupDTO field) {
+        ColumnConfig enumColumn = new ColumnConfig("name", field.getLabel(), 100);
+        enumColumn.setToolTip(field.getLabel());
+        enumColumn.setRenderer(new GridCellRenderer<SiteDTO>() {
+            @Override
+            public Object render(SiteDTO model, String property, ColumnData config, int rowIndex, int colIndex,
+                                 ListStore<SiteDTO> store, Grid<SiteDTO> grid) {
+
+                for (AttributeDTO attribute : field.getAttributes()) {
+                    if (model.getAttributeValue(attribute.getId())) {
+                        return SafeHtmlUtils.htmlEscape(attribute.getName());
+                    }
+                }
+                return null;
+            }
+        });
+        return enumColumn;
     }
 
     public ColumnModelBuilder addTreeNameColumn() {

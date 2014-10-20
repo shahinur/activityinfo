@@ -23,6 +23,7 @@ package org.activityinfo.server.database.hibernate.entity;
  */
 
 import com.google.common.base.Strings;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.mindrot.bcrypt.BCrypt;
 
 import javax.persistence.*;
@@ -69,6 +70,11 @@ public class User implements java.io.Serializable {
     public void setId(int id) {
         this.id = id;
     }
+
+    public AuthenticatedUser asAuthenticatedUser() {
+        return new AuthenticatedUser(getId());
+    }
+
 
     @Column(name = "Email", nullable = false, length = 75, unique = true)
     public String getEmail() {

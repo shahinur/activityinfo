@@ -61,6 +61,11 @@ public class PartialEvaluator {
         }
     }
 
+    public FieldReader partiallyEvaluate(String expression) {
+        ExprNode node = ExprParser.parse(expression);
+        return partiallyEvaluate(node);
+    }
+
     public FieldBinding bind(FieldPath fieldPath) {
         // Get the root field
         Iterator<ResourceId> path = fieldPath.iterator();
@@ -111,6 +116,7 @@ public class PartialEvaluator {
     public FormField getField(String fieldName) {
         return symbolTable.resolveFieldById(fieldName);
     }
+
 
 
 
@@ -180,7 +186,7 @@ public class PartialEvaluator {
                 return new FieldReader() {
                     @Override
                     public FieldValue readField(Record record) {
-                        return TextValue.valueOf(record.isString(fieldName));
+                        return nullToNullFieldValue(TextValue.valueOf(record.isString(fieldName)));
                     }
 
                     @Override
@@ -215,7 +221,7 @@ public class PartialEvaluator {
                         if(value != null && value.getClassId().equals(type.getClassId())) {
                             return value;
                         } else {
-                            return null;
+                            return NullFieldValue.INSTANCE;
                         }
                     }
 
@@ -231,7 +237,7 @@ public class PartialEvaluator {
                 return new FieldReader() {
                     @Override
                     public FieldValue readField(Record record) {
-                        return Types.read(record, fieldName, typeClass);
+                        return nullToNullFieldValue(Types.read(record, fieldName, typeClass));
                     }
 
                     @Override
@@ -242,6 +248,10 @@ public class PartialEvaluator {
             } else {
                 throw new UnsupportedOperationException("Cannot create field reader for field type " + field.getType());
             }
+        }
+
+        private FieldValue nullToNullFieldValue(FieldValue fieldValue) {
+            return fieldValue == null ? NullFieldValue.INSTANCE : fieldValue;
         }
 
         @Override

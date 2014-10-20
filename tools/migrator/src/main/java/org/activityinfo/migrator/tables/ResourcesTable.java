@@ -3,6 +3,7 @@ package org.activityinfo.migrator.tables;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.activityinfo.migrator.ResourceMigrator;
 import org.activityinfo.migrator.ResourceWriter;
 import org.activityinfo.migrator.filter.MigrationContext;
@@ -18,6 +19,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 
@@ -25,6 +27,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -118,9 +121,24 @@ public class ResourcesTable extends ResourceMigrator {
             FormInstance rewritten = new FormInstance(siteId, instance.getClassId());
             for (Map.Entry<ResourceId, FieldValue> entry : instance.getFieldValueMap().entrySet()) {
                 ResourceId legacyFieldId = context.getIdStrategy().mapToLegacyId(entry.getKey());
-                rewritten.set(legacyFieldId, entry.getValue());
+                FieldValue fieldValue = rewriteFieldValue(entry.getValue());
+                rewritten.set(legacyFieldId, fieldValue);
             }
             return rewritten.asResource();
+        }
+    }
+
+    private FieldValue rewriteFieldValue(FieldValue value) {
+        if(value instanceof EnumFieldValue) {
+            EnumFieldValue enumValue = (EnumFieldValue) value;
+            Set<ResourceId> enumIds = Sets.newHashSet();
+            Set<ResourceId> legacyEnumIds = Sets.newHashSet();
+            for(ResourceId id : enumValue.getResourceIds()) {
+                legacyEnumIds.add(context.getIdStrategy().mapToLegacyId(id));
+            }
+            return new EnumFieldValue(legacyEnumIds);
+        } else {
+            return value;
         }
     }
 

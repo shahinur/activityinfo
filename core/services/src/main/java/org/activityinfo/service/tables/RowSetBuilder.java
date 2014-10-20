@@ -258,20 +258,24 @@ public class RowSetBuilder {
 
         @Override
         public Supplier<ColumnView> visitFunctionCall(final FunctionCallNode call) {
-            final List<Supplier<ColumnView>> arguments = Lists.newArrayList();
-            for(ExprNode argument : call.getArguments()) {
-                arguments.add(argument.accept(this));
-            }
-            return new Supplier<ColumnView>() {
-                @Override
-                public ColumnView get() {
-                    List<ColumnView> columns = Lists.newArrayList();
-                    for (Supplier<ColumnView> argument : arguments) {
-                        columns.add(argument.get());
-                    }
-                    return ColumnFunctions.create(call.getFunction(), columns);
+            if(ColumnFunctions.isSupported(call.getFunction())) {
+                final List<Supplier<ColumnView>> arguments = Lists.newArrayList();
+                for(ExprNode argument : call.getArguments()) {
+                    arguments.add(argument.accept(this));
                 }
-            };
+                return new Supplier<ColumnView>() {
+                    @Override
+                    public ColumnView get() {
+                        List<ColumnView> columns = Lists.newArrayList();
+                        for (Supplier<ColumnView> argument : arguments) {
+                            columns.add(argument.get());
+                        }
+                        return ColumnFunctions.create(call.getFunction(), columns);
+                    }
+                };
+            } else {
+                return batchBuilder.addExpr(rootFormClass, call.asExpression());
+            }
         }
     }
 

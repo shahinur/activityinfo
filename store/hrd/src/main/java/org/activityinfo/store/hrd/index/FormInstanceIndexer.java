@@ -6,6 +6,7 @@ import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.store.hrd.entity.workspace.FormMetaEntry;
 import org.activityinfo.store.hrd.entity.workspace.FormMetaEntryKey;
+import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
 import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 import org.activityinfo.store.hrd.tx.WritableTx;
 
@@ -71,8 +72,27 @@ public class FormInstanceIndexer {
         }
     }
 
+    public void onResourceUpdated(Resource resource) {
+        if(isUserFormClass(resource.getId(), resource.getClassId())) {
+            onFormUpdated(resource.getId());
+        } else if(isUserFormInstance(resource)) {
+            onFormUpdated(resource.getClassId());
+        }
+    }
+
+
+    public void onResourceDeleted(LatestVersion previousVersion) {
+        if(isUserFormInstance(previousVersion.toResource())) {
+            onFormUpdated(previousVersion.getClassId());
+        }
+    }
+
     private void onFormClassCreated(ResourceId formClassId) {
         formMap.put(formClassId, new FormMetaEntry(workspace, formClassId));
+    }
+
+    private void onFormUpdated(ResourceId formClassId) {
+        FormMetaEntry entry = getEntry(formClassId);
     }
 
     public void flushWrites(long updateVersion) {
@@ -81,4 +101,5 @@ public class FormInstanceIndexer {
             transaction.put(entry);
         }
     }
+
 }

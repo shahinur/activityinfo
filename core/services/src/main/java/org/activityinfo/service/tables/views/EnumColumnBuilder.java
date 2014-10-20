@@ -15,15 +15,13 @@ import java.util.Map;
 
 public class EnumColumnBuilder implements ColumnViewBuilder {
 
-    private final String fieldName;
     private final Map<ResourceId, Integer> labelIndexMap = Maps.newHashMap();
     private final String[] labels;
     private List<Integer> values = Lists.newArrayList();
 
     private DiscreteStringColumnView result = null;
 
-    public EnumColumnBuilder(ResourceId fieldId, EnumType enumType) {
-        this.fieldName = fieldId.asString();
+    public EnumColumnBuilder(EnumType enumType) {
 
         int labelIndex = 0;
         this.labels = new String[enumType.getValues().size()];

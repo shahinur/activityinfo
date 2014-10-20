@@ -22,18 +22,13 @@ package org.activityinfo.ui.client.page.entry.form;
  * #L%
  */
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
@@ -56,7 +51,6 @@ public class SiteDialog extends Window {
 
     public static final int HEIGHT = 450;
     public static final int WIDTH = 500;
-    private final FormNavigationListView navigationListView;
     private final LayoutContainer sectionContainer;
 
     private final List<FormSection<SiteDTO>> sections = Lists.newArrayList();
@@ -83,19 +77,9 @@ public class SiteDialog extends Window {
         setHeadingText(I18N.MESSAGES.addNewSiteForActivity(activity.getName()));
         setWidth(WIDTH);
         setHeight(HEIGHT);
+        setScrollMode(Style.Scroll.AUTOY);
 
-        setLayout(new BorderLayout());
-
-        navigationListView = new FormNavigationListView();
-        BorderLayoutData navigationLayout = new BorderLayoutData(LayoutRegion.WEST);
-        navigationLayout.setSize(150);
-        add(navigationListView, navigationLayout);
-
-        sectionContainer = new LayoutContainer();
-        final CardLayout sectionLayout = new CardLayout();
-        sectionContainer.setLayout(sectionLayout);
-
-        add(sectionContainer, new BorderLayoutData(LayoutRegion.CENTER));
+        sectionContainer = this;
 
         if (activity.getLocationType().isAdminLevel()) {
             locationForm = new BoundLocationSection(dispatcher, activity);
@@ -104,10 +88,10 @@ public class SiteDialog extends Window {
         } else {
             locationForm = new LocationSection(dispatcher, activity);
         }
-
-        addSection(FormSectionModel.forComponent(new ActivitySection(activity))
-                                   .withHeader(I18N.CONSTANTS.siteDialogIntervention())
-                                   .withDescription(I18N.CONSTANTS.siteDialogInterventionDesc()));
+//
+//        addSection(FormSectionModel.forComponent(new ActivitySection(activity))
+//                                   .withHeader(I18N.CONSTANTS.siteDialogIntervention())
+//                                   .withDescription(I18N.CONSTANTS.siteDialogInterventionDesc()));
 
         if (!activity.getLocationType().isNationwide()) {
             addSection(FormSectionModel.forComponent(locationForm)
@@ -115,38 +99,18 @@ public class SiteDialog extends Window {
                                        .withDescription(I18N.CONSTANTS.siteDialogSiteDesc()));
         }
 
-        if (!activity.getAttributeGroups().isEmpty()) {
 
-            addSection(FormSectionModel.forComponent(new AttributeSection(activity))
-                                       .withHeader(I18N.CONSTANTS.attributes())
-                                       .withDescription(I18N.CONSTANTS.siteDialogAttributes()));
+        addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
+                                   .withHeader(I18N.CONSTANTS.indicators())
+                                   .withDescription(I18N.CONSTANTS.siteDialogIndicators()));
 
-        }
 
-        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE && !activity.getIndicators().isEmpty()) {
-
-            addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
-                                       .withHeader(I18N.CONSTANTS.indicators())
-                                       .withDescription(I18N.CONSTANTS.siteDialogIndicators()));
-
-        }
-
-        addSection(FormSectionModel.forComponent(new CommentSection(315, 330))
-                                   .withHeader(I18N.CONSTANTS.comments())
-                                   .withDescription(I18N.CONSTANTS.siteDialogComments()));
+//        addSection(FormSectionModel.forComponent(new CommentSection(315, 330))
+//                                   .withHeader(I18N.CONSTANTS.comments())
+//                                   .withDescription(I18N.CONSTANTS.siteDialogComments()));
 
         SiteFormResources.INSTANCE.style().ensureInjected();
 
-        navigationListView.getSelectionModel()
-                          .addSelectionChangedListener(new SelectionChangedListener<FormSectionModel>() {
-
-                              @Override
-                              public void selectionChanged(SelectionChangedEvent<FormSectionModel> se) {
-                                  if (!se.getSelection().isEmpty()) {
-                                      sectionLayout.setActiveItem(se.getSelectedItem().getComponent());
-                                  }
-                              }
-                          });
 
         finishButton = new Button(I18N.CONSTANTS.save(),
                 IconImageBundle.ICONS.save(),
@@ -178,22 +142,23 @@ public class SiteDialog extends Window {
         this.site = site;
         this.callback = callback;
         LocationDTO location = site.getLocation();
-        location.setLocationTypeId(activity.getLocationTypeId());
-
-        locationForm.updateForm(location, false);
+        if(location != null) {
+            location.setLocationTypeId(activity.getLocationTypeId());
+            locationForm.updateForm(location, false);
+        }
         updateForms(site, false);
         show();
     }
 
     private void updateForms(SiteDTO site, boolean isNew) {
-        for (FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
-            section.getSection().updateForm(site, isNew);
+        for (FormSection section : sections) {
+            section.updateForm(site, isNew);
         }
     }
 
     private void updateModel(final SiteDTO newSite) {
-        for (FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
-            section.getSection().updateModel(newSite);
+        for (FormSection section : sections) {
+            section.updateModel(newSite);
         }
 
         // no-location: hack
@@ -201,16 +166,15 @@ public class SiteDialog extends Window {
     }
 
     private void addSection(FormSectionModel<SiteDTO> model) {
-        navigationListView.addSection(model);
         sectionContainer.add(model.getComponent());
         sections.add(model.getSection());
     }
 
     private boolean validateSections() {
-        for (FormSectionModel<SiteDTO> section : navigationListView.getStore().getModels()) {
-            if (!section.getSection().validate()) {
-                navigationListView.getSelectionModel().select(section, false);
-                section.getSection().validate(); // validate after render to enable validation-error styling
+        for (FormSection section : sections) {
+            if (!section.validate()) {
+                sectionContainer.scrollIntoView(section.asComponent());
+                section.validate(); // validate after render to enable validation-error styling
                 MessageBox.alert(getHeadingHtml(), I18N.CONSTANTS.pleaseCompleteForm(), null);
                 return false;
             }

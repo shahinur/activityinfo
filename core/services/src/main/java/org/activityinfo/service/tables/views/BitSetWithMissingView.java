@@ -3,14 +3,19 @@ package org.activityinfo.service.tables.views;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
+import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Date;
 
-public class BitSetWithMissingView implements ColumnView {
+public class BitSetWithMissingView implements ColumnView, Serializable {
 
     private int numRows;
     private BitSet bitSet;
     private BitSet missing;
+
+    protected BitSetWithMissingView() {
+
+    }
 
     public BitSetWithMissingView(int numRows, BitSet bitSet, BitSet missing) {
         this.numRows = numRows;

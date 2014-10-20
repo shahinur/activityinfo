@@ -30,6 +30,7 @@ import com.google.common.base.Strings;
 import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.number.QuantityType;
 
 /**
  * One-to-one DTO for the
@@ -51,8 +52,11 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public static final int MAX_LIST_HEADER_LENGTH = 29;
     public static final int MAX_CATEGORY_LENGTH = 50;
 
+    private AttributeGroupDTO attributeGroup;
+
     public IndicatorDTO() {
         super();
+        setType(QuantityType.TYPE_CLASS);
     }
 
     /**
@@ -135,6 +139,14 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         set("listHeader", value);
     }
 
+    public AttributeGroupDTO getAttributeGroup() {
+        return attributeGroup;
+    }
+
+    public void setAttributeGroup(AttributeGroupDTO attributeGroup) {
+        this.attributeGroup = attributeGroup;
+    }
+
     /**
      * Full description of this Indicator, used to aid users entering data.
      */
@@ -178,6 +190,21 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public FieldTypeClass getType() {
         String id = get("type");
         return TypeRegistry.get().getTypeClass(id);
+    }
+
+    @Override
+    public FieldTypeClass getTypeClass() {
+        return getType();
+    }
+
+    @Override
+    public boolean isRequired() {
+        return isMandatory();
+    }
+
+    @Override
+    public String getFieldId() {
+        return getPropertyName();
     }
 
     @JsonProperty("type")

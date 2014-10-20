@@ -104,3 +104,28 @@
     color: blue;
     cursor: pointer;
 }
+
+.fieldLabel {
+    font-size: 12px;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.fieldControl {
+    display: block;
+    width: 100%;
+    font-size: 14px;
+}
+
+.fieldGroup {
+    margin-bottom: 15px;
+}
+
+.helpText {
+    color: #615f5f;
+}
+
+.fieldContainer {
+    padding: 10px;
+}

@@ -1,6 +1,10 @@
 package org.activityinfo.legacy.shared.model;
 
-public interface IsFormField {
+import org.activityinfo.model.type.FieldTypeClass;
+
+import java.io.Serializable;
+
+public interface IsFormField extends Serializable {
 
     /**
      *
@@ -14,5 +18,11 @@ public interface IsFormField {
      */
     int getSortOrder();
 
+    FieldTypeClass getTypeClass();
 
+    boolean isRequired();
+
+    String getFieldId();
+
+    String getDescription();
 }

@@ -40,26 +40,30 @@ public class AttributeSection extends FormSectionWithFormLayout<SiteDTO> {
 
         for (AttributeGroupDTO attributeGroup : activity.getAttributeGroups()) {
 
-            AttributeField field;
-
-            if (attributeGroup.isMultipleAllowed()) {
-
-                AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(attributeGroup);
-                boxGroup.setStyleAttribute("marginBottom", "10px");
-                boxGroup.setStyleAttribute("width", "100%"); // if the width is specified in px, IE6 flips out
-                add(boxGroup);
-                field = boxGroup;
-
-            } else {
-                AttributeCombo combo = new AttributeCombo(attributeGroup);
-                add(combo);
-                field = combo;
-            }
-
-            field.setReadOnly(attributeGroup.isWorkflow() && !activity.getDatabase().isDesignAllowed());
-
-            fields.add(field);
+            addAttribute(activity, attributeGroup);
         }
+    }
+
+    private void addAttribute(ActivityDTO activity, AttributeGroupDTO attributeGroup) {
+        AttributeField field;
+
+        if (attributeGroup.isMultipleAllowed()) {
+
+            AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(attributeGroup);
+            boxGroup.setStyleAttribute("marginBottom", "10px");
+            boxGroup.setStyleAttribute("width", "100%"); // if the width is specified in px, IE6 flips out
+            add(boxGroup);
+            field = boxGroup;
+
+        } else {
+            AttributeCombo combo = new AttributeCombo(attributeGroup);
+            add(combo);
+            field = combo;
+        }
+
+        field.setReadOnly(attributeGroup.isWorkflow() && !activity.getDatabase().isDesignAllowed());
+
+        fields.add(field);
     }
 
     @Override

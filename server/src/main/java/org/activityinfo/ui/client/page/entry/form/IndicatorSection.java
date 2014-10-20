@@ -22,9 +22,7 @@ package org.activityinfo.ui.client.page.entry.form;
  * #L%
  */
 
-import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.util.Format;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
@@ -32,144 +30,156 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.layout.TableLayout;
-import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.IndicatorDTO;
-import org.activityinfo.legacy.shared.model.IndicatorGroup;
-import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.barcode.BarcodeType;
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.ui.client.page.entry.form.field.AttributeCheckBoxGroup;
+import org.activityinfo.ui.client.page.entry.form.field.AttributeCombo;
+import org.activityinfo.ui.client.page.entry.form.field.AttributeField;
+import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
 
 import java.util.List;
 
 public class IndicatorSection extends LayoutContainer implements FormSection<SiteDTO> {
 
-    public static final int NUMBER_FIELD_WIDTH = 50;
+    public static final int NUMBER_FIELD_WIDTH = 150;
     public static final int TEXT_FIELD_WIDTH = 3 * NUMBER_FIELD_WIDTH;
 
     private List<Field> indicatorFields = Lists.newArrayList();
 
+    private List<AttributeField> attributeFields = Lists.newArrayList();
+    private ActivityDTO activity;
+
+
     public IndicatorSection(ActivityDTO activity) {
+        this.activity = activity;
 
-        TableLayout layout = new TableLayout(3);
-        layout.setCellPadding(5);
-        layout.setCellVerticalAlign(Style.VerticalAlignment.TOP);
-
-        setLayout(layout);
-        setStyleAttribute("fontSize", "8pt");
+        setLayout(new FlowLayout());
         setScrollMode(Scroll.AUTOY);
+        addStyleName(SiteFormResources.INSTANCE.style().fieldContainer());
 
-        for (IndicatorGroup group : activity.groupIndicators()) {
+        for (IsFormField field : activity.getFields()) {
 
-            if (group.getName() != null) {
-                addGroupHeader(group.getName());
-            }
+            FieldGroup fieldGroup = new FieldGroup();
 
-            for (IndicatorDTO indicator : group.getIndicators()) {
-                if (indicator.getAggregation() != IndicatorDTO.AGGREGATE_SITE_COUNT) {
-                    addIndicator(indicator);
+            if(field instanceof AttributeGroupDTO) {
+                AttributeField attributeField = createAttributeWidget((AttributeGroupDTO) field);
+                fieldGroup.add(createFieldLabel(field));
+                fieldGroup.add((Component) attributeField);
+                attributeFields.add(attributeField);
+
+            } else {
+                Field fieldWidget = createFieldWidget(field);
+                if (fieldWidget != null) {
+                    fieldWidget.setName(field.getFieldId());
+                    fieldGroup.add(createFieldLabel(field));
+                    fieldGroup.add(fieldWidget);
+                    if(field.getDescription() != null) {
+                        fieldGroup.add(createHelpText(field));
+                    }
+                    indicatorFields.add(fieldWidget);
                 }
             }
+
+            add(fieldGroup);
         }
     }
 
-    private void addGroupHeader(String name) {
-
-        TableData layoutData = new TableData();
-        layoutData.setColspan(3);
-
-        Text header = new Text(name);
-        header.setStyleAttribute("fontSize", "9pt");
-        header.setStyleAttribute("fontWeight", "bold");
-        header.setStyleAttribute("marginTop", "6pt");
-
-        add(header, layoutData);
+    private Component createHelpText(IsFormField field) {
+        Text text = new Text(field.getDescription());
+        text.addStyleName(SiteFormResources.INSTANCE.style().helpText());
+        return text;
     }
 
-    private void addIndicator(IndicatorDTO indicator) {
-        if (indicator.isCalculated()) {
-            return; // it's not allowed to specify value for calculated indicators
+    private Text createFieldLabel(IsFormField indicator) {
+        String label = indicator.getLabel();
+        label += createUnitsLabel(indicator);
+        if (indicator.isRequired()) {
+            label += " *";
         }
 
-        String name = indicator.getName();
-        if (indicator.isMandatory()) {
-            name += " *";
-        }
-        Text indicatorLabel = new Text(Format.htmlEncode(name));
-        indicatorLabel.setStyleAttribute("fontSize", "9pt");
-        add(indicatorLabel);
-
-        FieldTypeClass type = indicator.getType();
-
-        Field indicatorField = addIndicatorField(indicator, type);
-
-        indicatorField.setName(indicator.getPropertyName());
-
-        if (indicator.getDescription() != null && !indicator.getDescription().isEmpty()) {
-            ToolTipConfig tip = new ToolTipConfig();
-            tip.setDismissDelay(0);
-            tip.setShowDelay(100);
-            tip.setText(indicator.getDescription());
-
-            indicatorField.setToolTip(tip);
-        }
-
-        indicatorFields.add(indicatorField);
+        Text labelComponent = new Text(label);
+        labelComponent.addStyleName(SiteFormResources.INSTANCE.style().fieldLabel());
+        return labelComponent;
     }
 
-    private Field addIndicatorField(IndicatorDTO indicator, FieldTypeClass type) {
-        if (type == FieldTypeClass.NARRATIVE) {
 
+    private Field createFieldWidget(IsFormField field) {
+
+        FieldTypeClass type = field.getTypeClass();
+        if (type == NarrativeType.TYPE_CLASS) {
             TextArea textArea = new TextArea();
-
-            textArea.setEnabled(!indicator.isCalculated());
-            textArea.setWidth(TEXT_FIELD_WIDTH);
-//            textArea.setAutoWidth(true);
-            if (indicator.isMandatory()) {
-                textArea.setAllowBlank(false);
-            }
-            add(textArea);
-            add(new Text()); // avoid layout shift
+            textArea.setAllowBlank(!field.isRequired());
+            textArea.addStyleName(SiteFormResources.INSTANCE.style().fieldControl());
             return textArea;
-        } else if (type == FieldTypeClass.QUANTITY) {
+
+        } else if (type == QuantityType.TYPE_CLASS) {
             NumberField numberField = new NumberField();
-
             numberField.setFormat(IndicatorNumberFormat.INSTANCE);
-            numberField.setWidth(NUMBER_FIELD_WIDTH);
-            numberField.setStyleAttribute("textAlign", "right");
-            if (indicator.isMandatory()) {
-                numberField.setAllowBlank(false);
-            }
-
-            add(numberField);
-
-            Text unitLabel = new Text(indicator.getUnits());
-            unitLabel.setStyleAttribute("fontSize", "9pt");
-
-            add(unitLabel);
+            numberField.setAllowBlank(!field.isRequired());
+            numberField.addStyleName(SiteFormResources.INSTANCE.style().fieldControl());
             return numberField;
-        } else if (type == FieldTypeClass.FREE_TEXT) {
-            TextField textField = new TextField();
 
-            textField.setWidth(TEXT_FIELD_WIDTH);
-//            textField.setAutoWidth(true);
-            if (indicator.isMandatory()) {
-                textField.setAllowBlank(false);
-            }
-            add(textField);
-            add(new Text()); // avoid layout shift
+        } else if (type == TextType.TYPE_CLASS ||
+                type == BarcodeType.TYPE_CLASS) {
+            TextField textField = new TextField();
+            textField.setAllowBlank(!field.isRequired());
+            textField.addStyleName(SiteFormResources.INSTANCE.style().fieldControl());
             return textField;
+
+        } else {
+            return null;
         }
-        return new NumberField();
+    }
+
+    private String createUnitsLabel(IsFormField field) {
+
+        if(field.getTypeClass() == QuantityType.TYPE_CLASS) {
+            IndicatorDTO indicator = (IndicatorDTO) field;
+            if(!Strings.isNullOrEmpty(indicator.getUnits())) {
+                return " (" + indicator.getUnits() + ")";
+            }
+        }
+        return "";
+    }
+
+
+    private AttributeField createAttributeWidget(AttributeGroupDTO attributeGroup) {
+        AttributeField field;
+
+        if (attributeGroup.isMultipleAllowed()) {
+
+            AttributeCheckBoxGroup boxGroup = new AttributeCheckBoxGroup(attributeGroup);
+            boxGroup.setStyleAttribute("marginBottom", "10px");
+            boxGroup.setStyleAttribute("width", "100%"); // if the width is specified in px, IE6 flips out
+            add(boxGroup);
+            field = boxGroup;
+
+        } else {
+            AttributeCombo combo = new AttributeCombo(attributeGroup);
+            add(combo);
+            field = combo;
+        }
+
+        field.setReadOnly(attributeGroup.isWorkflow() && !activity.getDatabase().isDesignAllowed());
+
+        return field;
     }
 
     @Override
     public boolean validate() {
         boolean valid = true;
         for (Field field : indicatorFields) {
+            valid &= field.validate();
+        }
+        for (AttributeField field : attributeFields) {
             valid &= field.validate();
         }
         return valid;
@@ -180,6 +190,9 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         for (Field field : indicatorFields) {
             m.set(field.getName(), field.getValue());
         }
+        for (AttributeField field : attributeFields) {
+            field.updateModel(m);
+        }
     }
 
     @Override
@@ -187,10 +200,15 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
         for (Field field : indicatorFields) {
             field.setValue(m.get(field.getName()));
         }
+        for (AttributeField field : attributeFields) {
+            field.updateForm(m, isNew);
+        }
     }
 
     @Override
     public Component asComponent() {
         return this;
     }
+
+
 }

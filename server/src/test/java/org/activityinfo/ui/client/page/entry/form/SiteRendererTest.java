@@ -52,9 +52,9 @@ public class SiteRendererTest {
 
         ActivityDTO activity = new ActivityDTO();
         activity.setId(1);
-        activity.getIndicators().add(indicator1);
-        activity.getIndicators().add(indicator2);
-        activity.getIndicators().add(indicator3);
+        activity.getFields().add(indicator1);
+        activity.getFields().add(indicator2);
+        activity.getFields().add(indicator3);
 
         SiteDTO site = new SiteDTO();
         site.setIndicatorValue(1, 1000d);

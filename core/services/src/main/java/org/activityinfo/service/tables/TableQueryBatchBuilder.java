@@ -170,4 +170,8 @@ public class TableQueryBatchBuilder {
     public Supplier<ColumnView> addConstantColumn(FormClass rootFormClass, Object value) {
         return getTable(rootFormClass).fetchConstantColumn(value);
     }
+
+    public Supplier<ColumnView> addExpr(FormClass formClassId, String s) {
+        return getTable(formClassId).fetchExpression(s);
+    }
 }

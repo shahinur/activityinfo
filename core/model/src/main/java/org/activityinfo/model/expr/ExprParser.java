@@ -100,24 +100,29 @@ public class ExprParser {
 
     private ExprNode parseFunctionCall(Token token) {
         ExprFunction function = ExprFunctions.get(token.getString());
-        List<ExprNode> arguments = Lists.newArrayList();
-        while(lexer.hasNext()) {
-            Token next = lexer.next();
 
-            if (next.getType() == TokenType.COMMA || next.getType() == TokenType.PAREN_START) {
-                continue;
+        return new FunctionCallNode(function, parseArgumentList());
+    }
 
-            } else if (next.getType() == TokenType.PAREN_END) {
-                break;
+    private List<ExprNode> parseArgumentList() {
 
-            } else if (next.getType() == TokenType.SYMBOL) {
-                arguments.add(new SymbolExpr(next.getString()));
+        expectNext(TokenType.PAREN_START, "(");
+        if(lexer.peek().getType() == TokenType.PAREN_END) {
+            lexer.next();
+            return Collections.emptyList();
 
-            } else {
-                throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");
+        } else {
+            List<ExprNode> arguments = Lists.newArrayList();
+            while(lexer.hasNext()) {
+                arguments.add(parseSimple());
+
+                if (lexer.peek().getType() == TokenType.PAREN_END) {
+                    break;
+                }
+                expectNext(TokenType.COMMA, "Expected ',' after function call argument");
             }
+            return arguments;
         }
-        return new FunctionCallNode(function, arguments);
     }
 
     private boolean prefixOperator(Token token) {

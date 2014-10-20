@@ -1,15 +1,14 @@
 package org.activityinfo.service.tables.views;
 
-import org.activityinfo.model.form.FormClassVisitor;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.barcode.BarcodeValue;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.expr.CalculatedFieldType;
-import org.activityinfo.model.type.expr.ExprFieldType;
-import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.image.ImageType;
+import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
@@ -21,7 +20,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
+public class ViewBuilderFactory {
 
     private static final ViewBuilderFactory INSTANCE = new ViewBuilderFactory();
     private static final Logger LOGGER = Logger.getLogger(ViewBuilderFactory.class.getName());
@@ -29,155 +28,119 @@ public class ViewBuilderFactory implements FormClassVisitor<ColumnViewBuilder> {
     private ViewBuilderFactory() {}
 
 
-    public static ColumnViewBuilder get(FormField field, FieldType type) {
-        return type.accept(field, INSTANCE);
+    public static ColumnViewBuilder get(FieldType type) {
+        if(type instanceof TextType) {
+            return new StringColumnBuilder(new TextFieldReader());
+        } else if(type instanceof QuantityType) {
+            return new DoubleColumnBuilder(new QuantityReader());
+        } else if(type instanceof BarcodeType) {
+            return new StringColumnBuilder(new BarcodeReader());
+        } else if(type instanceof ReferenceType) {
+            return new StringColumnBuilder(new ReferenceIdReader());
+        } else if(type instanceof EnumType) {
+            return new EnumColumnBuilder((EnumType) type);
+        } else if(type instanceof BooleanType) {
+            return new BooleanColumnBuilder();
+        } else if(type instanceof LocalDateType) {
+            return new DateColumnBuilder(new LocalDateReader());
+        } else if(type instanceof MonthType) {
+            return new DateColumnBuilder(new MonthReader());
+        } else if(type instanceof YearType) {
+            return new DoubleColumnBuilder(new YearReader());
+        } else if(type instanceof ImageType) {
+            return new StringColumnBuilder(new ImageBlobIdReader());
+        } else {
+            LOGGER.log(Level.SEVERE, "Unsupported type: " + type);
+            return null;
+        }
     }
 
-    @Override
-    public ColumnViewBuilder visitTextField(FormField field, TextType type) {
-        return new StringColumnBuilder(new StringReader() {
-            @Override
-            public String readString(FieldValue value) {
-                if(value instanceof TextValue) {
-                    return ((TextValue) value).asString();
-                }
-                return null;
+    private static class TextFieldReader implements StringReader {
+        @Override
+        public String readString(FieldValue value) {
+            if(value instanceof TextValue) {
+                return ((TextValue) value).asString();
             }
-        });
+            return null;
+        }
     }
 
-    @Override
-    public ColumnViewBuilder visitQuantityField(FormField field, QuantityType type) {
-        return new DoubleColumnBuilder(field.getId(), new DoubleReader() {
-            @Override
-            public double read(FieldValue fieldValue) {
-                if(fieldValue instanceof Quantity) {
-                    Quantity quantity = (Quantity) fieldValue;
-                    return quantity.getValue();
-                } else {
-                    return Double.NaN;
-                }
+    private static class QuantityReader implements DoubleReader {
+        @Override
+        public double read(FieldValue fieldValue) {
+            if(fieldValue instanceof Quantity) {
+                Quantity quantity = (Quantity) fieldValue;
+                return quantity.getValue();
+            } else {
+                return Double.NaN;
             }
-        });
+        }
     }
 
-    @Override
-    public ColumnViewBuilder visitReferenceField(FormField field, ReferenceType type) {
-        return new StringColumnBuilder(new StringReader() {
-            @Override
-            public String readString(FieldValue value) {
-                if(value instanceof ReferenceValue) {
-                    ReferenceValue ref = (ReferenceValue) value;
-                    if(ref.getResourceIds().size() == 1) {
-                        return ref.getResourceId().asString();
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public ColumnViewBuilder visitEnumField(FormField field, EnumType type) {
-        return new EnumColumnBuilder(field.getId(), type);
-    }
-
-    @Override
-    public ColumnViewBuilder visitBarcodeField(FormField field, BarcodeType type) {
-        return new StringColumnBuilder(new StringReader() {
-            @Override
-            public String readString(FieldValue value) {
-                if(value instanceof BarcodeValue) {
-                    return ((BarcodeValue) value).asString();
-                }
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public ColumnViewBuilder visitBooleanField(FormField field, BooleanType type) {
-        return new BooleanColumnBuilder();
-    }
-
-    @Override
-    public ColumnViewBuilder visitCalculatedField(FormField field, CalculatedFieldType type) {
-        throw new IllegalArgumentException("calculated field types should resolve to something else!");
-    }
-
-    @Override
-    public ColumnViewBuilder visitGeoPointField(FormField field, GeoPointType type) {
-        return unsupported(type);
-    }
-
-    @Override
-    public ColumnViewBuilder visitImageField(FormField field, ImageType type) {
-        return unsupported(type);
-    }
-
-    @Override
-    public ColumnViewBuilder visitExprField(FormField field, ExprFieldType type) {
-        return unsupported(type);
-    }
-
-    @Override
-    public ColumnViewBuilder visitLocalDateField(FormField field, LocalDateType localDateType) {
-        return new DateColumnBuilder(field.getId(), new DateReader() {
-            @Override
-            public Date readDate(FieldValue value) {
-                if(value instanceof LocalDate) {
-                    return ((LocalDate) value).atMidnightInMyTimezone();
-                }
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public ColumnViewBuilder visitNarrativeField(FormField field, NarrativeType narrativeType) {
-        return null;
-    }
-
-    @Override
-    public ColumnViewBuilder visitMonthField(FormField field, MonthType monthType) {
-        return new DateColumnBuilder(field.getId(), new DateReader() {
-            @Override
-            public Date readDate(FieldValue value) {
-                if(value instanceof TemporalValue) {
-                    return ((TemporalValue) value).asInterval().getEndDate().atMidnightInMyTimezone();
-                }
-                return null;
-            }
-        });
-    }
-
-    @Override
-    public ColumnViewBuilder visitYearField(FormField field, YearType yearType) {
-        return new DoubleColumnBuilder(field.getId(), new DoubleReader() {
-            @Override
-            public double read(FieldValue value) {
-                if(value instanceof YearValue) {
-                    return ((YearValue)value).getYear();
-                } else {
-                    return Double.NaN;
+    private static class ReferenceIdReader implements StringReader {
+        @Override
+        public String readString(FieldValue value) {
+            if(value instanceof ReferenceValue) {
+                ReferenceValue ref = (ReferenceValue) value;
+                if(ref.getResourceIds().size() == 1) {
+                    return ref.getResourceId().asString();
                 }
             }
-        });
+            return null;
+        }
     }
 
-    @Override
-    public ColumnViewBuilder visitMissingField(FormField field, MissingFieldType missingFieldType) {
-        return unsupported(missingFieldType);
-    }
-    @Override
-    public ColumnViewBuilder visitSubForm(FormField field, RecordFieldType recordFieldType) {
-        return unsupported(recordFieldType);
-    }
-
-    private ColumnViewBuilder unsupported(FieldType type) {
-        LOGGER.log(Level.SEVERE, "Unsupported type: " + type);
-        return null;
+    private static class BarcodeReader implements StringReader {
+        @Override
+        public String readString(FieldValue value) {
+            if(value instanceof BarcodeValue) {
+                return ((BarcodeValue) value).asString();
+            }
+            return null;
+        }
     }
 
+    private static class LocalDateReader implements DateReader {
+        @Override
+        public Date readDate(FieldValue value) {
+            if(value instanceof LocalDate) {
+                return ((LocalDate) value).atMidnightInMyTimezone();
+            }
+            return null;
+        }
+    }
 
+    private static class YearReader implements DoubleReader {
+        @Override
+        public double read(FieldValue value) {
+            if(value instanceof YearValue) {
+                return ((YearValue)value).getYear();
+            } else {
+                return Double.NaN;
+            }
+        }
+    }
+
+    private static class MonthReader implements DateReader {
+        @Override
+        public Date readDate(FieldValue value) {
+            if(value instanceof TemporalValue) {
+                return ((TemporalValue) value).asInterval().getEndDate().atMidnightInMyTimezone();
+            }
+            return null;
+        }
+    }
+
+    private static class ImageBlobIdReader implements StringReader {
+        @Override
+        public String readString(FieldValue value) {
+            if(value instanceof ImageValue) {
+                ImageValue imageValue = (ImageValue) value;
+                if(imageValue.getValues().size() >= 1) {
+                    return imageValue.getValues().get(0).getBlobId();
+                }
+            }
+            return null;
+        }
+    }
 }

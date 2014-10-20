@@ -46,7 +46,6 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
                                    // SearchHandler searchHandler,
                                    PivotSitesHandler pivotSitesHandler,
                                    GetLocationsHandler getLocationsHandler,
-                                   DeleteSiteHandler deleteSiteHandler,
                                    GetSiteAttachmentsHandler getSiteAttachmentsHandler,
                                    GetFormViewModelHandler getFormViewModelHandler) {
 
@@ -63,7 +62,6 @@ public class HandlerRegistryProvider implements Provider<HandlerRegistry> {
         registry.registerHandler(SearchLocations.class, searchLocationsHandler);
         registry.registerHandler(PivotSites.class, pivotSitesHandler);
         registry.registerHandler(GetLocations.class, getLocationsHandler);
-        registry.registerHandler(DeleteSite.class, deleteSiteHandler);
         registry.registerHandler(GetSiteAttachments.class, getSiteAttachmentsHandler);
         registry.registerHandler(GetMonthlyReports.class, getMonthlyReportsHandler);
 

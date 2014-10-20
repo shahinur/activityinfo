@@ -3587,4 +3587,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Offline")
     String offline();
 
+    @DefaultStringValue("Hide empty fields")
+    String hideEmptyFields();
+
 }

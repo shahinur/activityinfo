@@ -6,7 +6,9 @@ import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.HasSetFieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
+import org.activityinfo.model.type.primitive.TextValue;
 
+import java.util.Collections;
 import java.util.Set;
 
 public class Casting {
@@ -33,8 +35,11 @@ public class Casting {
     public static Set<ResourceId> toSet(FieldValue value) {
         if (value instanceof HasSetFieldValue) {
             return ((HasSetFieldValue) value).getResourceIds();
-        }else {
-            throw new InvalidTypeException("Cannot cast [" + value + "] to Set<ResourceId>");
         }
+        if(value instanceof TextValue) {
+            TextValue constantValue = (TextValue) value;
+            return Collections.singleton(ResourceId.valueOf(constantValue.asString()));
+        }
+        throw new InvalidTypeException("Cannot cast [" + value + "] to Set<ResourceId>");
     }
 }

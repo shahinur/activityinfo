@@ -1,7 +1,6 @@
 package org.activityinfo.service.tables.views;
 
 import com.google.common.base.Optional;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
 import org.activityinfo.model.type.FieldValue;
 
@@ -13,13 +12,11 @@ public class DateColumnBuilder implements ColumnViewBuilder {
 
     private List<Date> values = new ArrayList<>();
 
-    private final ResourceId fieldId;
     private final DateReader reader;
 
     private Optional<ColumnView> result = Optional.absent();
 
-    public DateColumnBuilder(ResourceId fieldId, DateReader reader) {
-        this.fieldId = fieldId;
+    public DateColumnBuilder(DateReader reader) {
         this.reader = reader;
     }
 

@@ -3,13 +3,16 @@ package org.activityinfo.service.tables.views;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
+import java.io.Serializable;
 import java.util.BitSet;
 import java.util.Date;
 
-public class BitSetColumnView implements ColumnView {
+public class BitSetColumnView implements ColumnView, Serializable {
 
     private int numRows;
     private BitSet bitSet;
+
+    protected BitSetColumnView() {}
 
     public BitSetColumnView(int numRows, BitSet bitSet) {
         this.numRows = numRows;
@@ -23,7 +26,7 @@ public class BitSetColumnView implements ColumnView {
 
     @Override
     public int numRows() {
-        return bitSet.length();
+        return numRows;
     }
 
     @Override

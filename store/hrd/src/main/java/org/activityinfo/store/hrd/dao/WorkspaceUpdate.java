@@ -103,6 +103,8 @@ public class WorkspaceUpdate implements AutoCloseable {
         updateLatestVersion(resource);
         writeSnapshot(resource);
 
+        formIndexer.onResourceUpdated(resource);
+
         if(isAcr(resource)) {
             writeAcrIndex(resource);
         }
@@ -183,6 +185,8 @@ public class WorkspaceUpdate implements AutoCloseable {
         if(!previousVersion.isPresent()) {
             throw new ResourceNotFound(resourceId);
         }
+
+        formIndexer.onResourceDeleted(previousVersion.get());
 
         // Create a new snapshot entry of the resource to log its deletion
         writeSnapshotOfDeletedResource(previousVersion.get());

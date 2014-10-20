@@ -88,5 +88,4 @@ public class TableBuilder {
 
         return new ColumnSet(numRows, dataMap);
     }
-
 }

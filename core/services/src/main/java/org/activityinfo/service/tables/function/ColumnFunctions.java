@@ -1,12 +1,20 @@
 package org.activityinfo.service.tables.function;
 
+import com.google.common.collect.Sets;
 import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.table.ColumnType;
 import org.activityinfo.model.table.ColumnView;
 
 import java.util.List;
+import java.util.Set;
 
 public class ColumnFunctions {
+
+    private static final Set<String> supportedFunctions = Sets.newHashSet("==", "!=", "+", "&&", "||");
+
+    public static boolean isSupported(ExprFunction fn) {
+        return supportedFunctions.contains(fn.getId());
+    }
 
 
     public static ColumnView create(ExprFunction fn, List<ColumnView> arguments) {
@@ -31,7 +39,7 @@ public class ColumnFunctions {
                 return new BooleanBinaryOp(BooleanBinaryOp.Operator.OR, arguments.get(0), arguments.get(1));
             }
         }
-        throw new UnsupportedOperationException("Unimplemented function: " + fn.getId());
+        return null;
     }
 
     private static boolean argsMatch(List<ColumnView> arguments, ColumnType... argumentTypes) {

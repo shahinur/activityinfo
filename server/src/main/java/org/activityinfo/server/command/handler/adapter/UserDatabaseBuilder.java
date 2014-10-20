@@ -28,8 +28,8 @@ import org.activityinfo.service.store.StoreReader;
 import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 /**
-* Created by alex on 10/15/14.
-*/
+ * Created by alex on 10/15/14.
+ */
 public class UserDatabaseBuilder {
 
     private final AuthenticatedUser user;
@@ -161,41 +161,9 @@ public class UserDatabaseBuilder {
         for(FormField field : formClass.getFields()) {
             if(field.getId().equals(field(formClass.getId(), LOCATION_FIELD))) {
                 LocationTypeDTO locationType = locationTypeFrom(field);
-                if(locationType != null) {
+                if (locationType != null) {
                     activity.setLocationType(locationType);
                 }
-
-            } else if(isIndicator(field.getType())) {
-                IndicatorDTO dto = new IndicatorDTO();
-                dto.setId(getLegacyId(field.getId()));
-                dto.setName(field.getLabel());
-                dto.setMandatory(field.isRequired());
-                dto.setCode(field.getCode());
-                dto.setListHeader(field.getListHeader());
-                dto.setDescription(field.getDescription());
-                dto.setType(field.getType().getTypeClass());
-
-                // requires a value to be set
-                dto.setAggregation(IndicatorDTO.AGGREGATE_SUM);
-
-                if(field.getType() instanceof QuantityType) {
-                    QuantityType type = (QuantityType) field.getType();
-                    dto.setUnits(type.getUnits());
-                    switch(type.getAggregation()) {
-                        case MEAN:
-                            dto.setAggregation(IndicatorDTO.AGGREGATE_AVG);
-                            break;
-                        case COUNT:
-                            dto.setAggregation(IndicatorDTO.AGGREGATE_SITE_COUNT);
-                        case SUM:
-                            dto.setAggregation(IndicatorDTO.AGGREGATE_SUM);
-                            break;
-                    }
-                }
-
-                dto.setSortOrder(sortOrder++);
-                activity.getIndicators().add(dto);
-
             } else if(isAttributeGroup(field)) {
                 EnumType type = (EnumType) field.getType();
                 AttributeGroupDTO group = new AttributeGroupDTO();
@@ -213,6 +181,39 @@ public class UserDatabaseBuilder {
                 }
 
                 activity.getAttributeGroups().add(group);
+                activity.getFields().add(group);
+
+            } else {
+                IndicatorDTO indicator = new IndicatorDTO();
+                indicator.setId(getLegacyId(field.getId()));
+                indicator.setName(field.getLabel());
+                indicator.setMandatory(field.isRequired());
+                indicator.setCode(field.getCode());
+                indicator.setListHeader(field.getListHeader());
+                indicator.setDescription(field.getDescription());
+                indicator.setType(field.getType().getTypeClass());
+
+                // requires a value to be set
+                indicator.setAggregation(IndicatorDTO.AGGREGATE_SUM);
+
+                if(field.getType() instanceof QuantityType) {
+                    QuantityType type = (QuantityType) field.getType();
+                    indicator.setUnits(type.getUnits());
+                    switch(type.getAggregation()) {
+                        case MEAN:
+                            indicator.setAggregation(IndicatorDTO.AGGREGATE_AVG);
+                            break;
+                        case COUNT:
+                            indicator.setAggregation(IndicatorDTO.AGGREGATE_SITE_COUNT);
+                        case SUM:
+                            indicator.setAggregation(IndicatorDTO.AGGREGATE_SUM);
+                            break;
+                    }
+                }
+
+                indicator.setSortOrder(sortOrder++);
+                activity.getIndicators().add(indicator);
+                activity.getFields().add(indicator);
             }
         }
 
@@ -257,8 +258,8 @@ public class UserDatabaseBuilder {
 
     private boolean isIndicator(FieldType type) {
         return type instanceof TextType ||
-               type instanceof QuantityType ||
-               type instanceof BarcodeType;
+                type instanceof QuantityType ||
+                type instanceof BarcodeType;
     }
 
     public UserDatabaseDTO build() {

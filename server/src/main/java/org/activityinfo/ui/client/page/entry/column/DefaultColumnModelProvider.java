@@ -88,7 +88,7 @@ public class DefaultColumnModelProvider implements ColumnModelProvider {
                                            .maybeAddDateColumn(activity)
                                            .maybeAddPartnerColumn(activity)
                                            .maybeAddProjectColumn(activity)
-                                           .maybeAddKeyIndicatorColumns(activity)
+                                           .addFields(activity)
                                            .maybeAddTwoLineLocationColumn(activity)
                                            .addAdminLevelColumns(activity)
                                            .build();

@@ -9,11 +9,13 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.handler.GetSchemaHandler;
 import org.activityinfo.server.command.handler.GetSitesHandler;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.server.endpoint.kml.JreIndicatorValueFormatter;
 import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
 import org.activityinfo.server.util.jaxrs.Utf8JacksonJsonProvider;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.test.TestResourceStore;
+import org.activityinfo.ui.client.page.entry.form.SiteRenderer;
 import org.junit.Test;
 
 import java.util.Properties;
@@ -65,6 +67,7 @@ public class MigrateDatabaseTaskTest {
         assertThat(activity.getLocationType().getAdminLevels(), hasSize(0));
 
         IndicatorDTO barcode = findIndicator(activity, "Barcode");
+        AttributeGroupDTO sex = findAttribute(activity, "HHsx:Sex of the interviewee");
 
 
         SchemaCsvWriter writer = new SchemaCsvWriter();
@@ -82,9 +85,24 @@ public class MigrateDatabaseTaskTest {
 
         assertThat(sites.getData().get(0).getId(), instanceOf(Integer.class));
 
-        for(SiteDTO site : sites.getData()) {
-            System.out.println(site.get(barcode.getPropertyName()));
+        SiteRenderer renderer = new SiteRenderer(new JreIndicatorValueFormatter());
+        System.out.println(renderer.renderSite(sites.getData().get(100), activity, true));
+//
+//        for(SiteDTO site : sites.getData()) {
+//      //      System.out.println(site.get(barcode.getPropertyName()));
+//            System.out.println(site.get(AttributeDTO.getPropertyName(sex.getAttributes().get(0))) +
+//                    ", " +
+//                    site.get(AttributeDTO.getPropertyName(sex.getAttributes().get(1))));
+//        }
+    }
+
+    private AttributeGroupDTO findAttribute(ActivityDTO activity, String label) {
+        for(AttributeGroupDTO group : activity.getAttributeGroups()) {
+            if(group.getLabel().equals(label)) {
+                return group;
+            }
         }
+        throw new IllegalArgumentException(label);
     }
 
     private IndicatorDTO findIndicator(ActivityDTO activity, String label) {
