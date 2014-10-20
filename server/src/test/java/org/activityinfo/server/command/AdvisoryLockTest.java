@@ -60,7 +60,7 @@ public class AdvisoryLockTest extends CommandTestCase2 {
     @Test
     @Ignore
     public void lockTest() throws CommandException, InterruptedException {
-        int workCount = 5;
+        int workCount = 25;
 
         reset();
 
@@ -76,6 +76,7 @@ public class AdvisoryLockTest extends CommandTestCase2 {
                         // if added to started then lock is obtained
                         startedWork.add(workNumber);
                         System.out.println("Started work: " + Joiner.on(",").join(startedWork));
+                        Thread.sleep(2000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
