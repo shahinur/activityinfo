@@ -94,7 +94,7 @@ public class ImportSource {
         try {
             Geometry geometry = (Geometry) feature.getDefaultGeometryProperty().getValue();
             Geometry geometryInWgs84 = JTS.transform(geometry, transform);
-            return geometryInWgs84.getEnvelope();
+            return geometryInWgs84;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
