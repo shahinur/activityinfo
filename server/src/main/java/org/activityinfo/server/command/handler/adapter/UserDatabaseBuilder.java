@@ -15,13 +15,10 @@ import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.store.ResourceCursor;
 import org.activityinfo.service.store.StoreReader;
 
@@ -183,7 +180,7 @@ public class UserDatabaseBuilder {
                 activity.getAttributeGroups().add(group);
                 activity.getFields().add(group);
 
-            } else {
+            } else if(isIndicator(field)) {
                 IndicatorDTO indicator = new IndicatorDTO();
                 indicator.setId(getLegacyId(field.getId()));
                 indicator.setName(field.getLabel());
@@ -256,10 +253,8 @@ public class UserDatabaseBuilder {
         return field.getType() instanceof EnumType && field.getId().getDomain() == ATTRIBUTE_GROUP_FIELD_DOMAIN;
     }
 
-    private boolean isIndicator(FieldType type) {
-        return type instanceof TextType ||
-                type instanceof QuantityType ||
-                type instanceof BarcodeType;
+    private boolean isIndicator(FormField field) {
+        return field.getId().asString().startsWith(IndicatorDTO.PROPERTY_PREFIX);
     }
 
     public UserDatabaseDTO build() {

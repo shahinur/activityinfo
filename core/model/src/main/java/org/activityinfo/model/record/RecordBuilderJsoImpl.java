@@ -71,6 +71,13 @@ final class RecordBuilderJsoImpl extends JavaScriptObject implements RecordBuild
         return set(fieldName, new EnumFieldValue(ResourceId.valueOf(enumValue.name())).asRecord());
     }
 
+
+    @Override
+    public native RecordBuilder remove(String fieldName) /*-{
+        this[fieldName] = null;
+        return this;
+    }-*/;
+
     @Override
     public RecordBuilder set(String fieldName, Record record) {
         throw new UnsupportedOperationException();

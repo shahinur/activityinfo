@@ -1,9 +1,6 @@
 package org.activityinfo.service.tables.views;
 
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.ReferenceType;
-import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.barcode.BarcodeValue;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -31,6 +28,8 @@ public class ViewBuilderFactory {
     public static ColumnViewBuilder get(FieldType type) {
         if(type instanceof TextType) {
             return new StringColumnBuilder(new TextFieldReader());
+        } else if(type instanceof NarrativeType) {
+            return new StringColumnBuilder(new NarrativeFieldReader());
         } else if(type instanceof QuantityType) {
             return new DoubleColumnBuilder(new QuantityReader());
         } else if(type instanceof BarcodeType) {
@@ -60,6 +59,17 @@ public class ViewBuilderFactory {
         public String readString(FieldValue value) {
             if(value instanceof TextValue) {
                 return ((TextValue) value).asString();
+            }
+            return null;
+        }
+    }
+
+
+    private static class NarrativeFieldReader implements StringReader {
+        @Override
+        public String readString(FieldValue value) {
+            if(value instanceof NarrativeValue) {
+                return ((NarrativeValue) value).asString();
             }
             return null;
         }

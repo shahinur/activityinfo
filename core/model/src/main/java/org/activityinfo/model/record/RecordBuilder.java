@@ -91,6 +91,9 @@ public interface RecordBuilder {
 
     RecordBuilder set(String fieldName, Enum<?> enumValue);
 
+    RecordBuilder remove(String fieldName);
+
+
     /**
      * Sets a "tag" for this record.
      *
@@ -108,5 +111,4 @@ public interface RecordBuilder {
     RecordBuilder setTag(ResourceId formClassId, ResourceId resourceId);
 
     Record build();
-
 }

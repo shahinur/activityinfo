@@ -38,6 +38,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.activityinfo.model.legacy.CuidAdapter.COMMENT_FIELD;
 import static org.activityinfo.model.legacy.CuidAdapter.getLegacyId;
 import static org.activityinfo.model.resource.ResourceId.valueOf;
 
@@ -78,9 +79,15 @@ public class SiteFormQuery {
 
         Set<ResourceId> referencedClassIds = Sets.newHashSet();
 
+        ResourceId commentsId = CuidAdapter.field(formClassId, COMMENT_FIELD);
+
         // Add root fields first
         for(FormTree.Node field : tree.getRootFields()) {
-            if(isIndicator(field.getType())) {
+            if(field.getFieldId().equals(commentsId)) {
+                if (query.isFetchComments()) {
+                    tableModel.selectField(field.getFieldId()).as("comments");
+                }
+            } else if(isIndicator(field.getType())) {
                 if (fetchIndicators) {
                     tableModel.selectField(field.getFieldId());
                 }

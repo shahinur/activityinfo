@@ -126,6 +126,12 @@ class RecordBuilderImpl implements RecordBuilder {
     }
 
     @Override
+    public RecordBuilder remove(String fieldName) {
+        properties.remove(fieldName);
+        return this;
+    }
+
+    @Override
     public RecordBuilder setTag(ResourceId formClassId, Record record) {
         return set("#" + formClassId.asString(), record);
     }

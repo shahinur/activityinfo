@@ -32,8 +32,6 @@ import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
 import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.server.database.hibernate.entity.*;
-import org.activityinfo.server.event.sitehistory.ChangeType;
-import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
 
 import javax.persistence.EntityManager;
 import java.util.Calendar;
@@ -51,16 +49,13 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
 
     private final EntityManager em;
     private final KeyGenerator keyGenerator;
-    private final SiteHistoryProcessor siteHistoryProcessor;
     private final PermissionOracle permissionOracle;
 
     @Inject
     public UpdateMonthlyReportsHandler(EntityManager em,
-                                       KeyGenerator keyGenerator,
-                                       SiteHistoryProcessor siteHistoryProcessor) {
+                                       KeyGenerator keyGenerator) {
         this.em = em;
         this.keyGenerator = keyGenerator;
-        this.siteHistoryProcessor = siteHistoryProcessor;
         this.permissionOracle = new PermissionOracle(em);
     }
 
@@ -124,8 +119,6 @@ public class UpdateMonthlyReportsHandler implements CommandHandler<UpdateMonthly
         // finally update the timestamp on the site entity so changes get picked up
         // by the synchro mechanism
         site.setDateEdited(new Date());
-
-        siteHistoryProcessor.persistHistory(site, user, ChangeType.UPDATE, siteHistoryChangeMap);
 
         return new VoidResult();
     }

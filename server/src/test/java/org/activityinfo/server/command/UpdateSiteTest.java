@@ -78,6 +78,8 @@ public class UpdateSiteTest extends CommandTestCase {
         result = execute(GetSites.byId(1));
         SiteDTO secondRead = result.getData().get(0);
 
+        System.out.println(secondRead.getProperties());
+
         // confirm that the changes are there
         Assert.assertEquals("site.comments", modified.getComments(),
                 secondRead.getComments());

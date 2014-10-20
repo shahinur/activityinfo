@@ -1,6 +1,5 @@
 package org.activityinfo.server.command.handler.adapter;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
@@ -12,7 +11,6 @@ import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.service.store.StoreReader;
 
-import java.util.List;
 import java.util.Set;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
@@ -34,12 +32,11 @@ public final class SiteQueryAdapter {
         findActivities(filter);
     }
 
-    private List<ResourceId> findActivities(Filter filter) {
-        List<ResourceId> formClasses = Lists.newArrayList();
+    private void findActivities(Filter filter) {
         if(filter.isRestricted(DimensionType.Site)) {
             for(Integer siteId : filter.getRestrictions(DimensionType.Site)) {
                 UserResource resource = reader.getResource(CuidAdapter.resourceId(SITE_DOMAIN, siteId));
-                formClasses.add(resource.getResource().getClassId());
+                forms.add(resource.getResource().getClassId());
             }
         } else if(filter.isRestricted(DimensionType.Activity)) {
             for(Integer activityId : filter.getRestrictions(DimensionType.Activity)) {
@@ -53,7 +50,6 @@ public final class SiteQueryAdapter {
             throw new UnsupportedOperationException("GetSites must be filtered " +
                     "by one or more databases, forms, or sites");
         }
-        return formClasses;
     }
 
     private void findActivityForms(ResourceId parent) {
