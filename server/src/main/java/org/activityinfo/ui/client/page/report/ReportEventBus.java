@@ -23,21 +23,32 @@ package org.activityinfo.ui.client.page.report;
  */
 
 import com.extjs.gxt.ui.client.event.Listener;
+import com.google.gwt.user.client.Timer;
 import org.activityinfo.ui.client.EventBus;
 
 public class ReportEventBus {
 
+    private static final int UPDATE_DELAY = 100;
+
     private EventBus eventBus;
     private HasReportElement source;
     private Listener<ReportChangeEvent> innerListener;
+    private Timer updateTimer;
 
-    public ReportEventBus(EventBus eventBus, HasReportElement source) {
+    public ReportEventBus(final EventBus eventBus, final HasReportElement source) {
         this.eventBus = eventBus;
         this.source = source;
+
+        updateTimer = new Timer() {
+            @Override
+            public void run() {
+                eventBus.fireEvent(new ReportChangeEvent(source, source.getModel()));
+            }
+        };
     }
 
     public void fireChange() {
-        eventBus.fireEvent(new ReportChangeEvent(source, source.getModel()));
+        updateTimer.schedule(UPDATE_DELAY);
     }
 
     public void listen(final ReportChangeHandler handler) {
