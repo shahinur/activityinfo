@@ -73,9 +73,11 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
         this.reportEventBus.listen(new ReportChangeHandler() {
             @Override
             public void onChanged() {
-                fireEvents = false;
-                onModelChanged();
-                fireEvents = true;
+                if (fireEvents) {
+                    fireEvents = false;
+                    onModelChanged();
+                    fireEvents = true;
+                }
             }
         });
         this.dispatcher = dispatcher;

@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.GenerateElement;
 import org.activityinfo.legacy.shared.reports.content.Content;
@@ -103,8 +104,7 @@ public class ReportViewBinder<C extends Content, R extends ReportElement<C>> imp
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    // TODO Auto-generated method stub
-
+                    Log.error(caught.getMessage(), caught);
                 }
 
                 @Override

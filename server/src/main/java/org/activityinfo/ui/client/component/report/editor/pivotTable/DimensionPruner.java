@@ -26,6 +26,7 @@ import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
@@ -78,7 +79,7 @@ public class DimensionPruner implements HasReportElement<PivotTableReportElement
 
             @Override
             public void onFailure(Throwable caught) {
-
+                Log.error(caught.getMessage(), caught);
             }
 
             @Override

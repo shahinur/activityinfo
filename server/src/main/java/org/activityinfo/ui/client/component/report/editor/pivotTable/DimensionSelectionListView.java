@@ -34,6 +34,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
@@ -128,8 +129,7 @@ public class DimensionSelectionListView implements HasReportElement<PivotTableRe
 
             @Override
             public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-
+                Log.error(caught.getMessage(), caught);
             }
 
             @Override
