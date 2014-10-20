@@ -76,8 +76,9 @@ public class AdvisoryLock implements AutoCloseable {
             }
 
             stopwatch.stop();
-            LOGGER.finest("Acquire lock takes: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms");
+            LOGGER.finest("Acquiring advisory lock takes: " + stopwatch.elapsed(TimeUnit.MILLISECONDS) + "ms");
         } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Internal error during acquiring advisory lock: " + e.getMessage(), e);
             throw new RuntimeException("Exception caught while trying to acquire update lock", e);
         }
     }
