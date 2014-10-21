@@ -85,6 +85,7 @@ public class DimensionTree implements HasReportElement<PivotTableReportElement> 
         this.store = new TreeStore<DimensionModel>();
         addDimension(DimensionType.Database, I18N.CONSTANTS.database());
         addDimension(DimensionType.Activity, I18N.CONSTANTS.activity());
+        addDimension(DimensionType.ActivityCategory, I18N.CONSTANTS.formCategory());
         addDimension(DimensionType.Indicator, I18N.CONSTANTS.indicator());
         addDimension(DimensionType.Partner, I18N.CONSTANTS.partner());
         addDimension(DimensionType.Project, I18N.CONSTANTS.project());

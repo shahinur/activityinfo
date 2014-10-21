@@ -42,7 +42,6 @@ import org.activityinfo.legacy.shared.reports.model.MapReportElement;
 import org.activityinfo.legacy.shared.reports.model.layers.MapLayer;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.component.report.editor.map.layerOptions.LayerOptionsPanel;
-import org.activityinfo.ui.client.page.report.ReportChangeHandler;
 import org.activityinfo.ui.client.page.report.ReportEventBus;
 import org.activityinfo.ui.client.page.report.editor.ReportElementEditor;
 
@@ -52,7 +51,6 @@ import java.util.List;
 public class MapEditor extends ContentPanel implements ReportElementEditor<MapReportElement> {
 
     private static final int CONTROL_TOP_MARGIN = 10;
-    private static final int LAYERS_STYLE_TOP_MARGIN = 50;
     private static final int ZOOM_CONTROL_LEFT_MARGIN = 10;
 
     private final Dispatcher dispatcher;
@@ -71,12 +69,6 @@ public class MapEditor extends ContentPanel implements ReportElementEditor<MapRe
         this.dispatcher = dispatcher;
         this.eventBus = eventBus;
         this.reportEventBus = new ReportEventBus(eventBus, this);
-        this.reportEventBus.listen(new ReportChangeHandler() {
-
-            @Override
-            public void onChanged() {
-            }
-        });
 
         MapResources.INSTANCE.style().ensureInjected();
 
@@ -122,10 +114,6 @@ public class MapEditor extends ContentPanel implements ReportElementEditor<MapRe
         });
 
         add(optionsPanel, new AbsoluteData(0, CONTROL_TOP_MARGIN));
-    }
-
-    private void onChanged() {
-
     }
 
     protected void createLayersWidget() {

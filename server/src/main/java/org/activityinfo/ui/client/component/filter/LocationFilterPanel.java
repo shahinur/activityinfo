@@ -16,6 +16,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.PivotSites;
@@ -184,8 +185,7 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    // TODO Auto-generated method stub
-
+                    Log.error(caught.getMessage(), caught);
                 }
 
                 @Override
