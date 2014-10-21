@@ -189,7 +189,6 @@ public class SiteFormQuery {
             // Copy the data into the SiteDTO objects
             for (int i = start; i < numRows; ++i) {
                 SiteDTO dto = new SiteDTO();
-                dto.setId(getLegacyId(valueOf(id.getString(i))));
                 dto.setActivityId(activityId);
                 dto.setFormClassId(formClassId);
 
@@ -199,6 +198,7 @@ public class SiteFormQuery {
                 } else {
                     ii = order[i];
                 }
+                dto.setId(getLegacyId(valueOf(id.getString(ii))));
                 for (j = 0; j < numColumns; ++j) {
                     dto.set(columnIds[j], views[j].get(ii));
                 }
