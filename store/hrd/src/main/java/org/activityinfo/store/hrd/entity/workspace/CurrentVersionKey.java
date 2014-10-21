@@ -11,7 +11,8 @@ import javax.annotation.Nonnull;
  * Datastore key for the {@link org.activityinfo.store.hrd.entity.workspace.CurrentVersion} entity
  */
 public class CurrentVersionKey implements WorkspaceEntityGroupKey<CurrentVersion> {
-    public static final String KIND = "WV";
+    public static final String KIND = "WorkspaceVersion";
+
     public static final String KEY_NAME = "current";
 
     private final WorkspaceEntityGroup workspaceKey;

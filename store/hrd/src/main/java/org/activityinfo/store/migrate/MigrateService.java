@@ -38,6 +38,16 @@ public class MigrateService {
         return Response.ok("Task started").build();
     }
 
+
+    @GET
+    @Path("users")
+    public Response startUserMigration() {
+
+        QueueFactory.getQueue("migrate").add(TaskOptions.Builder.withUrl("/service/migrate/tasks/migrateUsers"));
+        return Response.ok("Task started").build();
+    }
+
+
     @GET
     @Path("resources")
     public Response startResourcesMigration(@InjectParam AuthenticatedUser user,
@@ -60,6 +70,18 @@ public class MigrateService {
         new MigrateDatabaseTask(store, config, new AuthenticatedUser(userId)).migrate(databaseId);
     }
 
+
+
+    @POST
+    @Path("tasks/migrateUsers")
+    public void runUserMigration(@HeaderParam(TASK_NAME_HEADER) String taskName,
+                             @FormParam("databaseId") int databaseId,
+                             @FormParam("userId") int userId) throws Exception {
+
+        assertValidTaskInvocation(taskName);
+
+        new MigrateDatabaseTask(store, config, new AuthenticatedUser(userId)).migrate(databaseId);
+    }
 
     /**
      * Verify that this task handler is being invoked by the AppEngine task system and not

@@ -13,7 +13,7 @@ import org.activityinfo.store.hrd.tx.IsKey;
  */
 public class SnapshotKey implements IsKey<Snapshot> {
 
-    public static final String KIND = "S";
+    public static final String KIND = "Snapshot";
 
     private final Key key;
 

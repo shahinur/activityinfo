@@ -7,7 +7,7 @@ import org.activityinfo.model.resource.ResourceId;
 
 public class FormMetaEntryKey implements WorkspaceEntityGroupKey<FormMetaEntry> {
 
-    public static final String KIND = "F";
+    public static final String KIND = "Form";
 
     private final Key key;
 

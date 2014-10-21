@@ -11,7 +11,7 @@ import org.activityinfo.model.resource.ResourceId;
  */
 public class LatestVersionKey implements WorkspaceEntityGroupKey<LatestVersion> {
 
-    public static final String KIND = "C";
+    public static final String KIND = "Resource";
 
     private Key key;
 
