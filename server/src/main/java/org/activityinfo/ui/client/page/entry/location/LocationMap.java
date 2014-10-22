@@ -151,6 +151,26 @@ public class LocationMap extends Html {
 
     }
 
+    LatLngBounds previousBounds = null;
+
+    /**
+     * IMPORTANT : if call update map with the same bounds map will NOT look the same. It leads to destructive user experience.
+     * For now just workaround the issue with checking whether the same bounds
+     * was already set.
+     *
+     * @param bounds bounds
+     */
+    private void updateMap(final LatLngBounds bounds) {
+        //GWT.log("===> Bounds: " + bounds + ", eq:" + LeafletUtil.equals(bounds, previousBounds));
+
+        if (!LeafletUtil.equals(bounds, previousBounds)) {
+            int effectiveZoom = Math.min(8, map.getBoundsZoom(bounds, false));
+            map.setView(bounds.getCenter(), effectiveZoom, false);
+            map.fitBounds(bounds);
+            previousBounds = new LatLngBounds(bounds.getJSObject());
+        }
+    }
+
     private void updateSearchMarkers() {
 
         markerLayer.clearLayers();
@@ -180,10 +200,8 @@ public class LocationMap extends Html {
                 bounds = LeafletUtil.newLatLngBounds(searchPresenter.getSearchBounds());
             }
         }
-        int effectiveZoom = Math.min(8, map.getBoundsZoom(bounds, false));
-        map.setView(bounds.getCenter(), effectiveZoom, false);
-        map.fitBounds(bounds);
 
+        updateMap(bounds);
     }
 
     private void bindClickEvent(final LocationDTO location, Marker marker) {
