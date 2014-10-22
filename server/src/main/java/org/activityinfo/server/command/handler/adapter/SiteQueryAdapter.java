@@ -47,6 +47,7 @@ public final class SiteQueryAdapter {
                 findActivityForms(databaseId(databaseId));
             }
         } else {
+
             throw new UnsupportedOperationException("GetSites must be filtered " +
                     "by one or more databases, forms, or sites");
         }

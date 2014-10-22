@@ -2,6 +2,7 @@ package org.activityinfo.store.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.common.base.Supplier;
 import com.google.common.io.Resources;
@@ -32,8 +33,10 @@ public class TestResourceStore implements ResourceStore {
     private AuthenticatedUser currentUser = new AuthenticatedUser(1);
 
     private final LocalServiceTestHelper helper =
-            new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()
-                    .setApplyAllHighRepJobPolicy());
+            new LocalServiceTestHelper(
+                    new LocalDatastoreServiceTestConfig()
+                    .setApplyAllHighRepJobPolicy(),
+                    new LocalMemcacheServiceTestConfig());
 
     private Resource lastUpdated;
     private final StoreContext storeContext;

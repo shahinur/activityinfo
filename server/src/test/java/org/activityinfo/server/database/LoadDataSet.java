@@ -79,8 +79,8 @@ public class LoadDataSet extends Statement {
         IDataSet data = loadDataSet();
 
         LOGGER.info("Loading resources...");
-//        store.setUp();
-//        store.load(jsonFile());
+        store.setUp();
+        store.load(jsonFile());
 
         List<Throwable> errors = new ArrayList<Throwable>();
         errors.clear();
