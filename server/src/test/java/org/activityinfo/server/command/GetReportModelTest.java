@@ -22,10 +22,15 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.GetReportModel;
 import org.activityinfo.legacy.shared.model.ReportDTO;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.database.OnDataSet;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,6 +39,19 @@ import static org.junit.Assert.*;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/getreporttests.db.xml")
 public class GetReportModelTest extends CommandTestCase {
+
+    private final LocalServiceTestHelper helper = new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig(),
+            new LocalMemcacheServiceTestConfig());
+
+    @Before
+    public void setUp() {
+        helper.setUp();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
+    }
 
     @Test
     public void selectReportOnly() {
