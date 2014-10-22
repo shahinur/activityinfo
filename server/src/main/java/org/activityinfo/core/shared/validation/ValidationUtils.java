@@ -36,14 +36,6 @@ public class ValidationUtils {
     private ValidationUtils() {
     }
 
-    public static void show(List<ValidationFailure> failures, DivElement failuresContainer) {
-        final List<String> messages = Lists.newArrayList();
-        for (ValidationFailure failure : failures) {
-            messages.add(failure.getMessage().getMessage());
-        }
-        showMessages(messages, failuresContainer);
-    }
-
     public static void showMessage(String message, DivElement divContainer){
         showMessages(Lists.newArrayList(message), divContainer);
     }
