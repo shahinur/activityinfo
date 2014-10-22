@@ -31,7 +31,10 @@ import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.exception.CommandTimeoutException;
+import org.activityinfo.legacy.shared.util.BackOff;
 import org.activityinfo.legacy.shared.util.Commands;
+import org.activityinfo.legacy.shared.util.ExponentialBackOff;
+import org.activityinfo.server.endpoint.gwtrpc.AdvisoryLock;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +51,8 @@ public class MergingDispatcher extends AbstractDispatcher {
 
     private Dispatcher dispatcher;
 
+    private Scheduler scheduler;
+
     /**
      * Pending commands have been requested but not yet sent to the server
      */
@@ -59,9 +64,21 @@ public class MergingDispatcher extends AbstractDispatcher {
      */
     private List<CommandRequest> executingCommands = new ArrayList<CommandRequest>();
 
+    private BackOff backOff;
+
     @Inject
     public MergingDispatcher(Dispatcher dispatcher, Scheduler scheduler) {
+        this(dispatcher, scheduler, new ExponentialBackOff.Builder()
+                .setInitialIntervalMillis(AdvisoryLock.ADVISORY_GET_LOCK_TIMEOUT)
+                .setMultiplier(2) // increase in 2 times
+                .build());
+    }
+
+    @Inject
+    public MergingDispatcher(Dispatcher dispatcher, Scheduler scheduler, BackOff backOff) {
         this.dispatcher = dispatcher;
+        this.scheduler = scheduler;
+        this.backOff = backOff;
 
         scheduler.scheduleFinally(new RepeatingCommand() {
 
@@ -113,7 +130,7 @@ public class MergingDispatcher extends AbstractDispatcher {
 
         if (!sent.isEmpty()) {
             for (final CommandRequest request : sent) {
-                executeCommand(request, new RetryCountDown());
+                executeCommand(request, new RetryCountDown(backOff));
             }
         }
     }
@@ -144,7 +161,7 @@ public class MergingDispatcher extends AbstractDispatcher {
         try {
             long waitPeriod = retryCountDown.countDownAndGetWaitPeriod();
             Log.debug("Retry will run in " + waitPeriod + "ms.");
-            Scheduler.get().scheduleFixedPeriod(new RepeatingCommand() {
+            scheduler.scheduleFixedPeriod(new RepeatingCommand() {
                 @Override
                 public boolean execute() {
                     executeCommand(request, retryCountDown);

@@ -22,9 +22,7 @@ package org.activityinfo.legacy.client.remote;
  */
 
 import org.activityinfo.legacy.shared.exception.RetryCountExceedsLimitException;
-import org.activityinfo.server.endpoint.gwtrpc.AdvisoryLock;
 import org.activityinfo.legacy.shared.util.BackOff;
-import org.activityinfo.legacy.shared.util.ExponentialBackOff;
 
 
 /**
@@ -39,12 +37,10 @@ public class RetryCountDown {
     private static final int RETRY_COUNT_LIMIT_ON_TIMEOUT = 3;
 
     private int countDown = RETRY_COUNT_LIMIT_ON_TIMEOUT;
-    private BackOff backOff = new ExponentialBackOff.Builder()
-            .setInitialIntervalMillis(AdvisoryLock.ADVISORY_GET_LOCK_TIMEOUT)
-            .setMultiplier(2) // increase in 2 times
-            .build();
+    private BackOff backOff;
 
-    public RetryCountDown() {
+    public RetryCountDown(BackOff backOff) {
+        this.backOff = backOff;
     }
 
     public long countDownAndGetWaitPeriod() {

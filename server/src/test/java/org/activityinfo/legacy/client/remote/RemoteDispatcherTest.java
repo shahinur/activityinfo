@@ -37,6 +37,10 @@ import org.activityinfo.legacy.shared.command.RemoteCommandServiceAsync;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.util.BackOff;
+import org.activityinfo.legacy.shared.util.ExponentialBackOff;
+import org.activityinfo.legacy.shared.util.NanoClock;
+import org.activityinfo.server.endpoint.gwtrpc.AdvisoryLock;
 import org.activityinfo.ui.client.MockEventBus;
 import org.easymock.Capture;
 import org.easymock.IAnswer;
@@ -67,10 +71,21 @@ public class RemoteDispatcherTest {
         AuthenticatedUser auth = new AuthenticatedUser(AUTH_TOKEN, 1,
                 "alex@alex.com");
 
+        BackOff backOff = new ExponentialBackOff.Builder()
+                .setInitialIntervalMillis(AdvisoryLock.ADVISORY_GET_LOCK_TIMEOUT)
+                .setMultiplier(2) // increase in 2 times
+                .setNanoClock(new NanoClock() {
+                    @Override
+                    public long nanoTime() {
+                        return System.nanoTime();
+                    }
+                })
+                .build();
         dispatcher = new CachingDispatcher(proxyManager,
                 new MergingDispatcher(
                         new RemoteDispatcher(new MockEventBus(), auth, service),
-                        scheduler));
+                        scheduler,
+                        backOff));
     }
 
     @Test
