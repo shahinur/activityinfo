@@ -1,30 +1,43 @@
 package org.activityinfo.store.migrate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.google.common.collect.Lists;
+import org.activityinfo.legacy.shared.command.Command;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.GetSites;
+import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
+import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.command.handler.GetSchemaHandler;
 import org.activityinfo.server.command.handler.GetSitesHandler;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.endpoint.kml.JreIndicatorValueFormatter;
 import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
+import org.activityinfo.server.endpoint.rest.SitesResources;
 import org.activityinfo.server.util.jaxrs.Utf8JacksonJsonProvider;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.test.TestResourceStore;
 import org.activityinfo.ui.client.page.entry.form.SiteRenderer;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+@Ignore("requires local setup")
 public class MigrateDatabaseTaskTest {
+
+    public static final List<Integer> ANY = Collections.<Integer>emptyList();
 
     public static final int DB_OWNER_ID = 11;
     private TestResourceStore testStore;
@@ -64,8 +77,7 @@ public class MigrateDatabaseTaskTest {
         runMigrator(config, store);
 
 
-        User mithunEntity = new User();
-        mithunEntity.setId(DB_OWNER_ID);
+        User mithunEntity = dbOwnerUserEntity();
         GetSchemaHandler handler = new GetSchemaHandler(store);
         SchemaDTO schema = (SchemaDTO) handler.execute(new GetSchema(), mithunEntity);
 
@@ -106,6 +118,19 @@ public class MigrateDatabaseTaskTest {
 
         SiteRenderer renderer = new SiteRenderer(new JreIndicatorValueFormatter());
         System.out.println(renderer.renderSite(sites.getData().get(100), activity, true));
+
+        SitesResources resources = new SitesResources(new GetSitesDispatcher());
+
+        String json = resources.query(Lists.newArrayList(activity.getId()), ANY, ANY, ANY, ANY, ANY);
+        ArrayNode siteArray = objectMapper.readValue(json, ArrayNode.class);
+
+        assertThat(siteArray.size(), equalTo(sites.getTotalLength()));
+
+        for(int i=0;i!=5;++i) {
+            System.out.println(siteArray.get(i));
+        }
+
+
 //
 //        for(SiteDTO site : sites.getData()) {
 //      //      System.out.println(site.get(barcode.getPropertyName()));
@@ -113,6 +138,12 @@ public class MigrateDatabaseTaskTest {
 //                    ", " +
 //                    site.get(AttributeDTO.getPropertyName(sex.getAttributes().get(1))));
 //        }
+    }
+
+    private User dbOwnerUserEntity() {
+        User mithunEntity = new User();
+        mithunEntity.setId(DB_OWNER_ID);
+        return mithunEntity;
     }
 
     private AuthenticatedUser runMigrator(DeploymentConfiguration config, HrdResourceStore store) throws Exception {
@@ -147,5 +178,22 @@ public class MigrateDatabaseTaskTest {
             }
         }
         throw new IllegalArgumentException(label);
+    }
+
+    private class GetSitesDispatcher implements DispatcherSync {
+
+        private GetSitesHandler getSitesHandler = new GetSitesHandler(store);
+        private GetSchemaHandler getSchemaHandler = new GetSchemaHandler(store);
+
+        @Override
+        public <C extends Command<R>, R extends CommandResult> R execute(C command) throws CommandException {
+            if(command instanceof GetSites) {
+                return (R) getSitesHandler.execute((GetSites)command, dbOwnerUserEntity());
+            } else if(command instanceof GetSchema) {
+                return (R) getSchemaHandler.execute((GetSchema) command, dbOwnerUserEntity());
+            } else {
+                throw new UnsupportedOperationException(command.getClass().getName());
+            }
+        }
     }
 }

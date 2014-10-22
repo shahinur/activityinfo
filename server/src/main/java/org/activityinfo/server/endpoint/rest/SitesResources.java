@@ -33,8 +33,7 @@ public class SitesResources {
                         @QueryParam("indicator") List<Integer> indicatorIds,
                         @QueryParam("partner") List<Integer> partnerIds,
                         @QueryParam("attribute") List<Integer> attributeIds,
-                        @QueryParam("location") List<Integer> locationIds,
-                        @QueryParam("format") String format) throws IOException {
+                        @QueryParam("location") List<Integer> locationIds) throws IOException {
 
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, activityIds);
@@ -95,22 +94,25 @@ public class SitesResources {
             }
 
             // write the location as a separate object
-            json.writeObjectFieldStart("location");
-            json.writeNumberField("id", site.getLocationId());
-            json.writeStringField("name", site.getLocationName());
+            if(site.get("location") != null) {
+                json.writeObjectFieldStart("location");
+                json.writeNumberField("id", site.getLocationId());
+                json.writeStringField("name", site.getLocationName());
 
-            if (site.hasLatLong()) {
-                json.writeFieldName("latitude");
-                json.writeNumber(site.getLatitude());
-                json.writeFieldName("longitude");
-                json.writeNumber(site.getLongitude());
+                if (site.hasLatLong()) {
+                    json.writeFieldName("latitude");
+                    json.writeNumber(site.getLatitude());
+                    json.writeFieldName("longitude");
+                    json.writeNumber(site.getLongitude());
+                }
+                json.writeEndObject();
             }
-            json.writeEndObject();
-
-            json.writeObjectFieldStart("partner");
-            json.writeNumberField("id", site.getPartnerId());
-            json.writeStringField("name", site.getPartnerName());
-            json.writeEndObject();
+            if(site.get("partner") != null) {
+                json.writeObjectFieldStart("partner");
+                json.writeNumberField("id", site.getPartnerId());
+                json.writeStringField("name", site.getPartnerName());
+                json.writeEndObject();
+            }
 
             if (site.getProject() != null) {
                 json.writeNumberField("projectId", site.getProject().getId());
