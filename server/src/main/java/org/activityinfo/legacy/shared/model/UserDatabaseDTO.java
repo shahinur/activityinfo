@@ -43,6 +43,8 @@ import java.util.Set;
 @JsonAutoDetect(getterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, HasLockedPeriod, ProvidesKey {
 
+    public static final String NAME_PROPERTY = "name";
+    public static final String FULL_NAME_PROPERTY = "fullName";
     private CountryDTO country;
     private List<PartnerDTO> partners = new ArrayList<PartnerDTO>(0);
     private List<ActivityDTO> activities = new ArrayList<ActivityDTO>(0);
@@ -79,14 +81,14 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, H
      */
     @Override @JsonProperty @JsonView({DTOViews.Schema.class, DTOViews.List.class})
     public String getName() {
-        return get("name");
+        return get(NAME_PROPERTY);
     }
 
     /**
      * Sets the name of this UserDatabase
      */
     public void setName(String name) {
-        set("name", name);
+        set(NAME_PROPERTY, name);
     }
 
     /**
@@ -123,7 +125,7 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, H
      * Sets the full, descriptive name of this UserDatabase
      */
     public void setFullName(String fullName) {
-        set("fullName", fullName);
+        set(FULL_NAME_PROPERTY, fullName);
     }
 
     /**
@@ -131,7 +133,7 @@ public final class UserDatabaseDTO extends BaseModelData implements EntityDTO, H
      */
     @JsonProperty("description") @JsonView(DTOViews.Schema.class)
     public String getFullName() {
-        return get("fullName");
+        return get(FULL_NAME_PROPERTY);
     }
 
     /**

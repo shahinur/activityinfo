@@ -26,16 +26,15 @@ import com.google.inject.Inject;
 import org.activityinfo.legacy.shared.command.AddPartner;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
-import org.activityinfo.legacy.shared.command.result.DuplicateCreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.server.database.hibernate.entity.Partner;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.database.hibernate.entity.UserDatabase;
+import org.activityinfo.service.store.ResourceStore;
 
-import javax.persistence.EntityManager;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 /**
  * @author Alex Bertram
@@ -43,47 +42,30 @@ import java.util.Set;
  */
 public class AddPartnerHandler implements CommandHandler<AddPartner> {
 
-    private final EntityManager em;
+    private final ResourceStore store;
+    private final KeyGenerator keyGenerator = new KeyGenerator();
 
     @Inject
-    public AddPartnerHandler(EntityManager em) {
-        this.em = em;
+    public AddPartnerHandler(ResourceStore store) {
+        this.store = store;
     }
+
 
     @Override @SuppressWarnings("unchecked")
     public CommandResult execute(AddPartner cmd, User user) throws CommandException {
 
-        UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
-        PermissionOracle.using(em).assertManagePartnerAllowed(db, user);
 
-        // first check to see if an organization by this name is already
-        // a partner
-        Set<Partner> dbPartners = db.getPartners();
-        for (Partner partner : dbPartners) {
-            if (partner.getName().equals(cmd.getPartner().getName())) {
-                return new DuplicateCreateResult();
-            }
-        }
+        int partnerId = keyGenerator.generateInt();
 
-        // now try to match this partner by name
-        List<Partner> allPartners = em.createQuery("select p from Partner p where p.name = ?1")
-                                      .setParameter(1, cmd.getPartner().getName())
-                                      .getResultList();
+        ResourceId id = CuidAdapter.resourceId(PARTNER_DOMAIN, partnerId);
+        ResourceId classId = CuidAdapter.partnerFormClass(cmd.getDatabaseId());
 
-        if (allPartners.size() != 0) {
-            db.getPartners().add(allPartners.get(0));
-            return new CreateResult(allPartners.get(0).getId());
-        }
+        FormInstance instance = new FormInstance(id, classId);
+        instance.set(field(classId, NAME_FIELD), cmd.getPartner().getName());
+        instance.set(field(classId, FULL_NAME_FIELD), cmd.getPartner().getFullName());
 
-        // nope, have to create a new record
-        Partner newPartner = new Partner();
-        newPartner.setName(cmd.getPartner().getName());
-        newPartner.setFullName(cmd.getPartner().getFullName());
-        em.persist(newPartner);
-        db.setLastSchemaUpdate(new Date());
-        em.persist(db);
-        db.getPartners().add(newPartner);
+        store.create(user.asAuthenticatedUser(), instance.asResource());
 
-        return new CreateResult(newPartner.getId());
+        return new CreateResult(partnerId);
     }
 }

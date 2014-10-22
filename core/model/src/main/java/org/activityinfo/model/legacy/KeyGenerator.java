@@ -31,6 +31,9 @@ import java.util.Random;
  */
 public class KeyGenerator {
 
+
+    private static KeyGenerator INSTANCE = null;
+
     private final Random random = new Random();
 
     private static final int MIN_KEY = 2 ^ 13;
@@ -40,5 +43,13 @@ public class KeyGenerator {
      */
     public int generateInt() {
         return random.nextInt(Integer.MAX_VALUE - MIN_KEY) + MIN_KEY;
+    }
+
+
+    public static KeyGenerator get() {
+        if(INSTANCE == null) {
+            INSTANCE = new KeyGenerator();
+        }
+        return INSTANCE;
     }
 }

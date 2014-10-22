@@ -22,13 +22,13 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.AddPartner;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.DuplicateCreateResult;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.database.OnDataSet;
 import org.junit.Assert;
 import org.junit.Test;
@@ -47,11 +47,11 @@ public class PartnerTest extends CommandTestCase {
 
         CreateResult cr = execute(new AddPartner(PEAR_PLUS_DB_ID, newPartner));
 
-        Assert.assertEquals(SOL_ID, cr.getNewId());
+        // Partners are no longer shared...
+        // Assert.assertEquals(SOL_ID, cr.getNewId());
 
         SchemaDTO schema = execute(new GetSchema());
-        PartnerDTO partner = schema.getDatabaseById(PEAR_PLUS_DB_ID)
-                .getPartnerById(SOL_ID);
+        PartnerDTO partner = schema.getDatabaseById(PEAR_PLUS_DB_ID).getPartnerById(cr.getNewId());
 
         Assert.assertNotNull(partner);
         Assert.assertEquals(newPartner.getName(), partner.getName());

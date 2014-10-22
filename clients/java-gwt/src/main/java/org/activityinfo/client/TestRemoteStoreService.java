@@ -1,5 +1,7 @@
 package org.activityinfo.client;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.record.Record;
@@ -20,15 +22,21 @@ import java.util.List;
 public class TestRemoteStoreService implements ActivityInfoAsyncClient {
 
     private final ResourceStore store;
+    private Supplier<AuthenticatedUser> currentUser = Suppliers.ofInstance(AuthenticatedUser.getAnonymous());
 
     public TestRemoteStoreService(ResourceStore store) {
         this.store = store;
     }
 
+    public TestRemoteStoreService(ResourceStore store, Supplier<AuthenticatedUser> user) {
+        this(store);
+        this.currentUser = user;
+    }
+
     @Override
     public Promise<ColumnSet> queryColumns(TableModel tableModel) {
         try {
-            try(StoreReader reader = store.openReader(AuthenticatedUser.getAnonymous())) {
+            try(StoreReader reader = store.openReader(currentUser.get())) {
                 return Promise.resolved(reader.queryColumns(tableModel));
             }
         } catch(Exception e) {
@@ -43,12 +51,12 @@ public class TestRemoteStoreService implements ActivityInfoAsyncClient {
 
     @Override
     public Promise<UserResource> get(ResourceId resourceId) {
-        return Promise.resolved(store.get(AuthenticatedUser.getAnonymous(), resourceId));
+        return Promise.resolved(store.get(currentUser.get(), resourceId));
     }
 
     @Override
     public Promise<UpdateResult> put(Resource resource) {
-        return Promise.resolved(store.put(AuthenticatedUser.getAnonymous(), resource));
+        return Promise.resolved(store.put(currentUser.get(), resource));
     }
 
     @Override
@@ -58,12 +66,12 @@ public class TestRemoteStoreService implements ActivityInfoAsyncClient {
 
     @Override
     public Promise<UpdateResult> create(Resource resource) {
-        throw new UnsupportedOperationException();
+        return Promise.resolved(store.create(currentUser.get(), resource));
     }
 
     @Override
     public Promise<List<UserTask>> getTasks() {
-        return null;
+        return Promise.rejected(new UnsupportedOperationException());
     }
 
     @Override
@@ -78,18 +86,18 @@ public class TestRemoteStoreService implements ActivityInfoAsyncClient {
 
     @Override
     public Promise<List<ResourceNode>> getWorkspaces() {
-        return null;
+        return Promise.rejected(new UnsupportedOperationException());
     }
 
     @Override
     public Promise<FolderProjection> getFolder(ResourceId rootId) {
         return Promise.resolved(store.queryTree(
-            AuthenticatedUser.getAnonymous(), new FolderRequest(rootId)));
+                currentUser.get(), new FolderRequest(rootId)));
     }
 
     @Override
     public Promise<UpdateResult> remove(ResourceId resourceId) {
-        throw new UnsupportedOperationException();
+        return Promise.resolved(store.delete(currentUser.get(), resourceId));
     }
 
     @Override

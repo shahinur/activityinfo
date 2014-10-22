@@ -45,6 +45,7 @@ public class UserDatabaseBuilder {
         this.databaseRecord = reader.getResource(workspace.getId()).getResource().getValue();
         this.db.setId(getLegacyId(workspace.getId()));
         this.db.setName(workspace.getLabel());
+        this.db.setFullName(databaseRecord.isString(FolderClass.DESCRIPTION_FIELD_NAME));
         this.country = countryProvider.getCountry(getCountryId());
         this.db.setCountry(country);
 

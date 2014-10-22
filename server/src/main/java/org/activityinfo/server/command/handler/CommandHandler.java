@@ -36,12 +36,6 @@ import org.activityinfo.server.database.hibernate.entity.User;
  */
 public interface CommandHandler<CommandT extends Command> {
 
-    /*
-     * TODO: is there anyway the return type can be automatically parameratized
-     * with the type parameter of CommandT ? (and without adding a second type
-     * parameter to CommandHandler
-     */
-
     /**
      * Execute a command received from the client
      *

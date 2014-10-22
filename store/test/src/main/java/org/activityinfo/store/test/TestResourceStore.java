@@ -3,6 +3,7 @@ package org.activityinfo.store.test;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.base.Supplier;
 import com.google.common.io.Resources;
 import com.sun.jersey.api.core.InjectParam;
 import org.activityinfo.client.LocatorAdapter;
@@ -37,8 +38,9 @@ public class TestResourceStore implements ResourceStore {
     private Resource lastUpdated;
     private final StoreContext storeContext;
 
-    public void setUp() {
+    public TestResourceStore setUp() {
         helper.setUp();
+        return this;
     }
 
     public void tearDown() {
@@ -84,7 +86,12 @@ public class TestResourceStore implements ResourceStore {
     }
 
     public ResourceLocator createLocator() {
-        return new LocatorAdapter(new TestRemoteStoreService(store));
+        return new LocatorAdapter(new TestRemoteStoreService(store, new Supplier<AuthenticatedUser>() {
+            @Override
+            public AuthenticatedUser get() {
+                return currentUser;
+            }
+        }));
     }
 
     @Override
@@ -156,4 +163,7 @@ public class TestResourceStore implements ResourceStore {
         return lastUpdated;
     }
 
+    public AuthenticatedUser getCurrentUser() {
+        return currentUser;
+    }
 }

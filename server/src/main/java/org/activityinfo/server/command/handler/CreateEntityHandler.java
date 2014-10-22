@@ -23,110 +23,113 @@ package org.activityinfo.server.command.handler;
  */
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
-import org.activityinfo.server.command.handler.crud.ActivityPolicy;
-import org.activityinfo.server.command.handler.crud.LocationTypePolicy;
-import org.activityinfo.server.command.handler.crud.PropertyMap;
-import org.activityinfo.server.command.handler.crud.UserDatabasePolicy;
-import org.activityinfo.server.database.hibernate.entity.*;
+import org.activityinfo.server.command.handler.adapter.SchemaUpdater;
+import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.service.store.ResourceStore;
 
-import javax.persistence.EntityManager;
-import java.util.Date;
-import java.util.Map;
+public class CreateEntityHandler implements CommandHandler<CreateEntity> {
 
-public class CreateEntityHandler extends BaseEntityHandler implements CommandHandler<CreateEntity> {
-
-    private final Injector injector;
+    private final ResourceStore store;
 
     @Inject
-    public CreateEntityHandler(EntityManager em, Injector injector) {
-        super(em);
-        this.injector = injector;
+    public CreateEntityHandler(ResourceStore store) {
+        this.store = store;
     }
+
 
     @Override
     public CommandResult execute(CreateEntity cmd, User user) throws CommandException {
-
-        Map<String, Object> properties = cmd.getProperties().getTransientMap();
-        PropertyMap propertyMap = new PropertyMap(cmd.getProperties().getTransientMap());
-
-        if ("UserDatabase".equals(cmd.getEntityName())) {
-            UserDatabasePolicy policy = injector.getInstance(UserDatabasePolicy.class);
-            return new CreateResult((Integer) policy.create(user, propertyMap));
-        } else if ("Activity".equals(cmd.getEntityName())) {
-            ActivityPolicy policy = injector.getInstance(ActivityPolicy.class);
-            return new CreateResult((Integer) policy.create(user, propertyMap));
-        } else if ("AttributeGroup".equals(cmd.getEntityName())) {
-            return createAttributeGroup(cmd, properties);
-        } else if ("Attribute".equals(cmd.getEntityName())) {
-            return createAttribute(cmd, properties);
-        } else if ("Indicator".equals(cmd.getEntityName())) {
-            return createIndicator(user, cmd, properties);
-        } else if ("LocationType".equals(cmd.getEntityName())) {
-            LocationTypePolicy policy = injector.getInstance(LocationTypePolicy.class);
-            return new CreateResult(policy.create(user, propertyMap));
-        } else {
-            throw new CommandException("Invalid entity class " + cmd.getEntityName());
-        }
+        int newId = new SchemaUpdater(store, user.asAuthenticatedUser()).create(cmd);
+        return new CreateResult(newId);
     }
-
-    private CommandResult createAttributeGroup(CreateEntity cmd, Map<String, Object> properties) {
-        Activity activity = entityManager().find(Activity.class, properties.get("activityId"));
-
-        AttributeGroup group = new AttributeGroup();
-        group.setSortOrder(activity.getAttributeGroups().size() + 1);
-        updateAttributeGroupProperties(group, properties);
-
-        entityManager().persist(group);
-
-        activity.getAttributeGroups().add(group);
-
-        activity.getDatabase().setLastSchemaUpdate(new Date());
-
-
-        return new CreateResult(group.getId());
-    }
-
-    private CommandResult createAttribute(CreateEntity cmd, Map<String, Object> properties) {
-        Attribute attribute = new Attribute();
-        AttributeGroup ag = entityManager().getReference(AttributeGroup.class, properties.get("attributeGroupId"));
-        attribute.setGroup(ag);
-
-        updateAttributeProperties(properties, attribute);
-
-        Activity activity = ag.getActivities().iterator().next(); // Assume
-        // group has
-        // only one
-        // activity
-
-        entityManager().persist(attribute);
-        activity.getDatabase().setLastSchemaUpdate(new Date());
-
-        attribute.setSortOrder(ag.getAttributes().size());
-
-        return new CreateResult(attribute.getId());
-    }
-
-    private CommandResult createIndicator(User user,
-                                          CreateEntity cmd,
-                                          Map<String, Object> properties) throws IllegalAccessCommandException {
-
-        Indicator indicator = new Indicator();
-        Activity activity = entityManager().getReference(Activity.class, properties.get("activityId"));
-        indicator.setActivity(activity);
-
-        assertDesignPrivileges(user, indicator.getActivity().getDatabase());
-
-        updateIndicatorProperties(indicator, properties);
-
-        entityManager().persist(indicator);
-        activity.getDatabase().setLastSchemaUpdate(new Date());
-
-        return new CreateResult(indicator.getId());
-    }
+//
+//    private class Update {
+//
+//        private AuthenticatedUser user;
+//
+//        private Update(AuthenticatedUser user) {
+//            this.user = user;
+//        }
+//
+//        public void create
+//
+//    }
+//
+//    private void createDatabase(AuthenticatedUser user, Map<String, Object> properties) {
+//        Folder folder = new Folder();
+//
+//        folder.setLabel((String)properties.get(UserDatabaseDTO.NAME_PROPERTY));
+//        folder.setDescription((String)properties.get(UserDatabaseDTO.FULL_NAME_PROPERTY));
+//
+//        Resource workspace = Resources.createResource();
+//        workspace.setId(CuidAdapter.databaseId(keyGenerator.generateInt()));
+//        workspace.setOwnerId(Resources.ROOT_ID);
+//        store.create(user, workspace);
+//    }
+//
+//    private void createLocationType(User user, CreateEntity cmd, Map<String, Object> properties) {
+//        throw new UnsupportedOperationException();
+//    }
+//
+//    private CommandResult createAttributeGroup(CreateEntity cmd, Map<String, Object> properties) {
+//
+//
+//
+//        Activity activity = entityManager().find(Activity.class, properties.get("activityId"));
+//
+//        AttributeGroup group = new AttributeGroup();
+//        group.setSortOrder(activity.getAttributeGroups().size() + 1);
+//        updateAttributeGroupProperties(group, properties);
+//
+//        entityManager().persist(group);
+//
+//        activity.getAttributeGroups().add(group);
+//
+//        activity.getDatabase().setLastSchemaUpdate(new Date());
+//
+//
+//        return new CreateResult(group.getId());
+//    }
+//
+//    private CommandResult createAttribute(CreateEntity cmd, Map<String, Object> properties) {
+//        Attribute attribute = new Attribute();
+//        AttributeGroup ag = entityManager().getReference(AttributeGroup.class, properties.get("attributeGroupId"));
+//        attribute.setGroup(ag);
+//
+//        updateAttributeProperties(properties, attribute);
+//
+//        Activity activity = ag.getActivities().iterator().next(); // Assume
+//        // group has
+//        // only one
+//        // activity
+//
+//        entityManager().persist(attribute);
+//        activity.getDatabase().setLastSchemaUpdate(new Date());
+//
+//        attribute.setSortOrder(ag.getAttributes().size());
+//
+//        return new CreateResult(attribute.getId());
+//    }
+//
+//    private CommandResult createIndicator(User user,
+//                                          CreateEntity cmd,
+//                                          Map<String, Object> properties) throws IllegalAccessCommandException {
+//
+//        Indicator indicator = new Indicator();
+//        Activity activity = entityManager().getReference(Activity.class, properties.get("activityId"));
+//        indicator.setActivity(activity);
+//
+//        assertDesignPrivileges(user, indicator.getActivity().getDatabase());
+//
+//        updateIndicatorProperties(indicator, properties);
+//
+//        entityManager().persist(indicator);
+//        activity.getDatabase().setLastSchemaUpdate(new Date());
+//
+//        return new CreateResult(indicator.getId());
+//    }
 }

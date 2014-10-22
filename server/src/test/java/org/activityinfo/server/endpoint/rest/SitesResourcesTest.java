@@ -75,7 +75,7 @@ public class SitesResourcesTest extends CommandTestCase2 {
     public String query(QueryParameters parameters) throws IOException {
         return new SitesResources(getDispatcherSync()).query(
                 parameters.activityIds, parameters.databaseIds, parameters.indicatorIds, parameters.partnerIds,
-                parameters.attributeIds, parameters.locationIds, parameters.format
+                parameters.attributeIds, parameters.locationIds
         );
     }
 

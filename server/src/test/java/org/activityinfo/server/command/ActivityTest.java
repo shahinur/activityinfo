@@ -26,7 +26,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.legacy.client.remote.DispatchingResourceLocator;
 import org.activityinfo.legacy.shared.command.BatchCommand;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
@@ -37,6 +36,7 @@ import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
@@ -45,12 +45,14 @@ import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
@@ -64,7 +66,8 @@ import static org.junit.Assert.*;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class ActivityTest extends CommandTestCase2 {
 
-    ResourceLocator resourceLocator;
+    private TestResourceStore store;
+    private ResourceLocator resourceLocator;
 
     @Before
     public void setUser() {
@@ -72,8 +75,9 @@ public class ActivityTest extends CommandTestCase2 {
     }
 
     @Before
-    public void createResourceLocator() {
-        resourceLocator = new DispatchingResourceLocator(getDispatcher());
+    public void createResourceLocator() throws IOException {
+        store = new TestResourceStore().setUp().load("schema1.json");
+        resourceLocator = store.createLocator();
     }
 
     @Test
@@ -252,15 +256,15 @@ public class ActivityTest extends CommandTestCase2 {
 
         FormClass formClass = assertResolves(resourceLocator.getFormClass(activityFormClass(1)));
 
-        FormField newField = new FormField(Resources.generateId());
+        FormField newField = new FormField(CuidAdapter.generateFieldId(EnumType.TYPE_CLASS));
         newField.setLabel("New Group");
-        EnumValue yes = new EnumValue(Resources.generateId(), "Yes");
-        EnumValue no = new EnumValue(Resources.generateId(), "No");
+        EnumValue yes = new EnumValue(CuidAdapter.generateEnumId(), "Yes");
+        EnumValue no = new EnumValue(CuidAdapter.generateEnumId(), "No");
         newField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(yes, no)));
 
         formClass.getElements().add(newField);
 
-        resourceLocator.persist(formClass);
+        assertResolves(resourceLocator.persist(formClass));
 
         // verify that it appears as attribute group
         ActivityDTO activity = getActivity(1);

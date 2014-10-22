@@ -3,6 +3,9 @@ package org.activityinfo.model.legacy;
 import com.google.common.base.Strings;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.enumerated.EnumType;
+
 
 /**
  * Provides an adapter between legacy ids, which are either random or sequential 32-bit integers but only
@@ -240,5 +243,17 @@ public class CuidAdapter {
             throw new IllegalArgumentException("resourceId is null");
         }
         return Integer.parseInt(id.asString().substring(1));
+    }
+
+    public static ResourceId generateFieldId(FieldTypeClass typeClass) {
+        if(typeClass.equals(EnumType.TYPE_CLASS)) {
+            return attributeGroupField(KeyGenerator.get().generateInt());
+        } else {
+            return indicatorField(KeyGenerator.get().generateInt());
+        }
+    }
+
+    public static ResourceId generateEnumId() {
+        return attributeId(KeyGenerator.get().generateInt());
     }
 }
