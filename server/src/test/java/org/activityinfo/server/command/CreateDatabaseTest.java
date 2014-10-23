@@ -30,6 +30,8 @@ import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,6 +40,9 @@ import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
 public class CreateDatabaseTest extends CommandTestCase {
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Test
     @OnDataSet("/dbunit/sites-simple1.db.xml")

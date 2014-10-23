@@ -1,15 +1,20 @@
 package org.activityinfo.io.odk;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+import com.google.inject.Provider;
 import com.google.inject.util.Providers;
-import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.io.odk.xform.Html;
-import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.json.ObjectMapperFactory;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -28,14 +33,29 @@ import static org.junit.Assert.assertThat;
 
 public class FormResourceTest {
 
+    private ObjectMapper objectMapper = ObjectMapperFactory.get();
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
+
     private FormResource resource;
 
     @Before
     public void setUp() throws IOException {
-        ResourceStore store = new TestResourceStore().load("formResourceTest.json");
+
+        Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
+        store.setUser(authProvider.get().getId());
+
+        FormInstance workspace = store.createWorkspace("My workspace");
+
+        Resource formResource = objectMapper.readValue(Resources.getResource("formResourceTest.json"), Resource[].class)[0];
+        formResource.setOwnerId(workspace.getId());
+        store.create(store.getCurrentUser(), formResource);
+
         OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(
-                new InstanceTableProvider(store, Providers.of(AuthenticatedUser.getAnonymous())));
-        resource = new FormResource(store, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory,
+                new InstanceTableProvider(store, authProvider));
+
+        resource = new FormResource(store, authProvider, factory,
                 new TestAuthenticationTokenService());
     }
 

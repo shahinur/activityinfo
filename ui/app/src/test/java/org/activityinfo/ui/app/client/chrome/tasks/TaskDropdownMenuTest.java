@@ -8,6 +8,7 @@ import org.activityinfo.service.tasks.UserTask;
 import org.activityinfo.ui.app.client.TestScenario;
 import org.activityinfo.ui.app.client.request.StartTask;
 import org.activityinfo.ui.vdom.shared.dom.TestRenderContext;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -16,9 +17,11 @@ import static org.junit.Assert.assertThat;
 
 public class TaskDropdownMenuTest {
 
+    @Rule
+    public TestScenario scenario = new TestScenario();
+
     @Test
     public void failedTaskStart() {
-        TestScenario scenario = new TestScenario();
 
         ExportFormTaskModel taskModel = new ExportFormTaskModel();
         taskModel.setFilename("Export.csv");
@@ -38,7 +41,6 @@ public class TaskDropdownMenuTest {
 
     @Test
     public void updateDropdown() {
-        TestScenario scenario = new TestScenario();
 
         ExportFormTaskModel taskModel = new ExportFormTaskModel();
         taskModel.setFilename("Export.csv");

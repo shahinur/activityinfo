@@ -34,7 +34,9 @@ import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.server.database.hibernate.entity.LockedPeriod;
 import org.activityinfo.server.database.hibernate.entity.Site;
 import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,6 +49,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class UpdateSiteTest extends CommandTestCase {
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Test
     public void testUpdate() throws CommandException {

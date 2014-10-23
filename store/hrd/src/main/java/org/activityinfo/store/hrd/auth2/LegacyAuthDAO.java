@@ -26,16 +26,20 @@ public class LegacyAuthDAO implements Authorizer {
         this.user = user;
 
         // Are we the owner?
-        workspaceAcr =
-                tx.getIfExists(new AcrEntryKey(workspace, user));
+        if(user.isAnonymous()) {
+            workspaceAcr = Optional.absent();
+        } else {
+            workspaceAcr = tx.getIfExists(new AcrEntryKey(workspace, user));
+        }
 
         // Retrieve the top level acr if it exists
-        ResourceId permissionId = UserPermission.calculateId(workspace.getWorkspaceId(), user.getUserResourceId());
-        Optional<LatestVersion> latestVersion = tx.getIfExists(new LatestVersionKey(workspace, permissionId));
-        if(latestVersion.isPresent()) {
-            userPermission = Optional.of(UserPermissionClass.INSTANCE.toBean(latestVersion.get().getRecord()));
-        } else {
-            userPermission = Optional.absent();
+        userPermission = Optional.absent();
+        if(!user.isAnonymous()) {
+            ResourceId permissionId = UserPermission.calculateId(workspace.getWorkspaceId(), user.getUserResourceId());
+            Optional<LatestVersion> latestVersion = tx.getIfExists(new LatestVersionKey(workspace, permissionId));
+            if (latestVersion.isPresent()) {
+                userPermission = Optional.of(UserPermissionClass.INSTANCE.toBean(latestVersion.get().getRecord()));
+            }
         }
     }
 

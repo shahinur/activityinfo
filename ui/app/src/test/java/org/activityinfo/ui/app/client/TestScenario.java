@@ -12,8 +12,12 @@ import org.activityinfo.ui.app.client.request.FetchWorkspaces;
 import org.activityinfo.ui.app.client.request.Request;
 import org.activityinfo.ui.app.client.request.TestRemoteStoreService;
 import org.activityinfo.ui.vdom.shared.dom.TestRenderContext;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
-public class TestScenario {
+public class TestScenario extends TestWatcher {
+
+
 
     private final TestRemoteStoreService remoteService;
     private final Application application;
@@ -31,6 +35,17 @@ public class TestScenario {
         this.application = new Application(remoteService);
 
         this.renderContext = new TestRenderContext();
+    }
+
+    @Override
+    protected void starting(Description description) {
+        store.setUp();
+    }
+
+
+    @Override
+    protected void finished(Description description) {
+        store.tearDown();
     }
 
     public TestFolder createWorkspace(String label) {

@@ -6,6 +6,7 @@ import org.activityinfo.ui.app.client.TestFormClass;
 import org.activityinfo.ui.app.client.TestScenario;
 import org.activityinfo.ui.app.client.request.FetchResource;
 import org.activityinfo.ui.flux.store.Status;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -13,10 +14,12 @@ import static org.junit.Assert.assertThat;
 
 public class ResourceStoreTest {
 
+    @Rule
+    public TestScenario scenario = new TestScenario();
+
     @Test
     public void cacheFetchedResource() {
 
-        TestScenario scenario = new TestScenario();
         TestFolder workspace = scenario.createWorkspace("My Workspace");
         TestFormClass form = workspace.newFormClass("Form 1040").addTextField("SS Number").create();
 

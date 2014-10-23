@@ -21,6 +21,7 @@ import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.store.test.TestResourceStore;
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -36,6 +37,10 @@ import static org.junit.Assert.assertThat;
 
 public class HierarchyTest {
 
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
+
+
     public static final ResourceId CAMP_CLASS = CuidAdapter.locationFormClass(50505);
 
     public static final ResourceId CAMP_DISTRICT_CLASS = CuidAdapter.adminLevelFormClass(1528);
@@ -48,7 +53,7 @@ public class HierarchyTest {
 
     @Test
     public void buildViewModelTest() throws IOException {
-        ResourceLocator resourceLocator = new TestResourceStore()
+        ResourceLocator resourceLocator = store
                 .load("jordan-admin.json")
                 .createLocator();
         FormClass campForm = assertResolves(resourceLocator.getFormClass(CAMP_CLASS));

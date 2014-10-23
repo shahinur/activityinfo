@@ -19,6 +19,7 @@ import org.activityinfo.model.type.converter.JvmConverterFactory;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -35,12 +36,15 @@ public class ImportSimpleTest extends AbstractImporterTest {
 
     public static final ResourceId MODHUPUR = resourceId(ADMIN_ENTITY_DOMAIN, 24);
 
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
+
     private ResourceLocator resourceLocator;
     private AsyncFormTreeBuilder formTreeBuilder;
 
     @Before
     public void setUp() throws IOException {
-        resourceLocator = TestResourceStore.createLocator("brac-import.json");
+        resourceLocator = store.load("brac-import.json").createLocator();
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
     }
 

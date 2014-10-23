@@ -9,7 +9,6 @@ import org.activityinfo.ui.app.client.request.FetchFolder;
 
 public class TestFolder {
 
-
     private TestScenario testScenario;
     private ResourceId id;
 

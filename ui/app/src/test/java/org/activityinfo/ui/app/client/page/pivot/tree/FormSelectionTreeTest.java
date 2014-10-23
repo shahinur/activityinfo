@@ -5,6 +5,7 @@ import org.activityinfo.ui.app.client.TestFolder;
 import org.activityinfo.ui.app.client.TestFormClass;
 import org.activityinfo.ui.app.client.TestScenario;
 import org.activityinfo.ui.flux.store.Status;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
@@ -15,10 +16,12 @@ import static org.junit.Assert.assertTrue;
 
 public class FormSelectionTreeTest {
 
+    @Rule
+    public TestScenario scenario = new TestScenario();
+
     @Test
     public void testRender() {
 
-        TestScenario scenario = new TestScenario();
         TestFolder workspace = scenario.createWorkspace("Workspace A");
         TestFormClass form = workspace.newFormClass("Test Form").addTextField("Field").create();
 

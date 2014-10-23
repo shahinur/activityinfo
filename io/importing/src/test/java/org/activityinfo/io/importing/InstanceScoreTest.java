@@ -42,6 +42,7 @@ import org.activityinfo.model.type.converter.JvmConverterFactory;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -58,12 +59,15 @@ public class InstanceScoreTest extends AbstractImporterTest {
 
     private static final ResourceId ADMINISTRATIVE_UNIT_FIELD = field(locationFormClass(2), CuidAdapter.ADMIN_FIELD);
 
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
+
     private ResourceLocator resourceLocator;
     private AsyncFormTreeBuilder formTreeBuilder;
 
     @Before
     public void setUp() throws IOException {
-        resourceLocator = TestResourceStore.createLocator("nfi-import.json");
+        resourceLocator = store.load("nfi-import.json").createLocator();
         formTreeBuilder = new AsyncFormTreeBuilder(resourceLocator);
     }
 

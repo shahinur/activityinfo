@@ -9,6 +9,7 @@ import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.service.blob.UserBlobService;
 import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
@@ -23,11 +24,14 @@ import static org.junit.Assert.*;
 
 public class FormSubmissionResourceTest {
     private FormSubmissionResource resource;
-    private TestResourceStore store;
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Before
     public void setUp() throws IOException {
-        store = new TestResourceStore().load("formSubmissionResourceTest.json");
+        store.load("formSubmissionResourceTest.json");
+
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
         UserBlobService userBlobService = new TestUserBlobService();

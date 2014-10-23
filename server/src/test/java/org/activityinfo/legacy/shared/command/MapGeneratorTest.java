@@ -35,6 +35,8 @@ import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.TestDatabaseModule;
 import org.activityinfo.server.report.ReportModule;
 import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,6 +47,11 @@ import static org.junit.Assert.assertThat;
 @Modules({TestDatabaseModule.class, ReportModule.class})
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class MapGeneratorTest extends CommandTestCase2 {
+
+
+    @Rule
+    public TestResourceStore scenario = new TestResourceStore();
+
 
     @Test
     public void adminMapIcon() {

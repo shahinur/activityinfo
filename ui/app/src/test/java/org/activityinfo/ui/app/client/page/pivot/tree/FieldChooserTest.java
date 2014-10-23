@@ -4,17 +4,21 @@ import org.activityinfo.ui.app.client.TestFolder;
 import org.activityinfo.ui.app.client.TestFormClass;
 import org.activityinfo.ui.app.client.TestScenario;
 import org.activityinfo.ui.vdom.shared.dom.TestRenderContext;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
 
 public class FieldChooserTest {
 
+    @Rule
+    public TestScenario scenario = new TestScenario();
+
+
     @Test
     public void test() throws IOException {
 
         // Setup data
-        TestScenario scenario = new TestScenario();
         TestFolder workspace = scenario.createWorkspace("Workspace A");
         TestFormClass form = workspace
             .newFormClass("Test Form")

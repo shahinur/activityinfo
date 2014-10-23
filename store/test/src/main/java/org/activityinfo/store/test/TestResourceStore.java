@@ -13,8 +13,10 @@ import org.activityinfo.client.ResourceLocator;
 import org.activityinfo.client.TestRemoteStoreService;
 import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.json.ObjectMapperFactory;
 import org.activityinfo.model.resource.*;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.table.Bucket;
 import org.activityinfo.service.store.*;
 import org.activityinfo.store.hrd.HrdResourceStore;
@@ -47,7 +49,7 @@ public class TestResourceStore extends TestWatcher implements ResourceStore {
 
     @Override
     protected void starting(Description description) {
-        helper.setUp();
+        setUp();
         OnDataSet dataset = description.getAnnotation(OnDataSet.class);
         if(dataset == null) {
             dataset = description.getTestClass().getAnnotation(OnDataSet.class);
@@ -75,15 +77,12 @@ public class TestResourceStore extends TestWatcher implements ResourceStore {
     }
 
     public TestResourceStore setUp() {
-        if(setUp) {
-            System.out.println("*NOT* SETTING UP TestResourceStore: Already done");
-        } else {
-            System.out.println("SETTING UP TestResourceStore");
-            helper.setUp();
-            setUp = true;
-        }
+        tearDown();
         return this;
+    }
 
+    public void tearDown() {
+        helper.setUp();
     }
 
     public TestResourceStore() {
@@ -208,5 +207,14 @@ public class TestResourceStore extends TestWatcher implements ResourceStore {
 
     public void setUser(int userId) {
         currentUser = new AuthenticatedUser(userId);
+    }
+
+
+    public FormInstance createWorkspace(String label) {
+        FormInstance workspace = new FormInstance(org.activityinfo.model.resource.Resources.generateId(), FolderClass.CLASS_ID);
+        workspace.setOwnerId(org.activityinfo.model.resource.Resources.ROOT_ID);
+        workspace.set(FolderClass.LABEL_FIELD_ID, label);
+        store.create(currentUser, workspace.asResource());
+        return workspace;
     }
 }

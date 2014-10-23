@@ -14,6 +14,7 @@ import org.activityinfo.ui.app.client.TestFolder;
 import org.activityinfo.ui.app.client.TestFormClass;
 import org.activityinfo.ui.app.client.TestScenario;
 import org.activityinfo.ui.app.client.request.FetchCube;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,10 +27,12 @@ import static org.junit.Assert.assertThat;
 
 public class MeasureListTest {
 
+    @Rule
+    public TestScenario scenario = new TestScenario();
+
     @Test
     public void testAddMeasure() throws IOException {
 
-        TestScenario scenario = new TestScenario();
         TestFolder workspace = scenario.createWorkspace("Workspace A");
         TestFormClass form = workspace.newFormClass("Test Form");
         FormField field = form.addQuantityField("My Measure #1", "widgets");

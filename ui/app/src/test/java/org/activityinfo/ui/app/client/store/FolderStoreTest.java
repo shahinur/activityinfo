@@ -14,6 +14,7 @@ import org.activityinfo.ui.app.client.request.SaveRequest;
 import org.activityinfo.ui.flux.store.Status;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
@@ -26,6 +27,9 @@ import static org.junit.Assert.assertTrue;
 
 public class FolderStoreTest {
 
+    @Rule
+    public TestScenario scenario = new TestScenario();
+
     @Before
     public void setUp() {
         LocaleProxy.initialize();
@@ -34,7 +38,6 @@ public class FolderStoreTest {
     @Test
     public void testCacheNewWorkspace() {
 
-        TestScenario scenario = new TestScenario();
 
         // Create a new workspace
         InstanceState workspaceDraft = scenario.application().getDraftStore().getWorkspaceDraft();
@@ -50,7 +53,6 @@ public class FolderStoreTest {
 
     @Test
     public void requestWorkspaceChildren() {
-        TestScenario scenario = new TestScenario();
         TestFolder workspace = scenario.createWorkspace("Workspace A");
         TestFolder folder = workspace.createFolder("Folder 1");
         TestFormClass form = folder.newFormClass("Form 1").create();
@@ -75,7 +77,6 @@ public class FolderStoreTest {
 
     @Test
     public void testUpdateItem() {
-        TestScenario scenario = new TestScenario();
         TestFolder workspace = scenario.createWorkspace("Workspace A");
         TestFolder folder = workspace.createFolder("Folder 1");
         TestFormClass form = folder.newFormClass("Form 1").create();
