@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 
 
@@ -40,6 +41,7 @@ public class ProjectTest extends CommandTestCase {
         filter.addRestriction(DimensionType.Site, 3);
         SiteResult sites = execute(new GetSites(filter));
 
+        assertThat(sites.getData(), hasSize(1));
         assertThat(sites.getData().get(0).getProjectName(), is(nullValue()));
 
         // and doesn't show up in pivoting...

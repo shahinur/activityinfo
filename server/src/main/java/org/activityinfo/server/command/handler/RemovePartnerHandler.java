@@ -22,18 +22,14 @@ package org.activityinfo.server.command.handler;
  * #L%
  */
 
-import com.google.inject.Inject;
 import org.activityinfo.legacy.shared.command.RemovePartner;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
-import org.activityinfo.legacy.shared.command.result.RemoveFailedResult;
 import org.activityinfo.legacy.shared.command.result.RemoveResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.server.database.hibernate.entity.Partner;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.database.hibernate.entity.UserDatabase;
-
-import javax.persistence.EntityManager;
-import java.util.Date;
+import org.activityinfo.service.store.ResourceStore;
 
 /**
  * @author Alex Bertram
@@ -41,38 +37,16 @@ import java.util.Date;
  */
 public class RemovePartnerHandler implements CommandHandler<RemovePartner> {
 
-    private EntityManager em;
+    private final ResourceStore store;
 
-    @Inject
-    public RemovePartnerHandler(EntityManager em) {
-        this.em = em;
+    public RemovePartnerHandler(ResourceStore store) {
+        this.store = store;
     }
 
     @Override
     public CommandResult execute(RemovePartner cmd, User user) throws CommandException {
-
-        // verify the current user has access to this site
-        UserDatabase db = em.getReference(UserDatabase.class, cmd.getDatabaseId());
-        PermissionOracle.using(em).isManagePartnersAllowed(db, user);
-
-        // check to see if there are already sites associated with this partner
-        int siteCount = ((Number) em.createQuery("select count(s) " +
-                                                 "from Site s " +
-                                                 "where s.activity.id in (select a.id from Activity a where a" +
-                                                 ".database.id = :dbId) " +
-                                                 "and s.partner.id = :partnerId " +
-                                                 "and s.dateDeleted is null")
-                                    .setParameter("dbId", cmd.getDatabaseId())
-                                    .setParameter("partnerId", cmd.getPartnerId())
-                                    .getSingleResult()).intValue();
-
-        if (siteCount > 0) {
-            return new RemoveFailedResult();
-        }
-
-        db.getPartners().remove(em.getReference(Partner.class, cmd.getPartnerId()));
-        db.setLastSchemaUpdate(new Date());
-
+        ResourceId resourceId = CuidAdapter.partnerInstanceId(cmd.getPartnerId());
+        store.delete(user.asAuthenticatedUser(), resourceId);
         return new RemoveResult();
     }
 }

@@ -37,6 +37,11 @@ public class HrdCursor implements ResourceCursor {
     }
 
     @Override
+    public boolean isDeleted() {
+        return current.isDeleted();
+    }
+
+    @Override
     public boolean next() {
         if(it.hasNext()) {
             current = it.next();

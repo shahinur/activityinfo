@@ -38,6 +38,10 @@ public class PropertyMap {
         return get(name, PropertyType.MODEL);
     }
 
+    public boolean getBoolean(String propertyName) {
+        return get(propertyName, PropertyType.BOOLEAN);
+    }
+
     private <T> T get(String name, PropertyType<T> propertyType) {
         Object value = map.get(name);
         if(value == null) {
@@ -52,6 +56,14 @@ public class PropertyMap {
 
 
     public boolean contains(String propertyName) {
-        return map.containsKey(propertyName);
+        Object value = map.get(propertyName);
+        if(value == null) {
+            return false;
+        }
+        if(value instanceof String && ((String) value).trim().length() == 0) {
+            return false;
+        }
+        return true;
     }
+
 }

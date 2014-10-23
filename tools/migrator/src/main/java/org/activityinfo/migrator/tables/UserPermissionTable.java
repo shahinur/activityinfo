@@ -6,7 +6,6 @@ import org.activityinfo.migrator.filter.MigrationContext;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.auth.UserPermission;
 import org.activityinfo.model.auth.UserPermissionClass;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.Resources;
 
@@ -50,7 +49,7 @@ public class UserPermissionTable extends ResourceMigrator {
                     rule.setEditAll(rs.getBoolean("AllowEditAll"));
                     rule.setManageUsers(rs.getBoolean("AllowManageUsers"));
                     rule.setManageAllUsers(rs.getBoolean("AllowManageAllUsers"));
-                    rule.setPartner(CuidAdapter.partnerInstanceId(databaseId, rs.getInt("partnerId")));
+                    rule.setPartner(context.getIdStrategy().partnerInstanceId(databaseId, rs.getInt("partnerId")));
 
                     Resource resource = Resources.createResource();
                     resource.setId(rule.getId());

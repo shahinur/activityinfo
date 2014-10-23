@@ -4,10 +4,10 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import org.activityinfo.model.expr.eval.FieldReader;
-import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.service.store.ResourceCursor;
 
 
 public class ForeignKeyBuilder implements InstanceSink, Supplier<ForeignKeyColumn> {
@@ -21,8 +21,8 @@ public class ForeignKeyBuilder implements InstanceSink, Supplier<ForeignKeyColum
     }
 
     @Override
-    public void accept(ResourceId resourceId, Record record) {
-        FieldValue fieldValue = fieldReader.readField(record);
+    public void accept(ResourceCursor cursor) {
+        FieldValue fieldValue = fieldReader.readField(cursor.getRecord());
         if(fieldValue instanceof ReferenceValue) {
             ReferenceValue referenceValue = (ReferenceValue) fieldValue;
             for (ResourceId id : referenceValue.getResourceIds()) {

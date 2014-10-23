@@ -176,7 +176,7 @@ public class TableScan {
         while(cursor.next()) {
 
             for(int i=0;i!=builders.length;++i) {
-                builders[i].accept(cursor.getResourceId(), cursor.getRecord());
+                builders[i].accept(cursor);
             }
             rowCount ++ ;
         }

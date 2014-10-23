@@ -27,43 +27,41 @@ import org.activityinfo.legacy.shared.command.AddProject;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.model.ProjectDTO;
-import org.activityinfo.server.database.hibernate.entity.Project;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.database.hibernate.entity.UserDatabase;
+import org.activityinfo.service.store.ResourceStore;
 
-import javax.persistence.EntityManager;
-import java.util.Date;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 /*
  * Adds given Project to the database
  */
 public class AddProjectHandler implements CommandHandler<AddProject> {
 
-    private final EntityManager em;
+    private final ResourceStore store;
 
     @Inject
-    public AddProjectHandler(EntityManager em) {
-        this.em = em;
+    public AddProjectHandler(ResourceStore store) {
+        this.store = store;
     }
 
     @Override
     public CommandResult execute(AddProject cmd, User user) throws CommandException {
 
-        UserDatabase db = em.find(UserDatabase.class, cmd.getDatabaseId());
+        int projectId = KeyGenerator.get().generateInt();
 
-        ProjectDTO from = cmd.getProjectDTO();
-        Project project = new Project();
-        project.setName(from.getName());
-        project.setDescription(from.getDescription());
-        project.setUserDatabase(db);
+        ResourceId id = CuidAdapter.resourceId(PROJECT_DOMAIN, projectId);
+        ResourceId classId = CuidAdapter.projectFormClass(cmd.getDatabaseId());
 
-        db.setLastSchemaUpdate(new Date());
+        FormInstance instance = new FormInstance(id, classId);
+        instance.set(field(classId, NAME_FIELD), cmd.getProjectDTO().getName());
+        instance.set(field(classId, FULL_NAME_FIELD), cmd.getProjectDTO().getName());
 
-        em.persist(project);
-        em.persist(db);
-        db.getProjects().add(project);
+        store.create(user.asAuthenticatedUser(), instance.asResource());
 
-        return new CreateResult(project.getId());
+        return new CreateResult(projectId);
     }
 }

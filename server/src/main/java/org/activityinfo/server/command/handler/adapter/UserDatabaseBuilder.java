@@ -9,7 +9,6 @@ import org.activityinfo.model.auth.UserPermissionClass;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.record.Record;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.system.ApplicationProperties;
@@ -75,42 +74,47 @@ public class UserDatabaseBuilder {
             case PARTNER_FORM_CLASS_DOMAIN:
                 addPartners(child);
                 break;
-            case PROJECT_DOMAIN:
-                addProject(child);
+            case PROJECT_CLASS_DOMAIN:
+                addProjects(child);
                 break;
         }
-
     }
 
-    private void addProject(ResourceNode child) {
-
-        Resource resource = reader.getResource(child.getId()).getResource();
-
-        ProjectDTO project = new ProjectDTO();
-        project.setId(getLegacyId(child.getId()));
-        project.setName(child.getLabel());
-        project.setDescription(getDescription(resource));
-        project.setUserDatabase(db);
-        db.getProjects().add(project);
+    private void addProjects(ResourceNode projectFormClass) throws Exception {
+        ResourceId formId = projectFormClass.getId();
+        ResourceCursor cursor = reader.openCursor(formId);
+        while(cursor.next()) {
+            if(!cursor.isDeleted()) {
+                ProjectDTO project = new ProjectDTO();
+                project.setId(getLegacyId(cursor.getResourceId()));
+                project.setName(getName(cursor.getRecord()));
+                project.setDescription(getDescription(cursor.getRecord()));
+                project.setUserDatabase(db);
+                db.getProjects().add(project);
+            }
+        }
     }
 
     private void addPartners(ResourceNode partnerFormClass) throws Exception {
         ResourceId formId = partnerFormClass.getId();
-        ResourceCursor cursor = reader.openCursor(partnerFormClass.getId());
+        ResourceCursor cursor = reader.openCursor(formId);
         while(cursor.next()) {
+            if(!cursor.isDeleted()) {
+                PartnerDTO partner = new PartnerDTO();
+                partner.setId(getLegacyId(cursor.getResourceId()));
+                partner.setName(cursor.getRecord().getString(field(formId, NAME_FIELD).asString()));
+                partner.setFullName(cursor.getRecord().isString(field(formId, FULL_NAME_FIELD).asString()));
 
-
-            PartnerDTO partner = new PartnerDTO();
-            partner.setId(getLegacyId(cursor.getResourceId()));
-            partner.setName(cursor.getRecord().getString(field(formId, NAME_FIELD).asString()));
-            partner.setFullName(cursor.getRecord().isString(field(formId, FULL_NAME_FIELD).asString()));
-
-            db.getPartners().add(partner);
+                db.getPartners().add(partner);
+            }
         }
     }
 
-    private String getDescription(Resource resource) {
-        return resource.getValue().isString(field(resource.getClassId(), FULL_NAME_FIELD).asString());
+    private String getName(Record record) {
+        return record.isString(field(record.getClassId(), NAME_FIELD).asString());
+    }
+    private String getDescription(Record record) {
+        return record.isString(field(record.getClassId(), FULL_NAME_FIELD).asString());
     }
 
     private void queryAccessRules() {

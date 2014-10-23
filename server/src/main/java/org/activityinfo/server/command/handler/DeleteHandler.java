@@ -25,51 +25,47 @@ package org.activityinfo.server.command.handler;
 import com.google.inject.Inject;
 import org.activityinfo.legacy.shared.command.Delete;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
-import org.activityinfo.server.database.hibernate.entity.*;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.service.store.ResourceStore;
 
-import javax.persistence.EntityManager;
-import java.util.Date;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class DeleteHandler implements CommandHandler<Delete> {
-    private EntityManager em;
+
+    private final ResourceStore store;
 
     @Inject
-    public DeleteHandler(EntityManager em) {
-        this.em = em;
+    public DeleteHandler(ResourceStore store) {
+        this.store = store;
     }
 
     @Override
     public CommandResult execute(Delete cmd, User user) {
-        // TODO check permissions for delete!
-        // These handler should redirect to one of the Entity policy classes.
-        Class entityClass = entityClassForEntityName(cmd.getEntityName());
-        Object entity = em.find(entityClass, cmd.getId());
+        switch(cmd.getEntityName()) {
+            case "Partner":
+                deleteResource(user, cmd, PARTNER_DOMAIN);
+                break;
+            case "Project":
+                deleteResource(user, cmd, PROJECT_DOMAIN);
+                break;
+            case "Activity":
+                deleteResource(user, cmd, ACTIVITY_DOMAIN);
+                break;
+            case "Site":
+                deleteResource(user, cmd, SITE_DOMAIN);
+                break;
+            case "UserDatabase":
+                deleteResource(user, cmd, DATABASE_DOMAIN);
+                break;
 
-        if (entity instanceof Deleteable) {
-            Deleteable deleteable = (Deleteable) entity;
-            deleteable.delete();
-
-            if (entity instanceof Site) {
-                ((Site) entity).setDateEdited(new Date());
-            }
+            default:
+                throw new IllegalArgumentException("entity type: " + cmd.getEntityName());
         }
-
-        if (entity instanceof ReallyDeleteable) {
-            ReallyDeleteable reallyDeleteable = (ReallyDeleteable) entity;
-            reallyDeleteable.deleteReferences();
-            em.remove(reallyDeleteable);
-        }
-
         return null;
     }
 
-    private Class<Deleteable> entityClassForEntityName(String entityName) {
-        try {
-            return (Class<Deleteable>) Class.forName(UserDatabase.class.getPackage().getName() + "." + entityName);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Invalid entity name '" + entityName + "'", e);
-        } catch (ClassCastException e) {
-            throw new RuntimeException("Entity type '" + entityName + "' not Deletable", e);
-        }
+    private void deleteResource(User user, Delete cmd, char domain) {
+        store.delete(user.asAuthenticatedUser(), CuidAdapter.resourceId(domain, cmd.getId()));
     }
 }

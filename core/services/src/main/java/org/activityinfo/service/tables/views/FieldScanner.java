@@ -2,9 +2,8 @@ package org.activityinfo.service.tables.views;
 
 import com.google.common.base.Optional;
 import org.activityinfo.model.expr.eval.FieldReader;
-import org.activityinfo.model.record.Record;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.table.ColumnView;
+import org.activityinfo.service.store.ResourceCursor;
 
 public class FieldScanner implements ColumnScanner {
 
@@ -18,8 +17,8 @@ public class FieldScanner implements ColumnScanner {
     }
 
     @Override
-    public void accept(ResourceId resourceId, Record record) {
-        builder.accept(reader.readField(record));
+    public void accept(ResourceCursor cursor) {
+        builder.accept(reader.readField(cursor.getRecord()));
     }
 
     @Override

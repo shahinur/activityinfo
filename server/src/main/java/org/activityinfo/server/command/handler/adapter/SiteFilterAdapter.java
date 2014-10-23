@@ -1,6 +1,5 @@
 package org.activityinfo.server.command.handler.adapter;
 
-import com.google.common.collect.Iterables;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.model.expr.ConstantExpr;
@@ -15,6 +14,7 @@ import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.table.ColumnModel;
 import org.activityinfo.model.type.expr.ExprValue;
 import org.activityinfo.service.store.StoreReader;
 
@@ -36,45 +36,50 @@ public class SiteFilterAdapter {
         this.formTree = formTree;
     }
 
-    public ExprValue buildExpression(Filter query) {
+    public ExprValue buildExpression(Filter filter) {
         SetBuilder intersection = new SetBuilder(AndFunction.INSTANCE);
 
-        if(query.isRestricted(DimensionType.Partner)) {
-            intersection.add(partnerFilter(query.getRestrictions(DimensionType.Partner)));
+        if(filter.isRestricted(DimensionType.Partner)) {
+            intersection.add(partnerFilter(filter.getRestrictions(DimensionType.Partner)));
 
-        } else if(query.isRestricted(DimensionType.Project)) {
-            intersection.add(projectFilter(query.getRestrictions(DimensionType.Project)));
+        } else if(filter.isRestricted(DimensionType.Project)) {
+            intersection.add(projectFilter(filter.getRestrictions(DimensionType.Project)));
 
-        } else if(query.isRestricted(DimensionType.AdminLevel)) {
-            intersection.add(adminFilter(query.getRestrictions(DimensionType.AdminLevel)));
+        } else if(filter.isRestricted(DimensionType.AdminLevel)) {
+            intersection.add(adminFilter(filter.getRestrictions(DimensionType.AdminLevel)));
+
+        } else if(filter.isRestricted(DimensionType.Site)) {
+            intersection.add(siteFilter(filter.getRestrictions(DimensionType.Site)));
         }
         return intersection.buildFieldValue();
     }
 
-    private ExprNode partnerFilter(Set<Integer> partnerIds) {
-        int databaseId = findDatabaseId();
-        SymbolExpr field = new SymbolExpr(field(formTree.getRootClassId(), PARTNER_FIELD));
+    private ExprNode siteFilter(Set<Integer> ids) {
+        return filter(new SymbolExpr(ColumnModel.ID_SYMBOL), SITE_DOMAIN, ids);
+    }
 
+    private ExprNode filter(SymbolExpr fieldExpr, char domain, Set<Integer> ids) {
         SetBuilder union = new SetBuilder(OrFunction.INSTANCE);
-        for(Integer partnerId : partnerIds) {
-            union.add(equals(field, partnerInstanceId(databaseId, partnerId)));
+        for(Integer id : ids) {
+            union.add(equals(fieldExpr, CuidAdapter.resourceId(domain, id)));
         }
         return union.build();
+    }
+
+    private ExprNode partnerFilter(Set<Integer> partnerIds) {
+        return filter(field(PARTNER_FIELD), PARTNER_DOMAIN, partnerIds);
+    }
+
+    private SymbolExpr field(int fieldIndex) {
+        ResourceId fieldId = CuidAdapter.field(formTree.getRootClassId(), fieldIndex);
+        return new SymbolExpr(fieldId.asString());
     }
 
     private ExprNode projectFilter(Set<Integer> partnerIds) {
-        int databaseId = findDatabaseId();
-        SymbolExpr field = new SymbolExpr(field(formTree.getRootClassId(), PARTNER_FIELD));
-
-        SetBuilder union = new SetBuilder(OrFunction.INSTANCE);
-        for(Integer partnerId : partnerIds) {
-            union.add(equals(field, partnerInstanceId(databaseId, partnerId)));
-        }
-        return union.build();
+        return filter(field(PROJECT_FIELD), PROJECT_DOMAIN, partnerIds);
     }
 
     private ExprNode adminFilter(Set<Integer> entityIds) {
-
         SetBuilder union = new SetBuilder(OrFunction.INSTANCE);
         for(int adminEntityId : entityIds) {
             ResourceId entityId = CuidAdapter.entity(adminEntityId);
@@ -88,20 +93,6 @@ public class SiteFilterAdapter {
     private FunctionCallNode equals(SymbolExpr field, ResourceId resourceId) {
         return new FunctionCallNode(EqualFunction.INSTANCE, field, new ConstantExpr(resourceId.asString()));
     }
-
-    private int findDatabaseId() {
-        if(databaseId < 0) {
-
-            // Get the database id from the partner class, in which the database id is encoded
-            // For example: P1 is the partner form for databaseId=1
-
-            FormTree.Node partnerField = formTree.getRootField(field(formTree.getRootClassId(), PARTNER_FIELD));
-            ResourceId partnerClass = Iterables.getOnlyElement(partnerField.getRange());
-            databaseId = CuidAdapter.getLegacyId(partnerClass);
-        }
-        return databaseId;
-    }
-
 
     private static class SetBuilder {
         private final ExprFunction operator;

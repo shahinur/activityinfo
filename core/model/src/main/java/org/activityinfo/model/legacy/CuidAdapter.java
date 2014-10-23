@@ -92,8 +92,12 @@ public class CuidAdapter {
         return ResourceId.valueOf(domain + Integer.toString(id));
     }
 
+    public static ResourceId partnerInstanceId(int partnerId) {
+        return resourceId(PARTNER_DOMAIN, partnerId);
+    }
+
     public static ResourceId partnerInstanceId(int databaseId, int partnerId) {
-        return resourceId(PARTNER_DOMAIN, databaseId*10000+partnerId);
+        return partnerInstanceId(databaseId*10000+partnerId);
     }
 
     /**
@@ -256,4 +260,5 @@ public class CuidAdapter {
     public static ResourceId generateEnumId() {
         return attributeId(KeyGenerator.get().generateInt());
     }
+
 }

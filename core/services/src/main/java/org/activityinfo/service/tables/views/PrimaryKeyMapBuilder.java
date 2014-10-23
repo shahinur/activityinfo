@@ -2,8 +2,8 @@ package org.activityinfo.service.tables.views;
 
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.service.store.ResourceCursor;
 
 import java.util.Map;
 
@@ -16,8 +16,8 @@ public class PrimaryKeyMapBuilder implements InstanceSink, Supplier<PrimaryKeyMa
     private int rowIndex = 0;
 
     @Override
-    public void accept(ResourceId resourceId, Record value) {
-        map.put(resourceId, rowIndex++);
+    public void accept(ResourceCursor cursor) {
+        map.put(cursor.getResourceId(), rowIndex++);
     }
 
     @Override

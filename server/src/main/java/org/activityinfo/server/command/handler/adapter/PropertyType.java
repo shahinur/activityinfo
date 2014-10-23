@@ -33,7 +33,7 @@ public interface PropertyType<T> {
 
         @Override
         public String cast(Object value) {
-            return (String)value;
+            return ((String)value).trim();
         }
     };
 
@@ -49,6 +49,18 @@ public interface PropertyType<T> {
         }
     };
 
+
+    public static final PropertyType<Boolean> BOOLEAN = new PropertyType<Boolean>() {
+        @Override
+        public String name() {
+            return "boolean";
+        }
+
+        @Override
+        public Boolean cast(Object value) {
+            return (Boolean) value;
+        }
+    };
 
     public static final PropertyType<PropertyMap> MODEL = new PropertyType<PropertyMap>() {
         @Override

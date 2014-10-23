@@ -4,11 +4,15 @@ import com.extjs.gxt.ui.client.data.RpcMap;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.EntityDTO;
 
-public class RequestChange implements Command<VoidResult> {
+import java.util.HashMap;
+import java.util.Map;
+
+public final class RequestChange implements Command<VoidResult> {
 
     public static final String DELETE = "DELETE";
     public static final String UPDATE = "UPDATE";
 
+    private RequestChange() {}
 
     private String entityType;
     private String entityId;
@@ -19,66 +23,33 @@ public class RequestChange implements Command<VoidResult> {
         return entityType;
     }
 
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
-    }
-
     public String getEntityId() {
         return entityId;
-    }
-
-    public void setEntityId(String entityId) {
-        this.entityId = entityId;
-    }
-
-    private void setEntityId(int id) {
-        setEntityId(Integer.toString(id));
     }
 
     public String getChangeType() {
         return changeType;
     }
 
-    public void setChangeType(String changeType) {
-        this.changeType = changeType;
-    }
-
     public RpcMap getPropertyMap() {
         return propertyMap;
     }
 
-    public void setPropertyMap(RpcMap propertyMap) {
-        this.propertyMap = propertyMap;
+    public static Delete delete(EntityDTO entity) {
+        return new Delete(entity);
     }
 
-    public static RequestChange delete(EntityDTO entity) {
-        RequestChange request = new RequestChange();
-        request.setChangeType(DELETE);
-        request.setEntityId(entity.getId());
-        request.setEntityType(entity.getEntityName());
-        return request;
+    public static Delete delete(String entityType, int id) {
+        return new Delete(entityType, id);
     }
 
-    public static RequestChange delete(String entityType, int id) {
-        RequestChange request = new RequestChange();
-        request.setChangeType(DELETE);
-        request.setEntityId(id);
-        request.setEntityType(entityType);
-        return request;
-    }
+    public static UpdateEntity update(EntityDTO model, String... propertiesToChange) {
 
-    public static Command update(EntityDTO model, String... propertiesToChange) {
-        RequestChange request = new RequestChange();
-        request.setChangeType(UPDATE);
-        request.setEntityId(model.getId());
-        request.setEntityType(model.getEntityName());
-
-        RpcMap map = new RpcMap();
+        Map<String, Object> map = new HashMap<>();
         for (String property : propertiesToChange) {
             map.put(property, model.get(property));
         }
-        request.setPropertyMap(map);
 
-        return request;
+        return new UpdateEntity(model.getEntityName(), model.getId(), map);
     }
 }

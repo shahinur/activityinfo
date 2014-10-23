@@ -47,7 +47,7 @@ public class LegacyIdStrategy implements IdStrategy {
 
     @Override
     public ResourceId partnerInstanceId(int databaseId, int partnerId) {
-        return CuidAdapter.partnerInstanceId(databaseId, partnerId);
+        return CuidAdapter.partnerInstanceId(databaseId*10000+partnerId);
     }
 
     @Override

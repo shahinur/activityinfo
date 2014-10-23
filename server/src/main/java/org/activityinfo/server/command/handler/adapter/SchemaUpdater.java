@@ -3,10 +3,12 @@ package org.activityinfo.server.command.handler.adapter;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.exception.CommandException;
+import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.record.Record;
@@ -18,8 +20,13 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.number.AggregationType;
+import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.store.ResourceStore;
 
@@ -69,14 +76,32 @@ public class SchemaUpdater {
                 updateActivity(properties);
                 break;
 
+            case "Project":
+                updateProject(cmd.getId(), properties);
+                break;
+
             case "AttributeGroup":
             case "Attribute":
             case "Indicator":
                 updateActivity(properties).execute(cmd);
+                break;
 
             default:
                 throw new CommandException("Invalid entity class " + cmd.getEntityName());
         }
+    }
+
+    private void updateProject(int id, PropertyMap properties) {
+        ResourceId resourceId = CuidAdapter.resourceId(PROJECT_DOMAIN, id);
+        FormInstance instance = FormInstance.fromResource(getResource(resourceId));
+        ResourceId classId = instance.getClassId();
+        if(properties.contains("name")) {
+            instance.set(field(classId, NAME_FIELD), properties.getString("name"));
+        }
+        if(properties.contains("description")) {
+            instance.set(field(classId, FULL_NAME_FIELD), properties.getString("description"));
+        }
+        store.put(user, instance.asResource());
     }
 
 
@@ -85,10 +110,10 @@ public class SchemaUpdater {
         int databaseId = generateId();
 
         Record record = Records.builder(FolderClass.CLASS_ID)
-            .set(FolderClass.LABEL_FIELD_NAME, properties.getString(UserDatabaseDTO.NAME_PROPERTY))
-            .set(FolderClass.DESCRIPTION_FIELD_NAME, properties.getString(UserDatabaseDTO.FULL_NAME_PROPERTY))
-            .setTag(ApplicationProperties.WITHIN, country(properties))
-            .build();
+                .set(FolderClass.LABEL_FIELD_NAME, properties.getString(UserDatabaseDTO.NAME_PROPERTY))
+                .set(FolderClass.DESCRIPTION_FIELD_NAME, properties.getString(UserDatabaseDTO.FULL_NAME_PROPERTY))
+                .setTag(ApplicationProperties.WITHIN, country(properties))
+                .build();
 
         Resource workspace = Resources.createResource();
         workspace.setId(CuidAdapter.databaseId(databaseId));
@@ -213,13 +238,96 @@ public class SchemaUpdater {
         }
 
         public int execute(CreateEntity entity) {
+            switch(entity.getEntityName()) {
+                case "Indicator":
+                    return createIndicator(new PropertyMap(entity.getProperties()));
+            }
             throw new UnsupportedOperationException();
+        }
+
+        private int createIndicator(PropertyMap propertyMap) {
+            int indicatorId = KeyGenerator.get().generateInt();
+            FormField field = new FormField(CuidAdapter.indicatorField(indicatorId));
+            updateIndicatorField(propertyMap, field);
+            formClass.addElement(field);
+            store.put(user, formClass.asResource());
+            return indicatorId;
+        }
+
+        private void updateIndicatorField(PropertyMap map, FormField field) {
+            if (map.contains("name")) {
+                field.setLabel(map.getString("name"));
+            }
+            if (map.contains("nameInExpression")) {
+                field.setCode(map.getString("nameInExpression"));
+            }
+            if (map.contains("description")) {
+                field.setDescription(map.getString("description"));
+            }
+            if (map.contains("mandatory")) {
+                field.setRequired(map.getBoolean("mandatory"));
+            }
+
+            FieldType fieldType = field.getType();
+            if (map.contains("type")) {
+                fieldType = TypeRegistry.get().getTypeClass(map.getString("type")).createType();
+            }
+            if (map.contains("units")) {
+                if(fieldType instanceof QuantityType) {
+                    ((QuantityType) fieldType).setUnits(map.getString("units"));
+                }
+            }
+            if (map.contains("aggregation")) {
+                if(fieldType instanceof QuantityType) {
+                    ((QuantityType) fieldType).setAggregation(aggregation(map.getInt("aggregation")));
+                }
+            }
+            boolean ignoreCalculation = false;
+            if (map.contains("calculatedAutomatically")) {
+               if(!map.getBoolean("calculatedAutomatically")) {
+                   ignoreCalculation = true;
+               }
+            }
+            if (map.contains("expression") && !ignoreCalculation) {
+                if(fieldType instanceof CalculatedFieldType) {
+                    ((CalculatedFieldType) fieldType).setExpression(map.getString("expression"));
+                } else {
+                    fieldType = new CalculatedFieldType(map.getString("expression"));
+                }
+            }
+
+            if (map.contains("listHeader")) {
+                field.setListHeader(map.getString("listHeader"));
+            }
+
+//
+//            if (changes.containsKey("category")) {
+//                indicator.setCategory(trim(changes.get("category")));
+//            }
+//
+//
+//            if (changes.containsKey("sortOrder")) {
+//                indicator.setSortOrder((Integer) changes.get("sortOrder"));
+//            }
+
+        }
+
+        private AggregationType aggregation(int aggregation) {
+            switch(aggregation) {
+                default:
+                case IndicatorDTO.AGGREGATE_SUM:
+                    return AggregationType.SUM;
+                case IndicatorDTO.AGGREGATE_AVG:
+                    return AggregationType.MEAN;
+                case IndicatorDTO.AGGREGATE_SITE_COUNT:
+                    return AggregationType.COUNT;
+            }
         }
 
         public void execute(UpdateEntity cmd) {
             throw new UnsupportedOperationException();
         }
-        
+
         public void updateActivityProperties(PropertyMap map) {
             if (map.contains("locationTypeId")) {
                 updateLocationField(map.getInt("locationTypeId"));
