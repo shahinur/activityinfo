@@ -17,8 +17,12 @@ import org.activityinfo.service.store.StoreReader;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GetSchemaHandler implements CommandHandler<GetSchema> {
+
+    private static final Logger LOGGER = Logger.getLogger(GetSchemaHandler.class.getName());
 
     private final ResourceStore store;
 
@@ -38,9 +42,13 @@ public class GetSchemaHandler implements CommandHandler<GetSchema> {
             CountryProvider countryProvider = new CountryProvider(reader);
 
             SchemaDTO schema = new SchemaDTO();
-            for(ResourceNode workspace : workspaces) {
-                UserDatabaseBuilder database = new UserDatabaseBuilder(user, reader, countryProvider, workspace);
-                schema.getDatabases().add(database.build());
+            for (ResourceNode workspace : workspaces) {
+                try {
+                    UserDatabaseBuilder database = new UserDatabaseBuilder(user, reader, countryProvider, workspace);
+                    schema.getDatabases().add(database.build());
+                } catch(Exception e) {
+                    LOGGER.log(Level.SEVERE, "Exception creating UserDatabaseDTO for " + workspace, e);
+                }
             }
 
             schema.getCountries().addAll(countryProvider.getCountries());

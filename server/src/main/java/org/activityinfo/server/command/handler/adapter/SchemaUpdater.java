@@ -113,6 +113,7 @@ public class SchemaUpdater {
 
         int databaseId = generateId();
 
+        // Create the database itself
         Record record = Records.builder(FolderClass.CLASS_ID)
                 .set(FolderClass.LABEL_FIELD_NAME, properties.getString(UserDatabaseDTO.NAME_PROPERTY))
                 .set(FolderClass.DESCRIPTION_FIELD_NAME, properties.getStringIfPresent(UserDatabaseDTO.FULL_NAME_PROPERTY))
@@ -125,7 +126,30 @@ public class SchemaUpdater {
         workspace.setValue(record);
         store.create(user, workspace);
 
+        // We also need a Partner Form Class...
+        createPartnerForm(databaseId, workspace);
+
         return databaseId;
+    }
+
+    private void createPartnerForm(int databaseId, Resource workspace) {
+        ResourceId classId = CuidAdapter.partnerFormClass(databaseId);
+        FormClass form = new FormClass(classId)
+                .setOwnerId(workspace.getId())
+                .setLabel("Partners");
+
+        form.addField(field(classId, NAME_FIELD))
+                .setRequired(true)
+                .setLabel("Name")
+                .setSuperProperty(ApplicationProperties.LABEL_PROPERTY)
+                .setType(TextType.INSTANCE);
+
+        form.addField(field(classId, FULL_NAME_FIELD))
+                .setLabel("Full Name")
+                .setSuperProperty(ApplicationProperties.DESCRIPTION_PROPERTY)
+                .setRequired(true)
+                .setType(TextType.INSTANCE);
+        store.create(user, form.asResource());
     }
 
     private ResourceId country(PropertyMap properties) {

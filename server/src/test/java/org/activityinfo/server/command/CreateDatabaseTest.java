@@ -23,10 +23,12 @@ package org.activityinfo.server.command;
  */
 
 import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.legacy.shared.command.AddPartner;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
+import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.store.test.OnDataSet;
@@ -35,7 +37,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
@@ -64,6 +69,25 @@ public class CreateDatabaseTest extends CommandTestCase {
         assertNotNull(newdb.getCountry());
         assertEquals("Alex", newdb.getOwnerName());
     }
+
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testCreateAddPartner() {
+        UserDatabaseDTO db = new UserDatabaseDTO();
+        db.setName("RIMS");
+        db.setFullName("Reintegration Management Information System");
+        int dbId = execute(new CreateEntity(db)).getNewId();
+
+        AddPartner update = new AddPartner(dbId, new PartnerDTO(0, "NRC"));
+        CreateResult partnerResult = execute(update);
+
+
+        SchemaDTO schema = execute(new GetSchema());
+        List<PartnerDTO> partners = schema.getDatabaseById(dbId).getPartners();
+        assertThat(partners, hasSize(1));
+        assertThat(partners.get(0).getName(), equalTo("NRC"));
+    }
+
 
     @Test
     @OnDataSet("/dbunit/multicountry.db.xml")
