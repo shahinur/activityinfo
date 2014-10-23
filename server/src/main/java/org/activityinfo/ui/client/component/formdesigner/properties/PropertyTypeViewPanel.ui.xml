@@ -12,5 +12,8 @@
       <g:Label ui:field="name"/>
     </label>
     <a:TextBox ui:field="label" width="100%"/>
+    <g:HTML ui:field="errorMessageContainer" addStyleNames="has-error" visible="false">
+      <span class='help-block' ui:field="errorMessage"/>
+    </g:HTML>
   </g:HTMLPanel>
 </ui:UiBinder>

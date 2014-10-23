@@ -29,7 +29,12 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
-import org.activityinfo.core.shared.expr.*;
+import org.activityinfo.core.shared.expr.ExprLexer;
+import org.activityinfo.core.shared.expr.ExprNode;
+import org.activityinfo.core.shared.expr.ExprParser;
+import org.activityinfo.core.shared.expr.ExprSyntaxException;
+import org.activityinfo.core.shared.expr.FunctionCallNode;
+import org.activityinfo.core.shared.expr.PlaceholderExpr;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
@@ -37,6 +42,7 @@ import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
+import org.activityinfo.ui.client.widget.legacy.OnlyValidFieldBinding;
 
 import java.util.List;
 
@@ -60,7 +66,6 @@ class IndicatorForm extends AbstractDesignForm {
         binding = new FormBinding(this);
 
 
-
         this.setLabelWidth(150);
         this.setFieldWidth(200);
 
@@ -81,7 +86,7 @@ class IndicatorForm extends AbstractDesignForm {
         TextField<String> nameField = new TextField<>();
         nameField.setFieldLabel(constants.name());
         nameField.setAllowBlank(false);
-        binding.addFieldBinding(new FieldBinding(nameField, "name"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(nameField, "name"));
         this.add(nameField);
 
         typeCombo = new MappingComboBox<>();
@@ -97,7 +102,7 @@ class IndicatorForm extends AbstractDesignForm {
         unitsField.setFieldLabel(constants.units());
         unitsField.setAllowBlank(false);
         unitsField.setMaxLength(IndicatorDTO.UNITS_MAX_LENGTH);
-        binding.addFieldBinding(new FieldBinding(unitsField, "units"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(unitsField, "units"));
         this.add(unitsField);
 
         aggregationCombo = new MappingComboBox();
@@ -145,7 +150,7 @@ class IndicatorForm extends AbstractDesignForm {
                 return validateExpression(value);
             }
         });
-        binding.addFieldBinding(new FieldBinding(expressionField, "expression"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(expressionField, "expression"));
         this.add(expressionField);
 
         calculatedExpressionLabelDesc = new LabelField(constants.calculatedIndicatorExplanation());
@@ -155,14 +160,14 @@ class IndicatorForm extends AbstractDesignForm {
         categoryField.setName("category");
         categoryField.setFieldLabel(constants.category());
         categoryField.setMaxLength(IndicatorDTO.MAX_CATEGORY_LENGTH);
-        binding.addFieldBinding(new FieldBinding(categoryField, "category"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(categoryField, "category"));
         this.add(categoryField);
 
 
         TextField<String> listHeaderField = new TextField<>();
         listHeaderField.setFieldLabel(constants.listHeader());
         listHeaderField.setMaxLength(IndicatorDTO.MAX_LIST_HEADER_LENGTH);
-        binding.addFieldBinding(new FieldBinding(listHeaderField, "listHeader"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(listHeaderField, "listHeader"));
         this.add(listHeaderField);
 
         TextArea descField = new TextArea();
