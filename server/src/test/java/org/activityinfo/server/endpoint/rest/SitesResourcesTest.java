@@ -9,6 +9,8 @@ import com.google.common.collect.Lists;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,6 +24,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class SitesResourcesTest extends CommandTestCase2 {
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     private static class QueryParameters {
         private final List<Integer> activityIds = Lists.newArrayList();

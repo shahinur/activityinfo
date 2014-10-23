@@ -40,8 +40,10 @@ import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.report.generator.ReportGenerator;
 import org.activityinfo.server.report.renderer.Renderer;
 import org.activityinfo.server.report.renderer.RendererFactory;
+import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -58,6 +60,9 @@ import static org.junit.Assert.assertTrue;
 @Modules({ReportStubModule.class, ServletStubModule.class,
         MockHibernateModule.class})
 public class ReportsTest {
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Inject
     private EntityManager em;

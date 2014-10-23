@@ -23,7 +23,7 @@ import java.util.List;
 public class TestRemoteStoreService implements ActivityInfoAsyncClient {
 
     private ResourceStore store;
-    private AuthenticatedUser user;
+    private AuthenticatedUser user = new AuthenticatedUser(1);
 
     public boolean fail = false;
 
@@ -77,7 +77,7 @@ public class TestRemoteStoreService implements ActivityInfoAsyncClient {
 
     @Override
     public Promise<List<ResourceNode>> getWorkspaces() {
-        return Promise.resolved(store.getOwnedOrSharedWorkspaces(AuthenticatedUser.getAnonymous()));
+        return Promise.resolved(store.getOwnedOrSharedWorkspaces(user));
     }
 
     @Override
