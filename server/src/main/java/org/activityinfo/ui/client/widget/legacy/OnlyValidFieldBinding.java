@@ -22,6 +22,10 @@ package org.activityinfo.ui.client.widget.legacy;
  */
 
 import com.extjs.gxt.ui.client.binding.FieldBinding;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.form.Field;
 
 /**
@@ -45,4 +49,15 @@ public class OnlyValidFieldBinding extends FieldBinding {
             super.updateModel();
         }
     }
+
+    @Override
+    public void bind(ModelData model) {
+        super.bind(model);
+        field.addListener(Events.KeyUp, new Listener<FieldEvent>() {
+            public void handleEvent(FieldEvent be) {
+                onFieldChange(be);
+            }
+        });
+    }
+
 }

@@ -36,6 +36,7 @@ import org.activityinfo.legacy.shared.model.AttributeDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
+import org.activityinfo.ui.client.widget.legacy.OnlyValidFieldBinding;
 
 import java.util.List;
 
@@ -58,7 +59,7 @@ class AttributeGroupForm extends AbstractDesignForm {
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(I18N.CONSTANTS.name());
         nameField.setMaxLength(AttributeGroupDTO.NAME_MAX_LENGTH);
-        binding.addFieldBinding(new FieldBinding(nameField, "name"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(nameField, "name"));
 
         add(nameField);
 

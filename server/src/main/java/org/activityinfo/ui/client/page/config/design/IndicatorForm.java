@@ -78,7 +78,7 @@ class IndicatorForm extends AbstractDesignForm {
         codeField = new TextField<>();
         codeField.setFieldLabel(constants.codeFieldLabel());
         codeField.setToolTip(constants.codeFieldLabel());
-        binding.addFieldBinding(new FieldBinding(codeField, "nameInExpression"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(codeField, "nameInExpression"));
         this.add(codeField);
 
         this.add(new LabelField(constants.nameInExpressionTooltip()));
@@ -172,7 +172,7 @@ class IndicatorForm extends AbstractDesignForm {
 
         TextArea descField = new TextArea();
         descField.setFieldLabel(constants.description());
-        binding.addFieldBinding(new FieldBinding(descField, "description"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(descField, "description"));
         this.add(descField);
 
         CheckBox mandatoryCB = new CheckBox();

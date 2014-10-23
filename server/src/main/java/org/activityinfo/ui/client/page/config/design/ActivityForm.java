@@ -39,6 +39,7 @@ import org.activityinfo.legacy.shared.model.Published;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
+import org.activityinfo.ui.client.widget.legacy.OnlyValidFieldBinding;
 
 /**
  * FormClass for editing ActivityDTO
@@ -67,13 +68,13 @@ class ActivityForm extends AbstractDesignForm {
         nameField.setAllowBlank(false);
         nameField.setFieldLabel(I18N.CONSTANTS.name());
         nameField.setMaxLength(ActivityDTO.NAME_MAX_LENGTH);
-        binding.addFieldBinding(new FieldBinding(nameField, "name"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(nameField, "name"));
         this.add(nameField);
 
         TextField<String> categoryField = new TextField<String>();
         categoryField.setFieldLabel(I18N.CONSTANTS.category());
         categoryField.setMaxLength(ActivityDTO.CATEGORY_MAX_LENGTH);
-        binding.addFieldBinding(new FieldBinding(categoryField, "category"));
+        binding.addFieldBinding(new OnlyValidFieldBinding(categoryField, "category"));
         add(categoryField);
 
         final MappingComboBox<Integer> locationTypeCombo = new MappingComboBox<Integer>();
