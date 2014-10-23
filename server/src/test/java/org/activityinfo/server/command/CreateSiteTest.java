@@ -32,7 +32,7 @@ import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.legacy.KeyGenerator;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.OnDataSet;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -26,8 +26,8 @@ import com.google.inject.Inject;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.MockHibernateModule;
 import org.activityinfo.fixtures.Modules;
-import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.User;
+import org.activityinfo.store.test.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

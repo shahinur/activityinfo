@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.io.Resources;
 import com.sun.jersey.api.core.InjectParam;
@@ -19,6 +20,8 @@ import org.activityinfo.service.store.*;
 import org.activityinfo.store.hrd.HrdResourceStore;
 import org.activityinfo.store.hrd.StoreContext;
 import org.activityinfo.store.hrd.dao.WorkspaceCreation;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 import javax.ws.rs.*;
 import java.io.IOException;
@@ -26,7 +29,7 @@ import java.net.URL;
 import java.util.List;
 
 @SuppressWarnings("GwtClientClassFromNonInheritedModule")
-public class TestResourceStore implements ResourceStore {
+public class TestResourceStore extends TestWatcher implements ResourceStore {
 
     private HrdResourceStore store;
 
@@ -40,14 +43,47 @@ public class TestResourceStore implements ResourceStore {
 
     private Resource lastUpdated;
     private final StoreContext storeContext;
+    private boolean setUp = false;
 
-    public TestResourceStore setUp() {
+    @Override
+    protected void starting(Description description) {
         helper.setUp();
-        return this;
+        OnDataSet dataset = description.getAnnotation(OnDataSet.class);
+        if(dataset == null) {
+            dataset = description.getTestClass().getAnnotation(OnDataSet.class);
+        }
+        if(dataset != null) {
+            try {
+                load(jsonFile(dataset.value()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
-    public void tearDown() {
-//        helper.tearDown();
+    private String jsonFile(String name) {
+        Preconditions.checkState(name.startsWith("/dbunit/"));
+        Preconditions.checkState(name.endsWith(".db.xml"));
+
+        return name.substring("/dbunit/".length(), name.length() - ".db.xml".length()) + ".json";
+
+    }
+
+    @Override
+    protected void finished(Description description) {
+        helper.tearDown();
+    }
+
+    public TestResourceStore setUp() {
+        if(setUp) {
+            System.out.println("*NOT* SETTING UP TestResourceStore: Already done");
+        } else {
+            System.out.println("SETTING UP TestResourceStore");
+            helper.setUp();
+            setUp = true;
+        }
+        return this;
+
     }
 
     public TestResourceStore() {
@@ -168,5 +204,9 @@ public class TestResourceStore implements ResourceStore {
 
     public AuthenticatedUser getCurrentUser() {
         return currentUser;
+    }
+
+    public void setUser(int userId) {
+        currentUser = new AuthenticatedUser(userId);
     }
 }

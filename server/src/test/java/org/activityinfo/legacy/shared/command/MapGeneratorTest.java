@@ -32,9 +32,9 @@ import org.activityinfo.legacy.shared.reports.model.clustering.AdministrativeLev
 import org.activityinfo.legacy.shared.reports.model.layers.BubbleMapLayer;
 import org.activityinfo.legacy.shared.reports.model.layers.IconMapLayer;
 import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
 import org.activityinfo.server.report.ReportModule;
+import org.activityinfo.store.test.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

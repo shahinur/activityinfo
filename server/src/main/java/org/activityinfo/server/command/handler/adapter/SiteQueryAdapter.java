@@ -9,6 +9,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceNode;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.service.store.ResourceDeletedException;
 import org.activityinfo.service.store.StoreReader;
 
 import java.util.Set;
@@ -35,8 +36,12 @@ public final class SiteQueryAdapter {
     private void findActivities(Filter filter) {
         if(filter.isRestricted(DimensionType.Site)) {
             for(Integer siteId : filter.getRestrictions(DimensionType.Site)) {
-                UserResource resource = reader.getResource(CuidAdapter.resourceId(SITE_DOMAIN, siteId));
-                forms.add(resource.getResource().getClassId());
+                try {
+                    UserResource resource = reader.getResource(CuidAdapter.resourceId(SITE_DOMAIN, siteId));
+                    forms.add(resource.getResource().getClassId());
+                } catch(ResourceDeletedException e) {
+                    // do not include
+                }
             }
         } else if(filter.isRestricted(DimensionType.Activity)) {
             for(Integer activityId : filter.getRestrictions(DimensionType.Activity)) {

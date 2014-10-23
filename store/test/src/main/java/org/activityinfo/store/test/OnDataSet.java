@@ -1,4 +1,4 @@
-package org.activityinfo.legacy.shared.command;
+package org.activityinfo.store.test;
 
 /*
  * #%L
@@ -22,28 +22,10 @@ package org.activityinfo.legacy.shared.command;
  * #L%
  */
 
-import org.activityinfo.legacy.shared.command.result.SitePointList;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-/**
- * @author Alex Bertram (akbertram@gmail.com)
- */
-public class GetSitePoints implements Command<SitePointList> {
-
-    private int activityId;
-
-    private GetSitePoints() {
-
-    }
-
-    public GetSitePoints(int activityId) {
-        this.activityId = activityId;
-    }
-
-    public int getActivityId() {
-        return activityId;
-    }
-
-    public void setActivityId(int activityId) {
-        this.activityId = activityId;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+public @interface OnDataSet {
+    String value();
 }

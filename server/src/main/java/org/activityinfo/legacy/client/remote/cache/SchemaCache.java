@@ -86,8 +86,6 @@ public class SchemaCache implements DispatchListener {
             clearCache();
         } else if (command instanceof AddPartner || command instanceof RemovePartner) {
             clearCache();
-        } else if (command instanceof RequestChange && isSchemaEntity(((RequestChange) command).getEntityType())) {
-            clearCache();
         } else if (command instanceof BatchCommand) {
             for (Command element : ((BatchCommand) command).getCommands()) {
                 beforeDispatched(element);

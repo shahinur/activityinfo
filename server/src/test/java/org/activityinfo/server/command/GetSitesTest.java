@@ -33,10 +33,12 @@ import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -49,6 +51,9 @@ import static org.junit.Assert.assertThat;
 public class GetSitesTest extends CommandTestCase2 {
     private static final int DATABASE_OWNER = 1;
     public static final int NFI_ACTIVITY_ID = 1;
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Test
     public void testActivityQueryBasic() throws CommandException {

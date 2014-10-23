@@ -29,8 +29,10 @@ import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.DuplicateCreateResult;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,6 +41,9 @@ import org.junit.runner.RunWith;
 public class PartnerTest extends CommandTestCase {
     public static final int PEAR_PLUS_DB_ID = 2;
     public static final int SOL_ID = 2;
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Test
     public void testAddPartner() throws Exception {

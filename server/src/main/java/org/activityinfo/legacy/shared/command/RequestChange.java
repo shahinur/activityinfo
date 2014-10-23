@@ -23,18 +23,6 @@ public final class RequestChange implements Command<VoidResult> {
         return entityType;
     }
 
-    public String getEntityId() {
-        return entityId;
-    }
-
-    public String getChangeType() {
-        return changeType;
-    }
-
-    public RpcMap getPropertyMap() {
-        return propertyMap;
-    }
-
     public static Delete delete(EntityDTO entity) {
         return new Delete(entity);
     }

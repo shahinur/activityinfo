@@ -78,9 +78,9 @@ public class LoadDataSet extends Statement {
         LOGGER.info("DBUnit: loading " + name + " into the database.");
         IDataSet data = loadDataSet();
 
-        LOGGER.info("Loading resources...");
-        store.setUp();
-        store.load(jsonFile());
+//        LOGGER.info("Loading resources...");
+//        store.setUp();
+//        store.load(jsonFile());
 
         List<Throwable> errors = new ArrayList<Throwable>();
         errors.clear();
@@ -90,7 +90,7 @@ public class LoadDataSet extends Statement {
         } catch (Throwable e) {
             errors.add(e);
         } finally {
-            store.tearDown();
+//            store.tearDown();
         }
         MultipleFailureException.assertEmpty(errors);
     }

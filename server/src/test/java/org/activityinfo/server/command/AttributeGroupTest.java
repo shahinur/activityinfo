@@ -22,6 +22,7 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.UpdateEntity;
@@ -29,10 +30,11 @@ import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,6 +44,9 @@ import java.util.Map;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/schema1.db.xml")
 public class AttributeGroupTest extends CommandTestCase {
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Before
     public void setUp() {

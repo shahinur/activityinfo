@@ -27,7 +27,7 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetAdminEntities;
 import org.activityinfo.legacy.shared.command.result.AdminEntityResult;
 import org.activityinfo.legacy.shared.model.AdminEntityDTO;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

@@ -7,8 +7,10 @@ import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.ProjectDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
-import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
+import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -20,6 +22,9 @@ import static org.junit.Assert.assertThat;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class ProjectTest extends CommandTestCase {
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Test
     public void deleteProject() {

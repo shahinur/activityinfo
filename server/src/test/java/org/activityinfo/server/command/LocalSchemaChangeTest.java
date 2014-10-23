@@ -23,17 +23,17 @@ package org.activityinfo.server.command;
  */
 
 import com.google.common.collect.Maps;
+import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.fixtures.MockHibernateModule;
+import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.fixtures.MockHibernateModule;
-import org.activityinfo.fixtures.Modules;
-import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.util.logging.LoggingModule;
+import org.activityinfo.store.test.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

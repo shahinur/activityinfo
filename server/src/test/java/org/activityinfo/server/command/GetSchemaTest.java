@@ -28,21 +28,24 @@ import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.rest.SchemaCsvWriter;
+import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class GetSchemaTest extends CommandTestCase2 {
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Before
     public void cleanUpScheduler() {
@@ -54,7 +57,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         // owners should be able to see their databases
 
-        setUser(1); // Alex
+        store.setUser(1); // Alex
 
         SchemaDTO schema = execute(new GetSchema());
 
@@ -93,7 +96,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         // Anonymouse user should fetch schema database with published
         // activities.
-        setUser(0);
+        store.setUser(0);
 
         SchemaDTO schema = execute(new GetSchema());
 
@@ -102,7 +105,7 @@ public class GetSchemaTest extends CommandTestCase2 {
 
     @Test
     public void testLockedProjects() {
-        setUser(1);
+        store.setUser(1);
         SchemaDTO schema = execute(new GetSchema());
 
         assertThat(schema.getProjectById(1).getLockedPeriods().size(), equalTo(1));
@@ -118,7 +121,7 @@ public class GetSchemaTest extends CommandTestCase2 {
     @Test
     public void testDatabaseVisibilityForView() throws CommandException {
 
-        setUser(2); // Bavon
+        store.setUser(2); // Bavon
 
         SchemaDTO schema = execute(new GetSchema());
 
@@ -131,17 +134,18 @@ public class GetSchemaTest extends CommandTestCase2 {
 
     @Test
     public void testDatabaseVisibilityNone() throws CommandException {
-        setUser(3); // Stefan
+        store.setUser(3); // Stefan
 
         SchemaDTO schema = execute(new GetSchema());
 
-        assertTrue("STEFAN does not have access to RRM", schema.getDatabaseById(2) == null);
+        assertThat("STEFAN does not have access to RRM", schema.getDatabases(),
+                not(hasItem(Matchers.<UserDatabaseDTO>hasProperty("id", equalTo(2)))));
     }
 
     @Test
     public void testIndicators() throws CommandException {
 
-        setUser(1); // Alex
+        store.setUser(1); // Alex
 
         SchemaDTO schema = execute(new GetSchema());
 
@@ -163,7 +167,7 @@ public class GetSchemaTest extends CommandTestCase2 {
     @Test
     public void testAttributes() throws CommandException {
 
-        setUser(1); // Alex
+        store.setUser(1); // Alex
 
         SchemaDTO schema = execute(new GetSchema());
 

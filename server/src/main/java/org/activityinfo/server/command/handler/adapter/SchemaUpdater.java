@@ -20,15 +20,20 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.system.FolderClass;
+import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.AggregationType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.service.store.ResourceStore;
+
+import java.util.Collections;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
 
@@ -73,7 +78,7 @@ public class SchemaUpdater {
                 break;
 
             case "Activity":
-                updateActivity(properties);
+                updateActivity(cmd.getId()).updateActivityProperties(properties);
                 break;
 
             case "Project":
@@ -81,7 +86,6 @@ public class SchemaUpdater {
                 break;
 
             case "AttributeGroup":
-            case "Attribute":
             case "Indicator":
                 updateActivity(properties).execute(cmd);
                 break;
@@ -111,7 +115,7 @@ public class SchemaUpdater {
 
         Record record = Records.builder(FolderClass.CLASS_ID)
                 .set(FolderClass.LABEL_FIELD_NAME, properties.getString(UserDatabaseDTO.NAME_PROPERTY))
-                .set(FolderClass.DESCRIPTION_FIELD_NAME, properties.getString(UserDatabaseDTO.FULL_NAME_PROPERTY))
+                .set(FolderClass.DESCRIPTION_FIELD_NAME, properties.getStringIfPresent(UserDatabaseDTO.FULL_NAME_PROPERTY))
                 .setTag(ApplicationProperties.WITHIN, country(properties))
                 .build();
 
@@ -223,6 +227,10 @@ public class SchemaUpdater {
         // all part of the form class
         int activityId = properties.getInt("activityId");
 
+        return updateActivity(activityId);
+    }
+
+    private ActivityUpdater updateActivity(int activityId) {
         UserResource resource = store.get(user, CuidAdapter.activityFormClass(activityId));
         return new ActivityUpdater(FormClass.fromResource(resource.getResource()));
     }
@@ -241,9 +249,12 @@ public class SchemaUpdater {
             switch(entity.getEntityName()) {
                 case "Indicator":
                     return createIndicator(new PropertyMap(entity.getProperties()));
+                case "AttributeGroup":
+                    return createAttributeGroup(new PropertyMap(entity.getProperties()));
             }
             throw new UnsupportedOperationException();
         }
+
 
         private int createIndicator(PropertyMap propertyMap) {
             int indicatorId = KeyGenerator.get().generateInt();
@@ -252,6 +263,29 @@ public class SchemaUpdater {
             formClass.addElement(field);
             store.put(user, formClass.asResource());
             return indicatorId;
+        }
+
+
+        private int createAttributeGroup(PropertyMap propertyMap) {
+
+            int groupId = KeyGenerator.get().generateInt();
+
+            FormField field = new FormField(CuidAdapter.attributeGroupField(groupId));
+            field.setLabel(propertyMap.getString("name"));
+            field.setType(new EnumType(getCardinality(propertyMap), Collections.<EnumValue>emptyList()));
+            field.setRequired(propertyMap.getBoolean("mandatory", false));
+
+            formClass.addElement(field);
+
+            store.put(user, formClass.asResource());
+
+            return groupId;
+        }
+
+        private Cardinality getCardinality(PropertyMap propertyMap) {
+            return propertyMap.getBoolean("multipleAllowed") ?
+                    Cardinality.MULTIPLE :
+                    Cardinality.SINGLE;
         }
 
         private void updateIndicatorField(PropertyMap map, FormField field) {

@@ -10,6 +10,7 @@ import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.store.test.TestFormClass;
 import org.activityinfo.store.test.TestResourceStore;
+import org.junit.Rule;
 import org.junit.Test;
 
 import javax.persistence.EntityManager;
@@ -20,7 +21,8 @@ import static org.junit.Assert.assertThat;
 
 public class GetSiteHistoryHandlerTest {
 
-    private TestResourceStore store;
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     @Test
     public void test() {

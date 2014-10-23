@@ -22,13 +22,13 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.GetMonthlyReports;
 import org.activityinfo.legacy.shared.command.Month;
 import org.activityinfo.legacy.shared.command.UpdateMonthlyReports;
 import org.activityinfo.legacy.shared.command.result.MonthlyReportResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.OnDataSet;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -44,11 +44,12 @@ import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.OnDataSet;
 import org.activityinfo.store.test.TestResourceStore;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -66,7 +67,8 @@ import static org.junit.Assert.*;
 @OnDataSet("/dbunit/schema1.db.xml")
 public class ActivityTest extends CommandTestCase2 {
 
-    private TestResourceStore store;
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
     private ResourceLocator resourceLocator;
 
     @Before
@@ -76,7 +78,6 @@ public class ActivityTest extends CommandTestCase2 {
 
     @Before
     public void createResourceLocator() throws IOException {
-        store = new TestResourceStore().setUp().load("schema1.json");
         resourceLocator = store.createLocator();
     }
 

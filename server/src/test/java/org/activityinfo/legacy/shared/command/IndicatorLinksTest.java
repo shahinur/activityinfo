@@ -25,8 +25,8 @@ package org.activityinfo.legacy.shared.command;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.Modules;
 import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.database.TestDatabaseModule;
+import org.activityinfo.store.test.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

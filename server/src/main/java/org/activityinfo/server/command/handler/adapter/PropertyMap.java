@@ -30,6 +30,10 @@ public class PropertyMap {
         return get(name, PropertyType.STRING);
     }
 
+    public String getStringIfPresent(String name) {
+        return getIfPresent(name, PropertyType.STRING);
+    }
+
     public int getInt(String name) {
         return get(name, PropertyType.INTEGER);
     }
@@ -42,11 +46,36 @@ public class PropertyMap {
         return get(propertyName, PropertyType.BOOLEAN);
     }
 
+    public boolean getBoolean(String propertyName, boolean defaultValue) {
+        return get(propertyName, PropertyType.BOOLEAN, defaultValue);
+    }
+
     private <T> T get(String name, PropertyType<T> propertyType) {
         Object value = map.get(name);
         if(value == null) {
             throw PropertyException.missing(name);
         }
+        return cast(name, propertyType, value);
+    }
+
+    private <T> T get(String name, PropertyType<T> propertyType, T defaultValue) {
+        Object value = map.get(name);
+        if(value == null) {
+            return defaultValue;
+        }
+        return cast(name, propertyType, value);
+    }
+
+    private <T> T getIfPresent(String name, PropertyType<T> propertyType) {
+        Object value = map.get(name);
+        if(value == null) {
+            return null;
+        }
+        return cast(name, propertyType, value);
+    }
+
+
+    private <T> T cast(String name, PropertyType<T> propertyType, Object value) {
         try {
             return propertyType.cast(value);
         } catch (ClassCastException e) {
@@ -65,5 +94,6 @@ public class PropertyMap {
         }
         return true;
     }
+
 
 }

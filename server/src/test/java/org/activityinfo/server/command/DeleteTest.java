@@ -33,7 +33,9 @@ import org.activityinfo.legacy.shared.command.result.PagingResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.store.test.OnDataSet;
+import org.activityinfo.store.test.TestResourceStore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -42,6 +44,9 @@ import java.util.Collection;
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
 public class DeleteTest extends CommandTestCase {
+
+    @Rule
+    public TestResourceStore store = new TestResourceStore();
 
     public <T extends ModelData> T getById(Collection<T> list, Integer id) {
         for (T element : list) {
@@ -61,7 +66,7 @@ public class DeleteTest extends CommandTestCase {
         sites = execute(GetSites.byId(3));
         Assert.assertEquals(0, sites.getData().size());
 
-        sites = execute(new GetSites());
+        sites = execute(GetSites.byActivity(1));
         Assert.assertNull(getById(sites.getData(), 3));
     }
 
