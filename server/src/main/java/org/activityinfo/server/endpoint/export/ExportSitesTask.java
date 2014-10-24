@@ -7,13 +7,8 @@ import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
-import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.FilterUrlSerializer;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.command.DispatcherSync;
 
@@ -52,7 +47,8 @@ public class ExportSitesTask extends HttpServlet {
 
 
         // create the workbook
-        SiteExporter export = buildExcelWorkbook(req);
+        Filter filter = FilterUrlSerializer.fromQueryParameter(req.getParameter("filter"));
+        SiteExporter export = new SiteExporter(dispatcher.get()).buildExcelWorkbook(filter);
 
         // Save to GCS
         GcsService gcs = GcsServiceFactory.createGcsService();
@@ -66,22 +62,5 @@ public class ExportSitesTask extends HttpServlet {
         try(OutputStream outputStream = Channels.newOutputStream(gcs.createOrReplace(fileName, fileOptions))) {
             export.getBook().write(outputStream);
         }
-    }
-
-    private SiteExporter buildExcelWorkbook(HttpServletRequest req) {
-        Filter filter = FilterUrlSerializer.fromQueryParameter(req.getParameter("filter"));
-        SchemaDTO schema = dispatcher.get().execute(new GetSchema());
-
-        SiteExporter export = new SiteExporter(dispatcher.get());
-        for (UserDatabaseDTO db : schema.getDatabases()) {
-            for (ActivityDTO activity : db.getActivities()) {
-                if (!filter.isRestricted(DimensionType.Activity) ||
-                    filter.getRestrictions(DimensionType.Activity).contains(activity.getId())) {
-                    export.export(activity, filter);
-                }
-            }
-        }
-        export.done();
-        return export;
     }
 }

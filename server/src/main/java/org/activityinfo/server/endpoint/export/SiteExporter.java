@@ -29,6 +29,7 @@ import com.google.common.base.Strings;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
+import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.*;
@@ -36,11 +37,20 @@ import org.activityinfo.server.command.DispatcherSync;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.WorkbookUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -303,15 +313,18 @@ public class SiteExporter {
 
         // query in batches in order to avoid sinking MySQL
         int offset = 0;
-        while(true) {
+        while (true) {
             LOGGER.log(Level.INFO, "Fetching batching at offset " + offset);
 
             SiteResult batch = querySites(activity, filter, offset);
+            if (batch.getData().isEmpty()) {
+                break; // break if no data
+            }
             for (SiteDTO site : batch.getData()) {
                 addDataRow(sheet, rowIndex++, site);
             }
             offset += batch.getData().size();
-            if(offset >= batch.getTotalLength()) {
+            if (offset >= batch.getTotalLength()) {
                 break;
             }
         }
@@ -465,5 +478,24 @@ public class SiteExporter {
             HSSFSheet sheet = book.createSheet("Sheet1");
             sheet.createRow(0).createCell(0).setCellValue("No matching sites.");
         }
+    }
+
+    public SiteExporter buildExcelWorkbook(Filter filter) {
+
+        SchemaDTO schema = dispatcher.execute(new GetSchema());
+
+        for (UserDatabaseDTO db : schema.getDatabases()) {
+            if (!filter.isRestricted(DimensionType.Database) ||
+                    filter.getRestrictions(DimensionType.Database).contains(db.getId())) {
+                for (ActivityDTO activity : db.getActivities()) {
+                    if (!filter.isRestricted(DimensionType.Activity) ||
+                            filter.getRestrictions(DimensionType.Activity).contains(activity.getId())) {
+                        export(activity, filter);
+                    }
+                }
+            }
+        }
+        done();
+        return this;
     }
 }
