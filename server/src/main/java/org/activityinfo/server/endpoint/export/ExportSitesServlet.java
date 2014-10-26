@@ -23,6 +23,7 @@ package org.activityinfo.server.endpoint.export;
  */
 
 import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.RetryOptions;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import com.google.appengine.tools.cloudstorage.GcsFileMetadata;
 import com.google.appengine.tools.cloudstorage.GcsFilename;
@@ -87,9 +88,9 @@ public class ExportSitesServlet extends HttpServlet {
         }
         options.param("userId", Integer.toString(authenticatedUserProvider.get().getId()));
         options.param("userEmail", authenticatedUserProvider.get().getEmail());
-
         options.param("exportId", exportId);
         options.param("filename", fileName());
+        options.retryOptions(RetryOptions.Builder.withTaskRetryLimit(3));
 
         QueueFactory.getDefaultQueue().add(options);
 
