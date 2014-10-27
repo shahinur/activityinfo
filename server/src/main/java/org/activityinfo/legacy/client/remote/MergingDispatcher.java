@@ -69,7 +69,7 @@ public class MergingDispatcher extends AbstractDispatcher {
     @Inject
     public MergingDispatcher(Dispatcher dispatcher, Scheduler scheduler) {
         this(dispatcher, scheduler, new ExponentialBackOff.Builder()
-                .setInitialIntervalMillis(AdvisoryLock.ADVISORY_GET_LOCK_TIMEOUT)
+                .setInitialIntervalMillis(AdvisoryLock.ADVISORY_GET_LOCK_TIMEOUT * 1000)
                 .setMultiplier(2) // increase in 2 times
                 .build());
     }
