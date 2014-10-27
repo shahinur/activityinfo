@@ -34,7 +34,7 @@ public class RetryCountDown {
      * In case CommandTimeOutException occurs (may happen if Advisory lock wasn't obtains during configurable time),
      * dispatcher automatically retry command execution. With this constant it's possible to limit number of retry calls.
      */
-    private static final int RETRY_COUNT_LIMIT_ON_TIMEOUT = 3;
+    public static final int RETRY_COUNT_LIMIT_ON_TIMEOUT = 3;
 
     private int countDown = RETRY_COUNT_LIMIT_ON_TIMEOUT;
     private BackOff backOff;
