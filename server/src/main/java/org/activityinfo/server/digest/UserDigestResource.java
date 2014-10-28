@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 public abstract class UserDigestResource {
+
     public static final String PARAM_USER = "u";
     public static final String PARAM_NOW = "n";
     public static final String PARAM_DAYS = "d";
@@ -45,7 +46,8 @@ public abstract class UserDigestResource {
         this.digestRenderer = digestRenderer;
     }
 
-    @GET @Produces(MediaType.TEXT_HTML)
+    @GET
+    @Produces(MediaType.TEXT_HTML)
     public String createUserDigest(@QueryParam(PARAM_USER) int userId,
                                    @QueryParam(PARAM_NOW) Long now,
                                    @QueryParam(PARAM_DAYS) int days,
@@ -63,10 +65,15 @@ public abstract class UserDigestResource {
         }
 
         User user = entityManager.get().find(User.class, userId);
+        if (!user.isEmailNotification()) {
+            return "user's email notification flag is set to false.";
+        }
+        ensureUserTokenCreated(user);
+
         authProvider.set(user);
 
         LOGGER.info("creating digest for " + user.getEmail() + " on " + DateFormatter.formatDateTime(date) +
-                    " for activity period: " + days + " day(s)." + " (sending email: " + sendEmail + ")");
+                " for activity period: " + days + " day(s)." + " (sending email: " + sendEmail + ")");
 
         DigestMessageBuilder digest = new DigestMessageBuilder(digestModelBuilder, digestRenderer);
         digest.setUser(user);
@@ -79,6 +86,14 @@ public abstract class UserDigestResource {
         }
 
         return message == null ? "no updates found" : message.getHtmlBody();
+    }
+
+    private void ensureUserTokenCreated(User user) {
+        if (user.ensureUserTokenCreated()) {
+            entityManager.get().getTransaction().begin();
+            entityManager.get().merge(user);
+            entityManager.get().getTransaction().commit();
+        }
     }
 
     public abstract int getDefaultDays();

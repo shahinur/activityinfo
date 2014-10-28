@@ -23,6 +23,7 @@ package org.activityinfo.server.database.hibernate.entity;
  */
 
 import com.google.common.base.Strings;
+import org.activityinfo.server.authentication.SecureTokenGenerator;
 import org.mindrot.bcrypt.BCrypt;
 
 import javax.persistence.*;
@@ -55,6 +56,7 @@ public class User implements java.io.Serializable {
     private boolean emailNotification;
     private User invitedBy;
     private Date dateCreated;
+    private String token;
 
 
     public User() {
@@ -86,6 +88,15 @@ public class User implements java.io.Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "token", nullable = true, length = 150)
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Column(name = "Organization", nullable = true, length = 100)
@@ -192,6 +203,22 @@ public class User implements java.io.Serializable {
 
     public void changePassword(String newPlaintextPassword) {
         this.hashedPassword = BCrypt.hashpw(newPlaintextPassword, BCrypt.gensalt());
+    }
+
+    /**
+     *
+     * @return true if user token was created otherwise false.
+     */
+    public boolean ensureUserTokenCreated() {
+        if (Strings.isNullOrEmpty(getToken())) {
+            resetUserToken();
+            return true;
+        }
+        return false;
+    }
+
+    public void resetUserToken() {
+        setToken(SecureTokenGenerator.generate());
     }
 
     @Override

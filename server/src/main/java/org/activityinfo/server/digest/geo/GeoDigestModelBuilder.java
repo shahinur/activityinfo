@@ -16,6 +16,7 @@ import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.digest.DigestModelBuilder;
+import org.activityinfo.server.digest.UserDigest;
 import org.activityinfo.server.digest.geo.GeoDigestModel.DatabaseModel;
 import org.activityinfo.server.report.output.StorageProvider;
 import org.activityinfo.server.report.output.TempStorage;
@@ -54,7 +55,8 @@ public class GeoDigestModelBuilder implements DigestModelBuilder {
 
     @Override
     public GeoDigestModel createModel(User user, Date date, int days) throws IOException {
-        GeoDigestModel model = new GeoDigestModel(user, date, days);
+
+        GeoDigestModel model = new GeoDigestModel(new UserDigest(user, date, days));
 
         List<UserDatabase> databases = findDatabases(user);
         LOGGER.finest("found " + databases.size() + " database(s) for user " + user.getId());
@@ -74,11 +76,11 @@ public class GeoDigestModelBuilder implements DigestModelBuilder {
 
         DatabaseModel databaseModel = new DatabaseModel(model, database);
 
-        List<Integer> siteIds = findSiteIds(database, model.getFrom());
+        List<Integer> siteIds = findSiteIds(database, model.getUserDigest().getFrom());
 
-        LOGGER.finest("rendering geo digest for user " + model.getUser().getId() + " and database " + database.getId() +
+        LOGGER.finest("rendering geo digest for user " + model.getUserDigest().getUser().getId() + " and database " + database.getId() +
                       " - found " + siteIds.size() + " site(s) that were edited since " +
-                      DateFormatter.formatDateTime(model.getFrom()));
+                      DateFormatter.formatDateTime(model.getUserDigest().getFrom()));
 
         if (!siteIds.isEmpty()) {
             MapReportElement reportModel = new MapReportElement();

@@ -8,6 +8,7 @@ import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.digest.DigestModelBuilder;
+import org.activityinfo.server.digest.UserDigest;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.ActivityMap;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.DatabaseModel;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.PartnerActivityModel;
@@ -32,7 +33,8 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
 
     @Override
     public ActivityDigestModel createModel(User user, Date date, int days) throws IOException {
-        ActivityDigestModel model = new ActivityDigestModel(user, date, days);
+
+        ActivityDigestModel model = new ActivityDigestModel(new UserDigest(user, date, days));
 
         List<UserDatabase> databases = findDatabases(user);
         LOGGER.finest("found " + databases.size() + " database(s) for user " + user.getId());
@@ -58,7 +60,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
             databaseModel.setOwnerActivityMap(ownerActivityMap);
 
             List<Partner> partners = findPartners(databaseModel);
-            LOGGER.finest("building user activity digest for user " + model.getUser().getId() +
+            LOGGER.finest("building user activity digest for user " + model.getUserDigest().getUser().getId() +
                           " and database " + database.getId() + " - found " + partners.size() + " partner(s)");
             if (!partners.isEmpty()) {
                 for (Partner partner : partners) {
@@ -101,7 +103,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
     }
 
     /**
-     * @param database
+     * @param databaseModel
      * @return the partners linked to the specified database via a userpermission
      */
     @VisibleForTesting @SuppressWarnings("unchecked") List<Partner> findPartners(DatabaseModel databaseModel) {
@@ -115,7 +117,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
     }
 
     /**
-     * @param database
+     * @param partnerModel
      * @return the users linked to the specified database and partner via a userpermission where allowEdit is set to
      * true.
      */
@@ -132,9 +134,8 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
     }
 
     /**
-     * @param database
-     * @param user
-     * @param from
+     * @param databaseModel
+     * @param editor
      * @return the sitehistory edited since the specified timestamp (milliseconds) and linked to the specified database
      * and user.
      */
@@ -147,7 +148,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
                                                       "order by h.timeCreated");
         query.setParameter("database", databaseModel.getDatabase());
         query.setParameter("user", editor);
-        query.setParameter("from", databaseModel.getModel().getFrom());
+        query.setParameter("from", databaseModel.getModel().getUserDigest().getFrom());
 
         return query.getResultList();
     }

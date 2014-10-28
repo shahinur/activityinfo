@@ -22,6 +22,7 @@ package org.activityinfo.server.digest;
  * #L%
  */
 
+import com.google.common.base.Preconditions;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.server.database.hibernate.entity.User;
@@ -63,6 +64,9 @@ public class DigestMessageBuilder {
     }
 
     public Message build() throws IOException, MessagingException {
+
+        Preconditions.checkNotNull(user);
+
         // set the locale of the messages
         LocaleProxy.setLocale(user.getLocaleObject());
 

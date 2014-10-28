@@ -54,9 +54,9 @@ public class GeoDigestRenderer implements DigestRenderer {
 
     private void renderHeader(StringBuilder html, GeoDigestModel model) {
         html.append("<div class='geo-header'>");
-        html.append(I18N.MESSAGES.geoDigestIntro(model.getDays() * 24));
+        html.append(I18N.MESSAGES.geoDigestIntro(model.getUserDigest().getDays() * 24));
         html.append("<br/>");
-        html.append(I18N.MESSAGES.digestUnsubscribe());
+        html.append(I18N.MESSAGES.digestUnsubscribe(model.getUserDigest().getUnsubscribeLink()));
         html.append("</div>");
     }
 
@@ -113,7 +113,7 @@ public class GeoDigestRenderer implements DigestRenderer {
                                                        .getSchemaDTO()
                                                        .getActivityById(siteDTO.getActivityId());
 
-                List<SiteHistory> histories = findSiteHistory(siteId, databaseModel.getModel().getFrom());
+                List<SiteHistory> histories = findSiteHistory(siteId, databaseModel.getModel().getUserDigest().getFrom());
                 for (SiteHistory history : histories) {
                     html.append("<span class='geo-site' style='margin-left:10px;'>&bull; ");
                     html.append(I18N.MESSAGES.geoDigestSiteMsg(history.getUser().getEmail(),
@@ -121,7 +121,7 @@ public class GeoDigestRenderer implements DigestRenderer {
                             activityDTO.getName(),
                             siteDTO.getLocationName()));
 
-                    Date targetDate = databaseModel.getModel().getDate();
+                    Date targetDate = databaseModel.getModel().getUserDigest().getDate();
                     Date creationDate = new Date(history.getTimeCreated());
                     if (DateCalc.isOnToday(targetDate, creationDate)) {
                         html.append(I18N.MESSAGES.geoDigestSiteMsgDateToday(creationDate));
@@ -138,8 +138,8 @@ public class GeoDigestRenderer implements DigestRenderer {
     }
 
     /**
-     * @param database
-     * @param user
+     * @param siteId
+     * @param from
      * @param from
      * @return the sitehistory edited since the specified timestamp (milliseconds) and linked to the specified database
      * and user. The resulting list is grouped by user, keeping the last created sitehistory entry per user.
