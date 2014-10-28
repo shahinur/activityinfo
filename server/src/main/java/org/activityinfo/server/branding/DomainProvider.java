@@ -22,12 +22,15 @@ package org.activityinfo.server.branding;
  * #L%
  */
 
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import org.activityinfo.server.database.hibernate.entity.Domain;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+
+import static com.google.common.base.Strings.emptyToNull;
 
 /**
  * Provides information on the domain branding to use based
@@ -52,12 +55,54 @@ public class DomainProvider implements Provider<Domain> {
 
     @Override
     public Domain get() {
-        Domain result = entityManager.get().find(Domain.class, request.get().getServerName());
+
+        String host = getBrandHostName();
+        Domain result = entityManager.get().find(Domain.class, host);
         if (result == null) {
             result = new Domain();
             result.setTitle("ActivityInfo");
-            result.setHost(request.get().getServerName());
+            result.setHost(host);
+        } else {
+            entityManager.get().detach(result);
         }
+        result.setHost(getExternalHostName());
         return result;
+    }
+
+    private String getExternalHostName() {
+        String host = getHeader("X-Forwarded-Host");
+        if(host != null) {
+            return host;
+        }
+        return request.get().getServerName();
+    }
+
+    /**
+     *
+     * Return the hostname to use for looking up the branded domain.
+     *
+     * If the request is forwarded from a proxy server, this host name might
+     * be different from both the requested host name ('proxy.default.activityinfoeu.appspot.com')
+     * and the host name requested by the end user ('proxy.activityinfo.org') if we are
+     * are setting up an alias to an existing host.
+     *
+     * @return the host name to use for looking up the branded version of AI to serve.
+     *
+     */
+    private String getBrandHostName() {
+
+        String host = getHeader("X-AI-Domain");
+        if(host != null) {
+            return host;
+        }
+        host = getHeader("X-Forwarded-Host");
+        if(host != null) {
+            return host;
+        }
+        return request.get().getServerName();
+    }
+
+    private String getHeader(String headerName) {
+        return emptyToNull(request.get().getHeader(headerName));
     }
 }
