@@ -23,6 +23,7 @@ package org.activityinfo.server.authentication;
  */
 
 import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
 import com.google.common.io.BaseEncoding;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -81,7 +82,7 @@ public class BasicAuthentication {
     // header against the database of users maintained in the users Hashtable.
 
     public User authenticate(String auth) throws IOException {
-        if (auth == null) {
+        if (Strings.isNullOrEmpty(auth)) {
             // no auth
             return null;
         }

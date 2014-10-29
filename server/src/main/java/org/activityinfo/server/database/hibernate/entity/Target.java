@@ -51,7 +51,7 @@ public class Target implements Serializable, ReallyDeleteable {
         this.id = id;
     }
 
-    @Column(name = "Name", nullable = false, length = 30)
+    @Column(name = "Name", nullable = false, length = 255)
     public String getName() {
         return name;
     }
