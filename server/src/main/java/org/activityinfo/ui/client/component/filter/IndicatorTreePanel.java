@@ -270,31 +270,30 @@ public class IndicatorTreePanel extends ContentPanel {
 
     private List<ModelData> createDatabaseChildren(UserDatabaseDTO databaseDTO) {
 
+        List<ModelData> children = new ArrayList<ModelData>();
+
         Set<ActivityCategory> categories = new HashSet<ActivityCategory>();
-        Set<ActivityDTO> activitiesWithoutCategory = new HashSet<ActivityDTO>();
 
         for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
             ActivityCategory activityCategory = activityDTO.getActivityCategory();
             if (activityCategory != null) {
                 categories.add(activityCategory);
+                if (!children.contains(activityCategory)) {
+                    children.add(activityCategory);
+                }
             } else {
-                activitiesWithoutCategory.add(activityDTO);
+                children.add(activityDTO);
             }
         }
 
         // fill category with activities
-        for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
-            for (ActivityCategory category : categories) {
+        for (ActivityCategory category : categories) {
+            for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
                 if (category.equals(activityDTO.getActivityCategory()) && !category.getActivities().contains(activityDTO)) {
                     category.addActivity(activityDTO);
                 }
             }
         }
-
-        List<ModelData> children = new ArrayList<ModelData>();
-
-        children.addAll(categories);
-        children.addAll(activitiesWithoutCategory);
 
         return children;
     }

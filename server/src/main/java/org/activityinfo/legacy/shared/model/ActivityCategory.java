@@ -23,15 +23,15 @@ package org.activityinfo.legacy.shared.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yuriyz on 10/07/2014.
  */
 public class ActivityCategory extends BaseModelData implements ProvidesKey {
 
-    private Set<ActivityDTO> activities = new HashSet<ActivityDTO>();
+    private List<ActivityDTO> activities = new ArrayList<ActivityDTO>();
 
     public ActivityCategory() {
     }
@@ -50,7 +50,7 @@ public class ActivityCategory extends BaseModelData implements ProvidesKey {
         return get("name");
     }
 
-    public Set<ActivityDTO> getActivities() {
+    public List<ActivityDTO> getActivities() {
         return activities;
     }
 
