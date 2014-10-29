@@ -2,6 +2,9 @@ package org.activityinfo.server.digest;
 
 import com.google.inject.Provider;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
+import org.activityinfo.server.authentication.UserToken;
+import org.activityinfo.server.authentication.UserTokenManager;
+import org.activityinfo.server.authentication.UserTokenScope;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.Message;
@@ -19,6 +22,7 @@ import java.util.Date;
 import java.util.logging.Logger;
 
 public abstract class UserDigestResource {
+
     public static final String PARAM_USER = "u";
     public static final String PARAM_NOW = "n";
     public static final String PARAM_DAYS = "d";
@@ -45,7 +49,8 @@ public abstract class UserDigestResource {
         this.digestRenderer = digestRenderer;
     }
 
-    @GET @Produces(MediaType.TEXT_HTML)
+    @GET
+    @Produces(MediaType.TEXT_HTML)
     public String createUserDigest(@QueryParam(PARAM_USER) int userId,
                                    @QueryParam(PARAM_NOW) Long now,
                                    @QueryParam(PARAM_DAYS) int days,
@@ -63,15 +68,20 @@ public abstract class UserDigestResource {
         }
 
         User user = entityManager.get().find(User.class, userId);
+        if (!user.isEmailNotification()) {
+            return "user's email notification flag is set to false.";
+        }
+
+        UserToken userToken = UserTokenManager.create(userId, UserTokenScope.SUBSCRIBE, UserTokenScope.UNSUBSCRIBE);
+
         authProvider.set(user);
 
         LOGGER.info("creating digest for " + user.getEmail() + " on " + DateFormatter.formatDateTime(date) +
-                    " for activity period: " + days + " day(s)." + " (sending email: " + sendEmail + ")");
+                " for activity period: " + days + " day(s)." + " (sending email: " + sendEmail + ")");
 
+        UserDigest userDigest = new UserDigest(user, date, days, userToken.getSecureToken());
         DigestMessageBuilder digest = new DigestMessageBuilder(digestModelBuilder, digestRenderer);
-        digest.setUser(user);
-        digest.setDate(date);
-        digest.setDays(days);
+        digest.setUserDigest(userDigest);
 
         Message message = digest.build();
         if (message != null && sendEmail) {
@@ -80,6 +90,5 @@ public abstract class UserDigestResource {
 
         return message == null ? "no updates found" : message.getHtmlBody();
     }
-
     public abstract int getDefaultDays();
 }
