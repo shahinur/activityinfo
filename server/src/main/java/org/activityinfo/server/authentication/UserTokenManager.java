@@ -27,6 +27,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.KeyFactory;
 
+import java.util.Arrays;
+
 /**
  * @author yuriyz on 10/29/2014.
  */
@@ -37,7 +39,7 @@ public class UserTokenManager {
     public static void put(UserNoAuthEntity user) {
         Entity entity = new Entity(KeyFactory.createKey("token", user.getSecureToken()));
         entity.setUnindexedProperty("userId", user.getUserId());
-        entity.setUnindexedProperty("scope", user.isSubscribe());
+        entity.setUnindexedProperty("scope", UserTokenScope.scope(user.getScopes()));
 
         datastore.put(null, entity);  // we have a single put to make, no need for transaction
     }
@@ -47,14 +49,14 @@ public class UserTokenManager {
         return new UserNoAuthEntity()
                 .setUserId((Long)entity.getProperty("userId"))
                 .setSecureToken(secureToken)
-                .setSubscribe((Boolean) entity.getProperty("subscribe"));
+                .setScopes(UserTokenScope.parseScopes((String) entity.getProperty("scope")));
     }
 
-    public static UserNoAuthEntity create(long userId, boolean subscribe) {
+    public static UserNoAuthEntity create(long userId, UserTokenScope... scopes) {
         UserNoAuthEntity user = new UserNoAuthEntity()
                 .setSecureToken(SecureTokenGenerator.generate())
                 .setUserId(userId)
-                .setSubscribe(subscribe);
+                .setScopes(Arrays.asList(scopes));
         put(user);
         return user;
     }
