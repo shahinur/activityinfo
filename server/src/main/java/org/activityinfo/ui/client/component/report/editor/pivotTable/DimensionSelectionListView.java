@@ -187,9 +187,11 @@ public class DimensionSelectionListView implements HasReportElement<PivotTableRe
                     return new DimensionModel(dim, I18N.CONSTANTS.location());
                 case Target:
                     return new DimensionModel(dim, I18N.CONSTANTS.realizedOrTargeted());
+                case ActivityCategory:
+                    return new DimensionModel(dim, I18N.CONSTANTS.formCategory());
             }
         }
-        return null;
+        throw new RuntimeException("Dimension is not supported: " + dim);
     }
 
     @Override
