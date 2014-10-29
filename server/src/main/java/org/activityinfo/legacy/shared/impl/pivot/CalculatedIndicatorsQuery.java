@@ -273,6 +273,8 @@ public class CalculatedIndicatorsQuery implements WorkItem {
             return new PartnerAccessor(dim);
         } else if (dim.getType() == DimensionType.Site) {
             return new SiteAccessor(dim);
+        } else if (dim.getType() == DimensionType.Target) {
+            return new TargetAccessor(dim);
         }
         throw new UnsupportedOperationException("dim: " + dim);
     }

@@ -54,12 +54,14 @@ import static org.junit.Assert.assertEquals;
 public class PivotSitesHandlerTest extends CommandTestCase2 {
 
     private Set<Dimension> dimensions;
-    private Dimension indicatorDim;
-    private Filter filter;
-    private AdminDimension provinceDim;
-    private AdminDimension territoireDim;
-    private List<Bucket> buckets;
+    private Dimension indicatorDim = new Dimension(DimensionType.Indicator);
+    private AdminDimension provinceDim = new AdminDimension(OWNER_USER_ID);
+    private AdminDimension territoireDim = new AdminDimension(2);
     private final Dimension projectDim = new Dimension(DimensionType.Project);
+    private final Dimension targetDim = new Dimension(DimensionType.Target);
+
+    private Filter filter;
+    private List<Bucket> buckets;
     private Dimension partnerDim;
     private ValueType valueType = ValueType.INDICATOR;
     private boolean pointsRequested;
@@ -79,9 +81,6 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     public void setUp() throws Exception {
         dimensions = new HashSet<Dimension>();
         filter = new Filter();
-
-        provinceDim = new AdminDimension(OWNER_USER_ID);
-        territoireDim = new AdminDimension(2);
     }
 
     @Test
@@ -112,6 +111,22 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         execute();
         // todo !!!
         assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-simple-target.db.xml")
+    public void testTargetsWithCalculatedIndicators() {
+        withIndicatorAsDimension();
+        dimensions.add(new Dimension(DimensionType.Target));
+        filter.addRestriction(DimensionType.Indicator, Arrays.asList(1,111));
+
+        execute();
+        assertThat().forIndicatorTarget(1).thereIsOneBucketWithValue(20000);
+        assertThat().forRealizedIndicator(1).thereIsOneBucketWithValue(15100);
+
+        assertThat().forIndicatorTarget(111).thereIsOneBucketWithValue(2000000);
+        assertThat().forRealizedIndicator(111).thereIsOneBucketWithValue(1510000);
+
     }
 
     @Test
@@ -800,7 +815,6 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     }
 
     private void withIndicatorAsDimension() {
-        indicatorDim = new Dimension(DimensionType.Indicator);
         dimensions.add(indicatorDim);
     }
 
@@ -869,6 +883,23 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
             filter(indicatorDim, indicatorId);
             return this;
         }
+
+
+        public AssertionBuilder forIndicatorTarget(int indicatorId) {
+            criteria.append(" with target for indicator ").append(indicatorId);
+            filter(indicatorDim, indicatorId);
+            filter(targetDim, TargetCategory.TARGETED);
+            return this;
+        }
+
+
+        public AssertionBuilder forRealizedIndicator(int indicatorId) {
+            criteria.append(" with target for indicator ").append(indicatorId);
+            filter(indicatorDim, indicatorId);
+            filter(targetDim, TargetCategory.REALIZED);
+            return this;
+        }
+
 
         public AssertionBuilder forYear(int year) {
             criteria.append(" in year ").append(year);
