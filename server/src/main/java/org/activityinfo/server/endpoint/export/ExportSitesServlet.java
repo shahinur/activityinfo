@@ -57,6 +57,7 @@ import java.util.Map;
  */
 @Singleton
 public class ExportSitesServlet extends HttpServlet {
+    public static final String X_AI_STORAGE_PROXY = "X-AI-Storage-Proxy";
     private DispatcherSync dispatcher;
     private StorageProvider storageProvider;
     private Provider<AuthenticatedUser> authenticatedUserProvider;
@@ -120,6 +121,13 @@ public class ExportSitesServlet extends HttpServlet {
                 url = signer.getSignedUrl("GET", ExportSitesTask.EXPORT_BUCKET_NAME + "/" + exportId);
             } catch (Exception e) {
                 throw new RuntimeException("Failed to sign url", e);
+            }
+
+            // Workaround for the great embargo of 2014
+            // This will allow download links through our proxy instead of
+            // through google's network.
+            if(Strings.isNullOrEmpty(req.getHeader(X_AI_STORAGE_PROXY))) {
+                url = url.replace("https://storage.googleapis.com", "http://" + req.getHeader(X_AI_STORAGE_PROXY));
             }
 
             resp.setStatus(HttpServletResponse.SC_OK);
