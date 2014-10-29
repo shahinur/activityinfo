@@ -38,10 +38,9 @@ public class UpdateUserProfileHandler implements CommandHandlerAsync<UpdateUserP
         UserProfileDTO model = command.getModel();
 
         SqlUpdate.update("userlogin")
-                .where("userId", model.getUserId())
-                .value("name", model.getName())
-                .value("organization", model.getOrganization())
-                .value("jobtitle", model.getJobtitle())
+                 .where("userId", model.getUserId())
+                 .value("name", model.getName())
+                 .value("organization", model.getOrganization()).value("jobtitle", model.getJobtitle())
                 // .value("locale", model.toString())
                 .value("emailNotification", model.isEmailNotification()).execute(context.getTransaction());
 

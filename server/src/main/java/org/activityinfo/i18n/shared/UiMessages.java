@@ -261,14 +261,17 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Hi {0},")
     String digestGreeting(String userName);
 
-    @DefaultMessage("If you don''t wish to receive this email, please click <a href=\"{0}\" style=\"text-decoration: underline;\">Unsubscribe</a>.")
-    String digestUnsubscribe(String unsubscribeLink);
+    @DefaultMessage("If you don''t wish to receive this email, uncheck the Email notification checkbox in your <a href=\"https://www.activityinfo.org/#userprofile\" style=\"text-decoration: underline;\">settings</a>.")
+    String digestUnsubscribe();
 
     @DefaultMessage("Best regards,<br>The ActivityInfo Team")
     String digestSignature();
 
     @DefaultMessage("Here are the updates to ActivityInfo in the last {0} hours, for your information.")
     String geoDigestIntro(int hours);
+
+    @DefaultMessage("If you don''t wish to receive this email, uncheck the Email notification checkbox in <a href=\"https://www.activityinfo.org/#userprofile\" style=\"font-weight: bold;text-decoration: underline;\">your settings</a>.")
+    String geoDigestUnsubscribe();
 
     @DefaultMessage("<a href=\"mailto:{0}\">{1}</a> edited the {2} at {3} ")
     String geoDigestSiteMsg(String userEmail, String userName, String activityName, String locationName);
