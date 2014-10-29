@@ -48,7 +48,7 @@ public class TargetForm extends FormPanel {
 
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(constants.name());
-        nameField.setMaxLength(16);
+        nameField.setMaxLength(255);
         nameField.setAllowBlank(false);
         binding.addFieldBinding(new FieldBinding(nameField, "name"));
         this.add(nameField);
