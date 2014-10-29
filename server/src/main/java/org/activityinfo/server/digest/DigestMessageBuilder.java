@@ -22,16 +22,15 @@ package org.activityinfo.server.digest;
  * #L%
  */
 
+import com.google.common.base.Preconditions;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.html.HtmlTag;
 import org.activityinfo.server.util.html.HtmlWriter;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
-import java.util.Date;
 import java.util.logging.Logger;
 
 public class DigestMessageBuilder {
@@ -41,32 +40,27 @@ public class DigestMessageBuilder {
     private final DigestModelBuilder digestModelBuilder;
     private final DigestRenderer digestRenderer;
 
-    private User user;
-    private Date date;
-    private int days;
+    private UserDigest userDigest;
 
     public DigestMessageBuilder(DigestModelBuilder digestModelBuilder, DigestRenderer digestRenderer) {
         this.digestModelBuilder = digestModelBuilder;
         this.digestRenderer = digestRenderer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public void setDays(int days) {
-        this.days = days;
+    public DigestMessageBuilder setUserDigest(UserDigest userDigest) {
+        this.userDigest = userDigest;
+        return this;
     }
 
     public Message build() throws IOException, MessagingException {
-        // set the locale of the messages
-        LocaleProxy.setLocale(user.getLocaleObject());
 
-        DigestModel model = digestModelBuilder.createModel(user, date, days);
+        Preconditions.checkNotNull(userDigest);
+        Preconditions.checkNotNull(userDigest.getUser());
+
+        // set the locale of the messages
+        LocaleProxy.setLocale(userDigest.getUser().getLocaleObject());
+
+        DigestModel model = digestModelBuilder.createModel(userDigest);
 
         if (!model.hasData()) {
             return null;
@@ -74,9 +68,9 @@ public class DigestMessageBuilder {
 
         // create message, set recipient & bcc
         Message message = new Message();
-        message.to(user.getEmail(), user.getName());
+        message.to(userDigest.getUser().getEmail(), userDigest.getUser().getName());
 
-        String subject = I18N.MESSAGES.digestSubject(date);
+        String subject = I18N.MESSAGES.digestSubject(userDigest.getDate());
         message.subject(subject);
 
         // create the html body
@@ -94,7 +88,7 @@ public class DigestMessageBuilder {
 
         htmlWriter.startDocumentBody();
 
-        htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(user.getName()));
+        htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(userDigest.getUser().getName()));
 
         // the digest content
         htmlWriter.paragraph(digestRenderer.renderHtml(model));
