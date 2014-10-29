@@ -126,7 +126,7 @@ public class ExportSitesServlet extends HttpServlet {
             // Workaround for the great embargo of 2014
             // This will allow download links through our proxy instead of
             // through google's network.
-            if(Strings.isNullOrEmpty(req.getHeader(X_AI_STORAGE_PROXY))) {
+            if(!Strings.isNullOrEmpty(req.getHeader(X_AI_STORAGE_PROXY))) {
                 url = url.replace("https://storage.googleapis.com", "http://" + req.getHeader(X_AI_STORAGE_PROXY));
             }
 
