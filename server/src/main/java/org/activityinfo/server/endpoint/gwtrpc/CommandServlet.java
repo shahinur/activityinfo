@@ -139,6 +139,8 @@ public class CommandServlet extends RemoteServiceServlet implements RemoteComman
             }
 
             return result;
+        } catch (CommandException e) {
+            throw e;
         } catch (Exception e) {
             throw new CommandException(command, context, e);
         }

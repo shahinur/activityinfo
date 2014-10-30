@@ -110,11 +110,11 @@ public class RemoteExecutionContext implements ExecutionContext {
         if (CURRENT.get() != null) {
             throw new IllegalStateException("Command execution context already in progress");
         }
-//
-//        AdvisoryLock lock = null;
-//        if (Commands.hasMutatingCommand(command)) {
-//            lock = new AdvisoryLock(entityManager);
-//        }
+
+        AdvisoryLock lock = null;
+        if (Commands.hasMutatingCommand(command)) {
+            lock = new AdvisoryLock(entityManager);
+        }
 
         try {
             CURRENT.set(this);
@@ -175,7 +175,7 @@ public class RemoteExecutionContext implements ExecutionContext {
 
         } finally {
             CURRENT.remove();
-           // AdvisoryLock.closeQuietly(lock);
+            AdvisoryLock.closeQuietly(lock);
         }
     }
 
