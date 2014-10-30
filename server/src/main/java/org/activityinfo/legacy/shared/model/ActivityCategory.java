@@ -32,11 +32,13 @@ import java.util.List;
 public class ActivityCategory extends BaseModelData implements ProvidesKey {
 
     private List<ActivityDTO> activities = new ArrayList<ActivityDTO>();
+    private int databaseId;
 
     public ActivityCategory() {
     }
 
-    public ActivityCategory(String name) {
+    public ActivityCategory(int databaseId, String name) {
+        this.databaseId = databaseId;
         set("name", name);
     }
 
@@ -79,6 +81,6 @@ public class ActivityCategory extends BaseModelData implements ProvidesKey {
 
     @Override
     public String getKey() {
-        return "activity_category_" + getName();
+        return "activity_category_" + databaseId + "_" + getName();
     }
 }

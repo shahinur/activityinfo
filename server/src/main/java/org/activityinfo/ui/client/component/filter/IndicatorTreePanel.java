@@ -275,8 +275,9 @@ public class IndicatorTreePanel extends ContentPanel {
         Set<ActivityCategory> categories = new HashSet<ActivityCategory>();
 
         for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
-            ActivityCategory activityCategory = activityDTO.getActivityCategory();
-            if (activityCategory != null) {
+            if (activityDTO.hasCategory()) {
+                ActivityCategory activityCategory =
+                        new ActivityCategory(databaseDTO.getId(), activityDTO.getCategory());
                 categories.add(activityCategory);
                 if (!children.contains(activityCategory)) {
                     children.add(activityCategory);
@@ -289,17 +290,15 @@ public class IndicatorTreePanel extends ContentPanel {
         // fill category with activities
         for (ActivityCategory category : categories) {
             for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
-                if (category.equals(activityDTO.getActivityCategory()) && !category.getActivities().contains(activityDTO)) {
-                    category.addActivity(activityDTO);
-                }
+                category.addActivity(activityDTO);
             }
         }
 
         return children;
     }
 
-    private List<ModelData> createActivityChildren(ActivityDTO acitvity) {
-        List<IndicatorGroup> groupIndicators = acitvity.groupIndicators();
+    private List<ModelData> createActivityChildren(ActivityDTO activity) {
+        List<IndicatorGroup> groupIndicators = activity.groupIndicators();
         List<ModelData> children = new ArrayList<ModelData>();
         for (IndicatorGroup group : groupIndicators) {
             if (group.getName() == null) {
