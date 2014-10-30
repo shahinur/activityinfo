@@ -54,14 +54,23 @@ public class LinkedDimensionValues extends BaseTable {
         query.leftJoin(Tables.REPORTING_PERIOD, "Period").on("Period.ReportingPeriodId=V.ReportingPeriodId");
         query.leftJoin(Tables.SITE, "Site").on("Site.SiteId=Period.SiteId");
 
-        query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue").on("Site.SiteId = AttributeValue.SiteId");
-        query.leftJoin(Tables.ATTRIBUTE, "Attribute").on("AttributeValue.AttributeId = Attribute.AttributeId");
-        query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup")
-             .on("Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
+        if(command.isPivotedBy(DimensionType.Attribute) ||
+                command.isPivotedBy(DimensionType.AttributeGroup)) {
+            query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue").on("Site.SiteId = AttributeValue.SiteId");
+            query.leftJoin(Tables.ATTRIBUTE, "Attribute").on("AttributeValue.AttributeId = Attribute.AttributeId");
+
+            if(command.isPivotedBy(DimensionType.AttributeGroup)) {
+                query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup")
+                        .on("Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
+            }
+        }
 
         // dummy data
         query.appendColumn("0", ValueFields.COUNT);
         query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT), ValueFields.AGGREGATION);
+
+        // QUICK FIX: limit result sets returned until we have a dedicated query for this
+        query.setLimitClause("LIMIT 50");
     }
 
     @Override

@@ -36,6 +36,8 @@ import org.activityinfo.legacy.shared.reports.content.TargetCategory;
  */
 public class DimensionValues extends BaseTable {
 
+    private SqlQuery query;
+
     @Override
     public boolean accept(PivotSites command) {
         return command.getValueType() == ValueType.DIMENSION;
@@ -43,27 +45,37 @@ public class DimensionValues extends BaseTable {
 
     @Override
     public void setupQuery(PivotSites command, SqlQuery query) {
+        this.query = query;
 
-        if (command.getFilter().isRestricted(DimensionType.Indicator)) {
+        if (command.getFilter().isRestricted(DimensionType.Indicator) ) {
             // we only need to pull in indicator values if there is a filter on indicators
             query.from(Tables.INDICATOR_VALUE, "V");
             query.leftJoin(Tables.REPORTING_PERIOD, "RP").on("V.ReportingPeriodId = RP.ReportingPeriodId");
             query.leftJoin(Tables.SITE, "Site").on("RP.SiteId = Site.SiteId");
+
         } else {
             query.from(Tables.SITE, "Site");
         }
 
         query.leftJoin(Tables.ACTIVITY, "Activity").on("Activity.ActivityId = Site.ActivityId");
         query.leftJoin(Tables.USER_DATABASE, "UserDatabase").on("Activity.DatabaseId = UserDatabase.DatabaseId");
-        query.leftJoin(Tables.REPORTING_PERIOD, "Period").on("Period.SiteId = Site.SiteId");
-        query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue").on("Site.SiteId = AttributeValue.SiteId");
-        query.leftJoin(Tables.ATTRIBUTE, "Attribute").on("AttributeValue.AttributeId = Attribute.AttributeId");
-        query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup")
-             .on("Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
 
+        if(command.isPivotedBy(DimensionType.Attribute) ||
+           command.isPivotedBy(DimensionType.AttributeGroup)) {
+            query.leftJoin(Tables.ATTRIBUTE_VALUE, "AttributeValue").on("Site.SiteId = AttributeValue.SiteId");
+            query.leftJoin(Tables.ATTRIBUTE, "Attribute").on("AttributeValue.AttributeId = Attribute.AttributeId");
+
+            if(command.isPivotedBy(DimensionType.AttributeGroup)) {
+                query.leftJoin(Tables.ATTRIBUTE_GROUP, "AttributeGroup")
+                        .on("Attribute.AttributeGroupId = AttributeGroup.AttributeGroupId");
+            }
+        }
         // dummy data
         query.appendColumn("0", ValueFields.COUNT);
         query.appendColumn(Integer.toString(IndicatorDTO.AGGREGATE_SITE_COUNT), ValueFields.AGGREGATION);
+
+        // QUICK FIX: limit result sets returned until we have a dedicated query for this
+        query.setLimitClause("LIMIT 50");
     }
 
     @Override

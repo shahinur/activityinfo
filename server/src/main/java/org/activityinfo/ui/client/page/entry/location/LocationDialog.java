@@ -25,7 +25,11 @@ package org.activityinfo.ui.client.page.entry.location;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -36,7 +40,6 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import org.activityinfo.core.shared.workflow.Workflow;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.model.CountryDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
@@ -173,7 +176,7 @@ public class LocationDialog extends Window {
 
                     @Override
                     public void componentSelected(ButtonEvent ce) {
-                        newLocationPresenter.setActive(true);
+                        newLocationPresenter.setActive(true, true);
                     }
                 });
         addLocationButton.addStyleName(SiteFormResources.INSTANCE.style().addLocationButton());

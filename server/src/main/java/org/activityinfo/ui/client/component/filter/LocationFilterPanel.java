@@ -180,7 +180,7 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
             PivotSites pivotSites = new PivotSites();
             pivotSites.setDimensions(Sets.<Dimension>newHashSet(new Dimension(DimensionType.Location)));
             pivotSites.setFilter(filter);
-            pivotSites.setValueType(ValueType.TOTAL_SITES);
+            pivotSites.setValueType(ValueType.DIMENSION);
             service.execute(pivotSites, new AsyncCallback<PivotResult>() {
 
                 @Override
@@ -196,12 +196,10 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
                     for (Bucket bucket : result.getBuckets()) {
                         LocationDTO dto = new LocationDTO();
                         dto.setId(((EntityCategory) bucket.getCategory(new Dimension(DimensionType.Location))).getId());
-                        dto.setName(((EntityCategory) bucket.getCategory(new Dimension(DimensionType.Location)))
+                        dto.setName(bucket.getCategory(new Dimension(DimensionType.Location))
                                 .getLabel());
                         store.add(dto);
                     }
-                    store.sort("name", Style.SortDir.ASC);
-
                     applyInternalValue();
                     for (LocationDTO location : store.getModels()) {
                         if (ids.contains(location.getId())) {

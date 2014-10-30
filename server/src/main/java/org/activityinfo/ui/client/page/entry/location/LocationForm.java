@@ -31,7 +31,6 @@ import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
 import com.extjs.gxt.ui.client.widget.layout.HBoxLayoutData;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Timer;
 import org.activityinfo.core.shared.model.AiLatLng;
 import org.activityinfo.i18n.shared.I18N;
@@ -56,7 +55,7 @@ public class LocationForm extends LayoutContainer {
     private TextField<String> nameField;
     private TextField<String> axeField;
 
-    private Timer nameFieldChangedTimer;
+    private Timer nameTypeAheadTimer;
 
     private LocationSearchPresenter searchPresenter;
     private NewLocationPresenter newLocationPresenter;
@@ -94,6 +93,7 @@ public class LocationForm extends LayoutContainer {
             public void handleEvent(AdminSelectionChangedEvent be) {
                 search();
                 coordinateFields.validate();
+                forceBoundsUpdate();
             }
         });
 
@@ -112,7 +112,7 @@ public class LocationForm extends LayoutContainer {
             }
         });
 
-        nameFieldChangedTimer = new Timer() {
+        nameTypeAheadTimer = new Timer() {
 
             @Override
             public void run() {
@@ -121,26 +121,27 @@ public class LocationForm extends LayoutContainer {
         };
     }
 
+    private void forceBoundsUpdate() {
+        if (!newLocationPresenter.isActive()) {
+            newLocationPresenter.setActive(true, false);
+            newLocationPresenter.setBounds(adminPresenter.getBounds());
+            newLocationPresenter.setActive(false, false);
+        } else {
+            newLocationPresenter.setBounds(adminPresenter.getBounds());
+        }
+    }
+
     private void addNameField() {
         nameField = new TextField<String>();
         nameField.setFieldLabel(locationType.getName());
         nameField.setMaxLength(50);
         add(nameField);
 
-        nameField.addListener(Events.Change, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
-                nameFieldChangedTimer.schedule(200);
-            }
-        });
-
         nameField.addKeyListener(new KeyListener() {
 
             @Override
             public void componentKeyDown(ComponentEvent event) {
-                if (event.getKeyCode() == KeyCodes.KEY_ENTER){
-                    nameFieldChangedTimer.schedule(200);
-                }
+                nameTypeAheadTimer.schedule(200);
             }
         });
     }
@@ -210,7 +211,7 @@ public class LocationForm extends LayoutContainer {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                newLocationPresenter.setActive(false);
+                newLocationPresenter.setActive(false, true);
             }
         });
         cancelButton.setWidth(buttonWidth);

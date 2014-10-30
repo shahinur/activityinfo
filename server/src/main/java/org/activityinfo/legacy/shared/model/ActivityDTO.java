@@ -23,6 +23,7 @@ package org.activityinfo.legacy.shared.model;
  */
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.adapter.CuidAdapter;
 import org.activityinfo.legacy.shared.model.LockedPeriodDTO.HasLockedPeriod;
@@ -298,11 +299,6 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
         return get("category");
     }
 
-    public ActivityCategory getActivityCategory() {
-        String category = getCategory();
-        return category == null || category.isEmpty() ? null : new ActivityCategory(getCategory());
-    }
-
     /**
      * Sets this Activity's category
      */
@@ -311,6 +307,10 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
             category = null;
         }
         set("category", category);
+    }
+
+    public boolean hasCategory() {
+        return !Strings.isNullOrEmpty(getCategory());
     }
 
     /**
