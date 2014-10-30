@@ -166,6 +166,11 @@
       <version>4.3.1.Final</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-jdbc</artifactId>
+      <version>8.0.9</version>
+    </dependency>
+    <dependency>
       <groupId>org.liquibase</groupId>
       <artifactId>liquibase-core</artifactId>
       <version>2.0.2-bdd</version>
@@ -526,7 +531,6 @@
               <compileReport>false</compileReport>
               <modules>
                 <module>org.activityinfo.ui.ActivityInfoCI</module>
-                <module>org.activityinfo.ui.AI</module>
                 <module>org.activityinfo.ui.Embed</module>
               </modules>
             </configuration>
@@ -583,7 +587,6 @@
               <compileReport>true</compileReport>
               <modules>
                 <module>org.activityinfo.ui.ActivityInfoCI</module>
-                <module>org.activityinfo.ui.AI</module>
               </modules>
             </configuration>
           </plugin>
