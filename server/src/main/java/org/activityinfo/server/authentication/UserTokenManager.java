@@ -36,7 +36,7 @@ public class UserTokenManager {
 
     private static DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    public static void put(UserToken user) {
+    public static void put(UserNoAuthEntity user) {
         Entity entity = new Entity(KeyFactory.createKey("token", user.getSecureToken()));
         entity.setUnindexedProperty("userId", user.getUserId());
         entity.setUnindexedProperty("scope", UserTokenScope.scope(user.getScopes()));
@@ -44,16 +44,16 @@ public class UserTokenManager {
         datastore.put(null, entity);  // we have a single put to make, no need for transaction
     }
 
-    public static UserToken get(String secureToken) throws EntityNotFoundException {
+    public static UserNoAuthEntity get(String secureToken) throws EntityNotFoundException {
         Entity entity = datastore.get(KeyFactory.createKey("Token", secureToken));
-        return new UserToken()
+        return new UserNoAuthEntity()
                 .setUserId((Long)entity.getProperty("userId"))
                 .setSecureToken(secureToken)
                 .setScopes(UserTokenScope.parseScopes((String) entity.getProperty("scope")));
     }
 
-    public static UserToken create(long userId, UserTokenScope... scopes) {
-        UserToken user = new UserToken()
+    public static UserNoAuthEntity create(long userId, UserTokenScope... scopes) {
+        UserNoAuthEntity user = new UserNoAuthEntity()
                 .setSecureToken(SecureTokenGenerator.generate())
                 .setUserId(userId)
                 .setScopes(Arrays.asList(scopes));
