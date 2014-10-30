@@ -45,13 +45,6 @@ import java.util.logging.Logger;
  * the server side.
  */
 public class ConfigModule extends ServletModule {
-
-    /**
-     * Static reference to this process' deployment config
-     * (For points where components dont' have a access to a guice injector)
-     */
-    public static DeploymentConfiguration DEPLOYMENT_CONFIG;
-
     private static Logger logger = Logger.getLogger(ConfigModule.class.getName());
 
     @Override
@@ -79,9 +72,7 @@ public class ConfigModule extends ServletModule {
             tryToLoadFrom(properties, new File(System.getProperty("activityinfo.config")));
         }
 
-        DEPLOYMENT_CONFIG = new DeploymentConfiguration(properties);
-
-        return DEPLOYMENT_CONFIG;
+        return new DeploymentConfiguration(properties);
     }
 
     private boolean tryToLoadFrom(Properties properties, File file) {
