@@ -23,7 +23,6 @@ package org.activityinfo.server.authentication;
 
 import com.google.api.client.util.Lists;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -69,10 +68,6 @@ public enum UserTokenScope {
     }
 
     public static String scope(UserTokenScope... scopes) {
-        return scope(Arrays.asList(scopes));
-    }
-
-    public static String scope(List<UserTokenScope> scopes) {
         String result = "";
         for (UserTokenScope scope : scopes) {
             result = result + scope.getValue() + " ";

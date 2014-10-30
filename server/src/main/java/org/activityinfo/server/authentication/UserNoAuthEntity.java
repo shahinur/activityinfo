@@ -21,8 +21,6 @@ package org.activityinfo.server.authentication;
  * #L%
  */
 
-import java.util.List;
-
 /**
  * @author yuriyz on 10/29/2014.
  */
@@ -30,15 +28,15 @@ public class UserNoAuthEntity {
 
     private String secureToken;
     private long userId;
-    private List<UserTokenScope> scopes;
+    private boolean subscribe;
 
     public UserNoAuthEntity() {
     }
 
-    public UserNoAuthEntity(String secureToken, long userId, List<UserTokenScope> scopes) {
+    public UserNoAuthEntity(String secureToken, long userId, boolean subscribe) {
         this.secureToken = secureToken;
         this.userId = userId;
-        this.scopes = scopes;
+        this.subscribe = subscribe;
     }
 
     public String getSecureToken() {
@@ -59,12 +57,12 @@ public class UserNoAuthEntity {
         return this;
     }
 
-    public List<UserTokenScope> getScopes() {
-        return scopes;
+    public boolean isSubscribe() {
+        return subscribe;
     }
 
-    public UserNoAuthEntity setScopes(List<UserTokenScope> scopes) {
-        this.scopes = scopes;
+    public UserNoAuthEntity setSubscribe(boolean subscribe) {
+        this.subscribe = subscribe;
         return this;
     }
 }
