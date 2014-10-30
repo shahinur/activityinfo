@@ -4,6 +4,7 @@ import com.google.inject.Provider;
 import org.activityinfo.server.authentication.ServerSideAuthProvider;
 import org.activityinfo.server.authentication.UserNoAuthEntity;
 import org.activityinfo.server.authentication.UserTokenManager;
+import org.activityinfo.server.authentication.UserTokenScope;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.mail.MailSender;
 import org.activityinfo.server.mail.Message;
@@ -71,7 +72,7 @@ public abstract class UserDigestResource {
             return "user's email notification flag is set to false.";
         }
 
-        UserNoAuthEntity userNoAuthEntity = UserTokenManager.create(userId, user.isEmailNotification());
+        UserNoAuthEntity userNoAuthEntity = UserTokenManager.create(userId, UserTokenScope.SUBSCRIBE, UserTokenScope.UNSUBSCRIBE);
 
         authProvider.set(user);
 
