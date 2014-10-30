@@ -26,16 +26,16 @@ import java.util.List;
 /**
  * @author yuriyz on 10/29/2014.
  */
-public class UserNoAuthEntity {
+public class UserToken {
 
     private String secureToken;
     private long userId;
     private List<UserTokenScope> scopes;
 
-    public UserNoAuthEntity() {
+    public UserToken() {
     }
 
-    public UserNoAuthEntity(String secureToken, long userId, List<UserTokenScope> scopes) {
+    public UserToken(String secureToken, long userId, List<UserTokenScope> scopes) {
         this.secureToken = secureToken;
         this.userId = userId;
         this.scopes = scopes;
@@ -45,7 +45,7 @@ public class UserNoAuthEntity {
         return secureToken;
     }
 
-    public UserNoAuthEntity setSecureToken(String secureToken) {
+    public UserToken setSecureToken(String secureToken) {
         this.secureToken = secureToken;
         return this;
     }
@@ -54,7 +54,7 @@ public class UserNoAuthEntity {
         return userId;
     }
 
-    public UserNoAuthEntity setUserId(long userId) {
+    public UserToken setUserId(long userId) {
         this.userId = userId;
         return this;
     }
@@ -63,7 +63,7 @@ public class UserNoAuthEntity {
         return scopes;
     }
 
-    public UserNoAuthEntity setScopes(List<UserTokenScope> scopes) {
+    public UserToken setScopes(List<UserTokenScope> scopes) {
         this.scopes = scopes;
         return this;
     }
