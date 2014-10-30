@@ -60,9 +60,11 @@ public class NewLocationPresenter extends BaseObservable {
         return active;
     }
 
-    public void setActive(boolean active) {
+    public void setActive(boolean active, boolean fireEvent) {
         this.active = active;
-        fireEvent(ACTIVE_STATE_CHANGED, new BaseEvent(ACTIVE_STATE_CHANGED));
+        if (fireEvent) {
+            fireEvent(ACTIVE_STATE_CHANGED, new BaseEvent(ACTIVE_STATE_CHANGED));
+        }
     }
 
     public void setLatLng(AiLatLng latLng) {
