@@ -310,7 +310,7 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
     }
 
     public boolean hasCategory() {
-        return Strings.isNullOrEmpty(getCategory());
+        return !Strings.isNullOrEmpty(getCategory());
     }
 
     /**
