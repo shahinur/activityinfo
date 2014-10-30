@@ -93,6 +93,7 @@ public class LocationForm extends LayoutContainer {
             public void handleEvent(AdminSelectionChangedEvent be) {
                 search();
                 coordinateFields.validate();
+                forceBoundsUpdate();
             }
         });
 
@@ -118,6 +119,16 @@ public class LocationForm extends LayoutContainer {
                 search();
             }
         };
+    }
+
+    private void forceBoundsUpdate() {
+        if (!newLocationPresenter.isActive()) {
+            newLocationPresenter.setActive(true, false);
+            newLocationPresenter.setBounds(adminPresenter.getBounds());
+            newLocationPresenter.setActive(false, false);
+        } else {
+            newLocationPresenter.setBounds(adminPresenter.getBounds());
+        }
     }
 
     private void addNameField() {
@@ -200,7 +211,7 @@ public class LocationForm extends LayoutContainer {
 
             @Override
             public void componentSelected(ButtonEvent ce) {
-                newLocationPresenter.setActive(false);
+                newLocationPresenter.setActive(false, true);
             }
         });
         cancelButton.setWidth(buttonWidth);

@@ -193,15 +193,9 @@ public class LocationMap extends Html {
             }
         }
 
-        if (empty) {
-            if (searchPresenter.getSearchBounds() != null) {
-                bounds = LeafletUtil.newLatLngBounds(searchPresenter.getSearchBounds());
-            } else {
-                bounds = LeafletUtil.newLatLngBounds(searchPresenter.getSearchBounds());
-            }
+        if (!empty) {
+            updateMap(bounds);
         }
-
-        updateMap(bounds);
     }
 
     private void bindClickEvent(final LocationDTO location, Marker marker) {

@@ -290,7 +290,10 @@ public class IndicatorTreePanel extends ContentPanel {
         // fill category with activities
         for (ActivityCategory category : categories) {
             for (ActivityDTO activityDTO : databaseDTO.getActivities()) {
-                category.addActivity(activityDTO);
+                if (activityDTO.hasCategory() &&
+                        category.equals(new ActivityCategory(databaseDTO.getId(), activityDTO.getCategory()))) {
+                    category.addActivity(activityDTO);
+                }
             }
         }
 
