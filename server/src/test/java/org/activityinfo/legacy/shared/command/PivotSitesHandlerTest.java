@@ -177,7 +177,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     @Test
     public void testSiteCountOnQuarters() {
         forTotalSiteCounts();
-        filteringOnDatabases(1,2);
+        filteringOnDatabases(1, 2);
         dimensions.add(new DateDimension(DateUnit.QUARTER));
 
         execute();
@@ -526,6 +526,16 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         assertThat().thereAre(2).buckets();
         assertThat().forPartner(1).thereIsOneBucketWithValue(2).andItsPartnerLabelIs("NRC");
         assertThat().forPartner(2).thereIsOneBucketWithValue(1).andItsPartnerLabelIs("NRC2");
+    }
+
+    @Test
+    @OnDataSet("/dbunit/ss-schools.db.xml")
+    public void testLargeSchoolSet() {
+        dimensions.add(new Dimension(DimensionType.Location));
+        forFilterData();
+        filter.addRestriction(DimensionType.Indicator, Arrays.asList(44162, 44163,44164, 44165));
+        execute();
+        assertThat().thereAre(100).buckets();
     }
 
     @Test
