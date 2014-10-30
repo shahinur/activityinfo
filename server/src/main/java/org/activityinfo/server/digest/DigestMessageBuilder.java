@@ -22,15 +22,16 @@ package org.activityinfo.server.digest;
  * #L%
  */
 
-import com.google.common.base.Preconditions;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.html.HtmlTag;
 import org.activityinfo.server.util.html.HtmlWriter;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.util.Date;
 import java.util.logging.Logger;
 
 public class DigestMessageBuilder {
@@ -40,27 +41,32 @@ public class DigestMessageBuilder {
     private final DigestModelBuilder digestModelBuilder;
     private final DigestRenderer digestRenderer;
 
-    private UserDigest userDigest;
+    private User user;
+    private Date date;
+    private int days;
 
     public DigestMessageBuilder(DigestModelBuilder digestModelBuilder, DigestRenderer digestRenderer) {
         this.digestModelBuilder = digestModelBuilder;
         this.digestRenderer = digestRenderer;
     }
 
-    public DigestMessageBuilder setUserDigest(UserDigest userDigest) {
-        this.userDigest = userDigest;
-        return this;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setDays(int days) {
+        this.days = days;
     }
 
     public Message build() throws IOException, MessagingException {
-
-        Preconditions.checkNotNull(userDigest);
-        Preconditions.checkNotNull(userDigest.getUser());
-
         // set the locale of the messages
-        LocaleProxy.setLocale(userDigest.getUser().getLocaleObject());
+        LocaleProxy.setLocale(user.getLocaleObject());
 
-        DigestModel model = digestModelBuilder.createModel(userDigest);
+        DigestModel model = digestModelBuilder.createModel(user, date, days);
 
         if (!model.hasData()) {
             return null;
@@ -68,9 +74,9 @@ public class DigestMessageBuilder {
 
         // create message, set recipient & bcc
         Message message = new Message();
-        message.to(userDigest.getUser().getEmail(), userDigest.getUser().getName());
+        message.to(user.getEmail(), user.getName());
 
-        String subject = I18N.MESSAGES.digestSubject(userDigest.getDate());
+        String subject = I18N.MESSAGES.digestSubject(date);
         message.subject(subject);
 
         // create the html body
@@ -88,7 +94,7 @@ public class DigestMessageBuilder {
 
         htmlWriter.startDocumentBody();
 
-        htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(userDigest.getUser().getName()));
+        htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(user.getName()));
 
         // the digest content
         htmlWriter.paragraph(digestRenderer.renderHtml(model));

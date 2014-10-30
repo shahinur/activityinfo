@@ -8,7 +8,6 @@ import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 import org.activityinfo.server.digest.DigestModelBuilder;
-import org.activityinfo.server.digest.UserDigest;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.ActivityMap;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.DatabaseModel;
 import org.activityinfo.server.digest.activity.ActivityDigestModel.PartnerActivityModel;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 public class ActivityDigestModelBuilder implements DigestModelBuilder {
-
     private static final Logger LOGGER = Logger.getLogger(ActivityDigestModelBuilder.class.getName());
 
     private final Provider<EntityManager> entityManager;
@@ -33,12 +31,11 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
     }
 
     @Override
-    public ActivityDigestModel createModel(UserDigest userDigest) throws IOException {
+    public ActivityDigestModel createModel(User user, Date date, int days) throws IOException {
+        ActivityDigestModel model = new ActivityDigestModel(user, date, days);
 
-        ActivityDigestModel model = new ActivityDigestModel(userDigest);
-
-        List<UserDatabase> databases = findDatabases(userDigest.getUser());
-        LOGGER.finest("found " + databases.size() + " database(s) for user " + userDigest.getUser().getId());
+        List<UserDatabase> databases = findDatabases(user);
+        LOGGER.finest("found " + databases.size() + " database(s) for user " + user.getId());
 
         if (!databases.isEmpty()) {
             for (UserDatabase database : databases) {
@@ -61,7 +58,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
             databaseModel.setOwnerActivityMap(ownerActivityMap);
 
             List<Partner> partners = findPartners(databaseModel);
-            LOGGER.finest("building user activity digest for user " + model.getUserDigest().getUser().getId() +
+            LOGGER.finest("building user activity digest for user " + model.getUser().getId() +
                           " and database " + database.getId() + " - found " + partners.size() + " partner(s)");
             if (!partners.isEmpty()) {
                 for (Partner partner : partners) {
@@ -104,7 +101,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
     }
 
     /**
-     * @param databaseModel
+     * @param database
      * @return the partners linked to the specified database via a userpermission
      */
     @VisibleForTesting @SuppressWarnings("unchecked") List<Partner> findPartners(DatabaseModel databaseModel) {
@@ -118,7 +115,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
     }
 
     /**
-     * @param partnerModel
+     * @param database
      * @return the users linked to the specified database and partner via a userpermission where allowEdit is set to
      * true.
      */
@@ -135,8 +132,9 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
     }
 
     /**
-     * @param databaseModel
-     * @param editor
+     * @param database
+     * @param user
+     * @param from
      * @return the sitehistory edited since the specified timestamp (milliseconds) and linked to the specified database
      * and user.
      */
@@ -149,7 +147,7 @@ public class ActivityDigestModelBuilder implements DigestModelBuilder {
                                                       "order by h.timeCreated");
         query.setParameter("database", databaseModel.getDatabase());
         query.setParameter("user", editor);
-        query.setParameter("from", databaseModel.getModel().getUserDigest().getFrom());
+        query.setParameter("from", databaseModel.getModel().getFrom());
 
         return query.getResultList();
     }
