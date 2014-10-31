@@ -4,7 +4,7 @@ import org.activityinfo.core.shared.expr.ExprFunction;
 
 public class ArithmeticFunctions {
 
-    public static final ExprFunction<Double> BINARY_PLUS = new BinaryInfixFunction<Double>("+") {
+    public static final ExprFunction<Double, Double> BINARY_PLUS = new BinaryInfixFunction<Double>("+") {
 
         @Override
         public Double applyReal(Double x, Double y) {
@@ -12,7 +12,7 @@ public class ArithmeticFunctions {
         }
     };
 
-    public static final ExprFunction<Double> BINARY_MINUS = new BinaryInfixFunction<Double>("-") {
+    public static final ExprFunction<Double, Double> BINARY_MINUS = new BinaryInfixFunction<Double>("-") {
 
         @Override
         public Double applyReal(Double x, Double y) {
@@ -20,7 +20,7 @@ public class ArithmeticFunctions {
         }
     };
 
-    public static final ExprFunction<Double> DIVIDE = new BinaryInfixFunction<Double>("/") {
+    public static final ExprFunction<Double, Double> DIVIDE = new BinaryInfixFunction<Double>("/") {
 
         @Override
         public Double applyReal(Double x, Double y) {
@@ -28,7 +28,7 @@ public class ArithmeticFunctions {
         }
     };
 
-    public static final ExprFunction<Double> MULTIPLY = new BinaryInfixFunction<Double>("*") {
+    public static final ExprFunction<Double, Double> MULTIPLY = new BinaryInfixFunction<Double>("*") {
 
         @Override
         public Double applyReal(Double x, Double y) {
@@ -36,7 +36,7 @@ public class ArithmeticFunctions {
         }
     };
 
-    public static ExprFunction<Double> getBinaryInfix(String name) {
+    public static ExprFunction<Double, Double> getBinaryInfix(String name) {
         if (name.equals("+")) {
             return BINARY_PLUS;
 
