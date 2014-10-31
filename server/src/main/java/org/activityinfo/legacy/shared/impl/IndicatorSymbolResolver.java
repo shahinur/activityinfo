@@ -129,7 +129,7 @@ class IndicatorSymbolResolver implements PlaceholderExprResolver {
             }
             try {
                 calculating = true;
-                return expr.evalReal();
+                return (Double)expr.evalReal();
             } catch(Exception e) {
                 LOGGER.severe("Expression calculating " + expr);
                 invalid = true;
