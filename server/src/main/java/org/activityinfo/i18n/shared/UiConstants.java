@@ -3473,4 +3473,11 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Form Category")
     String formCategory();
+
+    @DefaultStringValue("Search for location to add...")
+    String searchForLocationToAdd();
+
+    @DefaultStringValue("Sorry, your permissions have changed and you are no longer authorized to perform this action.")
+    @Key("permissionChangedError")
+    String permissionChangedError();
 }

@@ -95,7 +95,7 @@ public class LockedPeriodsPresenter extends ListPresenterBase<LockedPeriodDTO, L
         service.execute(lockUserDatabase, new AsyncCallback<CreateResult>() {
             @Override
             public void onFailure(Throwable caught) {
-                view.getCreatingMonitor().onServerError();
+                view.getCreatingMonitor().onServerError(caught);
                 MessageBox.alert(I18N.CONSTANTS.error(),
                         I18N.CONSTANTS.errorOnServer() + "\n\n" + caught.getMessage(),
                         null);
@@ -125,7 +125,7 @@ public class LockedPeriodsPresenter extends ListPresenterBase<LockedPeriodDTO, L
                 @Override
                 public void onFailure(Throwable caught) {
                     // Tell the user an error occurred
-                    view.getDeletingMonitor().onServerError();
+                    view.getDeletingMonitor().onServerError(caught);
                     // TODO Handle failure
                     MessageBox.alert(I18N.CONSTANTS.error(),
                             I18N.CONSTANTS.errorOnServer() + "\n\n" + caught.getMessage(),
