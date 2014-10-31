@@ -3480,4 +3480,10 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Sorry, your permissions have changed and you are no longer authorized to perform this action.")
     @Key("permissionChangedError")
     String permissionChangedError();
+
+    @DefaultStringValue("Open Form Designer")
+    String openFormDesigner();
+
+    @DefaultStringValue("Open Table")
+    String openTable();
 }
