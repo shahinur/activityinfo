@@ -535,7 +535,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         forFilterData();
         filter.addRestriction(DimensionType.Indicator, Arrays.asList(44162, 44163,44164, 44165));
         execute();
-        assertThat().thereAre(100).buckets();
+        assertThat().thereAre(50).buckets();
     }
 
     @Test

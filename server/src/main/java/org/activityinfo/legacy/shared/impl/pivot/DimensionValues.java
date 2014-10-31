@@ -47,7 +47,7 @@ public class DimensionValues extends BaseTable {
     public void setupQuery(PivotSites command, SqlQuery query) {
         this.query = query;
 
-        if (command.getFilter().isRestricted(DimensionType.Indicator) ) {
+        if (command.getFilter().isRestricted(DimensionType.Indicator)) {
             // we only need to pull in indicator values if there is a filter on indicators
             query.from(Tables.INDICATOR_VALUE, "V");
             query.leftJoin(Tables.REPORTING_PERIOD, "RP").on("V.ReportingPeriodId = RP.ReportingPeriodId");
@@ -55,6 +55,9 @@ public class DimensionValues extends BaseTable {
 
         } else {
             query.from(Tables.SITE, "Site");
+            if( command.getFilter().isDateRestricted() ) {
+                query.leftJoin(Tables.REPORTING_PERIOD, "RP").on("RP.SiteId = Site.SiteId");
+            }
         }
 
         query.leftJoin(Tables.ACTIVITY, "Activity").on("Activity.ActivityId = Site.ActivityId");
@@ -105,7 +108,7 @@ public class DimensionValues extends BaseTable {
 
     @Override
     public String getDateCompleteColumn() {
-        return "Period.Date2";
+        return "RP.Date2";
     }
 
     @Override

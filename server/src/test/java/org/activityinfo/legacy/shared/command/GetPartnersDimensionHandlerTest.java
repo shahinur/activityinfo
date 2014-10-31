@@ -22,6 +22,7 @@ package org.activityinfo.legacy.shared.command;
  * #L%
  */
 
+import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.shared.command.result.PartnerResult;
@@ -55,6 +56,21 @@ public class GetPartnersDimensionHandlerTest extends CommandTestCase2 {
     @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void testActivity() throws CommandException {
         PartnerResult result = execute(DimensionType.Activity, 1);
+        assertThat(result.getData().size(), equalTo(2));
+        assertThat(result.getData().get(0).getName(), equalTo("NRC"));
+        assertThat(result.getData().get(1).getName(), equalTo("Solidarites"));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void testActivityWithDateFilter() throws CommandException {
+
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, 1);
+        filter.setMinDate(new LocalDate(1998,1,1).atMidnightInMyTimezone());
+        filter.setMaxDate(new LocalDate(2099,1,15).atMidnightInMyTimezone());
+
+        PartnerResult result = execute(filter);
         assertThat(result.getData().size(), equalTo(2));
         assertThat(result.getData().get(0).getName(), equalTo("NRC"));
         assertThat(result.getData().get(1).getName(), equalTo("Solidarites"));
@@ -127,6 +143,10 @@ public class GetPartnersDimensionHandlerTest extends CommandTestCase2 {
         if (type != null) {
             filter.addRestriction(type, Arrays.asList(params));
         }
+        return execute(filter);
+    }
+
+    private PartnerResult execute(Filter filter) {
         return execute(new GetPartnersDimension(filter));
     }
 }
