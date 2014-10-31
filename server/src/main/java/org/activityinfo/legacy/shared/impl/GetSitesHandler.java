@@ -693,6 +693,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                             }
                         } else if (indicatorType == FieldTypeClass.LOCAL_DATE) {
                             indicatorValue = row.getDate("DateValue");
+                        } else if (indicatorType == FieldTypeClass.BOOLEAN) {
+                            if (!row.isNull("BooleanValue")) {
+                                indicatorValue = row.getBoolean("BooleanValue");
+                            }
                         }
                     }
 
