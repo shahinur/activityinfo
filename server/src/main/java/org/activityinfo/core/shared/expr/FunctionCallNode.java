@@ -23,7 +23,7 @@ public class FunctionCallNode<T, K> extends ExprNode<T> {
     }
 
     @Nonnull
-    public List<ExprNode<T>> getArguments() {
+    public List<ExprNode<K>> getArguments() {
         return arguments;
     }
 
