@@ -70,6 +70,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     private static final int NB_BENEFICIARIES_ID = 1;
     private DateDimension yearDim = new DateDimension(DateUnit.YEAR);
     private DateDimension monthDim = new DateDimension(DateUnit.MONTH);
+    private final Dimension activityCategoryDim = new Dimension(DimensionType.ActivityCategory);
 
     @BeforeClass
     public static void setup() {
@@ -106,11 +107,21 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
     @Test
     public void testBasicWithCalculatedIndicators() {
         withIndicatorAsDimension();
-        filter.addRestriction(DimensionType.Indicator, 1);
+        filter.addRestriction(DimensionType.Indicator, 12451);
 
         execute();
-        // todo !!!
-        assertThat().forIndicator(1).thereIsOneBucketWithValue(15100);
+        assertThat().forIndicator(12451).thereIsOneBucketWithValue(17300);
+    }
+
+    @Test
+    public void calculatedIndicatorsAndActivityCategory() {
+        withIndicatorAsDimension();
+        dimensions.add(activityCategoryDim);
+        filter.addRestriction(DimensionType.Indicator, 12451);
+
+        execute();
+        assertThat().forIndicator(12451).thereIsOneBucketWithValue(17300);
+        assertThat().forIndicator(12451).with(activityCategoryDim).label("NFI Cluster");
     }
 
     @Test
@@ -1034,7 +1045,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
             Dimension dim = (Dimension) predicate;
             assertEquals(description(dim.toString() + " label of only bucket"),
                     label,
-                    ((EntityCategory) matchingBuckets.get(0).getCategory(dim)).getLabel());
+                    matchingBuckets.get(0).getCategory(dim).getLabel());
             return this;
         }
 
@@ -1062,7 +1073,7 @@ public class PivotSitesHandlerTest extends CommandTestCase2 {
         }
 
         public AssertionBuilder andItsPartnerLabelIs(String label) {
-            bucketCountIs(OWNER_USER_ID);
+            bucketCountIs(1);
             with(partnerDim).label(label);
             return this;
         }
