@@ -4,11 +4,13 @@ import com.google.common.io.ByteStreams;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.server.command.CommandTestCase2;
+import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.service.lookup.ReferenceProvider;
 import org.activityinfo.service.store.ResourceStore;
 import org.apache.geronimo.mail.util.StringBufferOutputStream;
@@ -29,12 +31,12 @@ import static org.junit.Assert.*;
 @RunWith(InjectionSupport.class)
 public class FormSubmissionResourceTest extends CommandTestCase2 {
     private FormSubmissionResource resource;
-    private ResourceStore store;
 
     @Before
     public void setUp() throws IOException {
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory(new ReferenceProvider());
-        resource = new FormSubmissionResource(factory, store);
+        ResourceLocatorSync resourceLocatorSync = new ResourceLocatorSync(getDispatcherSync());
+        resource = new FormSubmissionResource(factory, resourceLocatorSync);
     }
 
     @Test
@@ -50,7 +52,7 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
             assertEquals(CREATED, fromStatusCode(response.getStatus()));
         }
 
-        Iterator<Resource> iterator = store.openCursor(CuidAdapter.activityFormClass(1081));
+        Iterator<Resource> iterator = openCursor(CuidAdapter.activityFormClass(1081));
         assertTrue(iterator.hasNext());
 
         Map<String, Object> map = iterator.next().getProperties();
@@ -64,5 +66,9 @@ public class FormSubmissionResourceTest extends CommandTestCase2 {
         assertEquals(new ReferenceValue(CuidAdapter.entity(141796)).asRecord(), map.get("a1081f11"));
         assertEquals(new Quantity(42.0, "%").asRecord(), map.get("i5346"));
         assertEquals(new NarrativeValue("Awesome.").asRecord(), map.get("a1081f14"));
+    }
+
+    private Iterator<Resource> openCursor(ResourceId resourceId) {
+        throw new UnsupportedOperationException();
     }
 }

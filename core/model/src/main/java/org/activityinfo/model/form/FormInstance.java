@@ -151,17 +151,17 @@ public class FormInstance implements IsResource {
 
         } else if (fieldValue instanceof ResourceId) {
             // TODO(alex) once rest of code has been updated
-            propertyBag.set(fieldId.asString(), new ReferenceValue((ResourceId)fieldValue).toRecord());
+            propertyBag.set(fieldId.asString(), new ReferenceValue((ResourceId)fieldValue).asRecord());
 
         } else if (fieldValue instanceof Date) {
             // TODO(alex) once rest of code has been updated
-            propertyBag.set(fieldId.asString(), new LocalDate((Date)fieldValue).toRecord());
+            propertyBag.set(fieldId.asString(), new LocalDate((Date)fieldValue).asRecord());
 
         } else if (fieldValue instanceof Number) {
             // TODO(alex) once rest of code has been updated
 
             Quantity quantity = new Quantity(((Number) fieldValue).doubleValue(), null);
-            propertyBag.set(fieldId.asString(), quantity.toRecord());
+            propertyBag.set(fieldId.asString(), quantity.asRecord());
 
         } else if (fieldValue instanceof String) {
             propertyBag.set(fieldId.asString(), (String) fieldValue);
@@ -176,7 +176,7 @@ public class FormInstance implements IsResource {
             propertyBag.set(fieldId.asString(), (Boolean)fieldValue);
 
         } else if(fieldValue instanceof IsRecord) {
-            propertyBag.set(fieldId.asString(), ((IsRecord) fieldValue).toRecord());
+            propertyBag.set(fieldId.asString(), ((IsRecord) fieldValue).asRecord());
 
         } else {
             throw new UnsupportedOperationException(fieldId + " = " + fieldValue);

@@ -39,7 +39,7 @@ public class ReferenceValue implements FieldValue, IsRecord {
 
 
     @Override
-    public Record toRecord() {
+    public Record asRecord() {
         Record record = new Record();
         record.set(TYPE_CLASS_FIELD_NAME, ReferenceType.TYPE_CLASS.getId());
 

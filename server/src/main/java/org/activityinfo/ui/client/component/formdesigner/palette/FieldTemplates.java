@@ -34,13 +34,13 @@ public class FieldTemplates {
         items.add(new TypeClassTemplate(QuantityType.TYPE_CLASS));
         items.add(new TypeClassTemplate(TextType.TYPE_CLASS));
         items.add(new TypeClassTemplate(NarrativeType.TYPE_CLASS));
-        items.add(new TypeClassTemplate(LocalDateType.TYPE_CLASS));
-        items.add(new TypeClassTemplate(LocalDateIntervalType.TYPE_CLASS));
+  //      items.add(new TypeClassTemplate(LocalDateType.TYPE_CLASS));
+  //      items.add(new TypeClassTemplate(LocalDateIntervalType.TYPE_CLASS));
 
         items.add(new CheckboxTemplate());
         items.add(new RadioButtonTemplate());
 
-        items.add(new TypeClassTemplate(GeoPointType.TYPE_CLASS));
+    //    items.add(new TypeClassTemplate(GeoPointType.TYPE_CLASS));
         items.add(new TypeClassTemplate(BarcodeType.TYPE_CLASS));
 
         return items;

@@ -92,7 +92,7 @@ public class EnumType implements ParametrizedFieldType {
 
         List<Record> enumValueRecords = Lists.newArrayList();
         for(EnumValue enumValue : getValues()) {
-            enumValueRecords.add(enumValue.toRecord());
+            enumValueRecords.add(enumValue.asRecord());
         }
 
         return new Record()

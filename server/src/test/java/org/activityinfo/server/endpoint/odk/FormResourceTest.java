@@ -9,6 +9,8 @@ import com.google.inject.util.Providers;
 import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.server.command.CommandTestCase2;
+import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.endpoint.odk.xform.Html;
 import org.activityinfo.service.lookup.ReferenceProvider;
 import org.activityinfo.service.store.ResourceCursor;
@@ -23,31 +25,22 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Iterator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
 
-public class FormResourceTest {
+public class FormResourceTest extends CommandTestCase2 {
 
     private FormResource resource;
 
     @Before
     public void setUp() throws IOException {
-        ResourceStore store = new ResourceStore() {
-            @Override
-            public ResourceCursor openCursor(ResourceId formClassId) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public Resource get(ResourceId resourceId) {
-                throw new UnsupportedOperationException();
-            }
-        };
+        ResourceLocatorSync resourceLocator = new ResourceLocatorSync(getDispatcherSync());
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
         OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(new ReferenceProvider());
-        resource = new FormResource(store, authProvider, factory);
+        resource = new FormResource(resourceLocator, authProvider, factory);
     }
 
     @Test

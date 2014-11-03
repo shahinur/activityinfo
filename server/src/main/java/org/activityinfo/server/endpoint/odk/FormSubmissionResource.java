@@ -8,6 +8,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -30,10 +31,10 @@ import static javax.ws.rs.core.Response.Status.CREATED;
 @Path("/submission")
 public class FormSubmissionResource {
     final private OdkFieldValueParserFactory factory;
-    final private ResourceStore locator;
+    final private ResourceLocatorSync locator;
 
     @Inject
-    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator) {
+    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceLocatorSync locator) {
         this.factory = factory;
         this.locator = locator;
     }
@@ -75,7 +76,7 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    //TODO Determine owner
+                    locator.persist(formInstance);
 //                    locator.createResource(null, formInstance.asResource());
 //                    return Response.status(CREATED).build();
                     throw new UnsupportedOperationException();
