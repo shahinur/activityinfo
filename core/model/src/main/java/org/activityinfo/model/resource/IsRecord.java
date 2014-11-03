@@ -8,6 +8,6 @@ public interface IsRecord {
     /**
      * @return this object serialized as a {@code Record}
      */
-    Record toRecord();
+    Record asRecord();
 
 }
