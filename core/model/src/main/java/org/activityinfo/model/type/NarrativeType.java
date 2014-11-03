@@ -23,7 +23,7 @@ public enum NarrativeType implements FieldType, FieldTypeClass {
 
     @Override
     public Record getParameters() {
-        return null;
+        return new Record().set("classId", getTypeClass().getParameterFormClass().getId());
     }
 
     @Override

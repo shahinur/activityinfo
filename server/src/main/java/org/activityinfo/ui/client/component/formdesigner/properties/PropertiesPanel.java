@@ -22,11 +22,10 @@ package org.activityinfo.ui.client.component.formdesigner.properties;
  */
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import org.activityinfo.ui.client.widget.CheckBox;
 import org.activityinfo.ui.client.widget.TextArea;
 import org.activityinfo.ui.client.widget.TextBox;
@@ -56,6 +55,14 @@ public class PropertiesPanel extends Composite {
     HTMLPanel readOnlyGroup;
     @UiField
     CheckBox readOnly;
+    @UiField
+    Button skipButton;
+    @UiField
+    Label skipState;
+    @UiField
+    HTMLPanel skipGroup;
+    @UiField
+    SpanElement skipExpression;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -87,5 +94,21 @@ public class PropertiesPanel extends Composite {
 
     public CheckBox getReadOnly() {
         return readOnly;
+    }
+
+    public Button getSkipButton() {
+        return skipButton;
+    }
+
+    public Label getSkipState() {
+        return skipState;
+    }
+
+    public HTMLPanel getSkipGroup() {
+        return skipGroup;
+    }
+
+    public SpanElement getSkipExpression() {
+        return skipExpression;
     }
 }

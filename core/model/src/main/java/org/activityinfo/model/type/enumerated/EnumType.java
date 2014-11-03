@@ -4,6 +4,7 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldTypeClass;
@@ -39,7 +40,7 @@ public class EnumType implements FieldType {
 
         @Override
         public FormClass getParameterFormClass() {
-            return null;
+            return new FormClass(ResourceIdPrefixType.TYPE.id("enum"));
         }
     }
 
@@ -76,7 +77,7 @@ public class EnumType implements FieldType {
 
     @Override
     public Record getParameters() {
-        return new Record();
+        return new Record().set("classId", getTypeClass().getParameterFormClass().getId());
     }
 
     @Override

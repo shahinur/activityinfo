@@ -3,11 +3,11 @@ package org.activityinfo.core.shared.expr;
 /**
  * An expression group ()
  */
-public class GroupExpr extends ExprNode {
+public class GroupExpr<T> extends ExprNode<T> {
 
-    private ExprNode expr;
+    private ExprNode<T> expr;
 
-    public GroupExpr(ExprNode expr) {
+    public GroupExpr(ExprNode<T> expr) {
         super();
         this.expr = expr;
     }
@@ -18,7 +18,7 @@ public class GroupExpr extends ExprNode {
     }
 
     @Override
-    public double evalReal() {
+    public T evalReal() {
         return expr.evalReal();
     }
 

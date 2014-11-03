@@ -24,12 +24,12 @@ package org.activityinfo.core.shared.expr;
 /**
  * @author yuriyz on 6/2/14.
  */
-public class PlaceholderExpr extends ExprNode {
+public class PlaceholderExpr<T> extends ExprNode<T> {
 
     private final String placeholder;
     private final PlaceholderExprResolver resolver;
 
-    private Double value = null;
+    private T value = null;
 
     public PlaceholderExpr(String placeholder) {
         this(placeholder, null);
@@ -41,14 +41,13 @@ public class PlaceholderExpr extends ExprNode {
     }
 
     @Override
-    public double evalReal() {
-        // HACK: ensure that indicator is recacluated up on each call:
-        // that we don't have to parse the AST six million times!!
-        if (resolver != null) {
+    public T evalReal() {
+        // try to resolve value if it's not resolved yet
+        if (value == null && resolver != null) {
             resolver.resolve(this);
         }
         if (value == null) {
-            throw new IllegalArgumentException("Placeholder is not resolved: " + getPlaceholder());
+            throw new IllegalArgumentException("Placeholder is not resolved.");
         }
         return value;
     }
@@ -61,11 +60,11 @@ public class PlaceholderExpr extends ExprNode {
         return new Placeholder(placeholder);
     }
 
-    public Double getValue() {
+    public T getValue() {
         return value;
     }
 
-    public void setValue(Double value) {
+    public void setValue(T value) {
         this.value = value;
     }
 

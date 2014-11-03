@@ -52,7 +52,7 @@ public enum LocalDateType implements FieldType, FieldTypeClass {
 
     @Override
     public Record getParameters() {
-        return new Record();
+        return new Record().set("classId", getTypeClass().getParameterFormClass().getId());
     }
 
     @Override

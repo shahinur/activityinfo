@@ -144,6 +144,7 @@ public class SiteUpdateBuilder implements UpdateBuilder {
                        .appendColumn("iv.Value")
                        .appendColumn("iv.TextValue")
                        .appendColumn("iv.DateValue")
+                       .appendColumn("iv.BooleanValue")
                        .where("a.ActivityId")
                        .equalTo(activityId)
                        .where("s.timeEdited")
