@@ -10,9 +10,9 @@ import java.util.Map;
 public class ActivityAccessor implements DimAccessor {
 
     private Dimension dim;
-    private final Map<Integer, EntityCategory> categoryMap;
+    private final Map<Integer, DimensionCategory> categoryMap;
 
-    public ActivityAccessor(Dimension dim, Map<Integer, EntityCategory> categoryMap) {
+    public ActivityAccessor(Dimension dim, Map<Integer, DimensionCategory> categoryMap) {
         this.dim = dim;
         this.categoryMap = categoryMap;
     }
