@@ -1,12 +1,11 @@
 package org.activityinfo.core.shared.importing.strategy;
 
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.client.type.converter.JsCoordinateNumberFormatter;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
-import org.activityinfo.core.shared.model.AiLatLng;
+import org.activityinfo.model.type.geo.AiLatLng;
 import org.activityinfo.core.shared.type.converter.CoordinateAxis;
 import org.activityinfo.core.shared.type.converter.CoordinateFormatException;
 import org.activityinfo.core.shared.type.converter.CoordinateParser;

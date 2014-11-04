@@ -18,6 +18,7 @@ import org.activityinfo.legacy.shared.impl.pivot.calc.*;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.DimensionCategory;
 import org.activityinfo.legacy.shared.reports.content.EntityCategory;
+import org.activityinfo.legacy.shared.reports.content.SimpleCategory;
 import org.activityinfo.legacy.shared.reports.model.AdminDimension;
 import org.activityinfo.legacy.shared.reports.model.AttributeGroupDimension;
 import org.activityinfo.legacy.shared.reports.model.DateDimension;
@@ -40,8 +41,9 @@ public class CalculatedIndicatorsQuery implements WorkItem {
     private Set<Integer> activityIds = Sets.newHashSet();
     private Set<Integer> indicatorIds = Sets.newHashSet();
 
-    private Map<Integer, EntityCategory> activityMap = Maps.newHashMap();
-    private Map<Integer, EntityCategory> activityToDatabaseMap = Maps.newHashMap();
+    private Map<Integer, DimensionCategory> activityMap = Maps.newHashMap();
+    private Map<Integer, DimensionCategory> activityCategoryMap = Maps.newHashMap();
+    private Map<Integer, DimensionCategory> activityToDatabaseMap = Maps.newHashMap();
     private Map<Integer, EntityCategory> indicatorMap = Maps.newHashMap();
 
     private Multimap<Integer, EntityCategory> attributes = HashMultimap.create();
@@ -64,6 +66,7 @@ public class CalculatedIndicatorsQuery implements WorkItem {
                 .appendColumn("i.activityId", "activityId")
                 .appendColumn("i.sortOrder", "indicatorOrder")
                 .appendColumn("a.name", "activityName")
+                .appendColumn("a.category", "activityCategory")
                 .appendColumn("a.sortOrder", "activityOrder")
                 .appendColumn("db.DatabaseId", "databaseId")
                 .appendColumn("db.name", "databaseName")
@@ -112,6 +115,8 @@ public class CalculatedIndicatorsQuery implements WorkItem {
                         activityMap.put(activityId, new EntityCategory(activityId,
                             row.getString("activityName"),
                             row.getInt("activityOrder")));
+
+                        activityCategoryMap.put(activityId, new SimpleCategory(row.getString("activityCategory")));
 
                         activityToDatabaseMap.put(activityId,
                                 new EntityCategory(row.getInt("databaseId"), row.getString("databaseName")));
@@ -251,6 +256,9 @@ public class CalculatedIndicatorsQuery implements WorkItem {
     private DimAccessor createAccessor(Dimension dim) {
         if(dim.getType() == DimensionType.Activity) {
             return new ActivityAccessor(dim, activityMap);
+
+        } else if(dim.getType() == DimensionType.ActivityCategory) {
+                return new ActivityAccessor(dim, activityCategoryMap);
 
         } else if(dim.getType() == DimensionType.Database) {
             return new ActivityAccessor(dim, activityToDatabaseMap);

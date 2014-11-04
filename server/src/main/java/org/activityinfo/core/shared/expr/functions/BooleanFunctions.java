@@ -24,6 +24,9 @@ package org.activityinfo.core.shared.expr.functions;
 import com.google.common.collect.Maps;
 import org.activityinfo.core.shared.expr.ExprFunction;
 import org.activityinfo.core.shared.expr.ExprNode;
+import org.activityinfo.core.shared.expr.constant.IsConstantExpr;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.number.Quantity;
 
 import java.util.List;
 import java.util.Map;
@@ -97,7 +100,10 @@ public class BooleanFunctions {
             }
             Object result = arguments.get(0).evalReal();
             for (int i = 1; i < size; i++) {
-                if (!result.equals(arguments.get(i).evalReal())) {
+                ExprNode<Object> rightOperand = arguments.get(i);
+                Object val = rightOperand.evalReal();
+                val = cast(result, val, rightOperand);
+                if (!result.equals(val)) {
                     return false;
                 }
             }
@@ -123,7 +129,10 @@ public class BooleanFunctions {
             if (size != 2) {
                 throw new IllegalArgumentException();
             }
-            return !arguments.get(0).evalReal().equals(arguments.get(1).evalReal());
+            Object leftOperand = arguments.get(0).evalReal();
+            ExprNode<Object> rightOperandNode = arguments.get(1);
+            Object rightOperand = cast(leftOperand, rightOperandNode.evalReal(), rightOperandNode);
+            return !leftOperand.equals(rightOperand);
         }
     };
 
@@ -156,5 +165,28 @@ public class BooleanFunctions {
 
     public static ExprFunction<Boolean, ?> getBooleanFunction(String token) {
         return registry.get(token);
+    }
+
+    /**
+     * Performs normalization for primitive FieldValues.
+     * <p/>
+     * Solution is error prone but is "good for now". Needs to be replaced in future...
+     * <p/>
+     * Example: {id} == 1. It's not clear which unit should be used for ConstanctExpr of 1. Therefore idea is
+     * to "normalize" 1 and cast it to type of left operand. E.g. 1 apple == 1 is transformed to 1 apple == 1 apple.
+     *
+     * @param leftOperand  left operand
+     * @param rightOperand right operand
+     * @return normalized (casted) right operand
+     */
+    private static Object cast(Object leftOperand, Object rightOperand, ExprNode rightOperandNode) {
+        if (rightOperandNode instanceof IsConstantExpr && leftOperand instanceof FieldValue) {
+            IsConstantExpr constantExpr = (IsConstantExpr) rightOperandNode;
+            rightOperand = constantExpr.getValue();
+            if (leftOperand instanceof Quantity && rightOperand instanceof Quantity) {
+                ((Quantity) rightOperand).setUnits(((Quantity) leftOperand).getUnits());
+            }
+        }
+        return rightOperand;
     }
 }

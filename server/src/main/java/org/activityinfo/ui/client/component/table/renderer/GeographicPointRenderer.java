@@ -21,7 +21,7 @@ package org.activityinfo.ui.client.component.table.renderer;
  * #L%
  */
 
-import org.activityinfo.core.shared.model.AiLatLng;
+import org.activityinfo.model.type.geo.AiLatLng;
 
 /**
  * @author yuriyz on 3/28/14.

@@ -4,6 +4,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
 import com.google.common.collect.Sets;
+import org.activityinfo.core.shared.expr.constant.BooleanConstantExpr;
+import org.activityinfo.core.shared.expr.constant.NumberConstantExpr;
+import org.activityinfo.core.shared.expr.constant.StringConstantExpr;
 import org.activityinfo.core.shared.expr.functions.ArithmeticFunctions;
 import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 
@@ -26,7 +29,9 @@ public class ExprParser {
 
             @Override
             public boolean apply(Token token) {
-                return token.getType() != TokenType.WHITESPACE;
+                return token.getType() != TokenType.WHITESPACE &&
+                        token.getType() != TokenType.STRING_START &&
+                        token.getType() != TokenType.STRING_START;
             }
         }));
         this.placeholderExprResolver = placeholderExprResolver;
@@ -77,7 +82,7 @@ public class ExprParser {
             return parsePlaceholder();
 
         } else if (token.getType() == TokenType.NUMBER) {
-            return new ConstantExpr(Double.parseDouble(token.getString()));
+            return new NumberConstantExpr(Double.parseDouble(token.getString()));
 
         } else if (token.getType() == TokenType.BOOLEAN_LITERAL) {
             return new BooleanConstantExpr(Boolean.parseBoolean(token.getString()));
@@ -87,6 +92,9 @@ public class ExprParser {
             ExprFunction function = BooleanFunctions.getBooleanFunction(token.getString());
             ExprNode right = parse();
             return new FunctionCallNode(function, right);
+
+        } else if (token.getType() == TokenType.STRING_LITERAL || token.getType() == TokenType.SYMBOL) {
+            return new StringConstantExpr(token.getString());
 
         } else {
             throw new ExprSyntaxException("Unexpected token '" + token.getString() + "' at position " + token.getTokenStart() + "'");

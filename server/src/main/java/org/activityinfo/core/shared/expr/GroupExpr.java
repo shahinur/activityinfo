@@ -14,12 +14,20 @@ public class GroupExpr<T> extends ExprNode<T> {
 
     @Override
     public String toString() {
+        return asExpression();
+    }
+
+    public String asExpression() {
         return "(" + expr.toString() + ")";
     }
 
     @Override
     public T evalReal() {
         return expr.evalReal();
+    }
+
+    public ExprNode<T> getExpr() {
+        return expr;
     }
 
     @Override

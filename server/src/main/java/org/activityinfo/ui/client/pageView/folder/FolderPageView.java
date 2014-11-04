@@ -19,7 +19,7 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.core.shared.criteria.ParentCriteria;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.chrome.PageHeader;

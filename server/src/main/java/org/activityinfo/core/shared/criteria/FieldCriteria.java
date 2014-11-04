@@ -2,7 +2,7 @@ package org.activityinfo.core.shared.criteria;
 
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
 
 import javax.annotation.Nonnull;

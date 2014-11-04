@@ -1,5 +1,7 @@
 package org.activityinfo.core.shared.expr;
 
+import org.activityinfo.core.shared.expr.constant.BooleanConstantExpr;
+import org.activityinfo.core.shared.expr.constant.NumberConstantExpr;
 import org.activityinfo.core.shared.expr.functions.ArithmeticFunctions;
 import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.junit.Test;
@@ -67,6 +69,25 @@ public class ExprParserTest {
     }
 
     @Test
+    public void stringTokenizing() {
+        expect("\"true\"",
+                new Token(TokenType.STRING_START, 0, "\""),
+                new Token(TokenType.STRING_LITERAL, 1, "true"),
+                new Token(TokenType.STRING_END, 5, "\"")
+        );
+        expect("\"1\"",
+                new Token(TokenType.STRING_START, 0, "\""),
+                new Token(TokenType.STRING_LITERAL, 1, "1"),
+                new Token(TokenType.STRING_END, 2, "\"")
+        );
+        expect("\"1a1\"",
+                new Token(TokenType.STRING_START, 0, "\""),
+                new Token(TokenType.STRING_LITERAL, 1, "1a1"),
+                new Token(TokenType.STRING_END, 4, "\"")
+        );
+    }
+
+    @Test
     public void placeholderTokenizing() {
         expect("{i1}+{i2}",
                 new Token(TokenType.BRACE_START, 0, "{"),
@@ -115,11 +136,11 @@ public class ExprParserTest {
 
     @Test
     public void parseSimple() {
-        expect("1", new ConstantExpr(1));
-        expect("(1)", new GroupExpr(new ConstantExpr(1)));
+        expect("1", new NumberConstantExpr(1));
+        expect("(1)", new GroupExpr(new NumberConstantExpr(1)));
         expect("1+2", new FunctionCallNode(ArithmeticFunctions.BINARY_PLUS,
-                new ConstantExpr(1),
-                new ConstantExpr(2)));
+                new NumberConstantExpr(1),
+                new NumberConstantExpr(2)));
     }
 
     @Test
@@ -142,9 +163,9 @@ public class ExprParserTest {
                 new FunctionCallNode(ArithmeticFunctions.DIVIDE,
                         new GroupExpr(
                                 new FunctionCallNode(ArithmeticFunctions.BINARY_PLUS,
-                                        new ConstantExpr(1),
-                                        new ConstantExpr(2))),
-                        new ConstantExpr(3)));
+                                        new NumberConstantExpr(1),
+                                        new NumberConstantExpr(2))),
+                        new NumberConstantExpr(3)));
     }
 
     @Test
@@ -152,7 +173,7 @@ public class ExprParserTest {
         expect("{i1}+{i2}+1", new FunctionCallNode(ArithmeticFunctions.BINARY_PLUS,
                 new PlaceholderExpr("i1"),
                 new FunctionCallNode(ArithmeticFunctions.BINARY_PLUS, new PlaceholderExpr("i2"),
-                        new ConstantExpr(1))));
+                        new NumberConstantExpr(1))));
 
         expect("({class1_i1}+{class2_i2})/{class3_i3}",
                 new FunctionCallNode(ArithmeticFunctions.DIVIDE,

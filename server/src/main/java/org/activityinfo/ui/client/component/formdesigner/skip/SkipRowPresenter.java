@@ -21,21 +21,23 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  * #L%
  */
 
-import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ListBox;
 import org.activityinfo.core.shared.expr.ExprFunction;
 import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.activityinfo.core.shared.expr.functions.FieldTypeToFunctionRegistry;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -47,7 +49,8 @@ public class SkipRowPresenter {
     private final SkipRow view = new SkipRow();
     private final FormFieldWidgetFactory widgetFactory;
     private FormFieldWidget valueWidget = null;
-    private Object value;
+    private FieldValue value;
+    private RowData rowData;
 
     public SkipRowPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
@@ -63,20 +66,28 @@ public class SkipRowPresenter {
     private void initValueWidget() {
         view.getValueContainer().clear();
 
-        ValueUpdater valueUpdater = new ValueUpdater() {
+        ValueUpdater<FieldValue> valueUpdater = new ValueUpdater<FieldValue>() {
             @Override
-            public void update(Object value) {
+            public void update(FieldValue value) {
                 SkipRowPresenter.this.value = value;
             }
         };
 
-        widgetFactory.createWidget(getSelectedFormField(), valueUpdater).then(new Function<FormFieldWidget, Void>() {
-            @Nullable
+        widgetFactory.createWidget(getSelectedFormField(), valueUpdater).then(new AsyncCallback<FormFieldWidget>() {
             @Override
-            public Void apply(@Nullable FormFieldWidget widget) {
+            public void onFailure(Throwable caught) {
+                caught.printStackTrace();
+            }
+
+            @Override
+            public void onSuccess(FormFieldWidget widget) {
                 valueWidget = widget;
                 view.getValueContainer().add(widget);
-                return null;
+
+                if (rowData != null) {
+                    valueWidget.setValue(rowData.getValue());
+                    SkipRowPresenter.this.value = rowData.getValue();
+                }
             }
         });
     }
@@ -124,7 +135,25 @@ public class SkipRowPresenter {
         return view;
     }
 
-    public Object getValue() {
+    public FieldValue getValue() {
         return value;
+    }
+
+    public void updateWith(final RowData rowData) {
+        this.rowData = rowData;
+        setSelectedValue(view.getJoinFunction(), rowData.getJoinFunction().getId());
+        setSelectedValue(view.getFunction(), rowData.getFunction().getId());
+        setSelectedValue(view.getFormfield(), rowData.getFormField().getId().asString());
+        initValueWidget();
+    }
+
+    private static void setSelectedValue(ListBox listBox, String value) {
+        for (int i = 0; i< listBox.getItemCount(); i++) {
+            String itemValue = listBox.getValue(i);
+            if (!Strings.isNullOrEmpty(itemValue) && itemValue.equals(value)) {
+                listBox.setSelectedIndex(i);
+                return;
+            }
+        }
     }
 }

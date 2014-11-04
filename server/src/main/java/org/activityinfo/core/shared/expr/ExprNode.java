@@ -11,4 +11,6 @@ public abstract class ExprNode<T> {
      */
     public abstract T evalReal();
 
+    public abstract String asExpression();
+
 }

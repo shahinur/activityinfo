@@ -5,18 +5,15 @@ import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.component.ComponentReader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnumType implements FieldType {
+public class EnumType implements ParametrizedFieldType {
 
-    public enum TypeClass implements FieldTypeClass {
-        INSTANCE;
+    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
 
         @Override
         public String getId() {
@@ -29,8 +26,16 @@ public class EnumType implements FieldType {
         }
 
         @Override
-        public FieldType createType(Record typeParameters) {
-            return new EnumType();
+        public FieldType deserializeType(Record typeParameters) {
+
+            Cardinality cardinality = Cardinality.valueOf(typeParameters.getString("cardinality"));
+
+            List<EnumValue> enumValues = Lists.newArrayList();
+            List<Record> enumValueRecords = typeParameters.getRecordList("values");
+            for(Record record : enumValueRecords) {
+                enumValues.add(EnumValue.fromRecord(record));
+            }
+            return new EnumType(cardinality, enumValues);
         }
 
         @Override
@@ -42,7 +47,14 @@ public class EnumType implements FieldType {
         public FormClass getParameterFormClass() {
             return new FormClass(ResourceIdPrefixType.TYPE.id("enum"));
         }
-    }
+
+        @Override
+        public FieldValue deserialize(Record record) {
+            return EnumValue.fromRecord(record);
+        }
+    };
+
+    public static final TypeClass TYPE_CLASS = new TypeClass();
 
     private final Cardinality cardinality;
     private final List<EnumValue> values;
@@ -71,13 +83,22 @@ public class EnumType implements FieldType {
     }
 
     @Override
-    public FieldTypeClass getTypeClass() {
-        return TypeClass.INSTANCE;
+    public ParametrizedFieldTypeClass getTypeClass() {
+        return TYPE_CLASS;
     }
 
     @Override
     public Record getParameters() {
-        return new Record().set("classId", getTypeClass().getParameterFormClass().getId());
+
+        List<Record> enumValueRecords = Lists.newArrayList();
+        for(EnumValue enumValue : getValues()) {
+            enumValueRecords.add(enumValue.asRecord());
+        }
+
+        return new Record()
+                .set("classId", getTypeClass().getParameterFormClass().getId())
+                .set("cardinality", cardinality.name())
+                .set("values", enumValueRecords);
     }
 
     @Override
@@ -89,4 +110,5 @@ public class EnumType implements FieldType {
     public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
         throw new UnsupportedOperationException();
     }
+
 }

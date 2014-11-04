@@ -3474,15 +3474,20 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Boolean")
     String fieldTypeBoolean();
 
+    @DefaultStringValue("Relevance")
+    String relevance();
     @DefaultStringValue("Form Category")
     String formCategory();
 
     @DefaultStringValue("Skip logic")
     String skipLogic();
 
-    @DefaultStringValue("Define skip logic")
-    String defineSkipLogic();
+    @DefaultStringValue("Define relevance")
+    String defineRelevanceLogic();
 
     @DefaultStringValue("Defined")
     String defined();
+
+    @DefaultStringValue("Visible")
+    String visible();
 }

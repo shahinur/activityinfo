@@ -17,6 +17,7 @@ import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
  */
 public class VerticalFieldContainer implements FieldContainer {
 
+
     public static class Factory implements FieldContainerFactory {
         @Override
         public FieldContainer createContainer(FormField field, FormFieldWidget widget) {
@@ -31,6 +32,8 @@ public class VerticalFieldContainer implements FieldContainer {
 
     private final HTMLPanel formGroup;
 
+    private final FormField field;
+
     @UiField(provided = true)
     FormFieldWidget fieldWidget;
 
@@ -44,6 +47,7 @@ public class VerticalFieldContainer implements FieldContainer {
     SpanElement validationMessage;
 
     public VerticalFieldContainer(FormField formField, FormFieldWidget fieldWidget) {
+        this.field = formField;
         this.fieldWidget = fieldWidget;
         formGroup = ourUiBinder.createAndBindUi(this);
 
@@ -55,6 +59,11 @@ public class VerticalFieldContainer implements FieldContainer {
         }
     }
 
+
+    @Override
+    public FormField getField() {
+        return field;
+    }
 
     @Override
     public FormFieldWidget getFieldWidget() {

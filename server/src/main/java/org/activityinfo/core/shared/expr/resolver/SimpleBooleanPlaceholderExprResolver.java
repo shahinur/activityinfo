@@ -24,14 +24,20 @@ package org.activityinfo.core.shared.expr.resolver;
 import com.google.common.collect.Maps;
 import org.activityinfo.core.shared.expr.PlaceholderExpr;
 import org.activityinfo.core.shared.expr.PlaceholderExprResolver;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.ui.client.component.form.field.ReferenceFieldWidget;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,12 +49,12 @@ public class SimpleBooleanPlaceholderExprResolver implements PlaceholderExprReso
     // 1. instance values
     // 2. enum type values
     // 3. to do
-    private final Map<ResourceId, Object> valueMap = Maps.newHashMap();
+    private final Map<ResourceId, FieldValue> valueMap = Maps.newHashMap();
 
-    public SimpleBooleanPlaceholderExprResolver(FormInstance instance, FormClass formClass) {
+    public SimpleBooleanPlaceholderExprResolver(FormInstance instance, FormClass formClass, List<ReferenceFieldWidget> referenceFieldWidgets) {
 
         // 1. instance values
-        valueMap.putAll(instance.getValueMap());
+        valueMap.putAll(instance.getFieldValueMap());
 
         // 2. type values
         for (FormField formField : formClass.getFields()) {
@@ -56,10 +62,18 @@ public class SimpleBooleanPlaceholderExprResolver implements PlaceholderExprReso
             if (type instanceof EnumType) {
                 EnumType enumType = (EnumType) type;
                 for (EnumValue value : enumType.getValues()) {
-                    valueMap.put(value.getId(), value);
+                    valueMap.put(value.getId(), new EnumFieldValue(value.getId()));
+                }
+            } else if (type instanceof ReferenceType) {
+                for (ReferenceFieldWidget refWidget : referenceFieldWidgets) {
+                    for (FormInstance range : refWidget.getRange()) {
+                        valueMap.put(range.getId(), new ReferenceValue(range.getId()));
+                    }
                 }
             }
         }
+
+
     }
 
     @Override

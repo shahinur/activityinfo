@@ -1,205 +1,89 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
+import com.google.common.base.Charsets;
 import com.google.inject.Inject;
 import com.sun.jersey.multipart.FormDataParam;
-import org.activityinfo.legacy.shared.command.CreateLocation;
-import org.activityinfo.legacy.shared.command.CreateSite;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.command.result.CreateResult;
-import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.model.legacy.KeyGenerator;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.server.database.hibernate.dao.Geocoder;
-import org.activityinfo.server.database.hibernate.entity.Activity;
-import org.activityinfo.server.database.hibernate.entity.AdminEntity;
-import org.activityinfo.server.database.hibernate.entity.AdminLevel;
-import org.activityinfo.server.database.hibernate.entity.User;
-import org.activityinfo.server.endpoint.odk.SiteFormData.FormAttributeGroup;
-import org.activityinfo.server.endpoint.odk.SiteFormData.FormIndicator;
-import org.activityinfo.server.event.sitehistory.SiteHistoryProcessor;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.server.command.ResourceLocatorSync;
+import org.activityinfo.service.store.ResourceStore;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import javax.inject.Provider;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
+
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static javax.ws.rs.core.Response.Status.CREATED;
 
 @Path("/submission")
-public class FormSubmissionResource extends ODKResource {
-    private final Provider<FormParser> formParser;
-    private final Geocoder geocoder;
-    private final SiteHistoryProcessor siteHistoryProcessor;
-
-    private static final Logger LOGGER = Logger.getLogger(FormSubmissionResource.class.getName());
+public class FormSubmissionResource {
+    final private OdkFieldValueParserFactory factory;
+    final private ResourceLocatorSync locator;
 
     @Inject
-    public FormSubmissionResource(Provider<FormParser> formParser,
-                                  Geocoder geocoder,
-                                  SiteHistoryProcessor siteHistoryProcessor) {
-        this.formParser = formParser;
-        this.geocoder = geocoder;
-        this.siteHistoryProcessor = siteHistoryProcessor;
+    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceLocatorSync locator) {
+        this.factory = factory;
+        this.locator = locator;
     }
 
     @POST @Consumes(MediaType.MULTIPART_FORM_DATA) @Produces(MediaType.TEXT_XML)
     public Response submit(@FormDataParam("xml_submission_file") String xml) throws Exception {
-        LOGGER.fine("ODK form submitted by user " + getUser().getEmail() + " (" + getUser().getId() + ")");
+        //TODO Not everything is fully tested yet and especially Cardinality.MULTIPLE will definitely not work correctly
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(xml.getBytes(Charsets.UTF_8));
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = documentBuilder.parse(byteArrayInputStream);
+        document.normalizeDocument();
 
-        LOGGER.info("XML:\n" + xml);
+        NodeList nodeList = document.getElementsByTagName("instanceID");
+        Node node = nodeList.getLength() == 1 ? nodeList.item(0) : null;
 
-        // parse
-        SiteFormData data = formParser.get().parse(xml);
-        if (data == null) {
-            LOGGER.severe("Failed to parse XML");
-            return badRequest("Problem parsing submission XML");
-        }
+        // A cascade of various validations of the structure of the submitted form, where node may have been set to null
+        if (node != null &&
+                "instanceID".equals(node.getNodeName()) &&
+                "meta".equals(node.getParentNode().getNodeName()) &&
+                "data".equals(node.getParentNode().getParentNode().getNodeName()) &&
+                "#document".equals(node.getParentNode().getParentNode().getParentNode().getNodeName()) &&
+                node.getParentNode().getParentNode().getParentNode().getParentNode() == null) {
+            Node dataNode = node.getParentNode().getParentNode();
 
-        // basic validation
-        if (data.getActivity() == 0) {
-            LOGGER.severe("activity = 0");
-            return badRequest("Missing activityId");
+            if (dataNode.hasAttributes() && dataNode.getAttributes().getLength() == 1) {
+                String id = OdkHelper.extractText(dataNode.getAttributes().item(0));
 
-        } else if(data.getPartner() == 0) {
-            LOGGER.severe("partner = 0");
-            return badRequest("Missing partnerId");
+                if (id != null && id.length() > 0) {
+                    Resource resource = locator.get(ResourceId.create(id));
+                    FormClass formClass = FormClass.fromResource(resource);
+                    FormInstance formInstance = new FormInstance(ResourceId.generateId(), formClass.getId());
 
-        } else if(data.getDate1() == null || data.getDate2() == null || data.getDate2().before(data.getDate1())) {
-            LOGGER.severe("Invalid dates: date1=" + data.getDate1() + ", date2=" + data.getDate2());
-            return badRequest("Invalid dates");
-        }
+                    for (FormField formField : formClass.getFields()) {
+                        OdkFieldValueParser odkFieldValueParser = factory.fromFieldType(formField.getType());
+                        Node element = document.getElementsByTagName("field_" + formField.getId().asString()).item(0);
 
-        // Workaround: assign anonymous submissions to owner of form
-        if(!auth.isAuthenticated()) {
-            LOGGER.info("Setting authentication to form owner");
-
-            User owner = entityManager.get().find(Activity.class, data.getActivity()).getDatabase().getOwner();
-            LOGGER.info("Owner = " + owner.getEmail());
-
-            auth.set(owner);
-        }
-
-        // check if activity exists
-        SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
-        ActivityDTO activity = schemaDTO.getActivityById(data.getActivity());
-        if (activity == null) {
-            LOGGER.severe("Unknown activity, id = " + data.getActivity());
-            return notFound("Unknown activity");
-        }
-
-        // create site
-        try {
-            createSite(data, schemaDTO, activity);
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Exception whilst creating site: " + e.getMessage(), e);
-            throw new WebApplicationException(e, Status.INTERNAL_SERVER_ERROR);
-        }
-        return Response.status(Status.CREATED).build();
-    }
-
-    private void createSite(SiteFormData data, SchemaDTO schemaDTO, ActivityDTO activity) {
-        final SiteDTO site = new SiteDTO();
-        site.setId(new KeyGenerator().generateInt());
-        site.setActivityId(data.getActivity());
-
-        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-            site.setReportingPeriodId(new KeyGenerator().generateInt());
-        }
-
-        // set activitymodel
-        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-            site.setDate1(data.getDate1());
-            site.setDate2(data.getDate2());
-        }
-        site.setPartner(schemaDTO.getPartnerById(data.getPartner()));
-
-        // set comments
-        site.setComments(data.getComments());
-
-        // set attributes
-        for (FormAttributeGroup formAttributeGroup : data.getAttributegroups()) {
-            AttributeGroupDTO attributeGroup = activity.getAttributeGroupById(formAttributeGroup.getId());
-            for (Integer attributeId : attributeGroup.getAttributeIds()) {
-                site.setAttributeValue(attributeId, formAttributeGroup.isSelected(attributeId));
-            }
-        }
-
-        // set indicators
-        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
-            for (IndicatorDTO indicator : activity.getIndicators()) {
-                FormIndicator formIndicator = data.getIndicator(indicator.getId());
-                if(formIndicator != null) {
-                    if(indicator.getType() == FieldTypeClass.QUANTITY) {
-                        site.setIndicatorValue(indicator.getId(), formIndicator.getDoubleValue());
-                    } else {
-                        site.setIndicatorValue(indicator.getId(), formIndicator.getValue());
+                        if (element instanceof Element) {
+                            formInstance.set(formField.getId(), odkFieldValueParser.parse((Element) element));
+                        }
                     }
+
+                    locator.persist(formInstance);
+//                    locator.createResource(null, formInstance.asResource());
+//                    return Response.status(CREATED).build();
+                    throw new UnsupportedOperationException();
                 }
             }
         }
 
-        // create command(s)
-        CreateSite cmd = new CreateSite(site);
-        if(activity.getLocationType().isNationwide()) {
-            // hack to support "no" locationtypes in the legacy api
-            cmd.getProperties().put("locationId", activity.getLocationTypeId());
-        } else {
-            CreateLocation createlocation = createCreateLocationCommand(data, schemaDTO, activity);
-            dispatcher.execute(createlocation);
-            cmd.getProperties().put("locationId", createlocation.getLocationId());
-        }
-
-        CreateResult createResult = dispatcher.execute(cmd);
-
-        // create site history entry
-        siteHistoryProcessor.process(cmd, getUser().getId(), createResult.getNewId());
-    }
-
-    private CreateLocation createCreateLocationCommand(SiteFormData data, SchemaDTO schemaDTO, ActivityDTO activity) {
-        // create the dto
-        LocationDTO loc = new LocationDTO();
-        loc.setId(new KeyGenerator().generateInt());
-        loc.setLocationTypeId(activity.getLocationTypeId());
-        loc.setName(data.getLocationname());
-        loc.setLatitude(data.getLatitude());
-        loc.setLongitude(data.getLongitude());
-
-        CreateLocation cmd = new CreateLocation(loc);
-
-        // get adminentities that contain the specified coordinates
-        List<AdminEntity> adminentities = geocoder.geocode(data.getLatitude(), data.getLongitude());
-        if (adminentities.isEmpty()) {
-            AdminEntity adminEntity = createDebugAdminEntity();
-            if (adminEntity != null) {
-                adminentities.add(adminEntity);
-            }
-        }
-        if (!adminentities.isEmpty()) {
-            RpcMap map = cmd.getProperties();
-            for (AdminEntity entity : adminentities) {
-                map.put(AdminLevelDTO.getPropertyName(entity.getLevel().getId()), entity.getId());
-            }
-        }
-
-        return cmd;
-    }
-
-    private AdminEntity createDebugAdminEntity() {
-        AdminEntity adminEntity = null;
-
-        String odkDebugLocationEntityId = config.getProperty("odk.debug.location.entity.id");
-        String odkDebugLocationLevelId = config.getProperty("odk.debug.location.level.id");
-
-        if (odkDebugLocationEntityId != null && odkDebugLocationLevelId != null) {
-            AdminLevel level = new AdminLevel();
-            level.setId(Integer.parseInt(odkDebugLocationLevelId));
-            adminEntity = new AdminEntity();
-            adminEntity.setId(Integer.parseInt(odkDebugLocationEntityId));
-            adminEntity.setLevel(level);
-        }
-        return adminEntity;
+        return Response.status(BAD_REQUEST).build();
     }
 }

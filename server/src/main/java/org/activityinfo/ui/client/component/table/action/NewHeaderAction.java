@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.component.table.action;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.form.FormClass;

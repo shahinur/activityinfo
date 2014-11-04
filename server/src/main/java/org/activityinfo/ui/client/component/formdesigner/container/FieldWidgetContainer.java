@@ -80,14 +80,18 @@ public class FieldWidgetContainer implements WidgetContainer {
 
     public void syncWithModel() {
         final SafeHtmlBuilder label = new SafeHtmlBuilder();
+
         label.append(SafeHtmlUtils.fromString(Strings.nullToEmpty(formField.getLabel())));
         if (formField.isRequired()) {
             label.append(LABEL_TEMPLATE.mandatoryMarker());
         }
-
         formFieldWidget.setReadOnly(formField.isReadOnly());
 
-        widgetContainer.getLabel().setHTML(label.toSafeHtml());
+        String labelHtml = label.toSafeHtml().asString();
+        if (!formField.isVisible()) {
+            labelHtml = "<del>" + labelHtml + "</del>";
+        }
+        widgetContainer.getLabel().setHTML(labelHtml);
         formFieldWidget.setType(formField.getType());
     }
 

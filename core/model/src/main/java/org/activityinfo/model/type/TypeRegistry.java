@@ -2,9 +2,14 @@ package org.activityinfo.model.type;
 
 import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.BooleanType;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 import java.util.Map;
@@ -26,14 +31,17 @@ public class TypeRegistry {
     private Map<String, FieldTypeClass> typeMap = Maps.newHashMap();
 
     private TypeRegistry() {
-        register(EnumType.TypeClass.INSTANCE);
-        register(ReferenceType.TypeClass.INSTANCE);
-        register(TextType.INSTANCE);
-        register(QuantityType.TypeClass.INSTANCE);
-        register(NarrativeType.INSTANCE);
-        register(LocalDateType.INSTANCE);
-        register(GeoPointType.INSTANCE);
-        register(BooleanType.INSTANCE);
+        register(EnumType.TYPE_CLASS);
+        register(ReferenceType.TYPE_CLASS);
+        register(TextType.TYPE_CLASS);
+        register(QuantityType.TYPE_CLASS);
+        register(NarrativeType.TYPE_CLASS);
+        register(LocalDateType.TYPE_CLASS);
+        register(LocalDateIntervalType.TYPE_CLASS);
+        register(GeoPointType.TYPE_CLASS);
+        register(BooleanType.TYPE_CLASS);
+        register(BarcodeType.TYPE_CLASS);
+        register(ImageType.TYPE_CLASS);
     }
 
     private void register(FieldTypeClass typeClass) {
@@ -52,8 +60,13 @@ public class TypeRegistry {
         return typeMap.values();
     }
 
-    public static FieldTypeClass typeForValue(Record value) {
-        String typeId = value.getString(FieldTypeClass.TYPE_FIELD_NAME);
-        return get().getTypeClass(typeId);
+    public FieldValue deserializeFieldValue(Record record) {
+        String typeClassId = record.getString(FieldValue.TYPE_CLASS_FIELD_NAME);
+        FieldTypeClass typeClass = getTypeClass(typeClassId);
+        if(typeClass instanceof RecordFieldTypeClass) {
+            return ((RecordFieldTypeClass) typeClass).deserialize(record);
+        } else {
+            throw new UnsupportedOperationException(typeClassId + " cannot be deserialized from a Record");
+        }
     }
 }

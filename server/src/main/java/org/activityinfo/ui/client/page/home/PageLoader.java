@@ -10,7 +10,7 @@ import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.ParentCriteria;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.ui.client.page.*;
 import org.activityinfo.ui.client.page.instance.InstancePage;
 import org.activityinfo.ui.client.page.instance.InstancePlace;

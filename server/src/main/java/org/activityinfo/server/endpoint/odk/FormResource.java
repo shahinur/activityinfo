@@ -1,49 +1,116 @@
 package org.activityinfo.server.endpoint.odk;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.sun.jersey.api.view.Viewable;
-import org.activityinfo.legacy.shared.command.GetSchema;
+import com.google.inject.Inject;
+import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.IsFormField;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.server.command.ResourceLocatorSync;
+import org.activityinfo.server.endpoint.odk.xform.*;
+import org.activityinfo.service.store.ResourceStore;
 
-import javax.ws.rs.*;
+import javax.inject.Provider;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Path("/activityForm")
-public class FormResource extends ODKResource {
+public class FormResource {
+
+    private static final Logger LOGGER = Logger.getLogger(FormResource.class.getName());
+
+    private Provider<AuthenticatedUser> authProvider;
+    private ResourceLocatorSync locator;
+    private OdkFormFieldBuilderFactory factory;
+
+    @Inject
+    public FormResource(ResourceLocatorSync locator, OdkAuthProvider authProvider, OdkFormFieldBuilderFactory factory) {
+        this.locator = locator;
+        this.authProvider = authProvider;
+        this.factory = factory;
+    }
+
+    @VisibleForTesting
+    FormResource(ResourceLocatorSync locator, Provider<AuthenticatedUser> authProvider, OdkFormFieldBuilderFactory factory) {
+        this.authProvider = authProvider;
+        this.locator = locator;
+        this.factory = factory;
+    }
 
     @GET @Produces(MediaType.TEXT_XML)
     public Response form(@QueryParam("id") int id) throws Exception {
-        if (enforceAuthorization()) {
-            return askAuthentication();
-        }
+
+        AuthenticatedUser user = authProvider.get();
+
         LOGGER.finer("ODK activity form " + id + " requested by " +
-                     getUser().getEmail() + " (" + getUser().getId() + ")");
+                     user.getEmail() + " (" + user.getId() + ")");
 
-        SchemaDTO schemaDTO = dispatcher.execute(new GetSchema());
-        ActivityDTO activity = schemaDTO.getActivityById(id);
+        //TODO This is still not done and needs major refactoring, but we're getting there
+        Resource resource = locator.get(CuidAdapter.activityFormClass(id));
+        FormClass formClass = FormClass.fromResource(resource);
+        List<FormField> formFields = formClass.getFields();
 
-        if (activity == null) {
-            throw new WebApplicationException(Status.NOT_FOUND);
+        Html html = new Html();
+        html.head = new Head();
+        html.head.title = formClass.getLabel();
+        html.head.model = new Model();
+        html.head.model.instance = new Instance();
+        html.head.model.instance.data = new Data();
+        html.head.model.instance.data.id = formClass.getId().asString();
+        html.head.model.instance.data.meta = new Meta();
+        html.head.model.instance.data.meta.instanceID = new InstanceId();
+        html.head.model.instance.data.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
+        for (FormField formField : formFields) {
+            QName qName = new QName("http://www.w3.org/2002/xforms", "field_" + formField.getId().asString());
+            html.head.model.instance.data.jaxbElement.add(new JAXBElement<>(qName, String.class, ""));
         }
-        if (!activity.isEditAllowed()) {
-            throw new WebApplicationException(Status.FORBIDDEN);
+        html.head.model.bind = Lists.newArrayListWithCapacity(formFields.size() + 1);
+        Bind bind = new Bind();
+        bind.nodeset = "/data/meta/instanceID";
+        bind.type = "string";
+        bind.readonly = "true()";
+        bind.calculate = "concat('uuid:',uuid())";
+        html.head.model.bind.add(bind);
+        for (FormField formField : formFields) {
+            OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
+            bind = new Bind();
+            bind.nodeset = "/data/field_" + formField.getId().asString();
+            bind.type = odkFormFieldBuilder.getModelBindType();
+            if (formField.isReadOnly()) bind.readonly = "true()";
+            //TODO Fix this
+            //bind.calculate = formField.getExpression();
+            if (formField.isRequired()) bind.required = "true()";
+            html.head.model.bind.add(bind);
         }
-
-        // Quick fix to allow users to interleave attributes and indicators
-        // together without break the legacy model
-
-        activity.set("fields", sortFieldsTogether(activity));
-
-
-        return Response.ok(new Viewable("/odk/form.ftl", activity)).build();
+        html.body = new Body();
+        html.body.jaxbElement = Lists.newArrayListWithCapacity(formFields.size());
+        for (FormField formField : formFields) {
+            OdkFormFieldBuilder odkFormFieldBuilder = factory.fromFieldType(formField.getType());
+            //FIXME Temporary hack to work around FormClass.fromResource() apparently being incomplete
+            JAXBElement<PresentationElement> presentationElement = odkFormFieldBuilder.createPresentationElement(
+                    "/data/field_" + formField.getId().asString(), formField.getLabel(), formField.getDescription());
+            if (presentationElement.getValue().item != null && presentationElement.getValue().item.size() < 1) continue;
+            html.body.jaxbElement.add(presentationElement);
+            /* End of temporary hack
+            html.body.jaxbElement.add(odkFormFieldBuilder.createPresentationElement("/data/field_" +
+                    formField.getId().asString(), formField.getLabel(), formField.getDescription()));*/
+        }
+        return Response.ok(html).build();
     }
 
     private List<IsFormField> sortFieldsTogether(ActivityDTO activity) {

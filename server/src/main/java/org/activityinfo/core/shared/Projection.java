@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.ReferenceValue;
 
 import java.util.Collections;
 import java.util.Map;
@@ -52,8 +53,8 @@ public class Projection {
         Object value = values.get(path);
         if(value == null) {
             return Collections.emptySet();
-        } else if(value instanceof Set) {
-            return (Set<ResourceId>)value;
+        } else if(value instanceof ReferenceValue) {
+            return ((ReferenceValue)value).getResourceIds();
         } else {
             return Collections.singleton((ResourceId) value);
         }

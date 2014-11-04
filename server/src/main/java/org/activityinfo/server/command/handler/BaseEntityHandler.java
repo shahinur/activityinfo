@@ -27,6 +27,7 @@ import com.google.common.base.Strings;
 import com.google.inject.util.Providers;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
+import org.activityinfo.model.type.TypeRegistry;
 import org.activityinfo.server.database.hibernate.entity.*;
 
 import javax.persistence.EntityManager;
@@ -55,7 +56,8 @@ public class BaseEntityHandler {
         }
 
         if (changes.containsKey("type")) {
-            FieldTypeClass type = (FieldTypeClass) changes.get("type");
+            String typeId = (String) changes.get("type");
+            FieldTypeClass type = TypeRegistry.get().getTypeClass(typeId);
             indicator.setType(type != null ? type.getId() : null);
             if (type != FieldTypeClass.QUANTITY && !changes.containsKey("units")) {
                 indicator.setUnits("");

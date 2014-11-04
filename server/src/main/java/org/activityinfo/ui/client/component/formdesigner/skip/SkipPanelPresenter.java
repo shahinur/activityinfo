@@ -39,14 +39,27 @@ public class SkipPanelPresenter {
     private final FieldWidgetContainer fieldWidgetContainer;
     private final SkipPanel view = new SkipPanel();
     private final Map<SkipRow, SkipRowPresenter> map = Maps.newHashMap();
+    private final RowDataBuilder rowDataBuilder;
 
     public SkipPanelPresenter(final FieldWidgetContainer fieldWidgetContainer) {
         this.fieldWidgetContainer = fieldWidgetContainer;
+        this.rowDataBuilder = new RowDataBuilder(fieldWidgetContainer.getFormDesigner().getFormClass());
 
-        addRow(fieldWidgetContainer);
+        if (fieldWidgetContainer.getFormField().hasRelevanceConditionExpression()) {
+            List<RowData> build = rowDataBuilder.build(fieldWidgetContainer.getFormField().getRelevanceConditionExpression());
+            for (RowData rowData : build) {
+                SkipRowPresenter skipRowPresenter = addRow(fieldWidgetContainer);
+                skipRowPresenter.updateWith(rowData);
+            }
+        }
+
+        // add initial row if expression is not set
+        if (view.getRootPanel().getWidgetCount() == 0) {
+            addRow(fieldWidgetContainer);
+        }
     }
 
-    private void addRow(final FieldWidgetContainer fieldWidgetContainer) {
+    private SkipRowPresenter addRow(final FieldWidgetContainer fieldWidgetContainer) {
         final SkipRowPresenter skipRowPresenter = new SkipRowPresenter(fieldWidgetContainer);
         view.getRootPanel().add(skipRowPresenter.getView());
         map.put(skipRowPresenter.getView(), skipRowPresenter);
@@ -62,11 +75,18 @@ public class SkipPanelPresenter {
             public void onClick(ClickEvent event) {
                 view.getRootPanel().remove(skipRowPresenter.getView());
                 map.remove(skipRowPresenter.getView());
+                setFirstRowJoinFunctionVisible();
             }
         });
 
-        if (view.getRootPanel().getWidgetCount() == 1) { // disable join function for first row
-            skipRowPresenter.getView().getJoinFunction().setVisible(false);
+        setFirstRowJoinFunctionVisible();
+        return skipRowPresenter;
+    }
+
+    private void setFirstRowJoinFunctionVisible() {
+        if (view.getRootPanel().getWidgetCount() > 0) { // disable join function for first row
+            SkipRow firstSkipRow = (SkipRow) view.getRootPanel().getWidget(0);
+            firstSkipRow.getJoinFunction().setVisible(false);
         }
     }
 
@@ -75,7 +95,7 @@ public class SkipPanelPresenter {
     }
 
     public void updateFormField() {
-        fieldWidgetContainer.getFormField().setSkipExpression(buildSkipExpression());
+        fieldWidgetContainer.getFormField().setRelevanceConditionExpression(buildSkipExpression());
     }
 
     private String buildSkipExpression() {

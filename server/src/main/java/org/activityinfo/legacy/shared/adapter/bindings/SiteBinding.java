@@ -1,7 +1,7 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;

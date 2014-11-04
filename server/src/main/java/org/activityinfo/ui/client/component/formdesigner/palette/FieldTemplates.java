@@ -1,7 +1,14 @@
 package org.activityinfo.ui.client.component.formdesigner.palette;
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.barcode.BarcodeType;
+import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.image.ImageType;
+import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.time.LocalDateIntervalType;
+import org.activityinfo.model.type.time.LocalDateType;
 
 import java.util.List;
 
@@ -25,14 +32,19 @@ public class FieldTemplates {
 //        // ReferenceTypes are a bit abstract, we will provide a number of
 //        // concrete types that make will hopefully make sense to the user
 
-        items.add(new TypeClassTemplate(FieldTypeClass.QUANTITY));
-        items.add(new TypeClassTemplate(FieldTypeClass.FREE_TEXT));
-        items.add(new TypeClassTemplate(FieldTypeClass.NARRATIVE));
-        items.add(new TypeClassTemplate(FieldTypeClass.BOOLEAN));
+        items.add(new TypeClassTemplate(QuantityType.TYPE_CLASS));
+        items.add(new TypeClassTemplate(TextType.TYPE_CLASS));
+        items.add(new TypeClassTemplate(NarrativeType.TYPE_CLASS));
+  //      items.add(new TypeClassTemplate(LocalDateType.TYPE_CLASS));
+  //      items.add(new TypeClassTemplate(LocalDateIntervalType.TYPE_CLASS));
 
         items.add(new CheckboxTemplate());
         items.add(new RadioButtonTemplate());
-        
+
+    //    items.add(new TypeClassTemplate(GeoPointType.TYPE_CLASS));
+        items.add(new TypeClassTemplate(BarcodeType.TYPE_CLASS));
+        items.add(new TypeClassTemplate(ImageType.TYPE_CLASS));
+
         return items;
     }
 }

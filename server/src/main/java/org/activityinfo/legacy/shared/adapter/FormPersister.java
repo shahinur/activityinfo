@@ -16,6 +16,8 @@ import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.primitive.BooleanType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
@@ -178,6 +180,7 @@ public class FormPersister {
         indicator.setNameInExpression(field.getNameInExpression());
         indicator.setExpression(field.getExpression());
         indicator.setCalculatedAutomatically(field.getCalculateAutomatically());
+        indicator.setSkipExpression(field.getRelevanceConditionExpression());
 
         if(field.getType() instanceof QuantityType) {
             indicator.setType(FieldTypeClass.QUANTITY);

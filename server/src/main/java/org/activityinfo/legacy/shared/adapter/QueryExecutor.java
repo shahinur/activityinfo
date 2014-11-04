@@ -7,7 +7,7 @@ import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.FieldCriteria;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -99,8 +99,6 @@ public class QueryExecutor {
                     entityQuery.setEntityIds(ids);
                 }
                 return dispatcher.execute(entityQuery).then(new ListResultAdapter<>(new AdminEntityInstanceAdapter()));
-            case ATTRIBUTE_DOMAIN:
-                return dispatcher.execute(new GetSchema()).then(new AttributeInstanceListAdapter(criteria));
 
             case LOCATION_DOMAIN:
                 return dispatcher.execute(new GetLocations(Lists.newArrayList(ids)))
@@ -132,9 +130,6 @@ public class QueryExecutor {
         }
 
         switch (formClassId.getDomain()) {
-            case ATTRIBUTE_GROUP_DOMAIN:
-                return dispatcher.execute(new GetSchema()).then(new AttributeInstanceListAdapter(criteria));
-
             case ADMIN_LEVEL_DOMAIN:
                 return dispatcher.execute(adminQuery(formClassId))
                                  .then(new ListResultAdapter<>(new AdminEntityInstanceAdapter()));
@@ -147,7 +142,10 @@ public class QueryExecutor {
                 return dispatcher.execute(new GetSchema())
                                  .then(new PartnerListExtractor(criteria))
                                  .then(concatMap(new PartnerInstanceAdapter(formClassId)));
-
+            case PROJECT_CLASS_DOMAIN:
+                return dispatcher.execute(new GetSchema())
+                        .then(new ProjectListExtractor(criteria))
+                        .then(concatMap(new ProjectInstanceAdapter(formClassId)));
             default:
                 return Promise.rejected(new UnsupportedOperationException(
                         "domain not yet implemented: " + formClassId.getDomain()));

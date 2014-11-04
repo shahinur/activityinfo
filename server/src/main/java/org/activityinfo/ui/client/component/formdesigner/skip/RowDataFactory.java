@@ -24,6 +24,7 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
 import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldValue;
 
 /**
  * @author yuriyz on 7/25/14.
@@ -33,11 +34,11 @@ public class RowDataFactory {
     private RowDataFactory() {
     }
 
-    public static RowData create(SkipRow skipRow, Object value, FormClass formClass) {
+    public static RowData create(SkipRow skipRow, FieldValue value, FormClass formClass) {
         final ResourceId fieldId = ResourceId.create(skipRow.getFormfield().getValue(skipRow.getFormfield().getSelectedIndex()));
 
         final RowData rowData = new RowData();
-        rowData.setFieldId(formClass.getField(fieldId));
+        rowData.setFormField(formClass.getField(fieldId));
         rowData.setJoinFunction(BooleanFunctions.getBooleanFunction(skipRow.getJoinFunction().getValue(skipRow.getJoinFunction().getSelectedIndex())));
         rowData.setFunction(BooleanFunctions.getBooleanFunction(skipRow.getFunction().getValue(skipRow.getFunction().getSelectedIndex())));
         rowData.setValue(value);

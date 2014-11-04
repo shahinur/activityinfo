@@ -2,7 +2,7 @@ package org.activityinfo.ui.client.pageView;
 
 import com.google.common.base.Function;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.model.form.FormClass;

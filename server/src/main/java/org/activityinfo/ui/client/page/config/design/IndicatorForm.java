@@ -40,6 +40,9 @@ import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.barcode.BarcodeType;
+import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
 import org.activityinfo.ui.client.widget.legacy.OnlyValidFieldBinding;
@@ -51,7 +54,7 @@ class IndicatorForm extends AbstractDesignForm {
     private final UiConstants constants = GWT.create(UiConstants.class);
 
     private final FormBinding binding;
-    private final MappingComboBox<FieldTypeClass> typeCombo;
+    private final MappingComboBox<String> typeCombo;
     private final TextField<String> unitsField;
     private final MappingComboBox aggregationCombo;
     private final TextField<String> expressionField;
@@ -91,10 +94,12 @@ class IndicatorForm extends AbstractDesignForm {
 
         typeCombo = new MappingComboBox<>();
         typeCombo.setFieldLabel(constants.type());
-        typeCombo.add(FieldTypeClass.QUANTITY, I18N.CONSTANTS.fieldTypeQuantity());
-        typeCombo.add(FieldTypeClass.FREE_TEXT, I18N.CONSTANTS.fieldTypeText());
-        typeCombo.add(FieldTypeClass.NARRATIVE, I18N.CONSTANTS.fieldTypeNarrative());
-        typeCombo.add(FieldTypeClass.BOOLEAN, I18N.CONSTANTS.fieldTypeBoolean());
+        typeCombo.add(FieldTypeClass.QUANTITY.getId(), I18N.CONSTANTS.fieldTypeQuantity());
+        typeCombo.add(FieldTypeClass.FREE_TEXT.getId(), I18N.CONSTANTS.fieldTypeText());
+        typeCombo.add(FieldTypeClass.NARRATIVE.getId(), I18N.CONSTANTS.fieldTypeNarrative());
+        typeCombo.add(BooleanType.TYPE_CLASS.getId(), I18N.CONSTANTS.fieldTypeBoolean());
+        typeCombo.add(BarcodeType.TYPE_CLASS.getId(), I18N.CONSTANTS.fieldTypeBoolean());
+
         binding.addFieldBinding(new MappingComboBoxBinding(typeCombo, "type"));
         this.add(typeCombo);
 
@@ -118,9 +123,9 @@ class IndicatorForm extends AbstractDesignForm {
                                 "available for activities with monthly reporting. " +
                                 "(We're working on it!)"));
 
-        typeCombo.addSelectionChangedListener(new SelectionChangedListener<MappingComboBox.Wrapper<FieldTypeClass>>() {
+        typeCombo.addSelectionChangedListener(new SelectionChangedListener<MappingComboBox.Wrapper<String>>() {
             @Override
-            public void selectionChanged(SelectionChangedEvent<MappingComboBox.Wrapper<FieldTypeClass>> wrapperSelectionChangedEvent) {
+            public void selectionChanged(SelectionChangedEvent<MappingComboBox.Wrapper<String>> wrapperSelectionChangedEvent) {
                 setState();
             }
         });
@@ -250,7 +255,7 @@ class IndicatorForm extends AbstractDesignForm {
 
     private void setState() {
         if (typeCombo.getValue() != null) {
-            FieldTypeClass selectedType = typeCombo.getValue().getWrappedValue();
+            FieldTypeClass selectedType = TypeRegistry.get().get().getTypeClass(typeCombo.getValue().getWrappedValue());
 
             unitsField.setVisible(selectedType == FieldTypeClass.QUANTITY);
             unitsField.setAllowBlank(selectedType != FieldTypeClass.QUANTITY);

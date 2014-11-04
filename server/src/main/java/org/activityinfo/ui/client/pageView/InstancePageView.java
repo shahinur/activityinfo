@@ -1,7 +1,7 @@
 package org.activityinfo.ui.client.pageView;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.activityinfo.core.shared.form.FormInstance;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.DisplayWidget;
 

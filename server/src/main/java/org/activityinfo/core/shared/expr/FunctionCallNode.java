@@ -32,9 +32,19 @@ public class FunctionCallNode<T, K> extends ExprNode<T> {
         return function.applyReal(arguments);
     }
 
+    @Nonnull
+    public ExprFunction<T, K> getFunction() {
+        return function;
+    }
+
     @Override
     public String toString() {
-        return arguments.get(0) + " " + function.getId() + " " + arguments.get(1);
+        return asExpression();
+    }
+
+    @Override
+    public String asExpression() {
+        return arguments.get(0) + "" + function.getId() + "" + arguments.get(1);
     }
 
     @Override

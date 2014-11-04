@@ -16,12 +16,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The smallest logical unit of data entry.
  */
 public class FormField extends FormElement {
+
     private final ResourceId id;
-    private String name;
     private String label;
     private String description;
     private String expression;
-    private String skipExpression;
+    private String relevanceConditionExpression;
     private FieldType type;
     private boolean readOnly;
     private boolean visible = true;
@@ -36,16 +36,9 @@ public class FormField extends FormElement {
         this.id = id;
     }
 
-    public FormField(ResourceId formClassId, String name) {
-        this.id = FieldId.fieldId(formClassId, name);
-        this.name = name;
-    }
-
     public ResourceId getId() {
         return id;
     }
-
-    public String getName() { return name; }
 
     @NotNull
     public String getLabel() {
@@ -57,12 +50,12 @@ public class FormField extends FormElement {
         return this;
     }
 
-    public String getSkipExpression() {
-        return skipExpression;
+    public String getRelevanceConditionExpression() {
+        return relevanceConditionExpression;
     }
 
-    public void setSkipExpression(String skipExpression) {
-        this.skipExpression = skipExpression;
+    public void setRelevanceConditionExpression(String relevanceConditionExpression) {
+        this.relevanceConditionExpression = relevanceConditionExpression;
     }
 
     /**
@@ -80,6 +73,7 @@ public class FormField extends FormElement {
     }
 
     public FieldType getType() {
+        assert type != null : "type is missing for " + id;
         return type;
     }
 
@@ -113,8 +107,8 @@ public class FormField extends FormElement {
         return !Strings.isNullOrEmpty(expression);
     }
 
-    public boolean hasSkipExpression() {
-        return !Strings.isNullOrEmpty(skipExpression);
+    public boolean hasRelevanceConditionExpression() {
+        return !Strings.isNullOrEmpty(relevanceConditionExpression);
     }
 
     public FormField setExpression(String expression) {
@@ -136,12 +130,13 @@ public class FormField extends FormElement {
     /**
      * @return true if this field is visible to the user
      */
-    boolean isVisible() {
+    public boolean isVisible() {
         return visible;
     }
 
-    public void setVisible(boolean visible) {
+    public FormField setVisible(boolean visible) {
         this.visible = visible;
+        return this;
     }
 
     public String getNameInExpression() {
@@ -212,11 +207,13 @@ public class FormField extends FormElement {
         assert type != null : id + " has no type";
 
         Record record = new Record();
-        record.set("name", name);
+        record.set("id", id.asString());
         record.set("label", label);
         record.set("type", toRecord(type));
         record.set("required", required);
         record.set("expression", expression);
+        record.set("visible", visible);
+        record.set("relevanceConditionExpression", relevanceConditionExpression);
 
         return record;
     }
@@ -224,18 +221,24 @@ public class FormField extends FormElement {
     private Record toRecord(FieldType type) {
         Record record = new Record();
         record.set("typeClass", type.getTypeClass().getId());
-        record.set("parameters", type.getParameters());
+        if(type instanceof ParametrizedFieldType) {
+            record.set("parameters", ((ParametrizedFieldType)type).getParameters());
+        }
         return record;
     }
 
-    public static FormElement fromRecord(ResourceId formClassId, Record record) {
-        FormField formField = new FormField(formClassId, record.getString("name"))
+    public static FormElement fromRecord(Record record) {
+        FormField formField = new FormField(ResourceId.create(record.getString("id")))
             .setLabel(record.getString("label"))
             .setType(typeFromRecord(record.getRecord("type")))
+            .setVisible(record.getBoolean("visible", true))
             .setRequired(record.getBoolean("required", false));
 
         if(record.has("expression")) {
             formField.setExpression(record.getString("expression"));
+        }
+        if (record.has("relevanceConditionExpression")) {
+            formField.setRelevanceConditionExpression(record.getString("relevanceConditionExpression"));
         }
         return formField;
     }
@@ -243,16 +246,11 @@ public class FormField extends FormElement {
     private static FieldType typeFromRecord(Record record) {
         String typeClassId = record.getString("typeClass");
         FieldTypeClass typeClass = TypeRegistry.get().getTypeClass(typeClassId);
-        return typeClass.createType(record.isRecord("parameters"));
-    }
-
-
-    public void setCalculation(String calculation) {
-        this.calculation = calculation;
-    }
-
-    public String getCalculation() {
-        return calculation;
+        if(typeClass instanceof ParametrizedFieldTypeClass) {
+            return ((ParametrizedFieldTypeClass)typeClass).deserializeType(record.getRecord("parameters"));
+        } else {
+            return typeClass.createType();
+        }
     }
 
 }

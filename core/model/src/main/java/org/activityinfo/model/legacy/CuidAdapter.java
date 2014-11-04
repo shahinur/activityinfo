@@ -30,6 +30,7 @@ public class CuidAdapter {
 
     public static final char ATTRIBUTE_GROUP_FIELD_DOMAIN = 'Q';
 
+    public static final char MONTHLY_REPORT = 'm';
 
     public static final char ATTRIBUTE_DOMAIN = 't';
 
@@ -37,7 +38,7 @@ public class CuidAdapter {
 
     public static final char ADMIN_LEVEL_DOMAIN = 'E';
 
-    public static final char ADMIN_ENTITY_DOMAIN = 'e';
+    public static final char ADMIN_ENTITY_DOMAIN = 'z';
 
     public static final char PROJECT_CLASS_DOMAIN = 'R';
 
@@ -61,6 +62,8 @@ public class CuidAdapter {
     public static final int COMMENT_FIELD = 14;
 
     public static final int BLOCK_SIZE = 10;
+    public static final String CLASS_FIELD = "_class";
+
 
     /**
      * Avoid instance creation.
@@ -91,6 +94,10 @@ public class CuidAdapter {
         return ResourceId.create(domain + block(id));
     }
 
+    public static final ResourceId resourceId(char domain, int id) {
+        return cuid(domain, id);
+    }
+
     public static int getLegacyIdFromCuid(ResourceId id) {
         if(id.getDomain() == '_') {
             return 0;
@@ -99,19 +106,14 @@ public class CuidAdapter {
         }
     }
 
-    /**
-     * @return the {@code FormField} ResourceId for the Partner field of a given Activity {@code FormClass}
-     */
-    public static ResourceId partnerField(int activityId) {
-        return field(activityFormClass(activityId), PARTNER_FIELD);
-    }
-
-    public static ResourceId projectField(int activityId) {
-        return field(activityFormClass(activityId), PROJECT_FIELD);
-    }
-
+    @Deprecated
     public static ResourceId partnerInstanceId(int partnerId) {
         return cuid(PARTNER_DOMAIN, partnerId);
+    }
+
+    public static ResourceId partnerInstanceId(int databaseId, int partnerId) {
+        return ResourceId.create(String.valueOf(DATABASE_DOMAIN) + databaseId +
+                                 String.valueOf(PARTNER_DOMAIN) + partnerId);
     }
 
     /**

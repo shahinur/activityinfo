@@ -35,6 +35,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.ui.client.component.form.SimpleFormPanel;
 import org.activityinfo.ui.client.component.form.VerticalFieldContainer;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
@@ -57,6 +58,8 @@ public class PropertiesPresenter {
     private HandlerRegistration descriptionKeyUpHandler;
     private HandlerRegistration requiredValueChangeHandler;
     private HandlerRegistration readonlyValueChangeHandler;
+    private HandlerRegistration visibleValueChangeHandler;
+    private HandlerRegistration skipButtonClickHandler;
 
     public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
         this.view = view;
@@ -90,6 +93,7 @@ public class PropertiesPresenter {
 
         view.getRequiredGroup().setVisible(false);
         view.getReadOnlyGroup().setVisible(false);
+        view.getVisibleGroup().setVisible(false);
         view.getSkipGroup().setVisible(false);
 
         if (labelKeyUpHandler != null) {
@@ -104,6 +108,12 @@ public class PropertiesPresenter {
         if (readonlyValueChangeHandler != null) {
             readonlyValueChangeHandler.removeHandler();
         }
+        if (skipButtonClickHandler != null) {
+            skipButtonClickHandler.removeHandler();
+        }
+        if (visibleValueChangeHandler != null) {
+            visibleValueChangeHandler.removeHandler();
+        }
     }
 
     private void show(final FieldWidgetContainer fieldWidgetContainer) {
@@ -114,14 +124,16 @@ public class PropertiesPresenter {
         view.setVisible(true);
         view.getRequiredGroup().setVisible(true);
         view.getReadOnlyGroup().setVisible(true);
+        view.getVisibleGroup().setVisible(true);
         view.getSkipGroup().setVisible(true);
 
         view.getLabel().setValue(Strings.nullToEmpty(formField.getLabel()));
         view.getDescription().setValue(Strings.nullToEmpty(formField.getDescription()));
         view.getRequired().setValue(formField.isRequired());
+        view.getVisible().setValue(formField.isVisible());
 
         setSkipState(formField);
-        view.getSkipButton().addClickHandler(new ClickHandler() {
+        skipButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 SkipDialog dialog = new SkipDialog(fieldWidgetContainer, PropertiesPresenter.this);
@@ -157,23 +169,42 @@ public class PropertiesPresenter {
                 fieldWidgetContainer.syncWithModel();
             }
         });
+        visibleValueChangeHandler = view.getVisible().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
+                formField.setVisible(view.getVisible().getValue());
+                if (!view.getVisible().getValue()) {
+                    // invisible formfield must not be required -> user is not able to set value for invisible field
+                    view.getRequired().setValue(false);
+                    formField.setRequired(false);
+                }
+                fieldWidgetContainer.syncWithModel();
+            }
+        });
 
         ResourceLocator locator = fieldWidgetContainer.getFormDesigner().getResourceLocator();
         currentDesignWidget = new SimpleFormPanel(locator,
                 new VerticalFieldContainer.Factory(),
                 new FormFieldWidgetFactory(locator), false);
-        currentDesignWidget.show(Resources.createResource(formField.getType().getParameters()));
+        if(formField.getType() instanceof ParametrizedFieldType) {
+            ParametrizedFieldType parametrizedType = (ParametrizedFieldType) formField.getType();
+            currentDesignWidget.asWidget().setVisible(true);
+            currentDesignWidget.show(Resources.createResource(parametrizedType.getParameters()));
+
+        } else {
+            currentDesignWidget.asWidget().setVisible(false);
+        }
         view.getPanel().add(currentDesignWidget);
     }
 
     public void setSkipState(FormField formField) {
-        view.getSkipState().setText(formField.hasSkipExpression() ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
-        view.getSkipExpression().setInnerText(formField.getSkipExpression());
+        view.getRelevanceState().setText(formField.hasRelevanceConditionExpression() ? I18N.CONSTANTS.defined() : I18N.CONSTANTS.no());
+        view.getRelevanceExpression().setInnerText(formField.getRelevanceConditionExpression());
 
-        if (formField.hasSkipExpression()) {
-            view.getSkipExpression().removeClassName("hide");
-        } else if (!view.getSkipExpression().getClassName().contains("hide")) {
-            view.getSkipExpression().addClassName("hide");
+        if (formField.hasRelevanceConditionExpression()) {
+            view.getRelevanceExpression().removeClassName("hide");
+        } else if (!view.getRelevanceExpression().getClassName().contains("hide")) {
+            view.getRelevanceExpression().addClassName("hide");
         }
     }
 
