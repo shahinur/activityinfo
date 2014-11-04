@@ -1,27 +1,17 @@
 package org.activityinfo.ui.client.component.filter;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.KeyListener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.ListViewEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.CheckBoxListView;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.ListViewSelectionModel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.google.common.base.Function;
-import com.google.common.base.Strings;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.common.collect.Sets;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
@@ -29,51 +19,36 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.GetLocations;
-import org.activityinfo.legacy.shared.command.GetPivotLocations;
 import org.activityinfo.legacy.shared.command.PivotSites;
+import org.activityinfo.legacy.shared.command.PivotSites.PivotResult;
 import org.activityinfo.legacy.shared.command.PivotSites.ValueType;
-import org.activityinfo.legacy.shared.command.result.LocationResult;
+import org.activityinfo.legacy.shared.command.result.Bucket;
 import org.activityinfo.legacy.shared.model.LocationDTO;
+import org.activityinfo.legacy.shared.model.LocationTypeDTO;
+import org.activityinfo.legacy.shared.reports.content.EntityCategory;
 import org.activityinfo.legacy.shared.reports.model.Dimension;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.filter.FilterToolBar.ApplyFilterEvent;
 import org.activityinfo.ui.client.component.filter.FilterToolBar.ApplyFilterHandler;
 import org.activityinfo.ui.client.component.filter.FilterToolBar.RemoveFilterEvent;
 import org.activityinfo.ui.client.component.filter.FilterToolBar.RemoveFilterHandler;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class LocationFilterPanel extends ContentPanel implements FilterPanel {
 
-    private static final int TIMER_DELAY = 100;
-
-    private Dispatcher dispatcher;
+    private Dispatcher service;
     private FilterToolBar filterToolBar;
     private Filter baseFilter = new Filter();
     private Filter value = new Filter();
 
-    private ListStore<LocationDTO> store = new ListStore<>();
-    private ListStore<LocationDTO> filterComboboxStore = new ListStore<>();
-
-    private ComboBox<LocationDTO> filterCombobox;
-    private ListView<LocationDTO> listView;
-    private ListViewSelectionModel<LocationDTO> listSelectionModel = new ListViewSelectionModel<LocationDTO>();
-    private Button removeSelectedItem = new Button(I18N.CONSTANTS.removeSelectedLocations(), IconImageBundle.ICONS.remove());
-
-    private final Timer fetchLocationsTimer = new Timer() {
-        @Override
-        public void run() {
-            fetchLocations();
-        }
-    };
+    private ListStore<LocationDTO> store;
+    private CheckBoxListView<LocationDTO> listView;
 
     @Inject
-    public LocationFilterPanel(Dispatcher dispatcher) {
-        this.dispatcher = dispatcher;
+    public LocationFilterPanel(Dispatcher service) {
+        this.service = service;
         initializeComponent();
 
         createFilterToolBar();
@@ -84,7 +59,7 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
         setHeadingText(I18N.CONSTANTS.filterByLocation());
         setIcon(IconImageBundle.ICONS.filter());
 
-        setLayout(new RowLayout(Style.Orientation.VERTICAL));
+        setLayout(new FitLayout());
         setScrollMode(Style.Scroll.NONE);
         setHeadingText(I18N.CONSTANTS.filterByLocation());
         setIcon(IconImageBundle.ICONS.filter());
@@ -92,7 +67,6 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
 
     private void createFilterToolBar() {
         filterToolBar = new FilterToolBar();
-        filterToolBar.add(removeSelectedItem);
         filterToolBar.addApplyFilterHandler(new ApplyFilterHandler() {
 
             @Override
@@ -109,22 +83,6 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
             }
         });
         setTopComponent(filterToolBar);
-
-        removeSelectedItem.setEnabled(false);
-        removeSelectedItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                for (LocationDTO location : listSelectionModel.getSelection()) {
-                    store.remove(location);
-                }
-            }
-        });
-        listSelectionModel.addSelectionChangedListener(new SelectionChangedListener<LocationDTO>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<LocationDTO> se) {
-                removeSelectedItem.setEnabled(se.getSelectedItem() != null);
-            }
-        });
     }
 
     protected void applyFilter() {
@@ -144,52 +102,31 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
     private List<Integer> getSelectedIds() {
         List<Integer> list = new ArrayList<Integer>();
 
-        for (LocationDTO model : store.getModels()) {
+        for (LocationDTO model : listView.getChecked()) {
             list.add(model.getId());
         }
         return list;
     }
 
     private void createList() {
-        filterCombobox = new ComboBox<LocationDTO>();
-        filterCombobox.setEmptyText(I18N.CONSTANTS.searchForLocationToAdd());
-        filterCombobox.setDisplayField("name");
-        filterCombobox.setStore(filterComboboxStore);
-        filterCombobox.setTypeAhead(true);
-
-        filterCombobox.addSelectionChangedListener(new SelectionChangedListener<LocationDTO>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<LocationDTO> se) {
-                if (se.getSelectedItem() != null && !store.contains(se.getSelectedItem())) {
-                    store.add(se.getSelectedItem());
-                    filterToolBar.setApplyFilterEnabled(true);
-
-                    filterCombobox.setRawValue(""); // reset typed filter
-                }
-            }
-        });
-        filterCombobox.addKeyListener(new KeyListener() {
-            @Override
-            public void componentKeyUp(ComponentEvent event) {
-                String nameFilter = filterCombobox.getRawValue();
-                if (!Strings.isNullOrEmpty(nameFilter)) {
-                    fetchLocationsTimer.schedule(TIMER_DELAY);
-                }
-            }
-        });
-
-        listView = new ListView<LocationDTO>();
+        store = new ListStore<LocationDTO>();
+        listView = new CheckBoxListView<LocationDTO>();
         listView.setStore(store);
         listView.setDisplayProperty("name");
-        listView.setSelectionModel(listSelectionModel);
+        listView.addListener(Events.Select, new Listener<ListViewEvent<LocationTypeDTO>>() {
 
-        add(filterCombobox, new RowData(1, -1));
-        add(listView, new RowData(1, 1));
+            @Override
+            public void handleEvent(ListViewEvent<LocationTypeDTO> be) {
+                filterToolBar.setApplyFilterEnabled(true);
+            }
+        });
+        add(listView);
     }
 
     protected void clearFilter() {
-        store.removeAll();
-
+        for (LocationDTO location : listView.getStore().getModels()) {
+            listView.setChecked(location, false);
+        }
         value = new Filter();
         filterToolBar.setApplyFilterEnabled(false);
         filterToolBar.setRemoveFilterEnabled(false);
@@ -206,37 +143,21 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
     }
 
     @Override
-    public void setValue(final Filter value, final boolean fireEvents) {
+    public void setValue(Filter value, boolean fireEvents) {
         this.value = new Filter();
         this.value.addRestriction(DimensionType.Location, value.getRestrictions(DimensionType.Location));
-
-        applyInternalValue()
-                .then(new Function<LocationResult, Object>() {
-                    @Nullable
-                    @Override
-                    public Object apply(@Nullable LocationResult input) {
-                        if (fireEvents) {
-                            ValueChangeEvent.fire(LocationFilterPanel.this, value);
-                        }
-                        return null;
-                    }
-                });
-
+        applyInternalValue();
+        if (fireEvents) {
+            ValueChangeEvent.fire(this, this.value);
+        }
     }
 
-    private Promise<LocationResult> applyInternalValue() {
-        Promise<LocationResult> promise = new Promise<>();
-        promise.then(new Function<LocationResult, Object>() {
-            @Override
-            public Object apply(LocationResult input) {
-                filterToolBar.setApplyFilterEnabled(false);
-                filterToolBar.setRemoveFilterEnabled(value.isRestricted(DimensionType.Location));
-                return null;
-            }
-        });
-        dispatcher.execute(new GetLocations(new ArrayList<>(value.getRestrictions(DimensionType.Location))), promise);
-
-        return promise;
+    private void applyInternalValue() {
+        for (LocationDTO model : listView.getStore().getModels()) {
+            listView.setChecked(model, value.getRestrictions(DimensionType.Location).contains(model.getId()));
+        }
+        filterToolBar.setApplyFilterEnabled(false);
+        filterToolBar.setRemoveFilterEnabled(value.isRestricted(DimensionType.Location));
     }
 
     @Override
@@ -251,43 +172,45 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
 
         // avoid fetching a list of ALL locations if no indicators have been selected
         if (!filter.isRestricted(DimensionType.Indicator)) {
-            filterComboboxStore.removeAll();
+            store.removeAll();
             return;
         }
 
         if (baseFilter == null || !baseFilter.equals(filter)) {
-            baseFilter = filter;
+            PivotSites pivotSites = new PivotSites();
+            pivotSites.setDimensions(Sets.<Dimension>newHashSet(new Dimension(DimensionType.Location)));
+            pivotSites.setFilter(filter);
+            pivotSites.setValueType(ValueType.DIMENSION);
+            service.execute(pivotSites, new AsyncCallback<PivotResult>() {
 
-            fetchLocationsTimer.schedule(TIMER_DELAY);
+                @Override
+                public void onFailure(Throwable caught) {
+                    Log.error(caught.getMessage(), caught);
+                }
 
+                @Override
+                public void onSuccess(PivotResult result) {
+                    store.removeAll();
+                    List<Integer> ids = getSelectedIds();
+
+                    for (Bucket bucket : result.getBuckets()) {
+                        LocationDTO dto = new LocationDTO();
+                        dto.setId(((EntityCategory) bucket.getCategory(new Dimension(DimensionType.Location))).getId());
+                        dto.setName(bucket.getCategory(new Dimension(DimensionType.Location))
+                                .getLabel());
+                        store.add(dto);
+                    }
+                    applyInternalValue();
+                    for (LocationDTO location : store.getModels()) {
+                        if (ids.contains(location.getId())) {
+                            listView.setChecked(location, true);
+                        }
+                    }
+
+                    baseFilter = filter;
+                }
+
+            });
         }
-    }
-
-    private void fetchLocations() {
-        if (baseFilter == null || baseFilter.isNull()) {
-            return;
-        }
-
-        final PivotSites pivotSites = new PivotSites();
-        pivotSites.setDimensions(Sets.newHashSet(new Dimension(DimensionType.Location)));
-        pivotSites.setFilter(baseFilter);
-        pivotSites.setValueType(ValueType.DIMENSION);
-
-        String nameFilter = filterCombobox.getRawValue();
-
-        dispatcher.execute(new GetPivotLocations(pivotSites, nameFilter), new AsyncCallback<LocationResult>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                Log.error(caught.getMessage(), caught);
-            }
-
-            @Override
-            public void onSuccess(LocationResult result) {
-                filterComboboxStore.removeAll();
-                filterComboboxStore.add(result.getData());
-            }
-        });
-
-
     }
 }
