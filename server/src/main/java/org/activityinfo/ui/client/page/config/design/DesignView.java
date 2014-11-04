@@ -211,8 +211,8 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
         toolBar.add(new SeparatorMenuItem());
 
-        toolBar.addButton(UIActions.EDIT, "Open Form Designer", IconImageBundle.ICONS.edit());
-        toolBar.addButton(UIActions.OPEN_TABLE, "Open Table", IconImageBundle.ICONS.table());
+        toolBar.addButton(UIActions.EDIT, I18N.CONSTANTS.openFormDesigner(), IconImageBundle.ICONS.edit());
+        toolBar.addButton(UIActions.OPEN_TABLE, I18N.CONSTANTS.openTable(), IconImageBundle.ICONS.table());
         toolBar.addDeleteButton();
 
         toolBar.add(new SeparatorToolItem());

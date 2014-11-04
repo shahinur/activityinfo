@@ -3435,7 +3435,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Line")
     String line();
 
-    @DefaultStringValue("Set expression if you would like to calculate indicator value dynamically (otherwise leave blank). Example: [A]+[B]+([C]/[D])")
+    @DefaultStringValue("Set expression if you would like to calculate indicator value dynamically (otherwise leave blank). Example: {A}+{B}+({C}/{D})")
     String calculatedIndicatorExplanation();
 
     @DefaultStringValue("Calculation")
@@ -3476,8 +3476,9 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Relevance")
     String relevance();
+    
     @DefaultStringValue("Form Category")
-    String formCategory();
+    String formCategory(); 
 
     @DefaultStringValue("Skip logic")
     String skipLogic();
@@ -3490,4 +3491,17 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Visible")
     String visible();
+
+    @DefaultStringValue("Search for location to add...")
+    String searchForLocationToAdd();
+
+    @DefaultStringValue("Sorry, your permissions have changed and you are no longer authorized to perform this action.")
+    @Key("permissionChangedError")
+    String permissionChangedError();
+
+    @DefaultStringValue("Open Form Designer")
+    String openFormDesigner();
+
+    @DefaultStringValue("Open Table")
+    String openTable();
 }

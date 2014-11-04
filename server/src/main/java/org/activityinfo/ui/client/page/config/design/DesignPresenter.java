@@ -218,7 +218,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                 }
             });
         } else if(UIActions.EDIT.equals(actionId)) {
-            IsFormClass formClass = (IsFormClass) view.getSelection();
+            IsFormClass formClass = getSelectedActivity(view.getSelection());
             eventBus.fireEvent(new NavigationEvent(
                     NavigationHandler.NAVIGATION_REQUESTED,
                     new InstancePlace(formClass.getResourceId(), "design")));
@@ -406,13 +406,20 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     }
 
     private boolean canEditWithFormDesigner(ModelData selectedItem) {
-        if(!(selectedItem instanceof ActivityDTO)) {
-            return false;
-        }
-        ActivityDTO activity = (ActivityDTO)selectedItem;
+        ActivityDTO activity = getSelectedActivity(selectedItem);
+        return activity != null && activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE;
+    }
 
-        // we still don't have a plan for monthly reporting
-        return activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE;
+    private ActivityDTO getSelectedActivity(ModelData selectedItem) {
+        if (selectedItem instanceof ActivityDTO) {
+            return (ActivityDTO) selectedItem;
+        } else if (selectedItem instanceof AttributeGroupFolder ||
+                selectedItem instanceof IndicatorFolder ||
+                selectedItem instanceof IndicatorDTO ||
+                selectedItem instanceof AttributeDTO) {
+            return getSelectedActivity(treeStore.getParent(selectedItem));
+        }
+        return null;
     }
 
     @Override

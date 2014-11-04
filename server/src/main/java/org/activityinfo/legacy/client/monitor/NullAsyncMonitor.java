@@ -52,7 +52,7 @@ public class NullAsyncMonitor implements AsyncMonitor {
     }
 
     @Override
-    public void onServerError() {
+    public void onServerError(Throwable e) {
 
     }
 }
