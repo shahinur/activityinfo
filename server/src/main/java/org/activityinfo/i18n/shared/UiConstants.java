@@ -3504,4 +3504,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Open Table")
     String openTable();
+
+    @DefaultStringValue("Remove selected")
+    String removeSelectedLocations();
 }
