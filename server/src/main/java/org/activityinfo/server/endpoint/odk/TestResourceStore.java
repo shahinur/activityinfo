@@ -1,55 +1,54 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.legacy.shared.command.CreateSite;
-import org.activityinfo.model.auth.AuthenticatedUser;
+import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.service.store.ResourceStore;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.server.command.ResourceLocatorSync;
 
-import java.util.Iterator;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Map;
 
-/**
- * Created by alex on 11/5/14.
- */
-public class TestResourceStore implements ResourceStore {
-    public TestResourceStore load(String s) {
-        throw new UnsupportedOperationException();
-    }
+public class TestResourceStore implements ResourceLocatorSync {
+
+    private Optional<FormInstance> lastUpdated = Optional.absent();
+
+    private Map<ResourceId, Resource> resources = Maps.newHashMap();
 
     @Override
-    public Iterator<Resource> openCursor(ResourceId formClassId) {
-        throw new UnsupportedOperationException();
-
+    public void persist(FormInstance formInstance) {
+        lastUpdated = Optional.of(formInstance);
     }
 
     @Override
     public Resource get(ResourceId resourceId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void createResource(ResourceId resourceId, Resource resource) {
-        throw new UnsupportedOperationException();
-
-    }
-
-    @Override
-    public Resource get(AuthenticatedUser user, ResourceId resourceId) {
-        return null;
-    }
-
-    @Override
-    public void put(AuthenticatedUser user, Resource resource) {
-
-    }
-
-    @Override
-    public void create(AuthenticatedUser user, Resource backupBlobId) {
-
+        Resource resource = resources.get(resourceId);
+        if(resource == null) {
+            throw new IllegalArgumentException(resourceId.asString());
+        }
+        return resource.copy();
     }
 
     public Resource getLastUpdated() {
-        throw new UnsupportedOperationException();
+        return lastUpdated.get().asResource();
+    }
 
+    public TestResourceStore load(String resourceName) throws IOException {
+        URL url = getClass().getResource(resourceName);
+        JsonParser parser = new JsonParser();
+        String json = com.google.common.io.Resources.toString(url, Charsets.UTF_8);
+        JsonArray array = parser.parse(json).getAsJsonArray();
+        for(int i=0;i!=array.size();++i) {
+            Resource resource = Resources.fromJson(array.get(i).getAsJsonObject());
+            resources.put(resource.getId(), resource);
+            System.out.println("Loaded " + resource.getId());
+        }
+        return this;
     }
 }

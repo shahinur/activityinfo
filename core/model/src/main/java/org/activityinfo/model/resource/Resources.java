@@ -57,10 +57,13 @@ public class Resources {
 
     public static Resource fromJson(String json) {
         JsonParser parser = new JsonParser();
-        Resource resource = Resources.createResource();
-
         JsonObject resourceObject = parser.parse(json).getAsJsonObject();
 
+        return fromJson(resourceObject);
+    }
+
+    public static Resource fromJson(JsonObject resourceObject) {
+        Resource resource = Resources.createResource();
         for(Map.Entry<String, JsonElement> property : resourceObject.entrySet()) {
             String name = property.getKey();
             switch (name) {

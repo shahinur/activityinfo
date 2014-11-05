@@ -187,7 +187,6 @@ public class FormClass implements IsResource, FormElementContainer {
         FormClass formClass = new FormClass(resource.getId());
         formClass.setOwnerId(resource.getOwnerId());
         formClass.setLabel(Strings.nullToEmpty(resource.isString(LABEL_FIELD_ID)));
-        formClass.setLabel(resource.getString("label"));
         formClass.elements.addAll(fromRecords(resource.getRecordList("elements")));
         return formClass;
     }

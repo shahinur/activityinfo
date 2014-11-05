@@ -16,10 +16,11 @@ import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.model.type.primitive.TextValue;
+import org.activityinfo.server.command.ResourceLocatorSync;
+import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
 import org.activityinfo.service.blob.OdkFormSubmissionBackupService;
-import org.activityinfo.service.store.ResourceStore;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,13 +54,13 @@ public class FormSubmissionResource {
     private static final Logger LOGGER = Logger.getLogger(FormSubmissionResource.class.getName());
 
     final private OdkFieldValueParserFactory factory;
-    final private ResourceStore locator;
+    final private ResourceLocatorSync locator;
     final private AuthenticationTokenService authenticationTokenService;
     final private BlobFieldStorageService blobFieldStorageService;
     final private OdkFormSubmissionBackupService odkFormSubmissionBackupService;
 
     @Inject
-    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceStore locator,
+    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceLocatorSync locator,
                                   AuthenticationTokenService authenticationTokenService,
                                   BlobFieldStorageService blobFieldStorageService,
                                   OdkFormSubmissionBackupService odkFormSubmissionBackupService) {
@@ -130,7 +131,7 @@ public class FormSubmissionResource {
                         throw new RuntimeException(e);
                     }
 
-                    Resource resource = locator.get(user, CuidAdapter.activityFormClass(formClassId));
+                    Resource resource = locator.get(CuidAdapter.activityFormClass(formClassId));
                     FormClass formClass = FormClass.fromResource(resource);
                     FormInstance formInstance = new FormInstance(ResourceId.valueOf(instanceId), formClass.getId());
 
@@ -196,7 +197,9 @@ public class FormSubmissionResource {
                         }
                     }
 
-                    locator.create(user, formInstance.asResource().set("backupBlobId", resourceId.asString()));
+                    formInstance.set(ResourceId.valueOf("backupBlobId"), resourceId.asString());
+
+                    locator.persist(formInstance);
                     return Response.status(CREATED).build();
                 }
             }
