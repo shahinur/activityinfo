@@ -3507,4 +3507,7 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Remove selected")
     String removeSelectedLocations();
+
+    @DefaultStringValue("Classic view")
+    String classicView();
 }

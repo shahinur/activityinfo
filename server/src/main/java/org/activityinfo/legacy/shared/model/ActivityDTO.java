@@ -208,6 +208,15 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, HasLo
         set("assessment", value);
     }
 
+    public void setClassicView(boolean value) {
+        set("classicView", value);
+    }
+
+    public boolean getClassicView() {
+        return get("classicView");
+    }
+
+
     /**
      * Sets the ReportingFrequency of this Activity, either
      * <code>REPORT_ONCE</code> or <code>REPORT_MONTHLY</code>

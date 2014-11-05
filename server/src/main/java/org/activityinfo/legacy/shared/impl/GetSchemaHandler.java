@@ -418,6 +418,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     "locationTypeId",
                     "reportingFrequency",
                     "databaseId",
+                    "classicView",
                     "published").from("activity").orderBy("SortOrder");
 
             if (context.isRemote()) {
@@ -435,6 +436,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     activity.setCategory(row.getString("category"));
                     activity.setReportingFrequency(row.getInt("reportingFrequency"));
                     activity.setPublished(row.getInt("published"));
+                    activity.setClassicView(row.getBoolean("classicView"));
 
                     int databaseId = row.getInt("databaseId");
                     UserDatabaseDTO database = databaseMap.get(databaseId);

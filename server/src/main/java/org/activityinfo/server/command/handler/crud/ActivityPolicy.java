@@ -84,7 +84,7 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
     }
 
     private LocationType getLocationType(PropertyMap properties) {
-        int locationTypeId = ((Integer) properties.get("locationTypeId"));
+        int locationTypeId = (Integer) properties.get("locationTypeId");
         return em.getReference(LocationType.class, locationTypeId);
     }
 
@@ -125,6 +125,10 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
 
         if (changes.containsKey("published")) {
             activity.setPublished((Integer) changes.get("published"));
+        }
+
+        if (changes.containsKey("classicView")) {
+            activity.setClassicView((Boolean) changes.get("classicView"));
         }
 
         if (changes.containsKey("sortOrder")) {

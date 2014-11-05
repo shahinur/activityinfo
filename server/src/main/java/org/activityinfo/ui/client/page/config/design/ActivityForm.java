@@ -29,6 +29,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.BindingEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.activityinfo.i18n.shared.I18N;
@@ -112,6 +113,12 @@ class ActivityForm extends AbstractDesignForm {
         });
 
         this.add(publishedCombo);
+
+        CheckBox classicView = new CheckBox();
+        classicView.setFieldLabel(I18N.CONSTANTS.classicView());
+
+        binding.addFieldBinding(new FieldBinding(classicView, "classicView"));
+        this.add(classicView);
 
         hideFieldWhenNull(idField);
     }

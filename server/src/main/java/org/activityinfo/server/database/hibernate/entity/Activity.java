@@ -68,6 +68,7 @@ public class Activity implements Serializable, Deleteable, Orderable {
     private String mapIcon;
 
     private int published = Published.NOT_PUBLISHED.getIndex();
+    private boolean classicView;
 
     public Activity() {
 
@@ -113,6 +114,15 @@ public class Activity implements Serializable, Deleteable, Orderable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "classicView", nullable = false)
+    public boolean isClassicView() {
+        return classicView;
+    }
+
+    public void setClassicView(boolean classicView) {
+        this.classicView = classicView;
     }
 
     @Column(name = "ReportingFrequency", nullable = false)

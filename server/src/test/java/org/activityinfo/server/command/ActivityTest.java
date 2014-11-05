@@ -93,6 +93,7 @@ public class ActivityTest extends CommandTestCase2 {
         act.setName("Warshing the dishes");
         act.setLocationType(locType);
         act.setReportingFrequency(ActivityDTO.REPORT_MONTHLY);
+        act.setClassicView(false);
 
         CreateResult cresult = execute(CreateEntity.Activity(db, act));
 
@@ -110,6 +111,7 @@ public class ActivityTest extends CommandTestCase2 {
         assertEquals("locationType", locType.getName(), act.getLocationType().getName());
         assertEquals("reportingFrequency", ActivityDTO.REPORT_MONTHLY, act.getReportingFrequency());
         assertEquals("public", Published.NOT_PUBLISHED.getIndex(), act.getPublished());
+        assertEquals("classicView", false, act.getClassicView());
 
     }
 
