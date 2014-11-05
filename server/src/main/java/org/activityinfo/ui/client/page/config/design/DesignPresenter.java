@@ -23,6 +23,9 @@ package org.activityinfo.ui.client.page.config.design;
  */
 
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
@@ -86,7 +89,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
     private final EventBus eventBus;
     private final Dispatcher service;
-    private final View view;
+    private final DesignView view;
     private final UiConstants messages;
 
     private UserDatabaseDTO db;
@@ -101,7 +104,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;
-        this.view = view;
+        this.view = (DesignView) view;
         this.messages = messages;
     }
 
@@ -119,6 +122,18 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         this.view.setActionEnabled(UIActions.DELETE, false);
         this.view.setActionEnabled(UIActions.EDIT, false);
         this.view.setActionEnabled(UIActions.OPEN_TABLE, false);
+        this.view.getNewMenu().addListener(Events.BeforeShow, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+
+                ModelData sel = DesignPresenter.this.view.getSelection();
+                ActivityDTO activity = DesignPresenter.this.getSelectedActivity(sel);
+
+                DesignPresenter.this.view.getNewAttributeGroup().setEnabled(sel != null && activity.getClassicView());
+                DesignPresenter.this.view.getNewAttribute().setEnabled((sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) &&  activity.getClassicView());
+                DesignPresenter.this.view.getNewIndicator().setEnabled(sel != null && activity.getClassicView());
+            }
+        });
     }
 
     public void refresh() {
@@ -149,6 +164,10 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         for (ActivityDTO activity : db.getActivities()) {
             ActivityDTO activityNode = new ActivityDTO(activity);
             treeStore.add(activityNode, false);
+
+            if (!activityNode.getClassicView()) {
+                continue; // skip indicators and attributes in tree if activity is not classicView=true
+            }
 
             AttributeGroupFolder attributeFolder = new AttributeGroupFolder(messages.attributes());
             treeStore.add(activityNode, attributeFolder, false);

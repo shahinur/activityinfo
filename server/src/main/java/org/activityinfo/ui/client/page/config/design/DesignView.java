@@ -70,6 +70,11 @@ import java.util.List;
  */
 public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPresenter> implements DesignPresenter.View {
 
+    private MenuItem newAttributeGroup;
+    private MenuItem newAttribute;
+    private MenuItem newIndicator;
+    private Menu newMenu;
+
     private final class DragDropListener extends DNDListener {
         private final TreeStore treeStore;
 
@@ -201,7 +206,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
             }
         };
 
-        Menu newMenu = new Menu();
+        newMenu = new Menu();
         initNewMenu(newMenu, listener);
 
         Button newButtonMenu = new Button(I18N.CONSTANTS.newText(), IconImageBundle.ICONS.add());
@@ -233,35 +238,40 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         newLocationType.setItemId("LocationType");
         menu.add(newLocationType);
 
-        final MenuItem newAttributeGroup = newMenuItem("AttributeGroup",
+        newAttributeGroup = newMenuItem("AttributeGroup",
                 I18N.CONSTANTS.newAttributeGroup(),
                 IconImageBundle.ICONS.attribute(),
                 listener);
         menu.add(newAttributeGroup);
 
-        final MenuItem newAttribute = newMenuItem("Attribute",
+        newAttribute = newMenuItem("Attribute",
                 I18N.CONSTANTS.newAttribute(),
                 IconImageBundle.ICONS.attribute(),
                 listener);
         menu.add(newAttribute);
 
-        final MenuItem newIndicator = new MenuItem(I18N.CONSTANTS.newIndicator(),
+        newIndicator = new MenuItem(I18N.CONSTANTS.newIndicator(),
                 IconImageBundle.ICONS.indicator(),
                 listener);
         newIndicator.setItemId("Indicator");
         menu.add(newIndicator);
 
-        menu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
-            @Override
-            public void handleEvent(BaseEvent be) {
+    }
 
-                ModelData sel = getSelection();
+    public Menu getNewMenu() {
+        return newMenu;
+    }
 
-                newAttributeGroup.setEnabled(sel != null);
-                newAttribute.setEnabled(sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO);
-                newIndicator.setEnabled(sel != null);
-            }
-        });
+    public MenuItem getNewAttributeGroup() {
+        return newAttributeGroup;
+    }
+
+    public MenuItem getNewAttribute() {
+        return newAttribute;
+    }
+
+    public MenuItem getNewIndicator() {
+        return newIndicator;
     }
 
     private MenuItem newMenuItem(String itemId,
