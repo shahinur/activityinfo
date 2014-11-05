@@ -22,14 +22,12 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.expr.*;
-import org.activityinfo.core.shared.expr.constant.BooleanConstantExpr;
-import org.activityinfo.core.shared.expr.constant.NumberConstantExpr;
-import org.activityinfo.core.shared.expr.constant.StringConstantExpr;
-import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
+import org.activityinfo.model.expr.*;
+import org.activityinfo.model.expr.functions.BooleanFunctions;
+import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.HasSetFieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
@@ -54,23 +52,45 @@ public class ExpressionBuilder {
     private ExprNode buildNode(ExprNode leftNode, int index) {
         RowData row = rows.get(index);
 
-        ExprNode left = leftNode != null ? leftNode : new PlaceholderExpr(row.getFormField().getId().asString());
+        ExprNode left = leftNode != null ? leftNode : new SymbolExpr(row.getFormField().getId().asString());
 
         ExprNode right = null;
 
         FieldValue value = row.getValue();
 
+        ExprFunction rowFunction = row.getFunction();
+
+        // FUNCTIONS building
+        if (SkipRowPresenter.SET_FUNCTIONS.contains(rowFunction)) {
+
+            List<ExprNode> arguments = Lists.newArrayList();
+            arguments.add(new SymbolExpr(row.getFormField().getId().asString()));
+
+            if (value instanceof BooleanFieldValue || value instanceof Quantity || value instanceof TextValue) {
+                arguments.add(new ConstantExpr(value));
+            } else if (value instanceof HasSetFieldValue) {
+                List<ResourceId> idSet = Lists.newArrayList(((HasSetFieldValue)value).getResourceIds());
+                for (ResourceId resourceId : idSet) {
+                    arguments.add(new SymbolExpr(resourceId.asString()));
+                }
+            } else {
+                throw new UnsupportedOperationException("Not supported value: " + value);
+            }
+            return new FunctionCallNode(rowFunction, arguments);
+        }
+
+        // OPERATOR building
         if (value instanceof BooleanFieldValue) {
-            right = new BooleanConstantExpr((BooleanFieldValue)value);
+            right = new ConstantExpr(value);
         } else if (value instanceof Quantity) {
-            right = new NumberConstantExpr(((Quantity) value).getValue());
+            right = new ConstantExpr(value);
         } else if (value instanceof TextValue) {
-            right = new StringConstantExpr( ((TextValue)value).toString());
-        } else if (value instanceof ReferenceValue) {
-            List<ResourceId> idSet = Lists.newArrayList(((ReferenceValue)value).getResourceIds());
+            right = new ConstantExpr(value);
+        } else if (value instanceof HasSetFieldValue) {
+            List<ResourceId> idSet = Lists.newArrayList(((HasSetFieldValue)value).getResourceIds());
             int size = idSet.size();
             if (size == 1) {
-                right = new PlaceholderExpr(idSet.get(0).asString());
+                right = new SymbolExpr(idSet.get(0).asString());
             } else {
                 return new GroupExpr(buildNodeForSet(left, idSet, row));
             }
@@ -78,7 +98,7 @@ public class ExpressionBuilder {
             throw new UnsupportedOperationException("Not supported value: " + value);
         }
 
-        ExprNode node = new FunctionCallNode(row.getFunction(), left, right);
+        ExprNode node = new FunctionCallNode(rowFunction, left, right);
         if (rows.size() > 1) {
             node = new GroupExpr(node);
         }
@@ -101,7 +121,7 @@ public class ExpressionBuilder {
 
         final List<ExprNode> arguments = Lists.newArrayList();
         for (ResourceId value : values) {
-            arguments.add(new GroupExpr(new FunctionCallNode(row.getFunction(), left, new PlaceholderExpr(value.asString()))));
+            arguments.add(new GroupExpr(new FunctionCallNode(row.getFunction(), left, new SymbolExpr(value.asString()))));
         }
 
         return new FunctionCallNode(internalFunction, arguments);

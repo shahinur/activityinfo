@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -38,7 +37,10 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     public interface Templates extends SafeHtmlTemplates {
 
         @Template("{0} <span class='enum-edit-controls'>[ <span class='enum-edit'>Edit</span> | <span class='enum-remove'>Delete</span> ]</span>")
-        SafeHtml label(String label);
+        SafeHtml designLabel(String label);
+
+        @Template("{0} <span class='enum-edit-controls'/>")
+        SafeHtml normalLabel(String label);
 
         @Template("<span class='enum-add'>+ {0}</span>")
         SafeHtml addChoice(String label);
@@ -57,11 +59,13 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     private final FlowPanel panel;
     private final FlowPanel boxPanel;
     private final List<CheckBox> controls;
+    private final FieldWidgetMode fieldWidgetMode;
 
-
-    public EnumFieldWidget(EnumType enumType, final ValueUpdater<ReferenceValue> valueUpdater) {
+    public EnumFieldWidget(EnumType enumType, final ValueUpdater<EnumFieldValue> valueUpdater, FieldWidgetMode fieldWidgetMode) {
         this.enumType = enumType;
         this.groupName = "group" + (nextId++);
+        this.fieldWidgetMode = fieldWidgetMode;
+
         boxPanel = new FlowPanel();
         controls = new ArrayList<>();
 
@@ -80,7 +84,9 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
 
         panel = new FlowPanel();
         panel.add(boxPanel);
-        panel.add(new HTML(TEMPLATES.addChoice("Add option")));
+        if (this.fieldWidgetMode == FieldWidgetMode.DESIGN) {
+            panel.add(new HTML(TEMPLATES.addChoice("Add option")));
+        }
 
         panel.sinkEvents(Event.MOUSEEVENTS);
         panel.addDomHandler(new MouseUpHandler() {
@@ -119,7 +125,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
         String newLabel = Window.prompt("Enter a new label for this option", enumValue.getLabel());
         if(!Strings.isNullOrEmpty(newLabel)) {
             enumValue.setLabel(newLabel);
-            controlForId(id).setHTML(TEMPLATES.label(newLabel));
+            controlForId(id).setHTML(TEMPLATES.designLabel(newLabel));
         }
     }
 
@@ -151,16 +157,20 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
         while(Strings.isNullOrEmpty(container.getAttribute("data-id"))) {
             container = container.getParentElement();
         }
-        return ResourceId.create(container.getAttribute("data-id"));
+        return ResourceId.valueOf(container.getAttribute("data-id"));
 
+    }
+
+    private SafeHtml label(String label) {
+        return fieldWidgetMode == FieldWidgetMode.DESIGN ? TEMPLATES.designLabel(label) : TEMPLATES.normalLabel(label);
     }
 
     private CheckBox createControl(EnumValue instance) {
         CheckBox checkBox;
         if(enumType.getCardinality() == Cardinality.SINGLE) {
-            checkBox = new RadioButton(groupName, TEMPLATES.label(instance.getLabel()));
+            checkBox = new RadioButton(groupName, label(instance.getLabel()));
         } else {
-            checkBox = new org.activityinfo.ui.client.widget.CheckBox(TEMPLATES.label(instance.getLabel()));
+            checkBox = new org.activityinfo.ui.client.widget.CheckBox(label(instance.getLabel()));
         }
         checkBox.setFormValue(instance.getId().asString());
         checkBox.getElement().setAttribute("data-id", instance.getId().asString());
@@ -175,23 +185,37 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
         }
     }
 
-    private ReferenceValue updatedValue() {
+    private EnumFieldValue updatedValue() {
         final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
-                value.add(ResourceId.create(control.getFormValue()));
+                value.add(ResourceId.valueOf(control.getFormValue()));
             }
         }
-        return new ReferenceValue(value);
+        return new EnumFieldValue(value);
     }
 
     @Override
     public Promise<Void> setValue(EnumFieldValue value) {
         for (CheckBox entry : controls) {
-            ResourceId resourceId = ResourceId.create(entry.getFormValue());
-            entry.setValue(value.getValueIds().contains(resourceId));
+            entry.setValue(containsIgnoreCase(value.getResourceIds(), entry.getFormValue()));
         }
         return Promise.done();
+    }
+
+    /**
+     * Check with ignoreCase, trick is that values from html form elemns sometimes are lowercased
+     * @param resourceIds
+     *
+     * @return
+     */
+    private boolean containsIgnoreCase(Set<ResourceId> resourceIds, String resourceId) {
+        for (ResourceId resource : resourceIds) {
+            if (resource.asString().equalsIgnoreCase(resourceId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

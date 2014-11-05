@@ -501,7 +501,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     IndicatorDTO indicator = new IndicatorDTO();
                     indicator.setId(rs.getInt("indicatorId"));
                     indicator.setName(rs.getString("name"));
-                    indicator.setType(FormFieldType.valueOf(rs.getString("type")));
+                    indicator.setTypeId(rs.getString("type"));
                     indicator.setExpression(rs.getString("expression"));
                     indicator.setSkipExpression(rs.getString("skipExpression"));
                     indicator.setNameInExpression(rs.getString("nameInExpression"));

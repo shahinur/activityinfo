@@ -10,12 +10,13 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.HasSetFieldValue;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EnumFieldValue implements FieldValue, IsRecord {
+public class EnumFieldValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     public static final EnumFieldValue EMPTY = new EnumFieldValue(Collections.<ResourceId>emptySet());
 
@@ -33,7 +34,7 @@ public class EnumFieldValue implements FieldValue, IsRecord {
         this.valueIds = ImmutableSet.copyOf(valueIds);
     }
 
-    public Set<ResourceId> getValueIds() {
+    public Set<ResourceId> getResourceIds() {
         return valueIds;
     }
 
@@ -66,12 +67,16 @@ public class EnumFieldValue implements FieldValue, IsRecord {
     public static EnumFieldValue fromRecord(Record record) {
         String id = record.isString("value");
         if(id != null) {
-            return new EnumFieldValue(ResourceId.create(id));
+            return new EnumFieldValue(ResourceId.valueOf(id));
+        }
+        id = record.isString("id"); // ugly workaround for inconsistent data that appears on production db
+        if(id != null) {
+            return new EnumFieldValue(ResourceId.valueOf(id));
         }
         List<String> strings = record.getStringList("value");
         Set<ResourceId> ids = Sets.newHashSet();
         for(String string : strings) {
-            ids.add(ResourceId.create(string));
+            ids.add(ResourceId.valueOf(string));
         }
         return new EnumFieldValue(ids);
     }

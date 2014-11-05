@@ -1,8 +1,6 @@
 package org.activityinfo.model.resource;
 
 
-import org.activityinfo.model.form.FieldId;
-
 import javax.annotation.Nonnull;
 import java.util.Date;
 
@@ -13,18 +11,26 @@ import java.util.Date;
  */
 public final class ResourceId {
 
+    public static final ResourceId ROOT_ID = ResourceId.valueOf("_root");
+
     public static final int RADIX = 10;
     public static long COUNTER = 1;
 
     private final String text;
 
-    public static ResourceId create(@Nonnull String string) {
+    /**
+     * Creates a new ResourceId from its string representation
+     *
+     * <p>Note: This method must be named {@code valueOf} in order to be
+     * used as a Jersey {@code @PathParam}
+     */
+    public static ResourceId valueOf(@Nonnull String string) {
         return new ResourceId(string);
     }
 
     public static ResourceId generateId() {
-        return create("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
-               Long.toString(COUNTER++, Character.MAX_RADIX));
+        return valueOf("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
+                       Long.toString(COUNTER++, Character.MAX_RADIX));
     }
 
 
@@ -61,10 +67,6 @@ public final class ResourceId {
     @Override
     public String toString() {
         return text;
-    }
-
-    public ResourceId field(String name) {
-        return FieldId.fieldId(this, name);
     }
 
 }

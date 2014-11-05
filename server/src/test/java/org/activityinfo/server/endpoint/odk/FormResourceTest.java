@@ -6,45 +6,45 @@ import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
-import org.activityinfo.legacy.shared.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.command.ResourceLocatorSync;
+import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.server.endpoint.odk.xform.Html;
 import org.activityinfo.service.lookup.ReferenceProvider;
-import org.activityinfo.service.store.ResourceCursor;
-import org.activityinfo.service.store.ResourceStore;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Iterator;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-
+@RunWith(InjectionSupport.class)
 public class FormResourceTest extends CommandTestCase2 {
 
     private FormResource resource;
 
     @Before
     public void setUp() throws IOException {
-        ResourceLocatorSync resourceLocator = new ResourceLocatorSync(getDispatcherSync());
+        ResourceLocatorSyncImpl resourceLocator = new ResourceLocatorSyncImpl(getDispatcherSync());
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
         OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(new ReferenceProvider());
-        resource = new FormResource(resourceLocator, authProvider, factory);
+        resource = new FormResource(resourceLocator, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory,
+                new TestAuthenticationTokenService());
     }
 
     @Test
-    public void getBlankForm() throws Exception {
+    public void getBlankForm() throws JAXBException, URISyntaxException, IOException, InterruptedException {
         Response form = this.resource.form(1);
         File file = new File(targetDir(), "form.xml");
         JAXBContext context = JAXBContext.newInstance(Html.class);
@@ -64,7 +64,7 @@ public class FormResourceTest extends CommandTestCase2 {
         return targetDir;
     }
 
-    public void validate(File file) throws Exception {
+    public void validate(File file) throws URISyntaxException, IOException, InterruptedException {
 
 
         URL validatorJar = Resources.getResource(FormResourceTest.class, "odk-validate-1.4.3.jar");

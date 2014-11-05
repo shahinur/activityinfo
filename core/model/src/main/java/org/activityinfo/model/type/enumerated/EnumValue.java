@@ -32,7 +32,7 @@ public class EnumValue implements FieldValue, IsRecord {
     }
 
     public static EnumValue fromRecord(Record record) {
-        return new EnumValue(ResourceId.create(record.getString("id")), record.getString("label"));
+        return new EnumValue(ResourceId.valueOf(record.getString("id")), record.getString("label"));
     }
 
     @Override

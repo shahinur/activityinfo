@@ -5,7 +5,6 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.model.type.ParametrizedFieldTypeClass;
 import org.activityinfo.model.type.TypeRegistry;
 
@@ -24,7 +23,7 @@ public class ApplicationClassProvider {
         classMap.put(FolderClass.CLASS_ID, FolderClass.get());
 
         for (FieldTypeClass fieldTypeClass : TypeRegistry.get().getTypeClasses()) {
-            if(fieldTypeClass instanceof ParametrizedFieldType) {
+            if(fieldTypeClass instanceof ParametrizedFieldTypeClass) {
                 FormClass parameterFormClass = ((ParametrizedFieldTypeClass)fieldTypeClass).getParameterFormClass();
                 classMap.put(parameterFormClass.getId(), parameterFormClass);
             }
@@ -32,7 +31,7 @@ public class ApplicationClassProvider {
     }
 
     private FormClass createFormClassClass() {
-        FormField labelField = new FormField(FormClass.LABEL_FIELD_ID);
+        FormField labelField = new FormField(ResourceId.valueOf(FormClass.LABEL_FIELD_ID));
         labelField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
 
         FormClass formClass = new FormClass(FormClass.CLASS_ID);

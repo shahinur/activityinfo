@@ -15,7 +15,7 @@ import java.util.Set;
  * A Field Value containing the value of {@code ReferenceType} or
  * {@code EnumType}
  */
-public class ReferenceValue implements FieldValue, IsRecord {
+public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     public static final ReferenceValue EMPTY = new ReferenceValue(Collections.<ResourceId>emptySet());
 
@@ -62,12 +62,12 @@ public class ReferenceValue implements FieldValue, IsRecord {
     public static ReferenceValue fromRecord(Record record) {
         String id = record.isString("value");
         if(id != null) {
-            return new ReferenceValue(ResourceId.create(id));
+            return new ReferenceValue(ResourceId.valueOf(id));
         }
         List<String> strings = record.getStringList("value");
         Set<ResourceId> ids = Sets.newHashSet();
         for(String string : strings) {
-            ids.add(ResourceId.create(string));
+            ids.add(ResourceId.valueOf(string));
         }
         return new ReferenceValue(ids);
     }

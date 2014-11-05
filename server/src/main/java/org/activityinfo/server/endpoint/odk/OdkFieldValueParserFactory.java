@@ -4,8 +4,10 @@ import com.google.inject.Inject;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -15,15 +17,22 @@ import org.activityinfo.service.lookup.ReferenceProvider;
 public class OdkFieldValueParserFactory {
     final private ReferenceProvider table;
 
+    public OdkFieldValueParserFactory() {
+        // stub
+        this(new ReferenceProvider());
+    }
+
     @Inject
     public OdkFieldValueParserFactory(ReferenceProvider table) {
         this.table = table;
     }
 
     public OdkFieldValueParser fromFieldType(FieldType fieldType) {
+        if (fieldType instanceof BarcodeType) return new BarcodeFieldValueParser();
         if (fieldType instanceof BooleanType) return new BooleanFieldValueParser();
         if (fieldType instanceof EnumType) return new EnumFieldValueParser((EnumType) fieldType);
         if (fieldType instanceof GeoPointType) return new GeoPointFieldValueParser();
+        if (fieldType instanceof ImageType) return new ImageFieldValueParser();
         if (fieldType instanceof LocalDateType) return new LocalDateFieldValueParser();
         if (fieldType instanceof NarrativeType) return new NarrativeFieldValueParser();
         if (fieldType instanceof QuantityType) return new QuantityFieldValueParser((QuantityType) fieldType);

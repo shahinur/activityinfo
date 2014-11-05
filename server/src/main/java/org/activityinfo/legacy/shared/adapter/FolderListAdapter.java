@@ -24,8 +24,8 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
  */
 public class FolderListAdapter implements Function<SchemaDTO, List<FormInstance>> {
 
-    public static final ResourceId HOME_ID = ResourceId.create("home");
-    public static final ResourceId GEODB_ID = ResourceId.create("_geodb");
+    public static final ResourceId HOME_ID = ResourceId.valueOf("home");
+    public static final ResourceId GEODB_ID = ResourceId.valueOf("_geodb");
 
     private final Criteria criteria;
 

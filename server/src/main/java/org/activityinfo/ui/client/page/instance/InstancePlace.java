@@ -68,9 +68,9 @@ public class InstancePlace implements PageState {
         public InstancePlace parse(String token) {
             String parts[] = token.split("/");
             if(parts.length == 1) {
-                return new InstancePlace(ResourceId.create(parts[0]));
+                return new InstancePlace(ResourceId.valueOf(parts[0]));
             } else {
-                return new InstancePlace(ResourceId.create(parts[0]), parts[1]);
+                return new InstancePlace(ResourceId.valueOf(parts[0]), parts[1]);
             }
         }
     }

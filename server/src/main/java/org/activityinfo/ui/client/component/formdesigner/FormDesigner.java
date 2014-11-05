@@ -33,6 +33,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.ui.client.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropPanelDropController;
@@ -64,7 +65,7 @@ public class FormDesigner {
 
         propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel(), eventBus);
 
-        formFieldWidgetFactory = new FormFieldWidgetFactory(resourceLocator);
+        formFieldWidgetFactory = new FormFieldWidgetFactory(resourceLocator, FieldWidgetMode.DESIGN);
 
         ForwardDropController forwardDropController = new ForwardDropController(formDesignerPanel.getDropPanel());
         forwardDropController.add(new DropPanelDropController(formDesignerPanel.getDropPanel(), this));
@@ -116,7 +117,7 @@ public class FormDesigner {
         for(int i=0;i!=panel.getWidgetCount();++i) {
             Widget widget = panel.getWidget(i);
             String fieldId = widget.getElement().getAttribute(FieldWidgetContainer.DATA_FIELD_ID);
-            elements.add(fieldMap.get(ResourceId.create(fieldId)));
+            elements.add(fieldMap.get(ResourceId.valueOf(fieldId)));
         }
 
         formClass.getElements().clear();

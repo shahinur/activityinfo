@@ -23,12 +23,7 @@ public class SimpleFieldBinding implements FieldBinding<EntityDTO> {
     public void updateInstanceFromModel(FormInstance instance, EntityDTO model) {
         Object value = model.get(propertyName);
         if (value != null) {
-            if (value instanceof LocalDate) {
-                final LocalDate localDate = (LocalDate) value;
-                instance.set(fieldId, localDate.atMidnightInMyTimezone());
-            } else {
-                instance.set(fieldId, value);
-            }
+            instance.set(fieldId, value);
         }
     }
 

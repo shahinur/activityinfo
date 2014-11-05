@@ -8,6 +8,9 @@ public class PresentationElement {
     @XmlAttribute
     public String ref;
 
+    @XmlAttribute
+    public String mediatype;
+
     @XmlElement
     public String label;
 

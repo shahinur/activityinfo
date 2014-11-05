@@ -46,13 +46,13 @@ public class BreadCrumbBuilder {
     }
 
     public void show(FormInstance instance) {
-        if(instance.getParentId() == null) {
+        if(instance.getOwnerId() == null) {
             element.setInnerSafeHtml(TEMPLATES.link(UriUtils.fromTrustedString("#home"), I18N.CONSTANTS.home()));
 
         } else {
             element.setInnerSafeHtml(SafeHtmlUtils.fromTrustedString("&nbsp;"));
 
-            queryParent(instance.getParentId())
+            queryParent(instance.getOwnerId())
             .then(new Function<List<Projection>, Void>() {
                 @Nullable
                 @Override

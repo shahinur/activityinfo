@@ -22,12 +22,14 @@ package org.activityinfo.ui.client.component.formdesigner.skip;
  */
 
 import com.google.common.collect.Sets;
-import org.activityinfo.core.shared.expr.functions.BooleanFunctions;
+import org.activityinfo.model.expr.functions.BooleanFunctions;
+import org.activityinfo.model.expr.functions.ContainsAllFunction;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.primitive.TextType;
@@ -44,14 +46,14 @@ import java.util.List;
  */
 public class ExpressionBuilderTest {
 
-    private static final ResourceId GENDER_FIELD_ID = ResourceId.create("test_f1");
-    private static final ResourceId PREGNANT_FIELD_ID = ResourceId.create("test_f2");
-    private static final ResourceId TEXT_FIELD_ID = ResourceId.create("test_text");
+    private static final ResourceId GENDER_FIELD_ID = ResourceId.valueOf("test_f1");
+    private static final ResourceId PREGNANT_FIELD_ID = ResourceId.valueOf("test_f2");
+    private static final ResourceId TEXT_FIELD_ID = ResourceId.valueOf("test_text");
 
-    private static final EnumValue MALE = new EnumValue(ResourceId.create("test_ev1"), "Male");
-    private static final EnumValue FEMALE = new EnumValue(ResourceId.create("test_ev2"), "Female");
-    private static final EnumValue PREGNANT_YES = new EnumValue(ResourceId.create("test_ev3"), "Yes");
-    private static final EnumValue PREGNANT_NO = new EnumValue(ResourceId.create("test_ev4"), "No");
+    private static final EnumValue MALE = new EnumValue(ResourceId.valueOf("test_ev1"), "Male");
+    private static final EnumValue FEMALE = new EnumValue(ResourceId.valueOf("test_ev2"), "Female");
+    private static final EnumValue PREGNANT_YES = new EnumValue(ResourceId.valueOf("test_ev3"), "Yes");
+    private static final EnumValue PREGNANT_NO = new EnumValue(ResourceId.valueOf("test_ev4"), "No");
 
     FormClass formClass;
 
@@ -65,13 +67,13 @@ public class ExpressionBuilderTest {
         RowData row = new RowData();
         row.setFormField(formClass.getField(GENDER_FIELD_ID));
         row.setFunction(BooleanFunctions.EQUAL);
-        row.setValue(Sets.newHashSet(enumValue(GENDER_FIELD_ID, "Male").getId()));
+        row.setValue(new EnumFieldValue(Sets.newHashSet(enumValue(GENDER_FIELD_ID, "Male").getId())));
         row.setJoinFunction(BooleanFunctions.AND);
 
         RowData row2 = new RowData();
         row2.setFormField(formClass.getField(PREGNANT_FIELD_ID));
         row2.setFunction(BooleanFunctions.NOT_EQUAL);
-        row2.setValue(Sets.newHashSet(enumValue(PREGNANT_FIELD_ID, "No").getId()));
+        row2.setValue(new EnumFieldValue(Sets.newHashSet(enumValue(PREGNANT_FIELD_ID, "No").getId())));
         row2.setJoinFunction(BooleanFunctions.OR);
 
         expr("{test_f1}=={test_ev1}", row);
@@ -80,9 +82,13 @@ public class ExpressionBuilderTest {
         row2.setJoinFunction(BooleanFunctions.AND);
         expr("({test_f1}=={test_ev1})&&({test_f2}!={test_ev4})", row, row2);
 
-        row2.setValue(Sets.newHashSet(enumValue(PREGNANT_FIELD_ID, "Yes").getId(), enumValue(PREGNANT_FIELD_ID, "No").getId()));
+        row2.setValue(new EnumFieldValue(Sets.newHashSet(enumValue(PREGNANT_FIELD_ID, "Yes").getId(), enumValue(PREGNANT_FIELD_ID, "No").getId())));
         expr("(({test_f2}!={test_ev3})&&({test_f2}!={test_ev4}))", row2);
         expr("({test_f1}=={test_ev1})&&(({test_f2}!={test_ev3})&&({test_f2}!={test_ev4}))", row, row2);
+
+        // containsAll/containsAny
+        row.setFunction(ContainsAllFunction.INSTANCE);
+        expr("containsAll({test_f1},{test_ev1})", row);
     }
 
     @Test

@@ -52,7 +52,13 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private FormClass formClass;
     private ResourceLocator locator;
-    private SkipHandler skipHandler;
+    private RelevanceHandler relevanceHandler;
+
+    // validation form class is used to refer to "top-level" form class.
+    // For example "Properties panel" renders current type-formClass but in order to validate expression we need
+    // reference to formClass that is currently editing on FormDesigner.
+    // it can be null.
+    private FormClass validationFormClass = null;
 
     public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
                            FormFieldWidgetFactory widgetFactory) {
@@ -67,7 +73,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         this.containerFactory = containerFactory;
         this.widgetFactory = widgetFactory;
         this.withScroll = withScroll;
-        this.skipHandler = new SkipHandler(this);
+        this.relevanceHandler = new RelevanceHandler(this);
 
         panel = new FlowPanel();
         panel.setStyleName(FormPanelStyles.INSTANCE.formPanel());
@@ -102,7 +108,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     private Promise<Void> buildForm(final FormClass formClass) {
         this.formClass = formClass;
-        this.skipHandler.formClassChanged();
+        this.relevanceHandler.formClassChanged();
 
         try {
             return createWidgets().then(new Function<Void, Void>() {
@@ -120,15 +126,16 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     }
 
     private Promise<Void> createWidgets() {
+        final String resourceId = instance.getId().asString();
         return Promise.forEach(formClass.getFields(), new Function<FormField, Promise<Void>>() {
             @Override
             public Promise<Void> apply(final FormField field) {
-                return widgetFactory.createWidget(field, new ValueUpdater() {
+                return widgetFactory.createWidget(resourceId, formClass, field, new ValueUpdater<FieldValue>() {
                     @Override
-                    public void update(Object value) {
+                    public void update(FieldValue value) {
                         onFieldUpdated(field, value);
                     }
-                }).then(new Function<FormFieldWidget, Void>() {
+                }, validationFormClass).then(new Function<FormFieldWidget, Void>() {
                     @Override
                     public Void apply(@Nullable FormFieldWidget widget) {
                         containers.put(field.getId(), containerFactory.createContainer(field, widget));
@@ -156,7 +163,14 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
             container.setValid();
         }
 
-        return Promise.waitAll(tasks);
+        return Promise.waitAll(tasks).then(new Function<Void, Void>() {
+            @Nullable
+            @Override
+            public Void apply(@Nullable Void input) {
+                relevanceHandler.onValueChange(); // invoke relevance handler once values are set
+                return null;
+            }
+        });
     }
 
     private void addFormElements(FormElementContainer container, int depth) {
@@ -173,11 +187,11 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         }
     }
 
-    private void onFieldUpdated(FormField field, Object newValue) {
+    public void onFieldUpdated(FormField field, FieldValue newValue) {
         if (!Objects.equals(workingInstance.get(field.getId()), newValue)) {
             workingInstance.set(field.getId(), newValue);
             validate(field);
-            skipHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
+            relevanceHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
         }
     }
 
@@ -220,7 +234,19 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         return containers.get(fieldId);
     }
 
+    public ResourceLocator getLocator() {
+        return locator;
+    }
+
     public Map<ResourceId, FieldContainer> getContainers() {
         return containers;
+    }
+
+    public void setValidationFormClass(FormClass validationFormClass) {
+        this.validationFormClass = validationFormClass;
+    }
+
+    public FormClass getValidationFormClass() {
+        return validationFormClass;
     }
 }

@@ -3,7 +3,7 @@ package org.activityinfo.model.type.primitive;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
-public class TextValue implements FieldValue {
+public class TextValue implements FieldValue, HasStringValue {
 
     private final String value;
 
@@ -26,6 +26,10 @@ public class TextValue implements FieldValue {
     @Override
     public FieldTypeClass getTypeClass() {
         return TextType.TYPE_CLASS;
+    }
+
+    public String asString() {
+        return value;
     }
 
     @Override

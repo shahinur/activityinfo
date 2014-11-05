@@ -8,8 +8,6 @@
 
   <g:HTMLPanel>
 
-    <chrome:PageHeader ui:field="pageHeader"/>
-
     <div class="contentpanel">
 
       <ul class="nav nav-tabs">

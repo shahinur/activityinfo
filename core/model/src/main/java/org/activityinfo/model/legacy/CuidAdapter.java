@@ -46,6 +46,8 @@ public class CuidAdapter {
 
     public static final char ACTIVITY_CATEGORY_DOMAIN = 'C';
 
+    public static final char USER_DOMAIN = 'U';
+
     public static final int NAME_FIELD = 1;
     public static final int ADMIN_PARENT_FIELD = 2;
     public static final int CODE_FIELD = 3;
@@ -91,7 +93,7 @@ public class CuidAdapter {
     }
 
     public static final ResourceId cuid(char domain, int id) {
-        return ResourceId.create(domain + block(id));
+        return ResourceId.valueOf(domain + block(id));
     }
 
     public static final ResourceId resourceId(char domain, int id) {
@@ -112,8 +114,8 @@ public class CuidAdapter {
     }
 
     public static ResourceId partnerInstanceId(int databaseId, int partnerId) {
-        return ResourceId.create(String.valueOf(DATABASE_DOMAIN) + databaseId +
-                                 String.valueOf(PARTNER_DOMAIN) + partnerId);
+        return ResourceId.valueOf(String.valueOf(DATABASE_DOMAIN) + databaseId +
+                String.valueOf(PARTNER_DOMAIN) + partnerId);
     }
 
     /**
@@ -153,14 +155,14 @@ public class CuidAdapter {
      * @return
      */
     public static ResourceId field(ResourceId classId, int fieldIndex) {
-        return ResourceId.create(classId.asString() + block(fieldIndex));
+        return ResourceId.valueOf(classId.asString() + block(fieldIndex));
     }
 
     /**
      * @return the {@code FormClass} ResourceId for a given Activity
      */
     public static ResourceId activityFormClass(int activityId) {
-        return ResourceId.create(ACTIVITY_DOMAIN + block(activityId));
+        return ResourceId.valueOf(ACTIVITY_DOMAIN + block(activityId));
     }
 
 
@@ -197,11 +199,15 @@ public class CuidAdapter {
     }
 
     public static ResourceId activityCategoryFolderId(int dbId, String category) {
-        return ResourceId.create(ACTIVITY_CATEGORY_DOMAIN + block(dbId) + block(Math.abs(category.hashCode())));
+        return ResourceId.valueOf(ACTIVITY_CATEGORY_DOMAIN + block(dbId) + block(Math.abs(category.hashCode())));
     }
 
     public static ResourceId attributeGroupFormClass(int attributeGroupId) {
         return cuid(ATTRIBUTE_GROUP_DOMAIN, attributeGroupId);
+    }
+
+    public static ResourceId userId(int userId) {
+        return cuid(USER_DOMAIN, userId);
     }
 
     public static ResourceId attributeId(int attributeId) {
@@ -229,7 +235,7 @@ public class CuidAdapter {
      * Activity {@code FormClass}
      */
     public static ResourceId activityFormSection(int id, String name) {
-        return ResourceId.create(ACTIVITY_DOMAIN + block(id) + block(name.hashCode()));
+        return ResourceId.valueOf(ACTIVITY_DOMAIN + block(id) + block(name.hashCode()));
     }
 
     private static String block(int id) {

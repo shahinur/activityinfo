@@ -58,15 +58,25 @@ public class PropertiesPanel extends Composite {
     @UiField
     Button relevanceButton;
     @UiField
-    Label relevanceState;
-    @UiField
-    HTMLPanel skipGroup;
+    HTMLPanel relevanceGroup;
     @UiField
     SpanElement relevanceExpression;
     @UiField
     CheckBox visible;
     @UiField
     HTMLPanel visibleGroup;
+    @UiField
+    RadioButton relevanceEnabled;
+    @UiField
+    RadioButton relevanceEnabledIf;
+    @UiField
+    TextBox code;
+    @UiField
+    HTMLPanel codeGroup;
+    @UiField
+    SpanElement invalidCodeMessage;
+    @UiField
+    SpanElement duplicateCodeMessage;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -104,12 +114,8 @@ public class PropertiesPanel extends Composite {
         return relevanceButton;
     }
 
-    public Label getRelevanceState() {
-        return relevanceState;
-    }
-
-    public HTMLPanel getSkipGroup() {
-        return skipGroup;
+    public HTMLPanel getRelevanceGroup() {
+        return relevanceGroup;
     }
 
     public SpanElement getRelevanceExpression() {
@@ -122,5 +128,29 @@ public class PropertiesPanel extends Composite {
 
     public HTMLPanel getVisibleGroup() {
         return visibleGroup;
+    }
+
+    public RadioButton getRelevanceEnabled() {
+        return relevanceEnabled;
+    }
+
+    public RadioButton getRelevanceEnabledIf() {
+        return relevanceEnabledIf;
+    }
+
+    public TextBox getCode() {
+        return code;
+    }
+
+    public HTMLPanel getCodeGroup() {
+        return codeGroup;
+    }
+
+    public SpanElement getInvalidCodeMessage() {
+        return invalidCodeMessage;
+    }
+
+    public SpanElement getDuplicateCodeMessage() {
+        return duplicateCodeMessage;
     }
 }
