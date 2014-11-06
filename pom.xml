@@ -12,7 +12,7 @@
     <!-- This is the version displayed to users -->
     <display.version>${project.version}</display.version>
 
-    <gwtVersion>2.6.0-rc3</gwtVersion>
+    <gwtVersion>2.6.1</gwtVersion>
     <rebarVersion>2.4.1</rebarVersion>
     <gae.version>1.9.6</gae.version>
     <jersey.version>1.17</jersey.version>

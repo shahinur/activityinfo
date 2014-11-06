@@ -20,9 +20,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.teklabs.gwt-i18n-server</groupId>
+      <groupId>net.lightoze.gwt-i18n-server</groupId>
       <artifactId>gwt-i18n-server</artifactId>
-      <version>0.7-bedatadriven2</version>
+      <version>0.22</version>
     </dependency>
   </dependencies>
 
