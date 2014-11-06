@@ -24,7 +24,7 @@ package org.activityinfo.server.report.generator.map;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.teklabs.gwt.i18n.server.LocaleProxy;
+import net.lightoze.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.model.type.geo.AiLatLng;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.Modules;
@@ -60,8 +60,6 @@ public class PolygonGeneratorTest extends CommandTestCase2 {
     @Before
     public void setUpDirs() {
         new File("target/report-tests").mkdirs();
-
-        LocaleProxy.setLocale(Locale.ENGLISH);
     }
 
     @Test
