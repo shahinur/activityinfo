@@ -37,7 +37,7 @@ import org.activityinfo.ui.client.widget.ModalDialog;
  */
 public class NewFormDialog {
 
-    public static final String CLASSIC_VIEW_EXPLANATION_URL = "http://activityinfo.org/classic_view";
+    public static final String CLASSIC_VIEW_EXPLANATION_URL = "http://activity-info.screenstepslive.com/s/8956/m/28175/l/276541-difference-between-classic-mode-and-new-design-mode";
 
     public static enum ViewType {
         CLASSIC, CLASSIC_MONTHLY, NEW_FORM_DESIGNER
