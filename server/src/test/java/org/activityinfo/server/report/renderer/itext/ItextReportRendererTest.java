@@ -23,6 +23,7 @@ package org.activityinfo.server.report.renderer.itext;
  */
 
 import com.google.common.collect.Lists;
+import net.lightoze.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.model.BaseMap;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
@@ -66,6 +67,11 @@ public class ItextReportRendererTest {
     @Before
     public void setUpDirs() {
         new File("target/report-tests").mkdirs();
+    }
+
+    @Before
+    public void setupLocale() {
+        LocaleProxy.initialize();
     }
 
     @Test
