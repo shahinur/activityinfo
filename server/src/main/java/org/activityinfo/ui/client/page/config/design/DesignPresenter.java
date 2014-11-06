@@ -32,6 +32,8 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.google.common.base.Function;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
@@ -39,6 +41,7 @@ import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
 import org.activityinfo.legacy.client.state.StateProvider;
 import org.activityinfo.legacy.shared.command.BatchCommand;
@@ -63,6 +66,7 @@ import org.activityinfo.ui.client.page.common.grid.TreeGridView;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
+import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
@@ -271,9 +275,15 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         ModelData selected = view.getSelection();
 
         if ("Activity".equals(entityName)) {
-            newEntity = new ActivityDTO(db);
-            newEntity.set("databaseId", db.getId());
-            parent = null;
+            final NewFormDialog newFormDialog = new NewFormDialog();
+            newFormDialog.show();
+            newFormDialog.setSuccessHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    createNewActivity(newFormDialog);
+                }
+            });
+            return;
 
         } else if ("LocationType".equals(entityName)) {
             newEntity = new LocationTypeDTO();
@@ -312,6 +322,44 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         }
 
         createEntity(parent, newEntity);
+    }
+
+    private void createNewActivity(NewFormDialog newFormDialog) {
+        final ActivityDTO newActivity = new ActivityDTO(db);
+        newActivity.set("databaseId", db.getId());
+        newActivity.setName(newFormDialog.getName());
+        newActivity.setCategory(newFormDialog.getCategory());
+
+        if (newFormDialog.getViewType() == NewFormDialog.ViewType.CLASSIC || newFormDialog.getViewType() == NewFormDialog.ViewType.CLASSIC_MONTHLY) {
+
+            newActivity.setClassicView(true);
+            newActivity.setReportingFrequency(newFormDialog.getViewType() == NewFormDialog.ViewType.CLASSIC ?
+                    ActivityDTO.REPORT_ONCE : ActivityDTO.REPORT_MONTHLY);
+
+            createEntity(null, newActivity);
+            return;
+        } else if (newFormDialog.getViewType() == NewFormDialog.ViewType.NEW_FORM_DESIGNER) {
+
+            newActivity.setClassicView(false);
+            newActivity.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+            newActivity.setLocationType(db.getCountry().getLocationTypes().get(0)); // todo check it with Alex !!!
+
+            service.execute(new CreateEntity(newActivity), new SuccessCallback<CreateResult>() {
+                @Override
+                public void onSuccess(CreateResult result) {
+
+                    newActivity.setId(result.getNewId());
+
+                    eventBus.fireEvent(new NavigationEvent(
+                            NavigationHandler.NAVIGATION_REQUESTED,
+                            new InstancePlace(newActivity.getResourceId(), "design")));
+                }
+            });
+
+            return;
+        }
+
+        throw new RuntimeException("Unsupported view type of activity: " + newFormDialog.getViewType());
     }
 
     private void createEntity(final ModelData parent, final EntityDTO newEntity) {
