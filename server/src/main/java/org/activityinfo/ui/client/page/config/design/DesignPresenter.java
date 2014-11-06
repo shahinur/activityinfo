@@ -30,8 +30,12 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.common.base.Function;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.ImplementedBy;
@@ -39,6 +43,7 @@ import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
 import org.activityinfo.legacy.client.state.StateProvider;
 import org.activityinfo.legacy.shared.command.BatchCommand;
@@ -63,6 +68,7 @@ import org.activityinfo.ui.client.page.common.grid.TreeGridView;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.page.config.DbPage;
 import org.activityinfo.ui.client.page.config.DbPageState;
+import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
@@ -85,11 +91,19 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store);
 
         public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback);
+
+        public Menu getNewMenu();
+
+        public MenuItem getNewAttributeGroup();
+
+        public MenuItem getNewAttribute();
+
+        public MenuItem getNewIndicator();
     }
 
     private final EventBus eventBus;
     private final Dispatcher service;
-    private final DesignView view;
+    private final View view;
     private final UiConstants messages;
 
     private UserDatabaseDTO db;
@@ -104,7 +118,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;
-        this.view = (DesignView) view;
+        this.view = view;
         this.messages = messages;
     }
 
@@ -122,7 +136,17 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         this.view.setActionEnabled(UIActions.DELETE, false);
         this.view.setActionEnabled(UIActions.EDIT, false);
         this.view.setActionEnabled(UIActions.OPEN_TABLE, false);
-        this.view.getNewMenu().addListener(Events.BeforeShow, new Listener<BaseEvent>() {
+
+        initMenu();
+    }
+
+    private void initMenu() {
+        Menu newMenu = this.view.getNewMenu();
+        if (newMenu == null) {
+            return;
+        }
+
+        newMenu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
 
@@ -130,7 +154,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                 ActivityDTO activity = DesignPresenter.this.getSelectedActivity(sel);
 
                 DesignPresenter.this.view.getNewAttributeGroup().setEnabled(sel != null && activity.getClassicView());
-                DesignPresenter.this.view.getNewAttribute().setEnabled((sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) &&  activity.getClassicView());
+                DesignPresenter.this.view.getNewAttribute().setEnabled((sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) && activity.getClassicView());
                 DesignPresenter.this.view.getNewIndicator().setEnabled(sel != null && activity.getClassicView());
             }
         });
@@ -271,9 +295,15 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         ModelData selected = view.getSelection();
 
         if ("Activity".equals(entityName)) {
-            newEntity = new ActivityDTO(db);
-            newEntity.set("databaseId", db.getId());
-            parent = null;
+            final NewFormDialog newFormDialog = new NewFormDialog();
+            newFormDialog.show();
+            newFormDialog.setSuccessHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    createNewActivity(newFormDialog);
+                }
+            });
+            return;
 
         } else if ("LocationType".equals(entityName)) {
             newEntity = new LocationTypeDTO();
@@ -312,6 +342,44 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         }
 
         createEntity(parent, newEntity);
+    }
+
+    private void createNewActivity(NewFormDialog newFormDialog) {
+        final ActivityDTO newActivity = new ActivityDTO(db);
+        newActivity.set("databaseId", db.getId());
+        newActivity.setName(newFormDialog.getName());
+        newActivity.setCategory(newFormDialog.getCategory());
+
+        if (newFormDialog.getViewType() == NewFormDialog.ViewType.CLASSIC || newFormDialog.getViewType() == NewFormDialog.ViewType.CLASSIC_MONTHLY) {
+
+            newActivity.setClassicView(true);
+            newActivity.setReportingFrequency(newFormDialog.getViewType() == NewFormDialog.ViewType.CLASSIC ?
+                    ActivityDTO.REPORT_ONCE : ActivityDTO.REPORT_MONTHLY);
+
+            createEntity(null, newActivity);
+            return;
+        } else if (newFormDialog.getViewType() == NewFormDialog.ViewType.NEW_FORM_DESIGNER) {
+
+            newActivity.setClassicView(false);
+            newActivity.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+            newActivity.setLocationType(db.getCountry().getLocationTypes().get(0)); // todo check it with Alex !!!
+
+            service.execute(new CreateEntity(newActivity), new SuccessCallback<CreateResult>() {
+                @Override
+                public void onSuccess(CreateResult result) {
+
+                    newActivity.setId(result.getNewId());
+
+                    eventBus.fireEvent(new NavigationEvent(
+                            NavigationHandler.NAVIGATION_REQUESTED,
+                            new InstancePlace(newActivity.getResourceId(), "design")));
+                }
+            });
+
+            return;
+        }
+
+        throw new RuntimeException("Unsupported view type of activity: " + newFormDialog.getViewType());
     }
 
     private void createEntity(final ModelData parent, final EntityDTO newEntity) {

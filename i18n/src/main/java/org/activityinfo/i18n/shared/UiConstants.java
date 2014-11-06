@@ -3532,4 +3532,25 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Classic view")
     String classicView();
+
+    @DefaultStringValue("Flexible Data Entry Form")
+    String newFormAsFormDesigner();
+
+    @DefaultStringValue("ActivityInfo Classic : attributes and indicators appear separately")
+    String newFormAsClassic();
+
+    @DefaultStringValue("ActivityInfo Classic - Monthly : attributes and indicators appear separately and users enter indicator results in a monthly grid.")
+    String newFormAsClassicMonthly();
+
+    @DefaultStringValue("New Form")
+    String newForm();
+
+    @DefaultStringValue("Name can't be blank")
+    String nameCantBeBlank();
+
+    @DefaultStringValue("Style is not selected")
+    String styleIsNotSelected();
+
+    @DefaultStringValue("Show me the difference")
+    String showMeTheDifference();
 }
