@@ -30,6 +30,8 @@ import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.common.base.Function;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -89,11 +91,19 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         public void init(DesignPresenter presenter, UserDatabaseDTO db, TreeStore store);
 
         public FormDialogTether showNewForm(EntityDTO entity, FormDialogCallback callback);
+
+        public Menu getNewMenu();
+
+        public MenuItem getNewAttributeGroup();
+
+        public MenuItem getNewAttribute();
+
+        public MenuItem getNewIndicator();
     }
 
     private final EventBus eventBus;
     private final Dispatcher service;
-    private final DesignView view;
+    private final View view;
     private final UiConstants messages;
 
     private UserDatabaseDTO db;
@@ -108,7 +118,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         super(eventBus, service, stateMgr, view);
         this.eventBus = eventBus;
         this.service = service;
-        this.view = (DesignView) view;
+        this.view = view;
         this.messages = messages;
     }
 
@@ -126,7 +136,17 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         this.view.setActionEnabled(UIActions.DELETE, false);
         this.view.setActionEnabled(UIActions.EDIT, false);
         this.view.setActionEnabled(UIActions.OPEN_TABLE, false);
-        this.view.getNewMenu().addListener(Events.BeforeShow, new Listener<BaseEvent>() {
+
+        initMenu();
+    }
+
+    private void initMenu() {
+        Menu newMenu = this.view.getNewMenu();
+        if (newMenu == null) {
+            return;
+        }
+
+        newMenu.addListener(Events.BeforeShow, new Listener<BaseEvent>() {
             @Override
             public void handleEvent(BaseEvent be) {
 
@@ -134,7 +154,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                 ActivityDTO activity = DesignPresenter.this.getSelectedActivity(sel);
 
                 DesignPresenter.this.view.getNewAttributeGroup().setEnabled(sel != null && activity.getClassicView());
-                DesignPresenter.this.view.getNewAttribute().setEnabled((sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) &&  activity.getClassicView());
+                DesignPresenter.this.view.getNewAttribute().setEnabled((sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) && activity.getClassicView());
                 DesignPresenter.this.view.getNewIndicator().setEnabled(sel != null && activity.getClassicView());
             }
         });

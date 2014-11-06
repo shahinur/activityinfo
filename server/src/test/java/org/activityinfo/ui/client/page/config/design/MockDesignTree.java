@@ -24,6 +24,8 @@ package org.activityinfo.ui.client.page.config.design;
 
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.menu.Menu;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import org.activityinfo.legacy.shared.model.EntityDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.legacy.client.AsyncMonitor;
@@ -62,6 +64,26 @@ public class MockDesignTree implements DesignPresenter.View {
 
         callback.onValidated(tether);
         return tether;
+    }
+
+    @Override
+    public Menu getNewMenu() {
+        return new Menu();
+    }
+
+    @Override
+    public MenuItem getNewAttributeGroup() {
+        return new MenuItem();
+    }
+
+    @Override
+    public MenuItem getNewAttribute() {
+        return new MenuItem();
+    }
+
+    @Override
+    public MenuItem getNewIndicator() {
+        return new MenuItem();
     }
 
     protected void mockEditEntity(EntityDTO entity) {

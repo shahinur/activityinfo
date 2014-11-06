@@ -126,11 +126,13 @@ public class DTOs {
             NFI_DISTRIBUTION = new ActivityDTO(91, "NFI Distributions");
             NFI_DISTRIBUTION.setDatabase(DATABASE);
             NFI_DISTRIBUTION.setLocationType(LOCALITE);
+            NFI_DISTRIBUTION.setClassicView(true);
             DATABASE.getActivities().add(NFI_DISTRIBUTION);
 
             SCHOOL_REHAB = new ActivityDTO(92, "School Rehab");
             SCHOOL_REHAB.setDatabase(DATABASE);
             SCHOOL_REHAB.setLocationType(ECOLE);
+            SCHOOL_REHAB.setClassicView(true);
             DATABASE.getActivities().add(SCHOOL_REHAB);
 
             REHAB_TYPE = new AttributeGroupDTO(71);
