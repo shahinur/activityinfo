@@ -1,6 +1,7 @@
 package org.activityinfo.model.form;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.*;
 
@@ -20,14 +21,14 @@ public class FormClass implements IsResource, FormElementContainer {
     /**
      * Because FormClasses are themselves FormInstances, they have a class id of their own
      */
-    public static final ResourceId CLASS_ID = ResourceId.create("_class");
+    public static final ResourceId CLASS_ID = ResourceId.valueOf("_class");
 
     /**
      * Instances of FormClass have one FormField: a label, which has its own
      * FormField id. It is defined at the application level to be a subproperty of
-     * {@code _label}
-     */
-    public static final ResourceId LABEL_FIELD_ID = ResourceId.create("_class_label");
+                                     * {@code _label}
+                                     */
+    public static final String LABEL_FIELD_ID = "_class_label";
 
 
     @NotNull
@@ -165,6 +166,13 @@ public class FormClass implements IsResource, FormElementContainer {
         return this;
     }
 
+
+    public FormField addField(ResourceId fieldId) {
+        FormField field = new FormField(fieldId);
+        elements.add(field);
+        return field;
+    }
+
     public FormClass insertElement(int index, FormElement element) {
         elements.add(index, element);
         return this;
@@ -178,7 +186,7 @@ public class FormClass implements IsResource, FormElementContainer {
     public static FormClass fromResource(Resource resource) {
         FormClass formClass = new FormClass(resource.getId());
         formClass.setOwnerId(resource.getOwnerId());
-        formClass.setLabel(resource.getString("label"));
+        formClass.setLabel(Strings.nullToEmpty(resource.isString(LABEL_FIELD_ID)));
         formClass.elements.addAll(fromRecords(resource.getRecordList("elements")));
         return formClass;
     }
@@ -187,7 +195,7 @@ public class FormClass implements IsResource, FormElementContainer {
         List<FormElement> elements = Lists.newArrayList();
         for(Record elementRecord : elementArray) {
             if("section".equals(elementRecord.isString("type"))) {
-                FormSection section = new FormSection(ResourceId.create(elementRecord.getString("id")));
+                FormSection section = new FormSection(ResourceId.valueOf(elementRecord.getString("id")));
                 section.setLabel(elementRecord.getString("label"));
                 section.getElements().addAll(fromRecords(elementRecord.getRecordList("elements")));
                 elements.add(section);
@@ -202,7 +210,8 @@ public class FormClass implements IsResource, FormElementContainer {
         Resource resource = Resources.createResource();
         resource.setId(id);
         resource.setOwnerId(ownerId);
-        resource.set("label", label);
+        resource.set("classId", CLASS_ID);
+        resource.set(LABEL_FIELD_ID, label);
         resource.set("elements", FormElement.asRecordList(elements));
         return resource;
     }

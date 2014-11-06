@@ -21,16 +21,15 @@ package org.activityinfo.model.type.image;
  * #L%
  */
 
-import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
-import org.activityinfo.model.type.component.ComponentReader;
-import org.activityinfo.model.type.component.NullComponentReader;
-import org.activityinfo.model.type.number.QuantityType;
+import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 
 /**
  * @author yuriyz on 8/6/14.
@@ -54,57 +53,42 @@ public class ImageType implements ParametrizedFieldType {
 
         @Override
         public FieldType createType() {
-            return new ImageType();
-        }
-
-        @Override
-        public ImageType deserializeType(Record typeParameters) {
-            return new ImageType();
-        }
-
-        @Override
-        public FormClass getParameterFormClass() {
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("image"));
-            formClass.addElement(new FormField(ResourceId.create("mimeType"))
-                    .setType(FREE_TEXT.createType())
-                    .setLabel("Mime type")
-                    .setDescription("Mime type of image (e.g. image/gif, image/jpeg, image/png)")
-                    .setRequired(true)
-            );
-            formClass.addElement(new FormField(ResourceId.create("filename"))
-                    .setType(FREE_TEXT.createType())
-                    .setLabel("File name")
-                    .setDescription("Name of image file")
-                    .setRequired(false)
-            );
-            formClass.addElement(new FormField(ResourceId.create("token"))
-                    .setType(FREE_TEXT.createType())
-                    .setLabel("Token")
-                    .setDescription("Token which is used to retrieve the image file.")
-                    .setVisible(false)
-            );
-            formClass.addElement(new FormField(ResourceId.create("width"))
-                    .setType(QuantityType.TYPE_CLASS.createType().setUnits("pixels"))
-                    .setLabel("Width")
-                    .setDescription("Width of image")
-            );
-            formClass.addElement(new FormField(ResourceId.create("height"))
-                    .setType(QuantityType.TYPE_CLASS.createType().setUnits("pixels"))
-                    .setLabel("Height")
-                    .setDescription("Height of image")
-            );
-            return formClass;
+            return new ImageType(Cardinality.SINGLE);
         }
 
         @Override
         public FieldValue deserialize(Record record) {
             return ImageValue.fromRecord(record);
         }
+
+        @Override
+        public ImageType deserializeType(Record typeParameters) {
+            EnumFieldValue enumFieldValue = (EnumFieldValue) EnumType.TYPE_CLASS.deserialize(typeParameters.getRecord("cardinality"));
+            return new ImageType(Cardinality.valueOf(enumFieldValue.getValueId().asString()));
+        }
+
+        @Override
+        public FormClass getParameterFormClass() {
+            EnumType cardinalityType = (EnumType) EnumType.TYPE_CLASS.createType();
+            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("single"), "Single"));
+            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("multiple"), "Multiple"));
+
+            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("image"));
+            formClass.addElement(new FormField(ResourceId.valueOf("cardinality"))
+                    .setType(cardinalityType)
+                    .setLabel("Cardinality")
+                    .setDescription("Determines whether users can add a single image, or multiple images")
+            );
+            return formClass;
+        }
     }
 
     public static final TypeClass TYPE_CLASS = new TypeClass();
 
-    public ImageType() {
+    private Cardinality cardinality;
+
+    public ImageType(Cardinality cardinality) {
+        this.cardinality = cardinality;
     }
 
     @Override
@@ -112,20 +96,20 @@ public class ImageType implements ParametrizedFieldType {
         return TYPE_CLASS;
     }
 
+    public Cardinality getCardinality() {
+        return cardinality;
+    }
+
     @Override
     public Record getParameters() {
-        return new Record().
-                set("classId", getTypeClass().getParameterFormClass().getId());
+        return new Record()
+                .set("classId", getTypeClass().getParameterFormClass().getId())
+                .set("cardinality", new EnumFieldValue(ResourceId.valueOf(cardinality.name())).asRecord());
     }
 
     @Override
-    public ComponentReader<String> getStringReader(String fieldName, String componentId) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ComponentReader<LocalDate> getDateReader(String name, String componentId) {
-        return new NullComponentReader<>();
+    public boolean isValid() {
+        return true;
     }
 
     @Override

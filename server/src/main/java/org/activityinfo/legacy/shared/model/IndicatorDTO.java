@@ -30,6 +30,7 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -199,11 +200,17 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
 
     @JsonProperty @JsonView(DTOViews.Schema.class)
     public FieldTypeClass getType() {
-        return TypeRegistry.get().getTypeClass((String) get("type"));
+        return TypeRegistry.get().getTypeClass(getTypeId());
     }
 
     public void setType(FieldTypeClass type) {
         set("type", type.getId());
+    }
+
+    public void setTypeId(String typeId) { set("type", typeId); }
+
+    private String getTypeId() {
+        return get("typeId", QuantityType.TYPE_CLASS.getId());
     }
 
     public void setMandatory(boolean mandatory) {
@@ -340,12 +347,17 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         FormField field = new FormField(CuidAdapter.indicatorField(getId()));
         field.setLabel(getName());
         field.setDescription(getDescription());
-        field.setNameInExpression(getNameInExpression());
-        field.setCalculateAutomatically(getCalculatedAutomatically());
-        field.setExpression(getExpression());
         field.setRelevanceConditionExpression(getSkipExpression());
 
-        if(getType() == TextType.TYPE_CLASS) {
+        String code = getNameInExpression();
+        if(!Strings.isNullOrEmpty(code)) {
+            field.setCode(code);
+        }
+
+        if (isCalculated()) {
+            field.setType(new CalculatedFieldType(getExpression()));
+
+        } else if (getType() == TextType.TYPE_CLASS) {
             field.setType(TextType.INSTANCE);
 
         } else if(getType() == NarrativeType.TYPE_CLASS) {
@@ -360,6 +372,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         }
         return field;
     }
+
 
     public void setSortOrder(int sortOrder) {
         set("sortOrder", sortOrder);

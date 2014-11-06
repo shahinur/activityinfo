@@ -12,6 +12,6 @@ class ReferenceFieldValueParser implements OdkFieldValueParser {
 
         if (text == null) throw new IllegalArgumentException("Malformed Element passed to OdkFieldValueParser.parse()");
 
-        return new ReferenceValue(ResourceId.create(text));
+        return new ReferenceValue(ResourceId.valueOf(text));
     }
 }

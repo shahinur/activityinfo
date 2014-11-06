@@ -22,22 +22,20 @@ package org.activityinfo.ui.client.component.form.field;
  */
 
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.ValueUpdater;
-import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.formTree.FieldPath;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.expr.ExprFieldType;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -47,6 +45,7 @@ import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.form.field.hierarchy.HierarchyFieldWidget;
+import org.activityinfo.ui.client.component.form.field.image.ImageUploadFieldWidget;
 
 import java.util.List;
 
@@ -71,13 +70,20 @@ public class FormFieldWidgetFactory {
     public static final int SMALL_BALANCE_NUMBER = 10;
     public static final int MEDIUM_BALANCE_NUMBER = 20;
 
-    private ResourceLocator resourceLocator;
+    private final ResourceLocator resourceLocator;
+    private final FieldWidgetMode fieldWidgetMode;
 
-    public FormFieldWidgetFactory(ResourceLocator resourceLocator) {
+    public FormFieldWidgetFactory(ResourceLocator resourceLocator, FieldWidgetMode fieldWidgetMode) {
         this.resourceLocator = resourceLocator;
+        this.fieldWidgetMode = fieldWidgetMode;
     }
 
-    public Promise<? extends FormFieldWidget> createWidget(FormField field, ValueUpdater valueUpdater) {
+    public Promise<? extends FormFieldWidget> createWidget(FormClass formClass, FormField field, ValueUpdater valueUpdater) {
+        return createWidget(null, formClass, field, valueUpdater, null);
+    }
+
+    public Promise<? extends FormFieldWidget> createWidget(String resourceId, FormClass formClass, FormField field,
+                                                           ValueUpdater valueUpdater, FormClass validationFormClass) {
         FieldType type = field.getType();
 
         if (type instanceof QuantityType) {
@@ -89,6 +95,12 @@ public class FormFieldWidgetFactory {
         } else if (type instanceof TextType) {
             return Promise.resolved(new TextFieldWidget(valueUpdater));
 
+        } else if (type instanceof ExprFieldType) {
+            return Promise.resolved(new ExprFieldWidget(validationFormClass, valueUpdater));
+
+        } else if (type instanceof CalculatedFieldType) {
+            return Promise.resolved(new CalculatedFieldWidget(valueUpdater));
+
         } else if (type instanceof LocalDateType) {
             return Promise.resolved(new DateFieldWidget(valueUpdater));
 
@@ -99,18 +111,15 @@ public class FormFieldWidgetFactory {
             return Promise.resolved(new GeographicPointWidget(valueUpdater));
 
         } else if (type instanceof EnumType) {
-            return Promise.resolved(new EnumFieldWidget((EnumType) field.getType(), valueUpdater));
+            return Promise.resolved(new EnumFieldWidget((EnumType) field.getType(), valueUpdater, fieldWidgetMode));
 
         } else if (type instanceof BooleanType) {
             return Promise.resolved(new BooleanFieldWidget(valueUpdater));
 
         }  else if (type instanceof ImageType) {
-            return Promise.resolved(new ImageUploadFieldWidget(valueUpdater));
+            return Promise.resolved(new ImageUploadFieldWidget(resourceId, field, valueUpdater));
 
         } else if (type instanceof ReferenceType) {
-            if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
-                return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) type, valueUpdater);
-            }
             return createReferenceWidget(field, valueUpdater);
         } else if (type instanceof BarcodeType) {
             return Promise.resolved(new BarcodeFieldWidget(valueUpdater));
@@ -121,14 +130,13 @@ public class FormFieldWidgetFactory {
     }
 
     private Promise<? extends FormFieldWidget> createReferenceWidget(FormField field, ValueUpdater updater) {
+        ReferenceType type = (ReferenceType) field.getType();
         if (field.isSubPropertyOf(ApplicationProperties.HIERARCHIAL)) {
             return HierarchyFieldWidget.create(resourceLocator, (ReferenceType) field.getType(), updater);
         } else {
             return createSimpleListWidget((ReferenceType) field.getType(), updater);
         }
     }
-
-
     private Promise createSimpleListWidget(final ReferenceType type, final ValueUpdater valueUpdater) {
         return resourceLocator
                 .queryInstances(type.getRange())

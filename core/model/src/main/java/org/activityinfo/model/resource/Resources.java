@@ -57,18 +57,21 @@ public class Resources {
 
     public static Resource fromJson(String json) {
         JsonParser parser = new JsonParser();
-        Resource resource = Resources.createResource();
-
         JsonObject resourceObject = parser.parse(json).getAsJsonObject();
 
+        return fromJson(resourceObject);
+    }
+
+    public static Resource fromJson(JsonObject resourceObject) {
+        Resource resource = Resources.createResource();
         for(Map.Entry<String, JsonElement> property : resourceObject.entrySet()) {
             String name = property.getKey();
             switch (name) {
                 case "@id":
-                    resource.setId(ResourceId.create(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    resource.setId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
                     break;
                 case "@owner":
-                    resource.setOwnerId(ResourceId.create(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    resource.setOwnerId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
                     break;
                 default:
                     // normal value
@@ -160,7 +163,7 @@ public class Resources {
         }
     }
 
-    private static JsonElement toJsonObject(Record value) {
+    public static JsonElement toJsonObject(Record value) {
         JsonObject jsonObject = new JsonObject();
         for(Map.Entry<String, Object> property :  value.getProperties().entrySet()) {
             if(property.getValue() != null) {

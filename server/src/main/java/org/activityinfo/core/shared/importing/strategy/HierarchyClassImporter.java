@@ -97,7 +97,7 @@ public class HierarchyClassImporter implements FieldImporter {
             ColumnAccessor columnAccessor = sourceColumns.get(i);
             if (!columnAccessor.isMissing(row)) {
                 FieldImporterColumn importedColumn = getImportedColumn(columnAccessor);
-                ResourceId targetSiteId = ResourceId.create(importedColumn.getTarget().getSite().asString());
+                ResourceId targetSiteId = ResourceId.valueOf(importedColumn.getTarget().getSite().asString());
                 if (targetSiteId.getDomain() == CuidAdapter.ADMIN_LEVEL_DOMAIN) {
                     final int levelId = CuidAdapter.getBlock(targetSiteId, 0);
                     // todo : recreation of admin level cuid seems to be error prone, check later !

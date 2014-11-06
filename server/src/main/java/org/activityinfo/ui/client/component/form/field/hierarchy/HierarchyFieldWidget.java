@@ -5,7 +5,6 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
@@ -89,9 +88,5 @@ public class HierarchyFieldWidget implements ReferenceFieldWidget {
         });
     }
 
-    @Override
-    public List<FormInstance> getRange() {
-        throw new UnsupportedOperationException();
-    }
 }
 

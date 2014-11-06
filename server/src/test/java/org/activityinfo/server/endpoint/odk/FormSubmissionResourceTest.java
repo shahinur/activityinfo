@@ -1,74 +1,65 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.google.common.io.ByteStreams;
-import org.activityinfo.fixtures.InjectionSupport;
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
-import org.activityinfo.server.command.CommandTestCase2;
-import org.activityinfo.server.command.ResourceLocatorSync;
-import org.activityinfo.service.lookup.ReferenceProvider;
-import org.activityinfo.service.store.ResourceStore;
-import org.apache.geronimo.mail.util.StringBufferOutputStream;
+import org.activityinfo.service.blob.BlobFieldStorageService;
+import org.activityinfo.service.blob.TestBlobFieldStorageService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Map;
 
+import static com.google.common.io.Resources.asByteSource;
+import static com.google.common.io.Resources.getResource;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
-import static org.junit.Assert.*;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-@RunWith(InjectionSupport.class)
-public class FormSubmissionResourceTest extends CommandTestCase2 {
+public class FormSubmissionResourceTest {
     private FormSubmissionResource resource;
+    private TestResourceStore store;
+
+    public static final ResourceId CLASS_ID = activityFormClass(1081);
 
     @Before
     public void setUp() throws IOException {
-        OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory(new ReferenceProvider());
-        ResourceLocatorSync resourceLocatorSync = new ResourceLocatorSync(getDispatcherSync());
-        resource = new FormSubmissionResource(factory, resourceLocatorSync);
+        // TODO Create form as part of test to avoid problems with id migrations
+        store = new TestResourceStore().load("/dbunit/formSubmissionResourceTest.json");
+        OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
+        AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
+        BlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
+        resource = new FormSubmissionResource(
+                factory, store, authenticationTokenService, blobFieldStorageService, null);
     }
 
     @Test
-    public void parse() throws Exception {
-        try (InputStream inputStream = FormSubmissionResourceTest.class.getResourceAsStream("form.xml")) {
-            StringBuffer stringBuffer = new StringBuffer();
+    public void parse() throws IOException {
+        byte bytes[] = asByteSource(getResource(FormSubmissionResourceTest.class, "form.mime")).read();
 
-            try (StringBufferOutputStream stringBufferOutputStream = new StringBufferOutputStream(stringBuffer)) {
-                ByteStreams.copy(inputStream, stringBufferOutputStream);
-            }
+        Response response = resource.submit(bytes);
+        assertEquals(CREATED, fromStatusCode(response.getStatus()));
 
-            Response response = resource.submit(stringBuffer.toString());
-            assertEquals(CREATED, fromStatusCode(response.getStatus()));
-        }
-
-        Iterator<Resource> iterator = openCursor(CuidAdapter.activityFormClass(1081));
-        assertTrue(iterator.hasNext());
-
-        Map<String, Object> map = iterator.next().getProperties();
-        assertFalse(iterator.hasNext());
+        Map<String, Object> map = store.getLastUpdated().getProperties();
 
         assertEquals(7, map.size());
-        assertEquals("a1081", map.get("classId"));
-        assertEquals(new ReferenceValue(CuidAdapter.partnerInstanceId(507, 562)).asRecord(), map.get("a1081f7"));
-        assertEquals(new LocalDate(2005, 8, 31).asRecord(), map.get("a1081f12"));
-        assertEquals(new LocalDate(2006, 9, 6).asRecord(), map.get("a1081f13"));
-        assertEquals(new ReferenceValue(CuidAdapter.entity(141796)).asRecord(), map.get("a1081f11"));
-        assertEquals(new Quantity(42.0, "%").asRecord(), map.get("i5346"));
+        assertEquals(CLASS_ID.asString(), map.get("classId"));
+        assertEquals(new ReferenceValue(partnerInstanceId(507, 562)).asRecord(), map.get(fieldName(PARTNER_FIELD)));
+        assertEquals(new LocalDate(2005, 8, 31).asRecord(), map.get(fieldName(END_DATE_FIELD)));
+        assertEquals("09/06/06", map.get(CODE_FIELD));
+        assertEquals(new ReferenceValue(entity(141796)).asRecord(), map.get("a1081f11"));
+        assertNull(map.get("i5346"));
         assertEquals(new NarrativeValue("Awesome.").asRecord(), map.get("a1081f14"));
+        assertNotNull(map.get("backupBlobId"));
     }
 
-    private Iterator<Resource> openCursor(ResourceId resourceId) {
-        throw new UnsupportedOperationException();
+    private String fieldName(int fieldIndex) {
+        return field(CLASS_ID, fieldIndex).asString();
     }
 }

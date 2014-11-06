@@ -3,9 +3,12 @@ package org.activityinfo.server.endpoint.odk;
 import com.google.inject.Inject;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
+import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -21,11 +24,18 @@ public class OdkFormFieldBuilderFactory {
     }
 
     public OdkFormFieldBuilder fromFieldType(FieldType fieldType) {
+        if (fieldType instanceof ParametrizedFieldType) {
+            ParametrizedFieldType parametrizedFieldType = (ParametrizedFieldType) fieldType;
+            if (!parametrizedFieldType.isValid()) return null;
+        }
+
         SelectOptions selectOptions = getSelectOptions(fieldType);
 
+        if (fieldType instanceof BarcodeType) return new SimpleInputBuilder("barcode");
         if (fieldType instanceof BooleanType) return new SelectBuilder("boolean", selectOptions);
         if (fieldType instanceof EnumType) return new SelectBuilder("string", selectOptions);
         if (fieldType instanceof GeoPointType) return new SimpleInputBuilder("geopoint");
+        if (fieldType instanceof ImageType) return new UploadBuilder("image/*");
         if (fieldType instanceof LocalDateType) return new SimpleInputBuilder("date");
         if (fieldType instanceof NarrativeType) return new SimpleInputBuilder("string");
         if (fieldType instanceof QuantityType) return new QuantityFieldBuilder((QuantityType) fieldType);

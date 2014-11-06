@@ -15,6 +15,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -93,12 +94,11 @@ public class FormPersister {
         int sortOrder = 1;
         for(FormField field : form.getFields()) {
 
-            if(isIndicator(field)) {
-                updateOrCreateIndicator(field, sortOrder);
-            } else if(isAttributeGroup(field)) {
+            if(isAttributeGroup(field)) {
                 updateOrCreateAttributeGroup(field, sortOrder);
+            } else {
+                updateOrCreateIndicator(field, sortOrder);
             }
-
             sortOrder++;
         }
 
@@ -177,10 +177,10 @@ public class FormPersister {
         indicator.setMandatory(field.isRequired());
         indicator.setDescription(field.getDescription());
         indicator.set("sortOrder", sortOrder);
-        indicator.setNameInExpression(field.getNameInExpression());
-        indicator.setExpression(field.getExpression());
-        indicator.setCalculatedAutomatically(field.getCalculateAutomatically());
+
+        indicator.setNameInExpression(field.getCode());
         indicator.setSkipExpression(field.getRelevanceConditionExpression());
+        indicator.setCalculatedAutomatically(field.getType() instanceof CalculatedFieldType);
 
         if(field.getType() instanceof QuantityType) {
             indicator.setType(FieldTypeClass.QUANTITY);
@@ -191,6 +191,11 @@ public class FormPersister {
 
         } else if (field.getType() instanceof BooleanType) {
             indicator.setType(FieldTypeClass.BOOLEAN);
+
+        } else if (field.getType() instanceof CalculatedFieldType) {
+            CalculatedFieldType type = (CalculatedFieldType) field.getType();
+            indicator.setType(QuantityType.TYPE_CLASS);
+            indicator.setExpression(type.getExpression());
 
         } else {
             indicator.setType(FieldTypeClass.FREE_TEXT);
@@ -301,7 +306,8 @@ public class FormPersister {
         return field.getType() instanceof QuantityType ||
                field.getType() instanceof NarrativeType ||
                field.getType() instanceof TextType ||
-               field.getType() instanceof BooleanType
+               field.getType() instanceof BooleanType ||
+               field.getType() instanceof CalculatedFieldType
                 ;
     }
 
