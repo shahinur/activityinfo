@@ -5,8 +5,25 @@ import org.activityinfo.server.endpoint.odk.xform.Item;
 
 import java.util.List;
 
-interface SelectOptions {
-    Cardinality getCardinality();
+public class SelectOptions {
 
-    List<Item> getItem();
+    private Cardinality cardinality;
+    private List<Item> items;
+
+    public SelectOptions(Cardinality cardinality, List<Item> items) {
+        this.cardinality = cardinality;
+        this.items = items;
+    }
+
+    public Cardinality getCardinality() {
+        return cardinality;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public boolean isEmpty() {
+        return items.isEmpty();
+    }
 }

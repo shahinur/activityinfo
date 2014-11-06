@@ -121,6 +121,7 @@ public class FormFieldWidgetFactory {
 
         } else if (type instanceof ReferenceType) {
             return createReferenceWidget(field, valueUpdater);
+
         } else if (type instanceof BarcodeType) {
             return Promise.resolved(new BarcodeFieldWidget(valueUpdater));
         }

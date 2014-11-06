@@ -10,8 +10,8 @@ import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
+import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.odk.xform.Html;
-import org.activityinfo.service.lookup.ReferenceProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,14 +38,15 @@ public class FormResourceTest extends CommandTestCase2 {
     public void setUp() throws IOException {
         ResourceLocatorSyncImpl resourceLocator = new ResourceLocatorSyncImpl(getDispatcherSync());
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
-        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(new ReferenceProvider());
-        resource = new FormResource(resourceLocator, Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com")), factory,
-                new TestAuthenticationTokenService());
+        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(resourceLocator);
+        TestAuthenticationTokenService tokenService = new TestAuthenticationTokenService();
+        resource = new FormResource(resourceLocator, authProvider, factory, tokenService);
     }
 
     @Test
+    @OnDataSet("/dbunit/chad-form.db.xml")
     public void getBlankForm() throws JAXBException, URISyntaxException, IOException, InterruptedException {
-        Response form = this.resource.form(1);
+        Response form = this.resource.form(11218);
         File file = new File(targetDir(), "form.xml");
         JAXBContext context = JAXBContext.newInstance(Html.class);
         Marshaller marshaller = context.createMarshaller();

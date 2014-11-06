@@ -5,9 +5,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(namespace = "http://www.w3.org/1999/xhtml")
 public class Html {
-    @XmlElement(namespace = "http://www.w3.org/1999/xhtml")
-    public Head head;
 
     @XmlElement(namespace = "http://www.w3.org/1999/xhtml")
-    public Body body;
+    public Head head = new Head();
+
+    @XmlElement(namespace = "http://www.w3.org/1999/xhtml")
+    public Body body = new Body();
+
 }

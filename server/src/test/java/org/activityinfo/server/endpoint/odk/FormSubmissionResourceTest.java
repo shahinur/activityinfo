@@ -32,7 +32,7 @@ public class FormSubmissionResourceTest {
     public void setUp() throws IOException {
         // TODO Create form as part of test to avoid problems with id migrations
         store = new TestResourceStore().load("/dbunit/formSubmissionResourceTest.json");
-        OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory();
+        OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory(store);
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
         BlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
         resource = new FormSubmissionResource(
