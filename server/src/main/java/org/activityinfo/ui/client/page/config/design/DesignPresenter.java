@@ -362,7 +362,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
             newActivity.setClassicView(false);
             newActivity.setReportingFrequency(ActivityDTO.REPORT_ONCE);
-            newActivity.setLocationType(db.getCountry().getLocationTypes().get(0)); // todo check it with Alex !!!
+            newActivity.setLocationType(newActivityLocationTypeForModernView());
 
             service.execute(new CreateEntity(newActivity), new SuccessCallback<CreateResult>() {
                 @Override
@@ -380,6 +380,17 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         }
 
         throw new RuntimeException("Unsupported view type of activity: " + newFormDialog.getViewType());
+    }
+
+    private LocationTypeDTO newActivityLocationTypeForModernView() {
+        for (LocationTypeDTO dto : db.getCountry().getLocationTypes()) {
+            if (dto.isNationwide()) {
+                return dto;
+            }
+        }
+//        throw new RuntimeException("Failed to find nationwide location type, db:" + db + ", country:" + db.getCountry());
+        // return first location, test db doesn't have nationwide location type for country
+        return db.getCountry().getLocationTypes().get(0);
     }
 
     private void createEntity(final ModelData parent, final EntityDTO newEntity) {
