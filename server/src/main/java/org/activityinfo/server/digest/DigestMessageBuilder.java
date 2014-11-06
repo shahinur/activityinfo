@@ -23,7 +23,8 @@ package org.activityinfo.server.digest;
  */
 
 import com.google.common.base.Preconditions;
-import com.teklabs.gwt.i18n.server.LocaleProxy;
+import net.lightoze.gwt.i18n.server.LocaleProxy;
+import net.lightoze.gwt.i18n.server.ThreadLocalLocaleProvider;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.server.mail.Message;
 import org.activityinfo.server.util.html.HtmlTag;
@@ -58,51 +59,57 @@ public class DigestMessageBuilder {
         Preconditions.checkNotNull(userDigest.getUser());
 
         // set the locale of the messages
-        LocaleProxy.setLocale(userDigest.getUser().getLocaleObject());
+        ThreadLocalLocaleProvider.pushLocale(userDigest.getUser().getLocaleObject());
 
-        DigestModel model = digestModelBuilder.createModel(userDigest);
+        try {
 
-        if (!model.hasData()) {
-            return null;
+            DigestModel model = digestModelBuilder.createModel(userDigest);
+
+            if (!model.hasData()) {
+                return null;
+            }
+
+            // create message, set recipient & bcc
+            Message message = new Message();
+            message.to(userDigest.getUser().getEmail(), userDigest.getUser().getName());
+
+            String subject = I18N.MESSAGES.digestSubject(userDigest.getDate());
+            message.subject(subject);
+
+            // create the html body
+            HtmlWriter htmlWriter = new HtmlWriter();
+
+            htmlWriter.startDocument();
+
+            htmlWriter.startDocumentHeader();
+            htmlWriter.documentTitle(subject);
+            htmlWriter.open(new HtmlTag("style"))
+                    .at("type", "text/css")
+                    .text("body { font-family:Helvetica; } a {color: black; text-decoration:none;} ")
+                    .close();
+            htmlWriter.endDocumentHeader();
+
+            htmlWriter.startDocumentBody();
+
+            htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(userDigest.getUser().getName()));
+
+            // the digest content
+            htmlWriter.paragraph(digestRenderer.renderHtml(model));
+
+            String signature = I18N.MESSAGES.digestSignature();
+            htmlWriter.paragraph(signature);
+
+            htmlWriter.endDocumentBody();
+            htmlWriter.endDocument();
+
+            LOGGER.finest("digest:\n" + htmlWriter.toString());
+
+            message.htmlBody(htmlWriter.toString());
+
+            return message;
+
+        } finally {
+            ThreadLocalLocaleProvider.popLocale();
         }
-
-        // create message, set recipient & bcc
-        Message message = new Message();
-        message.to(userDigest.getUser().getEmail(), userDigest.getUser().getName());
-
-        String subject = I18N.MESSAGES.digestSubject(userDigest.getDate());
-        message.subject(subject);
-
-        // create the html body
-        HtmlWriter htmlWriter = new HtmlWriter();
-
-        htmlWriter.startDocument();
-
-        htmlWriter.startDocumentHeader();
-        htmlWriter.documentTitle(subject);
-        htmlWriter.open(new HtmlTag("style"))
-                  .at("type", "text/css")
-                  .text("body { font-family:Helvetica; } a {color: black; text-decoration:none;} ")
-                  .close();
-        htmlWriter.endDocumentHeader();
-
-        htmlWriter.startDocumentBody();
-
-        htmlWriter.paragraph(I18N.MESSAGES.digestGreeting(userDigest.getUser().getName()));
-
-        // the digest content
-        htmlWriter.paragraph(digestRenderer.renderHtml(model));
-
-        String signature = I18N.MESSAGES.digestSignature();
-        htmlWriter.paragraph(signature);
-
-        htmlWriter.endDocumentBody();
-        htmlWriter.endDocument();
-
-        LOGGER.finest("digest:\n" + htmlWriter.toString());
-
-        message.htmlBody(htmlWriter.toString());
-
-        return message;
     }
 }

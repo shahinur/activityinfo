@@ -23,7 +23,7 @@
 <module>
 
   <inherits name="com.google.gwt.i18n.I18N"/>
-  <inherits name="com.teklabs.gwt.i18n.GwtI18nServer"/>
+  <inherits name="net.lightoze.gwt.i18n.GwtI18nServer"/>
 
   <source path="shared"/>
 

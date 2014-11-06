@@ -2,7 +2,7 @@ package org.activityinfo.ui.client.importer;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
-import com.teklabs.gwt.i18n.server.LocaleProxy;
+import net.lightoze.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.core.server.type.converter.JvmConverterFactory;
 import org.activityinfo.core.shared.form.tree.FormTreePrettyPrinter;
 import org.activityinfo.core.shared.importing.model.ImportModel;

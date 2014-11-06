@@ -1,6 +1,6 @@
 package org.activityinfo.server.digest.activity;
 
-import com.teklabs.gwt.i18n.server.LocaleProxy;
+import net.lightoze.gwt.i18n.server.LocaleProxy;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.server.database.hibernate.entity.SiteHistory;
 import org.activityinfo.server.digest.DigestModel;

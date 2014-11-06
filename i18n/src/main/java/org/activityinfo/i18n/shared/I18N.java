@@ -23,7 +23,7 @@ package org.activityinfo.i18n.shared;
  */
 
 import com.google.gwt.core.shared.GWT;
-import com.teklabs.gwt.i18n.client.LocaleFactory;
+import net.lightoze.gwt.i18n.client.LocaleFactory;
 
 /**
  * Contains global instances of UiConstants and UiMessages
