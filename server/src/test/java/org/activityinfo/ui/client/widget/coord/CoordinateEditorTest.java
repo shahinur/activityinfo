@@ -32,16 +32,16 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Locale;
 
 public class CoordinateEditorTest {
     private static final double DELTA = 0.00001;
     private CoordinateParser editor;
 
+    @SuppressWarnings("NonJREEmulationClassesInClientCode")
     @Before
     public void before() {
         LocaleProxy.initialize();
-        ThreadLocalLocaleProvider.pushLocale(Locale.ENGLISH);
+        ThreadLocalLocaleProvider.pushLocale(java.util.Locale.ENGLISH);
     }
 
     @Test

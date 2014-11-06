@@ -63,8 +63,7 @@ public class ExportIntegrationTest extends CommandTestCase2 {
         File outputDir = new File("target/report-test/");
         outputDir.mkdirs();
 
-        FileOutputStream fos = new FileOutputStream(
-                "target/report-test/ExportTest.xls");
+        FileOutputStream fos = new FileOutputStream("target/report-test/ExportTest.xls");
         export.getBook().write(fos);
         fos.close();
     }

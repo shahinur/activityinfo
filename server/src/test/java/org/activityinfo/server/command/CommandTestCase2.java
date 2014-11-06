@@ -74,6 +74,11 @@ public class CommandTestCase2 {
     }
 
     @Before
+    public final void setupLocaleProxy() {
+        LocaleProxy.initialize();
+    }
+
+    @Before
     public final void setDefaultUser() {
         setUser(1);
     }
