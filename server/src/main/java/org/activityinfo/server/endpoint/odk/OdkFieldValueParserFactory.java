@@ -12,18 +12,13 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
-import org.activityinfo.service.lookup.ReferenceProvider;
+import org.activityinfo.server.command.ResourceLocatorSync;
 
 public class OdkFieldValueParserFactory {
-    final private ReferenceProvider table;
-
-    public OdkFieldValueParserFactory() {
-        // stub
-        this(new ReferenceProvider());
-    }
+    final private ResourceLocatorSync table;
 
     @Inject
-    public OdkFieldValueParserFactory(ReferenceProvider table) {
+    public OdkFieldValueParserFactory(ResourceLocatorSync table) {
         this.table = table;
     }
 
@@ -40,6 +35,6 @@ public class OdkFieldValueParserFactory {
         if (fieldType instanceof TextType) return new TextFieldValueParser();
 
         // If this happens, it means this class needs to be expanded to support the new FieldType class.
-        throw new IllegalArgumentException("Unknown FieldType passed to OdkFieldValueParserFactory.fromFieldType()");
+        throw new IllegalArgumentException("Unknown FieldType passed to OdkFieldValueParserFactory.get()");
     }
 }

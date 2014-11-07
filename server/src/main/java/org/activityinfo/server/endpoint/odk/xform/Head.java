@@ -7,5 +7,7 @@ public class Head {
     public String title;
 
     @XmlElement
-    public Model model;
+    public Model model = new Model();
+
+
 }

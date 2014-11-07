@@ -1,12 +1,14 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.inject.ImplementedBy;
+import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.ResourceId;
 
 @ImplementedBy(AuthenticationTokenServiceImpl.class)
 public interface AuthenticationTokenService {
-    public AuthenticationToken getAuthenticationToken(int userId, int formClassId);
 
-    public int getFormClassId(AuthenticationToken authenticationToken) throws Exception;
+    String createAuthenticationToken(int userId, ResourceId formClassId);
 
-    public int getUserId(AuthenticationToken authenticationToken) throws Exception;
+    AuthenticatedUser authenticate(String authenticationToken);
+
 }

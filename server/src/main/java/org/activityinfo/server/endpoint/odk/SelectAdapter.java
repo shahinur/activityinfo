@@ -18,7 +18,7 @@ class SelectAdapter implements OdkTypeAdapter {
     SelectAdapter(String modelBindType, SelectOptions selectOptions) {
         this.modelBindType = modelBindType;
         this.cardinality = selectOptions.getCardinality();
-        this.item = selectOptions.getItem();
+        this.item = selectOptions.getItems();
     }
 
     @Override

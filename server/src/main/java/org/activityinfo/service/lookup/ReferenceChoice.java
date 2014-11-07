@@ -2,12 +2,15 @@ package org.activityinfo.service.lookup;
 
 import org.activityinfo.model.resource.ResourceId;
 
-/**
- * Created by alex on 11/3/14.
- */
+
 public class ReferenceChoice {
     private ResourceId id;
     private String label;
+
+    public ReferenceChoice(ResourceId id, String label) {
+        this.id = id;
+        this.label = label;
+    }
 
     public ResourceId getId() {
         return id;

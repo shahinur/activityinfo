@@ -4,5 +4,5 @@ import javax.xml.bind.annotation.XmlElement;
 
 public class Instance {
     @XmlElement
-    public Data data;
+    public Data data = new Data();
 }

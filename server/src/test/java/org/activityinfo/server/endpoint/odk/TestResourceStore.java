@@ -2,18 +2,25 @@ package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.form.FormInstanceLabeler;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.server.command.ResourceLocatorSync;
+import org.activityinfo.service.lookup.ReferenceChoice;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Ref;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class TestResourceStore implements ResourceLocatorSync {
 
@@ -27,12 +34,33 @@ public class TestResourceStore implements ResourceLocatorSync {
     }
 
     @Override
-    public Resource get(ResourceId resourceId) {
+    public FormClass getFormClass(ResourceId resourceId) {
         Resource resource = resources.get(resourceId);
         if(resource == null) {
             throw new IllegalArgumentException(resourceId.asString());
         }
-        return resource.copy();
+        return FormClass.fromResource(resource);
+    }
+
+    @Override
+    public FormInstance getFormInstance(ResourceId resourceId) {
+        Resource resource = resources.get(resourceId);
+        if(resource == null) {
+            throw new IllegalArgumentException(resourceId.asString());
+        }
+        return FormInstance.fromResource(resource);
+    }
+
+    @Override
+    public List<ReferenceChoice> getReferenceChoices(Set<ResourceId> range) {
+        List<ReferenceChoice> choices = Lists.newArrayList();
+        for(Resource resource : resources.values()) {
+            FormInstance instance = FormInstance.fromResource(resource);
+            if(range.contains(instance.getClassId())) {
+                choices.add(new ReferenceChoice(instance.getId(), FormInstanceLabeler.getLabel(instance)));
+            }
+        }
+        return choices;
     }
 
     public Resource getLastUpdated() {

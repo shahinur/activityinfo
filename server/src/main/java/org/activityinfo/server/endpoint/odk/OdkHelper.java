@@ -8,6 +8,7 @@ import org.activityinfo.model.expr.FunctionCallNode;
 import org.activityinfo.model.expr.GroupExpr;
 import org.activityinfo.model.expr.SymbolExpr;
 import org.activityinfo.model.expr.functions.ExprFunction;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
@@ -41,7 +42,8 @@ class OdkHelper {
         return null;
     }
 
-    static Set<String> extractFieldsSet(List<FormField> formFields) {
+    static Set<String> extractFieldsSet(FormClass formClass) {
+        List<FormField> formFields = formClass.getFields();
         Set<String> fieldsSet = Sets.newHashSetWithExpectedSize(formFields.size());
 
         for (FormField formField : formFields) {
