@@ -10,17 +10,11 @@ import com.google.inject.util.Providers;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.NarrativeValue;
-import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.endpoint.odk.xform.Html;
 import org.activityinfo.service.DeploymentConfiguration;
-import org.activityinfo.service.blob.BlobFieldStorageService;
-import org.activityinfo.service.blob.OdkFormSubmissionBackupService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +28,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -43,7 +36,6 @@ import static com.google.common.io.Resources.getResource;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
 import static org.activityinfo.model.legacy.CuidAdapter.*;
-import static org.activityinfo.model.legacy.CuidAdapter.entity;
 import static org.activityinfo.model.legacy.CuidAdapter.field;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
@@ -68,7 +60,7 @@ public class FormResourceTest extends CommandTestCase2 {
         AuthTokenProvider tokenService = new AuthTokenProvider();
 
         TestBlobstoreService blobstore = new TestBlobstoreService();
-        OdkFormSubmissionBackupService backupService = new OdkFormSubmissionBackupService(
+        SubmissionArchiver backupService = new SubmissionArchiver(
                 new DeploymentConfiguration(new Properties()));
 
         formResource = new FormResource(resourceLocator, authProvider, fieldFactory, tokenService);
@@ -91,6 +83,12 @@ public class FormResourceTest extends CommandTestCase2 {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.marshal(form.getEntity(), file);
         validate(file);
+    }
+
+
+    @Test @OnDataSet("/dbunit/sites-simple.db.xml")
+    public void current() throws IOException {
+
     }
 
     @Test @OnDataSet("/dbunit/chad-form.db.xml")

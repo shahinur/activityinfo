@@ -1,6 +1,5 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.images.Image;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
@@ -20,7 +19,6 @@ import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
-import org.activityinfo.service.blob.OdkFormSubmissionBackupService;
 import org.w3c.dom.Element;
 
 import javax.mail.BodyPart;
@@ -49,18 +47,18 @@ public class FormSubmissionResource {
     final private ResourceLocatorSync locator;
     final private AuthenticationTokenService authenticationTokenService;
     final private BlobFieldStorageService blobFieldStorageService;
-    final private OdkFormSubmissionBackupService odkFormSubmissionBackupService;
+    final private SubmissionArchiver submissionArchiver;
 
     @Inject
     public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceLocatorSync locator,
                                   AuthenticationTokenService authenticationTokenService,
                                   BlobFieldStorageService blobFieldStorageService,
-                                  OdkFormSubmissionBackupService odkFormSubmissionBackupService) {
+                                  SubmissionArchiver submissionArchiver) {
         this.factory = factory;
         this.locator = locator;
         this.authenticationTokenService = authenticationTokenService;
         this.blobFieldStorageService = blobFieldStorageService;
-        this.odkFormSubmissionBackupService = odkFormSubmissionBackupService;
+        this.submissionArchiver = submissionArchiver;
     }
 
     @POST
@@ -69,7 +67,7 @@ public class FormSubmissionResource {
     public Response submit(byte bytes[]) {
         ResourceId resourceId = ResourceId.generateId();
         try {
-            odkFormSubmissionBackupService.backup(resourceId, ByteSource.wrap(bytes));
+            submissionArchiver.backup(resourceId, ByteSource.wrap(bytes));
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Form submission could not be backed up to GCS", e);
             LOGGER.info(new String(bytes, Charsets.UTF_8));
@@ -84,6 +82,8 @@ public class FormSubmissionResource {
         ResourceId formId = CuidAdapter.newLegacyFormInstanceId(formClass.getId());
         FormInstance formInstance = new FormInstance(formId, formClass.getId());
 
+        LOGGER.log(Level.INFO, "Saving XForm " + instance.getId() + " as " + formId);
+
         for (FormField formField : formClass.getFields()) {
             Optional<Element> element = instance.getFieldContent(formField.getId());
             if (element.isPresent()) {
@@ -96,8 +96,6 @@ public class FormSubmissionResource {
                 persistImageData(user, instance, (ImageValue) fieldValue);
             }
         }
-
-        formInstance.set(ResourceId.valueOf("backupBlobId"), resourceId.asString());
 
         locator.persist(formInstance);
         return Response.status(CREATED).build();
