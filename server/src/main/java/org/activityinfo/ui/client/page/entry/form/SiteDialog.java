@@ -38,6 +38,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.UpdateSite;
 import org.activityinfo.legacy.shared.command.exception.NotAuthorizedException;
@@ -46,7 +47,6 @@ import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
@@ -54,23 +54,14 @@ import java.util.List;
 
 public class SiteDialog extends Window {
 
-    private  static final int CLASSIC_HEIGHT = 450;
-    private  static final int CLASSIC_WIDTH = 500;
-
-    private  static final int MODERN_HEIGHT = 550;
-    private  static final int MODERN_WIDTH = 600;
-
-
+    public static final int HEIGHT = 450;
+    public static final int WIDTH = 500;
     private final FormNavigationListView navigationListView;
     private final LayoutContainer sectionContainer;
 
     private final List<FormSection<SiteDTO>> sections = Lists.newArrayList();
-
-    private final Button finishButton;
-
-    // direct reference to sections
     private LocationFormSection locationForm;
-    private FormDataSection formDataSection;
+    private final Button finishButton;
 
     private final Dispatcher dispatcher;
     private final ActivityDTO activity;
@@ -90,8 +81,8 @@ public class SiteDialog extends Window {
         this.activity = activity;
 
         setHeadingText(I18N.MESSAGES.addNewSiteForActivity(activity.getName()));
-        setWidth(activity.getClassicView() ? CLASSIC_WIDTH : MODERN_WIDTH);
-        setHeight(activity.getClassicView() ? CLASSIC_HEIGHT : MODERN_HEIGHT);
+        setWidth(WIDTH);
+        setHeight(HEIGHT);
 
         setLayout(new BorderLayout());
 
@@ -124,31 +115,21 @@ public class SiteDialog extends Window {
                                        .withDescription(I18N.CONSTANTS.siteDialogSiteDesc()));
         }
 
-//        if (activity.getClassicView()) { // classic view : show indicator and attributes separately
-            if (!activity.getAttributeGroups().isEmpty()) {
+        if (!activity.getAttributeGroups().isEmpty()) {
 
-                addSection(FormSectionModel.forComponent(new AttributeSection(activity))
-                        .withHeader(I18N.CONSTANTS.attributes())
-                        .withDescription(I18N.CONSTANTS.siteDialogAttributes()));
+            addSection(FormSectionModel.forComponent(new AttributeSection(activity))
+                                       .withHeader(I18N.CONSTANTS.attributes())
+                                       .withDescription(I18N.CONSTANTS.siteDialogAttributes()));
 
-            }
+        }
 
-            if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE && !activity.getIndicators().isEmpty()) {
+        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE && !activity.getIndicators().isEmpty()) {
 
-                addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
-                        .withHeader(I18N.CONSTANTS.indicators())
-                        .withDescription(I18N.CONSTANTS.siteDialogIndicators()));
+            addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
+                                       .withHeader(I18N.CONSTANTS.indicators())
+                                       .withDescription(I18N.CONSTANTS.siteDialogIndicators()));
 
-            }
-//        } else {
-//            // classicView=false -> modern view : show new form renderer
-//
-//            formDataSection = new FormDataSection(dispatcher, activity);
-//            addSection(FormSectionModel.forComponent(formDataSection)
-//                    .withHeader(I18N.CONSTANTS.formData())
-//                    .withDescription(I18N.CONSTANTS.formDataDescription()));
-//
-//        }
+        }
 
         addSection(FormSectionModel.forComponent(new CommentSection(315, 330))
                                    .withHeader(I18N.CONSTANTS.comments())
