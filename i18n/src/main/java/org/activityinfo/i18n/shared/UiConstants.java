@@ -3496,6 +3496,9 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Or")
     String or();
 
+    @DefaultStringValue(" or ")
+    String orWithSpaces();
+
     @DefaultStringValue("Always applicable")
     String relevanceEnabled();
 
@@ -3568,4 +3571,13 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("View type")
     String viewType();
+
+    @DefaultStringValue("Want your users to see the new form layout?")
+    String alertAboutModerView();
+
+    @DefaultStringValue("Learn more about the change")
+    String learnMore();
+
+    @DefaultStringValue( "Switch to new layout")
+    String switchToNewLayout();
 }

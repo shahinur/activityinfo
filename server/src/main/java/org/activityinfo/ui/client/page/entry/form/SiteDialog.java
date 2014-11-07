@@ -27,6 +27,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -34,11 +35,16 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.common.collect.Lists;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.InlineLabel;
+import com.google.gwt.user.client.ui.Label;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.UpdateSite;
 import org.activityinfo.legacy.shared.command.exception.NotAuthorizedException;
@@ -47,6 +53,8 @@ import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
@@ -54,8 +62,9 @@ import java.util.List;
 
 public class SiteDialog extends Window {
 
-    public static final int HEIGHT = 450;
-    public static final int WIDTH = 500;
+    private static final int HEIGHT = 470;
+    private static final int WIDTH = 500;
+
     private final FormNavigationListView navigationListView;
     private final LayoutContainer sectionContainer;
 
@@ -86,6 +95,10 @@ public class SiteDialog extends Window {
 
         setLayout(new BorderLayout());
 
+        BorderLayoutData alertLayout = new BorderLayoutData(LayoutRegion.NORTH);
+        alertLayout.setSize(30);
+        add(modernViewAlert(activity.getDatabaseId()), alertLayout);
+
         navigationListView = new FormNavigationListView();
         BorderLayoutData navigationLayout = new BorderLayoutData(LayoutRegion.WEST);
         navigationLayout.setSize(150);
@@ -106,47 +119,47 @@ public class SiteDialog extends Window {
         }
 
         addSection(FormSectionModel.forComponent(new ActivitySection(activity))
-                                   .withHeader(I18N.CONSTANTS.siteDialogIntervention())
-                                   .withDescription(I18N.CONSTANTS.siteDialogInterventionDesc()));
+                .withHeader(I18N.CONSTANTS.siteDialogIntervention())
+                .withDescription(I18N.CONSTANTS.siteDialogInterventionDesc()));
 
         if (!activity.getLocationType().isNationwide()) {
             addSection(FormSectionModel.forComponent(locationForm)
-                                       .withHeader(I18N.CONSTANTS.location())
-                                       .withDescription(I18N.CONSTANTS.siteDialogSiteDesc()));
+                    .withHeader(I18N.CONSTANTS.location())
+                    .withDescription(I18N.CONSTANTS.siteDialogSiteDesc()));
         }
 
         if (!activity.getAttributeGroups().isEmpty()) {
 
             addSection(FormSectionModel.forComponent(new AttributeSection(activity))
-                                       .withHeader(I18N.CONSTANTS.attributes())
-                                       .withDescription(I18N.CONSTANTS.siteDialogAttributes()));
+                    .withHeader(I18N.CONSTANTS.attributes())
+                    .withDescription(I18N.CONSTANTS.siteDialogAttributes()));
 
         }
 
         if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE && !activity.getIndicators().isEmpty()) {
 
             addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
-                                       .withHeader(I18N.CONSTANTS.indicators())
-                                       .withDescription(I18N.CONSTANTS.siteDialogIndicators()));
+                    .withHeader(I18N.CONSTANTS.indicators())
+                    .withDescription(I18N.CONSTANTS.siteDialogIndicators()));
 
         }
 
         addSection(FormSectionModel.forComponent(new CommentSection(315, 330))
-                                   .withHeader(I18N.CONSTANTS.comments())
-                                   .withDescription(I18N.CONSTANTS.siteDialogComments()));
+                .withHeader(I18N.CONSTANTS.comments())
+                .withDescription(I18N.CONSTANTS.siteDialogComments()));
 
         SiteFormResources.INSTANCE.style().ensureInjected();
 
         navigationListView.getSelectionModel()
-                          .addSelectionChangedListener(new SelectionChangedListener<FormSectionModel>() {
+                .addSelectionChangedListener(new SelectionChangedListener<FormSectionModel>() {
 
-                              @Override
-                              public void selectionChanged(SelectionChangedEvent<FormSectionModel> se) {
-                                  if (!se.getSelection().isEmpty()) {
-                                      sectionLayout.setActiveItem(se.getSelectedItem().getComponent());
-                                  }
-                              }
-                          });
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent<FormSectionModel> se) {
+                        if (!se.getSelection().isEmpty()) {
+                            sectionLayout.setActiveItem(se.getSelectedItem().getComponent());
+                        }
+                    }
+                });
 
         finishButton = new Button(I18N.CONSTANTS.save(),
                 IconImageBundle.ICONS.save(),
@@ -164,6 +177,30 @@ public class SiteDialog extends Window {
                 });
 
         getButtonBar().add(finishButton);
+    }
+
+    private LayoutContainer modernViewAlert(int dbId) {
+        Anchor linkToDesign = new Anchor(I18N.CONSTANTS.switchToNewLayout());
+        linkToDesign.setHref("#design/" + dbId);
+        linkToDesign.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                SiteDialog.this.hide();
+            }
+        });
+
+        Anchor linkToMore = new Anchor(I18N.CONSTANTS.learnMore());
+        linkToMore.setHref(NewFormDialog.CLASSIC_VIEW_EXPLANATION_URL);
+        linkToMore.setTarget("_blank");
+
+        ContentPanel panel = new ContentPanel();
+        panel.setHeaderVisible(false);
+        panel.setLayout(new FlowLayout());
+        panel.add(new Label(I18N.CONSTANTS.alertAboutModerView()));
+        panel.add(linkToDesign);
+        panel.add(new InlineLabel(I18N.CONSTANTS.orWithSpaces()));
+        panel.add(linkToMore);
+        return panel;
     }
 
     public void showNew(SiteDTO site, LocationDTO location, boolean locationIsNew, SiteDialogCallback callback) {
