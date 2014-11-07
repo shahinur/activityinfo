@@ -64,7 +64,6 @@ public class FormResource {
         LOGGER.finer("ODK activity form " + id + " requested by " +
                      user.getEmail() + " (" + user.getId() + ")");
 
-        AuthenticationToken authenticationToken = authenticationTokenService.createAuthenticationToken(user.getId(), id);
         FormClass formClass;
         try {
             formClass = locator.getFormClass(CuidAdapter.activityFormClass(id));
@@ -72,13 +71,17 @@ public class FormResource {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
 
+        String authenticationToken = authenticationTokenService
+                .createAuthenticationToken(user.getId(), formClass.getId());
+
         Set<String> fieldsSet = OdkHelper.extractFieldsSet(formClass);
         List<OdkField> fields = buildFieldList(formClass);
 
         Html html = new Html();
         html.head.title = formClass.getLabel();
-        html.head.model.instance.data.id = authenticationToken.getToken();
+        html.head.model.instance.data.id = formClass.getId().asString();
         html.head.model.instance.data.meta.instanceID = new InstanceId();
+        html.head.model.instance.data.meta.userID = authenticationToken;
 
         for (OdkField field : fields) {
             QName qName = new QName("http://www.w3.org/2002/xforms", toRelativeFieldName(field.getModel().getId().asString()));

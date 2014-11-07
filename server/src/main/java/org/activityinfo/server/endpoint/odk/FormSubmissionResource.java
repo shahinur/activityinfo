@@ -77,28 +77,17 @@ public class FormSubmissionResource {
 
         XFormInstance instance = new XFormInstance(bytes);
 
-        AuthenticationToken authenticationToken = instance.getAuthenticationToken();
-        int formClassId;
-        AuthenticatedUser user;
-        try {
-            int userId = authenticationTokenService.getUserId(authenticationToken);
-            formClassId = authenticationTokenService.getFormClassId(authenticationToken);
-            user = new AuthenticatedUser("XYZ", userId, "@");
-        } catch (EntityNotFoundException entityNotFoundException) {
-            throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-        } catch (RuntimeException runtimeException) {
-            throw runtimeException;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        String authenticationToken = instance.getAuthenticationToken();
+        AuthenticatedUser user = authenticationTokenService.authenticate(authenticationToken);
 
-        FormClass formClass = locator.getFormClass(CuidAdapter.activityFormClass(formClassId));
-        FormInstance formInstance = new FormInstance(ResourceId.valueOf(instance.getId()), formClass.getId());
+        FormClass formClass = locator.getFormClass(instance.getFormClassId());
+        ResourceId formId = CuidAdapter.newLegacyFormInstanceId(formClass.getId());
+        FormInstance formInstance = new FormInstance(formId, formClass.getId());
 
         for (FormField formField : formClass.getFields()) {
             Optional<Element> element = instance.getFieldContent(formField.getId());
             if (element.isPresent()) {
-                formInstance.set(formField.getId(), tryParse(formInstance, formField, element));
+                formInstance.set(formField.getId(), tryParse(formInstance, formField, element.get()));
             }
         }
 
@@ -114,13 +103,13 @@ public class FormSubmissionResource {
         return Response.status(CREATED).build();
     }
 
-    private FieldValue tryParse(FormInstance formInstance, FormField formField, Optional<Element> element) {
+    private FieldValue tryParse(FormInstance formInstance, FormField formField, Element element) {
         try {
             OdkFieldValueParser odkFieldValueParser = factory.fromFieldType(formField.getType());
-            return odkFieldValueParser.parse((Element) element);
+            return odkFieldValueParser.parse(element);
 
         } catch (Exception e) {
-            String text = OdkHelper.extractText(element.get());
+            String text = OdkHelper.extractText(element);
 
             if (text == null) {
                 LOGGER.log(Level.SEVERE, "Malformed Element in form instance prevents parsing", e);

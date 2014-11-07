@@ -7,6 +7,7 @@ import com.google.common.io.ByteSource;
 import com.google.common.io.ByteStreams;
 import com.sun.jersey.multipart.BodyPart;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.w3c.dom.Document;
@@ -36,9 +37,13 @@ public class XFormInstance {
 
     private static final Logger LOGGER = Logger.getLogger(XFormInstance.class.getName());
     private Document document;
-    private AuthenticationToken authenticationToken;
-    private String instanceId;
     private MimeMultipart mimeMultipart;
+
+    private Element data;
+    private Element meta;
+    private String instanceId;
+    private ResourceId formClassId;
+    private String userId;
 
     public XFormInstance(byte[] bytes) {
         ByteArrayDataSource byteArrayDataSource = new ByteArrayDataSource(bytes, MediaType.MULTIPART_FORM_DATA);
@@ -62,34 +67,19 @@ public class XFormInstance {
     }
 
     private void parseHeader() {
-        NodeList nodeList = document.getElementsByTagName("instanceID");
-        Node node = nodeList.getLength() == 1 ? nodeList.item(0) : null;
-
-        // A cascade of various validations of the structure of the submitted form, where node may have been set to null
-        String tokenString;
-        if (node == null ||
-                !"instanceID".equals(node.getNodeName()) ||
-                !"meta".equals(node.getParentNode().getNodeName()) ||
-                !"data".equals(node.getParentNode().getParentNode().getNodeName()) ||
-                !"#document".equals(node.getParentNode().getParentNode().getParentNode().getNodeName()) ||
-                node.getParentNode().getParentNode().getParentNode().getParentNode() != null) {
-            throw new WebApplicationException(Response.status(BAD_REQUEST).build());
-        }
-
-        instanceId = OdkHelper.extractText(node).replace("-", "");
-        Node dataNode = node.getParentNode().getParentNode();
-
-        if (dataNode.hasAttributes() && dataNode.getAttributes().getLength() == 1) {
-            tokenString = OdkHelper.extractText(dataNode.getAttributes().item(0));
-
-            if (tokenString != null && tokenString.length() > 0) {
-                authenticationToken = new AuthenticationToken(tokenString);
-            }
-        }
+        data = document.getDocumentElement();
+        formClassId = ResourceId.valueOf(data.getAttribute("id"));
+        meta = findElement(data, "meta");
+        instanceId = extractText(findElement(meta, "instanceID")).replace("-", "");
+        userId = extractText(findElement(meta, "userID"));
     }
 
-    public AuthenticationToken getAuthenticationToken() {
-        return authenticationToken;
+    private String extractText(Element element) {
+        return OdkHelper.extractText(element);
+    }
+
+    public String getAuthenticationToken() {
+        return userId;
     }
 
     public String getId() {
@@ -107,10 +97,6 @@ public class XFormInstance {
         }
     }
 
-    public MimeMultipart getMimeMultipart() {
-        return mimeMultipart;
-    }
-
     public javax.mail.BodyPart findBodyPartByFilename(String filename) throws MessagingException {
         for (int i = 0; i < mimeMultipart.getCount(); i++) {
             javax.mail.BodyPart bodyPart = mimeMultipart.getBodyPart(i);
@@ -120,5 +106,22 @@ public class XFormInstance {
         }
         LOGGER.log(Level.SEVERE, "Could not find the specified filename");
         throw new WebApplicationException(Response.status(BAD_REQUEST).build());
+    }
+
+    private Element findElement(Element parent, String tagName) {
+        NodeList children = parent.getChildNodes();
+        for(int i=0;i!=children.getLength();++i) {
+            Node child = children.item(i);
+            if(child instanceof Element) {
+                if(((Element) child).getTagName().equals(tagName)) {
+                    return (Element) child;
+                }
+            }
+        }
+        throw new IllegalStateException("Cannot find element " + tagName);
+    }
+
+    public ResourceId getFormClassId() {
+        return formClassId;
     }
 }

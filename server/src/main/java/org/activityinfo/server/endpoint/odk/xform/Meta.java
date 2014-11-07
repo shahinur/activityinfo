@@ -5,4 +5,8 @@ import javax.xml.bind.annotation.XmlElement;
 public class Meta {
     @XmlElement
     public InstanceId instanceID;
+
+
+    @XmlElement
+    public String userID;
 }

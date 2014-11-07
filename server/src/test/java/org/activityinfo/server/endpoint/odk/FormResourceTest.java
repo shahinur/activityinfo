@@ -8,12 +8,14 @@ import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.server.database.hibernate.entity.Authentication;
 import org.activityinfo.server.endpoint.odk.xform.Html;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.activityinfo.service.blob.BlobFieldStorageService;
@@ -61,7 +63,7 @@ public class FormResourceTest extends CommandTestCase2 {
         OdkFormFieldBuilderFactory fieldFactory = new OdkFormFieldBuilderFactory(resourceLocator);
         OdkFieldValueParserFactory parserFactory = new OdkFieldValueParserFactory(resourceLocator);
 
-        TestAuthenticationTokenService tokenService = new TestAuthenticationTokenService();
+        AuthTokenProvider tokenService = new AuthTokenProvider();
 
         TestBlobstoreService blobstore = new TestBlobstoreService();
         OdkFormSubmissionBackupService backupService = new OdkFormSubmissionBackupService(
@@ -76,6 +78,9 @@ public class FormResourceTest extends CommandTestCase2 {
     @Test
     @OnDataSet("/dbunit/chad-form.db.xml")
     public void getBlankForm() throws JAXBException, URISyntaxException, IOException, InterruptedException {
+
+        setUser(USER_ID);
+
         Response form = this.formResource.form(ACTIVITY_ID);
         File file = new File(targetDir(), "form.xml");
         JAXBContext context = JAXBContext.newInstance(Html.class);
@@ -88,7 +93,7 @@ public class FormResourceTest extends CommandTestCase2 {
 
     @Test @OnDataSet("/dbunit/chad-form.db.xml")
     public void parse() throws IOException {
-        byte bytes[] = asByteSource(getResource(FormSubmissionResourceTest.class, "form.mime")).read();
+        byte bytes[] = asByteSource(getResource(FormResourceTest.class, "form.mime")).read();
 
         Response response = formSubmissionResource.submit(bytes);
         assertEquals(CREATED, fromStatusCode(response.getStatus()));
@@ -136,5 +141,23 @@ public class FormResourceTest extends CommandTestCase2 {
         }
 
         assertThat(exitCode, equalTo(0));
+    }
+
+    private class AuthTokenProvider implements AuthenticationTokenService {
+
+        @Override
+        public String createAuthenticationToken(int userId, ResourceId formClassId) {
+            return "XYZ";
+        }
+
+        @Override
+        public AuthenticatedUser authenticate(String authenticationToken) {
+            if("LDbRuQsl".equals(authenticationToken)) {
+                AuthenticatedUser user = new AuthenticatedUser("", USER_ID, "@");
+                setUser(user.getId());
+                return user;
+            }
+            throw new AssertionError("Not authenticated");
+        }
     }
 }
