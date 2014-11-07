@@ -8,10 +8,16 @@ import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.type.NarrativeValue;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.server.endpoint.odk.xform.Html;
+import org.activityinfo.service.DeploymentConfiguration;
+import org.activityinfo.service.blob.BlobFieldStorageService;
+import org.activityinfo.service.blob.OdkFormSubmissionBackupService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,28 +31,52 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Properties;
 
+import static com.google.common.io.Resources.asByteSource;
+import static com.google.common.io.Resources.getResource;
+import static javax.ws.rs.core.Response.Status.CREATED;
+import static javax.ws.rs.core.Response.Status.fromStatusCode;
+import static org.activityinfo.model.legacy.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.entity;
+import static org.activityinfo.model.legacy.CuidAdapter.field;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
 public class FormResourceTest extends CommandTestCase2 {
 
-    private FormResource resource;
+    public static final int ACTIVITY_ID = 11218;
+    public static final int USER_ID = 9944;
+
+    private FormResource formResource;
+    private FormSubmissionResource formSubmissionResource;
 
     @Before
     public void setUp() throws IOException {
         ResourceLocatorSyncImpl resourceLocator = new ResourceLocatorSyncImpl(getDispatcherSync());
-        Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", 123, "jorden@bdd.com"));
-        OdkFormFieldBuilderFactory factory = new OdkFormFieldBuilderFactory(resourceLocator);
+        Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", USER_ID, "jorden@bdd.com"));
+
+        OdkFormFieldBuilderFactory fieldFactory = new OdkFormFieldBuilderFactory(resourceLocator);
+        OdkFieldValueParserFactory parserFactory = new OdkFieldValueParserFactory(resourceLocator);
+
         TestAuthenticationTokenService tokenService = new TestAuthenticationTokenService();
-        resource = new FormResource(resourceLocator, authProvider, factory, tokenService);
+
+        TestBlobstoreService blobstore = new TestBlobstoreService();
+        OdkFormSubmissionBackupService backupService = new OdkFormSubmissionBackupService(
+                new DeploymentConfiguration(new Properties()));
+
+        formResource = new FormResource(resourceLocator, authProvider, fieldFactory, tokenService);
+        formSubmissionResource = new FormSubmissionResource(
+                parserFactory, resourceLocator, tokenService, blobstore,
+                backupService);
     }
 
     @Test
     @OnDataSet("/dbunit/chad-form.db.xml")
     public void getBlankForm() throws JAXBException, URISyntaxException, IOException, InterruptedException {
-        Response form = this.resource.form(11218);
+        Response form = this.formResource.form(ACTIVITY_ID);
         File file = new File(targetDir(), "form.xml");
         JAXBContext context = JAXBContext.newInstance(Html.class);
         Marshaller marshaller = context.createMarshaller();
@@ -54,6 +84,30 @@ public class FormResourceTest extends CommandTestCase2 {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.marshal(form.getEntity(), file);
         validate(file);
+    }
+
+    @Test @OnDataSet("/dbunit/chad-form.db.xml")
+    public void parse() throws IOException {
+        byte bytes[] = asByteSource(getResource(FormSubmissionResourceTest.class, "form.mime")).read();
+
+        Response response = formSubmissionResource.submit(bytes);
+        assertEquals(CREATED, fromStatusCode(response.getStatus()));
+
+        //Map<String, Object> map = store.getLastUpdated().getProperties();
+
+//        assertEquals(7, map.size());
+//        assertEquals(CLASS_ID.asString(), map.get("classId"));
+//        assertEquals(new ReferenceValue(partnerInstanceId(507, 562)).asRecord(), map.get(fieldName(PARTNER_FIELD)));
+//        assertEquals(new LocalDate(2005, 8, 31).asRecord(), map.get(fieldName(END_DATE_FIELD)));
+//        assertEquals("09/06/06", map.get(CODE_FIELD));
+//        assertEquals(new ReferenceValue(entity(141796)).asRecord(), map.get("a1081f11"));
+//        assertNull(map.get("i5346"));
+//        assertEquals(new NarrativeValue("Awesome.").asRecord(), map.get("a1081f14"));
+//        assertNotNull(map.get("backupBlobId"));
+    }
+
+    private String fieldName(int fieldIndex) {
+        return field(activityFormClass(ACTIVITY_ID), fieldIndex).asString();
     }
 
     private File targetDir() {

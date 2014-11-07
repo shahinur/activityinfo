@@ -9,8 +9,9 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Transaction;
 
 public class AuthenticationTokenServiceImpl implements AuthenticationTokenService {
+
     @Override
-    public AuthenticationToken getAuthenticationToken(int userId, int formClassId) {
+    public AuthenticationToken createAuthenticationToken(int userId, int formClassId) {
         AuthenticationToken authenticationToken;
         Key key;
         DatastoreService datastoreService = DatastoreServiceFactory.getDatastoreService();

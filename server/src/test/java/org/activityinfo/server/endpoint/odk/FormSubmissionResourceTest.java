@@ -1,13 +1,16 @@
 package org.activityinfo.server.endpoint.odk;
 
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.NarrativeValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.time.LocalDate;
+import org.activityinfo.server.database.OnDataSet;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.TestBlobFieldStorageService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
@@ -22,16 +25,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+@RunWith(InjectionSupport.class)
 public class FormSubmissionResourceTest {
     private FormSubmissionResource resource;
     private TestResourceStore store;
 
-    public static final ResourceId CLASS_ID = activityFormClass(1081);
+    public static final ResourceId CLASS_ID = activityFormClass(11218);
 
     @Before
     public void setUp() throws IOException {
-        // TODO Create form as part of test to avoid problems with id migrations
-        store = new TestResourceStore().load("/dbunit/formSubmissionResourceTest.json");
         OdkFieldValueParserFactory factory = new OdkFieldValueParserFactory(store);
         AuthenticationTokenService authenticationTokenService = new TestAuthenticationTokenService();
         BlobFieldStorageService blobFieldStorageService = new TestBlobFieldStorageService();
@@ -39,7 +41,7 @@ public class FormSubmissionResourceTest {
                 factory, store, authenticationTokenService, blobFieldStorageService, null);
     }
 
-    @Test
+    @Test @OnDataSet("/dbunit/chad-form.db.xml")
     public void parse() throws IOException {
         byte bytes[] = asByteSource(getResource(FormSubmissionResourceTest.class, "form.mime")).read();
 

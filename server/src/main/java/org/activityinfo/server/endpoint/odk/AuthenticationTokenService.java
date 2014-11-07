@@ -4,7 +4,8 @@ import com.google.inject.ImplementedBy;
 
 @ImplementedBy(AuthenticationTokenServiceImpl.class)
 public interface AuthenticationTokenService {
-    public AuthenticationToken getAuthenticationToken(int userId, int formClassId);
+
+    public AuthenticationToken createAuthenticationToken(int userId, int formClassId);
 
     public int getFormClassId(AuthenticationToken authenticationToken) throws Exception;
 

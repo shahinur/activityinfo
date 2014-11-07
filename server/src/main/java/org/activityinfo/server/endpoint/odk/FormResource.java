@@ -64,7 +64,7 @@ public class FormResource {
         LOGGER.finer("ODK activity form " + id + " requested by " +
                      user.getEmail() + " (" + user.getId() + ")");
 
-        AuthenticationToken authenticationToken = authenticationTokenService.getAuthenticationToken(user.getId(), id);
+        AuthenticationToken authenticationToken = authenticationTokenService.createAuthenticationToken(user.getId(), id);
         FormClass formClass;
         try {
             formClass = locator.getFormClass(CuidAdapter.activityFormClass(id));
