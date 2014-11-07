@@ -1,11 +1,13 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.server.endpoint.odk.xform.Bind;
 import org.activityinfo.server.endpoint.odk.xform.Html;
@@ -20,6 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -89,25 +92,39 @@ public class FormResource {
         }
 
         html.head.model.bind.add(instanceIdBinding());
+        html.head.model.bind.add(startDate(formClass.getId()));
+        html.head.model.bind.add(endDate(formClass.getId()));
+
+        ResourceId startDateFieldId = CuidAdapter.field(formClass.getId(), CuidAdapter.START_DATE_FIELD);
+        ResourceId endDateFieldId = CuidAdapter.field(formClass.getId(), CuidAdapter.END_DATE_FIELD);
+        Set<ResourceId> dateFields = Sets.newHashSet(startDateFieldId, endDateFieldId);
 
         for (OdkField field : fields) {
-            Bind bind = new Bind();
-            bind.nodeset = toAbsoluteFieldName(field.getModel().getId().asString());
-            bind.type = field.getBuilder().getModelBindType();
-            if (field.getModel().isReadOnly()) {
-                bind.readonly = "true()";
+            // As a transitional hack, populate the startDate and endDate of the "activity"
+            // with the start/end date of interview
+            if(field.getModel().getId().equals(startDateFieldId)) {
+                html.head.model.bind.add(startDate(formClass.getId()));
+            } else if(field.getModel().getId().equals(endDateFieldId)) {
+                html.head.model.bind.add(endDate(formClass.getId()));
+            } else {
+                Bind bind = new Bind();
+                bind.nodeset = toAbsoluteFieldName(field.getModel().getId().asString());
+                bind.type = field.getBuilder().getModelBindType();
+                if (field.getModel().isReadOnly()) {
+                    bind.readonly = "true()";
+                }
+                //TODO Fix this
+                //bind.calculate = formField.getExpression();
+                bind.relevant = convertRelevanceConditionExpression(field.getModel().getRelevanceConditionExpression(), fieldsSet);
+                if (field.getModel().isRequired()) {
+                    bind.required = "true()";
+                }
+                html.head.model.bind.add(bind);
             }
-            //TODO Fix this
-            //bind.calculate = formField.getExpression();
-            bind.relevant = convertRelevanceConditionExpression(field.getModel().getRelevanceConditionExpression(), fieldsSet);
-            if (field.getModel().isRequired()) {
-                bind.required = "true()";
-            }
-            html.head.model.bind.add(bind);
         }
 
         for (OdkField formField : fields) {
-            if (formField.getModel().isVisible()) {
+            if (formField.getModel().isVisible() && !dateFields.contains(formField.getModel().getId())) {
                 html.body.jaxbElement.add(formField.getBuilder().createPresentationElement(
                         toAbsoluteFieldName(formField.getModel().getId().asString()),
                         formField.getModel().getLabel(),
@@ -138,4 +155,23 @@ public class FormResource {
         bind.calculate = "concat('uuid:',uuid())";
         return bind;
     }
+
+    private Bind startDate(ResourceId classId) {
+        Bind bind = new Bind();
+        bind.nodeset = "/data/field_" + CuidAdapter.field(classId, CuidAdapter.START_DATE_FIELD);
+        bind.type = "dateTime";
+        bind.preload = "timestamp";
+        bind.preloadParams = "start";
+        return bind;
+    }
+
+    private Bind endDate(ResourceId classId) {
+        Bind bind = new Bind();
+        bind.nodeset = "/data/field_" + CuidAdapter.field(classId, CuidAdapter.END_DATE_FIELD);
+        bind.type = "dateTime";
+        bind.preload = "timestamp";
+        bind.preloadParams = "end";
+        return bind;
+    }
+
 }

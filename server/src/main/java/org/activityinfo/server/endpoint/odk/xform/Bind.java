@@ -26,4 +26,10 @@ public class Bind {
 
     @XmlAttribute(namespace = "http://openrosa.org/javarosa")
     public String constraintMsg;
+
+    @XmlAttribute(namespace = "http://openrosa.org/javarosa")
+    public String preload;
+
+    @XmlAttribute(namespace = "http://openrosa.org/javarosa")
+    public String preloadParams;
 }

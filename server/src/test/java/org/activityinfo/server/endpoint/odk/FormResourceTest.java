@@ -175,7 +175,7 @@ public class FormResourceTest extends CommandTestCase2 {
 
         @Override
         public AuthenticatedUser authenticate(String authenticationToken) {
-            Set<String> tokens = Sets.newHashSet("token:3e2a26585ac83ff5");
+            Set<String> tokens = Sets.newHashSet("LDbRuQsl", "token:3e2a26585ac83ff5", "token:c55536ea93b0c7da");
             if(tokens.contains(authenticationToken)) {
                 AuthenticatedUser user = new AuthenticatedUser("", USER_ID, "@");
                 setUser(user.getId());
