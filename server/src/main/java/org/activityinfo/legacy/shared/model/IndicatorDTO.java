@@ -210,7 +210,7 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public void setTypeId(String typeId) { set("type", typeId); }
 
     private String getTypeId() {
-        return get("typeId", QuantityType.TYPE_CLASS.getId());
+        return get("type", QuantityType.TYPE_CLASS.getId());
     }
 
     public void setMandatory(boolean mandatory) {
@@ -357,18 +357,15 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
         if (isCalculated()) {
             field.setType(new CalculatedFieldType(getExpression()));
 
-        } else if (getType() == TextType.TYPE_CLASS) {
-            field.setType(TextType.INSTANCE);
-
-        } else if(getType() == NarrativeType.TYPE_CLASS) {
-            field.setType(NarrativeType.INSTANCE);
-
-        } else {
+        } else if (Strings.isNullOrEmpty(getTypeId()) || getTypeId().equals(QuantityType.TYPE_CLASS.getId())) {
             String units = getUnits();
             if(Strings.isNullOrEmpty(units)) {
                 units = "units";
             }
             field.setType(new QuantityType().setUnits(units));
+
+        } else {
+            field.setType(getType().createType());
         }
         return field;
     }

@@ -14,6 +14,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
@@ -103,7 +104,7 @@ public class FormPersister {
 
             if(isAttributeGroup(field)) {
                 updateOrCreateAttributeGroup(field, sortOrder);
-            } else {
+            } else if(isIndicator(field)) {
                 updateOrCreateIndicator(field, sortOrder);
             }
             sortOrder++;
@@ -234,7 +235,7 @@ public class FormPersister {
             indicator.setExpression(type.getExpression());
 
         } else {
-            indicator.setType(FieldTypeClass.FREE_TEXT);
+            indicator.setType(field.getType().getTypeClass());
         }
 
         if (created) {
@@ -343,7 +344,8 @@ public class FormPersister {
                field.getType() instanceof NarrativeType ||
                field.getType() instanceof TextType ||
                field.getType() instanceof BooleanType ||
-               field.getType() instanceof CalculatedFieldType
+               field.getType() instanceof CalculatedFieldType ||
+               field.getType() instanceof BarcodeType
                 ;
     }
 
