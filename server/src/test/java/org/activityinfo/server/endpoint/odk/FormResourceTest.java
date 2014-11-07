@@ -2,6 +2,7 @@ package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.google.inject.Provider;
@@ -35,6 +36,7 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import static com.google.common.io.Resources.asByteSource;
 import static com.google.common.io.Resources.getResource;
@@ -111,6 +113,27 @@ public class FormResourceTest extends CommandTestCase2 {
 //        assertNotNull(map.get("backupBlobId"));
     }
 
+
+    @Test @OnDataSet("/dbunit/chad-form.db.xml")
+    public void parseWithBlankComments() throws IOException {
+        byte bytes[] = asByteSource(getResource(FormResourceTest.class, "form-no-comments.mime")).read();
+
+        Response response = formSubmissionResource.submit(bytes);
+        assertEquals(CREATED, fromStatusCode(response.getStatus()));
+
+        //Map<String, Object> map = store.getLastUpdated().getProperties();
+
+//        assertEquals(7, map.size());
+//        assertEquals(CLASS_ID.asString(), map.get("classId"));
+//        assertEquals(new ReferenceValue(partnerInstanceId(507, 562)).asRecord(), map.get(fieldName(PARTNER_FIELD)));
+//        assertEquals(new LocalDate(2005, 8, 31).asRecord(), map.get(fieldName(END_DATE_FIELD)));
+//        assertEquals("09/06/06", map.get(CODE_FIELD));
+//        assertEquals(new ReferenceValue(entity(141796)).asRecord(), map.get("a1081f11"));
+//        assertNull(map.get("i5346"));
+//        assertEquals(new NarrativeValue("Awesome.").asRecord(), map.get("a1081f14"));
+//        assertNotNull(map.get("backupBlobId"));
+    }
+
     private String fieldName(int fieldIndex) {
         return field(activityFormClass(ACTIVITY_ID), fieldIndex).asString();
     }
@@ -152,7 +175,8 @@ public class FormResourceTest extends CommandTestCase2 {
 
         @Override
         public AuthenticatedUser authenticate(String authenticationToken) {
-            if("LDbRuQsl".equals(authenticationToken)) {
+            Set<String> tokens = Sets.newHashSet("token:3e2a26585ac83ff5");
+            if(tokens.contains(authenticationToken)) {
                 AuthenticatedUser user = new AuthenticatedUser("", USER_ID, "@");
                 setUser(user.getId());
                 return user;

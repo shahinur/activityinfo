@@ -50,7 +50,5 @@ public class ActivityUserFormBuilderTest extends CommandTestCase2 {
                 new ReferenceValue(CuidAdapter.locationInstanceId(1)));
 
         assertResolves(locator.persist(instance));
-
     }
-
 }

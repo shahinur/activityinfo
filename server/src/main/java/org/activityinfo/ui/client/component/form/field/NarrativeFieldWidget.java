@@ -20,13 +20,13 @@ public class NarrativeFieldWidget implements FormFieldWidget<NarrativeValue> {
         this.textArea.addValueChangeHandler(new ValueChangeHandler<String>() {
             @Override
             public void onValueChange(ValueChangeEvent<String> event) {
-                updater.update(new NarrativeValue(event.getValue()));
+                updater.update(NarrativeValue.valueOf(event.getValue()));
             }
         });
         this.textArea.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                updater.update(new NarrativeValue(NarrativeFieldWidget.this.textArea.getValue()));
+                updater.update(NarrativeValue.valueOf(NarrativeFieldWidget.this.textArea.getValue()));
             }
         });
     }
