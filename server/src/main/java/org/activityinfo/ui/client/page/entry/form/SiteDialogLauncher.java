@@ -24,21 +24,15 @@ package org.activityinfo.ui.client.page.entry.form;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.legacy.shared.command.GetActivity;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.Log;
-import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.GetFormViewModel;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.ui.client.component.form.FormDialog;
-import org.activityinfo.ui.client.component.form.FormDialogCallback;
 import org.activityinfo.ui.client.page.entry.location.LocationDialog;
 
 public class SiteDialogLauncher {
@@ -54,7 +48,7 @@ public class SiteDialogLauncher {
         if (filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
             int activityId = filter.getRestrictedCategory(DimensionType.Activity);
 
-            dispatcher.execute(new GetFormViewModel(activityId), new AsyncCallback<ActivityDTO>() {
+            dispatcher.execute(new GetActivity(activityId), new AsyncCallback<ActivityDTO>() {
 
                 @Override
                 public void onFailure(Throwable caught) {

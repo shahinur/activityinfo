@@ -6,15 +6,15 @@ import org.activityinfo.legacy.shared.model.ActivityDTO;
  * Retrieves a FormClass (ActivityDTO for now)
  *
  */
-public class GetFormViewModel implements Command<ActivityDTO> {
+public class GetActivity implements Command<ActivityDTO> {
 
     private int activityId;
 
-    public GetFormViewModel(int activityId) {
+    public GetActivity(int activityId) {
         this.activityId = activityId;
     }
 
-    public GetFormViewModel() {
+    public GetActivity() {
     }
 
     public int getActivityId() {

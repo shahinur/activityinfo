@@ -106,7 +106,7 @@ public class SchemaCache implements DispatchListener {
     public void onSuccess(Command command, CommandResult result) {
         if (command instanceof GetSchema) {
             cache((SchemaDTO) result);
-        } else if (command instanceof GetFormViewModel) {
+        } else if (command instanceof GetActivity) {
             ActivityDTO activity = (ActivityDTO) result;
             activityMap.put(activity.getId(), activity);
         } else if (schema != null) {

@@ -58,7 +58,7 @@ public class FormPersister {
 
     public Promise<Void> persist() {
         int activityId = CuidAdapter.getLegacyIdFromCuid(form.getId());
-        return dispatcher.execute(new GetFormViewModel(activityId)).join(new Function<ActivityDTO, Promise<Void>>() {
+        return dispatcher.execute(new GetActivity(activityId)).join(new Function<ActivityDTO, Promise<Void>>() {
             @Nullable
             @Override
             public Promise<Void> apply(@Nullable ActivityDTO input) {

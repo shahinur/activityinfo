@@ -39,7 +39,7 @@ import com.google.gwt.user.client.ui.Frame;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
-import org.activityinfo.legacy.shared.command.GetFormViewModel;
+import org.activityinfo.legacy.shared.command.GetActivity;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
 
@@ -81,7 +81,7 @@ public class PrintDataEntryForm extends Window {
 
     public void print(final int activityId) {
         setVisible(true);
-        dispatcher.execute(new GetFormViewModel(activityId),
+        dispatcher.execute(new GetActivity(activityId),
                 new MaskingAsyncMonitor(this, I18N.CONSTANTS.loading()),
                 new AsyncCallback<ActivityDTO>() {
 
