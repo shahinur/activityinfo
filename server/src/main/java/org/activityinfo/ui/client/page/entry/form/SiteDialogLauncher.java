@@ -23,7 +23,6 @@ package org.activityinfo.ui.client.page.entry.form;
  */
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.i18n.shared.I18N;
@@ -35,11 +34,7 @@ import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetActivity;
 import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.LocationDTO;
-import org.activityinfo.legacy.shared.model.LockedPeriodSet;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
@@ -47,8 +42,6 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.component.form.FormDialog;
 import org.activityinfo.ui.client.component.form.FormDialogCallback;
 import org.activityinfo.ui.client.page.entry.location.LocationDialog;
-
-import java.util.List;
 
 public class SiteDialogLauncher {
 
@@ -121,14 +114,10 @@ public class SiteDialogLauncher {
                 final ActivityDTO activity = schema.getActivityById(site.getActivityId());
 
                 if (!activity.getClassicView()) {// modern view
-                    resourceLocator.queryInstances(Sets.newHashSet(site.getInstanceId())).then(new SuccessCallback<List<FormInstance>>() {
+                    resourceLocator.getFormInstance(site.getInstanceId()).then(new SuccessCallback<FormInstance>() {
                         @Override
-                        public void onSuccess(List<FormInstance> result) {
-                            if (result.size() == 1) {
-                                showModernFormDialog(activity, result.get(0), callback);
-                            } else {
-                                throw new RuntimeException("Unexpected form instance size returned for instance id: " + site.getInstanceId());
-                            }
+                        public void onSuccess(FormInstance result) {
+                            showModernFormDialog(activity, result, callback);
                         }
                     });
 
