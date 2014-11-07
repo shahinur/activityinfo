@@ -46,9 +46,10 @@ public class ActivityUserFormBuilder {
         }
 
         FormField partnerField = new FormField(CuidAdapter.field(classId, CuidAdapter.PARTNER_FIELD))
-        .setLabel(I18N.CONSTANTS.partner())
-        .setType(ReferenceType.single(CuidAdapter.partnerFormClass(activity.getDatabaseId())))
-        .setRequired(true);
+                .setLabel(I18N.CONSTANTS.partner())
+                .setType(ReferenceType.single(CuidAdapter.partnerFormClass(activity.getDatabaseId())))
+                .setVisible(activity.getPartnerRange().size() > 1)
+                .setRequired(true);
         siteForm.addElement(partnerField);
 
         FormField projectField = new FormField(CuidAdapter.field(classId, CuidAdapter.PROJECT_FIELD))
