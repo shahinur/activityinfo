@@ -264,7 +264,7 @@ public class SiteDialog extends Window {
             @Override
             public void onSuccess(CreateResult result) {
                 hide();
-                callback.onSaved(newSite);
+                callback.onSaved();
             }
         });
     }
@@ -284,7 +284,7 @@ public class SiteDialog extends Window {
             @Override
             public void onSuccess(VoidResult result) {
                 hide();
-                callback.onSaved(updated);
+                callback.onSaved();
             }
         });
     }

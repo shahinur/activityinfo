@@ -23,14 +23,21 @@ package org.activityinfo.ui.client.page.entry;
  */
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.Label;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.SeparatorToolItem;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -40,7 +47,10 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.DeleteSite;
+import org.activityinfo.legacy.shared.command.DimensionType;
+import org.activityinfo.legacy.shared.command.Filter;
+import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
@@ -50,7 +60,12 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.ui.client.ClientContext;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.component.importDialog.ImportPresenter;
-import org.activityinfo.ui.client.page.*;
+import org.activityinfo.ui.client.page.NavigationCallback;
+import org.activityinfo.ui.client.page.NavigationEvent;
+import org.activityinfo.ui.client.page.NavigationHandler;
+import org.activityinfo.ui.client.page.Page;
+import org.activityinfo.ui.client.page.PageId;
+import org.activityinfo.ui.client.page.PageState;
 import org.activityinfo.ui.client.page.common.toolbar.ActionListener;
 import org.activityinfo.ui.client.page.common.toolbar.ActionToolBar;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
@@ -361,7 +376,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
             formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {
 
                 @Override
-                public void onSaved(SiteDTO site) {
+                public void onSaved() {
                     gridPanel.refresh();
                 }
             });
@@ -372,7 +387,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
             launcher.editSite(selection, new SiteDialogCallback() {
 
                 @Override
-                public void onSaved(SiteDTO site) {
+                public void onSaved() {
                     gridPanel.refresh();
                 }
             });

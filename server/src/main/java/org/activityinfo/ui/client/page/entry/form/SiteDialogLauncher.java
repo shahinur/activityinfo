@@ -23,25 +23,42 @@ package org.activityinfo.ui.client.page.entry.form;
  */
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.common.collect.Sets;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.activityinfo.legacy.shared.command.GetActivity;
+import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.shared.Log;
+import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
+import org.activityinfo.legacy.shared.command.GetActivity;
 import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.LocationDTO;
+import org.activityinfo.legacy.shared.model.LockedPeriodSet;
+import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.ui.client.component.form.FormDialog;
+import org.activityinfo.ui.client.component.form.FormDialogCallback;
 import org.activityinfo.ui.client.page.entry.location.LocationDialog;
+
+import java.util.List;
 
 public class SiteDialogLauncher {
 
     private final Dispatcher dispatcher;
+    private final ResourceLocator resourceLocator;
 
     public SiteDialogLauncher(Dispatcher dispatcher) {
         super();
         this.dispatcher = dispatcher;
+        this.resourceLocator = new ResourceLocatorAdaptor(dispatcher);
     }
 
     public void addSite(final Filter filter, final SiteDialogCallback callback) {
@@ -59,6 +76,13 @@ public class SiteDialogLauncher {
                 public void onSuccess(ActivityDTO activity) {
                     Log.trace("adding site for activity " + activity + ", locationType = " + activity.getLocationType());
 
+                    if (!activity.getClassicView()) {// modern view
+                        final ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(activity.getResourceId());
+                        FormInstance newInstance = new FormInstance(instanceId, activity.getResourceId());
+                        showModernFormDialog(activity, newInstance, callback);
+                        return;
+                    }
+
                     if (activity.getLocationType().isAdminLevel()) {
                         addNewSiteWithBoundLocation(activity, callback);
 
@@ -73,6 +97,18 @@ public class SiteDialogLauncher {
         }
     }
 
+    private void showModernFormDialog(ActivityDTO activity, FormInstance instance, final SiteDialogCallback callback) {
+        FormDialog dialog = new FormDialog(resourceLocator);
+        dialog.setDialogTitle(I18N.MESSAGES.addNewSiteForActivity(activity.getName()));
+        dialog.show(instance, new FormDialogCallback() {
+            @Override
+            public void onPersisted(FormInstance instance) {
+                callback.onSaved();
+            }
+        });
+    }
+
+
     public void editSite(final SiteDTO site, final SiteDialogCallback callback) {
         dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
@@ -82,7 +118,22 @@ public class SiteDialogLauncher {
 
             @Override
             public void onSuccess(SchemaDTO schema) {
-                ActivityDTO activity = schema.getActivityById(site.getActivityId());
+                final ActivityDTO activity = schema.getActivityById(site.getActivityId());
+
+                if (!activity.getClassicView()) {// modern view
+                    resourceLocator.queryInstances(Sets.newHashSet(site.getInstanceId())).then(new SuccessCallback<List<FormInstance>>() {
+                        @Override
+                        public void onSuccess(List<FormInstance> result) {
+                            if (result.size() == 1) {
+                                showModernFormDialog(activity, result.get(0), callback);
+                            } else {
+                                throw new RuntimeException("Unexpected form instance size returned for instance id: " + site.getInstanceId());
+                            }
+                        }
+                    });
+
+                    return;
+                }
 
                 // check whether the site has been locked
                 // (this only applies to Once-reported activities because
