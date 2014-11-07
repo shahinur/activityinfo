@@ -3533,6 +3533,15 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Classic view")
     String classicView();
 
+    @DefaultStringValue("Modern view")
+    String modernView();
+
+    @DefaultStringValue("Classic view : attributes and indicators appear separately")
+    String classicViewExplanation();
+
+    @DefaultStringValue("Modern view : visual designer and flexible data entry form")
+    String modernViewExplanation();
+
     @DefaultStringValue("Flexible Data Entry Form")
     String newFormAsFormDesigner();
 
@@ -3553,4 +3562,10 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Show me the difference")
     String showMeTheDifference();
+
+    @DefaultStringValue("More about view types")
+    String moreAboutView();
+
+    @DefaultStringValue("View type")
+    String viewType();
 }
