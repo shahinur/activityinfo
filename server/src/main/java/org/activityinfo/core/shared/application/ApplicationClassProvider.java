@@ -7,6 +7,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.ParametrizedFieldTypeClass;
 import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.primitive.TextType;
 
 import java.util.Map;
 
@@ -33,6 +34,7 @@ public class ApplicationClassProvider {
     private FormClass createFormClassClass() {
         FormField labelField = new FormField(ResourceId.valueOf(FormClass.LABEL_FIELD_ID));
         labelField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
+        labelField.setType(TextType.INSTANCE);
 
         FormClass formClass = new FormClass(FormClass.CLASS_ID);
         formClass.addElement(labelField);

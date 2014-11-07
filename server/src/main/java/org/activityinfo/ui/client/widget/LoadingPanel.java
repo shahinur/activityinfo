@@ -157,11 +157,15 @@ public class LoadingPanel<V> implements IsWidget {
             @Override
             public boolean execute() {
                 if(requestNumber == currentRequestNumber) {
-                    loadingView.setWidget(widget);
+                    setWidget(widget);
                 }
                 return false;
             }
         }, DELAY_MS);
+    }
+
+    protected void setWidget(IsWidget widget){
+        loadingView.setWidget(widget);
     }
 
     private void showWidget(final int requestNumber, V result) {

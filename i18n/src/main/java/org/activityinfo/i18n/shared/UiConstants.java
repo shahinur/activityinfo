@@ -3568,4 +3568,10 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("View type")
     String viewType();
+
+    @DefaultStringValue("Form data")
+    String formData();
+
+    @DefaultStringValue("Enter the results and details of this form submission")
+    String formDataDescription();
 }
