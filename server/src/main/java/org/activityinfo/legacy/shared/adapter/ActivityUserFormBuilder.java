@@ -69,11 +69,13 @@ public class ActivityUserFormBuilder {
         .setRequired(true);
         siteForm.addElement(startDateField);
 
-        FormField locationField = new FormField(CuidAdapter.locationField(activity.getId()))
-        .setLabel(activity.getLocationType().getName())
-        .setType(ReferenceType.single(locationClass(activity.getLocationType())))
-        .setRequired(true);
-        siteForm.addElement(locationField);
+        if(!activity.getLocationType().isNationwide()) {
+            FormField locationField = new FormField(CuidAdapter.locationField(activity.getId()))
+                    .setLabel(activity.getLocationType().getName())
+                    .setType(ReferenceType.single(locationClass(activity.getLocationType())))
+                    .setRequired(true);
+            siteForm.addElement(locationField);
+        }
 
         List<IsFormField> fields = Lists.newArrayList();
         fields.addAll(activity.getAttributeGroups());

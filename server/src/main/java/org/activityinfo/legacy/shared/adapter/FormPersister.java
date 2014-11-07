@@ -1,6 +1,7 @@
 package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.activityinfo.legacy.client.Dispatcher;
@@ -51,9 +52,15 @@ public class FormPersister {
 
     private List<FormField> newAttributes = Lists.newArrayList();
 
+    private Map<ResourceId, FormField> fieldMap = Maps.newHashMap();
+
     public FormPersister(Dispatcher dispatcher, FormClass form) {
         this.dispatcher = dispatcher;
         this.form = form;
+
+        for(FormField field : form.getFields()) {
+            fieldMap.put(field.getId(), field);
+        }
     }
 
     public Promise<Void> persist() {
@@ -108,12 +115,41 @@ public class FormPersister {
         return executeAndCollectNewIds();
     }
 
+    private LocationTypeDTO locationTypeFromFormClass() {
+        ResourceId locationFieldId = CuidAdapter.field(form.getId(), CuidAdapter.LOCATION_FIELD);
+        FormField locationField = fieldMap.get(locationFieldId);
+        if(locationField == null) {
+            return activity.getCountry().getNullLocationType();
+        } else {
+            ReferenceType type = (ReferenceType) locationField.getType();
+            ResourceId rangeId = Iterables.getOnlyElement(type.getRange());
+            if(rangeId.getDomain() == CuidAdapter.ADMIN_LEVEL_DOMAIN) {
+                int adminLevelId = CuidAdapter.getLegacyIdFromCuid(rangeId);
+                return activity.getCountry().getLocationTypeForAdminLevel(adminLevelId);
+            } else if(rangeId.getDomain() == CuidAdapter.LOCATION_TYPE_DOMAIN) {
+                int locationTypeId = CuidAdapter.getLegacyIdFromCuid(rangeId);
+                return activity.getCountry().getLocationTypeById(locationTypeId);
+            } else {
+                throw new IllegalStateException("Canot map location field range " + rangeId + " to location type");
+            }
+        }
+    }
+
     private void updateActivity() {
+        Map<String, Object> changes = new HashMap<>();
+
         String label = form.getLabel();
         if (!activity.getName().equals(label)) {
-            Map<String, Object> changes = new HashMap<>();
             changes.put("name", label);
-            commands.add(new UpdateEntity(activity, changes) );
+        }
+
+        LocationTypeDTO locationType = locationTypeFromFormClass();
+        if(activity.getLocationTypeId() != locationType.getId()) {
+            changes.put("locationTypeId", locationType.getId());
+        }
+
+        if(!changes.isEmpty()) {
+            commands.add(new UpdateEntity(activity, changes));
         }
     }
 
