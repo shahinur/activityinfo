@@ -2,6 +2,7 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
+import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.adapter.bindings.SiteBinding;
@@ -54,6 +55,10 @@ public class SitePersister {
             siteProperties.put("reportingPeriodId", new KeyGenerator().generateInt());
         }
 
+        if (siteProperties.get("partnerId") == null) {
+            siteProperties.put("partnerId", siteBinding.getDefaultPartnerId());
+        }
+
         final CreateSite createSite = new CreateSite(siteProperties);
 
         if (siteBinding.getLocationType().isAdminLevel()) {
@@ -73,6 +78,10 @@ public class SitePersister {
         } else {
             return dispatcher.execute(createSite);
         }
+    }
+
+    private PartnerDTO defaultPartnerId(SiteBinding siteBinding) {
+        return siteBinding.getActivity().getPartnerRange().get(0);
     }
 
     private class FetchEntityFunction implements Function<Integer, Promise<List<AdminEntityDTO>>> {

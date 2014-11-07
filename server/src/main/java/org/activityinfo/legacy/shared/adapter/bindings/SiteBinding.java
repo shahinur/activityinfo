@@ -7,6 +7,7 @@ import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 
+import static org.activityinfo.model.legacy.CuidAdapter.activityCategoryFolderId;
 import static org.activityinfo.model.legacy.CuidAdapter.getLegacyIdFromCuid;
 import static org.activityinfo.model.legacy.CuidAdapter.locationField;
 
@@ -36,5 +37,12 @@ public class SiteBinding extends ModelBinding<SiteDTO> {
 
     public LocationTypeDTO getLocationType() {
         return activity.getLocationType();
+    }
+
+    public int getDefaultPartnerId() {
+        if(activity.getPartnerRange().isEmpty()) {
+            throw new IllegalStateException("Empty partner range set for activity " + activity.getId());
+        }
+        return activity.getPartnerRange().get(0).getId();
     }
 }
