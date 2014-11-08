@@ -1,6 +1,12 @@
 package org.activityinfo.model.resource;
 
 
+import org.activityinfo.model.form.annotation.Field;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.enumerated.EnumType;
+
 import javax.annotation.Nonnull;
 import java.util.Date;
 
@@ -69,4 +75,12 @@ public final class ResourceId {
         return text;
     }
 
+    public static ResourceId generateFieldId(FieldTypeClass typeClass) {
+        KeyGenerator generator = new KeyGenerator();
+        if(typeClass == EnumType.TYPE_CLASS) {
+            return CuidAdapter.attributeGroupField(generator.generateInt());
+        } else {
+            return CuidAdapter.indicatorField(generator.generateInt());
+        }
+    }
 }

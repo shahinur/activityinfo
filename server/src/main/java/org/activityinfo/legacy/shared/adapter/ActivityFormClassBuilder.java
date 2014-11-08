@@ -21,14 +21,14 @@ import static org.activityinfo.model.legacy.CuidAdapter.activityCategoryFolderId
 /**
  * Adapts a Legacy "Activity" model to a FormClass
  */
-public class ActivityUserFormBuilder {
+public class ActivityFormClassBuilder {
 
 
     private final ActivityDTO activity;
 
     private FormClass siteForm;
 
-    public ActivityUserFormBuilder(ActivityDTO activity) {
+    public ActivityFormClassBuilder(ActivityDTO activity) {
         assert activity != null;
         this.activity = activity;
     }

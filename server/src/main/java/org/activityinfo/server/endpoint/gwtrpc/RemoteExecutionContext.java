@@ -254,6 +254,7 @@ public class RemoteExecutionContext implements ExecutionContext {
             try {
                 callback.onSuccess((R) ((CommandHandler) handler).execute(command, retrieveUserEntity()));
             } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Command execution failed", e);
                 callback.onFailure(e);
             }
         }

@@ -22,6 +22,8 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 
 import javax.persistence.*;
@@ -35,7 +37,7 @@ import java.util.Date;
 @Entity @org.hibernate.annotations.Filter(
         name = "hideDeleted",
         condition = "DateDeleted is null")
-public class Indicator implements java.io.Serializable, Orderable, Deleteable {
+public class Indicator implements java.io.Serializable, Orderable, Deleteable, FormFieldEntity {
 
     private int id;
     private Date dateDeleted;
@@ -65,9 +67,16 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable {
     /**
      * @return the id of this Indicator
      */
-    @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "IndicatorId", unique = true, nullable = false)
+    @Id
+    @Column(name = "IndicatorId", unique = true, nullable = false)
     public int getId() {
         return this.id;
+    }
+
+    @Transient
+    @Override
+    public ResourceId getFieldId() {
+        return CuidAdapter.indicatorField(getId());
     }
 
     /**

@@ -23,7 +23,7 @@ public class TypeClassTemplate implements FieldTemplate {
 
     @Override
     public FormField createField() {
-        FormField formField = new FormField(ResourceId.generateId());
+        FormField formField = new FormField(ResourceId.generateFieldId(typeClass));
         formField.setType(typeClass.createType());
         formField.setLabel(typeClass.getLabel());
         return formField;

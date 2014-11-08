@@ -21,7 +21,7 @@ public class RadioButtonTemplate implements FieldTemplate {
         List<EnumValue> values = Lists.newArrayList();
         values.add(new EnumValue(ResourceId.generateId(), "Choice 1"));
         values.add(new EnumValue(ResourceId.generateId(), "Choice 2"));
-        FormField field = new FormField(ResourceId.generateId());
+        FormField field = new FormField(ResourceId.generateFieldId(EnumType.TYPE_CLASS));
         field.setLabel("Which choice would you choose?");
         field.setType(new EnumType(Cardinality.SINGLE, values));
 

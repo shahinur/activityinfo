@@ -1,5 +1,7 @@
 package org.activityinfo.model.type.enumerated;
 
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
@@ -69,5 +71,10 @@ public class EnumValue implements FieldValue, IsRecord {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    public static ResourceId generateId() {
+        KeyGenerator generator = new KeyGenerator();
+        return CuidAdapter.attributeField(generator.generateInt());
     }
 }
