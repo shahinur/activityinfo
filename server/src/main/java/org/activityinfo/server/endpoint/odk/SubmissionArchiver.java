@@ -56,8 +56,7 @@ public class SubmissionArchiver {
             String path = Joiner.on('/').join(
                     formClassId,
                     dateFormat.print(submissionTime),
-                    timeFormat.print(submissionTime),
-                    formId + ".xml");
+                    timeFormat.print(submissionTime) + " " + formId + ".xml");
 
             GcsFilename gcsFilename = new GcsFilename(bucketName, path);
             GcsService gcsService = GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
