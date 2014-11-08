@@ -16,11 +16,13 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.NarrativeType;
+import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.database.hibernate.entity.*;
 
@@ -174,6 +176,9 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
             CalculatedFieldType type = (CalculatedFieldType) field.getType();
             indicator.setType(QuantityType.TYPE_CLASS.getId());
             indicator.setExpression(type.getExpression());
+
+        } else if (field.getType() instanceof BarcodeType) {
+            indicator.setType(TextType.TYPE_CLASS.getId());
 
         } else {
             indicator.setType(field.getType().getTypeClass().getId());
