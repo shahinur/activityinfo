@@ -34,6 +34,7 @@ import org.activityinfo.model.expr.functions.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceType;
@@ -149,16 +150,22 @@ public class SkipRowPresenter {
     private void initFunction() {
         view.getFunction().clear();
 
-        FieldType type = getSelectedFormField().getType();
-        if (type instanceof EnumType || type instanceof ReferenceType) {
-            for (ExprFunction function : SET_FUNCTIONS) {
-                view.getFunction().addItem(function.getLabel(), function.getId());
+        for(ExprFunction function : functionsForType(getSelectedFormField().getType())) {
+            view.getFunction().addItem(function.getLabel(), function.getId());
+        }
+    }
+
+    private List<? extends ExprFunction> functionsForType(FieldType type) {
+        if(type instanceof EnumType) {
+            if(((EnumType) type).getCardinality() == Cardinality.MULTIPLE) {
+                return SET_FUNCTIONS;
             }
-        } else {
-            for (ComparisonOperator function : COMPARISON_OPERATORS) {
-                view.getFunction().addItem(function.getLabel(), function.getId());
+        } else if(type instanceof ReferenceType) {
+            if(((ReferenceType) type).getCardinality() == Cardinality.MULTIPLE) {
+                return SET_FUNCTIONS;
             }
         }
+        return COMPARISON_OPERATORS;
     }
 
     private void initJoinFunction() {

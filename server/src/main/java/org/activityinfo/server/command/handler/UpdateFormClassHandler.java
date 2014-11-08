@@ -214,6 +214,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
         }
 
         // add/update present attributes
+        int sortOrder = 1;
         for(EnumValue item : type.getValues()) {
             Attribute attribute = attributeMap.get(item.getId());
             if(attribute == null) {
@@ -221,12 +222,15 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
                 attribute.setGroup(group);
                 attribute.setId(CuidAdapter.getLegacyIdFromCuid(item.getId()));
                 attribute.setName(item.getLabel());
+                attribute.setSortOrder(sortOrder);
                 entityManager.get().persist(attribute);
                 group.getAttributes().add(attribute);
             } else {
                 // update properties
                 attribute.setName(item.getLabel());
+                attribute.setSortOrder(sortOrder);
             }
+            sortOrder++;
         }
 
         // remove deleted
