@@ -14,7 +14,7 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resources;
 
-public class GetFormClassHandler implements CommandHandlerAsync<GetFormClass, FormClassResult> {
+public class GetFormClassHandlerAsync implements CommandHandlerAsync<GetFormClass, FormClassResult> {
 
     @Override
     public void execute(GetFormClass command, final ExecutionContext context, final AsyncCallback<FormClassResult> callback) {

@@ -13,7 +13,7 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.endpoint.odk.xform.Html;
+import org.activityinfo.server.endpoint.odk.xform.XForm;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,7 +77,7 @@ public class FormResourceTest extends CommandTestCase2 {
 
         Response form = this.formResource.form(ACTIVITY_ID);
         File file = new File(targetDir(), "form.xml");
-        JAXBContext context = JAXBContext.newInstance(Html.class);
+        JAXBContext context = JAXBContext.newInstance(XForm.class);
         Marshaller marshaller = context.createMarshaller();
 
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

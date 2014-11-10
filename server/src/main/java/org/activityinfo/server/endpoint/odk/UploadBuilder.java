@@ -1,32 +1,29 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
+import org.activityinfo.server.endpoint.odk.xform.BindingType;
+import org.activityinfo.server.endpoint.odk.xform.Upload;
 
 class UploadBuilder implements OdkFormFieldBuilder {
-    final private String mediatype;
+    final private String mediaType;
 
-    UploadBuilder(String mediatype) {
-        this.mediatype = mediatype;
+    UploadBuilder(String mediaType) {
+        this.mediaType = mediaType;
     }
 
     @Override
-    public String getModelBindType() {
-        return "binary";
+    public BindingType getModelBindType() {
+        return BindingType.BINARY;
     }
 
     @Override
-    public JAXBElement<PresentationElement> createPresentationElement(String ref, String label, String hint) {
-        PresentationElement presentationElement = new PresentationElement();
+    public Upload createPresentationElement(String ref, String label, String hint) {
+        Upload upload = new Upload();
 
-        presentationElement.ref = ref;
-        presentationElement.mediatype = mediatype;
-        presentationElement.label = label;
-        presentationElement.hint = hint;
+        upload.setRef(ref);
+        upload.setMediaType(mediaType);
+        upload.setLabel(label);
+        upload.setHint(hint);
 
-        QName qName = new QName("http://www.w3.org/2002/xforms", "upload");
-        return new JAXBElement<>(qName, PresentationElement.class, presentationElement);
+        return upload;
     }
 }

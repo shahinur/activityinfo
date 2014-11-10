@@ -1,31 +1,28 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
+import org.activityinfo.server.endpoint.odk.xform.BindingType;
+import org.activityinfo.server.endpoint.odk.xform.Input;
 
 class SimpleInputBuilder implements OdkFormFieldBuilder {
-    final private String modelBindType;
+    final private BindingType modelBindType;
 
-    SimpleInputBuilder(String modelBindType) {
+    SimpleInputBuilder(BindingType modelBindType) {
         this.modelBindType = modelBindType;
     }
 
     @Override
-    public String getModelBindType() {
+    public BindingType getModelBindType() {
         return modelBindType;
     }
 
     @Override
-    public JAXBElement<PresentationElement> createPresentationElement(String ref, String label, String hint) {
-        PresentationElement presentationElement = new PresentationElement();
+    public Input createPresentationElement(String ref, String label, String hint) {
+        Input input = new Input();
 
-        presentationElement.ref = ref;
-        presentationElement.label = label;
-        presentationElement.hint = hint;
+        input.setRef(ref);
+        input.setLabel(label);
+        input.setHint(hint);
 
-        QName qName = new QName("http://www.w3.org/2002/xforms", "input");
-        return new JAXBElement<>(qName, PresentationElement.class, presentationElement);
+        return input;
     }
 }

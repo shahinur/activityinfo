@@ -33,5 +33,13 @@
       <column name="formClass" type="longtext"/>
     </addColumn>
   </changeSet>
+  <changeSet author="alex" id="029-02">
+    <comment>
+      allow saving as gzipped json for large formclasses
+    </comment>
+    <addColumn tableName="activity">
+      <column name="gzFormClass" type="longblob"/>
+    </addColumn>
+  </changeSet>
 
 </databaseChangeLog>

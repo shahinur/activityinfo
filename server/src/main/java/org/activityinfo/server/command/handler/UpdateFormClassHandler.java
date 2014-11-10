@@ -1,5 +1,6 @@
 package org.activityinfo.server.command.handler;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -23,17 +24,22 @@ import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.database.hibernate.entity.*;
 
 import javax.persistence.EntityManager;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.zip.GZIPOutputStream;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
 
 public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
+
+    private static final int MIN_GZIP_BYTES = 1024 * 5;
 
     private static final Logger LOGGER = Logger.getLogger(UpdateFormClassHandler.class.getName());
 
@@ -61,11 +67,34 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
         FormClass formClass = validateFormClass(cmd.getJson());
 
         // Update the activity table with the JSON value
-        activity.setFormClass(cmd.getJson());
+        String json = cmd.getJson();
+        if(json.length() > MIN_GZIP_BYTES) {
+            activity.setGzFormClass(compressJson(json));
+            activity.setFormClass(null);
+        } else {
+            activity.setFormClass(json);
+            activity.setGzFormClass(null);
+        }
+        activity.setClassicView(false);
 
         syncEntities(activity, formClass);
 
         return new VoidResult();
+    }
+
+    private byte[] compressJson(String json) {
+        try {
+            ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+            GZIPOutputStream gzOut = new GZIPOutputStream(byteArrayOut);
+            OutputStreamWriter writer = new OutputStreamWriter(gzOut, Charsets.UTF_8);
+            writer.write(json);
+            writer.close();
+            byte[] bytes = byteArrayOut.toByteArray();
+            LOGGER.log(Level.INFO, "FormClass GZipped json size = " + bytes.length);
+            return bytes;
+        } catch(IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -87,6 +116,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
      *
      */
     private void syncEntities(Activity activity, FormClass formClass) {
+
         activity.setName(formClass.getLabel());
 
         List<FormFieldEntity> fields = new ArrayList<>();
@@ -154,7 +184,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
     }
 
     private void updateIndicatorProperties(Indicator indicator, FormField field, int sortOrder) {
-        indicator.setName(field.getLabel());
+        indicator.setName(truncate(field.getLabel(), 255));
         indicator.setMandatory(field.isRequired());
         indicator.setDescription(field.getDescription());
         indicator.setSortOrder(sortOrder);
@@ -185,6 +215,14 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
         }
     }
 
+    private String truncate(String label, int maxLength) {
+        if(label.length() > maxLength) {
+            return label.substring(0, maxLength);
+        } else {
+            return label;
+        }
+    }
+
     private FormFieldEntity createAttributeGroup(Activity activity, FormField field, int sortOrder) {
         EnumType type = (EnumType) field.getType();
 
@@ -206,7 +244,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
     }
 
     private void updateAttributeGroupProperties(AttributeGroup group, FormField field, int sortOrder) {
-        group.setName(field.getLabel());
+        group.setName(truncate(field.getLabel(), 255));
         group.setMandatory(field.isRequired());
         group.setMultipleAllowed(((EnumType) field.getType()).getCardinality() == Cardinality.MULTIPLE);
         group.setSortOrder(sortOrder);
@@ -226,7 +264,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
                 attribute = new Attribute();
                 attribute.setGroup(group);
                 attribute.setId(CuidAdapter.getLegacyIdFromCuid(item.getId()));
-                attribute.setName(item.getLabel());
+                attribute.setName(truncate(item.getLabel(), 255));
                 attribute.setSortOrder(sortOrder);
                 entityManager.get().persist(attribute);
                 group.getAttributes().add(attribute);

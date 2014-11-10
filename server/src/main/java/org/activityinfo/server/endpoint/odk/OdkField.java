@@ -19,4 +19,12 @@ public class OdkField {
     public OdkFormFieldBuilder getBuilder() {
         return builder;
     }
+
+    public String getAbsoluteFieldName() {
+        return "/data/" + getRelativeFieldName();
+    }
+
+    public String getRelativeFieldName() {
+        return "field_" + model.getId().asString();
+    }
 }

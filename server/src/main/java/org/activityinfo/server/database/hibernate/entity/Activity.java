@@ -22,10 +22,13 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
+import com.google.common.base.Charsets;
 import org.activityinfo.legacy.shared.model.Published;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -71,6 +74,7 @@ public class Activity implements Serializable, Deleteable, Orderable {
     private boolean classicView;
 
     private String formClass;
+    private byte[] gzFormClass;
 
     public Activity() {
 
@@ -200,6 +204,14 @@ public class Activity implements Serializable, Deleteable, Orderable {
 
     public void setFormClass(String formClass) {
         this.formClass = formClass;
+    }
+
+    public byte[] getGzFormClass() {
+        return gzFormClass;
+    }
+
+    public void setGzFormClass(byte[] gzFormClass) {
+        this.gzFormClass = gzFormClass;
     }
 
     @Column @Temporal(value = TemporalType.TIMESTAMP)

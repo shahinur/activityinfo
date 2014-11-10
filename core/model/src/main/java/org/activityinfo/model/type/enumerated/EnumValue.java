@@ -11,6 +11,7 @@ import org.activityinfo.model.type.FieldValue;
 public class EnumValue implements FieldValue, IsRecord {
     private ResourceId id;
     private String label;
+    private String code;
 
     public EnumValue(ResourceId id, String label) {
         this.id = id;
@@ -34,7 +35,17 @@ public class EnumValue implements FieldValue, IsRecord {
     }
 
     public static EnumValue fromRecord(Record record) {
-        return new EnumValue(ResourceId.valueOf(record.getString("id")), record.getString("label"));
+        return new EnumValue(ResourceId.valueOf(record.getString("id")), record.getString("label"))
+                .setCode(record.isString("code"));
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public EnumValue setCode(String code) {
+        this.code = code;
+        return this;
     }
 
     @Override
@@ -50,9 +61,10 @@ public class EnumValue implements FieldValue, IsRecord {
     @Override
     public Record asRecord() {
         Record record = new Record();
-        record.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId()).
-                set("label", label).
-                set("id", id.asString());
+        record.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId())
+                .set("label", label)
+                .set("code", code)
+                .set("id", id.asString());
         return record;
     }
 

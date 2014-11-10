@@ -97,29 +97,13 @@ public class RootResource {
 
     @GET @Path("/databases") @JsonView(DTOViews.List.class) @Produces(MediaType.APPLICATION_JSON)
     public List<UserDatabaseDTO> getDatabases() {
-        return dispatcher.execute(new GetSchema()).getDatabases();
+        List<UserDatabaseDTO> databases = dispatcher.execute(new GetSchema()).getDatabases();
+        return databases;
     }
 
-    @GET @Path("/database/{id}/schema") @JsonView(DTOViews.Schema.class) @Produces(MediaType.APPLICATION_JSON)
-    public UserDatabaseDTO getDatabaseSchema(@PathParam("id") int id) {
-        UserDatabaseDTO db = dispatcher.execute(new GetSchema()).getDatabaseById(id);
-        if (db == null) {
-            throw new WebApplicationException(Status.NOT_FOUND);
-        }
-        return db;
-    }
-
-    @GET @Path("/database/{id}/schema.csv")
-    public Response getDatabaseSchemaCsv(@PathParam("id") int id) {
-        UserDatabaseDTO db = getDatabaseSchema(id);
-        SchemaCsvWriter writer = new SchemaCsvWriter();
-        writer.write(db);
-
-        return Response.ok()
-                       .type("text/css")
-                       .header("Content-Disposition", "attachment; filename=schema_" + id + ".csv")
-                       .entity(writer.toString())
-                       .build();
+    @Path("/database/{id}")
+    public DatabaseResource getDatabaseSchema(@PathParam("id") int id) {
+        return new DatabaseResource(dispatcher, id);
     }
 
     @Path("/adminLevel/{id}")
@@ -140,5 +124,10 @@ public class RootResource {
     @Path("/locations")
     public LocationsResource getLocations() {
         return new LocationsResource(dispatcher);
+    }
+
+    @Path("/form/{id}")
+    public FormResource getForm(@PathParam("id") String id) {
+        return new FormResource(id);
     }
 }

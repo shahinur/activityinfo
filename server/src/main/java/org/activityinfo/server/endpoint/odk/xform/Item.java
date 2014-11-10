@@ -3,9 +3,25 @@ package org.activityinfo.server.endpoint.odk.xform;
 import javax.xml.bind.annotation.XmlElement;
 
 public class Item {
-    @XmlElement
-    public String label;
+
+    private String label;
+    private String value;
 
     @XmlElement
-    public String value;
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    @XmlElement
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 }

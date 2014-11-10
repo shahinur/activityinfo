@@ -101,7 +101,6 @@
     <module>geoadmin</module>
     <module>server</module>
     <module>i18n</module>
-    <module>io/feeds</module>
   </modules>
 
   <dependencies>

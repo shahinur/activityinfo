@@ -1,6 +1,5 @@
 package org.activityinfo.legacy.shared.adapter;
 
-import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.QueryResult;
@@ -9,9 +8,7 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.criteria.IdCriteria;
-import org.activityinfo.legacy.shared.command.GetFormClass;
 import org.activityinfo.legacy.shared.command.UpdateFormClass;
-import org.activityinfo.legacy.shared.command.result.FormClassResult;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.model.form.FormClass;
@@ -19,9 +16,7 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.server.command.handler.FormPersister;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;

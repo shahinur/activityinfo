@@ -13,6 +13,7 @@ import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 import org.activityinfo.server.command.ResourceLocatorSync;
+import org.activityinfo.server.endpoint.odk.xform.BindingType;
 import org.activityinfo.server.endpoint.odk.xform.Item;
 import org.activityinfo.service.lookup.ReferenceChoice;
 
@@ -39,30 +40,30 @@ public class OdkFormFieldBuilderFactory {
         }
 
         if (fieldType instanceof BarcodeType) {
-            return new SimpleInputBuilder("barcode");
+            return new SimpleInputBuilder(BindingType.BARCODE);
         }
         if (fieldType instanceof BooleanType) {
-            return new SelectBuilder("boolean", booleanOptions());
+            return new SelectBuilder(BindingType.BOOLEAN, booleanOptions());
         }
         if (fieldType instanceof EnumType) {
             SelectOptions options = enumOptions((EnumType) fieldType);
             if(options.isEmpty()) {
                 return null;
             } else {
-                return new SelectBuilder("string", options);
+                return new SelectBuilder(BindingType.STRING, options);
             }
         }
         if (fieldType instanceof GeoPointType) {
-            return new SimpleInputBuilder("geopoint");
+            return new SimpleInputBuilder(BindingType.GEOPOINT);
         }
         if (fieldType instanceof ImageType) {
             return new UploadBuilder("image/*");
         }
         if (fieldType instanceof LocalDateType) {
-            return new SimpleInputBuilder("date");
+            return new SimpleInputBuilder(BindingType.DATE);
         }
         if (fieldType instanceof NarrativeType) {
-            return new SimpleInputBuilder("string");
+            return new SimpleInputBuilder(BindingType.STRING);
         }
         if (fieldType instanceof QuantityType) {
             return new QuantityFieldBuilder((QuantityType) fieldType);
@@ -72,10 +73,10 @@ public class OdkFormFieldBuilderFactory {
             if(options.isEmpty()) {
                 return null;
             }
-            return new SelectBuilder("string", options);
+            return new SelectBuilder(BindingType.STRING, options);
         }
         if (fieldType instanceof TextType) {
-            return new SimpleInputBuilder("string");
+            return new SimpleInputBuilder(BindingType.STRING);
         }
 
         // If this happens, it means this class needs to be expanded to support the new FieldType class.
@@ -88,8 +89,8 @@ public class OdkFormFieldBuilderFactory {
         List<Item> items = Lists.newArrayListWithCapacity(enumType.getValues().size());
         for (EnumValue enumValue : enumType.getValues()) {
             Item item = new Item();
-            item.label = enumValue.getLabel();
-            item.value = enumValue.getId().asString();
+            item.setLabel(enumValue.getLabel());
+            item.setValue(enumValue.getId().asString());
             items.add(item);
         }
         return new SelectOptions(cardinality, items);
@@ -97,12 +98,12 @@ public class OdkFormFieldBuilderFactory {
 
     private SelectOptions booleanOptions() {
         Item no = new Item();
-        no.label = "no";
-        no.value = "FALSE";
+        no.setLabel("no");
+        no.setValue("FALSE");
 
         Item yes = new Item();
-        yes.label = "yes";
-        yes.value = "TRUE";
+        yes.setLabel("yes");
+        yes.setValue("TRUE");
 
         return new SelectOptions(Cardinality.SINGLE, Arrays.asList(yes, no));
     }
@@ -112,8 +113,8 @@ public class OdkFormFieldBuilderFactory {
 
         for (ReferenceChoice choice : locator.getReferenceChoices(referenceType.getRange())) {
             Item item = new Item();
-            item.label = choice.getLabel();
-            item.value = choice.getId().asString();
+            item.setLabel(choice.getLabel());
+            item.setValue(choice.getId().asString());
             items.add(item);
         }
 

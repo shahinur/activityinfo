@@ -87,7 +87,7 @@ public class XFormInstance {
     }
 
     public Optional<Element> getFieldContent(ResourceId id) {
-        String tagName = OdkHelper.toRelativeFieldName(id.asString());
+        String tagName = id.asString();
         NodeList nodeList = document.getElementsByTagName(tagName);
 
         if (nodeList.getLength() > 0) {

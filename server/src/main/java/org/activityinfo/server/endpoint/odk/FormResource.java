@@ -1,35 +1,21 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
-import org.activityinfo.server.endpoint.odk.xform.Bind;
-import org.activityinfo.server.endpoint.odk.xform.Html;
-import org.activityinfo.server.endpoint.odk.xform.InstanceId;
+import org.activityinfo.server.endpoint.odk.xform.XForm;
+import org.activityinfo.server.endpoint.odk.xform.XFormBuilder;
 import org.activityinfo.service.store.ResourceNotFound;
 
 import javax.inject.Provider;
 import javax.ws.rs.*;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Logger;
 
-import static org.activityinfo.server.endpoint.odk.OdkHelper.convertRelevanceConditionExpression;
-import static org.activityinfo.server.endpoint.odk.OdkHelper.toAbsoluteFieldName;
-import static org.activityinfo.server.endpoint.odk.OdkHelper.toRelativeFieldName;
 
 @Path("/activityForm")
 public class FormResource {
@@ -59,7 +45,8 @@ public class FormResource {
         this.authenticationTokenService = authenticationTokenService;
     }
 
-    @GET @Produces(MediaType.TEXT_XML)
+    @GET
+    @Produces(MediaType.TEXT_XML)
     public Response form(@QueryParam("id") int id) {
 
         AuthenticatedUser user = authProvider.get();
@@ -77,101 +64,12 @@ public class FormResource {
         String authenticationToken = authenticationTokenService
                 .createAuthenticationToken(user.getId(), formClass.getId());
 
-        Set<String> fieldsSet = OdkHelper.extractFieldsSet(formClass);
-        List<OdkField> fields = buildFieldList(formClass);
+        XForm xForm = new XFormBuilder(factory)
+                .setUserId(authenticationToken)
+                .build(formClass);
 
-        Html html = new Html();
-        html.head.title = formClass.getLabel();
-        html.head.model.instance.data.id = formClass.getId().asString();
-        html.head.model.instance.data.meta.instanceID = new InstanceId();
-        html.head.model.instance.data.meta.userID = authenticationToken;
-
-        for (OdkField field : fields) {
-            QName qName = new QName("http://www.w3.org/2002/xforms", toRelativeFieldName(field.getModel().getId().asString()));
-            html.head.model.instance.data.elements.add(new JAXBElement<>(qName, String.class, ""));
-        }
-
-        html.head.model.bind.add(instanceIdBinding());
-        html.head.model.bind.add(startDate(formClass.getId()));
-        html.head.model.bind.add(endDate(formClass.getId()));
-
-        ResourceId startDateFieldId = CuidAdapter.field(formClass.getId(), CuidAdapter.START_DATE_FIELD);
-        ResourceId endDateFieldId = CuidAdapter.field(formClass.getId(), CuidAdapter.END_DATE_FIELD);
-        Set<ResourceId> dateFields = Sets.newHashSet(startDateFieldId, endDateFieldId);
-
-        for (OdkField field : fields) {
-            // As a transitional hack, populate the startDate and endDate of the "activity"
-            // with the start/end date of interview
-            if(field.getModel().getId().equals(startDateFieldId)) {
-                html.head.model.bind.add(startDate(formClass.getId()));
-            } else if(field.getModel().getId().equals(endDateFieldId)) {
-                html.head.model.bind.add(endDate(formClass.getId()));
-            } else {
-                Bind bind = new Bind();
-                bind.nodeset = toAbsoluteFieldName(field.getModel().getId().asString());
-                bind.type = field.getBuilder().getModelBindType();
-                if (field.getModel().isReadOnly()) {
-                    bind.readonly = "true()";
-                }
-                //TODO Fix this
-                //bind.calculate = formField.getExpression();
-                bind.relevant = convertRelevanceConditionExpression(field.getModel().getRelevanceConditionExpression(), fieldsSet);
-                if (field.getModel().isRequired()) {
-                    bind.required = "true()";
-                }
-                html.head.model.bind.add(bind);
-            }
-        }
-
-        for (OdkField formField : fields) {
-            if (formField.getModel().isVisible() && !dateFields.contains(formField.getModel().getId())) {
-                html.body.jaxbElement.add(formField.getBuilder().createPresentationElement(
-                        toAbsoluteFieldName(formField.getModel().getId().asString()),
-                        formField.getModel().getLabel(),
-                        formField.getModel().getDescription()));
-            }
-        }
-        return Response.ok(html).build();
+        return Response.ok(xForm).build();
     }
 
-    private List<OdkField> buildFieldList(FormClass formClass) {
-        List<FormField> formFields = formClass.getFields();
-
-        List<OdkField> fieldBuilders = new ArrayList<>();
-        for (FormField field : formFields) {
-            OdkFormFieldBuilder builder = factory.get(field.getType());
-            if (builder != null) {
-                fieldBuilders.add(new OdkField(field, builder));
-            }
-        }
-        return fieldBuilders;
-    }
-
-    private Bind instanceIdBinding() {
-        Bind bind = new Bind();
-        bind.nodeset = "/data/meta/instanceID";
-        bind.type = "string";
-        bind.readonly = "true()";
-        bind.calculate = "concat('uuid:',uuid())";
-        return bind;
-    }
-
-    private Bind startDate(ResourceId classId) {
-        Bind bind = new Bind();
-        bind.nodeset = "/data/field_" + CuidAdapter.field(classId, CuidAdapter.START_DATE_FIELD);
-        bind.type = "dateTime";
-        bind.preload = "timestamp";
-        bind.preloadParams = "start";
-        return bind;
-    }
-
-    private Bind endDate(ResourceId classId) {
-        Bind bind = new Bind();
-        bind.nodeset = "/data/field_" + CuidAdapter.field(classId, CuidAdapter.END_DATE_FIELD);
-        bind.type = "dateTime";
-        bind.preload = "timestamp";
-        bind.preloadParams = "end";
-        return bind;
-    }
 
 }

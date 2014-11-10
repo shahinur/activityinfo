@@ -1,10 +1,9 @@
 package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.server.endpoint.odk.xform.PresentationElement;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
+import org.activityinfo.server.endpoint.odk.xform.BindingType;
+import org.activityinfo.server.endpoint.odk.xform.BodyElement;
+import org.activityinfo.server.endpoint.odk.xform.Input;
 
 class QuantityFieldBuilder implements OdkFormFieldBuilder {
     final private String units;
@@ -14,21 +13,24 @@ class QuantityFieldBuilder implements OdkFormFieldBuilder {
     }
 
     @Override
-    public String getModelBindType() {
-        return "decimal";
+    public BindingType getModelBindType() {
+        return BindingType.DECIMAL;
     }
 
     @Override
-    public JAXBElement<PresentationElement> createPresentationElement(String ref, String label, String hint) {
-        PresentationElement presentationElement = new PresentationElement();
+    public BodyElement createPresentationElement(String ref, String label, String hint) {
+        Input input = new Input();
+        input.setRef(ref);
 
-        presentationElement.ref = ref;
-        if (units == null) presentationElement.label = label;
-        else if (label == null) presentationElement.label = units;
-        else presentationElement.label = label + " [" + units + ']';
-        presentationElement.hint = hint;
+        if (units == null) {
+            input.setLabel(label);
+        } else if (label == null) {
+            input.setLabel(units);
+        } else {
+            input.setLabel(label + " [" + units + ']');
+        }
+        input.setHint(hint);
 
-        QName qName = new QName("http://www.w3.org/2002/xforms", "input");
-        return new JAXBElement<>(qName, PresentationElement.class, presentationElement);
+        return input;
     }
 }

@@ -1,13 +1,29 @@
 package org.activityinfo.server.endpoint.odk.xform;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
+@XmlType(propOrder = { "title", "model"})
 public class Head {
-    @XmlElement(namespace = "http://www.w3.org/1999/xhtml")
-    public String title;
+    private String title;
+
+    private Model model = new Model();
+
+    @XmlElement(namespace = Namespaces.XHTML)
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     @XmlElement
-    public Model model = new Model();
+    public Model getModel() {
+        return model;
+    }
 
-
+    public void setModel(Model model) {
+        this.model = model;
+    }
 }

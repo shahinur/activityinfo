@@ -1,4 +1,10 @@
 package org.activityinfo.server.endpoint.odk.xform;
 
-public class Select1 {
+import com.google.common.collect.Lists;
+
+import javax.xml.bind.annotation.XmlElement;
+import java.util.List;
+
+public class Select1 extends SelectElement {
+
 }

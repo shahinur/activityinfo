@@ -3,33 +3,114 @@ package org.activityinfo.server.endpoint.odk.xform;
 import javax.xml.bind.annotation.XmlAttribute;
 
 public class Bind {
-    @XmlAttribute
-    public String nodeset;
+    private String nodeSet;
+
+    private BindingType type;
+
+    private String readonly;
+
+    private String calculate;
+
+    private String required;
+
+    private String relevant;
+
+    private String constraint;
+
+    private String constraintMessage;
+
+    private String preload;
+
+    private String preloadParams;
+
+    @SuppressWarnings("SpellCheckingInspection")
+    @XmlAttribute(name = "nodeset")
+    public String getNodeSet() {
+        return nodeSet;
+    }
+
+    public void setNodeSet(String nodeSet) {
+        this.nodeSet = nodeSet;
+    }
 
     @XmlAttribute
-    public String type;
+    public BindingType getType() {
+        return type;
+    }
+
+    public void setType(BindingType type) {
+        this.type = type;
+    }
 
     @XmlAttribute
-    public String readonly;
+    public String getReadonly() {
+        return readonly;
+    }
+
+    public void setReadonly(String readonly) {
+        this.readonly = readonly;
+    }
 
     @XmlAttribute
-    public String calculate;
+    public String getCalculate() {
+        return calculate;
+    }
+
+    public void setCalculate(String calculate) {
+        this.calculate = calculate;
+    }
 
     @XmlAttribute
-    public String required;
+    public String getRequired() {
+        return required;
+    }
+
+    public void setRequired(String required) {
+        this.required = required;
+    }
 
     @XmlAttribute
-    public String relevant;
+    public String getRelevant() {
+        return relevant;
+    }
+
+    public void setRelevant(String relevant) {
+        this.relevant = relevant;
+    }
 
     @XmlAttribute
-    public String constraint;
+    public String getConstraint() {
+        return constraint;
+    }
+
+    public void setConstraint(String constraint) {
+        this.constraint = constraint;
+    }
+
+    @XmlAttribute(namespace = "http://openrosa.org/javarosa", name = "constraintMsg")
+    public String getConstraintMessage() {
+        return constraintMessage;
+    }
+
+    public void setConstraintMessage(String constraintMessage) {
+        this.constraintMessage = constraintMessage;
+    }
 
     @XmlAttribute(namespace = "http://openrosa.org/javarosa")
-    public String constraintMsg;
+    public String getPreload() {
+        return preload;
+    }
+
+    public void setPreload(String preload) {
+        this.preload = preload;
+    }
 
     @XmlAttribute(namespace = "http://openrosa.org/javarosa")
-    public String preload;
+    public String getPreloadParams() {
+        return preloadParams;
+    }
 
-    @XmlAttribute(namespace = "http://openrosa.org/javarosa")
-    public String preloadParams;
+    public void setPreloadParams(String preloadParams) {
+        this.preloadParams = preloadParams;
+    }
 }
