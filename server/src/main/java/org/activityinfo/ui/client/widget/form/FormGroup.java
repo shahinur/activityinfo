@@ -100,7 +100,6 @@ public class FormGroup implements IsWidget, HasWidgets {
 
     public FormGroup showValidationMessage(boolean show) {
 
-        // add help-block dynamically, we don't want the div to take space if description is not set
         if (show) {
             validationMessage.addClassName("help-block");
         } else {
