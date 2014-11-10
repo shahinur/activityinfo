@@ -37,6 +37,8 @@
 
       <div class="col-xs-2">
         <g:HTMLPanel>
+          <g:HTML ui:field="paletteSpacer" width="100%" height="0px"/>
+
           <div class="row">
             <!--<div class="col-xs-2">-->
             <a:Button style="PRIMARY" ui:field="saveButton" text="{i18n.save}"/>
