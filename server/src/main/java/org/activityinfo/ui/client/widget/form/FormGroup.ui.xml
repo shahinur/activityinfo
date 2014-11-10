@@ -4,17 +4,21 @@
 
   <g:HTMLPanel width="100%" ui:field="panel">
 
-    <!-- Field-->
+    <!-- Field -->
     <div class="form-group">
       <label class="control-label" ui:field="label"/>
       <g:HTMLPanel ui:field="widget"/>
-    </div>
 
-    <!-- Validation message -->
-    <g:HTMLPanel addStyleNames="form-group has-error" ui:field="messageContainer">
-      <div ui:field="validationMargin"/>
-      <div class="help-block" ui:field="validationMessage"/>
-    </g:HTMLPanel>
+      <!-- Description -->
+      <span ui:field="descriptionMargin"/>
+      <span ui:field="description"/>
+
+      <!-- Validation message -->
+      <g:HTMLPanel ui:field="messageContainer">
+        <span ui:field="validationMargin"/>
+        <span ui:field="validationMessage"/>
+      </g:HTMLPanel>
+    </div>
 
   </g:HTMLPanel>
 

@@ -22,8 +22,8 @@ package org.activityinfo.ui.client.widget.form;
  */
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.LabelElement;
+import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
@@ -54,26 +54,17 @@ public class FormGroup implements IsWidget, HasWidgets {
     @UiField
     HTMLPanel messageContainer;
     @UiField
-    DivElement validationMessage;
+    SpanElement validationMessage;
     @UiField
-    DivElement validationMargin;
+    SpanElement validationMargin;
+    @UiField
+    SpanElement description;
+    @UiField
+    SpanElement descriptionMargin;
 
     @UiConstructor
     public FormGroup() {
-        this("", ValidationStateType.ERROR, "", 2, false);
-    }
-
-    public FormGroup(String label, int columnLabelWidth) {
-        this(label, ValidationStateType.ERROR, "", columnLabelWidth, false);
-    }
-
-    public FormGroup(String label, ValidationStateType validationStateType, String validationMessage, int columnLabelWidth, boolean showValidationMessage) {
         uiBinder.createAndBindUi(this);
-        label(label);
-        validationStateType(validationStateType);
-        validationMessage(validationMessage);
-        columnLabelWidth(columnLabelWidth);
-        setShowValidationMessage(showValidationMessage);
     }
 
     public FormGroup label(String label) {
@@ -81,12 +72,22 @@ public class FormGroup implements IsWidget, HasWidgets {
         return this;
     }
 
+    public void setDescription(String description) {
+        this.description.addClassName("help-block"); // add help-block dynamically, we don't want div to take space if description is not set
+        this.description.setInnerHTML(SafeHtmlUtils.fromString(description).asString());
+    }
+
     public FormGroup columnLabelWidth(int width) {
         if (width < 0 || width > 12) {
             throw new IllegalArgumentException("Bootstrap width is invalid. Must be in range of 0..12. Width: " + width);
         }
+
         this.label.addClassName(GridCol.col(width));
         this.widget.addStyleName(GridCol.remainingCol(width));
+
+        this.descriptionMargin.addClassName(GridCol.col(width));
+        this.description.addClassName(GridCol.remainingCol(width));
+
         this.validationMargin.addClassName(GridCol.col(width));
         this.validationMessage.addClassName(GridCol.remainingCol(width));
         return this;
@@ -98,6 +99,14 @@ public class FormGroup implements IsWidget, HasWidgets {
     }
 
     public FormGroup showValidationMessage(boolean show) {
+
+        // add help-block dynamically, we don't want the div to take space if description is not set
+        if (show) {
+            validationMessage.addClassName("help-block");
+        } else {
+            validationMessage.removeClassName("help-block");
+        }
+
         messageContainer.setVisible(show);
         return this;
     }
