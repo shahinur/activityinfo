@@ -50,7 +50,7 @@ public class FormPersisterTest extends CommandTestCase2 {
 
         FormClass formClass = assertResolves(locator.getFormClass(CuidAdapter.activityFormClass(11218)));
 
-        ResourceId barcodeId = ResourceId.generateId();
+        ResourceId barcodeId = ResourceId.generateFieldId(BarcodeType.TYPE_CLASS);
         formClass.addElement(new FormField(barcodeId)
             .setLabel("HH ID")
             .setType(BarcodeType.INSTANCE)

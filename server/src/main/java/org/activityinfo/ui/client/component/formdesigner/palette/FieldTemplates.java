@@ -44,7 +44,7 @@ public class FieldTemplates {
 
     //    items.add(new TypeClassTemplate(GeoPointType.TYPE_CLASS));
         items.add(new TypeClassTemplate(BarcodeType.TYPE_CLASS));
-        items.add(new TypeClassTemplate(ImageType.TYPE_CLASS));
+ //       items.add(new TypeClassTemplate(ImageType.TYPE_CLASS));
         items.add(new TypeClassTemplate(CalculatedFieldType.TYPE_CLASS));
 
         return items;

@@ -65,13 +65,6 @@ public class FormSubmissionResource {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_XML)
     public Response submit(byte bytes[]) {
-        ResourceId resourceId = ResourceId.generateId();
-        try {
-            submissionArchiver.backup(resourceId, ByteSource.wrap(bytes));
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Form submission could not be backed up to GCS", e);
-            LOGGER.info(new String(bytes, Charsets.UTF_8));
-        }
 
         XFormInstance instance = new XFormInstance(bytes);
 
@@ -96,8 +89,11 @@ public class FormSubmissionResource {
                 persistImageData(user, instance, (ImageValue) fieldValue);
             }
         }
-
         locator.persist(formInstance);
+
+        // Backup the original XForm in case something went wrong with processing
+        submissionArchiver.backup(formClass.getId(), formId, ByteSource.wrap(bytes));
+
         return Response.status(CREATED).build();
     }
 

@@ -22,6 +22,9 @@ package org.activityinfo.server.database.hibernate.entity;
  * #L%
  */
 
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -34,7 +37,7 @@ import java.util.Set;
 @Entity @org.hibernate.annotations.Filter(
         name = "hideDeleted",
         condition = "DateDeleted is null")
-public class AttributeGroup implements Serializable, Deleteable, Orderable {
+public class AttributeGroup implements Serializable, Deleteable, Orderable, FormFieldEntity {
 
     private int id;
 
@@ -60,12 +63,19 @@ public class AttributeGroup implements Serializable, Deleteable, Orderable {
 
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "AttributeGroupId")
+    @Id
+    @Column(name = "AttributeGroupId")
     public int getId() {
         return this.id;
     }
 
-    protected void setId(int id) {
+    @Transient
+    @Override
+    public ResourceId getFieldId() {
+        return CuidAdapter.attributeGroupField(getId());
+    }
+
+    public void setId(int id) {
         this.id = id;
     }
 

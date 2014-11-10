@@ -50,7 +50,7 @@ public class BuiltinFormClasses {
 
         @Nullable @Override
         public FormClass apply(@Nullable ActivityDTO activity) {
-            ActivityUserFormBuilder builder = new ActivityUserFormBuilder(activity);
+            ActivityFormClassBuilder builder = new ActivityFormClassBuilder(activity);
             return builder.build();
         }
     }

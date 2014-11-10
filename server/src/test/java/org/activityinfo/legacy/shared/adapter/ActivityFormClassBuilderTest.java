@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(InjectionSupport.class)
-public class ActivityUserFormBuilderTest extends CommandTestCase2 {
+public class ActivityFormClassBuilderTest extends CommandTestCase2 {
 
     public static final int BAVON_USER_ID = 2;
 

@@ -70,6 +70,8 @@ public class Activity implements Serializable, Deleteable, Orderable {
     private int published = Published.NOT_PUBLISHED.getIndex();
     private boolean classicView;
 
+    private String formClass;
+
     public Activity() {
 
     }
@@ -185,6 +187,19 @@ public class Activity implements Serializable, Deleteable, Orderable {
 
     public void setSites(Set<Site> sites) {
         this.sites = sites;
+    }
+
+    /**
+     *
+     * @return the FormClass resource encoded as JSON
+     */
+    @Lob
+    public String getFormClass() {
+        return formClass;
+    }
+
+    public void setFormClass(String formClass) {
+        this.formClass = formClass;
     }
 
     @Column @Temporal(value = TemporalType.TIMESTAMP)

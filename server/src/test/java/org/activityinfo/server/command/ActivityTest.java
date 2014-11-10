@@ -170,24 +170,24 @@ public class ActivityTest extends CommandTestCase2 {
 
         // create three new fields with an order that mixes "attributes" and "indicators"
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(ResourceId.generateFieldId(QuantityType.TYPE_CLASS));
         newField.setLabel("How old are you?");
         newField.setType(new QuantityType().setUnits("years"));
         formClass.addElement(newField);
 
-        FormField newGenderField = new FormField(ResourceId.generateId());
+        FormField newGenderField = new FormField(ResourceId.generateFieldId(EnumType.TYPE_CLASS));
         newGenderField.setLabel("Gender");
-        EnumValue male = new EnumValue(ResourceId.generateId(), "Male");
-        EnumValue female = new EnumValue(ResourceId.generateId(), "Female");
+        EnumValue male = new EnumValue(EnumValue.generateId(), "Male");
+        EnumValue female = new EnumValue(EnumValue.generateId(), "Female");
         newGenderField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(male, female)));
         formClass.addElement(newGenderField);
 
-        FormField newTextField = new FormField(ResourceId.generateId());
+        FormField newTextField = new FormField(ResourceId.generateFieldId(TextType.TYPE_CLASS));
         newTextField.setLabel("What is your name?");
         newTextField.setType(TextType.INSTANCE);
         formClass.addElement(newTextField);
 
-        resourceLocator.persist(formClass);
+        assertResolves(resourceLocator.persist(formClass));
 
         FormClass reform = assertResolves(resourceLocator.getFormClass(formClass.getId()));
 
@@ -219,12 +219,12 @@ public class ActivityTest extends CommandTestCase2 {
         ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(classId));
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(ResourceId.generateFieldId(QuantityType.TYPE_CLASS));
         newField.setLabel("How old are you?");
         newField.setType(new QuantityType().setUnits("years"));
         formClass.addElement(newField);
 
-        FormField newTextField = new FormField(ResourceId.generateId());
+        FormField newTextField = new FormField(ResourceId.generateFieldId(TextType.TYPE_CLASS));
         newTextField.setLabel("What is your name?");
         newTextField.setType(TextType.INSTANCE);
         formClass.addElement(newTextField);
@@ -243,8 +243,8 @@ public class ActivityTest extends CommandTestCase2 {
         assertThat(reform.getFields(), hasSize(8));
 
         List<EnumValue> values = Lists.newArrayList();
-        values.add(new EnumValue(ResourceId.generateId(), "Option 1"));
-        values.add(new EnumValue(ResourceId.generateId(), "Option 2"));
+        values.add(new EnumValue(EnumValue.generateId(), "Option 1"));
+        values.add(new EnumValue(EnumValue.generateId(), "Option 2"));
     }
 
     @Test
@@ -253,10 +253,10 @@ public class ActivityTest extends CommandTestCase2 {
         ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
 
-        FormField newField = new FormField(ResourceId.generateId());
+        FormField newField = new FormField(ResourceId.generateFieldId(EnumType.TYPE_CLASS));
         newField.setLabel("New Group");
-        EnumValue yes = new EnumValue(ResourceId.generateId(), "Yes");
-        EnumValue no = new EnumValue(ResourceId.generateId(), "No");
+        EnumValue yes = new EnumValue(EnumValue.generateId(), "Yes");
+        EnumValue no = new EnumValue(EnumValue.generateId(), "No");
         newField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(yes, no)));
 
         formClass.getElements().add(newField);
@@ -315,7 +315,7 @@ public class ActivityTest extends CommandTestCase2 {
         FormField beneficiaries = find(formClass.getFields(), hasProperty("label", equalTo("beneficiaries")));
         QuantityType updatedType = new QuantityType().setUnits("imperial tonne with very long qualifying text");
         beneficiaries.setType(updatedType);
-        resourceLocator.persist(formClass);
+        assertResolves(resourceLocator.persist(formClass));
 
         ActivityDTO activity = getActivity(1);
         assertThat(activity.getIndicatorById(1), hasProperty("units", Matchers.equalTo(updatedType.getUnits())));

@@ -1,4 +1,4 @@
-package org.activityinfo.legacy.shared.adapter;
+package org.activityinfo.server.command.handler;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
