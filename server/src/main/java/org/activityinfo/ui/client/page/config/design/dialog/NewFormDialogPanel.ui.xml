@@ -11,7 +11,7 @@
 
     <!-- Name -->
     <f:FormGroup ui:field="nameFieldGroup" label="{i18n.name}" columnLabelWidth="2"
-                 validationMessage="{i18n.nameCantBeBlank}"
+                 validationMessage="{i18n.enterNameForNewForm}"
                  validationStateType="ERROR" showValidationMessage="false">
       <a:TextBox ui:field="nameField" width="100%"/>
     </f:FormGroup>
