@@ -129,7 +129,7 @@ public class ShareReportDialog extends Dialog {
 
         BatchCommand batch = new BatchCommand();
         batch.add(new GetReportModel(metadata.getId()));
-        batch.add(new GetSchema());
+        batch.add(new GetIndicators(currentReport.getIndicators()));
         batch.add(new GetReportVisibility(metadata.getId()));
 
         dispatcher.execute(batch,
