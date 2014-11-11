@@ -34,6 +34,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
@@ -109,8 +110,6 @@ public class PropertiesPresenter {
         view.getVisibleGroup().setVisible(false);
         view.getRelevanceGroup().setVisible(false);
         view.getCodeGroup().setVisible(false);
-        view.getInvalidCodeMessage().addClassName("hide");
-        view.getDuplicateCodeMessage().addClassName("hide");
 
         if (labelKeyUpHandler != null) {
             labelKeyUpHandler.removeHandler();
@@ -187,8 +186,10 @@ public class PropertiesPresenter {
         codeKeyUpHandler = view.getCode().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent keyUpEvent) {
-                formField.setCode(view.getCode().getValue());
-                fieldWidgetContainer.syncWithModel();
+                if (validateCode(fieldWidgetContainer)) {
+                    formField.setCode(view.getCode().getValue());
+                    fieldWidgetContainer.syncWithModel();
+                }
             }
         });
         requiredValueChangeHandler = view.getRequired().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
@@ -281,16 +282,16 @@ public class PropertiesPresenter {
      * @return whether code is valid
      */
     private boolean validateCode(FieldWidgetContainer fieldWidgetContainer) {
+        view.getCodeGroup().setShowValidationMessage(false);
         String code = view.getCode().getValue();
         if (Strings.isNullOrEmpty(code)) {
             return true;
         }
 
         if (!FormField.isValidCode(code)) {
-            view.getInvalidCodeMessage().removeClassName("hide");
+            view.getCodeGroup().showValidationMessage(I18N.CONSTANTS.invalidCodeMessage());
             return false;
         } else {
-            view.getInvalidCodeMessage().addClassName("hide");
 
             // check whether code is unique
             List<FormField> formFields = Lists.newArrayList(fieldWidgetContainer.getFormDesigner().getFormClass().getFields());
@@ -298,7 +299,7 @@ public class PropertiesPresenter {
 
             for (FormField formField : formFields) {
                 if (code.equals(formField.getCode())) {
-                    view.getDuplicateCodeMessage().removeClassName("hide");
+                    view.getCodeGroup().showValidationMessage(I18N.CONSTANTS.duplicateCodeMessage());
                     return false;
                 }
             }

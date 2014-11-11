@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:a="urn:import:org.activityinfo.ui.client.widget"
+             xmlns:f="urn:import:org.activityinfo.ui.client.widget.form"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
@@ -10,42 +11,20 @@
   <g:HTMLPanel width="100%" ui:field="panel" addStyleNames="form-horizontal">
 
     <!-- Code -->
-    <g:HTMLPanel addStyleNames="form-group" ui:field="codeGroup">
-      <label class="control-label col-xs-4">
-        <ui:text from='{i18n.codeFieldLabel}'/>
-      </label>
-      <div class="col-xs-8">
-        <a:TextBox ui:field="code" width="100%"/>
-      </div>
-      <div class="col-xs-12 has-error">
-        <span class="hide help-block" ui:field="invalidCodeMessage">
-          <ui:text from='{i18n.invalidCodeMessage}'/>
-        </span>
-        <span class="hide help-block" ui:field="duplicateCodeMessage">
-          <ui:text from='{i18n.duplicateCodeMessage}'/>
-        </span>
-      </div>
-    </g:HTMLPanel>
+    <f:FormGroup ui:field="codeGroup" label="{i18n.codeFieldLabel}" columnLabelWidth="4"
+                 validationStateType="ERROR">
+      <a:TextBox ui:field="code" width="100%"/>
+    </f:FormGroup>
 
     <!-- Label -->
-    <div class="form-group">
-      <label class="control-label col-xs-4">
-        <ui:text from='{i18n.label}'/>
-      </label>
-      <div class="col-xs-8">
-        <a:TextBox ui:field="label" width="100%"/>
-      </div>
-    </div>
+    <f:FormGroup label="{i18n.label}" columnLabelWidth="4">
+      <a:TextBox ui:field="label" width="100%"/>
+    </f:FormGroup>
 
     <!-- Description -->
-    <div class="form-group">
-      <label class="control-label col-xs-4">
-        <ui:text from='{i18n.description}'/>
-      </label>
-      <div class="col-xs-8">
-        <a:TextArea ui:field="description" width="100%"/>
-      </div>
-    </div>
+    <f:FormGroup label="{i18n.description}" columnLabelWidth="4">
+      <a:TextArea ui:field="description" width="100%"/>
+    </f:FormGroup>
 
     <!-- Required & ReadOnly -->
     <g:HTMLPanel addStyleNames="form-group">
@@ -68,24 +47,9 @@
     </g:HTMLPanel>
 
     <!-- Visible -->
-    <g:HTMLPanel addStyleNames="form-group">
-      <g:HTMLPanel ui:field="visibleGroup">
-        <label class="control-label col-xs-4">
-          <ui:text from='{i18n.visible}'/>
-        </label>
-        <div class="col-xs-2">
-          <a:CheckBox ui:field="visible"/>
-        </div>
-      </g:HTMLPanel>
-      <!--<g:HTMLPanel ui:field="readOnlyGroup">-->
-        <!--<label class="control-label col-xs-4">-->
-          <!--<ui:text from='{i18n.readonly}'/>-->
-        <!--</label>-->
-        <!--<div class="col-xs-2">-->
-          <!--<a:CheckBox ui:field="readOnly"/>-->
-        <!--</div>-->
-      <!--</g:HTMLPanel>-->
-    </g:HTMLPanel>
+    <f:FormGroup ui:field="visibleGroup" label="{i18n.visible}" columnLabelWidth="4" columnWidgetWidth="2">
+      <a:CheckBox ui:field="visible"/>
+    </f:FormGroup>
 
     <!-- Relevance -->
     <g:HTMLPanel addStyleNames="form-group" ui:field="relevanceGroup">

@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.*;
 import org.activityinfo.ui.client.widget.CheckBox;
 import org.activityinfo.ui.client.widget.TextArea;
 import org.activityinfo.ui.client.widget.TextBox;
+import org.activityinfo.ui.client.widget.form.FormGroup;
 
 /**
  * @author yuriyz on 7/9/14.
@@ -64,7 +65,7 @@ public class PropertiesPanel extends Composite {
     @UiField
     CheckBox visible;
     @UiField
-    HTMLPanel visibleGroup;
+    FormGroup visibleGroup;
     @UiField
     RadioButton relevanceEnabled;
     @UiField
@@ -72,11 +73,7 @@ public class PropertiesPanel extends Composite {
     @UiField
     TextBox code;
     @UiField
-    HTMLPanel codeGroup;
-    @UiField
-    SpanElement invalidCodeMessage;
-    @UiField
-    SpanElement duplicateCodeMessage;
+    FormGroup codeGroup;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -126,7 +123,7 @@ public class PropertiesPanel extends Composite {
         return visible;
     }
 
-    public HTMLPanel getVisibleGroup() {
+    public FormGroup getVisibleGroup() {
         return visibleGroup;
     }
 
@@ -142,15 +139,7 @@ public class PropertiesPanel extends Composite {
         return code;
     }
 
-    public HTMLPanel getCodeGroup() {
+    public FormGroup getCodeGroup() {
         return codeGroup;
-    }
-
-    public SpanElement getInvalidCodeMessage() {
-        return invalidCodeMessage;
-    }
-
-    public SpanElement getDuplicateCodeMessage() {
-        return duplicateCodeMessage;
     }
 }
