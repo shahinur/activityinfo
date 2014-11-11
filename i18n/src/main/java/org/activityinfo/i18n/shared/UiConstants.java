@@ -3557,8 +3557,8 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("New Form")
     String newForm();
 
-    @DefaultStringValue("Name can't be blank")
-    String nameCantBeBlank();
+    @DefaultStringValue("Please enter a name for the new form")
+    String enterNameForNewForm();
 
     @DefaultStringValue("Style is not selected")
     String styleIsNotSelected();

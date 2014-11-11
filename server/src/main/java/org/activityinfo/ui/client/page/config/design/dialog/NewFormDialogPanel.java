@@ -22,15 +22,14 @@ package org.activityinfo.ui.client.page.config.design.dialog;
  */
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.ui.client.widget.RadioButton;
 import org.activityinfo.ui.client.widget.TextBox;
+import org.activityinfo.ui.client.widget.form.FormGroup;
 
 /**
  * @author yuriyz on 11/05/2014.
@@ -53,11 +52,9 @@ public class NewFormDialogPanel extends Composite {
     @UiField
     RadioButton formDesigner;
     @UiField
-    HTMLPanel errorContainer;
-    @UiField
-    DivElement errorMessage;
-    @UiField
     Anchor explanationLink;
+    @UiField
+    FormGroup nameFieldGroup;
 
     public NewFormDialogPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -84,11 +81,7 @@ public class NewFormDialogPanel extends Composite {
         return formDesigner;
     }
 
-    public HTMLPanel getErrorContainer() {
-        return errorContainer;
-    }
-
-    public DivElement getErrorMessage() {
-        return errorMessage;
+    public FormGroup getNameFieldGroup() {
+        return nameFieldGroup;
     }
 }

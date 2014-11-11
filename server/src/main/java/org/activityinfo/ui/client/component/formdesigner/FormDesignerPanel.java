@@ -35,8 +35,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
-import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.model.form.*;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
@@ -92,6 +90,8 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
     HTML statusMessage;
     @UiField
     HTML spacer;
+    @UiField
+    HTML paletteSpacer;
 
     public FormDesignerPanel(final ResourceLocator resourceLocator, @Nonnull final FormClass formClass) {
         FormDesignerStyles.INSTANCE.ensureInjected();
@@ -221,8 +221,10 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
 
             //GWT.log("verticalPos = " + verticalScrollPosition + ", height = " + height + ", selectedWidgetTop = " + selectedWidgetTop);
             spacer.setHeight(height + "px");
+            paletteSpacer.setHeight(height + "px");
         } else {
             spacer.setHeight("0px");
+            paletteSpacer.setHeight("0px");
         }
     }
 

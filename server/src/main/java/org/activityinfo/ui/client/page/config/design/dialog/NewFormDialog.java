@@ -28,7 +28,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.client.widget.ModalDialog;
 
@@ -91,32 +90,12 @@ public class NewFormDialog {
     }
 
     public boolean validate() {
-        content.getErrorContainer().setVisible(false);
+        boolean isNameValid = !Strings.isNullOrEmpty(getName());
 
-        boolean result = true;
+        content.getNameFieldGroup().setShowValidationMessage(!isNameValid);
 
-        SafeHtmlBuilder errorBuilder = new SafeHtmlBuilder();
-        if (Strings.isNullOrEmpty(getName())) {
-            errorBuilder
-                    .appendEscaped("- ")
-                    .appendEscaped(I18N.CONSTANTS.nameCantBeBlank())
-                    .appendHtmlConstant("<br/>");
-            result = false;
-        }
-
-        if (getViewType() == null) {
-            errorBuilder
-                    .appendEscaped("- ")
-                    .appendEscaped(I18N.CONSTANTS.styleIsNotSelected());
-            result = false;
-        }
-
-        if (!result) {
-            showError(errorBuilder.toSafeHtml().asString());
-        }
-
-        dialog.getPrimaryButton().setEnabled(result);
-        return result;
+        dialog.getPrimaryButton().setEnabled(isNameValid);
+        return isNameValid;
     }
 
     public ViewType getViewType() {
@@ -128,11 +107,6 @@ public class NewFormDialog {
             return ViewType.NEW_FORM_DESIGNER;
         }
         return null;
-    }
-
-    private void showError(String error) {
-        content.getErrorContainer().setVisible(true);
-        content.getErrorMessage().setInnerHTML(error);
     }
 
     public NewFormDialog show() {
