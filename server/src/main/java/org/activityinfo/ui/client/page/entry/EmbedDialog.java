@@ -38,6 +38,7 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.Published;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.ui.client.page.entry.place.DataEntryPlace;
@@ -95,8 +96,8 @@ public class EmbedDialog extends Dialog {
             public void onSuccess(SchemaDTO result) {
                 Filter filter = place.getFilter();
                 if (filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
-                    ActivityDTO singleActivity = result.getActivityById(filter.getRestrictedCategory(DimensionType
-                            .Activity));
+                    int activityId = filter.getRestrictedCategory(DimensionType.Activity);
+                    ActivityDTO singleActivity = result.getActivityById(activityId);
                     showPublished(singleActivity, url);
                 } else if (filter.isDimensionRestrictedToSingleCategory(DimensionType.Database)) {
                     MessageBox.alert("foo", "not impl", null);

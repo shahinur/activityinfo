@@ -35,7 +35,6 @@ import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
-import org.activityinfo.model.form.FormFieldType;
 import org.activityinfo.promise.Promise;
 
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 
         private final Map<Integer, CountryDTO> countries = new HashMap<Integer, CountryDTO>();
         private final Map<Integer, PartnerDTO> partners = new HashMap<Integer, PartnerDTO>();
-        private final Map<Integer, ActivityDTO> activities = new HashMap<Integer, ActivityDTO>();
+        private final Map<Integer, ActivityDTO> activities = new HashMap<>();
         private final Map<Integer, AttributeGroupDTO> attributeGroups = new HashMap<Integer, AttributeGroupDTO>();
         private final Map<Integer, ProjectDTO> projects = new HashMap<Integer, ProjectDTO>();
         private final Map<Integer, LocationTypeDTO> locationTypes = new HashMap<>();
@@ -265,10 +264,10 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                                 joinPartnersToDatabases(),
                                 loadProjects(),
                                 loadActivities(),
-                                loadIndicators(),
-                                loadAttributeGroups(),
-                                loadAttributes(),
-                                joinAttributesToActivities(),
+//                                loadIndicators(),
+//                                loadAttributeGroups(),
+//                                loadAttributes(),
+//                                joinAttributesToActivities(),
                                 loadLockedPeriods())
                                .then(promise);
                     }
@@ -441,7 +440,6 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                     int databaseId = row.getInt("databaseId");
                     UserDatabaseDTO database = databaseMap.get(databaseId);
                     activity.setDatabase(database);
-                    activity.setPartnerRange(getAllowablePartners(database));
                     database.getActivities().add(activity);
 
                     int locationTypeId = row.getInt("locationTypeId");
@@ -455,184 +453,172 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
 
                     activities.put(activity.getId(), activity);
                 }
-
-                private List<PartnerDTO> getAllowablePartners(UserDatabaseDTO database) {
-                    if(database.isEditAllAllowed()) {
-                        return database.getPartners();
-                    } else if(database.hasPartnerId()) {
-                        return Lists.newArrayList(database.getMyPartner());
-                    } else {
-                        // if the user has no specific rights, they may not
-                        // have any options to set the partner
-                        return Lists.newArrayList();
-                    }
-                }
             });
         }
-
-        public Promise<Void> loadIndicators() {
-            SqlQuery query = SqlQuery.select("indicatorId",
-                    "name",
-                    "type",
-                    "expression",
-                    "skipExpression",
-                    "nameInExpression",
-                    "calculatedAutomatically",
-                    "category",
-                    "listHeader",
-                    "description",
-                    "aggregation",
-                    "units",
-                    "activityId",
-                    "sortOrder",
-                    "mandatory").from("indicator").orderBy("SortOrder");
-
-            if (context.isRemote()) {
-                query.where("DateDeleted IS NULL");
-                query.where("activityId")
-                     .in(SqlQuery.select("ActivityId").from("activity").where("databaseId").in(databaseMap.keySet()));
-
-            }
-
-            return execute(query, new RowHandler() {
-
-                @Override
-                public void handleRow(SqlResultSetRow rs) {
-                    IndicatorDTO indicator = new IndicatorDTO();
-                    indicator.setId(rs.getInt("indicatorId"));
-                    indicator.setName(rs.getString("name"));
-                    indicator.setTypeId(rs.getString("type"));
-                    indicator.setExpression(rs.getString("expression"));
-                    indicator.setSkipExpression(rs.getString("skipExpression"));
-                    indicator.setNameInExpression(rs.getString("nameInExpression"));
-                    indicator.setCalculatedAutomatically(rs.getBoolean("calculatedAutomatically"));
-                    indicator.setCategory(rs.getString("category"));
-                    indicator.setListHeader(rs.getString("listHeader"));
-                    indicator.setDescription(rs.getString("description"));
-                    indicator.setAggregation(rs.getInt("aggregation"));
-                    indicator.setUnits(rs.getString("units"));
-                    indicator.setMandatory(rs.getBoolean("mandatory"));
-                    indicator.setSortOrder(rs.getInt("sortOrder"));
-
-                    int activityId = rs.getInt("activityId");
-                    ActivityDTO activity = activities.get(activityId);
-                    if (activity != null) { // it may have been deleted
-                        activity.getIndicators().add(indicator);
-                    }
-                }
-            });
-        }
-
-        public Promise<Void> loadAttributeGroups() {
-            SqlQuery query = SqlQuery.select()
-                                     .appendColumn("AttributeGroupId", "id")
-                                     .appendColumn("Name", "name")
-                                     .appendColumn("multipleAllowed")
-                                     .appendColumn("mandatory")
-                                     .appendColumn("defaultValue")
-                                     .appendColumn("workflow")
-                                     .appendColumn("sortOrder")
-                                     .from("attributegroup")
-                                     .orderBy("SortOrder");
-
-            if (context.isRemote()) {
-                query.where("DateDeleted IS NULL");
-                query.where("AttributeGroupId")
-                     .in(SqlQuery.select("AttributeGroupId")
-                                 .from("attributegroupinactivity")
-                                 .where("ActivityId")
-                                 .in(SqlQuery.select("ActivityId")
-                                             .from("activity")
-                                             .where("databaseId")
-                                             .in(databaseMap.keySet())));
-
-            }
-
-            return execute(query, new RowHandler() {
-
-                @Override
-                public void handleRow(SqlResultSetRow rs) {
-
-                    AttributeGroupDTO group = new AttributeGroupDTO();
-                    group.setId(rs.getInt("id"));
-                    group.setName(rs.getString("name"));
-                    group.setMultipleAllowed(rs.getBoolean("multipleAllowed"));
-                    group.setMandatory(rs.getBoolean("mandatory"));
-                    group.setSortOrder(rs.getInt("sortOrder"));
-                    if (!rs.isNull("defaultValue")) { // if null it throws NPE
-                        group.setDefaultValue(rs.getInt("defaultValue"));
-                    }
-                    group.setWorkflow(rs.getBoolean("workflow"));
-
-                    attributeGroups.put(group.getId(), group);
-                }
-            });
-        }
-
-        public Promise<Void> loadAttributes() {
-            SqlQuery query = SqlQuery.select("attributeId", "name", "attributeGroupId")
-                                     .from("attribute")
-                                     .orderBy("SortOrder");
-
-            if (context.isRemote()) {
-                query.where("DateDeleted IS NULL");
-                query.where("AttributeGroupId")
-                     .in(SqlQuery.select("AttributeGroupId")
-                                 .from("attributegroupinactivity")
-                                 .where("ActivityId")
-                                 .in(SqlQuery.select("ActivityId")
-                                             .from("activity")
-                                             .where("databaseId")
-                                             .in(databaseMap.keySet())));
-
-            }
-
-            return execute(query, new RowHandler() {
-
-                @Override
-                public void handleRow(SqlResultSetRow row) {
-
-                    AttributeDTO attribute = new AttributeDTO();
-                    attribute.setId(row.getInt("attributeId"));
-                    attribute.setName(row.getString("name"));
-
-                    int groupId = row.getInt("attributeGroupId");
-                    AttributeGroupDTO group = attributeGroups.get(groupId);
-                    if (group != null) {
-                        group.getAttributes().add(attribute);
-                    }
-                }
-            });
-        }
-
-        public Promise<Void> joinAttributesToActivities() {
-            SqlQuery query = SqlQuery.select("J.activityId", "J.attributeGroupId")
-                                     .from("attributegroupinactivity J " +
-                                           "INNER JOIN attributegroup G ON (J.attributeGroupId = G.attributeGroupId)")
-                                     .orderBy("G.SortOrder")
-                                     .where("G.dateDeleted")
-                                     .isNull();
-
-            if (context.isRemote()) {
-                query.where("ActivityId")
-                     .in(SqlQuery.select("ActivityId").from("activity").where("databaseId").in(databaseMap.keySet()));
-
-            }
-
-            return execute(query, new RowHandler() {
-                @Override
-                public void handleRow(SqlResultSetRow row) {
-
-                    int groupId = row.getInt("attributeGroupId");
-
-                    ActivityDTO activity = activities.get(row.getInt("activityId"));
-                    if (activity != null) { // it may have been deleted
-                        activity.getAttributeGroups().add(attributeGroups.get(groupId));
-                    }
-
-                }
-            });
-        }
+//
+//        public Promise<Void> loadIndicators() {
+//            SqlQuery query = SqlQuery.select("indicatorId",
+//                    "name",
+//                    "type",
+//                    "expression",
+//                    "skipExpression",
+//                    "nameInExpression",
+//                    "calculatedAutomatically",
+//                    "category",
+//                    "listHeader",
+//                    "description",
+//                    "aggregation",
+//                    "units",
+//                    "activityId",
+//                    "sortOrder",
+//                    "mandatory").from("indicator").orderBy("SortOrder");
+//
+//            if (context.isRemote()) {
+//                query.where("DateDeleted IS NULL");
+//                query.where("activityId")
+//                     .in(SqlQuery.select("ActivityId").from("activity").where("databaseId").in(databaseMap.keySet()));
+//
+//            }
+//
+//            return execute(query, new RowHandler() {
+//
+//                @Override
+//                public void handleRow(SqlResultSetRow rs) {
+//                    IndicatorDTO indicator = new IndicatorDTO();
+//                    indicator.setId(rs.getInt("indicatorId"));
+//                    indicator.setName(rs.getString("name"));
+//                    indicator.setTypeId(rs.getString("type"));
+//                    indicator.setExpression(rs.getString("expression"));
+//                    indicator.setSkipExpression(rs.getString("skipExpression"));
+//                    indicator.setNameInExpression(rs.getString("nameInExpression"));
+//                    indicator.setCalculatedAutomatically(rs.getBoolean("calculatedAutomatically"));
+//                    indicator.setCategory(rs.getString("category"));
+//                    indicator.setListHeader(rs.getString("listHeader"));
+//                    indicator.setDescription(rs.getString("description"));
+//                    indicator.setAggregation(rs.getInt("aggregation"));
+//                    indicator.setUnits(rs.getString("units"));
+//                    indicator.setMandatory(rs.getBoolean("mandatory"));
+//                    indicator.setSortOrder(rs.getInt("sortOrder"));
+//
+//                    int activityId = rs.getInt("activityId");
+//                    ActivityFormDTO activity = activities.get(activityId);
+//                    if (activity != null) { // it may have been deleted
+//                        activity.getIndicators().add(indicator);
+//                    }
+//                }
+//            });
+//        }
+//
+//        public Promise<Void> loadAttributeGroups() {
+//            SqlQuery query = SqlQuery.select()
+//                                     .appendColumn("AttributeGroupId", "id")
+//                                     .appendColumn("Name", "name")
+//                                     .appendColumn("multipleAllowed")
+//                                     .appendColumn("mandatory")
+//                                     .appendColumn("defaultValue")
+//                                     .appendColumn("workflow")
+//                                     .appendColumn("sortOrder")
+//                                     .from("attributegroup")
+//                                     .orderBy("SortOrder");
+//
+//            if (context.isRemote()) {
+//                query.where("DateDeleted IS NULL");
+//                query.where("AttributeGroupId")
+//                     .in(SqlQuery.select("AttributeGroupId")
+//                                 .from("attributegroupinactivity")
+//                                 .where("ActivityId")
+//                                 .in(SqlQuery.select("ActivityId")
+//                                             .from("activity")
+//                                             .where("databaseId")
+//                                             .in(databaseMap.keySet())));
+//
+//            }
+//
+//            return execute(query, new RowHandler() {
+//
+//                @Override
+//                public void handleRow(SqlResultSetRow rs) {
+//
+//                    AttributeGroupDTO group = new AttributeGroupDTO();
+//                    group.setId(rs.getInt("id"));
+//                    group.setName(rs.getString("name"));
+//                    group.setMultipleAllowed(rs.getBoolean("multipleAllowed"));
+//                    group.setMandatory(rs.getBoolean("mandatory"));
+//                    group.setSortOrder(rs.getInt("sortOrder"));
+//                    if (!rs.isNull("defaultValue")) { // if null it throws NPE
+//                        group.setDefaultValue(rs.getInt("defaultValue"));
+//                    }
+//                    group.setWorkflow(rs.getBoolean("workflow"));
+//
+//                    attributeGroups.put(group.getId(), group);
+//                }
+//            });
+//        }
+//
+//        public Promise<Void> loadAttributes() {
+//            SqlQuery query = SqlQuery.select("attributeId", "name", "attributeGroupId")
+//                                     .from("attribute")
+//                                     .orderBy("SortOrder");
+//
+//            if (context.isRemote()) {
+//                query.where("DateDeleted IS NULL");
+//                query.where("AttributeGroupId")
+//                     .in(SqlQuery.select("AttributeGroupId")
+//                                 .from("attributegroupinactivity")
+//                                 .where("ActivityId")
+//                                 .in(SqlQuery.select("ActivityId")
+//                                             .from("activity")
+//                                             .where("databaseId")
+//                                             .in(databaseMap.keySet())));
+//
+//            }
+//
+//            return execute(query, new RowHandler() {
+//
+//                @Override
+//                public void handleRow(SqlResultSetRow row) {
+//
+//                    AttributeDTO attribute = new AttributeDTO();
+//                    attribute.setId(row.getInt("attributeId"));
+//                    attribute.setName(row.getString("name"));
+//
+//                    int groupId = row.getInt("attributeGroupId");
+//                    AttributeGroupDTO group = attributeGroups.get(groupId);
+//                    if (group != null) {
+//                        group.getAttributes().add(attribute);
+//                    }
+//                }
+//            });
+//        }
+//
+//        public Promise<Void> joinAttributesToActivities() {
+//            SqlQuery query = SqlQuery.select("J.activityId", "J.attributeGroupId")
+//                                     .from("attributegroupinactivity J " +
+//                                           "INNER JOIN attributegroup G ON (J.attributeGroupId = G.attributeGroupId)")
+//                                     .orderBy("G.SortOrder")
+//                                     .where("G.dateDeleted")
+//                                     .isNull();
+//
+//            if (context.isRemote()) {
+//                query.where("ActivityId")
+//                     .in(SqlQuery.select("ActivityId").from("activity").where("databaseId").in(databaseMap.keySet()));
+//
+//            }
+//
+//            return execute(query, new RowHandler() {
+//                @Override
+//                public void handleRow(SqlResultSetRow row) {
+//
+//                    int groupId = row.getInt("attributeGroupId");
+//
+//                    ActivityFormDTO activity = activities.get(row.getInt("activityId"));
+//                    if (activity != null) { // it may have been deleted
+//                        activity.getAttributeGroups().add(attributeGroups.get(groupId));
+//                    }
+//
+//                }
+//            });
+//        }
 
         private Promise<Void> execute(SqlQuery query, final RowHandler rowHandler) {
             final Promise<Void> promise = new Promise<>();

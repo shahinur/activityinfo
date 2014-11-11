@@ -7,6 +7,7 @@ import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.reports.content.BubbleMapMarker;
 import org.activityinfo.legacy.shared.reports.content.MapMarker;

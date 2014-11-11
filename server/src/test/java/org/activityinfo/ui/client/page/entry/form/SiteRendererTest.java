@@ -1,6 +1,6 @@
 package org.activityinfo.ui.client.page.entry.form;
 
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.type.FieldTypeClass;
@@ -44,7 +44,7 @@ public class SiteRendererTest {
         indicator3.setCategory("Second group");
 
 
-        ActivityDTO activity = new ActivityDTO();
+        ActivityFormDTO activity = new ActivityFormDTO();
         activity.setId(1);
         activity.getIndicators().add(indicator1);
         activity.getIndicators().add(indicator2);

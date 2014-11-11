@@ -86,7 +86,7 @@ public class FormResourceTest extends CommandTestCase2 {
     }
 
 
-    @Test @OnDataSet("/dbunit/sites-simple.db.xml")
+    @Test @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void current() throws IOException {
 
     }

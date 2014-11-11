@@ -6,10 +6,10 @@ import com.bedatadriven.rebar.sql.client.util.SingleRowHandler;
 import com.google.common.base.Strings;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.shared.adapter.ActivityFormClassBuilder;
+import org.activityinfo.legacy.shared.command.GetActivityForm;
 import org.activityinfo.legacy.shared.command.GetFormClass;
-import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.FormClassResult;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resources;
@@ -38,17 +38,17 @@ public class GetFormClassHandlerAsync implements CommandHandlerAsync<GetFormClas
     }
 
     private void constructFromLegacy(final int activityId, ExecutionContext context, final AsyncCallback<FormClassResult> callback) {
-        context.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+        context.execute(new GetActivityForm(activityId), new AsyncCallback<ActivityFormDTO>() {
             @Override
             public void onFailure(Throwable caught) {
                 callback.onFailure(caught);
             }
 
             @Override
-            public void onSuccess(SchemaDTO result) {
+            public void onSuccess(ActivityFormDTO result) {
                 String json;
                 try {
-                    ActivityFormClassBuilder builder = new ActivityFormClassBuilder(result.getActivityById(activityId));
+                    ActivityFormClassBuilder builder = new ActivityFormClassBuilder(result);
                     FormClass formClass = builder.build();
                     json = Resources.toJson(formClass.asResource());
                 } catch (Exception e) {

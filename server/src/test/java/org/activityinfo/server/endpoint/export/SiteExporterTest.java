@@ -32,19 +32,19 @@ public class SiteExporterTest {
         syli.setName("SYLI");
         syli.setCountry(somalia);
 
-        ActivityDTO activity = new ActivityDTO();
+        ActivityFormDTO activity = new ActivityFormDTO();
         activity.setId(1);
         activity.setDatabase(syli);
         activity.setName("Construction/Rehabilitation of Sec. Schools");
         activity.setLocationType(locationType);
 
-        ActivityDTO activity2 = new ActivityDTO();
+        ActivityFormDTO activity2 = new ActivityFormDTO();
         activity2.setId(2);
         activity2.setDatabase(syli);
         activity2.setName("Construction/Rehabilitation of Primary Schools");
         activity2.setLocationType(locationType);
 
-        ActivityDTO activity3 = new ActivityDTO();
+        ActivityFormDTO activity3 = new ActivityFormDTO();
         activity3.setId(3);
         activity3.setDatabase(syli);
         activity3.setName("Construction Rehabil (2)");

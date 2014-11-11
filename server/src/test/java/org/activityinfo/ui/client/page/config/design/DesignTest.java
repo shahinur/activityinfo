@@ -25,6 +25,7 @@ package org.activityinfo.ui.client.page.config.design;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.TreeStore;
+import com.google.gwt.junit.GWTMockUtilities;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.client.state.StateManagerStub;
 import org.activityinfo.legacy.shared.command.CreateEntity;
@@ -33,6 +34,7 @@ import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
+import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.DTOs;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
@@ -82,8 +84,7 @@ public class DesignTest {
         // Verify that following a change to the record, a save call
         // triggers an update command
 
-        ActivityDTO activity = (ActivityDTO) ((TreeStore) designer.getStore())
-                .getRootItems().get(0);
+        ActivityDTO activity = (ActivityDTO) ((TreeStore) designer.getStore()).getRootItems().get(0);
         Record record = designer.getStore().getRecord(activity);
 
         record.set("name", "New Name");
@@ -127,8 +128,7 @@ public class DesignTest {
         // Verify that following a change to the record, a save call
         // triggers an update command
 
-        ActivityDTO activity = (ActivityDTO) ((TreeStore) designer.getStore())
-                .getRootItems().get(0);
+        ActivityDTO activity = (ActivityDTO) ((TreeStore) designer.getStore()).getRootItems().get(0);
         Record record = designer.getStore().getRecord(activity);
 
         record.set("name", "New Name");
@@ -249,6 +249,8 @@ public class DesignTest {
 
     @Test
     public void testNewActivityComesWithFolders() {
+
+        GWTMockUtilities.disarm();
 
         // Test data
         SchemaDTO schema = DTOs.pear();

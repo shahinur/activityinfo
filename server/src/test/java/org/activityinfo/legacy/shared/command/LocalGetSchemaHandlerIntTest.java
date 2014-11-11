@@ -23,7 +23,7 @@ package org.activityinfo.legacy.shared.command;
  */
 
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
@@ -78,7 +78,7 @@ public class LocalGetSchemaHandlerIntTest extends LocalHandlerTestCase {
         assertThat(pearDb.isEditAllowed(), equalTo(false));
         assertThat(pearDb.isEditAllAllowed(), equalTo(true));
 
-        ActivityDTO activity = schema.getActivityById(1);
+        ActivityFormDTO activity = executeLocally(new GetActivityForm(1));
         assertThat(activity.getAttributeGroups().size(), equalTo(3));
 
         AttributeGroupDTO group = activity.getAttributeGroupById(1);

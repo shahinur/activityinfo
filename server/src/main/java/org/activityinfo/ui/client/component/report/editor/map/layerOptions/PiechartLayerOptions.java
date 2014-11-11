@@ -38,6 +38,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.EditorGrid;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -45,15 +47,25 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.result.BatchResult;
+import org.activityinfo.legacy.shared.command.result.Bucket;
+import org.activityinfo.legacy.shared.command.result.CommandResult;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
+import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.reports.content.EntityCategory;
+import org.activityinfo.legacy.shared.reports.model.Dimension;
 import org.activityinfo.legacy.shared.reports.model.layers.PiechartMapLayer;
 import org.activityinfo.legacy.shared.reports.model.layers.PiechartMapLayer.Slice;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.page.common.columns.EditColorColumn;
 import org.activityinfo.ui.client.page.common.columns.ReadTextColumn;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Displays a list of options to configure a PiechartMapLayer
@@ -61,7 +73,6 @@ import java.util.List;
 public class PiechartLayerOptions extends LayoutContainer implements LayerOptionsWidget<PiechartMapLayer> {
     private Dispatcher service;
     private PiechartMapLayer piechartMapLayer;
-    private SchemaDTO schema;
     private EditorGrid<NamedSlice> indicatorOptionGrid;
     private ListStore<NamedSlice> indicatorsStore = new ListStore<NamedSlice>();
     private SliderField sliderfieldMinSize;
@@ -72,6 +83,7 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
     private Timer timerMaxSlider;
     private FormData formData = new FormData("5");
     private FormPanel panel = new FormPanel();
+    private Map<Integer, String> indicatorLabels;
 
     public PiechartLayerOptions(Dispatcher service) {
         super();
@@ -182,16 +194,40 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
     }
 
     private void loadData() {
-        service.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
-            @Override
-            public void onFailure(Throwable caught) {
-                // TODO Auto-generated method stub
-            }
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Indicator, piechartMapLayer.getIndicatorIds());
 
+        PivotSites query = new PivotSites();
+        query.setFilter(filter);
+        final Dimension formDimension = new Dimension(DimensionType.Activity);
+        query.setDimensions(formDimension);
+        query.setValueType(PivotSites.ValueType.DIMENSION);
+
+        service.execute(query)
+        .join(new Function<PivotSites.PivotResult, Promise<BatchResult>>() {
             @Override
-            public void onSuccess(SchemaDTO result) {
-                schema = result;
+            public Promise<BatchResult> apply(PivotSites.PivotResult input) {
+                BatchCommand batchFetch = new BatchCommand();
+                for (Bucket bucket : input.getBuckets()) {
+                    EntityCategory activity = (EntityCategory) bucket.getCategory(formDimension);
+                    batchFetch.add(new GetActivityForm(activity.getId()));
+                }
+                return service.execute(batchFetch);
+            }
+        })
+        .then(new Function<BatchResult, Void>() {
+            @Nullable
+            @Override
+            public Void apply(@Nullable BatchResult input) {
+                indicatorLabels = Maps.newHashMap();
+                for(CommandResult result : input.getResults()) {
+                    ActivityFormDTO form = (ActivityFormDTO) result;
+                    for(IndicatorDTO indicator : form.getIndicators()) {
+                        indicatorLabels.put(indicator.getId(), indicator.getName());
+                    }
+                }
                 populateColorPickerWidget();
+                return null;
             }
         });
     }
@@ -202,7 +238,7 @@ public class PiechartLayerOptions extends LayoutContainer implements LayerOption
             piechartMapLayer.getIndicatorIds() != null &&
             piechartMapLayer.getIndicatorIds().size() > 0) {
             for (Slice slice : piechartMapLayer.getSlices()) {
-                String name = schema.getIndicatorById(slice.getIndicatorId()).getName();
+                String name = indicatorLabels.get(slice.getIndicatorId());
                 indicatorsStore.add(new NamedSlice(slice.getColor(), slice.getIndicatorId(), name, slice));
             }
         }

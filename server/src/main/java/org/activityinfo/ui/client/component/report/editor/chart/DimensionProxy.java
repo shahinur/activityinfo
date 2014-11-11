@@ -29,13 +29,16 @@ import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.command.DimensionType;
-import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.result.AdminLevelResult;
+import org.activityinfo.legacy.shared.command.result.AttributeGroupResult;
 import org.activityinfo.legacy.shared.model.AdminLevelDTO;
+import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
 import org.activityinfo.legacy.shared.model.CountryDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.reports.model.DateUnit;
 import org.activityinfo.legacy.shared.reports.model.PivotChartReportElement;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.report.editor.pivotTable.DimensionModel;
 
 import java.util.List;
@@ -71,33 +74,10 @@ public class DimensionProxy extends RpcProxy<ListLoadResult<DimensionModel>> {
         list.add(new DimensionModel(DimensionType.Location, I18N.CONSTANTS.location()));
 
         if (model.getIndicators().isEmpty()) {
-            callback.onSuccess(new BaseListLoadResult<DimensionModel>(list));
+            callback.onSuccess(new BaseListLoadResult<>(list));
+
         } else {
-            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
-                @Override
-                public void onFailure(Throwable caught) {
-                    callback.onFailure(caught);
-                }
-
-                @Override
-                public void onSuccess(SchemaDTO schema) {
-                    addGeographicDimensions(list, schema);
-                    list.addAll(DimensionModel.attributeGroupModels(schema, model.getIndicators()));
-                    callback.onSuccess(new BaseListLoadResult<DimensionModel>(list));
-                }
-            });
-        }
-    }
-
-    private void addGeographicDimensions(final List<DimensionModel> list, SchemaDTO schema) {
-        Set<CountryDTO> countries = schema.getCountriesForIndicators(model.getIndicators());
-
-        if (countries.size() == 1) {
-            CountryDTO country = countries.iterator().next();
-            for (AdminLevelDTO level : country.getAdminLevels()) {
-                list.add(new DimensionModel(level));
-            }
         }
     }
 

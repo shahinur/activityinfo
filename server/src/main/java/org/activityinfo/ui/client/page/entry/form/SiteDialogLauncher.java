@@ -30,10 +30,7 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.DimensionType;
-import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.GetActivity;
-import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -56,38 +53,55 @@ public class SiteDialogLauncher {
 
     public void addSite(final Filter filter, final SiteDialogCallback callback) {
         if (filter.isDimensionRestrictedToSingleCategory(DimensionType.Activity)) {
-            int activityId = filter.getRestrictedCategory(DimensionType.Activity);
+            final int activityId = filter.getRestrictedCategory(DimensionType.Activity);
 
-            dispatcher.execute(new GetActivity(activityId), new AsyncCallback<ActivityDTO>() {
+            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    Log.error("Unable to add site", caught);
+                    showError(caught);
                 }
 
                 @Override
-                public void onSuccess(ActivityDTO activity) {
+                public void onSuccess(SchemaDTO schema) {
+                    ActivityDTO activity = schema.getActivityById(activityId);
                     Log.trace("adding site for activity " + activity + ", locationType = " + activity.getLocationType());
 
                     if (!activity.getClassicView()) {// modern view
-                        final ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(activity.getResourceId());
-                        FormInstance newInstance = new FormInstance(instanceId, activity.getResourceId());
+                        final ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(activity.getFormClassId());
+                        FormInstance newInstance = new FormInstance(instanceId, activity.getFormClassId());
                         showModernFormDialog(activity, newInstance, callback);
                         return;
                     }
+                    dispatcher.execute(new GetActivityForm(activityId)).then(new AsyncCallback<ActivityFormDTO>() {
+                        @Override
+                        public void onFailure(Throwable caught) {
+                            showError(caught);
+                        }
 
-                    if (activity.getLocationType().isAdminLevel()) {
-                        addNewSiteWithBoundLocation(activity, callback);
+                        @Override
+                        public void onSuccess(ActivityFormDTO activity) {
 
-                    } else if (activity.getLocationType().isNationwide()) {
-                        addNewSiteWithNoLocation(activity, callback);
+                            if (activity.getLocationType().isAdminLevel()) {
+                                addNewSiteWithBoundLocation(activity, callback);
 
-                    } else {
-                        chooseLocationThenAddSite(activity, callback);
-                    }
+                            } else if (activity.getLocationType().isNationwide()) {
+                                addNewSiteWithNoLocation(activity, callback);
+
+                            } else {
+                                chooseLocationThenAddSite(activity, callback);
+                            }
+                        }
+                    });
+
                 }
             });
         }
+    }
+
+    private void showError(Throwable caught) {
+        MessageBox.alert(I18N.CONSTANTS.serverError(), I18N.CONSTANTS.errorUnexpectedOccured(), null);
+        Log.error("Error launching site dialog", caught);
     }
 
     private void showModernFormDialog(ActivityDTO activity, FormInstance instance, final SiteDialogCallback callback) {
@@ -107,6 +121,7 @@ public class SiteDialogLauncher {
 
             @Override
             public void onFailure(Throwable caught) {
+                showError(caught);
             }
 
             @Override
@@ -127,7 +142,7 @@ public class SiteDialogLauncher {
                 // check whether the site has been locked
                 // (this only applies to Once-reported activities because
                 //  otherwise the date criteria applies to the monthly report)
-                if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
+                if (activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE) {
                     LockedPeriodSet locks = new LockedPeriodSet(schema);
                     if (locks.isLocked(site)) {
                         MessageBox.alert(I18N.CONSTANTS.lockedSiteTitle(), I18N.CONSTANTS.siteIsLocked(), null);
@@ -135,13 +150,23 @@ public class SiteDialogLauncher {
                     }
                 }
 
-                SiteDialog dialog = new SiteDialog(dispatcher, activity);
-                dialog.showExisting(site, callback);
+                dispatcher.execute(new GetActivityForm(activity.getId())).then(new AsyncCallback<ActivityFormDTO>() {
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        showError(caught);
+                    }
+
+                    @Override
+                    public void onSuccess(ActivityFormDTO result) {
+                        SiteDialog dialog = new SiteDialog(dispatcher, result);
+                        dialog.showExisting(site, callback);
+                    }
+                });
             }
         });
     }
 
-    private void chooseLocationThenAddSite(final ActivityDTO activity, final SiteDialogCallback callback) {
+    private void chooseLocationThenAddSite(final ActivityFormDTO activity, final SiteDialogCallback callback) {
         LocationDialog dialog = new LocationDialog(dispatcher,
                 activity.getLocationType());
 
@@ -159,7 +184,7 @@ public class SiteDialogLauncher {
         });
     }
 
-    private void addNewSiteWithBoundLocation(ActivityDTO activity, SiteDialogCallback callback) {
+    private void addNewSiteWithBoundLocation(ActivityFormDTO activity, SiteDialogCallback callback) {
         SiteDTO newSite = new SiteDTO();
         newSite.setActivityId(activity.getId());
 
@@ -171,7 +196,7 @@ public class SiteDialogLauncher {
         dialog.showNew(newSite, location, true, callback);
     }
 
-    private void addNewSiteWithNoLocation(ActivityDTO activity, SiteDialogCallback callback) {
+    private void addNewSiteWithNoLocation(ActivityFormDTO activity, SiteDialogCallback callback) {
         SiteDTO newSite = new SiteDTO();
         newSite.setActivityId(activity.getId());
 

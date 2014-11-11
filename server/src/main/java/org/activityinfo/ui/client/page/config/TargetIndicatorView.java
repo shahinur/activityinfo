@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.TargetValueDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.ui.client.page.common.grid.AbstractEditorTreeGridView;
@@ -99,7 +99,7 @@ public class TargetIndicatorView extends AbstractEditorTreeGridView<ModelData, T
             @Override
             public AbstractImagePrototype getIcon(ModelData model) {
 
-                if (model instanceof ActivityDTO) {
+                if (model instanceof ActivityFormDTO) {
                     return IconImageBundle.ICONS.activity();
                 } else if (model instanceof TargetValueDTO) {
                     return IconImageBundle.ICONS.indicator();

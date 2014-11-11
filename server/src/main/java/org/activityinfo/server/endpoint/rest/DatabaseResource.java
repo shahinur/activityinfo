@@ -4,7 +4,7 @@ import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.UpdateFormClass;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.DTOViews;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
@@ -50,14 +50,13 @@ public class DatabaseResource {
 
     @GET
     @Path("schema.csv")
-    public Response getDatabaseSchemaCsv(@PathParam("id") int id) {
-        UserDatabaseDTO db = getSchema();
-        SchemaCsvWriter writer = new SchemaCsvWriter();
-        writer.write(db);
+    public Response getDatabaseSchemaCsv() {
+        SchemaCsvWriter writer = new SchemaCsvWriter(dispatcher);
+        writer.write(databaseId);
 
         return Response.ok()
                 .type("text/css")
-                .header("Content-Disposition", "attachment; filename=schema_" + id + ".csv")
+                .header("Content-Disposition", "attachment; filename=schema_" + databaseId + ".csv")
                 .entity(writer.toString())
                 .build();
     }
@@ -71,7 +70,7 @@ public class DatabaseResource {
         UserDatabaseDTO schema = getSchema();
         LocationTypeDTO locationType = schema.getCountry().getNullLocationType();
 
-        ActivityDTO activityDTO = new ActivityDTO();
+        ActivityFormDTO activityDTO = new ActivityFormDTO();
         activityDTO.setName(xForm.getHead().getTitle());
         activityDTO.set("databaseId", databaseId);
         activityDTO.set("locationTypeId", locationType.getId());

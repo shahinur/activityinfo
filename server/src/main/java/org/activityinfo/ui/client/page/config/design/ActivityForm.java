@@ -38,7 +38,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.ui.Anchor;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.legacy.shared.model.Published;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
@@ -73,13 +73,13 @@ class ActivityForm extends AbstractDesignForm {
         TextField<String> nameField = new TextField<String>();
         nameField.setAllowBlank(false);
         nameField.setFieldLabel(I18N.CONSTANTS.name());
-        nameField.setMaxLength(ActivityDTO.NAME_MAX_LENGTH);
+        nameField.setMaxLength(ActivityFormDTO.NAME_MAX_LENGTH);
         binding.addFieldBinding(new OnlyValidFieldBinding(nameField, "name"));
         this.add(nameField);
 
         TextField<String> categoryField = new TextField<String>();
         categoryField.setFieldLabel(I18N.CONSTANTS.category());
-        categoryField.setMaxLength(ActivityDTO.CATEGORY_MAX_LENGTH);
+        categoryField.setMaxLength(ActivityFormDTO.CATEGORY_MAX_LENGTH);
         binding.addFieldBinding(new OnlyValidFieldBinding(categoryField, "category"));
         add(categoryField);
 
@@ -96,8 +96,8 @@ class ActivityForm extends AbstractDesignForm {
         final MappingComboBox frequencyCombo = new MappingComboBox();
         frequencyCombo.setAllowBlank(false);
         frequencyCombo.setFieldLabel(I18N.CONSTANTS.reportingFrequency());
-        frequencyCombo.add(ActivityDTO.REPORT_ONCE, I18N.CONSTANTS.reportOnce());
-        frequencyCombo.add(ActivityDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
+        frequencyCombo.add(ActivityFormDTO.REPORT_ONCE, I18N.CONSTANTS.reportOnce());
+        frequencyCombo.add(ActivityFormDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
         binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo, "reportingFrequency"));
         this.add(frequencyCombo);
 

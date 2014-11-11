@@ -25,7 +25,7 @@ package org.activityinfo.server.command;
 import com.google.common.collect.Maps;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.fixtures.InjectionSupport;
@@ -65,9 +65,9 @@ public class LocalSchemaChangeTest extends LocalHandlerTestCase {
 
         synchronize();
 
-        SchemaDTO schema = executeLocally(new GetSchema());
+        ActivityFormDTO form = executeLocally(new GetActivityForm(3));
 
-        assertThat(schema.getIndicatorById(5).getName(), equalTo("New Name"));
+        assertThat(form.getIndicatorById(5).getName(), equalTo("New Name"));
     }
 
     @Test
@@ -77,7 +77,7 @@ public class LocalSchemaChangeTest extends LocalHandlerTestCase {
 
         SchemaDTO schema = executeLocally(new GetSchema());
 
-        ActivityDTO activity = new ActivityDTO();
+        ActivityFormDTO activity = new ActivityFormDTO();
         activity.setName("New Activity");
         activity.setReportingFrequency(0);
         activity.setLocationType(schema.getLocationTypeById(1));
@@ -87,10 +87,7 @@ public class LocalSchemaChangeTest extends LocalHandlerTestCase {
 
         synchronize();
 
-        schema = executeLocally(new GetSchema());
-
-        ActivityDTO createdActivity = schema.getActivityById(createResult
-                .getNewId());
+        ActivityFormDTO createdActivity = executeLocally(new GetActivityForm(createResult.getNewId()));
 
         assertThat(createdActivity, is(not(nullValue())));
         assertThat(createdActivity.getName(), equalTo(activity.getName()));
@@ -108,15 +105,13 @@ public class LocalSchemaChangeTest extends LocalHandlerTestCase {
         indicator.put("units", "bricks");
         indicator.put("activityId", 2);
 
-        CreateResult createResult = executeRemotely(new CreateEntity(
-                "Indicator", indicator));
+        CreateResult createResult = executeRemotely(new CreateEntity("Indicator", indicator));
 
         synchronize();
 
-        schema = executeLocally(new GetSchema());
+        ActivityFormDTO form = executeLocally(new GetActivityForm(2));
 
-        IndicatorDTO createdIndicator = schema.getIndicatorById(createResult
-                .getNewId());
+        IndicatorDTO createdIndicator = form.getIndicatorById(createResult.getNewId());
 
         assertThat(createdIndicator, is(not(nullValue())));
         assertThat(createdIndicator.getName(), equalTo("New Indicator"));

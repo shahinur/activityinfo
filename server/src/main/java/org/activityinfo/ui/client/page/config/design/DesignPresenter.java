@@ -151,7 +151,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             public void handleEvent(BaseEvent be) {
 
                 ModelData sel = DesignPresenter.this.view.getSelection();
-                ActivityDTO activity = DesignPresenter.this.getSelectedActivity(sel);
+                ActivityFormDTO activity = DesignPresenter.this.getSelectedActivity(sel);
 
                 DesignPresenter.this.view.getNewAttributeGroup().setEnabled(sel != null && activity.getClassicView());
                 DesignPresenter.this.view.getNewAttribute().setEnabled((sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) && activity.getClassicView());
@@ -196,27 +196,27 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             AttributeGroupFolder attributeFolder = new AttributeGroupFolder(messages.attributes());
             treeStore.add(activityNode, attributeFolder, false);
 
-            for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-                if (group != null) {
-                    AttributeGroupDTO groupNode = new AttributeGroupDTO(group);
-                    treeStore.add(attributeFolder, groupNode, false);
-
-                    for (AttributeDTO attribute : group.getAttributes()) {
-                        AttributeDTO attributeNode = new AttributeDTO(attribute);
-                        treeStore.add(groupNode, attributeNode, false);
-                    }
-                }
-            }
-
-            IndicatorFolder indicatorFolder = new IndicatorFolder(messages.indicators());
-            treeStore.add(activityNode, indicatorFolder, false);
-
-            for (IndicatorGroup group : activity.groupIndicators()) {
-                for (IndicatorDTO indicator : group.getIndicators()) {
-                    IndicatorDTO indicatorNode = new IndicatorDTO(indicator);
-                    treeStore.add(indicatorFolder, indicatorNode, false);
-                }
-            }
+//            for (AttributeGroupDTO group : activity.getAttributeGroups()) {
+//                if (group != null) {
+//                    AttributeGroupDTO groupNode = new AttributeGroupDTO(group);
+//                    treeStore.add(attributeFolder, groupNode, false);
+//
+//                    for (AttributeDTO attribute : group.getAttributes()) {
+//                        AttributeDTO attributeNode = new AttributeDTO(attribute);
+//                        treeStore.add(groupNode, attributeNode, false);
+//                    }
+//                }
+//            }
+//
+//            IndicatorFolder indicatorFolder = new IndicatorFolder(messages.indicators());
+//            treeStore.add(activityNode, indicatorFolder, false);
+//
+//            for (IndicatorGroup group : activity.groupIndicators()) {
+//                for (IndicatorDTO indicator : group.getIndicators()) {
+//                    IndicatorDTO indicatorNode = new IndicatorDTO(indicator);
+//                    treeStore.add(indicatorFolder, indicatorNode, false);
+//                }
+//            }
         }
 
         for(LocationTypeDTO locationType : db.getCountry().getLocationTypes()) {
@@ -311,7 +311,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             parent = null;
 
         } else if ("AttributeGroup".equals(entityName)) {
-            ActivityDTO activity = findActivityFolder(selected);
+            ActivityFormDTO activity = findActivityFolder(selected);
 
             newEntity = new AttributeGroupDTO();
             newEntity.set("activityId", activity.getId());
@@ -326,7 +326,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             parent = group;
 
         } else if ("Indicator".equals(entityName)) {
-            ActivityDTO activity = findActivityFolder(selected);
+            ActivityFormDTO activity = findActivityFolder(selected);
 
             IndicatorDTO newIndicator = new IndicatorDTO();
             newIndicator.setAggregation(IndicatorDTO.AGGREGATE_SUM);
@@ -345,7 +345,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     }
 
     private void createNewActivity(NewFormDialog newFormDialog) {
-        final ActivityDTO newActivity = new ActivityDTO(db);
+        final ActivityFormDTO newActivity = new ActivityFormDTO(db);
         newActivity.set("databaseId", db.getId());
         newActivity.setName(newFormDialog.getName());
         newActivity.setCategory(newFormDialog.getCategory());
@@ -354,14 +354,14 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
             newActivity.setClassicView(true);
             newActivity.setReportingFrequency(newFormDialog.getViewType() == NewFormDialog.ViewType.CLASSIC ?
-                    ActivityDTO.REPORT_ONCE : ActivityDTO.REPORT_MONTHLY);
+                    ActivityFormDTO.REPORT_ONCE : ActivityFormDTO.REPORT_MONTHLY);
 
             createEntity(null, newActivity);
             return;
         } else if (newFormDialog.getViewType() == NewFormDialog.ViewType.NEW_FORM_DESIGNER) {
 
             newActivity.setClassicView(false);
-            newActivity.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+            newActivity.setReportingFrequency(ActivityFormDTO.REPORT_ONCE);
             newActivity.setLocationType(newActivityLocationTypeForModernView());
 
             service.execute(new CreateEntity(newActivity), new SuccessCallback<CreateResult>() {
@@ -417,7 +417,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                             treeStore.add(parent, newEntity, false);
                         }
 
-                        if (newEntity instanceof ActivityDTO) {
+                        if (newEntity instanceof ActivityFormDTO) {
                             treeStore.add(newEntity, new AttributeGroupFolder(messages.attributes()), false);
                             treeStore.add(newEntity, new IndicatorFolder(messages.indicators()), false);
                         }
@@ -432,13 +432,13 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         });
     }
 
-    protected ActivityDTO findActivityFolder(ModelData selected) {
+    protected ActivityFormDTO findActivityFolder(ModelData selected) {
 
-        while (!(selected instanceof ActivityDTO)) {
+        while (!(selected instanceof ActivityFormDTO)) {
             selected = treeStore.getParent(selected);
         }
 
-        return (ActivityDTO) selected;
+        return (ActivityFormDTO) selected;
     }
 
     protected AttributeGroupDTO findAttributeGroupNode(ModelData selected) {
@@ -504,13 +504,13 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     }
 
     private boolean canEditWithFormDesigner(ModelData selectedItem) {
-        ActivityDTO activity = getSelectedActivity(selectedItem);
-        return activity != null && activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE;
+        ActivityFormDTO activity = getSelectedActivity(selectedItem);
+        return activity != null && activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE;
     }
 
-    private ActivityDTO getSelectedActivity(ModelData selectedItem) {
-        if (selectedItem instanceof ActivityDTO) {
-            return (ActivityDTO) selectedItem;
+    private ActivityFormDTO getSelectedActivity(ModelData selectedItem) {
+        if (selectedItem instanceof ActivityFormDTO) {
+            return (ActivityFormDTO) selectedItem;
         } else if (selectedItem instanceof AttributeGroupFolder ||
                 selectedItem instanceof IndicatorFolder ||
                 selectedItem instanceof IndicatorDTO ||

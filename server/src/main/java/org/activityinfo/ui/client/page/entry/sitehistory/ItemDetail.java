@@ -24,12 +24,7 @@ package org.activityinfo.ui.client.page.entry.sitehistory;
 
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.shared.command.Month;
-import org.activityinfo.legacy.shared.model.AttributeDTO;
-import org.activityinfo.legacy.shared.model.IndicatorDTO;
-import org.activityinfo.legacy.shared.model.LocationDTO;
-import org.activityinfo.legacy.shared.model.PartnerDTO;
-import org.activityinfo.legacy.shared.model.ProjectDTO;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.model.*;
 
 import java.util.Map;
 
@@ -40,7 +35,7 @@ class ItemDetail {
         ItemDetail d = new ItemDetail();
 
         Map<String, Object> state = ctx.getState();
-        SchemaDTO schema = ctx.getSchema();
+        ActivityFormDTO form = ctx.getForm();
 
         String key = entry.getKey();
         final Object oldValue = state.get(key);
@@ -73,23 +68,23 @@ class ItemDetail {
         } else if (key.equals("projectId")) {
             String oldName = null;
             if (oldValue != null) {
-                ProjectDTO project = schema.getProjectById(toInt(oldValue));
+                ProjectDTO project = form.getProjectById(toInt(oldValue));
                 if (project != null) {
                     oldName = project.getName();
                 }
             }
-            String newName = schema.getProjectById(toInt(newValue)).getName();
+            String newName = form.getProjectById(toInt(newValue)).getName();
             addValues(sb, I18N.CONSTANTS.project(), oldName, newName);
 
         } else if (key.equals("partnerId")) {
             String oldName = null;
             if (oldValue != null) {
-                PartnerDTO oldPartner = schema.getPartnerById(toInt(oldValue));
+                PartnerDTO oldPartner = form.getPartnerById(toInt(oldValue));
                 if (oldPartner != null) {
                     oldName = oldPartner.getName();
                 }
             }
-            PartnerDTO newPartner = schema.getPartnerById(toInt(newValue));
+            PartnerDTO newPartner = form.getPartnerById(toInt(newValue));
             if (newPartner != null) {
                 String newName = newPartner.getName();
                 addValues(sb, I18N.CONSTANTS.partner(), oldName, newName);
@@ -98,7 +93,7 @@ class ItemDetail {
         } else if (key.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
             // custom
             int id = IndicatorDTO.indicatorIdForPropertyName(key);
-            IndicatorDTO dto = schema.getIndicatorById(id);
+            IndicatorDTO dto = form.getIndicatorById(id);
             if (dto != null) {
                 String name = dto.getName();
 
@@ -112,7 +107,7 @@ class ItemDetail {
 
         } else if (key.startsWith(AttributeDTO.PROPERTY_PREFIX)) {
             int id = AttributeDTO.idForPropertyName(key);
-            AttributeDTO dto = schema.getAttributeById(id);
+            AttributeDTO dto = form.getAttributeById(id);
             if (dto != null) {
                 if (Boolean.parseBoolean(newValue.toString())) {
                     sb.append(I18N.MESSAGES.siteHistoryAttrAdd(dto.getName()));

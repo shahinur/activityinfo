@@ -22,11 +22,11 @@ public class SiteProjector implements Function<ListResult<SiteDTO>, List<Project
     private final List<ProjectionUpdater<AttributeDTO>> attributeProjectors = Lists.newArrayList();
     private final List<ProjectionUpdater<ProjectDTO>> projectProjectors = Lists.newArrayList();
 
-    private final SchemaDTO schemaDTO;
+    private final ActivityFormDTO activity;
     private final Criteria criteria;
 
-    public SiteProjector(SchemaDTO schemaDTO, Criteria criteria, List<FieldPath> fields) {
-        this.schemaDTO = schemaDTO;
+    public SiteProjector(ActivityFormDTO activity, Criteria criteria, List<FieldPath> fields) {
+        this.activity = activity;
         this.criteria = criteria;
         locationProjectors = LocationProjector.createLocationUpdaters(fields);
         for (FieldPath path : fields) {
@@ -79,7 +79,7 @@ public class SiteProjector implements Function<ListResult<SiteDTO>, List<Project
                     }
                 } else if (propertyName.startsWith(AttributeDTO.PROPERTY_PREFIX) &&
                            site.get(propertyName) == Boolean.TRUE) {
-                    final AttributeDTO attributeById = schemaDTO.getAttributeById(AttributeDTO.idForPropertyName(
+                    final AttributeDTO attributeById = activity.getAttributeById(AttributeDTO.idForPropertyName(
                             propertyName));
                     for (ProjectionUpdater<AttributeDTO> projector : attributeProjectors) {
                         projector.update(projection, attributeById);

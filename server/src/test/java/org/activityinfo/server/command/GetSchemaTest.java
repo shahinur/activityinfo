@@ -26,6 +26,7 @@ import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.bedatadriven.rebar.time.calendar.LocalDate;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.legacy.shared.command.GetActivityForm;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
@@ -54,8 +55,7 @@ import java.util.List;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.activityinfo.core.client.PromiseMatchers.resolvesTo;
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 @RunWith(InjectionSupport.class)
@@ -88,9 +88,6 @@ public class GetSchemaTest extends CommandTestCase2 {
 
 
         ActivityDTO nfi = schema.getDatabaseById(1).getActivities().get(0);
-
-        assertTrue("object graph is preserved (database-activity)",
-                schema.getDatabaseById(1) == nfi.getDatabase());
         assertThat(nfi.getLocationTypeId(), equalTo(1));
         assertThat(nfi.<Integer>get("locationTypeId"), equalTo(1));
 
@@ -101,8 +98,9 @@ public class GetSchemaTest extends CommandTestCase2 {
         assertTrue("CountryId is not null",
                 schema.getCountries().get(0).getAdminLevels().get(0).getCountryId() != 0);
 
-        assertThat("deleted attribute is not present",
-                schema.getActivityById(1).getAttributeGroups().size(), equalTo(3));
+        ActivityFormDTO nfiForm = execute(new GetActivityForm(nfi.getId()));
+
+        assertThat("deleted attribute is not present", nfiForm.getAttributeGroups(), hasSize(3));
     }
 
     @Test
@@ -163,14 +161,13 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         setUser(1); // Alex
 
-        SchemaDTO schema = execute(new GetSchema());
+        ActivityFormDTO schema = execute(new GetActivityForm(2));
 
-        assertTrue("no indicators case", schema.getActivityById(2).getIndicators().size() == 0);
+        assertThat("no indicators case", schema.getIndicators(), hasSize(0));
 
-        ActivityDTO nfi = schema.getActivityById(1);
+        ActivityFormDTO nfi = execute(new GetActivityForm(1));
 
-        assertThat("indicators are present", nfi.getIndicators().size(),
-                equalTo(5));
+        assertThat("indicators are present", nfi.getIndicators(), hasSize(5));
 
         IndicatorDTO test = nfi.getIndicatorById(2);
         assertThat(test, Matchers.hasProperty("name", equalTo("baches")));
@@ -185,27 +182,25 @@ public class GetSchemaTest extends CommandTestCase2 {
 
         setUser(1); // Alex
 
-        SchemaDTO schema = execute(new GetSchema());
+        ActivityFormDTO form = execute(new GetActivityForm(3));
+        assertThat("no attributes case", form.getAttributeGroups(), hasSize(0));
 
-        assertTrue("no attributes case", schema.getActivityById(3).getAttributeGroups().size() == 0);
-
-        ActivityDTO nfi = schema.getActivityById(1);
-        AttributeDTO[] attributes = nfi.getAttributeGroupById(1)
-                .getAttributes().toArray(new AttributeDTO[0]);
-
-        assertTrue("attributes are present", attributes.length == 2);
+        ActivityFormDTO nfi = execute(new GetActivityForm(1));
+        AttributeGroupDTO group = nfi.getAttributeGroupById(1);
+        assertThat(group, notNullValue());
+        assertThat("attributes are present", group.getAttributes(), hasSize(2));
 
         AttributeDTO test = nfi.getAttributeById(1);
 
-        assertEquals("property:name", "Catastrophe Naturelle", test.getName());
+        assertThat(test, hasProperty("name", equalTo("Catastrophe Naturelle")));
     }
 
     @Test
     public void toCSV() {
-        SchemaDTO schema = execute(new GetSchema());
+        int databaseId = 1;
 
-        SchemaCsvWriter writer = new SchemaCsvWriter();
-        writer.write(schema.getDatabaseById(1));
+        SchemaCsvWriter writer = new SchemaCsvWriter(getDispatcherSync());
+        writer.write(databaseId);
 
         System.out.println(writer.toString());
     }

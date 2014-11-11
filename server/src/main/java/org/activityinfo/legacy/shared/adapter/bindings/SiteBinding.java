@@ -1,9 +1,10 @@
 package org.activityinfo.legacy.shared.adapter.bindings;
 
+import com.google.common.base.Preconditions;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 
@@ -16,14 +17,14 @@ import static org.activityinfo.model.legacy.CuidAdapter.locationField;
  */
 public class SiteBinding extends ModelBinding<SiteDTO> {
 
-    private final ActivityDTO activity;
+    private final ActivityFormDTO activity;
 
-    SiteBinding(ActivityDTO activity) {
+    SiteBinding(ActivityFormDTO activity) {
         super(CuidAdapter.activityFormClass(activity.getId()), CuidAdapter.SITE_DOMAIN);
         this.activity = activity;
     }
 
-    public ActivityDTO getActivity() {
+    public ActivityFormDTO getActivity() {
         return activity;
     }
 
@@ -40,9 +41,14 @@ public class SiteBinding extends ModelBinding<SiteDTO> {
     }
 
     public int getDefaultPartnerId() {
-        if(activity.getPartnerRange().isEmpty()) {
-            throw new IllegalStateException("Empty partner range set for activity " + activity.getId());
+        if(activity.getCurrentPartnerId() == 0) {
+            // for database owners, return the first partner arbitrarily
+            Preconditions.checkState(activity.isEditAllAllowed(), "user has no partnerId and does not have editAll permission");
+            Preconditions.checkState(!activity.getPartnerRange().isEmpty());
+            return activity.getPartnerRange().get(0).getId();
+
+        } else {
+            return activity.getCurrentPartnerId();
         }
-        return activity.getPartnerRange().get(0).getId();
     }
 }

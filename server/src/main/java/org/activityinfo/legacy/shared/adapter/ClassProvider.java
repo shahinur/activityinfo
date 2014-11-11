@@ -2,7 +2,6 @@ package org.activityinfo.legacy.shared.adapter;
 
 import com.google.common.base.Function;
 import org.activityinfo.core.client.NotFoundException;
-import org.activityinfo.legacy.shared.command.GetActivity;
 import org.activityinfo.legacy.shared.command.GetFormClass;
 import org.activityinfo.legacy.shared.command.result.FormClassResult;
 import org.activityinfo.model.resource.ResourceId;

@@ -37,7 +37,7 @@ public class SitePersister {
     public Promise<Void> persist(final FormInstance siteInstance) {
 
         int activityId = CuidAdapter.getLegacyIdFromCuid(siteInstance.getClassId());
-        return dispatcher.execute(new GetSchema())
+        return dispatcher.execute(new GetActivityForm(activityId))
                          .then(new SiteBindingFactory(activityId))
                          .join(new Function<SiteBinding, Promise<Void>>() {
                              @Nullable @Override

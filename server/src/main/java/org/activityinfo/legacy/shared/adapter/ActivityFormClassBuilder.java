@@ -24,11 +24,11 @@ import static org.activityinfo.model.legacy.CuidAdapter.activityCategoryFolderId
 public class ActivityFormClassBuilder {
 
 
-    private final ActivityDTO activity;
+    private final ActivityFormDTO activity;
 
     private FormClass siteForm;
 
-    public ActivityFormClassBuilder(ActivityDTO activity) {
+    public ActivityFormClassBuilder(ActivityFormDTO activity) {
         assert activity != null;
         this.activity = activity;
     }
@@ -48,7 +48,7 @@ public class ActivityFormClassBuilder {
         FormField partnerField = new FormField(CuidAdapter.field(classId, CuidAdapter.PARTNER_FIELD))
                 .setLabel(I18N.CONSTANTS.partner())
                 .setType(ReferenceType.single(CuidAdapter.partnerFormClass(activity.getDatabaseId())))
-                .setVisible(activity.getPartnerRange().size() > 1)
+                .setVisible(activity.isEditAllAllowed())
                 .setRequired(true);
         siteForm.addElement(partnerField);
 

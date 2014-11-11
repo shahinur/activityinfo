@@ -33,9 +33,9 @@ import com.extjs.gxt.ui.client.widget.layout.TableData;
 import com.extjs.gxt.ui.client.widget.layout.TableLayout;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.common.collect.Lists;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.legacy.client.type.IndicatorNumberFormat;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
 import org.activityinfo.legacy.shared.model.IndicatorDTO;
 import org.activityinfo.legacy.shared.model.IndicatorGroup;
 import org.activityinfo.legacy.shared.model.SiteDTO;
@@ -49,7 +49,7 @@ public class IndicatorSection extends LayoutContainer implements FormSection<Sit
 
     private List<Field> indicatorFields = Lists.newArrayList();
 
-    public IndicatorSection(ActivityDTO activity) {
+    public IndicatorSection(ActivityFormDTO activity) {
 
         TableLayout layout = new TableLayout(3);
         layout.setCellPadding(5);

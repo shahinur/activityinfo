@@ -25,13 +25,9 @@ package org.activityinfo.server.endpoint.kml;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import org.activityinfo.legacy.shared.command.DimensionType;
-import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.command.GetSites;
+import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.server.authentication.BasicAuthentication;
 import org.activityinfo.server.command.DispatcherSync;
@@ -117,7 +113,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     protected void writeDocument(User user,
                                  PrintWriter out,
-                                 int actvityId) throws TransformerConfigurationException, SAXException,
+                                 int activityId) throws TransformerConfigurationException, SAXException,
             CommandException {
 
         // TODO: rewrite using FreeMarker
@@ -126,9 +122,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         XmlBuilder xml = new XmlBuilder(new StreamResult(out));
 
-        SchemaDTO schema = dispatcher.execute(new GetSchema());
-
-        List<SiteDTO> sites = querySites(user, schema, actvityId);
+        List<SiteDTO> sites = querySites(activityId);
 
         xml.startDocument();
 
@@ -136,7 +130,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
         kml.startKml();
 
-        ActivityDTO activity = schema.getActivityById(actvityId);
+        ActivityFormDTO activity = dispatcher.execute(new GetActivityForm(activityId));
         kml.startDocument();
 
         kml.startStyle().at("id", "noDirectionsStyle");
@@ -181,11 +175,11 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
 
     }
 
-    private String renderSnippet(ActivityDTO activity, SiteDTO pm) {
+    private String renderSnippet(ActivityFormDTO activity, SiteDTO pm) {
         return activity.getName() + " à " + pm.getLocationName() + " (" + pm.getPartnerName() + ")";
     }
 
-    private List<SiteDTO> querySites(User user, SchemaDTO schema, int activityId) {
+    private List<SiteDTO> querySites(int activityId) {
 
         Filter filter = new Filter();
         filter.addRestriction(DimensionType.Activity, activityId);
@@ -193,7 +187,7 @@ public class KmlDataServlet extends javax.servlet.http.HttpServlet {
         return dispatcher.execute(new GetSites(filter)).getData();
     }
 
-    private String renderDescription(ActivityDTO activity, SiteDTO site) {
+    private String renderDescription(ActivityFormDTO activity, SiteDTO site) {
 
         StringBuilder html = new StringBuilder();
         html.append(siteRenderer.renderLocation(site, activity));

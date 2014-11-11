@@ -57,6 +57,9 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
     public static final int MAX_LIST_HEADER_LENGTH = 29;
     public static final int MAX_CATEGORY_LENGTH = 50;
 
+    private int databaseId;
+    private String databaseName;
+
     public IndicatorDTO() {
         super();
     }
@@ -91,6 +94,23 @@ public final class IndicatorDTO extends BaseModelData implements EntityDTO, Prov
      */
     public void setId(int id) {
         set("id", id);
+    }
+
+
+    public int getDatabaseId() {
+        return databaseId;
+    }
+
+    public void setDatabaseId(int databaseId) {
+        this.databaseId = databaseId;
+    }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+    public void setDatabaseName(String databaseName) {
+        this.databaseName = databaseName;
     }
 
     /**

@@ -50,7 +50,7 @@ import org.activityinfo.legacy.shared.command.UpdateSite;
 import org.activityinfo.legacy.shared.command.exception.NotAuthorizedException;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.legacy.KeyGenerator;
@@ -73,7 +73,7 @@ public class SiteDialog extends Window {
     private final Button finishButton;
 
     private final Dispatcher dispatcher;
-    private final ActivityDTO activity;
+    private final ActivityFormDTO activity;
 
     private SiteDialogCallback callback;
 
@@ -85,7 +85,7 @@ public class SiteDialog extends Window {
     private boolean newSite;
     private KeyGenerator keyGenerator;
 
-    public SiteDialog(Dispatcher dispatcher, ActivityDTO activity) {
+    public SiteDialog(Dispatcher dispatcher, ActivityFormDTO activity) {
         this.dispatcher = dispatcher;
         this.activity = activity;
 
@@ -136,7 +136,7 @@ public class SiteDialog extends Window {
 
         }
 
-        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE && !activity.getIndicators().isEmpty()) {
+        if (activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE && !activity.getIndicators().isEmpty()) {
 
             addSection(FormSectionModel.forComponent(new IndicatorSection(activity))
                     .withHeader(I18N.CONSTANTS.indicators())
@@ -285,7 +285,7 @@ public class SiteDialog extends Window {
         newSite.setId(keyGenerator.generateInt());
         newSite.setActivityId(activity.getId());
 
-        if (activity.getReportingFrequency() == ActivityDTO.REPORT_ONCE) {
+        if (activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE) {
             newSite.setReportingPeriodId(new KeyGenerator().generateInt());
         }
 

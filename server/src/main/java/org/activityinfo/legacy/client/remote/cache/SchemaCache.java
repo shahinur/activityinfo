@@ -30,7 +30,7 @@ import org.activityinfo.legacy.client.DispatchEventSource;
 import org.activityinfo.legacy.client.DispatchListener;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 
 import java.util.Map;
@@ -48,7 +48,7 @@ public class SchemaCache implements DispatchListener {
 
     private SchemaDTO schema = null;
     private Set<String> schemaEntityTypes = Sets.newHashSet();
-    private Map<Integer, ActivityDTO> activityMap = Maps.newHashMap();
+    private Map<Integer, ActivityFormDTO> activityMap = Maps.newHashMap();
     
 
     @Inject
@@ -106,8 +106,8 @@ public class SchemaCache implements DispatchListener {
     public void onSuccess(Command command, CommandResult result) {
         if (command instanceof GetSchema) {
             cache((SchemaDTO) result);
-        } else if (command instanceof GetActivity) {
-            ActivityDTO activity = (ActivityDTO) result;
+        } else if (command instanceof GetActivityForm) {
+            ActivityFormDTO activity = (ActivityFormDTO) result;
             activityMap.put(activity.getId(), activity);
         } else if (schema != null) {
             if (command instanceof AddPartner) {

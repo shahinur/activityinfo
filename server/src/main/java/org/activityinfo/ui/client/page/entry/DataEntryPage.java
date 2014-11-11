@@ -47,12 +47,9 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.DeleteSite;
-import org.activityinfo.legacy.shared.command.DimensionType;
-import org.activityinfo.legacy.shared.command.Filter;
-import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
@@ -219,7 +216,10 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
         if (se.getSelection().isEmpty()) {
             onNoSelection();
         } else {
-            dispatcher.execute(new GetSchema(), new AsyncCallback<SchemaDTO>() {
+            final SiteDTO site = se.getSelectedItem();
+            int activityId = site.getActivityId();
+
+            dispatcher.execute(new GetActivityForm(activityId), new AsyncCallback<ActivityFormDTO>() {
 
                 @Override
                 public void onFailure(Throwable caught) {
@@ -228,16 +228,14 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
                 }
 
                 @Override
-                public void onSuccess(SchemaDTO schema) {
-                    SiteDTO site = se.getSelectedItem();
-                    ActivityDTO activity = schema.getActivityById(site.getActivityId());
+                public void onSuccess(ActivityFormDTO activity) {
                     updateSelection(activity, site);
                 }
             });
         }
     }
 
-    private void updateSelection(ActivityDTO activity, SiteDTO site) {
+    private void updateSelection(ActivityFormDTO activity, SiteDTO site) {
 
         boolean permissionToEdit = activity.isAllowedToEdit(site);
         toolBar.setActionEnabled(UIActions.EDIT, permissionToEdit && !site.isLinked());
@@ -245,7 +243,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 
         detailTab.setSite(site);
         attachmentsTab.setSite(site);
-        if (activity.getReportingFrequency() == ActivityDTO.REPORT_MONTHLY) {
+        if (activity.getReportingFrequency() == ActivityFormDTO.REPORT_MONTHLY) {
             monthlyPanel.load(site);
             monthlyPanel.setReadOnly(!permissionToEdit);
             monthlyTab.setEnabled(true);

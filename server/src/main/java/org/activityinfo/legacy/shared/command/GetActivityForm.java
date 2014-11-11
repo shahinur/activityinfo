@@ -1,20 +1,25 @@
 package org.activityinfo.legacy.shared.command;
 
 import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 
 /**
  * Retrieves a FormClass (ActivityDTO for now)
  *
  */
-public class GetActivity implements Command<ActivityDTO> {
+public class GetActivityForm implements Command<ActivityFormDTO> {
 
     private int activityId;
 
-    public GetActivity(int activityId) {
+    public GetActivityForm() {
+    }
+
+    public GetActivityForm(int activityId) {
         this.activityId = activityId;
     }
 
-    public GetActivity() {
+    public GetActivityForm(ActivityDTO activity) {
+        this(activity.getId());
     }
 
     public int getActivityId() {

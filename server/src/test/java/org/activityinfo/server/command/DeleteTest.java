@@ -23,20 +23,24 @@ package org.activityinfo.server.command;
  */
 
 import com.extjs.gxt.ui.client.data.ModelData;
-import junit.framework.Assert;
 import org.activityinfo.legacy.shared.command.Delete;
+import org.activityinfo.legacy.shared.command.GetActivityForm;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.PagingResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.server.database.OnDataSet;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Collection;
+
+import static org.junit.Assert.assertNull;
 
 @RunWith(InjectionSupport.class)
 @OnDataSet("/dbunit/sites-simple1.db.xml")
@@ -61,42 +65,43 @@ public class DeleteTest extends CommandTestCase {
         Assert.assertEquals(0, sites.getData().size());
 
         sites = execute(new GetSites());
-        Assert.assertNull(getById(sites.getData(), 3));
+        assertNull(getById(sites.getData(), 3));
     }
 
     @Test
     public void testDeleteIndicator() throws CommandException {
 
-        SchemaDTO schema = execute(new GetSchema());
-        execute(new Delete(schema.getIndicatorById(1)));
+        int activityId = 1;
+        int indicatorId = 1;
 
-        schema = execute(new GetSchema());
-        Assert.assertNull(schema.getIndicatorById(1));
+        execute(new Delete("Indicator", indicatorId));
+
+        ActivityFormDTO form = execute(new GetActivityForm(activityId));
+        assertNull(form.getIndicatorById(indicatorId));
 
         PagingResult<SiteDTO> sites = execute(GetSites.byId(1));
-        Assert.assertNull(sites.getData().get(0).getIndicatorValue(1));
+        assertNull(sites.getData().get(0).getIndicatorValue(1));
     }
 
     @Test
     public void testDeleteAttribute() throws CommandException {
 
-        SchemaDTO schema = execute(new GetSchema());
-        execute(new Delete(schema.getActivityById(1).getAttributeById(1)));
+        ActivityFormDTO form = execute(new GetActivityForm(1));
+        execute(new Delete(form.getAttributeById(1)));
 
-        schema = execute(new GetSchema());
-        Assert.assertNull(schema.getActivityById(1).getAttributeById(1));
+        form = execute(new GetActivityForm(1));
+        assertNull(form.getAttributeById(1));
     }
 
     @Test
     public void testDeleteActivity() throws CommandException {
 
-        SchemaDTO schema = execute(new GetSchema());
-        execute(new Delete(schema.getActivityById(1)));
+        ActivityFormDTO form = execute(new GetActivityForm(1));
+        execute(new Delete(form));
         execute(new Delete("Activity", 4));
 
-        schema = execute(new GetSchema());
-        Assert.assertNull("delete by entity reference",
-                schema.getActivityById(1));
-        Assert.assertNull("delete by id", schema.getActivityById(4));
+        SchemaDTO schema = execute(new GetSchema());
+        assertNull("delete by entity reference", schema.getActivityById(1));
+        assertNull("delete by id", schema.getActivityById(4));
     }
 }

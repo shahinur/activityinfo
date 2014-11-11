@@ -23,10 +23,7 @@ package org.activityinfo.ui.client.page.entry.sitehistory;
  */
 
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.legacy.shared.model.LocationDTO;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
-import org.activityinfo.legacy.shared.model.SiteDTO;
-import org.activityinfo.legacy.shared.model.SiteHistoryDTO;
+import org.activityinfo.legacy.shared.model.*;
 
 import java.util.*;
 
@@ -42,14 +39,14 @@ public class SiteHistoryRenderer {
         return Item.appendAll(new Item(I18N.MESSAGES.siteHistoryNotAvailable()), availableFrom(site));
     }
 
-    public String render(SchemaDTO schema, List<LocationDTO> locations, SiteDTO site, List<SiteHistoryDTO> histories) {
+    public String render(ActivityFormDTO activityForm, List<LocationDTO> locations, SiteDTO site, List<SiteHistoryDTO> histories) {
         List<Item> items = new ArrayList<Item>();
-        items.addAll(items(schema, locations, site, histories));
+        items.addAll(items(activityForm, locations, site, histories));
         items.add(availableFrom(site));
         return Item.appendAll(items);
     }
 
-    private List<Item> items(SchemaDTO schema,
+    private List<Item> items(ActivityFormDTO schema,
                              List<LocationDTO> locations,
                              SiteDTO site,
                              List<SiteHistoryDTO> histories) {
@@ -72,6 +69,7 @@ public class SiteHistoryRenderer {
                             history.getUserEmail()));
                 }
                 first = false;
+
             } else {
                 item.setMsg(I18N.MESSAGES.siteHistoryUpdated(history.getDateCreated(),
                         history.getUserName(),
@@ -88,7 +86,7 @@ public class SiteHistoryRenderer {
     }
 
     private List<ItemDetail> details(RenderContext ctx) {
-        List<ItemDetail> details = new ArrayList<ItemDetail>();
+        List<ItemDetail> details = new ArrayList<>();
         for (Map.Entry<String, Object> entry : ctx.getHistory().getJsonMap().entrySet()) {
             details.add(ItemDetail.create(ctx, entry));
         }

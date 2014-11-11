@@ -200,8 +200,7 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
 
         // Export to excel
-        SchemaDTO schema = execute(new GetSchema());
-        ActivityDTO activity = schema.getActivityById(activityId);
+        ActivityFormDTO activity = execute(new GetActivityForm(activityId));
 
         SiteExporter exporter = new SiteExporter(getDispatcherSync());
         exporter.export(activity, Filter.filter().onActivity(activityId));
@@ -277,10 +276,9 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
     }
 
     private AttributeGroupDTO getAttributeGroup(int activityId) {
-        SchemaDTO schema = execute(new GetSchema());
-        ActivityDTO activity = schema.getActivityById(activityId);
+        ActivityFormDTO form = execute(new GetActivityForm(activityId));
 
-        return activity.getAttributeGroups().get(0);
+        return form.getAttributeGroups().get(0);
     }
 
     private Matcher<Bucket> total(final String label, final double sum) {
@@ -364,10 +362,10 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
         UserDatabaseDTO db = schema.getDatabaseById(1);
         LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
 
-        ActivityDTO act = new ActivityDTO();
+        ActivityFormDTO act = new ActivityFormDTO();
         act.setName("Calculated indicators");
         act.setLocationType(locType);
-        act.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+        act.setReportingFrequency(ActivityFormDTO.REPORT_ONCE);
 
         CreateResult createResult = execute(CreateEntity.Activity(db, act));
         ResourceId classId = activityFormClass(createResult.getNewId());

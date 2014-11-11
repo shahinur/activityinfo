@@ -5,15 +5,10 @@ import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.UpdateFormClass;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.model.form.*;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.server.endpoint.odk.xform.XForm;
-import org.activityinfo.server.endpoint.odk.xform.XFormReader;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,9 +17,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.net.URL;
 
-import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(InjectionSupport.class)
@@ -36,7 +29,7 @@ public class XFormReaderTest extends CommandTestCase2 {
 
         int databaseId = 1;
 
-        ActivityDTO activityDTO = new ActivityDTO();
+        ActivityFormDTO activityDTO = new ActivityFormDTO();
         activityDTO.setName("MHFS");
         activityDTO.set("databaseId", databaseId);
         activityDTO.set("locationTypeId", 1);

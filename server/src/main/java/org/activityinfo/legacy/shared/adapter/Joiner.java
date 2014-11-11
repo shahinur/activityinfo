@@ -8,6 +8,7 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.criteria.IdCriteria;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.adapter.projection.LocationProjector;
@@ -141,12 +142,12 @@ class Joiner implements Function<InstanceQuery, Promise<List<Projection>>> {
         GetSites query = new GetSites();
         query.setFilter(filter);
 
-        final Promise<SchemaDTO> schemaPromise = dispatcher.execute(new GetSchema());
+        final Promise<ActivityFormDTO> schemaPromise = dispatcher.execute(new GetActivityForm(activityId));
         final Promise<SiteResult> sitePromise = dispatcher.execute(query);
         return Promise.waitAll(schemaPromise, sitePromise).then(new Supplier<List<Projection>>() {
             @Override
             public List<Projection> get() {
-                final SchemaDTO schemaDTO = schemaPromise.get();
+                final ActivityFormDTO schemaDTO = schemaPromise.get();
                 final SiteProjector siteProjector = new SiteProjector(schemaDTO, criteria, fieldPaths);
                 return siteProjector.apply(sitePromise.get());
             }

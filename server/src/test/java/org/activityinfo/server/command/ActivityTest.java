@@ -25,12 +25,9 @@ package org.activityinfo.server.command;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.BatchCommand;
-import org.activityinfo.legacy.shared.command.CreateEntity;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
@@ -89,10 +86,10 @@ public class ActivityTest extends CommandTestCase2 {
 
         LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
 
-        ActivityDTO act = new ActivityDTO();
+        ActivityFormDTO act = new ActivityFormDTO();
         act.setName("Warshing the dishes");
         act.setLocationType(locType);
-        act.setReportingFrequency(ActivityDTO.REPORT_MONTHLY);
+        act.setReportingFrequency(ActivityFormDTO.REPORT_MONTHLY);
         act.setClassicView(false);
 
         CreateResult cresult = execute(CreateEntity.Activity(db, act));
@@ -103,13 +100,12 @@ public class ActivityTest extends CommandTestCase2 {
          * Reload schema to verify the changes have stuck
          */
 
-        schema = execute(new GetSchema());
 
-        act = schema.getActivityById(newId);
+        act = execute(new GetActivityForm(newId));
 
         assertEquals("name", "Warshing the dishes", act.getName());
         assertEquals("locationType", locType.getName(), act.getLocationType().getName());
-        assertEquals("reportingFrequency", ActivityDTO.REPORT_MONTHLY, act.getReportingFrequency());
+        assertEquals("reportingFrequency", ActivityFormDTO.REPORT_MONTHLY, act.getReportingFrequency());
         assertEquals("public", Published.NOT_PUBLISHED.getIndex(), act.getPublished());
         assertEquals("classicView", false, act.getClassicView());
 
@@ -157,10 +153,10 @@ public class ActivityTest extends CommandTestCase2 {
         UserDatabaseDTO db = schema.getDatabaseById(1);
         LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
 
-        ActivityDTO act = new ActivityDTO();
+        ActivityFormDTO act = new ActivityFormDTO();
         act.setName("Household Survey");
         act.setLocationType(locType);
-        act.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+        act.setReportingFrequency(ActivityFormDTO.REPORT_ONCE);
 
         CreateResult createResult = execute(CreateEntity.Activity(db, act));
         ResourceId classId = activityFormClass(createResult.getNewId());
@@ -208,10 +204,10 @@ public class ActivityTest extends CommandTestCase2 {
         UserDatabaseDTO db = schema.getDatabaseById(1);
         LocationTypeDTO locType = schema.getCountryById(1).getLocationTypes().get(0);
 
-        ActivityDTO act = new ActivityDTO();
+        ActivityFormDTO act = new ActivityFormDTO();
         act.setName("Household Survey");
         act.setLocationType(locType);
-        act.setReportingFrequency(ActivityDTO.REPORT_ONCE);
+        act.setReportingFrequency(ActivityFormDTO.REPORT_ONCE);
 
         CreateResult createResult = execute(CreateEntity.Activity(db, act));
         ResourceId classId = activityFormClass(createResult.getNewId());
@@ -264,7 +260,7 @@ public class ActivityTest extends CommandTestCase2 {
         resourceLocator.persist(formClass);
 
         // verify that it appears as attribute group
-        ActivityDTO activity = getActivity(1);
+        ActivityFormDTO activity = getActivity(1);
         AttributeGroupDTO group = findGroup(activity, "New Group");
         assertThat(group.isMultipleAllowed(), equalTo(false));
         assertThat(group.getAttributes(), hasSize(2));
@@ -279,7 +275,8 @@ public class ActivityTest extends CommandTestCase2 {
 
         group = findGroup(getActivity(1), "Do you like ice cream?");
         assertThat(group.isMultipleAllowed(), equalTo(false));
-        assertThat(group.getAttributes(), contains(hasProperty("name", Matchers.equalTo("Oui")),
+        assertThat(group.getAttributes(), contains(
+                hasProperty("name", Matchers.equalTo("Oui")),
                 hasProperty("name", Matchers.equalTo("Non"))));
 
         // Remove one of our new enum values
@@ -301,7 +298,7 @@ public class ActivityTest extends CommandTestCase2 {
         beneficiaries.setLabel("Number of benes");
         resourceLocator.persist(formClass);
 
-        ActivityDTO activity = getActivity(1);
+        ActivityFormDTO activity = getActivity(1);
         assertThat(activity.getIndicatorById(1), hasProperty("name", Matchers.equalTo("Number of benes")));
     }
 
@@ -317,7 +314,7 @@ public class ActivityTest extends CommandTestCase2 {
         beneficiaries.setType(updatedType);
         assertResolves(resourceLocator.persist(formClass));
 
-        ActivityDTO activity = getActivity(1);
+        ActivityFormDTO activity = getActivity(1);
         assertThat(activity.getIndicatorById(1), hasProperty("units", Matchers.equalTo(updatedType.getUnits())));
     }
 
@@ -350,11 +347,11 @@ public class ActivityTest extends CommandTestCase2 {
 
 
 
-    private ActivityDTO getActivity(int activityId) {
-        return execute(new GetSchema()).getActivityById(activityId);
+    private ActivityFormDTO getActivity(int activityId) {
+        return execute(new GetActivityForm(activityId));
     }
 
-    private AttributeGroupDTO findGroup(ActivityDTO activityDTO, String label) {
+    private AttributeGroupDTO findGroup(ActivityFormDTO activityDTO, String label) {
         for(AttributeGroupDTO group : activityDTO.getAttributeGroups()) {
             if(group.getName().equals(label)) {
                 return group;
@@ -370,8 +367,6 @@ public class ActivityTest extends CommandTestCase2 {
         ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
         FormClass formClass = assertResolves(resourceLocator.getFormClass(CuidAdapter.activityFormClass(1)));
 
-        int numFields = formClass.getElements().size();
-
         // Remove attribute
         ListIterator<FormElement> it = formClass.getElements().listIterator();
         while(it.hasNext()) {
@@ -383,8 +378,8 @@ public class ActivityTest extends CommandTestCase2 {
         resourceLocator.persist(formClass);
 
         // Ensure deleted
-        SchemaDTO schema = execute(new GetSchema());
-        assertTrue("Cause attribute is gone", schema.getAttributeGroupById(1) == null);
+        ActivityFormDTO form = execute(new GetActivityForm(1));
+        assertTrue("Cause attribute is gone", form.getAttributeGroupById(1) == null);
 
 
     }

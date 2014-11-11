@@ -16,7 +16,7 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
 /**
  * Creates a SiteBinding from a SchemaDTO
  */
-public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
+public class SiteBindingFactory implements Function<ActivityFormDTO, SiteBinding> {
 
     private final int activityId;
     private final KeyGenerator keyGenerator = new KeyGenerator();
@@ -26,8 +26,7 @@ public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
     }
 
     @Override
-    public SiteBinding apply(SchemaDTO input) {
-        ActivityDTO activity = input.getActivityById(activityId);
+    public SiteBinding apply(ActivityFormDTO activity) {
         SiteBinding binding = new SiteBinding(activity);
         binding.addNestedField(partnerField(activity.getId()), PARTNER_DOMAIN, "partner");
         binding.addNestedField(projectField(activity.getId()), PROJECT_DOMAIN, "project");
@@ -67,7 +66,7 @@ public class SiteBindingFactory implements Function<SchemaDTO, SiteBinding> {
         private final AttributeGroupDTO group;
         private ResourceId fieldId;
 
-        private AttributeGroupBinding(ActivityDTO activity, AttributeGroupDTO group) {
+        private AttributeGroupBinding(ActivityFormDTO activity, AttributeGroupDTO group) {
             this.group = group;
             fieldId = CuidAdapter.attributeGroupField(group.getId());
         }
