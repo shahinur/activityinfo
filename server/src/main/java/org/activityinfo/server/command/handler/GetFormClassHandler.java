@@ -5,16 +5,27 @@ import com.google.common.io.CharStreams;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
+import org.activityinfo.legacy.shared.adapter.ActivityFormClassBuilder;
+import org.activityinfo.legacy.shared.command.GetActivity;
 import org.activityinfo.legacy.shared.command.GetFormClass;
+import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.FormClassResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.exception.UnexpectedCommandException;
 import org.activityinfo.legacy.shared.impl.CommandHandlerAsync;
+import org.activityinfo.legacy.shared.impl.ExecutionContext;
+import org.activityinfo.legacy.shared.impl.GetActivityHandler;
+import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.Resources;
+import org.activityinfo.server.command.DispatcherSync;
+import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.database.hibernate.entity.Activity;
 import org.activityinfo.server.database.hibernate.entity.User;
 
@@ -30,11 +41,13 @@ public class GetFormClassHandler implements CommandHandler<GetFormClass> {
 
     private PermissionOracle permissionOracle;
     private Provider<EntityManager> entityManager;
+    private DispatcherSync dispatcherSync;
 
     @Inject
-    public GetFormClassHandler(PermissionOracle permissionOracle, Provider<EntityManager> entityManager) {
+    public GetFormClassHandler(PermissionOracle permissionOracle, Provider<EntityManager> entityManager, DispatcherSync dispatcherSync) {
         this.permissionOracle = permissionOracle;
         this.entityManager = entityManager;
+        this.dispatcherSync = dispatcherSync;
     }
 
     @Override
@@ -58,8 +71,19 @@ public class GetFormClassHandler implements CommandHandler<GetFormClass> {
                 throw new UnexpectedCommandException(e);
             }
 
-        } else {
+        } else if(activity.getFormClass() != null) {
             return activity.getFormClass();
+
+        } else {
+            return constructFromLegacy(activity.getId());
         }
+    }
+
+
+    private String constructFromLegacy(final int activityId) {
+        ActivityDTO activityDTO = dispatcherSync.execute(new GetActivity(activityId));
+        ActivityFormClassBuilder builder = new ActivityFormClassBuilder(activityDTO);
+        FormClass formClass = builder.build();
+        return Resources.toJson(formClass.asResource());
     }
 }
