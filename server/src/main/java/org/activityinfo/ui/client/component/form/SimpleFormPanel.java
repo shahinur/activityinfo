@@ -31,7 +31,7 @@ import java.util.Objects;
  */
 public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
-    private final VerticalFieldContainer.Factory containerFactory;
+    private final FieldContainerFactory containerFactory;
     private final FormFieldWidgetFactory widgetFactory;
 
     private final FlowPanel panel;
@@ -60,12 +60,12 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     // it can be null.
     private FormClass validationFormClass = null;
 
-    public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
+    public SimpleFormPanel(ResourceLocator locator, FieldContainerFactory containerFactory,
                            FormFieldWidgetFactory widgetFactory) {
         this(locator, containerFactory, widgetFactory, true);
     }
 
-    public SimpleFormPanel(ResourceLocator locator, VerticalFieldContainer.Factory containerFactory,
+    public SimpleFormPanel(ResourceLocator locator, FieldContainerFactory containerFactory,
                            FormFieldWidgetFactory widgetFactory, boolean withScroll) {
         FormPanelStyles.INSTANCE.ensureInjected();
 
@@ -138,7 +138,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
                 }, validationFormClass).then(new Function<FormFieldWidget, Void>() {
                     @Override
                     public Void apply(@Nullable FormFieldWidget widget) {
-                        containers.put(field.getId(), containerFactory.createContainer(field, widget));
+                        containers.put(field.getId(), containerFactory.createContainer(field, widget, 4));
                         return null;
                     }
                 });

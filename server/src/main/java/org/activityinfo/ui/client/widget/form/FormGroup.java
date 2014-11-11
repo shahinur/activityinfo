@@ -21,6 +21,7 @@ package org.activityinfo.ui.client.widget.form;
  * #L%
  */
 
+import com.google.common.base.Strings;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.LabelElement;
@@ -29,17 +30,14 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
 import java.util.Iterator;
 
 /**
  * @author yuriyz on 11/10/2014.
  */
-public class FormGroup extends Composite implements HasWidgets {
+public class FormGroup extends Composite implements HasWidgets.ForIsWidget {
 
     private static OurUiBinder uiBinder = GWT.create(OurUiBinder.class);
 
@@ -69,13 +67,24 @@ public class FormGroup extends Composite implements HasWidgets {
     }
 
     public FormGroup label(String label) {
-        this.label.setInnerHTML(SafeHtmlUtils.fromString(label).asString());
+        if (!Strings.isNullOrEmpty(label)) {
+            this.label.setInnerHTML(SafeHtmlUtils.fromString(label).asString());
+        }
         return this;
     }
 
-    public void setDescription(String description) {
-        this.description.addClassName("help-block"); // add help-block dynamically, we don't want div to take space if description is not set
-        this.description.setInnerHTML(SafeHtmlUtils.fromString(description).asString());
+    public FormGroup description(String description) {
+        if (!Strings.isNullOrEmpty(description)) {
+            this.description.addClassName("help-block"); // add help-block dynamically, we don't want div to take space if description is not set
+            this.description.setInnerHTML(SafeHtmlUtils.fromString(description).asString());
+        }
+        return this;
+    }
+
+    public FormGroup columnWidgetWidth(int width) {
+        this.widget.addStyleName(GridCol.col(width));
+        skipWidgetColStyle = true;
+        return this;
     }
 
     public FormGroup columnLabelWidth(final int width) {
@@ -148,6 +157,16 @@ public class FormGroup extends Composite implements HasWidgets {
         return new FormGroup();
     }
 
+    public FormGroup addWidget(IsWidget w) {
+        add(w);
+        return this;
+    }
+
+    @Override
+    public void add(IsWidget w) {
+        widget.add(w);
+    }
+
     @Override
     public void add(Widget w) {
         widget.add(w);
@@ -165,6 +184,11 @@ public class FormGroup extends Composite implements HasWidgets {
 
     @Override
     public boolean remove(Widget w) {
+        return widget.remove(w);
+    }
+
+    @Override
+    public boolean remove(IsWidget w) {
         return widget.remove(w);
     }
 
@@ -188,9 +212,12 @@ public class FormGroup extends Composite implements HasWidgets {
         columnLabelWidth(width);
     }
 
-    public void setColumnWidgetWidth(int width) {
-        this.widget.addStyleName(GridCol.col(width));
-        skipWidgetColStyle = true;
+    public void setColumnWidgetWidth(int width) { // method for UiBinder
+        columnWidgetWidth(width);
+    }
+
+    public void setDescription(String description) { // method for UiBinder
+        description(description);
     }
 
 }
