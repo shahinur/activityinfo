@@ -22,15 +22,16 @@ package org.activityinfo.ui.client.widget.form;
  */
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.LabelElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.Iterator;
@@ -38,15 +39,13 @@ import java.util.Iterator;
 /**
  * @author yuriyz on 11/10/2014.
  */
-public class FormGroup implements IsWidget, HasWidgets {
+public class FormGroup extends Composite implements HasWidgets {
 
     private static OurUiBinder uiBinder = GWT.create(OurUiBinder.class);
 
     interface OurUiBinder extends UiBinder<Widget, FormGroup> {
     }
 
-    @UiField
-    HTMLPanel panel;
     @UiField
     LabelElement label;
     @UiField
@@ -62,9 +61,11 @@ public class FormGroup implements IsWidget, HasWidgets {
     @UiField
     SpanElement descriptionMargin;
 
+    private boolean skipWidgetColStyle = false;
+
     @UiConstructor
     public FormGroup() {
-        uiBinder.createAndBindUi(this);
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     public FormGroup label(String label) {
@@ -77,13 +78,21 @@ public class FormGroup implements IsWidget, HasWidgets {
         this.description.setInnerHTML(SafeHtmlUtils.fromString(description).asString());
     }
 
-    public FormGroup columnLabelWidth(int width) {
+    public FormGroup columnLabelWidth(final int width) {
         if (width < 0 || width > 12) {
             throw new IllegalArgumentException("Bootstrap width is invalid. Must be in range of 0..12. Width: " + width);
         }
 
         this.label.addClassName(GridCol.col(width));
-        this.widget.addStyleName(GridCol.remainingCol(width));
+
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                if (!skipWidgetColStyle) {
+                    FormGroup.this.widget.addStyleName(GridCol.remainingCol(width));
+                }
+            }
+        });
 
         this.descriptionMargin.addClassName(GridCol.col(width));
         this.description.addClassName(GridCol.remainingCol(width));
@@ -96,6 +105,10 @@ public class FormGroup implements IsWidget, HasWidgets {
     public FormGroup validationMessage(String validationMessage) {
         this.validationMessage.setInnerHTML(SafeHtmlUtils.fromString(validationMessage).asString());
         return this;
+    }
+
+    public FormGroup showValidationMessage(String validationMessage) {
+        return validationMessage(validationMessage).showValidationMessage(true);
     }
 
     public FormGroup showValidationMessage(boolean show) {
@@ -129,11 +142,6 @@ public class FormGroup implements IsWidget, HasWidgets {
                 break;
         }
         return this;
-    }
-
-    @Override
-    public Widget asWidget() {
-        return panel;
     }
 
     public static FormGroup newInstance() {
@@ -178,6 +186,11 @@ public class FormGroup implements IsWidget, HasWidgets {
 
     public void setColumnLabelWidth(int width) {  // method for UiBinder
         columnLabelWidth(width);
+    }
+
+    public void setColumnWidgetWidth(int width) {
+        this.widget.addStyleName(GridCol.col(width));
+        skipWidgetColStyle = true;
     }
 
 }
