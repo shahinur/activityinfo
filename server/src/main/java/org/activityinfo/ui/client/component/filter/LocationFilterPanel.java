@@ -1,12 +1,7 @@
 package org.activityinfo.ui.client.component.filter;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.KeyListener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.ListView;
@@ -17,7 +12,6 @@ import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
-import com.google.common.collect.Sets;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -30,12 +24,9 @@ import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetLocations;
-import org.activityinfo.legacy.shared.command.GetPivotLocations;
-import org.activityinfo.legacy.shared.command.PivotSites;
-import org.activityinfo.legacy.shared.command.PivotSites.ValueType;
+import org.activityinfo.legacy.shared.command.SearchLocations;
 import org.activityinfo.legacy.shared.command.result.LocationResult;
 import org.activityinfo.legacy.shared.model.LocationDTO;
-import org.activityinfo.legacy.shared.reports.model.Dimension;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.filter.FilterToolBar.ApplyFilterEvent;
 import org.activityinfo.ui.client.component.filter.FilterToolBar.ApplyFilterHandler;
@@ -257,14 +248,12 @@ public class LocationFilterPanel extends ContentPanel implements FilterPanel {
             return;
         }
 
-        final PivotSites pivotSites = new PivotSites();
-        pivotSites.setDimensions(Sets.newHashSet(new Dimension(DimensionType.Location)));
-        pivotSites.setFilter(baseFilter);
-        pivotSites.setValueType(ValueType.DIMENSION);
+        SearchLocations searchLocations = new SearchLocations()
+                .setName(filterCombobox.getRawValue())
+                .setIndicatorIds(baseFilter.getRestrictions(DimensionType.Indicator))
+                .setLimit(100);
 
-        String nameFilter = filterCombobox.getRawValue();
-
-        dispatcher.execute(new GetPivotLocations(pivotSites, nameFilter), new AsyncCallback<LocationResult>() {
+        dispatcher.execute(searchLocations, new AsyncCallback<LocationResult>() {
             @Override
             public void onFailure(Throwable caught) {
                 Log.error(caught.getMessage(), caught);
