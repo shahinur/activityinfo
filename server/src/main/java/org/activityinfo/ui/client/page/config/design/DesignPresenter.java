@@ -46,15 +46,11 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
 import org.activityinfo.legacy.client.state.StateProvider;
-import org.activityinfo.legacy.shared.command.BatchCommand;
-import org.activityinfo.legacy.shared.command.Command;
-import org.activityinfo.legacy.shared.command.CreateEntity;
-import org.activityinfo.legacy.shared.command.Delete;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.command.UpdateEntity;
+import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.AppEvents;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.page.NavigationEvent;
@@ -151,7 +147,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             public void handleEvent(BaseEvent be) {
 
                 ModelData sel = DesignPresenter.this.view.getSelection();
-                ActivityFormDTO activity = DesignPresenter.this.getSelectedActivity(sel);
+                ActivityDTO activity = DesignPresenter.this.getSelectedActivity(sel);
 
                 DesignPresenter.this.view.getNewAttributeGroup().setEnabled(sel != null && activity.getClassicView());
                 DesignPresenter.this.view.getNewAttribute().setEnabled((sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) && activity.getClassicView());
@@ -261,10 +257,10 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                 }
             });
         } else if(UIActions.EDIT.equals(actionId)) {
-            IsFormClass formClass = getSelectedActivity(view.getSelection());
+            ResourceId formClassId = getSelectedActivity(view.getSelection()).getFormClassId();
             eventBus.fireEvent(new NavigationEvent(
                     NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClass.getResourceId(), "design")));
+                    new InstancePlace(formClassId, "design")));
 
         } else if(UIActions.OPEN_TABLE.equals(actionId)) {
             IsFormClass formClass = (IsFormClass) view.getSelection();
@@ -504,13 +500,13 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     }
 
     private boolean canEditWithFormDesigner(ModelData selectedItem) {
-        ActivityFormDTO activity = getSelectedActivity(selectedItem);
+        ActivityDTO activity = getSelectedActivity(selectedItem);
         return activity != null && activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE;
     }
 
-    private ActivityFormDTO getSelectedActivity(ModelData selectedItem) {
-        if (selectedItem instanceof ActivityFormDTO) {
-            return (ActivityFormDTO) selectedItem;
+    private ActivityDTO getSelectedActivity(ModelData selectedItem) {
+        if (selectedItem instanceof ActivityDTO) {
+            return (ActivityDTO) selectedItem;
         } else if (selectedItem instanceof AttributeGroupFolder ||
                 selectedItem instanceof IndicatorFolder ||
                 selectedItem instanceof IndicatorDTO ||
