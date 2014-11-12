@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -143,7 +144,9 @@ public class DbListPresenter implements ActionListener {
                 new Listener<MessageBoxEvent>() {
                     @Override
                     public void handleEvent(MessageBoxEvent be) {
-                        deleteSelection();
+                        if (be.getButtonClicked().getItemId().equals(Dialog.YES)) {
+                            deleteSelection();
+                        }
                     }
                 });
     }
