@@ -25,5 +25,5 @@ package org.activityinfo.ui.client.widget.form;
  * @author yuriyz on 11/10/2014.
  */
 public enum ValidationStateType {
-    SUCCESS, WARNING, ERROR
+    SUCCESS, WARNING, ERROR, NONE
 }

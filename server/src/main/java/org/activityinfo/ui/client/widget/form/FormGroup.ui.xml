@@ -2,24 +2,20 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
-  <g:HTMLPanel width="100%" ui:field="panel">
+  <!-- Field -->
+  <g:HTMLPanel addStyleNames="form-group" width="100%" ui:field="formGroup">
+    <label class="control-label" ui:field="label"/>
+    <g:HTMLPanel ui:field="widget"/>
 
-    <!-- Field -->
-    <div class="form-group">
-      <label class="control-label" ui:field="label"/>
-      <g:HTMLPanel ui:field="widget"/>
+    <!-- Description -->
+    <span ui:field="descriptionMargin"/>
+    <span ui:field="description"/>
 
-      <!-- Description -->
-      <span ui:field="descriptionMargin"/>
-      <span ui:field="description"/>
-
-      <!-- Validation message -->
-      <g:HTMLPanel ui:field="messageContainer">
-        <span ui:field="validationMargin"/>
-        <span ui:field="validationMessage"/>
-      </g:HTMLPanel>
-    </div>
-
+    <!-- Validation message -->
+    <g:HTMLPanel ui:field="messageContainer">
+      <span ui:field="validationMargin"/>
+      <span ui:field="validationMessage"/>
+    </g:HTMLPanel>
   </g:HTMLPanel>
 
 </ui:UiBinder>

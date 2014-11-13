@@ -58,8 +58,11 @@ public class FormGroup extends Composite implements HasWidgets.ForIsWidget {
     SpanElement description;
     @UiField
     SpanElement descriptionMargin;
+    @UiField
+    HTMLPanel formGroup;
 
     private boolean skipWidgetColStyle = false;
+    private ValidationStateType stateType = ValidationStateType.NONE;
 
     @UiConstructor
     public FormGroup() {
@@ -124,8 +127,10 @@ public class FormGroup extends Composite implements HasWidgets.ForIsWidget {
 
         if (show) {
             validationMessage.addClassName("help-block");
+            validationStateType(stateType);
         } else {
             validationMessage.removeClassName("help-block");
+            resetFormGroupStyles();
         }
 
         messageContainer.setVisible(show);
@@ -133,24 +138,33 @@ public class FormGroup extends Composite implements HasWidgets.ForIsWidget {
     }
 
     public FormGroup validationStateType(ValidationStateType stateType) {
-        // reset
-        messageContainer.removeStyleName("has-error");
-        messageContainer.removeStyleName("has-warning");
-        messageContainer.removeStyleName("has-success");
+        this.stateType = stateType;
+
+        resetFormGroupStyles();
+
+        if (stateType == ValidationStateType.NONE) {
+            return this;
+        }
 
         // set style
         switch (stateType) {
             case ERROR:
-                messageContainer.addStyleName("has-error");
+                formGroup.addStyleName("has-error");
                 break;
             case SUCCESS:
-                messageContainer.addStyleName("has-success");
+                formGroup.addStyleName("has-success");
                 break;
             case WARNING:
-                messageContainer.addStyleName("has-warning");
+                formGroup.addStyleName("has-warning");
                 break;
         }
         return this;
+    }
+
+    private void resetFormGroupStyles() {
+        formGroup.removeStyleName("has-error");
+        formGroup.removeStyleName("has-warning");
+        formGroup.removeStyleName("has-success");
     }
 
     public static FormGroup newInstance() {
