@@ -34,6 +34,7 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.event.PanelUpdatedEvent;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldLabel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldTemplate;
 
@@ -43,7 +44,7 @@ import java.util.List;
 /**
  * @author yuriyz on 07/07/2014.
  */
-public class DropPanelDropController extends FlowPanelDropController {
+public class DropPanelDropController extends FlowPanelDropController implements DropControllerExtended {
 
     private final Positioner positioner = new Positioner();
     private FormDesigner formDesigner;
@@ -88,6 +89,7 @@ public class DropPanelDropController extends FlowPanelDropController {
                 DropPanelDropController.super.onDrop(context); // drop container
                 context.selectedWidgets = originalSelectedWidgets; // restore state;
 
+                formDesigner.getEventBus().fireEvent(new PanelUpdatedEvent(fieldWidgetContainer, PanelUpdatedEvent.EventType.ADDED));
                 Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                     @Override
                     public void execute() {
@@ -96,6 +98,8 @@ public class DropPanelDropController extends FlowPanelDropController {
                         // update model
                         formDesigner.getFormClass().insertElement(widgetIndex, formField);
                         formDesigner.getDragController().makeDraggable(containerWidget, fieldWidgetContainer.getDragHandle());
+
+                        removePositioner();
                     }
                 });
                 return null;
@@ -109,5 +113,18 @@ public class DropPanelDropController extends FlowPanelDropController {
     @Override
     protected Widget newPositioner(DragContext context) {
         return positioner.asWidget();
+    }
+
+    @Override
+    public void setPositionerToEnd() {
+        removePositioner();
+        dropTarget.insert(positioner, (dropTarget.getWidgetCount()));
+    }
+
+    private void removePositioner() {
+        int currentIndex = dropTarget.getWidgetIndex(positioner);
+        if (currentIndex != -1) {
+            dropTarget.remove(currentIndex);
+        }
     }
 }

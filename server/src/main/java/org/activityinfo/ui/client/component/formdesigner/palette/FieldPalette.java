@@ -22,12 +22,13 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
  */
 
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.drop.DropController;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.ui.client.component.formdesigner.Metrics;
+import org.activityinfo.ui.client.component.formdesigner.drop.ForwardDropController;
 
 import java.util.List;
 
@@ -44,9 +45,25 @@ public class FieldPalette implements IsWidget {
     private final AbsolutePanel panel;
     private final PickupDragController dragController;
 
+    // Used to check whether widget was dropped after Drag gesture. If it was not dropped then
+    // simulate "click" and drop widget at the end of the form.
+    private DragMonitor dragMonitor;
+
     public FieldPalette() {
         this.panel = new AbsolutePanel();
-        dragController = new PickupDragController(RootPanel.get(), false);
+        dragController = new PickupDragController(RootPanel.get(), false) {
+            @Override
+            public void dragStart() {
+                super.dragStart();
+                dragMonitor.start(context);
+            }
+
+            @Override
+            public void dragEnd() {
+                dragMonitor.dragEnd(); // monitor must finished drag end first while context is still valid
+                super.dragEnd();
+            }
+        };
         dragController.setBehaviorMultipleSelection(false);
 
         List<FieldTemplate> templates = FieldTemplates.list();
@@ -62,6 +79,11 @@ public class FieldPalette implements IsWidget {
         int rowCount = Math.round((float) templates.size() / NUM_COLUMNS);
 
         panel.setHeight(calculateTop(rowCount) + "px");
+    }
+
+    public void bind(EventBus eventBus, ForwardDropController dropController) {
+        this.dragController.registerDropController(dropController);
+        this.dragMonitor = new DragMonitor(eventBus, dropController);
     }
 
     @Override
@@ -84,12 +106,8 @@ public class FieldPalette implements IsWidget {
                 (Metrics.SOURCE_CONTROL_MARGIN_RIGHT * column);
     }
 
-
-    public void registerDropController(DropController dropController) {
-        dragController.registerDropController(dropController);
-    }
-
     public PickupDragController getDragController() {
         return dragController;
     }
+
 }

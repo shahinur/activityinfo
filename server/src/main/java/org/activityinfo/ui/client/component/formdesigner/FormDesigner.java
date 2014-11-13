@@ -70,7 +70,7 @@ public class FormDesigner {
         ForwardDropController forwardDropController = new ForwardDropController(formDesignerPanel.getDropPanel());
         forwardDropController.add(new DropPanelDropController(formDesignerPanel.getDropPanel(), this));
 
-        formDesignerPanel.getFieldPalette().registerDropController(forwardDropController);
+        formDesignerPanel.getFieldPalette().bind(eventBus, forwardDropController);
         formDesignerPanel.bind(eventBus);
 
         headerPresenter = new HeaderPresenter(this);
