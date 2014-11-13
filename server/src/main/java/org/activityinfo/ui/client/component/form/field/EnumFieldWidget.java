@@ -114,7 +114,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     private void addOption() {
         String newLabel = Window.prompt("Enter a new label for this option", "");
         if(!Strings.isNullOrEmpty(newLabel)) {
-            EnumValue newValue = new EnumValue(ResourceId.generateId(), newLabel);
+            EnumValue newValue = new EnumValue(EnumValue.generateId(), newLabel);
             enumType.getValues().add(newValue);
             boxPanel.add(createControl(newValue));
         }

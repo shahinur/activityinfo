@@ -33,7 +33,7 @@ public class KeyGenerator {
 
     private final Random random = new Random();
 
-    private static final int MIN_KEY = 2 ^ 13;
+    private static final int MIN_KEY = (int) Math.pow(2, 13);
 
     /**
      * @return a random 32-bit integer key
