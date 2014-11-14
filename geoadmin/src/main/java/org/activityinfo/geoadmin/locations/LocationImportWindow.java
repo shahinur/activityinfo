@@ -3,7 +3,12 @@ package org.activityinfo.geoadmin.locations;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,14 +20,13 @@ import javax.swing.JToolBar;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import com.google.common.math.IntMath;
 import net.miginfocom.swing.MigLayout;
 
 import org.activityinfo.geoadmin.ImportFeature;
 import org.activityinfo.geoadmin.ImportSource;
-import org.activityinfo.geoadmin.model.ActivityInfoClient;
-import org.activityinfo.geoadmin.model.AdminEntity;
-import org.activityinfo.geoadmin.model.AdminLevel;
-import org.activityinfo.geoadmin.model.NewLocation;
+import org.activityinfo.geoadmin.Sql;
+import org.activityinfo.geoadmin.model.*;
 import org.activityinfo.geoadmin.util.GenericTableModel;
 import org.activityinfo.geoadmin.util.GenericTableModel.Builder;
 
@@ -31,7 +35,6 @@ import com.google.common.collect.Lists;
 import com.vividsolutions.jts.geom.Point;
 
 public class LocationImportWindow extends JFrame {
-	
 
     private LocationImportForm importForm;
 	private JTable table;
@@ -42,7 +45,7 @@ public class LocationImportWindow extends JFrame {
 	private GenericTableModel<LocationFeature> tableModel;
 	private int locationTypeId;
 
-	public LocationImportWindow(JFrame parent, ActivityInfoClient client, 
+	public LocationImportWindow(JFrame parent, ActivityInfoClient client,
 			int locationTypeId,
 			List<AdminLevel> levels, ImportSource source) throws Exception {
         super("Import - " + source.getFile().getName());
@@ -55,10 +58,10 @@ public class LocationImportWindow extends JFrame {
         this.locationTypeId = locationTypeId;
         importForm = new LocationImportForm(source, levels);
         importForm.guessLevelColumns(client);
-        
+
         locations = createRows();
         tableModel = createTableModel();
-       
+
 
         table = new JTable(tableModel);
 //        table.getColumnModel().getColumn(ImportTableModel.PARENT_COLUMN).setCellEditor(
@@ -91,19 +94,21 @@ public class LocationImportWindow extends JFrame {
         getContentPane().add(panel, BorderLayout.CENTER);
     }
 
-    private List<LocationFeature> createRows() {    	    	
+    private List<LocationFeature> createRows() {
+        Random random = new Random();
 		List<LocationFeature> locations = Lists.newArrayList();
 		for(int i=0;i!=source.getFeatureCount();++i) {
 			ImportFeature feature = source.getFeatures().get(i);
 			System.out.println("Matching " + feature);
 			LocationFeature location = new LocationFeature(feature);
+            location.setId(random.nextInt(Integer.MAX_VALUE));
 			locations.add(location);
 		}
 		return locations;
 	}
 
 	private GenericTableModel<LocationFeature> createTableModel() {
-		
+
 		Builder<LocationFeature> model = GenericTableModel.newModel(locations);
 		for(final AdminLevel level : levels) {
 			model.addColumn(level.getName(), String.class, new Function<LocationFeature, String>() {
@@ -133,13 +138,13 @@ public class LocationImportWindow extends JFrame {
     private JToolBar createToolBar() {
     	JButton matchButton = new JButton("Match Admin Levels");
     	matchButton.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				doMatch();
 			}
 		});
-    	
+
     	JButton updateButton = new JButton("Import");
         updateButton.addActionListener(new ActionListener() {
 
@@ -148,11 +153,26 @@ public class LocationImportWindow extends JFrame {
                 doImport();
             }
         });
-        
+
+
+        JButton updateSQLButton = new JButton("Generate Import SQL");
+        updateSQLButton.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    doImportSql();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
         toolBar.add(matchButton);
         toolBar.add(updateButton);
+        toolBar.add(updateSQLButton);
         toolBar.addSeparator();
 
         return toolBar;
@@ -172,29 +192,82 @@ public class LocationImportWindow extends JFrame {
 		tableModel.fireTableDataChanged();
 	}
 
+    private void doImportSql() throws IOException {
+
+        int nameIndex = importForm.getNameAttributeIndex();
+        int codeIndex = importForm.getCodeAttributeIndex();
+
+        File locationsFile = File.createTempFile("location", ".sql");
+
+        try(FileWriter writer = new FileWriter(locationsFile)) {
+
+            writer.append("BEGIN;\n");
+            writer.append("INSERT INTO location (LocationID, LocationTypeID, Name, Axe, X, Y, timeEdited) VALUES");
+
+            boolean needsComma = false;
+            for (LocationFeature location : locations) {
+
+                Point point = location.getPoint();
+
+                writer.append(needsComma ? ",\n" : "\n");
+                writer.append(String.format("(%d, %d, %s, %s, %f, %f, %d)",
+                        location.getId(),
+                        locationTypeId,
+                        Sql.quote(truncate(location.getFeature().getAttributeStringValue(nameIndex))),
+                        Sql.quote(truncate(location.getFeature().getAttributeStringValue(codeIndex))),
+                        point.getX(),
+                        point.getY(),
+                        new Date().getTime()));
+
+                needsComma = true;
+            }
+
+            writer.append(";\n");
+            writer.append("INSERT INTO locationadminlink (LocationID, AdminEntityID) VALUES");
+
+            needsComma = false;
+
+            for (LocationFeature location : locations) {
+                for (AdminEntity entity : location.getEntities().values()) {
+
+                    writer.append(needsComma ? "\n," : "\n");
+                    writer.append(String.format("(%d, %d)",
+                            location.getId(),
+                            entity.getId()));
+
+                    needsComma = true;
+                }
+            }
+            writer.append(";");
+            writer.append("COMMIT;\n");
+        }
+
+        System.out.println("Wrote to " + locationsFile.getAbsolutePath());
+    }
+
 	private void doImport() {
-		
+
 		int nameIndex = importForm.getNameAttributeIndex();
-		
+
 		List<NewLocation> newLocations = Lists.newArrayList();
 		for(LocationFeature location : locations) {
-			
-			Point point = (Point)location.getFeature().getGeometry();
-			
+
+			Point point = location.getPoint();
+
 			NewLocation newLocation = new NewLocation();
 			newLocation.setName(truncate(location.getFeature().getAttributeStringValue(nameIndex)));
 			newLocation.setLongitude(point.getX());
 			newLocation.setLatitude(point.getY());
-		
+
 			for(AdminEntity entity : location.getEntities().values()) {
 				newLocation.getAdminEntityIds().add(entity.getId());
 			}
-			
+
 			newLocations.add(newLocation);
 		}
-		
+
 		client.postNewLocations(locationTypeId, newLocations);
-		
+
 		setVisible(false);
 	}
 

@@ -18,37 +18,38 @@ import static org.activityinfo.model.legacy.CuidAdapter.*;
  */
 public class SiteBindingFactory implements Function<ActivityFormDTO, SiteBinding> {
 
-    private final int activityId;
     private final KeyGenerator keyGenerator = new KeyGenerator();
 
-    public SiteBindingFactory(int activityId) {
-        this.activityId = activityId;
+    public SiteBindingFactory() {
     }
 
     @Override
     public SiteBinding apply(ActivityFormDTO activity) {
+
+        ResourceId formClassId = activity.getResourceId();
+
         SiteBinding binding = new SiteBinding(activity);
         binding.addNestedField(partnerField(activity.getId()), PARTNER_DOMAIN, "partner");
         binding.addNestedField(projectField(activity.getId()), PROJECT_DOMAIN, "project");
 
-        binding.addField(field(CuidAdapter.activityFormClass(activityId), START_DATE_FIELD), "date1");
-        binding.addField(field(CuidAdapter.activityFormClass(activityId), END_DATE_FIELD), "date2");
+        binding.addField(field(formClassId, START_DATE_FIELD), "date1");
+        binding.addField(field(formClassId, END_DATE_FIELD), "date2");
 
         if (activity.getLocationType().isAdminLevel()) {
-            binding.addField(new AdminLevelLocationBinding(activity.getLocationType().getBoundAdminLevelId()));
+            binding.addField(new AdminLevelLocationBinding(formClassId, activity.getLocationType().getBoundAdminLevelId()));
         } else {
             binding.addNestedField(locationField(activity.getId()), LOCATION_DOMAIN, "location");
         }
 
         for (AttributeGroupDTO group : activity.getAttributeGroups()) {
-            binding.addField(new AttributeGroupBinding(activity, group));
+            binding.addField(new AttributeGroupBinding(group));
         }
 
         for (IndicatorDTO indicator : activity.getIndicators()) {
             binding.addField(indicatorField(indicator.getId()), IndicatorDTO.getPropertyName(indicator.getId()));
         }
 
-        binding.addField(commentsField(activityId), "comments");
+        binding.addField(field(formClassId, COMMENT_FIELD), "comments");
 
         return binding;
     }
@@ -66,7 +67,7 @@ public class SiteBindingFactory implements Function<ActivityFormDTO, SiteBinding
         private final AttributeGroupDTO group;
         private ResourceId fieldId;
 
-        private AttributeGroupBinding(ActivityFormDTO activity, AttributeGroupDTO group) {
+        private AttributeGroupBinding(AttributeGroupDTO group) {
             this.group = group;
             fieldId = CuidAdapter.attributeGroupField(group.getId());
         }
@@ -96,9 +97,11 @@ public class SiteBindingFactory implements Function<ActivityFormDTO, SiteBinding
 
     private class AdminLevelLocationBinding implements FieldBinding<SiteDTO> {
 
+        private ResourceId formClassId;
         private final int levelId;
 
-        private AdminLevelLocationBinding(int levelId) {
+        private AdminLevelLocationBinding(ResourceId formClassId, int levelId) {
+            this.formClassId = formClassId;
             this.levelId = levelId;
         }
 
@@ -106,7 +109,7 @@ public class SiteBindingFactory implements Function<ActivityFormDTO, SiteBinding
         public void updateInstanceFromModel(FormInstance instance, SiteDTO model) {
             LocationDTO dummyLocation = model.getLocation();
             final AdminEntityDTO adminEntity = dummyLocation.getAdminEntity(levelId);
-            instance.set(locationField(activityId), Sets.newHashSet(entity(adminEntity.getId())));
+            instance.set(field(formClassId, LOCATION_FIELD), Sets.newHashSet(entity(adminEntity.getId())));
         }
 
         @Override

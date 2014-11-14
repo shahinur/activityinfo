@@ -226,7 +226,7 @@ public class FormField extends FormElement {
         return record;
     }
 
-    public static FormElement fromRecord(Record record) {
+    public static FormField fromRecord(Record record) {
         FormField formField = new FormField(ResourceId.valueOf(record.getString("id")))
             .setDescription(record.isString("description"))
             .setLabel(Strings.nullToEmpty(record.isString("label")))

@@ -23,7 +23,7 @@ public class CalculatedField implements ValueSource {
     public CalculatedField(FormField field) {
         this.field = field;
         CalculatedFieldType type = (CalculatedFieldType) field.getType();
-        expr = ExprParser.parse(type.getExpression());
+        expr = ExprParser.parse(type.getExpression().getExpression());
     }
 
     @Override

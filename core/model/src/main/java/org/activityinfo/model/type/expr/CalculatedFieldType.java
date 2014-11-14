@@ -31,7 +31,12 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
         @Override
         public FieldType deserializeType(Record parameters) {
-            return new CalculatedFieldType(parameters.isString("expression"));
+            CalculatedFieldType type = new CalculatedFieldType();
+            Record expr = parameters.isRecord("expression");
+            if(expr != null) {
+                type.setExpression(ExprValue.fromRecord(expr));
+            }
+            return type;
         }
 
         @Override
@@ -39,7 +44,7 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
             FormField exprField = new FormField(ResourceId.valueOf("expression"));
             exprField.setLabel("Expression");
-            exprField.setDescription("Set expression if you would like to calculate field value dynamically (otherwise leave blank). Example: {A}+{B}+({C}/{D})");
+            exprField.setDescription("Example: A+B+(C/D)+[Volume A]");
             exprField.setType(ExprFieldType.INSTANCE);
 
             FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id(getId()));
@@ -49,21 +54,30 @@ public class CalculatedFieldType implements ParametrizedFieldType {
         }
     };
 
-    private String expression;
+
+    private ExprValue expression;
 
     public CalculatedFieldType() {
     }
 
     public CalculatedFieldType(String expression) {
+        this.expression = ExprValue.valueOf(expression);
+    }
+
+    public CalculatedFieldType(ExprValue expression) {
         this.expression = expression;
     }
 
-    public String getExpression() {
+    public ExprValue getExpression() {
         return expression;
     }
 
     public void setExpression(String expression) {
-        this.expression = expression;
+        this.expression = ExprValue.valueOf(expression);
+    }
+
+    private void setExpression(ExprValue exprValue) {
+        this.expression = exprValue;
     }
 
     @Override
@@ -73,9 +87,12 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record()
-                .set("expression", expression)
-                .set("classId", getTypeClass().getParameterFormClass().getId());
+        Record record = new Record();
+        record.set("classId", getTypeClass().getParameterFormClass().getId());
+        if(expression != null) {
+            record.set("expression", expression.asRecord());
+        }
+        return record;
     }
 
     @Override
