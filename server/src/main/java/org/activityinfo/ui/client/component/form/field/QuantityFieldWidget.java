@@ -4,6 +4,7 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.type.FieldType;
@@ -16,7 +17,7 @@ public class QuantityFieldWidget implements FormFieldWidget<Quantity> {
 
     private FlowPanel panel;
     private DoubleBox box;
-    private final Label unitsLabel;
+    private final InlineLabel unitsLabel;
 
 
     public QuantityFieldWidget(final QuantityType type, final ValueUpdater<Quantity> valueUpdater) {
@@ -28,9 +29,11 @@ public class QuantityFieldWidget implements FormFieldWidget<Quantity> {
             }
         });
 
-        unitsLabel = new Label(type.getUnits());
+        unitsLabel = new InlineLabel(type.getUnits());
+        unitsLabel.setStyleName("input-group-addon");
 
         panel = new FlowPanel();
+        panel.setStyleName("input-group");
         panel.add(box);
         panel.add(unitsLabel);
     }

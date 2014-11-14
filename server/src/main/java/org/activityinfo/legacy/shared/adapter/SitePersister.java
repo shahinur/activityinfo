@@ -38,7 +38,7 @@ public class SitePersister {
 
         int activityId = CuidAdapter.getLegacyIdFromCuid(siteInstance.getClassId());
         return dispatcher.execute(new GetActivityForm(activityId))
-                         .then(new SiteBindingFactory(activityId))
+                         .then(new SiteBindingFactory())
                          .join(new Function<SiteBinding, Promise<Void>>() {
                              @Nullable @Override
                              public Promise<Void> apply(@Nullable SiteBinding binding) {
@@ -82,10 +82,6 @@ public class SitePersister {
         } else {
             return dispatcher.execute(createSite);
         }
-    }
-
-    private PartnerDTO defaultPartnerId(SiteBinding siteBinding) {
-        return siteBinding.getActivity().getPartnerRange().get(0);
     }
 
     private class FetchEntityFunction implements Function<Integer, Promise<List<AdminEntityDTO>>> {
