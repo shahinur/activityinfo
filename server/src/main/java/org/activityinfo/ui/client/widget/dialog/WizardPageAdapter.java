@@ -28,15 +28,28 @@ import com.google.gwt.user.client.ui.IsWidget;
  */
 public abstract class WizardPageAdapter implements WizardPage {
 
+    protected WizardDialog wizardDialog;
+
     @Override
     public abstract IsWidget asWidget();
 
     @Override
-    public boolean isPrimaryButtonEnabled() {
+    public boolean isValid() {
         return true;
     }
 
     @Override
     public void onShow(WizardDialog wizardDialog) {
+        this.wizardDialog = wizardDialog;
+    }
+
+    public void fireValidation() {
+        if (wizardDialog != null) {
+            wizardDialog.firePrimaryButtonState(this);
+        }
+    }
+
+    @Override
+    public void beforeLeave() {
     }
 }
