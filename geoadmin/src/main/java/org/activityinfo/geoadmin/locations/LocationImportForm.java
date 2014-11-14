@@ -25,6 +25,8 @@ public class LocationImportForm extends JPanel {
 
     private ImportSource source;
     private JComboBox nameCombo;
+    private JComboBox codeCombo;
+
     private Map<AdminLevel, JComboBox> levelCombos = Maps.newHashMap();
 
     public LocationImportForm(ImportSource source, List<AdminLevel> levels) {
@@ -34,9 +36,15 @@ public class LocationImportForm extends JPanel {
         
         nameCombo = new JComboBox(source.getAttributeNames());
         nameCombo.setSelectedIndex(guessNameColumn());
-        
+
+        codeCombo = new JComboBox(source.getAttributeNames());
+
         add(new JLabel("Name Attribute"));
         add(nameCombo, "width 160!, wrap");
+
+
+        add(new JLabel("Code Attribute"));
+        add(codeCombo, "width 160!, wrap");
 
         for(AdminLevel level : levels) {
         	JComboBox levelCombo = createAdminColumnCombo();
@@ -68,7 +76,9 @@ public class LocationImportForm extends JPanel {
     public int getNameAttributeIndex() {
         return nameCombo.getSelectedIndex();
     }
-    
+
+    public int getCodeAttributeIndex() { return codeCombo.getSelectedIndex(); }
+
     public void guessLevelColumns(ActivityInfoClient client) {
     	for(AdminLevel level : levelCombos.keySet()) {
     		List<AdminEntity> entities = client.getAdminEntities(level);

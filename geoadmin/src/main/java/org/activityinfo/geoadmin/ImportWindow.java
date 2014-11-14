@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import com.vividsolutions.jts.geom.Envelope;
 import net.miginfocom.swing.MigLayout;
 import org.activityinfo.geoadmin.model.*;
-import org.apache.commons.lang.StringEscapeUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -213,7 +212,7 @@ public class ImportWindow extends JDialog {
 
             out.println("BEGIN;");
             out.println(String.format("INSERT INTO adminlevel (name, countryid, parentid) VALUES (%s, %d, %d);",
-                quote(newLevel.getName()),
+                Sql.quote(newLevel.getName()),
                 country.getId(),
                 parentLevel.getId()));
 
@@ -223,7 +222,7 @@ public class ImportWindow extends JDialog {
 
             out.println(String.format("INSERT INTO locationtype (name, countryid, boundadminlevelid, reuse) " +
                     "VALUES (%s, %d, @newLevelId, 0);",
-                quote(newLevel.getName()),
+                Sql.quote(newLevel.getName()),
                 country.getId()));
 
             out.println("COMMIT;");
@@ -244,8 +243,8 @@ public class ImportWindow extends JDialog {
                 }
 
                 out.print(String.format("(@newLevelId, %s, %s, %s, %f, %f, %f, %f)",
-                    quote(entity.getName()),
-                    quote(entity.getCode()),
+                    Sql.quote(entity.getName()),
+                    Sql.quote(entity.getCode()),
                     parentLevel == null ? "null" : Integer.toString(entity.getParentId()),
                     entity.getBounds().getX1(),
                     entity.getBounds().getY1(),
@@ -263,14 +262,6 @@ public class ImportWindow extends JDialog {
             out.println("COMMIT;");
         }
         System.out.println("Wrote to " + tempFile.getAbsolutePath());
-    }
-
-    private String quote(String code) {
-        if(code == null) {
-            return "null";
-        } else {
-            return "\'" + StringEscapeUtils.escapeSql(code) + "\'";
-        }
     }
 
     private AdminLevel buildUpdate() {
