@@ -31,7 +31,12 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
         @Override
         public FieldType deserializeType(Record parameters) {
-            return new CalculatedFieldType(ExprValue.fromRecord(parameters.getRecord("expression")));
+            CalculatedFieldType type = new CalculatedFieldType();
+            Record expr = parameters.isRecord("expression");
+            if(expr != null) {
+                type.setExpression(ExprValue.fromRecord(expr));
+            }
+            return type;
         }
 
         @Override
@@ -48,6 +53,7 @@ public class CalculatedFieldType implements ParametrizedFieldType {
             return formClass;
         }
     };
+
 
     private ExprValue expression;
 
@@ -68,6 +74,10 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
     public void setExpression(String expression) {
         this.expression = ExprValue.valueOf(expression);
+    }
+
+    private void setExpression(ExprValue exprValue) {
+        this.expression = exprValue;
     }
 
     @Override
