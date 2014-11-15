@@ -52,7 +52,6 @@ public class FormField extends FormElement {
         return this;
     }
 
-
     public boolean hasCode() {
         return code != null;
     }

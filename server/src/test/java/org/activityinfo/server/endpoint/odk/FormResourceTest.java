@@ -9,6 +9,7 @@ import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
@@ -19,10 +20,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -40,6 +44,7 @@ import static org.activityinfo.model.legacy.CuidAdapter.field;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.*;
 
+@SuppressWarnings("AppEngineForbiddenCode")
 @RunWith(InjectionSupport.class)
 public class FormResourceTest extends CommandTestCase2 {
 
@@ -48,10 +53,11 @@ public class FormResourceTest extends CommandTestCase2 {
 
     private FormResource formResource;
     private FormSubmissionResource formSubmissionResource;
+    private ResourceLocatorSyncImpl resourceLocator;
 
     @Before
     public void setUp() throws IOException {
-        ResourceLocatorSyncImpl resourceLocator = new ResourceLocatorSyncImpl(getDispatcherSync());
+        resourceLocator = new ResourceLocatorSyncImpl(getDispatcherSync());
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", USER_ID, "jorden@bdd.com"));
 
         OdkFormFieldBuilderFactory fieldFactory = new OdkFormFieldBuilderFactory(resourceLocator);
@@ -63,7 +69,7 @@ public class FormResourceTest extends CommandTestCase2 {
         SubmissionArchiver backupService = new SubmissionArchiver(
                 new DeploymentConfiguration(new Properties()));
 
-        formResource = new FormResource(resourceLocator, authProvider, fieldFactory, tokenService);
+        formResource = new FormResource(resourceLocator, fieldFactory, tokenService);
         formSubmissionResource = new FormSubmissionResource(
                 parserFactory, resourceLocator, tokenService, blobstore,
                 backupService);
@@ -85,6 +91,18 @@ public class FormResourceTest extends CommandTestCase2 {
         validate(file);
     }
 
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void itemSet() throws IOException {
+        ItemSetBuilder builder = new ItemSetBuilder(resourceLocator, injector.getProvider(EntityManager.class));
+        StreamingOutput output = builder.build(CuidAdapter.activityFormClass(1));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        output.write(baos);
+
+        System.out.println(new String(baos.toByteArray()));
+
+    }
 
     @Test @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void current() throws IOException {

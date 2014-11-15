@@ -1,7 +1,12 @@
 package org.activityinfo.server.endpoint.odk;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.barcode.BarcodeType;
 import org.activityinfo.model.type.enumerated.EnumType;
@@ -20,6 +25,7 @@ import org.activityinfo.service.lookup.ReferenceChoice;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class OdkFormFieldBuilderFactory {
@@ -69,11 +75,12 @@ public class OdkFormFieldBuilderFactory {
             return new QuantityFieldBuilder((QuantityType) fieldType);
         }
         if (fieldType instanceof ReferenceType) {
-            SelectOptions options = referenceOptions((ReferenceType) fieldType);
-            if(options.isEmpty()) {
-                return null;
+            Set<ResourceId> range = ((ReferenceType) fieldType).getRange();
+            if(isSmallSet(range)) {
+                return new SelectBuilder(BindingType.STRING, referenceOptions((ReferenceType) fieldType));
+            } else {
+                return new ReferenceBuilder(range);
             }
-            return new SelectBuilder(BindingType.STRING, options);
         }
         if (fieldType instanceof TextType) {
             return new SimpleInputBuilder(BindingType.STRING);
@@ -82,6 +89,18 @@ public class OdkFormFieldBuilderFactory {
         // If this happens, it means this class needs to be expanded to support the new FieldType class.
         LOGGER.warning("Unknown FieldType: " + fieldType.getClass().getName());
         return null;
+    }
+
+    private boolean isSmallSet(Set<ResourceId> range) {
+        // TODO: hardcoded to include partner/projects in form
+        if(range.size() == 1) {
+            ResourceId formClassId = Iterables.getOnlyElement(range);
+            if(formClassId.getDomain() == CuidAdapter.PARTNER_FORM_CLASS_DOMAIN ||
+               formClassId.getDomain() == CuidAdapter.PROJECT_CLASS_DOMAIN) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private SelectOptions enumOptions(EnumType enumType) {

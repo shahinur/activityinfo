@@ -48,13 +48,14 @@ public class ActivityFormClassBuilder {
         FormField partnerField = new FormField(CuidAdapter.field(classId, CuidAdapter.PARTNER_FIELD))
                 .setLabel(I18N.CONSTANTS.partner())
                 .setType(ReferenceType.single(CuidAdapter.partnerFormClass(activity.getDatabaseId())))
-                .setVisible(activity.isEditAllAllowed())
+                .setVisible(activity.isEditAllAllowed() && activity.getPartnerRange().size() > 1)
                 .setRequired(true);
         siteForm.addElement(partnerField);
 
         FormField projectField = new FormField(CuidAdapter.field(classId, CuidAdapter.PROJECT_FIELD))
         .setLabel(I18N.CONSTANTS.project())
-        .setType(ReferenceType.single(CuidAdapter.projectFormClass(activity.getDatabaseId())));
+        .setType(ReferenceType.single(CuidAdapter.projectFormClass(activity.getDatabaseId())))
+        .setVisible(activity.getProjects().size() > 0);
         siteForm.addElement(projectField);
 
         FormField endDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.END_DATE_FIELD))

@@ -57,9 +57,11 @@ public class XFormBuilder {
     private List<OdkField> createFieldBuilders(FormClass formClass) {
         fields = new ArrayList<>();
         for (FormField field : formClass.getFields()) {
-            OdkFormFieldBuilder builder = factory.get(field.getType());
-            if (builder != null) {
-                fields.add(new OdkField(field, builder));
+            if(field.isVisible()) {
+                OdkFormFieldBuilder builder = factory.get(field.getType());
+                if (builder != null) {
+                    fields.add(new OdkField(field, builder));
+                }
             }
         }
         return fields;
@@ -67,6 +69,7 @@ public class XFormBuilder {
 
     private Model createModel() {
         Model model = new Model();
+        model.getItext().getTranslations().add(Translation.defaultTranslation());
         model.setInstance(createInstance());
         model.getBindings().addAll(createBindings());
         return model;
@@ -134,7 +137,7 @@ public class XFormBuilder {
     }
 
     private BodyElement createPresentationElement(OdkField formField) {
-        return formField.getBuilder().createPresentationElement(
+        return formField.getBuilder().createBodyElement(
                 formField.getAbsoluteFieldName(),
                 formField.getModel().getLabel(),
                 formField.getModel().getDescription());

@@ -1,11 +1,14 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
-import com.sun.jersey.api.view.Viewable;
 import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.DispatcherSync;
+import org.activityinfo.server.endpoint.odk.formList.XFormList;
+import org.activityinfo.server.endpoint.odk.formList.XFormListItem;
 
 import javax.inject.Provider;
 import javax.ws.rs.GET;
@@ -15,12 +18,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.util.Map;
 import java.util.logging.Logger;
 
 @Path("/formList")
 public class FormListResource {
     private static final Logger LOGGER = Logger.getLogger(FormListResource.class.getName());
+
+
 
     private Provider<AuthenticatedUser> authProvider;
     private DispatcherSync dispatcher;
@@ -31,16 +35,44 @@ public class FormListResource {
         this.dispatcher = dispatcher;
     }
 
-    @GET @Produces(MediaType.TEXT_XML)
-    public Response formList(@Context UriInfo info) throws Exception {
+    @GET
+    @Produces(MediaType.TEXT_XML)
+    public Response formList(@Context UriInfo uri) throws Exception {
         AuthenticatedUser user = authProvider.get();
 
-        LOGGER.finer("ODK formlist requested by " + user.getEmail() + " (" + user.getId() + ")");
+        LOGGER.finer("ODK form list requested by " + user.getEmail() + " (" + user.getId() + ")");
 
-        Map<String, Object> map = Maps.newHashMap();
-        map.put("schema", dispatcher.execute(new GetSchema()));
-        map.put("host", info.getBaseUri().toString());
+        SchemaDTO schema = dispatcher.execute(new GetSchema());
 
-        return Response.ok(new Viewable("/odk/formList.ftl", map)).build();
+        XFormList formList = new XFormList();
+        for (UserDatabaseDTO db : schema.getDatabases()) {
+            if (db.isEditAllAllowed()) {
+                for (ActivityDTO activity : db.getActivities()) {
+                    XFormListItem form = new XFormListItem();
+                    form.setName(db.getName() + " / " + activity.getName());
+                    form.setFormId("activityinfo.org:" + activity.getId());
+                    form.setVersion(getVersion());
+
+                    form.setDownloadUrl(uri.getBaseUriBuilder()
+                            .path(FormResource.class)
+                            .path(Integer.toString(activity.getId()))
+                            .path("xform")
+                            .build());
+
+                    form.setManifestUrl(uri.getBaseUriBuilder()
+                            .path(FormResource.class)
+                            .path(Integer.toString(activity.getId()))
+                            .path("manifest")
+                            .build());
+
+                    formList.getItems().add(form);
+                }
+            }
+        }
+        return OpenRosaResponse.build(formList);
+    }
+
+    private String getVersion() {
+        return Long.toString(System.currentTimeMillis() / 1000);
     }
 }

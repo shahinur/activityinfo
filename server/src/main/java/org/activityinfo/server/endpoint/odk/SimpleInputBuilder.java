@@ -16,7 +16,7 @@ class SimpleInputBuilder implements OdkFormFieldBuilder {
     }
 
     @Override
-    public Input createPresentationElement(String ref, String label, String hint) {
+    public Input createBodyElement(String ref, String label, String hint) {
         Input input = new Input();
 
         input.setRef(ref);

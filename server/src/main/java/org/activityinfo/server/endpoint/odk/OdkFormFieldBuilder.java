@@ -7,5 +7,5 @@ public interface OdkFormFieldBuilder {
 
     public BindingType getModelBindType();
 
-    public BodyElement createPresentationElement(String ref, String label, String hint);
+    public BodyElement createBodyElement(String ref, String label, String hint);
 }

@@ -27,7 +27,7 @@ class SelectBuilder implements OdkFormFieldBuilder {
     }
 
     @Override
-    public SelectElement createPresentationElement(String ref, String label, String hint) {
+    public SelectElement createBodyElement(String ref, String label, String hint) {
         SelectElement select;
         switch(cardinality) {
             case SINGLE:

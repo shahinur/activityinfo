@@ -23,6 +23,14 @@ public class Bind {
 
     private String preloadParams;
 
+    public Bind() {
+
+    }
+
+    public Bind(BindingType modelBindType) {
+        type = modelBindType;
+    }
+
     @SuppressWarnings("SpellCheckingInspection")
     @XmlAttribute(name = "nodeset")
     public String getNodeSet() {

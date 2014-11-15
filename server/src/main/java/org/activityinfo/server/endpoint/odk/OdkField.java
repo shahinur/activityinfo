@@ -1,6 +1,9 @@
 package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.server.endpoint.odk.xform.XPathBuilder;
+
+import javax.xml.xpath.XPath;
 
 public class OdkField {
 
@@ -25,6 +28,6 @@ public class OdkField {
     }
 
     public String getRelativeFieldName() {
-        return "field_" + model.getId().asString();
+        return XPathBuilder.fieldTagName(model.getId());
     }
 }

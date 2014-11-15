@@ -16,7 +16,7 @@ class UploadBuilder implements OdkFormFieldBuilder {
     }
 
     @Override
-    public Upload createPresentationElement(String ref, String label, String hint) {
+    public Upload createBodyElement(String ref, String label, String hint) {
         Upload upload = new Upload();
 
         upload.setRef(ref);

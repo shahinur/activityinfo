@@ -24,6 +24,8 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, Provi
     private Published _published;
     private LocationTypeDTO locationType;
 
+    private int version;
+
     public ActivityDTO() {
         setReportingFrequency(ActivityFormDTO.REPORT_ONCE);
     }

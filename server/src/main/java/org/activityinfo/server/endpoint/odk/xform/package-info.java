@@ -1,3 +1,6 @@
+/**
+ * JAXB Mapping of the XForm Schema
+ */
 @XmlSchema(
         elementFormDefault = XmlNsForm.QUALIFIED,
         namespace = "http://www.w3.org/2002/xforms",

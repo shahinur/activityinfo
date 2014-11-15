@@ -6,6 +6,7 @@ import javassist.compiler.ast.Expr;
 import org.activityinfo.model.expr.*;
 import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
@@ -43,7 +44,6 @@ public class XPathBuilder {
     private String quote(String value) {
         return "'" + value + "'";
     }
-
 
     public String build(String expr) {
         if(Strings.isNullOrEmpty(expr)) {
@@ -120,5 +120,9 @@ public class XPathBuilder {
         appendTo(arguments.get(0), xpath);
         xpath.append(" ").append(operatorName).append(" ");
         appendTo(arguments.get(1), xpath);
+    }
+
+    public static String fieldTagName(ResourceId fieldId) {
+        return "field_" + fieldId.asString();
     }
 }

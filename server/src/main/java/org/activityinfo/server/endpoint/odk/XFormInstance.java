@@ -10,6 +10,7 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.primitive.TextValue;
+import org.activityinfo.server.endpoint.odk.xform.XPathBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -86,8 +87,8 @@ public class XFormInstance {
         return instanceId;
     }
 
-    public Optional<Element> getFieldContent(ResourceId id) {
-        String tagName = id.asString();
+    public Optional<Element> getFieldContent(ResourceId fieldId) {
+        String tagName = XPathBuilder.fieldTagName(fieldId);
         NodeList nodeList = document.getElementsByTagName(tagName);
 
         if (nodeList.getLength() > 0) {
