@@ -34,11 +34,12 @@ public class NewDbDialog {
 
     private final Dispatcher dispatcher;
     private final WizardDialog dialog;
+    private final NewDbDialogData dialogData = new NewDbDialogData();
 
     public NewDbDialog(final Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
 
-        this.dialog = new WizardDialog(new NewDbPageSwitcher());
+        this.dialog = new WizardDialog(new NewDbPageSwitcher(dispatcher, dialogData));
         this.dialog.setTitle(I18N.CONSTANTS.createNewDatabase());
         this.dialog.setOnFinishHandler(new ClickHandler() {
             @Override

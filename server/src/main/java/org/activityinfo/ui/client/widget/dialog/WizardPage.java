@@ -30,7 +30,11 @@ public interface WizardPage {
 
     public IsWidget asWidget();
 
-    boolean isPrimaryButtonEnabled();
+    boolean isValid();
 
     void onShow(WizardDialog wizardDialog);
+
+    void beforeLeave();
+
+    void fireValidation();
 }

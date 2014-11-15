@@ -44,18 +44,28 @@ public class WizardDialog {
         dialog.getBackButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                informPageAboutLeave();
                 showPage(pageSwitcher.getPrevious());
             }
         });
         dialog.getPrimaryButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                showPage(pageSwitcher.getNext());
-                if (pageSwitcher.isFinishPage()) {
+                if (pageSwitcher.isFinishPage()) { // first check whether finish page and only then switch
                     onFinishHandler.onClick(event);
                 }
+
+                informPageAboutLeave();
+                showPage(pageSwitcher.getNext());
+
             }
         });
+    }
+
+    private void informPageAboutLeave() {
+        if (getCurrentPage() != null) {
+            getCurrentPage().beforeLeave();
+        }
     }
 
     public PageSwitcher getPageSwitcher() {
@@ -66,7 +76,7 @@ public class WizardDialog {
         return pageSwitcher.getCurrentPage();
     }
 
-    public void showPage(WizardPage page) {
+    private void showPage(WizardPage page) {
         dialog.getModalBody().clear();
         dialog.getModalBody().add(page.asWidget());
 
@@ -77,7 +87,7 @@ public class WizardDialog {
     }
 
     public void firePrimaryButtonState(WizardPage page) {
-        dialog.getPrimaryButton().setEnabled(page.isPrimaryButtonEnabled());
+        dialog.getPrimaryButton().setEnabled(page.isValid());
     }
 
     public WizardDialog setTitle(String title) {

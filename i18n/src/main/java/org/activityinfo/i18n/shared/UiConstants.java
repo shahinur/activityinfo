@@ -3613,4 +3613,16 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Creating...")
     String creating();
+
+    @DefaultStringValue("Please enter the name")
+    String enterNameWelcome();
+
+    @DefaultStringValue("Please enter the description")
+    String enterDescriptionWelcome();
+
+    @DefaultStringValue("Please select the country")
+    String selectCountryWelcome();
+
+    @DefaultStringValue("Failed to load country list (please report issue on help@activityinfo.org)")
+    String failedToLoadCountries();
 }

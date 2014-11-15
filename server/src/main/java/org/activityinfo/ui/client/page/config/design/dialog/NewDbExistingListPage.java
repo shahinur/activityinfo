@@ -25,11 +25,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.watopi.chosen.client.event.ChosenChangeEvent;
+import com.watopi.chosen.client.gwt.ChosenListBox;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
+import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
+import org.activityinfo.ui.client.util.GwtUtil;
 import org.activityinfo.ui.client.widget.dialog.WizardDialog;
 import org.activityinfo.ui.client.widget.dialog.WizardPageAdapter;
+
+import java.util.List;
 
 /**
  * @author yuriyz on 11/13/2014.
@@ -41,18 +50,73 @@ public class NewDbExistingListPage extends WizardPageAdapter {
     interface OurUiBinder extends UiBinder<Widget, NewDbExistingListPage> {
     }
 
+    private final Dispatcher dispatcher;
+    private final NewDbDialogData dialogData;
     private final Widget rootPanel;
-    @UiField
-    ListBox list;
 
-    public NewDbExistingListPage() {
-        rootPanel = uiBinder.createAndBindUi(this);
+    private List<UserDatabaseDTO> databaseList;
+
+    @UiField
+    ChosenListBox list;
+
+    public NewDbExistingListPage(Dispatcher dispatcher, NewDbDialogData dialogData) {
+        this.dispatcher = dispatcher;
+        this.dialogData = dialogData;
+        this.rootPanel = uiBinder.createAndBindUi(this);
+
+        list.addChosenChangeHandler(new ChosenChangeEvent.ChosenChangeHandler() {
+            @Override
+            public void onChange(ChosenChangeEvent event) {
+                fireValidation();
+            }
+        });
+
+        loadDatabaseList();
+    }
+
+    private void loadDatabaseList() {
+        dispatcher.execute(new GetSchema(), new SuccessCallback<SchemaDTO>() {
+            @Override
+            public void onSuccess(SchemaDTO result) {
+                databaseList = result.getDatabases();
+                for (UserDatabaseDTO db : databaseList) {
+                    list.addItem(db.getName(), Integer.toString(db.getId()));
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean isValid() {
+        boolean isValid = GwtUtil.isInt(list.getValue());
+        if (isValid) {
+            updateDialogData();
+        }
+        return isValid;
+    }
+
+    private void updateDialogData() {
+        UserDatabaseDTO db = getSelectedDb();
+        dialogData.setSourceDatabaseCountryId(db.getCountry().getId());
+        dialogData.getCommand().setSourceDatabaseId(db.getId());
+        dialogData.setHasDesignPrivileges(db.isDesignAllowed());
     }
 
     @Override
     public void onShow(WizardDialog wizardDialog) {
         super.onShow(wizardDialog);
         wizardDialog.getDialog().getPrimaryButton().setText(I18N.CONSTANTS.nextButton());
+        fireValidation();
+    }
+
+    private UserDatabaseDTO getSelectedDb() {
+        int dbId = GwtUtil.getIntSilently(list.getValue());
+        for (UserDatabaseDTO db : databaseList) {
+            if (db.getId() == dbId) {
+                return db;
+            }
+        }
+        throw new RuntimeException("Unable to find db with id: " + dbId);
     }
 
     @Override

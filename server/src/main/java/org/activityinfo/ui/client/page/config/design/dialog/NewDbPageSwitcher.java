@@ -21,6 +21,7 @@ package org.activityinfo.ui.client.page.config.design.dialog;
  * #L%
  */
 
+import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.ui.client.widget.dialog.PageSwitcher;
 import org.activityinfo.ui.client.widget.dialog.WizardPage;
 
@@ -30,11 +31,19 @@ import org.activityinfo.ui.client.widget.dialog.WizardPage;
 public class NewDbPageSwitcher implements PageSwitcher {
 
     private final NewDbTypePage typePage = new NewDbTypePage();
-    private final NewDbDetailsPage detailsPage = new NewDbDetailsPage();
-    private final NewDbExistingListPage existingListPage = new NewDbExistingListPage();
+    private final NewDbDetailsPage detailsPage;
+    private final NewDbExistingListPage existingListPage;
+
+    private final Dispatcher dispatcher;
 
     WizardPage currentPage = null;
     WizardPage previousPage = null;
+
+    public NewDbPageSwitcher(Dispatcher dispatcher, NewDbDialogData dialogData) {
+        this.dispatcher = dispatcher;
+        this.detailsPage = new NewDbDetailsPage(dispatcher, dialogData);
+        this.existingListPage = new NewDbExistingListPage(dispatcher, dialogData);
+    }
 
     @Override
     public WizardPage getNext() {
