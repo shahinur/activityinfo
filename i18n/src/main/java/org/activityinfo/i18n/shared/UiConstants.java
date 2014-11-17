@@ -3625,4 +3625,10 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Failed to load country list (please report issue on help@activityinfo.org)")
     String failedToLoadCountries();
+
+    @DefaultStringValue("Failed to create database.")
+    String failedToCreateDatabase();
+
+    @DefaultStringValue("Please select the database to copy")
+    String selectDbToCopyWelcome();
 }

@@ -28,9 +28,10 @@ import org.activityinfo.legacy.shared.command.CloneDatabase;
  */
 public class NewDbDialogData {
 
-    private Integer sourceDatabaseCountryId = null;
+    private int sourceDatabaseCountryId = -1;
     private boolean hasDesignPrivileges = false;
     private CloneDatabase command = new CloneDatabase();
+    private boolean cloneDb = false;
 
     public NewDbDialogData() {
     }
@@ -54,6 +55,15 @@ public class NewDbDialogData {
 
     public NewDbDialogData setHasDesignPrivileges(boolean hasDesignPrivileges) {
         this.hasDesignPrivileges = hasDesignPrivileges;
+        return this;
+    }
+
+    public boolean isCloneDb() {
+        return cloneDb;
+    }
+
+    public NewDbDialogData setCloneDb(boolean cloneDb) {
+        this.cloneDb = cloneDb;
         return this;
     }
 }

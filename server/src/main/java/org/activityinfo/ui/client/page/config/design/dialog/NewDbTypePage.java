@@ -27,7 +27,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
-import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.ui.client.widget.dialog.WizardDialog;
 import org.activityinfo.ui.client.widget.dialog.WizardPageAdapter;
@@ -43,20 +42,28 @@ public class NewDbTypePage extends WizardPageAdapter {
     }
 
     private final Widget rootPanel;
+    private final NewDbDialogData dialogData;
 
     @UiField
     RadioButton newDatabase;
     @UiField
     RadioButton copyDatabase;
 
-    public NewDbTypePage() {
-        rootPanel = uiBinder.createAndBindUi(this);
+    public NewDbTypePage(NewDbDialogData dialogData) {
+        this.rootPanel = uiBinder.createAndBindUi(this);
+        this.dialogData = dialogData;
     }
 
     @Override
     public void onShow(WizardDialog wizardDialog) {
         super.onShow(wizardDialog);
         wizardDialog.getDialog().getPrimaryButton().setText(I18N.CONSTANTS.nextButton());
+    }
+
+    @Override
+    public void beforeLeave() {
+        super.beforeLeave();
+        dialogData.setCloneDb(copyDatabase.getValue());
     }
 
     @Override

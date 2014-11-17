@@ -204,23 +204,13 @@ public class DbListPresenter implements ActionListener {
     public void onAdd() {
         NewDbDialog newDbDialog = new NewDbDialog(dispatcher);
         newDbDialog.show();
-
-//        final UserDatabaseDTO db = new UserDatabaseDTO();
-//
-//        DatabaseForm form = new DatabaseForm(dispatcher);
-//        form.getBinding().bind(db);
-//
-//        final FormDialogImpl dialog = new FormDialogImpl(form);
-//        dialog.setWidth(400);
-//        dialog.setHeight(200);
-//        dialog.setHeadingText(I18N.CONSTANTS.newDatabase());
-//
-//        dialog.show(new FormDialogCallback() {
-//            @Override
-//            public void onValidated() {
-//                save(db, dialog);
-//            }
-//        });
+        newDbDialog.setSuccessCallback(new SuccessCallback<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+                loader.load();
+            }
+        });
     }
 
     /**

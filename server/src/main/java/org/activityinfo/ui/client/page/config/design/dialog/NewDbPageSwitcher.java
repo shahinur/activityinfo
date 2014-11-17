@@ -30,19 +30,17 @@ import org.activityinfo.ui.client.widget.dialog.WizardPage;
  */
 public class NewDbPageSwitcher implements PageSwitcher {
 
-    private final NewDbTypePage typePage = new NewDbTypePage();
+    private final NewDbTypePage typePage;
     private final NewDbDetailsPage detailsPage;
     private final NewDbExistingListPage existingListPage;
-
-    private final Dispatcher dispatcher;
 
     WizardPage currentPage = null;
     WizardPage previousPage = null;
 
     public NewDbPageSwitcher(Dispatcher dispatcher, NewDbDialogData dialogData) {
-        this.dispatcher = dispatcher;
         this.detailsPage = new NewDbDetailsPage(dispatcher, dialogData);
         this.existingListPage = new NewDbExistingListPage(dispatcher, dialogData);
+        this.typePage = new NewDbTypePage(dialogData);
     }
 
     @Override

@@ -37,6 +37,7 @@ import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.ui.client.util.GwtUtil;
 import org.activityinfo.ui.client.widget.dialog.WizardDialog;
 import org.activityinfo.ui.client.widget.dialog.WizardPageAdapter;
+import org.activityinfo.ui.client.widget.form.FormGroup;
 
 import java.util.List;
 
@@ -58,6 +59,8 @@ public class NewDbExistingListPage extends WizardPageAdapter {
 
     @UiField
     ChosenListBox list;
+    @UiField
+    FormGroup dbField;
 
     public NewDbExistingListPage(Dispatcher dispatcher, NewDbDialogData dialogData) {
         this.dispatcher = dispatcher;
@@ -88,9 +91,13 @@ public class NewDbExistingListPage extends WizardPageAdapter {
 
     @Override
     public boolean isValid() {
+        dbField.showValidationMessage(false);
+
         boolean isValid = GwtUtil.isInt(list.getValue());
         if (isValid) {
             updateDialogData();
+        } else {
+            dbField.showValidationMessage(true);
         }
         return isValid;
     }

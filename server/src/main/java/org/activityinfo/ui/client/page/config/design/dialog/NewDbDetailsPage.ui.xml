@@ -30,7 +30,8 @@
     <!-- Country -->
     <f:FormGroup label="{i18n.country}" ui:field="countryField"  columnLabelWidth="2"
                  validationStateType="ERROR" validationMessage="{i18n.selectCountryWelcome}">
-      <chzn:ChosenListBox ui:field="country" multipleSelect="false" width="100%" allowSingleDeselect="true"/>
+      <chzn:ChosenListBox ui:field="country" visibleItemCount="10" multipleSelect="false"
+                          width="100%" allowSingleDeselect="true"/>
     </f:FormGroup>
 
     <g:HTMLPanel ui:field="optionsContainer">

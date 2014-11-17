@@ -2,6 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:chzn="urn:import:com.watopi.chosen.client.gwt"
+             xmlns:f="urn:import:org.activityinfo.ui.client.widget.form"
         >
 
 
@@ -14,8 +15,13 @@
     </h2>
     <br/>
 
-    <chzn:ChosenListBox ui:field="list" visibleItemCount="10" multipleSelect="false"
-                        width="100%" height="100%" allowSingleDeselect="true"/>
+    <f:FormGroup label="" ui:field="dbField"  columnLabelWidth="0"
+                 validationStateType="ERROR" validationMessage="{i18n.selectDbToCopyWelcome}">
+      <chzn:ChosenListBox ui:field="list" visibleItemCount="10" multipleSelect="false"
+                          width="100%" height="100%" allowSingleDeselect="true"/>
+    </f:FormGroup>
+
+
   </g:HTMLPanel>
 
 </ui:UiBinder>

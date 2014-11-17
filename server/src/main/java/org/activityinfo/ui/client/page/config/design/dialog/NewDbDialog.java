@@ -23,9 +23,17 @@ package org.activityinfo.ui.client.page.config.design.dialog;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
+import org.activityinfo.legacy.shared.command.Command;
+import org.activityinfo.legacy.shared.command.CreateEntity;
+import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.ui.client.widget.dialog.WizardDialog;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author yuriyz on 11/13/2014.
@@ -35,6 +43,8 @@ public class NewDbDialog {
     private final Dispatcher dispatcher;
     private final WizardDialog dialog;
     private final NewDbDialogData dialogData = new NewDbDialogData();
+
+    private SuccessCallback<Void> successCallback;
 
     public NewDbDialog(final Dispatcher dispatcher) {
         this.dispatcher = dispatcher;
@@ -50,13 +60,49 @@ public class NewDbDialog {
     }
 
     private void createDatabase() {
-        // todo
         dialog.getDialog().getPrimaryButton().setText(I18N.CONSTANTS.creating());
-        dialog.hide();
+        dialog.getDialog().disablePrimaryButton();
+
+        dispatcher.execute(createCommand(), new AsyncCallback<CreateResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                dialog.getDialog().getPrimaryButton().setText(I18N.CONSTANTS.retry());
+                dialog.getDialog().enablePrimaryButton();
+                dialog.getDialog().getStatusLabel().setText(I18N.CONSTANTS.failedToCreateDatabase());
+            }
+
+            @Override
+            public void onSuccess(CreateResult result) {
+                dialog.hide();
+                if (successCallback != null) {
+                    successCallback.onSuccess(null);
+                }
+            }
+        });
+    }
+
+    private Command<CreateResult> createCommand() {
+        if (dialogData.isCloneDb()) {
+            return dialogData.getCommand();
+        } else {
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("name", dialogData.getCommand().getName());
+            properties.put("countryId", dialogData.getCommand().getCountryId());
+            return new CreateEntity("UserDatabase", properties);
+        }
     }
 
     public NewDbDialog show() {
         dialog.show();
+        return this;
+    }
+
+    public SuccessCallback<Void> getSuccessCallback() {
+        return successCallback;
+    }
+
+    public NewDbDialog setSuccessCallback(SuccessCallback<Void> successCallback) {
+        this.successCallback = successCallback;
         return this;
     }
 }
