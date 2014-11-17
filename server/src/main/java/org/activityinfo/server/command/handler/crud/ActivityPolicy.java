@@ -68,6 +68,11 @@ public class ActivityPolicy implements EntityPolicy<Activity> {
         return activity.getId();
     }
 
+    public Activity persist(Activity activity) {
+        activityDAO.persist(activity);
+        return activity;
+    }
+
     @Override
     public void update(User user, Object entityId, PropertyMap changes) {
         Activity activity = em.find(Activity.class, entityId);

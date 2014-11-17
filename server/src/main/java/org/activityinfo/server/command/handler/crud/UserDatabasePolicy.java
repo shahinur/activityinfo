@@ -60,6 +60,10 @@ public class UserDatabasePolicy implements EntityPolicy<UserDatabase> {
         return database.getId();
     }
 
+    public UserDatabase findById(int dbId) {
+        return databaseDAO.findById(dbId);
+    }
+
     private Country findCountry(PropertyMap properties) {
         int countryId;
         if (properties.containsKey("countryId")) {

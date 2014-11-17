@@ -83,7 +83,31 @@ public class Activity implements Serializable, Deleteable, Orderable {
     public Activity(int id, String name) {
         this.id = id;
         this.name = name;
+    }
 
+    public Activity(Activity sourceActivity) {
+        this.locationType = sourceActivity.getLocationType();
+
+        this.database = sourceActivity.getDatabase();
+        this.name = sourceActivity.getName();
+        this.category = sourceActivity.getCategory();
+
+        this.reportingFrequency = sourceActivity.reportingFrequency;
+        this.allowEdit = sourceActivity.allowEdit;
+        this.sortOrder = sourceActivity.sortOrder;
+        this.dateDeleted = sourceActivity.dateDeleted;
+
+        this.indicators = sourceActivity.indicators;
+        this.sites = sourceActivity.sites;
+        this.attributeGroups = sourceActivity.attributeGroups;
+        this.lockedPeriods = sourceActivity.lockedPeriods;
+
+        this.mapIcon = sourceActivity.mapIcon;
+        this.published = sourceActivity.published;
+        this.classicView = sourceActivity.classicView;
+
+        this.formClass = sourceActivity.formClass;
+        this.gzFormClass = sourceActivity.gzFormClass;
     }
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "ActivityId", unique = true, nullable = false)

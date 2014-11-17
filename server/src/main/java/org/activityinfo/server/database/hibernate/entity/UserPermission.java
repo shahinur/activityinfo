@@ -64,6 +64,20 @@ public class UserPermission implements Serializable {
         this.user = user;
     }
 
+    public UserPermission(UserPermission sourcePermission) {
+        this.partner = sourcePermission.getPartner();
+        this.database = sourcePermission.getDatabase();
+        this.user = sourcePermission.user;
+        this.allowView = sourcePermission.allowView;
+        this.allowViewAll = sourcePermission.allowViewAll;
+        this.allowEdit = sourcePermission.allowEdit;
+        this.allowEditAll = sourcePermission.allowEditAll;
+        this.allowDesign = sourcePermission.allowDesign;
+        this.allowManageUsers = sourcePermission.allowManageUsers;
+        this.allowManageAllUsers = sourcePermission.allowManageAllUsers;
+        this.version = sourcePermission.version;
+    }
+
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "UserPermissionId", unique = true, nullable = false)
     public int getId() {

@@ -167,6 +167,8 @@ public class NewDbDetailsPage extends WizardPageAdapter {
         dialogData.getCommand().setDescription(description.getValue());
         dialogData.getCommand().setCountryId(GwtUtil.getIntSilently(country.getValue()));
         dialogData.getCommand().setCopyData(copyData.getValue());
+        dialogData.getCommand().setCopyPartners(copyPartners.getValue());
+        dialogData.getCommand().setCopyUsers(copyUser.getValue());
     }
 
     public NewDbDetailsPage showCopyOptions(boolean show) {
