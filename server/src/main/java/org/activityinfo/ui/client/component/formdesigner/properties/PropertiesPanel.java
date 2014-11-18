@@ -74,6 +74,8 @@ public class PropertiesPanel extends Composite {
     TextBox code;
     @UiField
     FormGroup codeGroup;
+    @UiField
+    FormGroup labelGroup;
 
     public PropertiesPanel() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -141,5 +143,9 @@ public class PropertiesPanel extends Composite {
 
     public FormGroup getCodeGroup() {
         return codeGroup;
+    }
+
+    public FormGroup getLabelGroup() {
+        return labelGroup;
     }
 }

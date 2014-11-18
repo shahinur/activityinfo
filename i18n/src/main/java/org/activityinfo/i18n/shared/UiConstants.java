@@ -3513,6 +3513,8 @@ public interface UiConstants extends Constants {
             "containing only letters, numbers, and the underscore symbol")
     String invalidCodeMessage();
 
+    @DefaultStringValue("Please enter label.")
+    String invalidLabel();
 
     @DefaultStringValue("A code with this name already exists. Please select another code.")
     String duplicateCodeMessage();

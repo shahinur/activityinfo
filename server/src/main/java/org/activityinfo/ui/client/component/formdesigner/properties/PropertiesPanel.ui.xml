@@ -17,7 +17,8 @@
     </f:FormGroup>
 
     <!-- Label -->
-    <f:FormGroup label="{i18n.label}" columnLabelWidth="4">
+    <f:FormGroup ui:field="labelGroup" label="{i18n.label}" columnLabelWidth="4"
+                 validationStateType="ERROR" validationMessage="{i18n.invalidLabel}">
       <a:TextBox ui:field="label" width="100%"/>
     </f:FormGroup>
 

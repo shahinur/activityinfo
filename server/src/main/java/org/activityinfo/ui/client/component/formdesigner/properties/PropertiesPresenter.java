@@ -160,6 +160,7 @@ public class PropertiesPresenter {
 
         setRelevanceState(formField, true);
         validateCode(fieldWidgetContainer);
+        validateLabel();
 
         relevanceButtonClickHandler = view.getRelevanceButton().addClickHandler(new ClickHandler() {
             @Override
@@ -172,8 +173,10 @@ public class PropertiesPresenter {
         labelKeyUpHandler = view.getLabel().addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                formField.setLabel(view.getLabel().getValue());
-                fieldWidgetContainer.syncWithModel();
+                if (validateLabel()) {
+                    formField.setLabel(view.getLabel().getValue());
+                    fieldWidgetContainer.syncWithModel();
+                }
             }
         });
         descriptionKeyUpHandler = view.getDescription().addKeyUpHandler(new KeyUpHandler() {
@@ -245,7 +248,7 @@ public class PropertiesPresenter {
                 if (formField.getType() instanceof CalculatedFieldType && newValue instanceof ExprValue) {
                     // for calculated fields we updated expression directly because it is handled via ExprFieldType
                     ExprValue exprValue = (ExprValue) newValue;
-                    ((CalculatedFieldType)formField.getType()).setExpression(exprValue.getExpression());
+                    ((CalculatedFieldType) formField.getType()).setExpression(exprValue.getExpression());
                 } else {
                     formField.setType(typeClass.deserializeType(param));
                 }
@@ -306,6 +309,20 @@ public class PropertiesPresenter {
 
             return true;
         }
+    }
+
+    /**
+     * Returns whether code is valid.
+     *
+     * @return whether code is valid
+     */
+    private boolean validateLabel() {
+        view.getLabelGroup().setShowValidationMessage(false);
+        if (Strings.isNullOrEmpty(view.getLabel().getValue())) {
+            view.getLabelGroup().setShowValidationMessage(true);
+            return false;
+        }
+        return true;
     }
 
     public void setRelevanceState(FormField formField, boolean setRadioButtonsState) {
