@@ -211,13 +211,13 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
         if (verticalScrollPosition > Metrics.MAX_VERTICAL_SCROLL_POSITION) {
             int height = verticalScrollPosition - Metrics.MAX_VERTICAL_SCROLL_POSITION;
 
-            int selectedWidgetTop = 0;
-            if (selectedWidgetContainer != null) {
-                selectedWidgetTop = selectedWidgetContainer.asWidget().getAbsoluteTop();
-            }
-            if (selectedWidgetTop < 0) {
-                height = height + selectedWidgetTop;
-            }
+//            int selectedWidgetTop = 0;
+//            if (selectedWidgetContainer != null) {
+//                selectedWidgetTop = selectedWidgetContainer.asWidget().getAbsoluteTop();
+//            }
+//            if (selectedWidgetTop < 0) {
+//                height = height + selectedWidgetTop;
+//            }
 
             //GWT.log("verticalPos = " + verticalScrollPosition + ", height = " + height + ", selectedWidgetTop = " + selectedWidgetTop);
             spacer.setHeight(height + "px");
