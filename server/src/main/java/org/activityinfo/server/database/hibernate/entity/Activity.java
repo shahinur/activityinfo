@@ -23,6 +23,7 @@ package org.activityinfo.server.database.hibernate.entity;
  */
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.model.Published;
 import org.hibernate.Hibernate;
 
@@ -97,10 +98,10 @@ public class Activity implements Serializable, Deleteable, Orderable {
         this.sortOrder = sourceActivity.sortOrder;
         this.dateDeleted = sourceActivity.dateDeleted;
 
-        this.indicators = sourceActivity.indicators;
-        this.sites = sourceActivity.sites;
-        this.attributeGroups = sourceActivity.attributeGroups;
-        this.lockedPeriods = sourceActivity.lockedPeriods;
+        this.indicators = Sets.newHashSet(sourceActivity.indicators);
+        this.sites = Sets.newHashSet(sourceActivity.sites);
+        this.attributeGroups = Sets.newHashSet(sourceActivity.attributeGroups);
+        this.lockedPeriods = Sets.newHashSet(sourceActivity.lockedPeriods);
 
         this.mapIcon = sourceActivity.mapIcon;
         this.published = sourceActivity.published;

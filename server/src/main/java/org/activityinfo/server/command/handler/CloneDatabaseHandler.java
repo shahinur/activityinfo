@@ -37,13 +37,13 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.server.command.handler.crud.ActivityPolicy;
-import org.activityinfo.server.command.handler.crud.PropertyMap;
-import org.activityinfo.server.command.handler.crud.UserDatabasePolicy;
 import org.activityinfo.server.database.hibernate.entity.*;
 import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,28 +55,25 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
     private static final Logger LOGGER = Logger.getLogger(CloneDatabaseHandler.class.getName());
 
     private final Injector injector;
-    private final UserDatabasePolicy policy;
     private final EntityManager em;
 
     @Inject
     public CloneDatabaseHandler(Injector injector) {
         this.injector = injector;
-        this.policy = injector.getInstance(UserDatabasePolicy.class);
         this.em = injector.getInstance(EntityManager.class);
     }
 
     @Override
     public void execute(CloneDatabase command, ExecutionContext context, final AsyncCallback<CreateResult> callback) {
         final User user = ((RemoteExecutionContext) context).retrieveUserEntity();
-        final Integer newDbId = createDatabase(command, user);
+        final UserDatabase targetDb = createDatabase(command, user);
 
-        UserDatabase sourceDb = policy.findById(command.getSourceDatabaseId());
-        UserDatabase targetDb = policy.findById(newDbId);
+        UserDatabase sourceDb = em.find(UserDatabase.class, command.getSourceDatabaseId());
 
         // if the new countryId of the target database is different than the countryId of sourceDatabase,
         // copyData must be false -> skip copy
         if (sourceDb.getCountry().getId() != targetDb.getCountry().getId()) {
-            callback.onSuccess(new CreateResult(newDbId));
+            callback.onSuccess(new CreateResult(targetDb.getId()));
             return;
         }
 
@@ -102,7 +99,7 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
 
             @Override
             public void onSuccess(Void result) {
-                callback.onSuccess(new CreateResult(newDbId));
+                callback.onSuccess(new CreateResult(targetDb.getId()));
             }
         });
     }
@@ -153,7 +150,11 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
                 @Override
                 public void onSuccess(FormClassResult result) {
                     FormClass formClass = result.getFormClass();
+                    ResourceId oldId = formClass.getId();
                     formClass.setId(targetFormClass);
+
+                    FormClassTrash.normalizeBuiltInFormClassFields(formClass, oldId);
+
                     context.execute(new UpdateFormClass(formClass), updatePromise);
                 }
             });
@@ -172,11 +173,14 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         return newActivity;
     }
 
-    private int createDatabase(CloneDatabase command, User user) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("name", command.getName());
-        properties.put("countryId", command.getCountryId());
+    private UserDatabase createDatabase(CloneDatabase command, User user) {
+        UserDatabase db = new UserDatabase();
+        db.setName(command.getName());
+        db.setFullName(command.getDescription());
+        db.setCountry(em.find(Country.class, command.getCountryId()));
+        db.setOwner(user);
 
-        return (Integer) policy.create(user, new PropertyMap(properties));
+        em.persist(db);
+        return db;
     }
 }

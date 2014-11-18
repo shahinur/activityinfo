@@ -35,17 +35,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.GZIPOutputStream;
 
-import static org.activityinfo.model.legacy.CuidAdapter.*;
-
 public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
 
     private static final int MIN_GZIP_BYTES = 1024 * 5;
 
     private static final Logger LOGGER = Logger.getLogger(UpdateFormClassHandler.class.getName());
-
-    private static final int[] BUILTIN_FIELDS = new int[] {
-            START_DATE_FIELD, END_DATE_FIELD, PARTNER_FIELD, PROJECT_FIELD,
-            LOCATION_FIELD, COMMENT_FIELD };
 
     private final PermissionOracle permissionOracle;
     private final Provider<EntityManager> entityManager;
@@ -129,7 +123,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
         }
 
         Set<ResourceId> builtinFields = Sets.newHashSet();
-        for(int fieldIndex : BUILTIN_FIELDS) {
+        for(int fieldIndex : FormClassTrash.BUILTIN_FIELDS) {
             builtinFields.add(CuidAdapter.field(formClass.getId(), fieldIndex));
         }
 

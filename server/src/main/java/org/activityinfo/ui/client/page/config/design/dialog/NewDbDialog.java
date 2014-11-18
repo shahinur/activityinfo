@@ -21,6 +21,7 @@ package org.activityinfo.ui.client.page.config.design.dialog;
  * #L%
  */
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -74,9 +75,14 @@ public class NewDbDialog {
             @Override
             public void onSuccess(CreateResult result) {
                 dialog.hide();
-                if (successCallback != null) {
-                    successCallback.onSuccess(null);
-                }
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        if (successCallback != null) {
+                            successCallback.onSuccess(null);
+                        }
+                    }
+                });
             }
         });
     }

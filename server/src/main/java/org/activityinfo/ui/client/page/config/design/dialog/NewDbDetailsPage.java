@@ -146,10 +146,11 @@ public class NewDbDetailsPage extends WizardPageAdapter {
             nameField.showValidationMessage(true);
             result = false;
         }
-        if (Strings.isNullOrEmpty(description.getValue())) {
-            descriptionField.showValidationMessage(true);
-            result = false;
-        }
+        // description is not required
+//        if (Strings.isNullOrEmpty(description.getValue())) {
+//            descriptionField.showValidationMessage(true);
+//            result = false;
+//        }
         if (Strings.isNullOrEmpty(country.getValue()) || !GwtUtil.isInt(country.getValue())) {
             countryField.showValidationMessage(true);
             result = false;
