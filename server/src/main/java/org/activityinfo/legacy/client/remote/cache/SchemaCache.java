@@ -62,7 +62,7 @@ public class SchemaCache implements DispatchListener {
         source.registerListener(RemovePartner.class, this);
         source.registerListener(RequestChange.class, this);
         source.registerListener(BatchCommand.class, this);
-        source.registerListener(BatchCommand.class, this);
+        source.registerListener(CloneDatabase.class, this);
 
         schemaEntityTypes.add("UserDatabase");
         schemaEntityTypes.add("Activity");
