@@ -144,7 +144,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         tree.setIconProvider(new ModelIconProvider<ModelData>() {
             @Override
             public AbstractImagePrototype getIcon(ModelData model) {
-                if (model instanceof ActivityFormDTO) {
+                if (model instanceof ActivityFormDTO || model instanceof ActivityDTO) {
                     return IconImageBundle.ICONS.activity();
                 } else if (model instanceof Folder) {
                     return GXT.IMAGES.tree_folder_closed();
@@ -316,7 +316,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
     protected Class formClassForSelection(ModelData sel) {
 
-        if (sel instanceof ActivityFormDTO) {
+        if (sel instanceof ActivityFormDTO || sel instanceof ActivityDTO) {
             return ActivityForm.class;
         } else if (sel instanceof AttributeGroupDTO) {
             return AttributeGroupForm.class;
@@ -333,7 +333,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
     }
 
     protected AbstractDesignForm createForm(ModelData sel) {
-        if (sel instanceof ActivityFormDTO) {
+        if (sel instanceof ActivityFormDTO || sel instanceof ActivityDTO) {
             return new ActivityForm(service, db);
         } else if (sel instanceof AttributeGroupDTO) {
             return new AttributeGroupForm();
@@ -402,7 +402,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         dlg.setHeight(form.getPreferredDialogHeight());
         dlg.setScrollMode(Style.Scroll.AUTOY);
 
-        if (entity instanceof ActivityFormDTO) {
+        if (entity instanceof ActivityFormDTO || entity instanceof ActivityDTO) {
             dlg.setHeadingText(I18N.CONSTANTS.newActivity());
         } else if (entity instanceof AttributeGroupDTO) {
             dlg.setHeadingText(I18N.CONSTANTS.newAttributeGroup());

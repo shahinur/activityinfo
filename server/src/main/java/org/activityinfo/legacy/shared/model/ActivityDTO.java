@@ -1,7 +1,6 @@
 package org.activityinfo.legacy.shared.model;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
@@ -10,9 +9,12 @@ import org.activityinfo.model.resource.ResourceId;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonView;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-public final class ActivityDTO extends BaseModelData implements EntityDTO, ProvidesKey, LockedPeriodDTO.HasLockedPeriod {
+public final class ActivityDTO extends BaseModelData implements EntityDTO, ProvidesKey, LockedPeriodDTO.HasLockedPeriod, IsActivityDTO {
 
     public static final String ENTITY_NAME = "Activity";
 

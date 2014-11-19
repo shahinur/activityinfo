@@ -42,7 +42,7 @@ import java.util.*;
  * @author Alex Bertram
  */
 @JsonAutoDetect(JsonMethod.NONE)
-public final class ActivityFormDTO extends BaseModelData implements EntityDTO, HasLockedPeriod, ProvidesKey, IsFormClass {
+public final class ActivityFormDTO extends BaseModelData implements EntityDTO, HasLockedPeriod, ProvidesKey, IsFormClass, IsActivityDTO {
 
     public static final String ENTITY_NAME = "Activity";
 
