@@ -28,6 +28,7 @@ public class XFormReader {
 
     private Map<String, Bind> bindings = new HashMap<>();
     private Map<String, InstanceElement> instanceElements = new HashMap<>();
+    private Map<InstanceElement, InstanceElement> instanceElementParents = new HashMap<>();
 
     public XFormReader(XForm xForm) {
         this.xForm = xForm;
@@ -59,6 +60,7 @@ public class XFormReader {
         instanceElements.put(path, element);
 
         for(InstanceElement child : element.getChildren()) {
+            instanceElementParents.put(child, element);
             findInstanceElements(path, child);
         }
     }
@@ -104,7 +106,7 @@ public class XFormReader {
         FieldType type = createType(element, bind);
 
         FormField field = new FormField(ResourceId.generateFieldId(type.getTypeClass()));
-        field.setCode(instanceElement.getName());
+        field.setCode(buildCode(null, instanceElement).toString());
         field.setLabel(element.getLabel());
         field.setDescription(element.getHint());
         field.setType(type);
@@ -140,6 +142,24 @@ public class XFormReader {
         }
         return enumValues;
     }
+
+    private StringBuilder buildCode(InstanceElement instanceElement, InstanceElement parentInstanceElement) {
+        StringBuilder stringBuilder = null;
+
+        if (parentInstanceElement != null) {
+            stringBuilder = buildCode(parentInstanceElement, instanceElementParents.get(parentInstanceElement));
+
+            if (instanceElement != null) {
+                if (stringBuilder == null) {
+                    stringBuilder = new StringBuilder();
+                } else {
+                    stringBuilder.append('/');
+                }
+
+                stringBuilder.append(instanceElement.getName());
+            }
+        }
+
+        return stringBuilder;
+    }
 }
-
-
