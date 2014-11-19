@@ -42,10 +42,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.AsyncMonitor;
 import org.activityinfo.legacy.client.monitor.NullAsyncMonitor;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.ActivityFormDTO;
-import org.activityinfo.legacy.shared.model.LockedPeriodDTO;
-import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
+import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.ui.client.page.common.columns.EditCheckColumnConfig;
 import org.activityinfo.ui.client.page.common.columns.EditableLocalDateColumn;
 import org.activityinfo.ui.client.page.common.columns.ReadLockedPeriodTypeColumn;
@@ -284,7 +281,7 @@ public class LockedPeriodGrid extends ContentPanel implements LockedPeriodListEd
             // activiftyFilter
             List<LockedPeriodDTO> lockedPeriodsFilteredByActivity = new ArrayList<LockedPeriodDTO>();
             for (LockedPeriodDTO lockedPeriod : items) {
-                if (lockedPeriod.getParent() != null && (lockedPeriod.getParent() instanceof ActivityFormDTO || lockedPeriod.getParent() instanceof ActivityDTO)) {
+                if (lockedPeriod.getParent() != null && lockedPeriod.getParent() instanceof IsActivityDTO) {
                     // Activity as parent, only add when activity equals filter
                     if (lockedPeriod.getParent().getId() == activityFilter.getId()) {
                         lockedPeriodsFilteredByActivity.add(lockedPeriod);

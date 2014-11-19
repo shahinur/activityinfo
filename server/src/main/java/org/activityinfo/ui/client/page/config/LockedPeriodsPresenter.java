@@ -82,7 +82,7 @@ public class LockedPeriodsPresenter extends ListPresenterBase<LockedPeriodDTO, L
 
         final LockedPeriodDTO lockedPeriod = view.getValue();
         CreateLockedPeriod lockUserDatabase = new CreateLockedPeriod(lockedPeriod);
-        if (lockedPeriod.getParent() instanceof ActivityFormDTO || lockedPeriod.getParent() instanceof ActivityDTO) {
+        if (lockedPeriod.getParent() instanceof IsActivityDTO) {
             lockUserDatabase.setActivityId(lockedPeriod.getParent().getId());
         }
         if (lockedPeriod.getParent() instanceof ProjectDTO) {

@@ -219,13 +219,13 @@ public class TargetIndicatorPresenter extends AbstractEditorGridPresenter<ModelD
         return treeStore;
     }
 
-    protected ActivityFormDTO findActivityFolder(ModelData selected) {
+    protected IsActivityDTO findActivityFolder(ModelData selected) {
 
-        while (!(selected instanceof ActivityFormDTO)) {
+        while (!(selected instanceof IsActivityDTO)) {
             selected = treeStore.getParent(selected);
         }
 
-        return (ActivityFormDTO) selected;
+        return (IsActivityDTO) selected;
     }
 
     public void updateTargetValue() {
