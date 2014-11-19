@@ -8,12 +8,11 @@ import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
-import org.w3c.dom.Element;
 
 import java.util.List;
 import java.util.Map;
 
-class EnumFieldValueParser implements OdkFieldValueParser {
+class EnumFieldValueParser implements FieldValueParser {
     final private Cardinality cardinality;
     final private Map<ResourceId, EnumValue> values;
 
@@ -27,9 +26,7 @@ class EnumFieldValueParser implements OdkFieldValueParser {
     }
 
     @Override
-    public FieldValue parse(Element element) {
-        String text = OdkHelper.extractText(element);
-
+    public FieldValue parse(String text) {
         if (text == null) throw new IllegalArgumentException("Malformed Element passed to OdkFieldValueParser.parse()");
 
         switch (cardinality) {
