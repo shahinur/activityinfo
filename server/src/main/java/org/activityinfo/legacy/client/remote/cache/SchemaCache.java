@@ -80,6 +80,8 @@ public class SchemaCache implements DispatchListener {
     public void beforeDispatched(Command command) {
         if (command instanceof UpdateEntity) {
             clearCache();
+        } else if (command instanceof CloneDatabase) {
+            clearCache();
         } else if (command instanceof CreateEntity) {
             clearCache();
         } else if (command instanceof AddPartner || command instanceof RemovePartner) {
