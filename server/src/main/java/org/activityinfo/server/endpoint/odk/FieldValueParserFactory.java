@@ -1,6 +1,5 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.google.inject.Inject;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.ReferenceType;
@@ -12,17 +11,9 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
-import org.activityinfo.server.command.ResourceLocatorSync;
 
 public class FieldValueParserFactory {
-    final private ResourceLocatorSync table;
-
-    @Inject
-    public FieldValueParserFactory(ResourceLocatorSync table) {
-        this.table = table;
-    }
-
-    public FieldValueParser fromFieldType(FieldType fieldType) {
+    static public FieldValueParser fromFieldType(FieldType fieldType) {
         if (fieldType instanceof BarcodeType) return new BarcodeFieldValueParser();
         if (fieldType instanceof BooleanType) return new BooleanFieldValueParser();
         if (fieldType instanceof EnumType) return new EnumFieldValueParser((EnumType) fieldType);

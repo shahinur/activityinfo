@@ -61,7 +61,6 @@ public class FormResourceTest extends CommandTestCase2 {
         Provider<AuthenticatedUser> authProvider = Providers.of(new AuthenticatedUser("", USER_ID, "jorden@bdd.com"));
 
         OdkFormFieldBuilderFactory fieldFactory = new OdkFormFieldBuilderFactory(resourceLocator);
-        OdkFieldValueParserFactory parserFactory = new OdkFieldValueParserFactory(resourceLocator);
 
         AuthTokenProvider tokenService = new AuthTokenProvider();
 
@@ -70,9 +69,7 @@ public class FormResourceTest extends CommandTestCase2 {
                 new DeploymentConfiguration(new Properties()));
 
         formResource = new FormResource(resourceLocator, fieldFactory, tokenService);
-        formSubmissionResource = new FormSubmissionResource(
-                parserFactory, resourceLocator, tokenService, blobstore,
-                backupService);
+        formSubmissionResource = new FormSubmissionResource(resourceLocator, tokenService, blobstore, backupService);
     }
 
     @Test
