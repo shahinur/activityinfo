@@ -28,5 +28,5 @@ package org.activityinfo.legacy.shared.command.result;
  * @author Alex Bertram
  */
 public class VoidResult implements CommandResult {
-
+    public static VoidResult INSTANCE = new VoidResult();
 }

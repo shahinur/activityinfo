@@ -21,18 +21,21 @@ package org.activityinfo.server.command.handler;
  * #L%
  */
 
+import com.google.common.base.Function;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import org.activityinfo.legacy.shared.command.CloneDatabase;
-import org.activityinfo.legacy.shared.command.GetFormClass;
-import org.activityinfo.legacy.shared.command.UpdateFormClass;
-import org.activityinfo.legacy.shared.command.result.CreateResult;
-import org.activityinfo.legacy.shared.command.result.FormClassResult;
-import org.activityinfo.legacy.shared.command.result.VoidResult;
+import org.activityinfo.legacy.client.remote.AbstractDispatcher;
+import org.activityinfo.legacy.shared.adapter.SitePersister;
+import org.activityinfo.legacy.shared.adapter.bindings.SiteBinding;
+import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.result.*;
 import org.activityinfo.legacy.shared.impl.CommandHandlerAsync;
 import org.activityinfo.legacy.shared.impl.ExecutionContext;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
+import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
@@ -40,6 +43,7 @@ import org.activityinfo.server.command.handler.crud.ActivityPolicy;
 import org.activityinfo.server.database.hibernate.entity.*;
 import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 
+import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Date;
@@ -80,15 +84,15 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         List<Promise<Void>> promises = new ArrayList<>();
 
         if (command.isCopyData()) {
-            promises.add(copyFormData(sourceDb, targetDb, user, context));
+            promises.add(copyFormData(sourceDb, targetDb, context));
         }
 
         if (command.isCopyPartners() || command.isCopyUsers()) {
-            copyPartners(sourceDb, targetDb, user, context);
+            copyPartners(sourceDb, targetDb);
         }
 
         if (command.isCopyUsers()) {
-            copyUserPermissions(sourceDb, targetDb, user, context);
+            copyUserPermissions(sourceDb, targetDb, user);
         }
 
         Promise.waitAll(promises).then(new AsyncCallback<Void>() {
@@ -104,7 +108,7 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         });
     }
 
-    private void copyUserPermissions(UserDatabase sourceDb, UserDatabase targetDb, User user, ExecutionContext context) {
+    private void copyUserPermissions(UserDatabase sourceDb, UserDatabase targetDb, User user) {
         for (UserPermission sourcePermission : sourceDb.getUserPermissions()) {
             UserPermission newPermission = new UserPermission(sourcePermission);
             newPermission.setDatabase(targetDb);
@@ -114,7 +118,7 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         }
     }
 
-    private void copyPartners(UserDatabase sourceDb, UserDatabase targetDb, User user, ExecutionContext context) {
+    private void copyPartners(UserDatabase sourceDb, UserDatabase targetDb) {
         for (Partner partner : sourceDb.getPartners()) {
             Partner newPartner = new Partner();
             newPartner.setName(partner.getName());
@@ -128,41 +132,80 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         em.persist(targetDb);
     }
 
-    private Promise<Void> copyFormData(UserDatabase sourceDb, UserDatabase targetDb, User user, final ExecutionContext context) {
-        List<Promise<VoidResult>> updatePromises = new ArrayList<>();
+    private Promise<Void> copyFormData(UserDatabase sourceDb, UserDatabase targetDb, final ExecutionContext context) {
+        final List<Promise<VoidResult>> copyPromises = new ArrayList<>();
+
         for (Activity activity : sourceDb.getActivities()) {
             final Activity newActivity = copyActivity(activity, targetDb);
 
             final ResourceId sourceFormClass = CuidAdapter.activityFormClass(activity.getId());
             final ResourceId targetFormClass = CuidAdapter.activityFormClass(newActivity.getId());
 
-            final Promise<VoidResult> updatePromise = new Promise<>();
-            updatePromises.add(updatePromise);
-
             // form class
-            context.execute(new GetFormClass(sourceFormClass), new AsyncCallback<FormClassResult>() {
-                @Override
-                public void onFailure(Throwable caught) {
-                    LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
-                    updatePromise.onFailure(caught);
-                }
+            copyPromises.add(copyFormClass(context, sourceFormClass, targetFormClass));
 
-                @Override
-                public void onSuccess(FormClassResult result) {
-                    FormClass formClass = result.getFormClass();
-                    ResourceId oldId = formClass.getId();
-                    formClass.setId(targetFormClass);
+            // site form instances
+            copyPromises.add(copySiteFormInstances(context, activity, newActivity));
 
-                    FormClassTrash.normalizeBuiltInFormClassFields(formClass, oldId);
-
-                    context.execute(new UpdateFormClass(formClass), updatePromise);
-                }
-            });
-
-            // form instance
-            // todo ?
         }
-        return Promise.waitAll(updatePromises);
+        return Promise.waitAll(copyPromises);
+    }
+
+    private Promise<VoidResult> copySiteFormInstances(final ExecutionContext context, Activity sourceActivity, final Activity targetActivity) {
+        Filter filter = new Filter();
+        filter.addRestriction(DimensionType.Activity, sourceActivity.getId());
+
+        GetSites query = new GetSites();
+        query.setFilter(filter);
+
+        final Promise<ActivityFormDTO> activityForm = new Promise<>();
+        context.execute(new GetActivityForm(sourceActivity.getId()), activityForm);
+
+        final Promise<SiteResult> fetchSitesPromise = new Promise<>();
+        context.execute(query, fetchSitesPromise);
+
+        return Promise.waitAll(activityForm, fetchSitesPromise).join(new Function<Void, Promise<VoidResult>>() {
+            @Nullable
+            @Override
+            public Promise<VoidResult> apply(@Nullable Void input) {
+
+                for (SiteDTO site : fetchSitesPromise.get().getData()) {
+                    SiteBinding binding = new SiteBinding(activityForm.get());
+
+                    // adapt id and classId to targetActivity
+                    FormInstance formInstance = binding.newInstance(site)
+                            .setId(CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, targetActivity.getId()))
+                            .setClassId(CuidAdapter.activityFormClass(targetActivity.getId()));
+
+                    // persist
+                    new SitePersister(new DispatchAdapter(context)).persist(formInstance);
+                }
+                return Promise.resolved(VoidResult.INSTANCE);
+            }
+        });
+    }
+
+    private Promise<VoidResult> copyFormClass(final ExecutionContext context, ResourceId sourceFormClass, final ResourceId targetFormClass) {
+        final Promise<VoidResult> promise = new Promise<>();
+        context.execute(new GetFormClass(sourceFormClass), new AsyncCallback<FormClassResult>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
+                promise.onFailure(caught);
+            }
+
+            @Override
+            public void onSuccess(FormClassResult result) {
+                FormClass formClass = result.getFormClass();
+                ResourceId oldId = formClass.getId();
+                formClass.setId(targetFormClass);
+
+                FormClassTrash.normalizeBuiltInFormClassFields(formClass, oldId);
+
+                context.execute(new UpdateFormClass(formClass), promise);
+            }
+        });
+        return promise;
     }
 
     private Activity copyActivity(Activity sourceActivity, UserDatabase targetDb) {
@@ -182,5 +225,23 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
 
         em.persist(db);
         return db;
+    }
+
+    private static class DispatchAdapter extends AbstractDispatcher {
+
+        private final ExecutionContext executionContext;
+
+        private DispatchAdapter(ExecutionContext executionContext) {
+            this.executionContext = executionContext;
+        }
+
+        @Override
+        public <T extends CommandResult> void execute(Command<T> command, AsyncCallback<T> callback) {
+            try {
+                executionContext.execute(command, callback);
+            } catch (Exception e) {
+                callback.onFailure(e);
+            }
+        }
     }
 }

@@ -76,6 +76,16 @@ public class FormInstance implements IsResource {
         return id;
     }
 
+    public FormInstance setId(ResourceId id) {
+        this.id = id;
+        return this;
+    }
+
+    public FormInstance setClassId(ResourceId classId) {
+        this.classId = classId;
+        return this;
+    }
+
     public static FormInstance fromResource(Resource resource) {
         FormInstance instance = new FormInstance(resource.getId(), resource.getResourceId("classId"));
         if (resource.getOwnerId() != null) { // owner may be null for FieldTypes
