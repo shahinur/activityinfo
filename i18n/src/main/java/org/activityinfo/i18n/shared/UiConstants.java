@@ -3216,7 +3216,7 @@ public interface UiConstants extends Constants {
     @Key("fieldTypeGeographicPoint")
     String fieldTypeGeographicPoint();
 
-    @DefaultStringValue("Narrative")
+    @DefaultStringValue("Multi-line text")
     @Key("fieldTypeNarrative")
     String fieldTypeNarrative();
 
@@ -3645,4 +3645,14 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Edit Submission")
     String editSubmission();
+
+    @DefaultStringValue("Barcode")
+    String fieldTypeBarcode();
+
+    @DefaultStringValue("Calculated")
+    String fieldTypeCalculated();
+
+    @DefaultStringValue("Checkboxes")
+    String checkboxes();
+
 }

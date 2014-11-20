@@ -2,6 +2,7 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.ui.CheckBox;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
@@ -15,7 +16,7 @@ import java.util.List;
 public class CheckboxTemplate implements FieldTemplate {
     @Override
     public String getLabel() {
-        return "Checkboxes";
+        return I18N.CONSTANTS.checkboxes();
     }
 
     @Override

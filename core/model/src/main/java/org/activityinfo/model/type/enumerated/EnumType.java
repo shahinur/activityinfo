@@ -21,11 +21,6 @@ public class EnumType implements ParametrizedFieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Enumerated Values";
-        }
-
-        @Override
         public FieldType deserializeType(Record typeParameters) {
 
             Cardinality cardinality = Cardinality.valueOf(typeParameters.getString("cardinality"));

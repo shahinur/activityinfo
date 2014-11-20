@@ -47,11 +47,6 @@ public class ImageType implements ParametrizedFieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Image";
-        }
-
-        @Override
         public FieldType createType() {
             return new ImageType(Cardinality.SINGLE);
         }

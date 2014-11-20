@@ -37,11 +37,6 @@ public class NullFieldValue implements FieldValue {
             }
 
             @Override
-            public String getLabel() {
-                return "null";
-            }
-
-            @Override
             public FieldType createType() {
                 return new FieldType() {
                     @Override

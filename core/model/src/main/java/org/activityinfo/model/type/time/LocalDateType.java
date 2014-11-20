@@ -31,11 +31,6 @@ public class LocalDateType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Date";
-        }
-
-        @Override
         public FieldType createType() {
             return INSTANCE;
         }
