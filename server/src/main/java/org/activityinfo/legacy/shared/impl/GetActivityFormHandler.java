@@ -30,8 +30,6 @@ import com.bedatadriven.rebar.sql.client.query.SqlQuery;
 import com.bedatadriven.rebar.sql.client.util.RowHandler;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.legacy.shared.command.GetActivityForm;
@@ -39,10 +37,12 @@ import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.reports.util.mapping.Extents;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.server.database.hibernate.entity.Project;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GetActivityFormHandler implements CommandHandlerAsync<GetActivityForm, ActivityFormDTO> {
 
@@ -69,6 +69,7 @@ public class GetActivityFormHandler implements CommandHandlerAsync<GetActivityFo
                 if (form.getOwnerUserId() == context.getUser().getId()) {
                     form.setEditAllowed(true);
                     form.setEditAllAllowed(true);
+                    form.setDesignAllowed(true);
                     return Promise.resolved(form);
 
                 } else {
@@ -86,6 +87,7 @@ public class GetActivityFormHandler implements CommandHandlerAsync<GetActivityFo
                 .appendColumn("allowViewAll")
                 .appendColumn("allowEdit")
                 .appendColumn("allowEditAll")
+                .appendColumn("allowDesign")
                 .appendColumn("partnerId")
                 .from(Tables.USER_PERMISSION, "p")
                 .where("p.UserId").equalTo(context.getUser().getId())
@@ -104,6 +106,7 @@ public class GetActivityFormHandler implements CommandHandlerAsync<GetActivityFo
                         }
                         form.setEditAllowed(row.getBoolean("allowEdit"));
                         form.setEditAllAllowed(row.getBoolean("allowEditAll"));
+                        form.setDesignAllowed(row.getBoolean("allowDesign"));
                         form.setCurrentPartnerId(row.getInt("partnerId"));
                         result.resolve(form);
                     }

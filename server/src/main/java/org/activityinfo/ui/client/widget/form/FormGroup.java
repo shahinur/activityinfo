@@ -71,7 +71,7 @@ public class FormGroup extends Composite implements HasWidgets.ForIsWidget {
 
     public FormGroup label(String label) {
         if (!Strings.isNullOrEmpty(label)) {
-            this.label.setInnerHTML(SafeHtmlUtils.fromString(label).asString());
+            this.label.setInnerText(label);
         }
         return this;
     }
@@ -79,7 +79,7 @@ public class FormGroup extends Composite implements HasWidgets.ForIsWidget {
     public FormGroup description(String description) {
         if (!Strings.isNullOrEmpty(description)) {
             this.description.addClassName("help-block"); // add help-block dynamically, we don't want div to take space if description is not set
-            this.description.setInnerHTML(SafeHtmlUtils.fromString(description).asString());
+            this.description.setInnerText(description);
         }
         return this;
     }

@@ -100,6 +100,10 @@ public final class ActivityFormDTO extends BaseModelData implements EntityDTO, H
         this.setAttributeGroups(model.getAttributeGroups());
     }
 
+    public ActivityFormDTO(ActivityDTO source) {
+        this(source.getId(), source.getName());
+    }
+
     /**
      * @param id   the Activity's id
      * @param name the Activity's name

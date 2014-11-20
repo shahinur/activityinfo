@@ -21,21 +21,21 @@ package org.activityinfo.server.command.handler;
  * #L%
  */
 
-import com.google.common.base.Function;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import org.activityinfo.legacy.client.remote.AbstractDispatcher;
-import org.activityinfo.legacy.shared.adapter.SitePersister;
-import org.activityinfo.legacy.shared.adapter.bindings.SiteBinding;
-import org.activityinfo.legacy.shared.command.*;
-import org.activityinfo.legacy.shared.command.result.*;
+import org.activityinfo.legacy.shared.command.CloneDatabase;
+import org.activityinfo.legacy.shared.command.Command;
+import org.activityinfo.legacy.shared.command.GetFormClass;
+import org.activityinfo.legacy.shared.command.UpdateFormClass;
+import org.activityinfo.legacy.shared.command.result.CommandResult;
+import org.activityinfo.legacy.shared.command.result.CreateResult;
+import org.activityinfo.legacy.shared.command.result.FormClassResult;
+import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.impl.CommandHandlerAsync;
 import org.activityinfo.legacy.shared.impl.ExecutionContext;
-import org.activityinfo.legacy.shared.model.ActivityFormDTO;
-import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
@@ -43,7 +43,6 @@ import org.activityinfo.server.command.handler.crud.ActivityPolicy;
 import org.activityinfo.server.database.hibernate.entity.*;
 import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 
-import javax.annotation.Nullable;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Date;
@@ -145,45 +144,46 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
             copyPromises.add(copyFormClass(context, sourceFormClass, targetFormClass));
 
             // site form instances
-            copyPromises.add(copySiteFormInstances(context, activity, newActivity));
+            // todo : commenting it temporary until we have nice idea how to implement it in scalable manner. (AI-787)
+//            copyPromises.add(copySiteFormInstances(context, activity, newActivity));
 
         }
         return Promise.waitAll(copyPromises);
     }
 
-    private Promise<VoidResult> copySiteFormInstances(final ExecutionContext context, Activity sourceActivity, final Activity targetActivity) {
-        Filter filter = new Filter();
-        filter.addRestriction(DimensionType.Activity, sourceActivity.getId());
-
-        GetSites query = new GetSites();
-        query.setFilter(filter);
-
-        final Promise<ActivityFormDTO> activityForm = new Promise<>();
-        context.execute(new GetActivityForm(sourceActivity.getId()), activityForm);
-
-        final Promise<SiteResult> fetchSitesPromise = new Promise<>();
-        context.execute(query, fetchSitesPromise);
-
-        return Promise.waitAll(activityForm, fetchSitesPromise).join(new Function<Void, Promise<VoidResult>>() {
-            @Nullable
-            @Override
-            public Promise<VoidResult> apply(@Nullable Void input) {
-
-                for (SiteDTO site : fetchSitesPromise.get().getData()) {
-                    SiteBinding binding = new SiteBinding(activityForm.get());
-
-                    // adapt id and classId to targetActivity
-                    FormInstance formInstance = binding.newInstance(site)
-                            .setId(CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, targetActivity.getId()))
-                            .setClassId(CuidAdapter.activityFormClass(targetActivity.getId()));
-
-                    // persist
-                    new SitePersister(new DispatchAdapter(context)).persist(formInstance);
-                }
-                return Promise.resolved(VoidResult.INSTANCE);
-            }
-        });
-    }
+//    private Promise<VoidResult> copySiteFormInstances(final ExecutionContext context, Activity sourceActivity, final Activity targetActivity) {
+//        Filter filter = new Filter();
+//        filter.addRestriction(DimensionType.Activity, sourceActivity.getId());
+//
+//        GetSites query = new GetSites();
+//        query.setFilter(filter);
+//
+//        final Promise<ActivityFormDTO> activityForm = new Promise<>();
+//        context.execute(new GetActivityForm(sourceActivity.getId()), activityForm);
+//
+//        final Promise<SiteResult> fetchSitesPromise = new Promise<>();
+//        context.execute(query, fetchSitesPromise);
+//
+//        return Promise.waitAll(activityForm, fetchSitesPromise).join(new Function<Void, Promise<VoidResult>>() {
+//            @Nullable
+//            @Override
+//            public Promise<VoidResult> apply(@Nullable Void input) {
+//
+//                for (SiteDTO site : fetchSitesPromise.get().getData()) {
+//                    SiteBinding binding = new SiteBinding(activityForm.get());
+//
+//                    // adapt id and classId to targetActivity
+//                    FormInstance formInstance = binding.newInstance(site)
+//                            .setId(CuidAdapter.cuid(CuidAdapter.SITE_DOMAIN, targetActivity.getId()))
+//                            .setClassId(CuidAdapter.activityFormClass(targetActivity.getId()));
+//
+//                    // persist
+//                    new SitePersister(new DispatchAdapter(context)).persist(formInstance);
+//                }
+//                return Promise.resolved(VoidResult.INSTANCE);
+//            }
+//        });
+//    }
 
     private Promise<VoidResult> copyFormClass(final ExecutionContext context, ResourceId sourceFormClass, final ResourceId targetFormClass) {
         final Promise<VoidResult> promise = new Promise<>();
