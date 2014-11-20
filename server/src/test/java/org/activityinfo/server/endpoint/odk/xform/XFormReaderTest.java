@@ -55,7 +55,7 @@ public class XFormReaderTest extends CommandTestCase2 {
         assertThat(veg408.getLabel(),
                 equalTo("E.37 In the last seven days did anyone in your household consume any cabbage ?"));
 
-        FormField consumption_veg401 = findField(formClass, "consumption_veg401");
+        FormField consumption_veg401 = findField(formClass, "v_401/consumption_veg401");
         assertThat(consumption_veg401.isVisible(), equalTo(true));
         assertThat(consumption_veg401.getLabel(),
                 equalTo("E.30.1.1 why was the previous question left blank?"));
