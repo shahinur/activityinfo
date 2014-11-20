@@ -12,11 +12,11 @@ import org.activityinfo.model.type.enumerated.EnumValue;
 import java.util.List;
 import java.util.Map;
 
-class EnumFieldValueParser implements FieldValueParser {
+class IdEnumFieldValueParser implements FieldValueParser {
     final private Cardinality cardinality;
     final private Map<ResourceId, EnumValue> values;
 
-    EnumFieldValueParser(EnumType enumType) {
+    IdEnumFieldValueParser(EnumType enumType) {
         this.cardinality = enumType.getCardinality();
         values = Maps.newHashMapWithExpectedSize(enumType.getValues().size());
 

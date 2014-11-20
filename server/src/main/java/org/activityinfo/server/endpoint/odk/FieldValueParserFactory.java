@@ -13,10 +13,16 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 public class FieldValueParserFactory {
-    static public FieldValueParser fromFieldType(FieldType fieldType) {
+    static public FieldValueParser fromFieldType(FieldType fieldType, boolean odk) {
         if (fieldType instanceof BarcodeType) return new BarcodeFieldValueParser();
         if (fieldType instanceof BooleanType) return new BooleanFieldValueParser();
-        if (fieldType instanceof EnumType) return new EnumFieldValueParser((EnumType) fieldType);
+        if (fieldType instanceof EnumType) {
+            if (odk) {
+                return new IdEnumFieldValueParser((EnumType) fieldType);
+            } else {
+                return new CodeEnumFieldValueParser((EnumType) fieldType);
+            }
+        }
         if (fieldType instanceof GeoPointType) return new GeoPointFieldValueParser();
         if (fieldType instanceof ImageType) return new ImageFieldValueParser();
         if (fieldType instanceof LocalDateType) return new LocalDateFieldValueParser();
