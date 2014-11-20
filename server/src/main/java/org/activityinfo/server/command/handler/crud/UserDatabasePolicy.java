@@ -23,10 +23,14 @@ package org.activityinfo.server.command.handler.crud;
  */
 
 import com.google.inject.Inject;
+import org.activityinfo.legacy.shared.command.AddPartner;
+import org.activityinfo.legacy.shared.model.PartnerDTO;
+import org.activityinfo.server.command.handler.AddPartnerHandler;
 import org.activityinfo.server.command.handler.PermissionOracle;
 import org.activityinfo.server.database.hibernate.dao.CountryDAO;
 import org.activityinfo.server.database.hibernate.dao.UserDatabaseDAO;
 import org.activityinfo.server.database.hibernate.entity.Country;
+import org.activityinfo.server.database.hibernate.entity.Partner;
 import org.activityinfo.server.database.hibernate.entity.User;
 import org.activityinfo.server.database.hibernate.entity.UserDatabase;
 
@@ -57,7 +61,18 @@ public class UserDatabasePolicy implements EntityPolicy<UserDatabase> {
 
         databaseDAO.persist(database);
 
+        addDefaultPartner(database.getId(), user);
+
         return database.getId();
+    }
+
+    private void addDefaultPartner(int databaseId, User user) {
+        PartnerDTO partner = new PartnerDTO();
+        partner.setName("Default");
+
+        AddPartner command = new AddPartner(databaseId, partner);
+
+        new AddPartnerHandler(em).execute(command, user);
     }
 
     public UserDatabase findById(int dbId) {
