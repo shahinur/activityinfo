@@ -170,6 +170,7 @@ public final class ActivityFormDTO extends BaseModelData implements EntityDTO, H
 
     public void setDatabase(UserDatabaseDTO database) {
         this.databaseId = database.getId();
+        this.databaseName = database.getName();
     }
 
 

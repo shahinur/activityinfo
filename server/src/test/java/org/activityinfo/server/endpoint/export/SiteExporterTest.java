@@ -29,6 +29,7 @@ public class SiteExporterTest {
         somalia.getLocationTypes().add(locationType);
 
         UserDatabaseDTO syli = new UserDatabaseDTO();
+        syli.setId(444);
         syli.setName("SYLI");
         syli.setCountry(somalia);
 
