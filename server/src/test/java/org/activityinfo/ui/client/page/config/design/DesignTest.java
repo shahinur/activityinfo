@@ -28,16 +28,11 @@ import com.extjs.gxt.ui.client.store.TreeStore;
 import com.google.gwt.junit.GWTMockUtilities;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.client.state.StateManagerStub;
-import org.activityinfo.legacy.shared.command.CreateEntity;
-import org.activityinfo.legacy.shared.command.Delete;
-import org.activityinfo.legacy.shared.command.GetSchema;
-import org.activityinfo.legacy.shared.command.UpdateEntity;
+import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
+import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.DTOs;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.ui.client.MockEventBus;
 import org.activityinfo.ui.client.dispatch.DispatcherStub;
 import org.activityinfo.ui.client.page.NavigationCallback;
@@ -65,6 +60,7 @@ public class DesignTest {
 
         // Collaborator
         DispatcherStub service = new DispatcherStub();
+        service.setResult(GetActivityForm.class, new ActivityFormDTO(schema.getDatabaseById(1).getActivities().get(0)));
         service.setResult(GetSchema.class, schema);
         service.setResult(UpdateEntity.class, new VoidResult());
 
@@ -109,6 +105,7 @@ public class DesignTest {
 
         // Collaborator
         DispatcherStub service = new DispatcherStub();
+        service.setResult(GetActivityForm.class, new ActivityFormDTO(schema.getDatabaseById(1).getActivities().get(0)));
         service.setResult(GetSchema.class, schema);
         service.setResult(UpdateEntity.class, new VoidResult());
 
@@ -156,6 +153,7 @@ public class DesignTest {
 
         // Collaborator
         DispatcherStub service = new DispatcherStub();
+        service.setResult(GetActivityForm.class, new ActivityFormDTO(schema.getDatabaseById(1).getActivities().get(0)));
         service.setResult(GetSchema.class, schema);
         service.setResult(Delete.class, new VoidResult());
 
@@ -201,6 +199,7 @@ public class DesignTest {
 
         // Collaborator
         DispatcherStub service = new DispatcherStub();
+        service.setResult(GetActivityForm.class, new ActivityFormDTO(schema.getDatabaseById(1).getActivities().get(0)));
         service.setResult(GetSchema.class, schema);
         service.setResult(Delete.class, new VoidResult());
 
@@ -260,6 +259,7 @@ public class DesignTest {
 
         // Collaborator : Command Service
         DispatcherStub service = new DispatcherStub();
+        service.setResult(GetActivityForm.class, new ActivityFormDTO(schema.getDatabaseById(1).getActivities().get(0)));
         service.setResult(GetSchema.class, schema);
         service.setResult(CreateEntity.class, new CreateResult(991));
 

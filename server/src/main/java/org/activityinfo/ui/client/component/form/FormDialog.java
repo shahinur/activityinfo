@@ -23,6 +23,7 @@ package org.activityinfo.ui.client.component.form;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.form.FormInstance;
@@ -80,6 +81,11 @@ public class FormDialog {
 
     public void setDialogTitle(String text) {
         dialog.setDialogTitle(text);
+    }
+
+    public void setDialogTitle(String h3, String h4) {
+        String html = "<h3>" + h3 + "</h3><br/><h4>" + h4 + "</h4>" ;
+        dialog.setDialogTitle(SafeHtmlUtils.fromSafeConstant(html).asString());
     }
 
     public void show(final FormInstance instance, FormDialogCallback callback) {

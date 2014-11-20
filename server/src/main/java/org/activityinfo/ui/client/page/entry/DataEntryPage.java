@@ -370,7 +370,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     public void onUIAction(String actionId) {
         if (UIActions.ADD.equals(actionId)) {
 
-            SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher);
+            SiteDialogLauncher formHelper = new SiteDialogLauncher(dispatcher, eventBus);
             formHelper.addSite(currentPlace.getFilter(), new SiteDialogCallback() {
 
                 @Override
@@ -381,7 +381,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
 
         } else if (UIActions.EDIT.equals(actionId)) {
             final SiteDTO selection = gridPanel.getSelection();
-            SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher);
+            SiteDialogLauncher launcher = new SiteDialogLauncher(dispatcher, eventBus);
             launcher.editSite(selection, new SiteDialogCallback() {
 
                 @Override

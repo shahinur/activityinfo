@@ -3633,4 +3633,16 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Please select the database to copy")
     String selectDbToCopyWelcome();
+
+    @DefaultStringValue("Alert")
+    String alert();
+
+    @DefaultStringValue("Unfortunately you do not have design privileges to perform this action.")
+    String noDesignPrivileges();
+
+    @DefaultStringValue("New Submission")
+    String newSubmission();
+
+    @DefaultStringValue("Edit Submission")
+    String editSubmission();
 }
