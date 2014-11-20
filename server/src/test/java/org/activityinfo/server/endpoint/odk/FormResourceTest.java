@@ -19,6 +19,8 @@ import org.activityinfo.service.DeploymentConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
@@ -26,6 +28,9 @@ import javax.ws.rs.core.StreamingOutput;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -68,13 +73,13 @@ public class FormResourceTest extends CommandTestCase2 {
         SubmissionArchiver backupService = new SubmissionArchiver(
                 new DeploymentConfiguration(new Properties()));
 
-        formResource = new FormResource(resourceLocator, fieldFactory, tokenService);
+        formResource = new FormResource(resourceLocator, authProvider, fieldFactory, tokenService);
         formSubmissionResource = new FormSubmissionResource(resourceLocator, tokenService, blobstore, backupService);
     }
 
     @Test
     @OnDataSet("/dbunit/chad-form.db.xml")
-    public void getBlankForm() throws JAXBException, URISyntaxException, IOException, InterruptedException {
+    public void getBlankForm() throws Exception {
 
         setUser(USER_ID);
 
@@ -86,6 +91,12 @@ public class FormResourceTest extends CommandTestCase2 {
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.marshal(form.getEntity(), file);
         validate(file);
+
+        DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document document = documentBuilder.parse(file);
+        Element userID = (Element) document.getElementsByTagName("userID").item(0);
+        assertThat(userID.getTextContent(), equalTo("XYZ"));
+
     }
 
     @Test

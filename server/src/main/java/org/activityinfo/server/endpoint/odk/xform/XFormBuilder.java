@@ -82,7 +82,7 @@ public class XFormBuilder {
         data.addChild(
                 new InstanceElement("meta",
                         new InstanceElement("instanceID"),
-                        new InstanceElement("userID")));
+                        new InstanceElement("userID", userId)));
 
         for (OdkField field : fields) {
             data.addChild(new InstanceElement(field.getRelativeFieldName()));
