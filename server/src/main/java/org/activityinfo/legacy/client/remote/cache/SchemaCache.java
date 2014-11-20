@@ -63,6 +63,7 @@ public class SchemaCache implements DispatchListener {
         source.registerListener(RequestChange.class, this);
         source.registerListener(BatchCommand.class, this);
         source.registerListener(CloneDatabase.class, this);
+        source.registerListener(Delete.class, this);
 
         schemaEntityTypes.add("UserDatabase");
         schemaEntityTypes.add("Activity");
@@ -82,7 +83,7 @@ public class SchemaCache implements DispatchListener {
             clearCache();
         } else if (command instanceof CloneDatabase) {
             clearCache();
-        } else if (command instanceof CreateEntity) {
+        } else if (command instanceof CreateEntity || command instanceof Delete) {
             clearCache();
         } else if (command instanceof AddPartner || command instanceof RemovePartner) {
             clearCache();
