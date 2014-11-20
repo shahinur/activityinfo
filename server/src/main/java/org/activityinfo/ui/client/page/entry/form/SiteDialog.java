@@ -23,10 +23,7 @@ package org.activityinfo.ui.client.page.entry.form;
  */
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
@@ -37,6 +34,7 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,7 +43,9 @@ import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.shared.command.CreateSite;
+import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.command.UpdateSite;
 import org.activityinfo.legacy.shared.command.exception.NotAuthorizedException;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
@@ -54,11 +54,17 @@ import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.legacy.KeyGenerator;
+import org.activityinfo.ui.client.EventBus;
+import org.activityinfo.ui.client.page.NavigationEvent;
+import org.activityinfo.ui.client.page.NavigationHandler;
+import org.activityinfo.ui.client.page.config.DbPageState;
+import org.activityinfo.ui.client.page.config.design.DesignPresenter;
 import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
 import java.util.List;
+import java.util.Map;
 
 public class SiteDialog extends Window {
 
@@ -74,6 +80,7 @@ public class SiteDialog extends Window {
 
     private final Dispatcher dispatcher;
     private final ActivityFormDTO activity;
+    private final EventBus eventBus;
 
     private SiteDialogCallback callback;
 
@@ -85,9 +92,10 @@ public class SiteDialog extends Window {
     private boolean newSite;
     private KeyGenerator keyGenerator;
 
-    public SiteDialog(Dispatcher dispatcher, ActivityFormDTO activity) {
+    public SiteDialog(Dispatcher dispatcher, ActivityFormDTO activity, EventBus eventBus) {
         this.dispatcher = dispatcher;
         this.activity = activity;
+        this.eventBus = eventBus;
 
         setHeadingText(I18N.MESSAGES.addNewSiteForActivity(activity.getName()));
         setWidth(WIDTH);
@@ -179,13 +187,33 @@ public class SiteDialog extends Window {
         getButtonBar().add(finishButton);
     }
 
-    private LayoutContainer modernViewAlert(int dbId) {
+    private LayoutContainer modernViewAlert(final int dbId) {
         Anchor linkToDesign = new Anchor(I18N.CONSTANTS.switchToNewLayout());
-        linkToDesign.setHref("#design/" + dbId);
+        linkToDesign.setHref("#");
         linkToDesign.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                SiteDialog.this.hide();
+                if (activity.isDesignAllowed()) {
+                    Map<String, Object> changes = Maps.newHashMap();
+                    changes.put("classicView", Boolean.FALSE);
+
+                    dispatcher.execute(new UpdateEntity(activity, changes)).then(new SuccessCallback<VoidResult>() {
+                        @Override
+                        public void onSuccess(VoidResult result) {
+                            com.google.gwt.user.client.Window.Location.assign("#design/" + dbId);
+                            eventBus.fireEvent(new NavigationEvent(
+                                    NavigationHandler.NAVIGATION_REQUESTED,
+                                    new DbPageState(DesignPresenter.PAGE_ID, dbId)));
+                            SiteDialog.this.hide();
+                        }
+                    });
+                } else {
+                    MessageBox.alert(I18N.CONSTANTS.alert(), I18N.CONSTANTS.noDesignPrivileges(), new SelectionListener<MessageBoxEvent>() {
+                        @Override
+                        public void componentSelected(MessageBoxEvent ce) {
+                        }
+                    });
+                }
             }
         });
 

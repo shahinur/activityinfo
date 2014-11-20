@@ -30,12 +30,16 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
-import org.activityinfo.legacy.shared.command.*;
+import org.activityinfo.legacy.shared.command.DimensionType;
+import org.activityinfo.legacy.shared.command.Filter;
+import org.activityinfo.legacy.shared.command.GetActivityForm;
+import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.component.form.FormDialog;
 import org.activityinfo.ui.client.component.form.FormDialogCallback;
 import org.activityinfo.ui.client.page.entry.location.LocationDialog;
@@ -44,10 +48,12 @@ public class SiteDialogLauncher {
 
     private final Dispatcher dispatcher;
     private final ResourceLocator resourceLocator;
+    private final EventBus eventBus;
 
-    public SiteDialogLauncher(Dispatcher dispatcher) {
+    public SiteDialogLauncher(Dispatcher dispatcher, EventBus eventBus) {
         super();
         this.dispatcher = dispatcher;
+        this.eventBus = eventBus;
         this.resourceLocator = new ResourceLocatorAdaptor(dispatcher);
     }
 
@@ -158,7 +164,7 @@ public class SiteDialogLauncher {
 
                     @Override
                     public void onSuccess(ActivityFormDTO result) {
-                        SiteDialog dialog = new SiteDialog(dispatcher, result);
+                        SiteDialog dialog = new SiteDialog(dispatcher, result, eventBus);
                         dialog.showExisting(site, callback);
                     }
                 });
@@ -178,7 +184,7 @@ public class SiteDialogLauncher {
                 newSite.setActivityId(activity.getId());
                 newSite.setLocation(location);
 
-                SiteDialog dialog = new SiteDialog(dispatcher, activity);
+                SiteDialog dialog = new SiteDialog(dispatcher, activity, eventBus);
                 dialog.showNew(newSite, location, isNew, callback);
             }
         });
@@ -192,7 +198,7 @@ public class SiteDialogLauncher {
         location.setId(new KeyGenerator().generateInt());
         location.setLocationTypeId(activity.getLocationTypeId());
 
-        SiteDialog dialog = new SiteDialog(dispatcher, activity);
+        SiteDialog dialog = new SiteDialog(dispatcher, activity, eventBus);
         dialog.showNew(newSite, location, true, callback);
     }
 
@@ -204,7 +210,7 @@ public class SiteDialogLauncher {
         location.setId(activity.getLocationTypeId());
         location.setLocationTypeId(activity.getLocationTypeId());
 
-        SiteDialog dialog = new SiteDialog(dispatcher, activity);
+        SiteDialog dialog = new SiteDialog(dispatcher, activity, eventBus);
         dialog.showNew(newSite, location, true, callback);
     }
 }
