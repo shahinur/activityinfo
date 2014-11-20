@@ -8,7 +8,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.DateBox;
+import org.activityinfo.ui.client.widget.DateBox;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.model.type.time.LocalDateInterval;
@@ -32,7 +32,6 @@ public class DateIntervalFieldWidget implements FormFieldWidget<LocalDateInterva
     @UiField
     DateBox endDateBox;
 
-    private boolean readOnly;
     private ValueUpdater<LocalDateInterval> valueUpdater;
 
     public DateIntervalFieldWidget(final ValueUpdater<LocalDateInterval> valueUpdater) {
@@ -67,7 +66,8 @@ public class DateIntervalFieldWidget implements FormFieldWidget<LocalDateInterva
 
     @Override
     public void setReadOnly(boolean readOnly) {
-
+        startDateBox.setReadOnly(readOnly);
+        endDateBox.setReadOnly(readOnly);
     }
 
     @Override

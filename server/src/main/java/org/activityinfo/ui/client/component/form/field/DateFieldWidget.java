@@ -26,7 +26,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.datepicker.client.DateBox;
+import org.activityinfo.ui.client.widget.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import org.activityinfo.core.shared.type.formatter.DateFormatterFactory;
 import org.activityinfo.model.type.FieldType;
@@ -59,19 +59,10 @@ import java.util.Date;
 public class DateFieldWidget implements FormFieldWidget<LocalDate> {
 
     private final DateBox dateBox;
-    private boolean readOnly;
 
     public DateFieldWidget(final ValueUpdater<LocalDate> valueUpdater) {
-        dateBox = new DateBox(new DatePicker(), null, createFormat()) {
-            @Override
-            public void showDatePicker() {
-                if(!readOnly) {
-                    super.showDatePicker();
-                }
-            }
-        };
-        dateBox.setStyleName("form-control");
-        dateBox.getTextBox().setStyleName("form-control");
+
+        dateBox = new DateBox(new DatePicker(), null, createFormat());
         dateBox.addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> event) {
@@ -86,8 +77,7 @@ public class DateFieldWidget implements FormFieldWidget<LocalDate> {
 
     @Override
     public void setReadOnly(boolean readOnly) {
-        this.readOnly = readOnly;
-        this.dateBox.getTextBox().setReadOnly(readOnly);
+        this.dateBox.setReadOnly(readOnly);
     }
 
     @Override
