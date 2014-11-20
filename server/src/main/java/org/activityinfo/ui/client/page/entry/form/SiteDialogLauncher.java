@@ -76,7 +76,7 @@ public class SiteDialogLauncher {
                     if (!activity.getClassicView()) {// modern view
                         final ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(activity.getFormClassId());
                         FormInstance newInstance = new FormInstance(instanceId, activity.getFormClassId());
-                        showModernFormDialog(activity, newInstance, callback);
+                        showModernFormDialog(activity, newInstance, callback, true);
                         return;
                     }
                     dispatcher.execute(new GetActivityForm(activityId)).then(new AsyncCallback<ActivityFormDTO>() {
@@ -110,9 +110,10 @@ public class SiteDialogLauncher {
         Log.error("Error launching site dialog", caught);
     }
 
-    private void showModernFormDialog(ActivityDTO activity, FormInstance instance, final SiteDialogCallback callback) {
+    private void showModernFormDialog(ActivityDTO activity, FormInstance instance, final SiteDialogCallback callback, boolean isNew) {
+        String h4Title = isNew ? I18N.CONSTANTS.newSubmission() : I18N.CONSTANTS.editSubmission();
         FormDialog dialog = new FormDialog(resourceLocator);
-        dialog.setDialogTitle(I18N.MESSAGES.addNewSiteForActivity(activity.getName()));
+        dialog.setDialogTitle(activity.getName(), h4Title);
         dialog.show(instance, new FormDialogCallback() {
             @Override
             public void onPersisted(FormInstance instance) {
@@ -138,7 +139,7 @@ public class SiteDialogLauncher {
                     resourceLocator.getFormInstance(site.getInstanceId()).then(new SuccessCallback<FormInstance>() {
                         @Override
                         public void onSuccess(FormInstance result) {
-                            showModernFormDialog(activity, result, callback);
+                            showModernFormDialog(activity, result, callback, false);
                         }
                     });
 
