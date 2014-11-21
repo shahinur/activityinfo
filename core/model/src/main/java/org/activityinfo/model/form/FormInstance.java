@@ -24,10 +24,7 @@ package org.activityinfo.model.form;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.*;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.geo.AiLatLng;
 import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.model.type.number.Quantity;
@@ -193,6 +190,14 @@ public class FormInstance implements IsResource {
 
     public void set(@NotNull ResourceId fieldId, Set<ResourceId> references) {
         set(fieldId, new ReferenceValue(references));
+    }
+
+    public FieldValue get(ResourceId fieldId, FieldType fieldType) {
+        Object value = propertyBag.get(fieldId.asString());
+        if (value instanceof String && fieldType instanceof NarrativeType) {
+            return NarrativeValue.valueOf((String) value);
+        }
+        return get(fieldId);
     }
 
     public FieldValue get(ResourceId fieldId) {
