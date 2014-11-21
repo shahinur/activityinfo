@@ -5,10 +5,13 @@ import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.server.endpoint.odk.OdkField;
 import org.activityinfo.server.endpoint.odk.OdkFormFieldBuilder;
 import org.activityinfo.server.endpoint.odk.OdkFormFieldBuilderFactory;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 import static org.activityinfo.model.legacy.CuidAdapter.*;
@@ -57,7 +60,7 @@ public class XFormBuilder {
     private List<OdkField> createFieldBuilders(FormClass formClass) {
         fields = new ArrayList<>();
         for (FormField field : formClass.getFields()) {
-            if(field.isVisible()) {
+            if(field.isVisible() && isValid(field)) {
                 OdkFormFieldBuilder builder = factory.get(field.getType());
                 if (builder != null) {
                     fields.add(new OdkField(field, builder));
@@ -65,6 +68,14 @@ public class XFormBuilder {
             }
         }
         return fields;
+    }
+
+    private boolean isValid(FormField field) {
+        if(!(field.getType() instanceof ParameterizedType)) {
+            return true;
+        }
+        ParametrizedFieldType type = (ParametrizedFieldType) field.getType();
+        return type.isValid();
     }
 
     private Model createModel() {
