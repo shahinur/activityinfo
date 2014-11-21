@@ -19,11 +19,6 @@ public class BarcodeType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Barcode";
-        }
-
-        @Override
         public FieldType createType() {
             return INSTANCE;
         }

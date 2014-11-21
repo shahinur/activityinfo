@@ -3,13 +3,10 @@ package org.activityinfo.server.endpoint.odk;
 import com.google.common.base.Strings;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.time.LocalDate;
-import org.w3c.dom.Element;
 
-class LocalDateFieldValueParser implements OdkFieldValueParser {
+class LocalDateFieldValueParser implements FieldValueParser {
     @Override
-    public FieldValue parse(Element element) {
-        String text = OdkHelper.extractText(element);
-
+    public FieldValue parse(String text) {
         if (Strings.isNullOrEmpty(text)) {
             return null;
         } else {

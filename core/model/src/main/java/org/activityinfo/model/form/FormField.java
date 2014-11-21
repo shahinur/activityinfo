@@ -170,7 +170,7 @@ public class FormField extends FormElement {
         return "FormField{" +
                 "id=" + id +
                 ", label=" + label +
-                ", type=" + type.getTypeClass().getLabel() +
+                ", type=" + type.getTypeClass().getId() +
                 '}';
     }
 

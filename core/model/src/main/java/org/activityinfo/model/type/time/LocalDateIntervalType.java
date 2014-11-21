@@ -16,11 +16,6 @@ public class LocalDateIntervalType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Date Range";
-        }
-
-        @Override
         public FieldType createType() {
             return LocalDateIntervalType.INSTANCE;
         }

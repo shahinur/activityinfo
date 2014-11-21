@@ -1,7 +1,6 @@
 package org.activityinfo.server.endpoint.odk;
 
 import com.google.appengine.api.images.Image;
-import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.io.ByteSource;
 import com.google.common.io.ByteStreams;
@@ -43,18 +42,16 @@ import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 public class FormSubmissionResource {
     private static final Logger LOGGER = Logger.getLogger(FormSubmissionResource.class.getName());
 
-    final private OdkFieldValueParserFactory factory;
     final private ResourceLocatorSync locator;
     final private AuthenticationTokenService authenticationTokenService;
     final private BlobFieldStorageService blobFieldStorageService;
     final private SubmissionArchiver submissionArchiver;
 
     @Inject
-    public FormSubmissionResource(OdkFieldValueParserFactory factory, ResourceLocatorSync locator,
+    public FormSubmissionResource(ResourceLocatorSync locator,
                                   AuthenticationTokenService authenticationTokenService,
                                   BlobFieldStorageService blobFieldStorageService,
                                   SubmissionArchiver submissionArchiver) {
-        this.factory = factory;
         this.locator = locator;
         this.authenticationTokenService = authenticationTokenService;
         this.blobFieldStorageService = blobFieldStorageService;
@@ -99,7 +96,7 @@ public class FormSubmissionResource {
 
     private FieldValue tryParse(FormInstance formInstance, FormField formField, Element element) {
         try {
-            OdkFieldValueParser odkFieldValueParser = factory.fromFieldType(formField.getType());
+            OdkFieldValueParser odkFieldValueParser = OdkFieldValueParserFactory.fromFieldType(formField.getType());
             return odkFieldValueParser.parse(element);
 
         } catch (Exception e) {

@@ -15,11 +15,6 @@ public class TextType implements FieldType {
         }
 
         @Override
-        public String getLabel() {
-            return "Text";
-        }
-
-        @Override
         public FieldType createType() {
             return INSTANCE;
         }

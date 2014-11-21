@@ -32,12 +32,6 @@ public interface FieldTypeClass {
 
 
     /**
-     * @return a human readable label describing this type class
-     */
-    String getLabel();
-
-
-    /**
      *
      * @return an instance of this {@code FieldTypeClass} using default parameters
      */

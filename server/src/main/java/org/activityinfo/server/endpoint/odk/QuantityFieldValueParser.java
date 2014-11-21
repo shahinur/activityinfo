@@ -3,9 +3,8 @@ package org.activityinfo.server.endpoint.odk;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.number.QuantityType;
-import org.w3c.dom.Element;
 
-class QuantityFieldValueParser implements OdkFieldValueParser {
+class QuantityFieldValueParser implements FieldValueParser {
     final private String units;
 
     QuantityFieldValueParser(QuantityType quantityType) {
@@ -13,9 +12,8 @@ class QuantityFieldValueParser implements OdkFieldValueParser {
     }
 
     @Override
-    public FieldValue parse(Element element) {
+    public FieldValue parse(String text) {
         double value;
-        String text = OdkHelper.extractText(element);
 
         if (text == null) throw new IllegalArgumentException("Malformed Element passed to OdkFieldValueParser.parse()");
 

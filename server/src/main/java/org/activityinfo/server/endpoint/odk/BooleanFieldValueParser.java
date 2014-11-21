@@ -2,13 +2,10 @@ package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
-import org.w3c.dom.Element;
 
-class BooleanFieldValueParser implements OdkFieldValueParser {
+class BooleanFieldValueParser implements FieldValueParser {
     @Override
-    public FieldValue parse(Element element) {
-        String text = OdkHelper.extractText(element);
-
+    public FieldValue parse(String text) {
         if (text == null) throw new IllegalArgumentException("Malformed Element passed to OdkFieldValueParser.parse()");
 
         return BooleanFieldValue.valueOf(text);

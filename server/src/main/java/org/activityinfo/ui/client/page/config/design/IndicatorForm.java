@@ -97,8 +97,6 @@ class IndicatorForm extends AbstractDesignForm {
         typeCombo.add(FieldTypeClass.QUANTITY.getId(), I18N.CONSTANTS.fieldTypeQuantity());
         typeCombo.add(FieldTypeClass.FREE_TEXT.getId(), I18N.CONSTANTS.fieldTypeText());
         typeCombo.add(FieldTypeClass.NARRATIVE.getId(), I18N.CONSTANTS.fieldTypeNarrative());
-        typeCombo.add(BooleanType.TYPE_CLASS.getId(), I18N.CONSTANTS.fieldTypeBoolean());
-        typeCombo.add(BarcodeType.TYPE_CLASS.getId(), I18N.CONSTANTS.fieldTypeBoolean());
 
         binding.addFieldBinding(new MappingComboBoxBinding(typeCombo, "type"));
         this.add(typeCombo);

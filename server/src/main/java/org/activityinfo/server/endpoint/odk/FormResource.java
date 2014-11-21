@@ -31,7 +31,7 @@ public class FormResource {
 
     private ResourceLocatorSyncImpl locator;
     private OdkFormFieldBuilderFactory factory;
-    private OdkAuthProvider authProvider;
+    private Provider<AuthenticatedUser> authProvider;
     private AuthenticationTokenService authenticationTokenService;
     private ItemSetBuilder itemSetBuilder;
 
@@ -46,9 +46,10 @@ public class FormResource {
     }
 
     @VisibleForTesting
-    FormResource(ResourceLocatorSyncImpl locator, OdkFormFieldBuilderFactory factory,
+    FormResource(ResourceLocatorSyncImpl locator, Provider<AuthenticatedUser> authProvider, OdkFormFieldBuilderFactory factory,
                  AuthenticationTokenService authenticationTokenService) {
         this.locator = locator;
+        this.authProvider = authProvider;
         this.factory = factory;
         this.authenticationTokenService = authenticationTokenService;
     }

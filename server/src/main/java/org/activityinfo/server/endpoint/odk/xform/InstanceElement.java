@@ -23,6 +23,12 @@ public class InstanceElement {
         this.children = Lists.newArrayList(children);
     }
 
+    public InstanceElement(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
+
+
     public String getName() {
         return name;
     }

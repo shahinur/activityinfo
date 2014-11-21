@@ -2,13 +2,11 @@ package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.geo.GeoPoint;
-import org.w3c.dom.Element;
 
-class GeoPointFieldValueParser implements OdkFieldValueParser {
+class GeoPointFieldValueParser implements FieldValueParser {
     @Override
-    public FieldValue parse(Element element) {
+    public FieldValue parse(String text) {
         double latitude, longitude;
-        String text = OdkHelper.extractText(element);
 
         if (text == null) throw new IllegalArgumentException("Malformed Element passed to OdkFieldValueParser.parse()");
 
