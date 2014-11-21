@@ -1,6 +1,5 @@
 package org.activityinfo.ui.client.component.table;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
@@ -8,8 +7,6 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
-import org.activityinfo.ui.client.component.table.renderer.RendererFactory;
-import org.activityinfo.ui.client.component.table.renderer.ValueRenderer;
 
 import java.util.List;
 
@@ -57,8 +54,8 @@ public class FieldColumn extends Column<Projection, String> {
             if (!value.isNaN()) {
                 return value.toString();
             }
-        } else if (valueAsObject instanceof String) {
-            return (String) valueAsObject;
+        } else if (valueAsObject != null) {
+            return valueAsObject.toString();
         }
 
         return NON_BREAKING_SPACE;

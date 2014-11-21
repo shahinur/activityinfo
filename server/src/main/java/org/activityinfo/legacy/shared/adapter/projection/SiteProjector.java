@@ -2,13 +2,13 @@ package org.activityinfo.legacy.shared.adapter.projection;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
-import org.activityinfo.model.formTree.FieldPath;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.command.result.ListResult;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.formTree.FieldPath;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 
 import java.util.List;
 
@@ -69,16 +69,19 @@ public class SiteProjector implements Function<ListResult<SiteDTO>, List<Project
             for (String propertyName : site.getPropertyNames()) {
                 if (propertyName.startsWith(IndicatorDTO.PROPERTY_PREFIX)) {
                     Object value = site.get(propertyName);
-                    if (value instanceof Number) {
-                        final double doubleValue = ((Number) value).doubleValue();
-                        for (IndicatorProjectionUpdater projector : indicatorProjectors) {
-                            if (projector.getIndicatorId() == IndicatorDTO.indicatorIdForPropertyName(propertyName)) {
+
+                    for (IndicatorProjectionUpdater projector : indicatorProjectors) {
+                        if (projector.getIndicatorId() == IndicatorDTO.indicatorIdForPropertyName(propertyName)) {
+                            if (value instanceof Number) {
+                                final double doubleValue = ((Number) value).doubleValue();
                                 projector.update(projection, doubleValue);
+                            } else {
+                                projector.update(projection, value);
                             }
                         }
                     }
                 } else if (propertyName.startsWith(AttributeDTO.PROPERTY_PREFIX) &&
-                           site.get(propertyName) == Boolean.TRUE) {
+                        site.get(propertyName) == Boolean.TRUE) {
                     final AttributeDTO attributeById = activity.getAttributeById(AttributeDTO.idForPropertyName(
                             propertyName));
                     for (ProjectionUpdater<AttributeDTO> projector : attributeProjectors) {
