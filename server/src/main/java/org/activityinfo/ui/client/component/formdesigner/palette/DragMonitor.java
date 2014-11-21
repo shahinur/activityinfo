@@ -65,7 +65,7 @@ public class DragMonitor {
 
     public void dragEnd() {
         try {
-            if (!widgetAdded && dragContext != null) {
+            if (!widgetAdded && dragContext != null && dragContext.draggable instanceof FieldLabel) {
                 dropController.onEnter(dragContext); // force to create positioner
                 dropController.setPositionerToEnd(); // set it to end
                 dropController.onPreviewDrop(dragContext); // drop

@@ -63,10 +63,13 @@ public class DropPanelDropController extends FlowPanelDropController implements 
         if (context.draggable instanceof FieldLabel) {
             previewDropNewWidget(context);
         } else {
+            drop(context.draggable, context);
+
             Scheduler.get().scheduleDeferred(new Command() {
                 @Override
                 public void execute() {
                     formDesigner.updateFieldOrder();
+                    removePositioner();
                 }
             });
         }
@@ -83,11 +86,7 @@ public class DropPanelDropController extends FlowPanelDropController implements 
                 final FieldWidgetContainer fieldWidgetContainer = new FieldWidgetContainer(formDesigner, formFieldWidget, formField);
                 final Widget containerWidget = fieldWidgetContainer.asWidget();
 
-                // hack ! - replace original selected widget with our container, drop it and then restore selection
-                final List<Widget> originalSelectedWidgets = context.selectedWidgets;
-                context.selectedWidgets = Lists.newArrayList(containerWidget);
-                DropPanelDropController.super.onDrop(context); // drop container
-                context.selectedWidgets = originalSelectedWidgets; // restore state;
+                drop(containerWidget, context);
 
                 formDesigner.getEventBus().fireEvent(new PanelUpdatedEvent(fieldWidgetContainer, PanelUpdatedEvent.EventType.ADDED));
                 Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
@@ -108,6 +107,14 @@ public class DropPanelDropController extends FlowPanelDropController implements 
 
         // forbid drop of source control widget
         throw new VetoDragException();
+    }
+
+    private void drop(Widget containerWidget, DragContext context) {
+        // hack ! - replace original selected widget with our container, drop it and then restore selection
+        final List<Widget> originalSelectedWidgets = context.selectedWidgets;
+        context.selectedWidgets = Lists.newArrayList(containerWidget);
+        DropPanelDropController.super.onDrop(context); // drop container
+        context.selectedWidgets = originalSelectedWidgets; // restore state;
     }
 
     @Override
