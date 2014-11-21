@@ -76,7 +76,7 @@ public class SiteDialogLauncher {
                     if (!activity.getClassicView()) {// modern view
                         final ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(activity.getFormClassId());
                         FormInstance newInstance = new FormInstance(instanceId, activity.getFormClassId());
-                        showModernFormDialog(activity, newInstance, callback, true);
+                        showModernFormDialog(activity.getName(), newInstance, callback, true);
                         return;
                     }
                     dispatcher.execute(new GetActivityForm(activityId)).then(new AsyncCallback<ActivityFormDTO>() {
@@ -110,10 +110,14 @@ public class SiteDialogLauncher {
         Log.error("Error launching site dialog", caught);
     }
 
-    private void showModernFormDialog(ActivityDTO activity, FormInstance instance, final SiteDialogCallback callback, boolean isNew) {
-        String h4Title = isNew ? I18N.CONSTANTS.newSubmission() : I18N.CONSTANTS.editSubmission();
+    public void showModernFormDialog(String formName, FormInstance instance, final SiteDialogCallback callback, boolean isNew) {
+        showModernFormDialog(formName, instance, callback, isNew, resourceLocator);
+    }
+
+    public static void showModernFormDialog(String formName, FormInstance instance, final SiteDialogCallback callback, boolean isNew, ResourceLocator resourceLocator) {
+        String h2Title = isNew ? I18N.CONSTANTS.newSubmission() : I18N.CONSTANTS.editSubmission();
         FormDialog dialog = new FormDialog(resourceLocator);
-        dialog.setDialogTitle(activity.getName(), h4Title);
+        dialog.setDialogTitle(formName, h2Title);
         dialog.show(instance, new FormDialogCallback() {
             @Override
             public void onPersisted(FormInstance instance) {
@@ -139,7 +143,7 @@ public class SiteDialogLauncher {
                     resourceLocator.getFormInstance(site.getInstanceId()).then(new SuccessCallback<FormInstance>() {
                         @Override
                         public void onSuccess(FormInstance result) {
-                            showModernFormDialog(activity, result, callback, false);
+                            showModernFormDialog(activity.getName(), result, callback, false);
                         }
                     });
 

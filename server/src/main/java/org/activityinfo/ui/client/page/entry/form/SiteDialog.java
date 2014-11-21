@@ -41,9 +41,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
+import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
+import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.CreateSite;
 import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.command.UpdateSite;
@@ -53,12 +55,9 @@ import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.LocationDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.ui.client.EventBus;
-import org.activityinfo.ui.client.page.NavigationEvent;
-import org.activityinfo.ui.client.page.NavigationHandler;
-import org.activityinfo.ui.client.page.config.DbPageState;
-import org.activityinfo.ui.client.page.config.design.DesignPresenter;
 import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.page.entry.form.resources.SiteFormResources;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
@@ -79,6 +78,7 @@ public class SiteDialog extends Window {
     private final Button finishButton;
 
     private final Dispatcher dispatcher;
+    private final ResourceLocator resourceLocator;
     private final ActivityFormDTO activity;
     private final EventBus eventBus;
 
@@ -94,6 +94,7 @@ public class SiteDialog extends Window {
 
     public SiteDialog(Dispatcher dispatcher, ActivityFormDTO activity, EventBus eventBus) {
         this.dispatcher = dispatcher;
+        this.resourceLocator = new ResourceLocatorAdaptor(dispatcher);
         this.activity = activity;
         this.eventBus = eventBus;
 
@@ -200,11 +201,13 @@ public class SiteDialog extends Window {
                     dispatcher.execute(new UpdateEntity(activity, changes)).then(new SuccessCallback<VoidResult>() {
                         @Override
                         public void onSuccess(VoidResult result) {
-                            com.google.gwt.user.client.Window.Location.assign("#design/" + dbId);
-                            eventBus.fireEvent(new NavigationEvent(
-                                    NavigationHandler.NAVIGATION_REQUESTED,
-                                    new DbPageState(DesignPresenter.PAGE_ID, dbId)));
                             SiteDialog.this.hide();
+                            resourceLocator.getFormInstance(site.getInstanceId()).then(new SuccessCallback<FormInstance>() {
+                                @Override
+                                public void onSuccess(FormInstance result) {
+                                    SiteDialogLauncher.showModernFormDialog(activity.getName(), result, callback, newSite, resourceLocator);
+                                }
+                            });
                         }
                     });
                 } else {
