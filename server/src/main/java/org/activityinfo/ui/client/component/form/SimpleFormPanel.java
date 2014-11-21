@@ -201,7 +201,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
             value = null;
         }
         FieldContainer container = containers.get(field.getId());
-        if (field.isRequired() && value == null) {
+        if (field.isRequired() && value == null && field.isVisible()) { // if field is not visible user doesn't have chance to fix it
             container.setInvalid(I18N.CONSTANTS.requiredFieldMessage());
             return false;
         } else {
