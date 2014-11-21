@@ -9,6 +9,7 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.core.shared.criteria.IdCriteria;
+import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.adapter.bindings.SiteBinding;
 import org.activityinfo.legacy.shared.adapter.bindings.SiteBindingFactory;
 import org.activityinfo.legacy.shared.command.GetActivityForm;
@@ -16,9 +17,8 @@ import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.UpdateFormClass;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.ActivityFormDTO;
-import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.IsResource;
 import org.activityinfo.model.resource.ResourceId;
@@ -61,7 +61,7 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
             return Promise.waitAll(site, form).then(new Function<Void, FormInstance>() {
                 @Override
                 public FormInstance apply(@Nullable Void input) {
-                    SiteBinding binding = new SiteBinding(form.get());
+                    SiteBinding binding = new SiteBindingFactory().apply(form.get());
                     return binding.newInstance(site.get().getData().get(0));
                 }
             });

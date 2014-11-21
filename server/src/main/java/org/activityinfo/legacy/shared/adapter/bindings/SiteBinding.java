@@ -2,13 +2,12 @@ package org.activityinfo.legacy.shared.adapter.bindings;
 
 import com.google.common.base.Preconditions;
 import org.activityinfo.legacy.shared.model.ActivityFormDTO;
-import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 
-import static org.activityinfo.model.legacy.CuidAdapter.activityCategoryFolderId;
 import static org.activityinfo.model.legacy.CuidAdapter.getLegacyIdFromCuid;
 import static org.activityinfo.model.legacy.CuidAdapter.locationField;
 
@@ -19,7 +18,7 @@ public class SiteBinding extends ModelBinding<SiteDTO> {
 
     private final ActivityFormDTO activity;
 
-    public SiteBinding(ActivityFormDTO activity) {
+    protected SiteBinding(ActivityFormDTO activity) {
         super(CuidAdapter.activityFormClass(activity.getId()), CuidAdapter.SITE_DOMAIN);
         this.activity = activity;
     }
