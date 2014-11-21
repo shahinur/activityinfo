@@ -113,6 +113,13 @@ public class FormDialog {
     }
 
     public void save() {
+        dialog.getStatusLabel().setText(""); // clear first
+
+        if (!formPanel.validate()) {
+            dialog.getStatusLabel().setText(I18N.CONSTANTS.pleaseFillInAllRequiredFields());
+            return;
+        }
+
         dialog.getStatusLabel().setText(I18N.CONSTANTS.saving());
         dialog.getPrimaryButton().setEnabled(false);
         resourceLocator.persist(formPanel.getInstance()).then(new AsyncCallback<Void>() {
@@ -121,7 +128,7 @@ public class FormDialog {
             public void onFailure(Throwable caught) {
                 Log.error("Save failed", caught);
                 dialog.getStatusLabel().setText(ExceptionOracle.getExplanation(caught));
-                        dialog.getPrimaryButton().setEnabled(true);
+                dialog.getPrimaryButton().setEnabled(true);
             }
 
             @Override

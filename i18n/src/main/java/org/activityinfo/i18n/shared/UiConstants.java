@@ -3655,4 +3655,6 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Checkboxes")
     String checkboxes();
 
+    @DefaultStringValue("Please fill in all required fields")
+    String pleaseFillInAllRequiredFields();
 }

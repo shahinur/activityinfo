@@ -190,22 +190,34 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     public void onFieldUpdated(FormField field, FieldValue newValue) {
         if (!Objects.equals(workingInstance.get(field.getId()), newValue)) {
             workingInstance.set(field.getId(), newValue);
-            validate(field);
             relevanceHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
         }
+        validateField(field);
     }
 
-    private void validate(FormField field) {
+    private boolean validateField(FormField field) {
         FieldValue value = getCurrentValue(field);
-        if(value.getTypeClass() != field.getType().getTypeClass()) {
+        if (value != null && value.getTypeClass() != field.getType().getTypeClass()) {
             value = null;
         }
         FieldContainer container = containers.get(field.getId());
         if (field.isRequired() && value == null) {
             container.setInvalid(I18N.CONSTANTS.requiredFieldMessage());
+            return false;
         } else {
             container.setValid();
+            return true;
         }
+    }
+
+    public boolean validate() {
+        boolean valid = true;
+        for (FormField formField : formClass.getFields()) {
+            if (!validateField(formField)) {
+                valid = false;
+            }
+        }
+        return valid;
     }
 
     private FieldValue getCurrentValue(FormField field) {
@@ -249,4 +261,5 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     public FormClass getValidationFormClass() {
         return validationFormClass;
     }
+
 }

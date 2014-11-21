@@ -50,7 +50,7 @@ public class VerticalFieldContainer implements FieldContainer {
 
     @Override
     public void setInvalid(String message) {
-        formGroup.setValidationMessage(message);
+        formGroup.showValidationMessage(message);
     }
 
     @Override
