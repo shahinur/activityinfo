@@ -18,11 +18,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Builds xpath expressions from AI expressions.
  */
 public class XPathBuilder {
+
+    private static final Logger LOGGER = Logger.getLogger(XPathBuilder.class.getName());
 
     public static final String TRUE = "true()";
     public static final String FALSE = "false()";
@@ -49,7 +53,12 @@ public class XPathBuilder {
         if(Strings.isNullOrEmpty(expr)) {
             return null;
         }
-        return build(ExprParser.parse(expr));
+        try {
+            return build(ExprParser.parse(expr));
+        } catch (XPathBuilderException e) {
+            LOGGER.log(Level.WARNING, "Exception translating expr '" + expr + "' to XPATH: " + e.getMessage());
+            return null;
+        }
     }
 
     public String build(ExprNode exprNode) {

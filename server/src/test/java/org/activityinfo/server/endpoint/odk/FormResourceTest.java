@@ -8,9 +8,16 @@ import com.google.common.io.Resources;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.legacy.shared.command.GetActivityForm;
+import org.activityinfo.legacy.shared.command.GetFormClass;
+import org.activityinfo.legacy.shared.command.UpdateFormClass;
+import org.activityinfo.legacy.shared.command.result.FormClassResult;
 import org.activityinfo.model.auth.AuthenticatedUser;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.server.database.OnDataSet;
@@ -21,6 +28,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
@@ -84,6 +92,10 @@ public class FormResourceTest extends CommandTestCase2 {
         setUser(USER_ID);
 
         Response form = this.formResource.form(ACTIVITY_ID);
+        validate(form);
+    }
+
+    private void validate(Response form) throws JAXBException, URISyntaxException, IOException, InterruptedException, ParserConfigurationException, SAXException {
         File file = new File(targetDir(), "form.xml");
         JAXBContext context = JAXBContext.newInstance(XForm.class);
         Marshaller marshaller = context.createMarshaller();
@@ -96,6 +108,24 @@ public class FormResourceTest extends CommandTestCase2 {
         Document document = documentBuilder.parse(file);
         Element userID = (Element) document.getElementsByTagName("userID").item(0);
         assertThat(userID.getTextContent(), equalTo("XYZ"));
+    }
+
+    @Test
+    @OnDataSet("/dbunit/invalid-relevance.db.xml")
+    public void invalidExpr() throws Exception {
+
+        setUser(USER_ID);
+
+        FormClass formClass = execute(new GetFormClass(CuidAdapter.activityFormClass(ACTIVITY_ID))).getFormClass();
+        FormField field = new FormField(ResourceId.generateFieldId(QuantityType.TYPE_CLASS));
+        field.setLabel("Question");
+        field.setType(new QuantityType());
+        field.setRelevanceConditionExpression("DELETED_FIELD=1");
+        formClass.addElement(field);
+        execute(new UpdateFormClass(formClass));
+
+        Response form = this.formResource.form(ACTIVITY_ID);
+        validate(form);
 
     }
 
