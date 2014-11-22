@@ -46,7 +46,7 @@ public class FormListResource {
 
         XFormList formList = new XFormList();
         for (UserDatabaseDTO db : schema.getDatabases()) {
-            if (db.isEditAllAllowed()) {
+            if (db.isEditAllowed()) {
                 for (ActivityDTO activity : db.getActivities()) {
                     XFormListItem form = new XFormListItem();
                     form.setName(db.getName() + " / " + activity.getName());
@@ -59,11 +59,11 @@ public class FormListResource {
                             .path("xform")
                             .build());
 
-//                    form.setManifestUrl(uri.getBaseUriBuilder()
-//                            .path(FormResource.class)
-//                            .path(Integer.toString(activity.getId()))
-//                            .path("manifest")
-//                            .build());
+                    form.setManifestUrl(uri.getBaseUriBuilder()
+                            .path(FormResource.class)
+                            .path(Integer.toString(activity.getId()))
+                            .path("manifest")
+                            .build());
 
                     formList.getItems().add(form);
                 }
