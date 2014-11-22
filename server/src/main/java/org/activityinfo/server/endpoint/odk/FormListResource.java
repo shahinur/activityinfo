@@ -59,11 +59,11 @@ public class FormListResource {
                             .path("xform")
                             .build());
 
-                    form.setManifestUrl(uri.getBaseUriBuilder()
-                            .path(FormResource.class)
-                            .path(Integer.toString(activity.getId()))
-                            .path("manifest")
-                            .build());
+//                    form.setManifestUrl(uri.getBaseUriBuilder()
+//                            .path(FormResource.class)
+//                            .path(Integer.toString(activity.getId()))
+//                            .path("manifest")
+//                            .build());
 
                     formList.getItems().add(form);
                 }
