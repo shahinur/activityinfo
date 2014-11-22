@@ -95,8 +95,13 @@ public class XFormBuilder {
                         new InstanceElement("instanceID"),
                         new InstanceElement("userID", userId)));
 
+        data.addChild(new InstanceElement(startDateFieldId.asString()));
+        data.addChild(new InstanceElement(endDateFieldId.asString()));
+
         for (OdkField field : fields) {
-            data.addChild(new InstanceElement(field.getRelativeFieldName()));
+            if(!dateFields.contains(field.getModel().getId())) {
+                data.addChild(new InstanceElement(field.getRelativeFieldName()));
+            }
         }
 
         return new Instance(data);
@@ -112,13 +117,7 @@ public class XFormBuilder {
         for (OdkField field : fields) {
             // As a transitional hack, populate the startDate and endDate of the "activity"
             // with the start/end date of interview
-            if(field.getModel().getId().equals(startDateFieldId)) {
-                bindings.add(startDate(formClass.getId()));
-
-            } else if(field.getModel().getId().equals(endDateFieldId)) {
-                bindings.add(endDate(formClass.getId()));
-
-            } else {
+            if(!dateFields.contains(field.getModel().getId())) {
                 Bind bind = new Bind();
                 bind.setNodeSet(field.getAbsoluteFieldName());
                 bind.setType(field.getBuilder().getModelBindType());
