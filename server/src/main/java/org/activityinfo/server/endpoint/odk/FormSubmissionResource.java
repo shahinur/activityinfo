@@ -16,6 +16,7 @@ import org.activityinfo.model.type.image.ImageRowValue;
 import org.activityinfo.model.type.image.ImageValue;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.server.command.ResourceLocatorSync;
+import org.activityinfo.server.endpoint.odk.xform.XFormInstance;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
 import org.w3c.dom.Element;

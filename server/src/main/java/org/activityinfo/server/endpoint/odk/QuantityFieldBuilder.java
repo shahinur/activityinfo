@@ -1,9 +1,9 @@
 package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.server.endpoint.odk.xform.BindingType;
-import org.activityinfo.server.endpoint.odk.xform.BodyElement;
-import org.activityinfo.server.endpoint.odk.xform.Input;
+import org.activityinfo.io.xform.form.BindingType;
+import org.activityinfo.io.xform.form.BodyElement;
+import org.activityinfo.io.xform.form.Input;
 
 class QuantityFieldBuilder implements OdkFormFieldBuilder {
     final private String units;

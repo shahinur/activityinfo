@@ -1,14 +1,9 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.legacy.shared.adapter.bindings.ModelBinding;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.server.endpoint.odk.xform.*;
+import org.activityinfo.io.xform.form.*;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 import java.util.List;
-
-import static org.activityinfo.model.type.Cardinality.SINGLE;
 
 class SelectBuilder implements OdkFormFieldBuilder {
     final private BindingType modelBindType;

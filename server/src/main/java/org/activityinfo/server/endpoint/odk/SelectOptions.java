@@ -1,7 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.server.endpoint.odk.xform.Item;
+import org.activityinfo.io.xform.form.Item;
 
 import java.util.List;
 

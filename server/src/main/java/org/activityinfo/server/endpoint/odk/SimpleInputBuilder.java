@@ -1,7 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.server.endpoint.odk.xform.BindingType;
-import org.activityinfo.server.endpoint.odk.xform.Input;
+import org.activityinfo.io.xform.form.BindingType;
+import org.activityinfo.io.xform.form.Input;
 
 class SimpleInputBuilder implements OdkFormFieldBuilder {
     final private BindingType modelBindType;

@@ -1,8 +1,8 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.server.endpoint.odk.xform.Bind;
-import org.activityinfo.server.endpoint.odk.xform.BodyElement;
-import org.activityinfo.server.endpoint.odk.xform.InstanceElement;
+import org.activityinfo.io.xform.form.Bind;
+import org.activityinfo.io.xform.form.BodyElement;
+import org.activityinfo.io.xform.form.InstanceElement;
 
 import java.util.List;
 

@@ -7,8 +7,8 @@ import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.DispatcherSync;
-import org.activityinfo.server.endpoint.odk.formList.XFormList;
-import org.activityinfo.server.endpoint.odk.formList.XFormListItem;
+import org.activityinfo.io.xform.formList.XFormList;
+import org.activityinfo.io.xform.formList.XFormListItem;
 
 import javax.inject.Provider;
 import javax.ws.rs.GET;
