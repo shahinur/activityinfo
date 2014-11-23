@@ -20,7 +20,7 @@ public class XFormReaderTest {
     public void test() throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(XForm.class);
 
-        URL formURL = Resources.getResource(XForm.class, "survey.xml");
+        URL formURL = Resources.getResource(XFormReader.class, "survey.xml");
         Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
         XForm xform = (XForm) jaxbUnmarshaller.unmarshal(formURL);
 
