@@ -16,6 +16,7 @@ public class InstanceElement {
 
     public InstanceElement(String name) {
         this.name = name;
+        this.children = Lists.newArrayList();
     }
 
     public InstanceElement(String name, InstanceElement... children) {
