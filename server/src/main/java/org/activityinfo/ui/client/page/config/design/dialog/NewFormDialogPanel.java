@@ -46,8 +46,6 @@ public class NewFormDialogPanel extends Composite {
     @UiField
     TextBox categoryField;
     @UiField
-    RadioButton classicMonthly;
-    @UiField
     RadioButton classic;
     @UiField
     RadioButton formDesigner;
@@ -67,10 +65,6 @@ public class NewFormDialogPanel extends Composite {
 
     public TextBox getCategoryField() {
         return categoryField;
-    }
-
-    public RadioButton getClassicMonthly() {
-        return classicMonthly;
     }
 
     public RadioButton getClassic() {

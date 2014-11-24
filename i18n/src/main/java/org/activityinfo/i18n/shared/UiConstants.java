@@ -3550,7 +3550,7 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Flexible Data Entry Form")
     String newFormAsFormDesigner();
 
-    @DefaultStringValue("ActivityInfo Classic : attributes and indicators appear separately")
+    @DefaultStringValue("ActivityInfo Classic")
     String newFormAsClassic();
 
     @DefaultStringValue("ActivityInfo Classic - Monthly : attributes and indicators appear separately and users enter indicator results in a monthly grid.")
@@ -3657,4 +3657,10 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Please fill in all required fields")
     String pleaseFillInAllRequiredFields();
+
+    @DefaultStringValue("Recommended mode for new users")
+    String recommendedMode();
+
+    @DefaultStringValue("Attributes and indicators appear separately")
+    String newFormAsClassicHelpBlock();
 }

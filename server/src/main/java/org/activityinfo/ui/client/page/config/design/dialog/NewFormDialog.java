@@ -80,12 +80,6 @@ public class NewFormDialog {
                 validate();
             }
         });
-        content.getClassicMonthly().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                validate();
-            }
-        });
         validate();
     }
 
@@ -101,8 +95,6 @@ public class NewFormDialog {
     public ViewType getViewType() {
         if (content.getClassic().getValue()) {
             return ViewType.CLASSIC;
-        } else if (content.getClassicMonthly().getValue()) {
-            return ViewType.CLASSIC_MONTHLY;
         } else if (content.getFormDesigner().getValue()) {
             return ViewType.NEW_FORM_DESIGNER;
         }
