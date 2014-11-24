@@ -17,7 +17,7 @@
         </div>
         <div class="modal-footer">
           <g:HTMLPanel ui:field="modalFooter">
-            <a:Button style="DEFAULT" text="{i18n.backButton}" ui:field="backButton"
+            <a:Button style="DEFAULT" label="{i18n.backButton}" ui:field="backButton"
                       visible="false" addStyleNames="pull-left"/>
             <g:InlineLabel ui:field="statusLabel"/>
             <a:Button style="DEFAULT" text="{i18n.cancel}" ui:field="cancelButton"/>

@@ -113,7 +113,6 @@ public class NewDbExistingListPage extends WizardPageAdapter {
     public void onShow(WizardDialog wizardDialog) {
         super.onShow(wizardDialog);
         wizardDialog.getDialog().getPrimaryButton().setText(I18N.CONSTANTS.nextButton());
-        fireValidation();
     }
 
     private UserDatabaseDTO getSelectedDb() {

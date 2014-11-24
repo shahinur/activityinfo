@@ -21,20 +21,8 @@ package org.activityinfo.ui.client.widget.dialog;
  * #L%
  */
 
-import com.google.gwt.user.client.ui.IsWidget;
-
 /**
- * @author yuriyz on 11/13/2014.
+ * @author yuriyz on 11/24/2014.
  */
-public interface WizardPage {
-
-    public IsWidget asWidget();
-
-    boolean isValid();
-
-    void onShow(WizardDialog wizardDialog);
-
-    void beforeLeave() throws VetoPageLeaveException;
-
-    void fireValidation();
+public class VetoPageLeaveException extends RuntimeException {
 }

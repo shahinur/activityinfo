@@ -399,7 +399,7 @@ public interface UiConstants extends Constants {
      *
      * @return translated "&laquo; Back"
      */
-    @DefaultStringValue("<< Back")
+    @DefaultStringValue("&laquo; Back")
     @Key("backButton")
     String backButton();
 
@@ -3586,13 +3586,13 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("Create a new database")
     String createNewDatabase();
 
-    @DefaultStringValue("Create a new database")
+    @DefaultStringValue("Create a new empty database")
     String createEmptyDatabase();
 
     @DefaultStringValue("You can create your own data collection forms in the next step")
     String createEmptyDatabaseExplanation();
 
-    @DefaultStringValue("Create a copy of an existing database")
+    @DefaultStringValue("Use an existing database as a template")
     String copyDatabase();
 
     @DefaultStringValue("You can create a new database that is a copy of any database to which you have access")

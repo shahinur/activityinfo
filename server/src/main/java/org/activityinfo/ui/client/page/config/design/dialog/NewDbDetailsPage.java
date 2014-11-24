@@ -188,7 +188,6 @@ public class NewDbDetailsPage extends WizardPageAdapter {
         copyUser.setEnabled(dialogData.hasDesignPrivileges());
         wizardDialog.getDialog().getPrimaryButton().setText(I18N.CONSTANTS.create());
 
-        fireValidation(); // validate at the end
     }
 
     private void setCopyDataCheckboxState() {

@@ -45,11 +45,11 @@ public abstract class WizardPageAdapter implements WizardPage {
 
     public void fireValidation() {
         if (wizardDialog != null) {
-            wizardDialog.firePrimaryButtonState(this);
+            isValid();
         }
     }
 
     @Override
-    public void beforeLeave() {
+    public void beforeLeave() throws VetoPageLeaveException {
     }
 }
