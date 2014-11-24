@@ -104,9 +104,12 @@ public class SiteDialog extends Window {
 
         setLayout(new BorderLayout());
 
-        BorderLayoutData alertLayout = new BorderLayoutData(LayoutRegion.NORTH);
-        alertLayout.setSize(30);
-        add(modernViewAlert(activity.getDatabaseId()), alertLayout);
+        // show alert only for report frequency ONCE
+        if (activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE) {
+            BorderLayoutData alertLayout = new BorderLayoutData(LayoutRegion.NORTH);
+            alertLayout.setSize(30);
+            add(modernViewAlert(), alertLayout);
+        }
 
         navigationListView = new FormNavigationListView();
         BorderLayoutData navigationLayout = new BorderLayoutData(LayoutRegion.WEST);
@@ -188,7 +191,7 @@ public class SiteDialog extends Window {
         getButtonBar().add(finishButton);
     }
 
-    private LayoutContainer modernViewAlert(final int dbId) {
+    private LayoutContainer modernViewAlert() {
         Anchor linkToDesign = new Anchor(I18N.CONSTANTS.switchToNewLayout());
         linkToDesign.setHref("#");
         linkToDesign.addClickHandler(new ClickHandler() {

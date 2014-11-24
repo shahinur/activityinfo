@@ -26,15 +26,8 @@ import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.BindingEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.form.AdapterField;
-import com.extjs.gxt.ui.client.widget.form.LabelField;
-import com.extjs.gxt.ui.client.widget.form.NumberField;
-import com.extjs.gxt.ui.client.widget.form.Radio;
-import com.extjs.gxt.ui.client.widget.form.RadioGroup;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.form.*;
 import com.google.gwt.user.client.ui.Anchor;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
@@ -98,6 +91,7 @@ class ActivityForm extends AbstractDesignForm {
         frequencyCombo.setFieldLabel(I18N.CONSTANTS.reportingFrequency());
         frequencyCombo.add(ActivityFormDTO.REPORT_ONCE, I18N.CONSTANTS.reportOnce());
         frequencyCombo.add(ActivityFormDTO.REPORT_MONTHLY, I18N.CONSTANTS.monthly());
+
         binding.addFieldBinding(new MappingComboBoxBinding(frequencyCombo, "reportingFrequency"));
         this.add(frequencyCombo);
 
@@ -121,13 +115,26 @@ class ActivityForm extends AbstractDesignForm {
 
         // hack : we represent boolean value with radiobuttons (instead of checkbox)
         // therefore radio buttons order is important: true - first button selected, false - second button selected
-        Radio classicView = new Radio();
+        final Radio classicView = new Radio();
         classicView.setBoxLabel(I18N.CONSTANTS.classicView());
         classicView.setToolTip(I18N.CONSTANTS.classicViewExplanation());
 
-        Radio modernView = new Radio();
+        final Radio modernView = new Radio();
         modernView.setBoxLabel(I18N.CONSTANTS.modernView());
         modernView.setToolTip(I18N.CONSTANTS.modernViewExplanation());
+
+        frequencyCombo.addSelectionChangedListener(new SelectionChangedListener() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent se) {
+                Object value = frequencyCombo.getValue();
+                boolean isMonthlySelected = value instanceof ModelData && ((ModelData)value).get("value") instanceof Integer &&
+                        ((ModelData)value).get("value").equals(ActivityFormDTO.REPORT_MONTHLY);
+                if (isMonthlySelected && modernView.getValue()) {
+                    classicView.setValue(true);
+                }
+                modernView.setEnabled(!isMonthlySelected);
+            }
+        });
 
         RadioGroup radioViewGroup = new RadioGroup();
         radioViewGroup.add(classicView); // order is important! - true is first button, false is second button
