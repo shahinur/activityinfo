@@ -6,10 +6,10 @@ import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
-import org.activityinfo.server.endpoint.odk.manifest.MediaFile;
-import org.activityinfo.server.endpoint.odk.xform.XForm;
-import org.activityinfo.server.endpoint.odk.xform.XFormBuilder;
-import org.activityinfo.server.endpoint.odk.manifest.XFormManifest;
+import org.activityinfo.io.xform.manifest.MediaFile;
+import org.activityinfo.io.xform.form.XForm;
+import org.activityinfo.server.endpoint.odk.build.XFormBuilder;
+import org.activityinfo.io.xform.manifest.XFormManifest;
 import org.activityinfo.service.store.ResourceNotFound;
 
 import javax.inject.Provider;

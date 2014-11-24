@@ -38,7 +38,7 @@ public class SiteBindingFactory implements Function<ActivityFormDTO, SiteBinding
         if (activity.getLocationType().isAdminLevel()) {
             binding.addField(new AdminLevelLocationBinding(formClassId, activity.getLocationType().getBoundAdminLevelId()));
         } else {
-            binding.addNestedField(locationField(activity.getId()), LOCATION_DOMAIN, "locationId");
+            binding.addNestedField(locationField(activity.getId()), LOCATION_DOMAIN, "location");
         }
 
         for (AttributeGroupDTO group : activity.getAttributeGroups()) {

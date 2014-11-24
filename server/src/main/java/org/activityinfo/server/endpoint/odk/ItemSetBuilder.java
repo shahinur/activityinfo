@@ -37,7 +37,13 @@ public class ItemSetBuilder {
         return new StreamingOutput() {
             @Override
             public void write(OutputStream output) throws IOException, WebApplicationException {
+
                 ItemSetWriter writer = new ItemSetWriter(output);
+
+                // We need at least one item set or ODK will crash
+                writer.writeItem("__dummy", "dummy", "dummy");
+
+                // Write out real item sets
                 for(ResourceId formClassId : rangeClassIds) {
                     writeInstances(formClassId, writer);
                 }

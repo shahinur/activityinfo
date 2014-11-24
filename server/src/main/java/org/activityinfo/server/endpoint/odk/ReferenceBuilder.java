@@ -2,9 +2,9 @@ package org.activityinfo.server.endpoint.odk;
 
 import com.google.common.collect.Iterables;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.server.endpoint.odk.xform.BindingType;
-import org.activityinfo.server.endpoint.odk.xform.BodyElement;
-import org.activityinfo.server.endpoint.odk.xform.Input;
+import org.activityinfo.io.xform.form.BindingType;
+import org.activityinfo.io.xform.form.BodyElement;
+import org.activityinfo.io.xform.form.Input;
 
 import java.util.Set;
 

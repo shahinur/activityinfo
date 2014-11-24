@@ -1,5 +1,6 @@
 package org.activityinfo.server.endpoint.rest;
 
+import org.activityinfo.io.xform.XFormReader;
 import org.activityinfo.legacy.shared.command.CreateEntity;
 import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.command.UpdateFormClass;
@@ -11,8 +12,7 @@ import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.server.command.DispatcherSync;
-import org.activityinfo.server.endpoint.odk.xform.XForm;
-import org.activityinfo.server.endpoint.odk.xform.XFormReader;
+import org.activityinfo.io.xform.form.XForm;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import javax.ws.rs.*;

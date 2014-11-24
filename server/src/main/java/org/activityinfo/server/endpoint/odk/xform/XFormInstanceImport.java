@@ -1,10 +1,13 @@
 package org.activityinfo.server.endpoint.odk.xform;
 
 import com.google.common.collect.HashMultiset;
+import org.activityinfo.io.xform.XFormReader;
+import org.activityinfo.io.xform.form.XForm;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.server.endpoint.odk.XFormInstanceReader;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.xml.bind.JAXBContext;

@@ -18,9 +18,9 @@ import org.w3c.dom.NodeList;
 import java.util.List;
 import java.util.Set;
 
-class OdkHelper {
+public class OdkHelper {
 
-    static String extractText(Node node) {
+    public static String extractText(Node node) {
         NodeList childNodes = node.getChildNodes();
 
         if (childNodes.getLength() == 1) {

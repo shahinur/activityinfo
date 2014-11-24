@@ -7,8 +7,8 @@ import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.model.auth.AuthenticatedUser;
 import org.activityinfo.server.command.DispatcherSync;
-import org.activityinfo.server.endpoint.odk.formList.XFormList;
-import org.activityinfo.server.endpoint.odk.formList.XFormListItem;
+import org.activityinfo.io.xform.formList.XFormList;
+import org.activityinfo.io.xform.formList.XFormListItem;
 
 import javax.inject.Provider;
 import javax.ws.rs.GET;
@@ -46,7 +46,7 @@ public class FormListResource {
 
         XFormList formList = new XFormList();
         for (UserDatabaseDTO db : schema.getDatabases()) {
-            if (db.isEditAllAllowed()) {
+            if (db.isEditAllowed()) {
                 for (ActivityDTO activity : db.getActivities()) {
                     XFormListItem form = new XFormListItem();
                     form.setName(db.getName() + " / " + activity.getName());
@@ -59,11 +59,16 @@ public class FormListResource {
                             .path("xform")
                             .build());
 
-                    form.setManifestUrl(uri.getBaseUriBuilder()
-                            .path(FormResource.class)
-                            .path(Integer.toString(activity.getId()))
-                            .path("manifest")
-                            .build());
+                    // skip itemset for LCCA form: earlier versions triggered
+                    // a bug in ODK and have corrupted the sqlite database on those
+                    // devices.
+                    if(activity.getId() != 11218) {
+                        form.setManifestUrl(uri.getBaseUriBuilder()
+                                .path(FormResource.class)
+                                .path(Integer.toString(activity.getId()))
+                                .path("manifest")
+                                .build());
+                    }
 
                     formList.getItems().add(form);
                 }

@@ -101,6 +101,7 @@
     <module>geoadmin</module>
     <module>server</module>
     <module>i18n</module>
+    <module>io/xform</module>
   </modules>
 
   <dependencies>

@@ -1,9 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.server.endpoint.odk.xform.XPathBuilder;
-
-import javax.xml.xpath.XPath;
+import org.activityinfo.server.endpoint.odk.build.XPathBuilder;
 
 public class OdkField {
 

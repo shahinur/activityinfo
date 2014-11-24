@@ -1,7 +1,7 @@
 package org.activityinfo.server.endpoint.odk;
 
-import org.activityinfo.server.endpoint.odk.xform.BindingType;
-import org.activityinfo.server.endpoint.odk.xform.Upload;
+import org.activityinfo.io.xform.form.BindingType;
+import org.activityinfo.io.xform.form.Upload;
 
 class UploadBuilder implements OdkFormFieldBuilder {
     final private String mediaType;
