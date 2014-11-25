@@ -38,7 +38,6 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
-import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.Published;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.ui.client.page.entry.place.DataEntryPlace;
@@ -61,6 +60,7 @@ public class EmbedDialog extends Dialog {
         layout.setVBoxLayoutAlign(VBoxLayoutAlign.STRETCH);
         layout.setPadding(new Padding(10));
         setLayout(layout);
+        setButtons(CLOSE);
 
         add(new Label("Paste link:"));
         urlText = new TextField<String>();
