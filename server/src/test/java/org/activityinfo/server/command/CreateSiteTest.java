@@ -93,7 +93,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         ResourceId formClassId = CuidAdapter.activityFormClass(1);
         FormInstance instance = new FormInstance(CuidAdapter.generateSiteCuid(), formClassId);
         instance.set(field(formClassId, LOCATION_FIELD), location.getId());
-        instance.set(field(formClassId, PARTNER_FIELD), CuidAdapter.partnerInstanceId(1, 1));
+        instance.set(field(formClassId, PARTNER_FIELD), CuidAdapter.partnerInstanceId(1));
         instance.set(field(formClassId, START_DATE_FIELD), new LocalDate(2008, 12, 1));
         instance.set(field(formClassId, END_DATE_FIELD), new LocalDate(2009, 1, 3));
         instance.set(indicatorField(1), 996.0);

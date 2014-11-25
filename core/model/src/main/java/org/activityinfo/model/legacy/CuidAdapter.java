@@ -108,14 +108,8 @@ public class CuidAdapter {
         }
     }
 
-    @Deprecated
     public static ResourceId partnerInstanceId(int partnerId) {
         return cuid(PARTNER_DOMAIN, partnerId);
-    }
-
-    public static ResourceId partnerInstanceId(int databaseId, int partnerId) {
-        return ResourceId.valueOf(String.valueOf(DATABASE_DOMAIN) + databaseId +
-                String.valueOf(PARTNER_DOMAIN) + partnerId);
     }
 
     /**
