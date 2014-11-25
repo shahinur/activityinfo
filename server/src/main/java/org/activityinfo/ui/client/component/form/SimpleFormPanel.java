@@ -1,6 +1,7 @@
 package org.activityinfo.ui.client.component.form;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -130,18 +131,22 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         return Promise.forEach(formClass.getFields(), new Function<FormField, Promise<Void>>() {
             @Override
             public Promise<Void> apply(final FormField field) {
-                return widgetFactory.createWidget(resourceId, formClass, field, new ValueUpdater<FieldValue>() {
-                    @Override
-                    public void update(FieldValue value) {
-                        onFieldUpdated(field, value);
-                    }
-                }, validationFormClass).then(new Function<FormFieldWidget, Void>() {
-                    @Override
-                    public Void apply(@Nullable FormFieldWidget widget) {
-                        containers.put(field.getId(), containerFactory.createContainer(field, widget, 4));
-                        return null;
-                    }
-                });
+                if (!field.isVisible()) {
+                    return null;
+                } else {
+                    return widgetFactory.createWidget(resourceId, formClass, field, new ValueUpdater<FieldValue>() {
+                        @Override
+                        public void update(FieldValue value) {
+                            onFieldUpdated(field, value);
+                        }
+                    }, validationFormClass).then(new Function<FormFieldWidget, Void>() {
+                        @Override
+                        public Void apply(@Nullable FormFieldWidget widget) {
+                            containers.put(field.getId(), containerFactory.createContainer(field, widget, 4));
+                            return null;
+                        }
+                    });
+                }
             }
         });
     }

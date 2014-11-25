@@ -255,4 +255,8 @@ public class CuidAdapter {
     public static ResourceId generateLocationCuid() {
         return locationInstanceId(new KeyGenerator().generateInt());
     }
+
+    public static ResourceId generateSiteCuid() {
+        return cuid(SITE_DOMAIN, new KeyGenerator().generateInt());
+    }
 }

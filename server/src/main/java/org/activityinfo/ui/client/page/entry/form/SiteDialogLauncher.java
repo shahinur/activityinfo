@@ -88,6 +88,13 @@ public class SiteDialogLauncher {
                         @Override
                         public void onSuccess(ActivityFormDTO activity) {
 
+                            if(activity.getPartnerRange().isEmpty()) {
+                                // Since we are creating a partner by default for every database,
+                                // this shouldn't happen beyond the development environment
+                                MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.noPartners(), null);
+                                return;
+                            }
+
                             if (activity.getLocationType().isAdminLevel()) {
                                 addNewSiteWithBoundLocation(activity, callback);
 
