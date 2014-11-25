@@ -1,22 +1,13 @@
 package org.activityinfo.server.endpoint.odk;
 
-import com.google.common.collect.Sets;
-import org.activityinfo.model.expr.ConstantExpr;
-import org.activityinfo.model.expr.ExprNode;
-import org.activityinfo.model.expr.ExprParser;
-import org.activityinfo.model.expr.FunctionCallNode;
-import org.activityinfo.model.expr.GroupExpr;
-import org.activityinfo.model.expr.SymbolExpr;
-import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.type.FieldValue;
-import org.activityinfo.model.type.primitive.BooleanFieldValue;
+import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.resource.ResourceId;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.util.List;
-import java.util.Set;
+import static org.activityinfo.model.legacy.CuidAdapter.LOCATION_FIELD;
 
 public class OdkHelper {
 
@@ -33,6 +24,8 @@ public class OdkHelper {
         return null;
     }
 
-
-
+    public static boolean isLocation(FormClass formClass, FormField formField) {
+        ResourceId locationFieldId = CuidAdapter.field(formClass.getId(), LOCATION_FIELD);
+        return formField.getId().equals(locationFieldId);
+    }
 }

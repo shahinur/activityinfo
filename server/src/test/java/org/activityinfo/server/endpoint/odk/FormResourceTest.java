@@ -8,6 +8,7 @@ import com.google.common.io.Resources;
 import com.google.inject.Provider;
 import com.google.inject.util.Providers;
 import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.io.xform.form.XForm;
 import org.activityinfo.legacy.shared.command.GetFormClass;
 import org.activityinfo.legacy.shared.command.UpdateFormClass;
 import org.activityinfo.model.auth.AuthenticatedUser;
@@ -19,7 +20,6 @@ import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.command.CommandTestCase2;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.io.xform.form.XForm;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,10 +50,11 @@ import static com.google.common.io.Resources.asByteSource;
 import static com.google.common.io.Resources.getResource;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.fromStatusCode;
-import static org.activityinfo.model.legacy.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.activityFormClass;
 import static org.activityinfo.model.legacy.CuidAdapter.field;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 @SuppressWarnings("AppEngineForbiddenCode")
 @RunWith(InjectionSupport.class)
@@ -80,7 +81,8 @@ public class FormResourceTest extends CommandTestCase2 {
                 new DeploymentConfiguration(new Properties()));
 
         formResource = new FormResource(resourceLocator, authProvider, fieldFactory, tokenService);
-        formSubmissionResource = new FormSubmissionResource(resourceLocator, tokenService, blobstore, backupService);
+        formSubmissionResource = new FormSubmissionResource(
+                getDispatcherSync(), resourceLocator, tokenService, blobstore, backupService);
     }
 
     @Test
