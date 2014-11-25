@@ -73,6 +73,13 @@ public class SiteDialogLauncher {
                     ActivityDTO activity = schema.getActivityById(activityId);
                     Log.trace("adding site for activity " + activity + ", locationType = " + activity.getLocationType());
 
+                    if(activity.getDatabase().getPartners().isEmpty()) {
+                        // Since we are creating a partner by default for every database,
+                        // this shouldn't happen beyond the development environment
+                        MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.noPartners(), null);
+                        return;
+                    }
+
                     if (!activity.getClassicView()) {// modern view
                         final ResourceId instanceId = CuidAdapter.newLegacyFormInstanceId(activity.getFormClassId());
                         FormInstance newInstance = new FormInstance(instanceId, activity.getFormClassId());
@@ -87,13 +94,6 @@ public class SiteDialogLauncher {
 
                         @Override
                         public void onSuccess(ActivityFormDTO activity) {
-
-                            if(activity.getPartnerRange().isEmpty()) {
-                                // Since we are creating a partner by default for every database,
-                                // this shouldn't happen beyond the development environment
-                                MessageBox.alert(I18N.CONSTANTS.error(), I18N.CONSTANTS.noPartners(), null);
-                                return;
-                            }
 
                             if (activity.getLocationType().isAdminLevel()) {
                                 addNewSiteWithBoundLocation(activity, callback);
