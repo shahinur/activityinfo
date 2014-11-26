@@ -57,13 +57,15 @@ public class FormDesigner {
     private final HeaderPresenter headerPresenter;
     private final FormDesignerPanel formDesignerPanel;
     private final FormFieldWidgetFactory formFieldWidgetFactory;
+    private final FormSavedGuard savedGuard;
+    private final FormDesignerActions formDesignerActions;
 
     public FormDesigner(@Nonnull FormDesignerPanel formDesignerPanel, @Nonnull ResourceLocator resourceLocator, @Nonnull FormClass formClass) {
         this.formDesignerPanel = formDesignerPanel;
         this.resourceLocator = resourceLocator;
         this.formClass = formClass;
 
-        propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel(), eventBus);
+        propertiesPresenter = new PropertiesPresenter(formDesignerPanel.getPropertiesPanel(), this);
 
         formFieldWidgetFactory = new FormFieldWidgetFactory(resourceLocator, FieldWidgetMode.DESIGN);
 
@@ -76,9 +78,18 @@ public class FormDesigner {
         headerPresenter = new HeaderPresenter(this);
         headerPresenter.show();
 
-        new FormDesignerActions(this); // init actions
+        savedGuard = new FormSavedGuard(this);
+
+        formDesignerActions = new FormDesignerActions(this);
     }
 
+    public FormDesignerActions getFormDesignerActions() {
+        return formDesignerActions;
+    }
+
+    public FormSavedGuard getSavedGuard() {
+        return savedGuard;
+    }
 
     public FormDesignerPanel getFormDesignerPanel() {
         return formDesignerPanel;

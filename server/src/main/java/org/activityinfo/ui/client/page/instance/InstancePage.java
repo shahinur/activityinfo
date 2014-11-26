@@ -1,17 +1,13 @@
 package org.activityinfo.ui.client.page.instance;
 
 import com.google.common.base.Function;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.*;
 import com.google.inject.Provider;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.core.client.Resources;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.ui.client.page.NavigationCallback;
-import org.activityinfo.ui.client.page.Page;
-import org.activityinfo.ui.client.page.PageId;
-import org.activityinfo.ui.client.page.PageState;
+import org.activityinfo.ui.client.component.formdesigner.FormSavedGuard;
+import org.activityinfo.ui.client.page.*;
 import org.activityinfo.ui.client.pageView.InstancePageViewFactory;
 import org.activityinfo.ui.client.pageView.InstanceViewModel;
 import org.activityinfo.ui.client.style.Icons;
@@ -24,8 +20,8 @@ import javax.annotation.Nullable;
  * Adapter that hosts a view of a given instance.
  */
 public class InstancePage implements Page {
-    public static final PageId PAGE_ID = new PageId("i");
 
+    public static final PageId PAGE_ID = new PageId("i");
 
     // scrollpanel.bs > div.container > loadingPanel
     private final ScrollPanel scrollPanel;
@@ -60,7 +56,7 @@ public class InstancePage implements Page {
 
     @Override
     public void requestToNavigateAway(PageState place, NavigationCallback callback) {
-        callback.onDecided(true);
+        FormSavedGuard.callNavigationCallback(scrollPanel, callback);
     }
 
     @Override

@@ -115,6 +115,8 @@ public class DropPanelDropController extends FlowPanelDropController implements 
         context.selectedWidgets = Lists.newArrayList(containerWidget);
         DropPanelDropController.super.onDrop(context); // drop container
         context.selectedWidgets = originalSelectedWidgets; // restore state;
+
+        formDesigner.getSavedGuard().setSaved(false);
     }
 
     @Override

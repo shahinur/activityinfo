@@ -3667,4 +3667,10 @@ public interface UiConstants extends Constants {
     @DefaultStringValue("There are no partners defined for this database, so it is not possible to" +
             "make new submissions at this time.")
     String noPartners();
+
+    @DefaultStringValue("Do you really want to delete this field? All dependent data will me removed as well (can't be reverted).")
+    String deleteFormFieldConfirmation();
+
+    @DefaultStringValue("Do you want to retry deletion?")
+    String retryDeletion();
 }

@@ -48,6 +48,8 @@ import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSe
 import org.activityinfo.ui.client.component.formdesigner.header.HeaderPanel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldPalette;
 import org.activityinfo.ui.client.component.formdesigner.properties.PropertiesPanel;
+import org.activityinfo.ui.client.page.HasNavigationCallback;
+import org.activityinfo.ui.client.page.NavigationCallback;
 import org.activityinfo.ui.client.util.GwtUtil;
 import org.activityinfo.ui.client.widget.Button;
 
@@ -61,11 +63,10 @@ import java.util.Set;
 /**
  * @author yuriyz on 07/04/2014.
  */
-public class FormDesignerPanel extends Composite implements ScrollHandler {
+public class FormDesignerPanel extends Composite implements ScrollHandler, HasNavigationCallback {
 
     private final static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
-
 
     interface OurUiBinder extends UiBinder<Widget, FormDesignerPanel> {
     }
@@ -73,6 +74,7 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
     private final Map<ResourceId, WidgetContainer> containerMap = Maps.newHashMap();
     private ScrollPanel scrollAncestor;
     private WidgetContainer selectedWidgetContainer;
+    private HasNavigationCallback savedGuard = null;
 
     @UiField
     HTMLPanel containerPanel;
@@ -109,6 +111,7 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
             @Override
             public void execute() {
                 final FormDesigner formDesigner = new FormDesigner(FormDesignerPanel.this, resourceLocator, formClass);
+                savedGuard = formDesigner.getSavedGuard();
                 List<Promise<Void>> promises = Lists.newArrayList();
                 buildWidgetContainers(formDesigner, formClass, 0, promises);
                 Promise.waitAll(promises).then(new AsyncCallback<Void>() {
@@ -254,5 +257,20 @@ public class FormDesignerPanel extends Composite implements ScrollHandler {
 
     public HTML getStatusMessage() {
         return statusMessage;
+    }
+
+    public HasNavigationCallback getSavedGuard() {
+        return savedGuard;
+    }
+
+    public void setSavedGuard(HasNavigationCallback savedGuard) {
+        this.savedGuard = savedGuard;
+    }
+
+    @Override
+    public void navigate(NavigationCallback callback) {
+        if (savedGuard != null) {
+            savedGuard.navigate(callback);
+        }
     }
 }

@@ -30,7 +30,6 @@ import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.core.client.ResourceLocator;
@@ -48,6 +47,7 @@ import org.activityinfo.ui.client.component.form.HorizontalFieldContainer;
 import org.activityinfo.ui.client.component.form.SimpleFormPanel;
 import org.activityinfo.ui.client.component.form.field.FieldWidgetMode;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
+import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
@@ -62,6 +62,7 @@ import java.util.List;
  */
 public class PropertiesPresenter {
 
+    private final FormDesigner formDesigner;
     private final PropertiesPanel view;
 
     private SimpleFormPanel currentDesignWidget = null;
@@ -75,9 +76,11 @@ public class PropertiesPresenter {
     private HandlerRegistration relevanceEnabledValueHandler;
     private HandlerRegistration relevanceEnabledIfValueHandler;
 
-    public PropertiesPresenter(PropertiesPanel view, EventBus eventBus) {
+    public PropertiesPresenter(PropertiesPanel view, FormDesigner formDesigner) {
         this.view = view;
-        eventBus.addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
+        this.formDesigner = formDesigner;
+
+        formDesigner.getEventBus().addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
             @Override
             public void handle(WidgetContainerSelectionEvent event) {
                 WidgetContainer widgetContainer = event.getSelectedItem();
@@ -86,7 +89,7 @@ public class PropertiesPresenter {
                 }
             }
         });
-        eventBus.addHandler(HeaderSelectionEvent.TYPE, new HeaderSelectionEvent.Handler() {
+        formDesigner.getEventBus().addHandler(HeaderSelectionEvent.TYPE, new HeaderSelectionEvent.Handler() {
             @Override
             public void handle(HeaderSelectionEvent event) {
                 show(event.getSelectedItem());
@@ -253,6 +256,7 @@ public class PropertiesPresenter {
                     formField.setType(typeClass.deserializeType(param));
                 }
                 fieldWidgetContainer.syncWithModel();
+                formDesigner.getSavedGuard().setSaved(false);
             }
         };
         if (formField.getType() instanceof ParametrizedFieldType) {
@@ -269,7 +273,6 @@ public class PropertiesPresenter {
 
                 @Override
                 public void onSuccess(Void result) {
-
                 }
             });
 
