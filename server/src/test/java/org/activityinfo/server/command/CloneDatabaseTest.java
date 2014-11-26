@@ -32,6 +32,10 @@ import org.activityinfo.legacy.shared.exception.CommandException;
 import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormSection;
+import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.server.database.OnDataSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -138,29 +142,30 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         assertEquals(sourceFormClass.getLabel(), targetFormClass.getLabel());
         assertEquals(sourceFormClass.getDescription(), targetFormClass.getDescription());
 
-        // TODO !!!
-
         // fields
-//        for (FormField sourceField : sourceFormClass.getFields()) {
-//            FormField targetField = (FormField) elementByName(targetFormClass.getElements(), sourceField.getLabel());
-//
-//            assertEquals(sourceField.getDescription(), targetField.getDescription());
-//            assertEquals(sourceField.getCode(), targetField.getCode());
-//            assertEquals(sourceField.getRelevanceConditionExpression(), targetField.getRelevanceConditionExpression());
-//
-//            if (sourceField.getType() instanceof ReferenceType) {
-//                // need something more sophisticated to check equality of ReferenceType
-//            } else {
-//                assertEquals(sourceField.getType(), targetField.getType());
-//            }
-//        }
-//
-//        // sections
-//        for (FormSection sourceSection : sourceFormClass.getSections()) {
-//            FormSection targetSection = (FormSection) elementByName(targetFormClass.getElements(), sourceSection.getLabel());
-//
-//            assertEquals(sourceSection.getLabel(), targetSection.getLabel());
-//        }
+        for (FormField sourceField : sourceFormClass.getFields()) {
+            FormField targetField = (FormField) elementByName(targetFormClass.getElements(), sourceField.getLabel());
+
+            assertEquals(sourceField.getDescription(), targetField.getDescription());
+            assertEquals(sourceField.getCode(), targetField.getCode());
+            assertEquals(sourceField.getRelevanceConditionExpression(), targetField.getRelevanceConditionExpression());
+
+            assertEquals(sourceField.getType().getTypeClass(), targetField.getType().getTypeClass());
+
+            // todo
+            if (sourceField.getType() instanceof ReferenceType) {
+                // need something more sophisticated to check equality of ReferenceType
+            } else if (sourceField.getType() instanceof EnumType) {
+                // need something more sophisticated to check equality of ReferenceType
+            }
+        }
+
+        // sections
+        for (FormSection sourceSection : sourceFormClass.getSections()) {
+            FormSection targetSection = (FormSection) elementByName(targetFormClass.getElements(), sourceSection.getLabel());
+
+            assertEquals(sourceSection.getLabel(), targetSection.getLabel());
+        }
     }
 
     private static <T extends BaseModelData> void assertProperties(T entity1, T entity2, String... propertyNames) {

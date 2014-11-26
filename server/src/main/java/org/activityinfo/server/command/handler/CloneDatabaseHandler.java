@@ -165,12 +165,29 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         }
 
         // copy activity payload (indicators, attributes)
+        for (Activity activity : sourceDb.getActivities()) {
+            copyActivityPayload(activity, targetDb);
+        }
+
+        // we have to commit in order to get valid FormClass
+        // hack : start own transaction, can't wait on RemoteExecutionContext
+        // REASON : we have to commit transaction internally in handler
+        // in order to get valid FormClass while still inside handler and perform GetFormClass and
+        // then push it to activity via UpdateFormClass
+        try {
+            em.flush();
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            em.getTransaction().rollback();
+        }
+
+        // make RemoteExecutionContext happy and allow him to commit()
+        em.getTransaction().begin();
+
         final List<Promise<VoidResult>> copyPromises = new ArrayList<>();
         for (Activity activity : sourceDb.getActivities()) {
-            Activity newActivity = copyActivityPayload(activity, targetDb);
-
             final ResourceId sourceFormClass = CuidAdapter.activityFormClass(activity.getId());
-            final ResourceId targetFormClass = CuidAdapter.activityFormClass(newActivity.getId());
+            final ResourceId targetFormClass = CuidAdapter.activityFormClass(activityMapping.get(activity.getId()).getId());
 
             // copy form class of newActivity
             copyPromises.add(copyFormClass(context, targetFormClass));
@@ -178,7 +195,6 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
             // site form instances
             // todo : commenting it temporary until we have nice idea how to implement it in scalable manner. (AI-787)
 //            copyPromises.add(copySiteFormInstances(context, activity, newActivity));
-
         }
         return Promise.waitAll(copyPromises);
     }
