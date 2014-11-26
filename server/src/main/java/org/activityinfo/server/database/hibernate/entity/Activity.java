@@ -98,17 +98,9 @@ public class Activity implements Serializable, Deleteable, Orderable {
         this.sortOrder = sourceActivity.sortOrder;
         this.dateDeleted = sourceActivity.dateDeleted;
 
-        this.indicators = Sets.newHashSet(sourceActivity.indicators);
-        this.sites = Sets.newHashSet(sourceActivity.sites);
-        this.attributeGroups = Sets.newHashSet(sourceActivity.attributeGroups);
-        this.lockedPeriods = Sets.newHashSet(sourceActivity.lockedPeriods);
-
         this.mapIcon = sourceActivity.mapIcon;
         this.published = sourceActivity.published;
         this.classicView = sourceActivity.classicView;
-
-        this.formClass = sourceActivity.formClass;
-        this.gzFormClass = sourceActivity.gzFormClass;
     }
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO) @Column(name = "ActivityId", unique = true, nullable = false)

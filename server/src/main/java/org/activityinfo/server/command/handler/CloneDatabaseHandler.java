@@ -21,6 +21,7 @@ package org.activityinfo.server.command.handler;
  * #L%
  */
 
+import com.google.api.client.util.Maps;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -33,13 +34,13 @@ import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.command.result.FormClassResult;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
+import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
 import org.activityinfo.legacy.shared.impl.CommandHandlerAsync;
 import org.activityinfo.legacy.shared.impl.ExecutionContext;
-import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
-import org.activityinfo.server.command.handler.crud.ActivityPolicy;
 import org.activityinfo.server.database.hibernate.entity.*;
 import org.activityinfo.server.endpoint.gwtrpc.RemoteExecutionContext;
 
@@ -47,6 +48,7 @@ import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -57,21 +59,32 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
 
     private static final Logger LOGGER = Logger.getLogger(CloneDatabaseHandler.class.getName());
 
-    private final Injector injector;
     private final EntityManager em;
+    private final PermissionOracle permissionOracle;
+    private final KeyGenerator generator = new KeyGenerator();
+
+    // Mappings old id (source db) -> new id (target/newly created db)
+    private final Map<Integer, Partner> partnerMapping = Maps.newHashMap();
+    private final Map<Integer, Activity> activityMapping = Maps.newHashMap();
+    private final Map<Integer, AttributeGroup> attributeGroupMapping = Maps.newHashMap();
 
     @Inject
     public CloneDatabaseHandler(Injector injector) {
-        this.injector = injector;
         this.em = injector.getInstance(EntityManager.class);
+        this.permissionOracle = injector.getInstance(PermissionOracle.class);
     }
 
     @Override
     public void execute(CloneDatabase command, ExecutionContext context, final AsyncCallback<CreateResult> callback) {
+
         final User user = ((RemoteExecutionContext) context).retrieveUserEntity();
         final UserDatabase targetDb = createDatabase(command, user);
 
         UserDatabase sourceDb = em.find(UserDatabase.class, command.getSourceDatabaseId());
+
+        if (!permissionOracle.isDesignAllowed(sourceDb, user)) {
+            throw new IllegalAccessCommandException();
+        }
 
         // if the new countryId of the target database is different than the countryId of sourceDatabase,
         // copyData must be false -> skip copy
@@ -80,18 +93,21 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
             return;
         }
 
-        List<Promise<Void>> promises = new ArrayList<>();
-
-        if (command.isCopyData()) {
-            promises.add(copyFormData(sourceDb, targetDb, context));
-        }
-
+        // 1. copy partners and keep mapping between old and new partners
         if (command.isCopyPartners() || command.isCopyUsers()) {
             copyPartners(sourceDb, targetDb);
         }
 
+        // 2. copy user permissions
         if (command.isCopyUsers()) {
             copyUserPermissions(sourceDb, targetDb, user);
+        }
+
+        List<Promise<Void>> promises = new ArrayList<>();
+
+        // 3. copy form data
+        if (command.isCopyData()) {
+            promises.add(copyFormData(sourceDb, targetDb, context));
         }
 
         Promise.waitAll(promises).then(new AsyncCallback<Void>() {
@@ -113,7 +129,15 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
             newPermission.setDatabase(targetDb);
             newPermission.setUser(user);
             newPermission.setLastSchemaUpdate(new Date());
+
+            // set newly created partner
+            if (sourcePermission.getPartner() != null) {
+                Partner targetPartner = partnerMapping.get(sourcePermission.getPartner().getId());
+                newPermission.setPartner(targetPartner != null ? targetPartner : null);
+            }
+
             em.persist(newPermission);
+
         }
     }
 
@@ -124,6 +148,8 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
             newPartner.setFullName(partner.getFullName());
 
             em.persist(newPartner);
+
+            partnerMapping.put(partner.getId(), newPartner);
             targetDb.getPartners().add(newPartner);
         }
 
@@ -132,16 +158,22 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
     }
 
     private Promise<Void> copyFormData(UserDatabase sourceDb, UserDatabase targetDb, final ExecutionContext context) {
-        final List<Promise<VoidResult>> copyPromises = new ArrayList<>();
 
+        // first copy all activities without payload (indicators, attributes)
         for (Activity activity : sourceDb.getActivities()) {
-            final Activity newActivity = copyActivity(activity, targetDb);
+            copyActivity(activity, targetDb);
+        }
+
+        // copy activity payload (indicators, attributes)
+        final List<Promise<VoidResult>> copyPromises = new ArrayList<>();
+        for (Activity activity : sourceDb.getActivities()) {
+            Activity newActivity = copyActivityPayload(activity, targetDb);
 
             final ResourceId sourceFormClass = CuidAdapter.activityFormClass(activity.getId());
             final ResourceId targetFormClass = CuidAdapter.activityFormClass(newActivity.getId());
 
-            // form class
-            copyPromises.add(copyFormClass(context, sourceFormClass, targetFormClass));
+            // copy form class of newActivity
+            copyPromises.add(copyFormClass(context, targetFormClass));
 
             // site form instances
             // todo : commenting it temporary until we have nice idea how to implement it in scalable manner. (AI-787)
@@ -185,9 +217,9 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
 //        });
 //    }
 
-    private Promise<VoidResult> copyFormClass(final ExecutionContext context, ResourceId sourceFormClass, final ResourceId targetFormClass) {
+    private Promise<VoidResult> copyFormClass(final ExecutionContext context, final ResourceId targetFormClass) {
         final Promise<VoidResult> promise = new Promise<>();
-        context.execute(new GetFormClass(sourceFormClass), new AsyncCallback<FormClassResult>() {
+        context.execute(new GetFormClass(targetFormClass), new AsyncCallback<FormClassResult>() {
             @Override
             public void onFailure(Throwable caught) {
                 LOGGER.log(Level.SEVERE, caught.getMessage(), caught);
@@ -196,24 +228,102 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
 
             @Override
             public void onSuccess(FormClassResult result) {
-                FormClass formClass = result.getFormClass();
-                ResourceId oldId = formClass.getId();
-                formClass.setId(targetFormClass);
-
-                FormClassTrash.normalizeBuiltInFormClassFields(formClass, oldId);
-
-                context.execute(new UpdateFormClass(formClass), promise);
+                UpdateFormClass updateFormClass = new UpdateFormClass(result.getFormClass())
+                        .setSyncActivityEntities(false);
+                context.execute(updateFormClass, promise);
             }
         });
         return promise;
     }
 
     private Activity copyActivity(Activity sourceActivity, UserDatabase targetDb) {
-        Activity newActivity = new Activity(sourceActivity);
+        Activity newActivity = new Activity(sourceActivity); // copy simple values : like name, category (but not Indicators, Attributes)
+        newActivity.getAttributeGroups().clear();
+        newActivity.getLockedPeriods().clear();
+        newActivity.getIndicators().clear();
+
+        // target db
         newActivity.setDatabase(targetDb);
-        ActivityPolicy policy = injector.getInstance(ActivityPolicy.class);
-        policy.persist(newActivity);
+
+        em.persist(newActivity); // persist to get id of new activity
+        activityMapping.put(sourceActivity.getId(), newActivity);
+
         return newActivity;
+    }
+
+
+    private Activity copyActivityPayload(Activity sourceActivity, UserDatabase targetDb) {
+        Activity newActivity = activityMapping.get(sourceActivity.getId());
+
+        // copy indicators
+        for (Indicator indicator : sourceActivity.getIndicators()) {
+            Indicator newIndicator = copyIndicator(indicator, newActivity);
+            newActivity.getIndicators().add(newIndicator);
+        }
+
+        // copy attribute groups
+        for (AttributeGroup attributeGroup : sourceActivity.getAttributeGroups()) {
+            AttributeGroup newAttributeGroup = copyAttributeGroup(attributeGroup);
+
+            newActivity.getAttributeGroups().add(newAttributeGroup);
+        }
+
+        // copy locked periods
+        for (LockedPeriod lockedPeriod : sourceActivity.getLockedPeriods()) {
+            LockedPeriod newLockedPeriod = new LockedPeriod(lockedPeriod);
+            newLockedPeriod.setActivity(newActivity);
+            newLockedPeriod.setUserDatabase(targetDb);
+            em.persist(newLockedPeriod);
+        }
+
+        em.persist(newActivity);
+        return newActivity;
+    }
+
+    private AttributeGroup copyAttributeGroup(AttributeGroup sourceAttributeGroup) {
+        AttributeGroup newAttributeGroup = attributeGroupMapping.get(sourceAttributeGroup.getId());
+        if (newAttributeGroup != null) {
+            return newAttributeGroup;
+        }
+
+        newAttributeGroup = new AttributeGroup(sourceAttributeGroup);
+        newAttributeGroup.getAttributes().clear();
+        newAttributeGroup.getActivities().clear();
+        newAttributeGroup.setId(generator.generateInt());
+
+        // activity references
+        for (Activity sourceActivity : sourceAttributeGroup.getActivities()) {
+            Activity newActivity = activityMapping.get(sourceActivity.getId());
+            if (newActivity != null) {
+                newActivity.getAttributeGroups().add(newAttributeGroup);
+            }
+        }
+
+        em.persist(newAttributeGroup);
+        attributeGroupMapping.put(sourceAttributeGroup.getId(), newAttributeGroup);
+
+        // copy attributes
+        for (Attribute attribute : sourceAttributeGroup.getAttributes()) {
+            Attribute newAttribute = new Attribute(attribute);
+            newAttribute.setId(generator.generateInt());
+            newAttribute.setGroup(newAttributeGroup);
+
+            em.persist(newAttribute);
+            newAttributeGroup.getAttributes().add(newAttribute);
+        }
+
+
+        return newAttributeGroup;
+    }
+
+    private Indicator copyIndicator(Indicator indicator, Activity newActivity) {
+        Indicator newIndicator = new Indicator(indicator);
+        newIndicator.setId(generator.generateInt());
+
+        newIndicator.setActivity(newActivity);
+
+        em.persist(newIndicator);
+        return newIndicator;
     }
 
     private UserDatabase createDatabase(CloneDatabase command, User user) {

@@ -64,6 +64,27 @@ public class Indicator implements java.io.Serializable, Orderable, Deleteable, F
     public Indicator() {
     }
 
+    public Indicator(Indicator indicator) {
+        this.dateDeleted = indicator.dateDeleted;
+
+        this.name = indicator.name;
+        this.units = indicator.units;
+        this.description = indicator.description;
+        this.mandatory = indicator.mandatory;
+
+        this.category = indicator.category;
+        this.activity = indicator.activity;
+        this.aggregation = indicator.aggregation;
+
+        this.sortOrder = indicator.sortOrder;
+        this.listHeader = indicator.listHeader;
+        this.type = indicator.type;
+        this.expression = indicator.expression;
+        this.skipExpression = indicator.skipExpression;
+        this.nameInExpression = indicator.nameInExpression;
+        this.calculatedAutomatically = indicator.calculatedAutomatically;
+    }
+
     /**
      * @return the id of this Indicator
      */

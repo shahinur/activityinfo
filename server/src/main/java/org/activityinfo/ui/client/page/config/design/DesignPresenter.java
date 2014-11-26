@@ -518,6 +518,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             return (ActivityDTO) selectedItem;
         } else if (selectedItem instanceof AttributeGroupFolder ||
                 selectedItem instanceof IndicatorFolder ||
+                selectedItem instanceof AttributeGroupDTO ||
                 selectedItem instanceof IndicatorDTO ||
                 selectedItem instanceof AttributeDTO) {
             return getSelectedActivity(treeStore.getParent(selectedItem));
