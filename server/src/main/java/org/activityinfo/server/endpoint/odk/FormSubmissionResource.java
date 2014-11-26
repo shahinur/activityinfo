@@ -27,6 +27,7 @@ import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.endpoint.odk.xform.XFormInstance;
+import org.activityinfo.server.endpoint.odk.xform.XFormInstanceImpl;
 import org.activityinfo.service.blob.BlobFieldStorageService;
 import org.activityinfo.service.blob.BlobId;
 import org.w3c.dom.Element;
@@ -86,7 +87,7 @@ public class FormSubmissionResource {
     @Produces(MediaType.TEXT_XML)
     public Response submit(byte bytes[]) {
 
-        XFormInstance instance = new XFormInstance(bytes);
+        XFormInstance instance = new XFormInstanceImpl(bytes);
 
         String authenticationToken = instance.getAuthenticationToken();
         AuthenticatedUser user = authenticationTokenService.authenticate(authenticationToken);
@@ -165,7 +166,7 @@ public class FormSubmissionResource {
         ImageRowValue imageRowValue = fieldValue.getValues().get(0);
         if (imageRowValue.getFilename() != null) {
             try {
-                BodyPart bodyPart = instance.findBodyPartByFilename(imageRowValue.getFilename());
+                BodyPart bodyPart = ((XFormInstanceImpl) instance).findBodyPartByFilename(imageRowValue.getFilename());
                 Image image = makeImage(ByteStreams.toByteArray(bodyPart.getInputStream()));
 
                 String contentDisposition = bodyPart.getDisposition();
