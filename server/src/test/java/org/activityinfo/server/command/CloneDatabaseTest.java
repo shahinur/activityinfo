@@ -44,6 +44,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author yuriyz on 11/26/2014.
@@ -64,7 +65,7 @@ public class CloneDatabaseTest extends CommandTestCase2 {
                 .setSourceDatabaseId(pearDb.getId())
                 .setCopyData(true)
                 .setCopyPartners(true)
-                .setCopyUsers(true)
+                .setCopyUserPermissions(true)
                 .setCountryId(pearDb.getCountry().getId())
                 .setName("PearClone")
                 .setDescription("PearClone Description");
@@ -72,11 +73,35 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         CreateResult cloneResult = execute(cloneDatabase);
         assertNotEquals(cloneResult.getNewId(), pearDb.getId());
 
-        assertLegacy(cloneResult.getNewId(), pearDb.getId(), true);
+        assertDbCloned(cloneResult.getNewId(), pearDb.getId(), cloneDatabase);
 
     }
 
-    private void assertLegacy(int newDbId, int sourceDbId, boolean assertDesignData) {
+    @Test
+    @OnDataSet("/dbunit/sites-simple1.db.xml")
+    public void cloneWithoutDataCopy() throws CommandException {
+
+        SchemaDTO schema = execute(new GetSchema());
+        UserDatabaseDTO pearDb = schema.getDatabaseById(PEAR_DATABASE_ID);
+
+        CloneDatabase cloneDatabase = new CloneDatabase()
+                .setSourceDatabaseId(pearDb.getId())
+                .setCopyData(false)
+                .setCopyPartners(true)
+                .setCopyUserPermissions(true)
+                .setCountryId(pearDb.getCountry().getId())
+                .setName("PearClone")
+                .setDescription("PearClone Description");
+
+        CreateResult cloneResult = execute(cloneDatabase);
+        assertNotEquals(cloneResult.getNewId(), pearDb.getId());
+
+        // assert data was not copied
+        UserDatabaseDTO targetDb = assertDbCloned(cloneResult.getNewId(), pearDb.getId(), cloneDatabase);
+        assertTrue(targetDb.getActivities().isEmpty());
+    }
+
+    private UserDatabaseDTO assertDbCloned(int newDbId, int sourceDbId, CloneDatabase cloneDatabase) {
         assertNotEquals(newDbId, sourceDbId);
 
         SchemaDTO schema = execute(new GetSchema());
@@ -87,21 +112,32 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         assertEquals(targetDb.getName(), "PearClone");
         assertEquals(targetDb.getFullName(), "PearClone Description");
 
-        if (assertDesignData) {
+        if (cloneDatabase.isCopyData()) {
+            assertDataCloned(sourceDb, targetDb);
+        }
+        if (cloneDatabase.isCopyPartners()) {
+            assertPropertyForEach(sourceDb.getPartners(), targetDb.getPartners(),
+                    "name", "fullName");
+        }
+        if (cloneDatabase.isCopyUserPermissions()) {
+            // todo
+        }
+        return targetDb;
+    }
 
-            assertEquals(sourceDb.getActivities().size(), targetDb.getActivities().size());
-            for (ActivityDTO activityDTO : sourceDb.getActivities()) {
-                ActivityFormDTO sourceActivity = execute(new GetActivityForm(activityDTO.getId()));
-                ActivityFormDTO targetActivity = execute(new GetActivityForm(entityByName(targetDb.getActivities(), sourceActivity.getName()).getId()));
+    private void assertDataCloned(UserDatabaseDTO sourceDb, UserDatabaseDTO targetDb) {
+        assertEquals(sourceDb.getActivities().size(), targetDb.getActivities().size());
+        for (ActivityDTO activityDTO : sourceDb.getActivities()) {
+            ActivityFormDTO sourceActivity = execute(new GetActivityForm(activityDTO.getId()));
+            ActivityFormDTO targetActivity = execute(new GetActivityForm(entityByName(targetDb.getActivities(), sourceActivity.getName()).getId()));
 
-                // legacy level
-                assertActivityClone(sourceActivity, targetActivity);
+            // legacy level
+            assertActivityClone(sourceActivity, targetActivity);
 
-                // form class level
-                FormClass sourceFormClass = execute(new GetFormClass(sourceActivity.getResourceId())).getFormClass();
-                FormClass targetFormClass = execute(new GetFormClass(targetActivity.getResourceId())).getFormClass();
-                assertFormClass(sourceFormClass, targetFormClass);
-            }
+            // form class level
+            FormClass sourceFormClass = execute(new GetFormClass(sourceActivity.getResourceId())).getFormClass();
+            FormClass targetFormClass = execute(new GetFormClass(targetActivity.getResourceId())).getFormClass();
+            assertFormClass(sourceFormClass, targetFormClass);
         }
     }
 
@@ -110,13 +146,8 @@ public class CloneDatabaseTest extends CommandTestCase2 {
                 "name", "category", "classicView");
 
         // indicators
-        assertEquals(sourceActivity.getIndicators().size(), targetActivity.getIndicators().size());
-        for (IndicatorDTO sourceIndicator : sourceActivity.getIndicators()) {
-            IndicatorDTO targetIndicator = entityByName(targetActivity.getIndicators(), sourceIndicator.getName());
-
-            assertProperties(sourceIndicator, targetIndicator,
-                    "name", "units", "expression", "listHeader", "skipExpression", "nameInExpression", "calculatedAutomatically");
-        }
+        assertPropertyForEach(sourceActivity.getIndicators(), targetActivity.getIndicators(),
+                "name", "units", "expression", "listHeader", "skipExpression", "nameInExpression", "calculatedAutomatically");
 
         // attributes groups
         for (AttributeGroupDTO sourceAttributeGroup : sourceActivity.getAttributeGroups()) {
@@ -126,14 +157,8 @@ public class CloneDatabaseTest extends CommandTestCase2 {
                     "name", "mandatory", "defaultValue", "workflow", "multipleAllowed", "sortOrder");
 
             // attributes
-            for (AttributeDTO sourceAttribute : sourceAttributeGroup.getAttributes()) {
-                AttributeDTO targetAttribute = entityByName(targetGroup.getAttributes(), sourceAttribute.getName());
-
-                assertProperties(sourceAttribute, targetAttribute, "name");
-            }
+            assertPropertyForEach(sourceAttributeGroup.getAttributes(), targetGroup.getAttributes(), "name");
         }
-
-
     }
 
     private void assertFormClass(FormClass sourceFormClass, FormClass targetFormClass) {
@@ -167,6 +192,15 @@ public class CloneDatabaseTest extends CommandTestCase2 {
 
             assertNotEquals(sourceSection.getId(), targetSection.getId());
             assertEquals(sourceSection.getLabel(), targetSection.getLabel());
+        }
+    }
+
+    private static <T extends BaseModelData> void assertPropertyForEach(List<T> sourceList, List<T> targetList,  String... properties) {
+        assertEquals(sourceList.size(), targetList.size());
+        for (T sourceItem : sourceList) {
+            T targetTarget = entityByName(targetList, (String) sourceItem.get("name"));
+
+            assertProperties(sourceItem, targetTarget, properties);
         }
     }
 

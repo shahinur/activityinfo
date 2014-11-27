@@ -94,12 +94,12 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         }
 
         // 1. copy partners and keep mapping between old and new partners
-        if (command.isCopyPartners() || command.isCopyUsers()) {
+        if (command.isCopyPartners() || command.isCopyUserPermissions()) {
             copyPartners(sourceDb, targetDb);
         }
 
         // 2. copy user permissions
-        if (command.isCopyUsers()) {
+        if (command.isCopyUserPermissions()) {
             copyUserPermissions(sourceDb, targetDb, user);
         }
 
@@ -124,10 +124,10 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
     }
 
     private void copyUserPermissions(UserDatabase sourceDb, UserDatabase targetDb, User user) {
+
         for (UserPermission sourcePermission : sourceDb.getUserPermissions()) {
             UserPermission newPermission = new UserPermission(sourcePermission);
             newPermission.setDatabase(targetDb);
-            newPermission.setUser(user);
             newPermission.setLastSchemaUpdate(new Date());
 
             // set newly created partner
