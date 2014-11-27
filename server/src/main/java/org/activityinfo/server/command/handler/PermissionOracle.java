@@ -35,6 +35,11 @@ public class PermissionOracle {
         return getPermissionByUser(database, user).isAllowDesign();
     }
 
+    public boolean isViewAllowed(UserDatabase database, User user) {
+        UserPermission permission = getPermissionByUser(database, user);
+        return permission.isAllowView() || permission.isAllowViewAll();
+    }
+
     public boolean isManageUsersAllowed(UserDatabase database, User user) {
         return getPermissionByUser(database, user).isAllowDesign() ||
                getPermissionByUser(database, user).isAllowManageUsers();

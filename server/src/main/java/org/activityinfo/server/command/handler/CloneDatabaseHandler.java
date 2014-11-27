@@ -82,7 +82,7 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
 
         UserDatabase sourceDb = em.find(UserDatabase.class, command.getSourceDatabaseId());
 
-        if (!permissionOracle.isDesignAllowed(sourceDb, user)) {
+        if (!permissionOracle.isViewAllowed(sourceDb, user)) {
             throw new IllegalAccessCommandException();
         }
 
@@ -98,8 +98,8 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
             copyPartners(sourceDb, targetDb);
         }
 
-        // 2. copy user permissions
-        if (command.isCopyUserPermissions()) {
+        // 2. copy user permissions : without design privileges the user shouldn't be able to see the list of users.
+        if (command.isCopyUserPermissions() && permissionOracle.isDesignAllowed(sourceDb, user)) {
             copyUserPermissions(sourceDb, targetDb, user);
         }
 
