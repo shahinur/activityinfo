@@ -149,7 +149,7 @@ class Presenter {
 
             query.where(new CriteriaIntersection(
                     new ClassCriteria(level.getClassId()),
-                    new FieldCriteria(level.getParentFieldId(), selectedParent.getRootInstanceId())));
+                    new FieldCriteria(level.getParentFieldId(), new ReferenceValue(selectedParent.getRootInstanceId()))));
         }
 
         return new Supplier<Promise<List<Projection>>>() {

@@ -1,5 +1,6 @@
 package org.activityinfo.legacy.shared.adapter;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import org.activityinfo.core.shared.application.ApplicationProperties;
@@ -12,6 +13,7 @@ import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.ConcatList;
 import org.activityinfo.promise.Promise;
 
@@ -165,9 +167,9 @@ public class QueryExecutor {
                 if (element instanceof FieldCriteria) {
                     FieldCriteria fieldCriteria = (FieldCriteria) element;
                     if (fieldCriteria.getFieldId().equals(CuidAdapter.field(formClassId, ADMIN_PARENT_FIELD))) {
-                        ResourceId id = (ResourceId) fieldCriteria.getValue();
+                        ReferenceValue id = (ReferenceValue) fieldCriteria.getValue();
 
-                        query.setParentId(CuidAdapter.getLegacyIdFromCuid(id));
+                        query.setParentId(CuidAdapter.getLegacyIdFromCuid(Iterables.getOnlyElement(id.getResourceIds())));
                     }
                 }
             }
