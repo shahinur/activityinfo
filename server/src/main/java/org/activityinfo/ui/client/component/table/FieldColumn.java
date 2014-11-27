@@ -7,6 +7,7 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.type.FieldValue;
 
 import java.util.List;
 
@@ -35,9 +36,9 @@ public class FieldColumn extends Column<Projection, String> {
         this.fieldPaths = Lists.newArrayList(fieldPath);
     }
 
-    public Object getValueAsObject(Projection projection) {
+    public FieldValue getFieldValue(Projection projection) {
         for (FieldPath path : fieldPaths) {
-            final Object value = projection.getValue(path);
+            final FieldValue value = projection.getValue(path);
             if (value != null) {
                 return value;
             }
@@ -47,7 +48,7 @@ public class FieldColumn extends Column<Projection, String> {
 
     @Override
     public String getValue(Projection projection) {
-        final Object valueAsObject = getValueAsObject(projection);
+        final Object valueAsObject = getFieldValue(projection);
 
         if (valueAsObject instanceof Double) {
             Double value = (Double) valueAsObject;

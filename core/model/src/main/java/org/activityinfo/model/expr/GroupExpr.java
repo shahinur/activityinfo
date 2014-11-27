@@ -22,7 +22,7 @@ public class GroupExpr extends ExprNode {
     }
 
     public String asExpression() {
-        return "(" + expr.toString() + ")";
+        return "(" + expr.asExpression() + ")";
     }
 
     @Override
