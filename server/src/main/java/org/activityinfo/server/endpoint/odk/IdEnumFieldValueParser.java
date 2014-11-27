@@ -36,7 +36,7 @@ class IdEnumFieldValueParser implements FieldValueParser {
 
                 for (String item : selected) {
                     if (item.length() < 1) continue;
-                    resourceIds.add(ResourceId.valueOf(text));
+                    resourceIds.add(ResourceId.valueOf(item));
                 }
 
                 return new EnumFieldValue(resourceIds);
