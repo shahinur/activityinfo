@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class ActivityDTO extends BaseModelData implements EntityDTO, ProvidesKey, LockedPeriodDTO.HasLockedPeriod, IsActivityDTO {
+public final class ActivityDTO extends BaseModelData implements EntityDTO, ProvidesKey,
+        LockedPeriodDTO.HasLockedPeriod, IsActivityDTO, IsFormClass {
 
     public static final String ENTITY_NAME = "Activity";
 
@@ -78,6 +79,10 @@ public final class ActivityDTO extends BaseModelData implements EntityDTO, Provi
         setDatabase(db);
     }
 
+    @Override
+    public ResourceId getResourceId() {
+        return CuidAdapter.activityFormClass(getId());
+    }
 
     /**
      * @return this Activity's id
