@@ -11,7 +11,7 @@ public class AndFunction extends BinaryBooleanOperator {
     }
 
     @Override
-    protected boolean apply(boolean a, boolean b) {
+    public boolean apply(boolean a, boolean b) {
         return a && b;
     }
 }

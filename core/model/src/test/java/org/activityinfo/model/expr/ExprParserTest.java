@@ -1,6 +1,8 @@
 package org.activityinfo.model.expr;
 
+
 import org.activityinfo.model.expr.functions.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -15,6 +17,11 @@ public class ExprParserTest {
         expect("1+2", new FunctionCallNode(PlusFunction.INSTANCE,
                 new ConstantExpr(1),
                 new ConstantExpr(2)));
+    }
+
+    @Test
+    public void parseCompound() {
+        expect("a.b", new CompoundExpr(new SymbolExpr("a"), new SymbolExpr("b")));
     }
 
     @Test
@@ -75,16 +82,13 @@ public class ExprParserTest {
     @Test
     public void parseComparisons() {
         expect("A==B", new FunctionCallNode(EqualFunction.INSTANCE,
+                new SymbolExpr("A"),
                 new SymbolExpr("B")));
     }
-    
-    public void evaluateExpr() {
-        evaluate("1", 1);
-        evaluate("1+1", 2);
-        evaluate("1+1+4", 6);
-        evaluate("(5+5)/2", 5);
-        evaluate("2*3", 6);
-        evaluate("3*(400/100)", 12);
+
+    @Test
+    public void parseQuotedSymbol() {
+        expect("[Year of expenditure]", new SymbolExpr("Year of expenditure"));
     }
 
     @Test
@@ -100,6 +104,18 @@ public class ExprParserTest {
         ));
     }
 
+    @Test
+    @Ignore("todo")
+    public void parseCalc() {
+        expect("{Exp}*{Alloc}*{InCostUnsp}/10000",
+          new FunctionCallNode(ExprFunctions.get("/"),
+              new FunctionCallNode(ExprFunctions.get("*"),
+                  new FunctionCallNode(ExprFunctions.get("*"), new SymbolExpr("Exp"), new SymbolExpr("Alloc")),
+                  new SymbolExpr("InCostUnsp")),
+              new ConstantExpr(10000)));
+
+    }
+
 
     private void expect(String string, ExprNode expr) {
         System.out.println("Parsing [" + string + "]");
@@ -110,17 +126,4 @@ public class ExprParserTest {
         assertEquals(expr, actual);
     }
 
-    private void evaluate(String string, double expectedValue) {
-        ExprLexer lexer = new ExprLexer(string);
-        ExprParser parser = new ExprParser(lexer);
-        ExprNode expr = parser.parse();
-        assertEquals(string, expectedValue, expr.evalReal(), 0);
-    }
-
-    private void evaluate(String string, boolean expectedValue) {
-        ExprLexer lexer = new ExprLexer(string);
-        ExprParser parser = new ExprParser(lexer);
-        ExprNode expr = parser.parse();
-        assertEquals(string, expectedValue, expr.evalReal());
-    }
 }

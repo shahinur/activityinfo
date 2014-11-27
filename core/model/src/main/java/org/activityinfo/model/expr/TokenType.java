@@ -13,25 +13,12 @@ public enum TokenType {
      */
     PAREN_END,
 
-    /**
-     * "{"
-     */
-    BRACE_START,
-
-    /**
-     * "}"
-     */
-    BRACE_END,
 
     /**
      * """
      */
-    STRING_START,
+    STRING_LITERAL,
 
-    /**
-     * """
-     */
-    STRING_END,
 
     /**
      * Operator : +, /, -, &&, || etc
@@ -44,12 +31,18 @@ public enum TokenType {
      */
     SYMBOL,
 
+    
     FUNCTION,
 
     /**
      * Comma: ','
      */
     COMMA,
+
+    /**
+     * Dot '.'
+     */
+    DOT,
 
     /**
      * Numeric Literal: 1, 3 ...
@@ -60,8 +53,6 @@ public enum TokenType {
      * Boolean literal : true, false
      */
     BOOLEAN_LITERAL,
-
-    STRING_LITERAL,
 
     /**
      * Whitespace

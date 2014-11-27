@@ -38,6 +38,10 @@ public class FormField extends FormElement {
         return id;
     }
 
+    public String getName() {
+        return id.asString();
+    }
+
     /**
      * @return user-assigned code for this field that can be
      * used in expressions.

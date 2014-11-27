@@ -30,7 +30,5 @@ public abstract class ExprNode {
         return Casting.toBoolean(fieldValue);
     }
 
-    public double evalReal() {
-        throw new UnsupportedOperationException();
-    }
+    public abstract <T> T accept(ExprVisitor<T> visitor);
 }

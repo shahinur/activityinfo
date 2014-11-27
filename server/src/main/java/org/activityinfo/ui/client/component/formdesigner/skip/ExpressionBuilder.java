@@ -30,6 +30,8 @@ import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.HasSetFieldValue;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
+import org.activityinfo.model.type.primitive.BooleanType;
+import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.primitive.TextValue;
 
 import java.util.List;
@@ -67,7 +69,8 @@ public class ExpressionBuilder {
             arguments.add(new SymbolExpr(row.getFormField().getId().asString()));
 
             if (value instanceof BooleanFieldValue || value instanceof Quantity || value instanceof TextValue) {
-                arguments.add(new ConstantExpr(value));
+                arguments.add(newConstant(value));
+
             } else if (value instanceof HasSetFieldValue) {
                 List<ResourceId> idSet = Lists.newArrayList(((HasSetFieldValue)value).getResourceIds());
                 for (ResourceId resourceId : idSet) {
@@ -80,12 +83,8 @@ public class ExpressionBuilder {
         }
 
         // OPERATOR building
-        if (value instanceof BooleanFieldValue) {
-            right = new ConstantExpr(value);
-        } else if (value instanceof Quantity) {
-            right = new ConstantExpr(value);
-        } else if (value instanceof TextValue) {
-            right = new ConstantExpr(value);
+        if (value instanceof BooleanFieldValue || value instanceof Quantity || value instanceof TextValue) {
+            right = newConstant(value);
         } else if (value instanceof HasSetFieldValue) {
             List<ResourceId> idSet = Lists.newArrayList(((HasSetFieldValue)value).getResourceIds());
             int size = idSet.size();
@@ -111,6 +110,19 @@ public class ExpressionBuilder {
         }
 
         return node;
+    }
+
+    private ExprNode newConstant(FieldValue value) {
+
+        if (value instanceof BooleanFieldValue) {
+            return new ConstantExpr(value, BooleanType.INSTANCE);
+        } else if (value instanceof Quantity) {
+            return new ConstantExpr((Quantity)value);
+        } else if (value instanceof TextValue) {
+            return new ConstantExpr(value, TextType.INSTANCE);
+        } else {
+            throw new IllegalArgumentException("value: "+ value);
+        }
     }
 
     private ExprNode buildNodeForSet(ExprNode left, List<ResourceId> values, RowData row) {
