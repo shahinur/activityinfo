@@ -134,24 +134,6 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         });
     }
 
-    private void commit() {
-        // we have to commit in order to get valid FormClass
-        // hack : start own transaction, can't wait on RemoteExecutionContext
-        // REASON : we have to commit transaction internally in handler
-        // in order to get valid FormClass while still inside handler and perform GetFormClass and
-        // then push it to activity via UpdateFormClass
-        try {
-            em.flush();
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw e;
-        }
-
-        // make RemoteExecutionContext happy and allow him to commit()
-        em.getTransaction().begin();
-    }
-
     private void copyUserPermissions() {
 
         for (UserPermission sourcePermission : sourceDb.getUserPermissions()) {
@@ -192,8 +174,6 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         for (Activity activity : sourceDb.getActivities()) {
             copyActivity(activity);
         }
-
-        commit(); // hack!!! - forced to push data
 
         final List<Promise<VoidResult>> copyPromises = new ArrayList<>();
         for (Activity activity : sourceDb.getActivities()) {
