@@ -106,7 +106,7 @@ public class CloneDatabaseTest extends CommandTestCase2 {
     }
 
     private void assertActivityClone(ActivityFormDTO sourceActivity, ActivityFormDTO targetActivity) {
-        assertProperties(sourceActivity, sourceActivity,
+        assertProperties(sourceActivity, targetActivity,
                 "name", "category", "classicView");
 
         // indicators
@@ -146,6 +146,7 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         for (FormField sourceField : sourceFormClass.getFields()) {
             FormField targetField = (FormField) elementByName(targetFormClass.getElements(), sourceField.getLabel());
 
+            assertNotEquals(sourceField.getId(), targetField.getId());
             assertEquals(sourceField.getDescription(), targetField.getDescription());
             assertEquals(sourceField.getCode(), targetField.getCode());
             assertEquals(sourceField.getRelevanceConditionExpression(), targetField.getRelevanceConditionExpression());
@@ -164,6 +165,7 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         for (FormSection sourceSection : sourceFormClass.getSections()) {
             FormSection targetSection = (FormSection) elementByName(targetFormClass.getElements(), sourceSection.getLabel());
 
+            assertNotEquals(sourceSection.getId(), targetSection.getId());
             assertEquals(sourceSection.getLabel(), targetSection.getLabel());
         }
     }
@@ -172,6 +174,8 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         if (propertyNames == null || propertyNames.length == 0) {
             throw new RuntimeException("No property names specified.");
         }
+
+        assertNotEquals(entity1.get("id"), entity2.get("id"));
 
         for (String property : propertyNames) {
             assertEquals(entity1.get(property), entity2.get(property));
