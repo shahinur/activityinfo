@@ -54,10 +54,17 @@ public class RowDataBuilder {
     }
 
     public List<RowData> build(String skipExpression) {
-        ExprLexer lexer = new ExprLexer(skipExpression);
-        ExprParser parser = new ExprParser(lexer);
-        ExprNode node = parser.parse();
-        parse(node, DEFAULT_JOIN_FUNCTION);
+        try {
+            ExprLexer lexer = new ExprLexer(skipExpression);
+            ExprParser parser = new ExprParser(lexer);
+            ExprNode node = parser.parse();
+            parse(node, DEFAULT_JOIN_FUNCTION);
+        } catch (Exception e) {
+            // 1. FormField was removed ?
+            // 2. other reason ?
+            // we don't want to block user, show dialog without rows.
+            return Lists.newArrayList();
+        }
         return rows;
     }
 
