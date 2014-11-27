@@ -147,14 +147,14 @@ public class CloneDatabaseTest extends CommandTestCase2 {
 
         // indicators
         assertPropertyForEach(sourceActivity.getIndicators(), targetActivity.getIndicators(),
-                "name", "units", "expression", "listHeader", "skipExpression", "nameInExpression", "calculatedAutomatically");
+                "name", "units", "expression", "skipExpression", "nameInExpression", "calculatedAutomatically");
 
         // attributes groups
         for (AttributeGroupDTO sourceAttributeGroup : sourceActivity.getAttributeGroups()) {
             AttributeGroupDTO targetGroup = entityByName(targetActivity.getAttributeGroups(), sourceAttributeGroup.getName());
 
             assertProperties(sourceAttributeGroup, targetGroup,
-                    "name", "mandatory", "defaultValue", "workflow", "multipleAllowed", "sortOrder");
+                    "name", "mandatory", "defaultValue", "workflow", "multipleAllowed");
 
             // attributes
             assertPropertyForEach(sourceAttributeGroup.getAttributes(), targetGroup.getAttributes(), "name");
@@ -212,7 +212,8 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         assertNotEquals(entity1.get("id"), entity2.get("id"));
 
         for (String property : propertyNames) {
-            assertEquals(entity1.get(property), entity2.get(property));
+            assertEquals("Failed assert property: " + property + ", sourceId: " + entity1.get("id") + ", targetId: " + entity2.get("id"),
+                    entity1.get(property), entity2.get(property));
         }
     }
 

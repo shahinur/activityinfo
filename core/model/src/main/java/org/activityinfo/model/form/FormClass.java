@@ -46,14 +46,6 @@ public class FormClass implements IsResource, FormElementContainer {
         this.id = id;
     }
 
-    public FormClass copy() {
-        final FormClass copy = new FormClass(this.getId());
-        copy.setOwnerId(this.getOwnerId());
-        copy.getElements().addAll(this.getElements());
-        copy.setLabel(this.getLabel());
-        return copy;
-    }
-
     public ResourceId getOwnerId() {
         return ownerId;
     }
