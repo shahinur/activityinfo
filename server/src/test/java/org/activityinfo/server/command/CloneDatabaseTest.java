@@ -44,7 +44,6 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author yuriyz on 11/26/2014.
@@ -75,6 +74,7 @@ public class CloneDatabaseTest extends CommandTestCase2 {
 
         assertDbCloned(cloneResult.getNewId(), pearDb.getId(), cloneDatabase);
 
+        // todo assert data copy
     }
 
     @Test
@@ -96,9 +96,7 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         CreateResult cloneResult = execute(cloneDatabase);
         assertNotEquals(cloneResult.getNewId(), pearDb.getId());
 
-        // assert data was not copied
-        UserDatabaseDTO targetDb = assertDbCloned(cloneResult.getNewId(), pearDb.getId(), cloneDatabase);
-        assertTrue(targetDb.getActivities().isEmpty());
+        assertDbCloned(cloneResult.getNewId(), pearDb.getId(), cloneDatabase);
     }
 
     private UserDatabaseDTO assertDbCloned(int newDbId, int sourceDbId, CloneDatabase cloneDatabase) {
