@@ -25,6 +25,7 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.PartnerDTO;
+import org.activityinfo.model.type.primitive.TextValue;
 
 /**
  * @author yuriyz on 4/15/14.
@@ -45,10 +46,10 @@ public class PartnerProjectionUpdater implements ProjectionUpdater<PartnerDTO> {
     public void update(Projection projection, PartnerDTO dto) {
         switch (fieldIndex) {
             case CuidAdapter.NAME_FIELD:
-                projection.setValue(path, dto.getName());
+                projection.setValue(path, TextValue.valueOf(dto.getName()));
                 break;
             case CuidAdapter.FULL_NAME_FIELD:
-                projection.setValue(path, dto.getFullName());
+                projection.setValue(path, TextValue.valueOf(dto.getFullName()));
                 break;
         }
     }

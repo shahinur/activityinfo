@@ -1,17 +1,21 @@
 package org.activityinfo.model.expr.eval;
 
-import org.activityinfo.model.expr.diagnostic.CircularReferenceException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.type.ErrorValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.junit.Test;
 
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.junit.Assert.assertThat;
+
 public class FormEvalContextTest {
 
-    @Test(expected = CircularReferenceException.class)
+    @Test
     public void circularRefs() {
 
         FormField a = new FormField(ResourceId.generateId());
@@ -31,7 +35,7 @@ public class FormEvalContextTest {
         FormEvalContext context = new FormEvalContext(formClass);
         context.setInstance(new FormInstance(ResourceId.generateId(), formClass.getId()));
 
-        context.getFieldValue(a.getId());
+        assertThat(context.getFieldValue(a.getId()), instanceOf(ErrorValue.class));
 
     }
 

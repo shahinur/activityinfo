@@ -68,7 +68,9 @@ public class CuidAdapter {
     public static final int BLOCK_SIZE = 10;
     public static final String CLASS_FIELD = "_class";
 
-
+    public static final int[] BUILTIN_FIELDS = new int[] {
+            START_DATE_FIELD, END_DATE_FIELD, PARTNER_FIELD, PROJECT_FIELD,
+            LOCATION_FIELD, COMMENT_FIELD };
     /**
      * Avoid instance creation.
      */
@@ -211,11 +213,11 @@ public class CuidAdapter {
     }
 
     /**
-     * @param databaseId the id of the user database
+     * @param partnerId the id of the partner
      * @return the {@code FormClass} ResourceId for a given database's list of partners.
      */
-    public static ResourceId partnerFormClass(int databaseId) {
-        return cuid(PARTNER_FORM_CLASS_DOMAIN, databaseId);
+    public static ResourceId partnerFormClass(int partnerId) {
+        return cuid(PARTNER_FORM_CLASS_DOMAIN, partnerId);
     }
 
     /**

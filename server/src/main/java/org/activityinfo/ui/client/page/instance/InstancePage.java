@@ -56,7 +56,9 @@ public class InstancePage implements Page {
 
     @Override
     public void requestToNavigateAway(PageState place, NavigationCallback callback) {
-        FormSavedGuard.callNavigationCallback(scrollPanel, callback);
+        if (!FormSavedGuard.callNavigationCallback(scrollPanel, callback)) {
+            callback.onDecided(true);
+        }
     }
 
     @Override

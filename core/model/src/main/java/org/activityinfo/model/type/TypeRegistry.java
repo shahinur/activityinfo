@@ -73,4 +73,17 @@ public class TypeRegistry {
             throw new UnsupportedOperationException(typeClassId + " cannot be deserialized from a Record");
         }
     }
+
+
+    public static FieldValue readField(Record record, String name, FieldTypeClass typeClass) {
+        Record fieldValue = record.isRecord(name);
+        if(fieldValue == null) {
+            return null;
+        }
+        String typeClassId = fieldValue.isString(FieldValue.TYPE_CLASS_FIELD_NAME);
+        if(!typeClass.getId().equals(typeClassId)) {
+            return null;
+        }
+        return ((RecordFieldTypeClass) typeClass).deserialize(record);
+    }
 }

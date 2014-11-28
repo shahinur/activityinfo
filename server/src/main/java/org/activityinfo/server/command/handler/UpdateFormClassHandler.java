@@ -69,9 +69,15 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
             activity.setFormClass(json);
             activity.setGzFormClass(null);
         }
-        activity.setClassicView(false);
 
-        syncEntities(activity, formClass);
+        // we should not set it instead of user (looks very weird for end user if mode is changed because of some backend function)
+//        activity.setClassicView(false);
+
+        if (cmd.isSyncActivityEntities()) {
+            syncEntities(activity, formClass);
+        } else {
+            entityManager.get().persist(activity);
+        }
 
         return new VoidResult();
     }
@@ -123,7 +129,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
         }
 
         Set<ResourceId> builtinFields = Sets.newHashSet();
-        for(int fieldIndex : FormClassTrash.BUILTIN_FIELDS) {
+        for(int fieldIndex : CuidAdapter.BUILTIN_FIELDS) {
             builtinFields.add(CuidAdapter.field(formClass.getId(), fieldIndex));
         }
 
@@ -186,7 +192,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
         indicator.setSkipExpression(field.getRelevanceConditionExpression());
         indicator.setCalculatedAutomatically(field.getType() instanceof CalculatedFieldType);
 
-        if(field.getType() instanceof QuantityType) {
+        if (field.getType() instanceof QuantityType) {
             indicator.setType(QuantityType.TYPE_CLASS.getId());
             indicator.setUnits(((QuantityType) field.getType()).getUnits());
 

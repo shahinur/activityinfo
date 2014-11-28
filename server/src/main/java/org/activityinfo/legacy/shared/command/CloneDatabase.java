@@ -34,7 +34,7 @@ public class CloneDatabase implements MutatingCommand<CreateResult> {
     private int countryId;
     private boolean copyData; // copies FormInstances as well as FormClasses
     private boolean copyPartners;
-    private boolean copyUsers; // copies UserPermissions (implies copyPartners and requires Design privileges on source database)
+    private boolean copyUserPermissions; // copies UserPermissions (implies copyPartners and requires Design privileges on source database)
 
     public CloneDatabase() {
     }
@@ -93,12 +93,12 @@ public class CloneDatabase implements MutatingCommand<CreateResult> {
         return this;
     }
 
-    public boolean isCopyUsers() {
-        return copyUsers;
+    public boolean isCopyUserPermissions() {
+        return copyUserPermissions;
     }
 
-    public CloneDatabase setCopyUsers(boolean copyUsers) {
-        this.copyUsers = copyUsers;
+    public CloneDatabase setCopyUserPermissions(boolean copyUserPermissions) {
+        this.copyUserPermissions = copyUserPermissions;
         return this;
     }
 }

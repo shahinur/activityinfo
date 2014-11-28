@@ -4,7 +4,9 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.primitive.TextValue;
 
 import java.util.Collections;
 import java.util.Map;
@@ -16,7 +18,7 @@ import java.util.Set;
  */
 public class Projection {
 
-    private final Map<FieldPath, Object> values = Maps.newHashMap();
+    private final Map<FieldPath, FieldValue> values = Maps.newHashMap();
     private final ResourceId rootInstanceId;
     private final ResourceId rootClassId;
 
@@ -37,7 +39,7 @@ public class Projection {
         return rootClassId;
     }
 
-    public void setValue(FieldPath path, Object value) {
+    public void setValue(FieldPath path, FieldValue value) {
         if(value == null) {
             values.remove(path);
         } else {
@@ -45,7 +47,7 @@ public class Projection {
         }
     }
 
-    public Object getValue(FieldPath path) {
+    public FieldValue getValue(FieldPath path) {
         return values.get(path);
     }
 
@@ -67,8 +69,8 @@ public class Projection {
 
     public String getStringValue(FieldPath fieldPath) {
         Object value = values.get(fieldPath);
-        if(value instanceof String) {
-            return (String) value;
+        if(value instanceof TextValue) {
+            return ((TextValue) value).asString();
         }
         return null;
     }
@@ -83,7 +85,7 @@ public class Projection {
         return "[" + Joiner.on(", ").withKeyValueSeparator("=").join(values) + "]";
     }
 
-    public Map<FieldPath, Object> getValueMap() {
+    public Map<FieldPath, FieldValue> getValueMap() {
         return values;
     }
 }

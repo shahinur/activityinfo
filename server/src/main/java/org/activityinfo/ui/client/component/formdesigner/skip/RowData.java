@@ -107,5 +107,14 @@ public class RowData {
         return result;
     }
 
-
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(formField == null ? "NULL" : formField.getId());
+        sb.append(" ");
+        sb.append(function == null ? "NULL" : function.getId());
+        sb.append(" ");
+        sb.append(value);
+        return sb.toString();
+    }
 }

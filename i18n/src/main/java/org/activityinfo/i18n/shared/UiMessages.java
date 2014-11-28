@@ -353,4 +353,7 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("Exceeds maximum length of {0} characters.")
     String exceedsMaximumLength(int maxLength);
+
+    @DefaultMessage("Invalid value. Please enter date in following format: {0}")
+    String dateFieldInvalidValue(String format);
 }

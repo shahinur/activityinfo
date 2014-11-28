@@ -92,4 +92,9 @@ public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
     public int hashCode() {
         return resourceIds != null ? resourceIds.hashCode() : 0;
     }
+
+    @Override
+    public String toString() {
+        return resourceIds.toString();
+    }
 }

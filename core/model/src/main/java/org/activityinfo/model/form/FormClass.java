@@ -1,10 +1,12 @@
 package org.activityinfo.model.form;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.resource.*;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -42,14 +44,6 @@ public class FormClass implements IsResource, FormElementContainer {
     public FormClass(ResourceId id) {
         Preconditions.checkNotNull(id);
         this.id = id;
-    }
-
-    public FormClass copy() {
-        final FormClass copy = new FormClass(this.getId());
-        copy.setOwnerId(this.getOwnerId());
-        copy.getElements().addAll(this.getElements());
-        copy.setLabel(this.getLabel());
-        return copy;
     }
 
     public ResourceId getOwnerId() {
@@ -137,17 +131,39 @@ public class FormClass implements IsResource, FormElementContainer {
 
     public List<FormField> getFields() {
         final List<FormField> fields = Lists.newArrayList();
-        collectFields(fields, getElements());
+        collectFields(fields, getElements(), new Predicate<FormElement>() {
+            @Override
+            public boolean apply(@Nullable FormElement input) {
+                return input instanceof FormField;
+            }
+        });
         return fields;
     }
 
-    private static void collectFields(List<FormField> fields, List<FormElement> elements) {
+    public List<FormSection> getSections() {
+        final List<FormSection> sections = Lists.newArrayList();
+        collectFields(sections, getElements(), new Predicate<FormElement>() {
+            @Override
+            public boolean apply(@Nullable FormElement input) {
+                return input instanceof FormSection;
+            }
+        });
+        return sections;
+
+    }
+
+    private static void collectFields(List result, List<FormElement> elements, Predicate<FormElement> predicate) {
         for (FormElement element : elements) {
+
+            if (predicate.apply(element)) {
+                result.add(element);
+            }
+
             if (element instanceof FormField) {
-                fields.add((FormField) element);
+                // do nothing
             } else if (element instanceof FormSection) {
                 final FormSection formSection = (FormSection) element;
-                collectFields(fields, formSection.getElements());
+                collectFields(result, formSection.getElements(), predicate);
             }
         }
     }

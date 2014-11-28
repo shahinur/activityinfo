@@ -49,11 +49,18 @@ public abstract class RealValuedBinaryFunction extends ExprFunction {
     }
 
     @Override
-    public FieldType getResultType(List<FieldType> argumentTypes) {
+    public FieldType resolveResultType(List<FieldType> argumentTypes) {
         Preconditions.checkArgument(argumentTypes.size() == 2);
-        QuantityType t1 = (QuantityType) argumentTypes.get(0);
-        QuantityType t2 = (QuantityType) argumentTypes.get(1);
+        if(argumentTypes.get(0) instanceof QuantityType &&
+           argumentTypes.get(1) instanceof QuantityType) {
 
-        return new QuantityType().setUnits(applyUnits(t1.getUnits(), t2.getUnits()));
+            QuantityType t1 = (QuantityType) argumentTypes.get(0);
+            QuantityType t2 = (QuantityType) argumentTypes.get(1);
+
+            return new QuantityType().setUnits(applyUnits(t1.getUnits(), t2.getUnits()));
+
+        } else {
+            throw new UnsupportedOperationException("todo");
+        }
     }
 }

@@ -73,6 +73,8 @@ public class FormSavedGuard implements HasNavigationCallback {
                     callback.onDecided(false);
                 }
             });
+        } else {
+            callback.onDecided(true);
         }
     }
 
@@ -84,9 +86,13 @@ public class FormSavedGuard implements HasNavigationCallback {
         this.saved = saved;
     }
 
-    public static void callNavigationCallback(Widget widget, NavigationCallback callback) {
+    /**
+     * @return true HasNavigationCallback was found, otherwise false
+     */
+    public static boolean callNavigationCallback(Widget widget, NavigationCallback callback) {
         if (widget instanceof HasNavigationCallback) {
             ((HasNavigationCallback) widget).navigate(callback);
+            return true;
         }
         if (widget instanceof HasOneWidget) {
             callNavigationCallback(((HasOneWidget) widget).getWidget(), callback);
@@ -97,5 +103,6 @@ public class FormSavedGuard implements HasNavigationCallback {
                 callNavigationCallback(w, callback);
             }
         }
+        return false;
     }
 }

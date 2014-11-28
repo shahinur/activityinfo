@@ -11,6 +11,8 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.core.shared.importing.source.SourceRow;
 import org.activityinfo.core.shared.importing.validation.ValidationResult;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
@@ -72,12 +74,12 @@ public class SingleClassImporter implements FieldImporter {
 
     public static String[] toArray(Projection projection, Map<FieldPath, Integer> referenceFields, int arraySize) {
         String[] values = new String[arraySize];
-        for (Map.Entry<FieldPath, Object> entry : projection.getValueMap().entrySet()) {
+        for (Map.Entry<FieldPath, FieldValue> entry : projection.getValueMap().entrySet()) {
             Integer index = referenceFields.get(entry.getKey());
             if (index != null) {
                 Object value = entry.getValue();
-                if (value instanceof String) {
-                    values[index] = (String) value;
+                if (value instanceof TextValue) {
+                    values[index] = ((TextValue) value).asString();
                 }
             }
         }

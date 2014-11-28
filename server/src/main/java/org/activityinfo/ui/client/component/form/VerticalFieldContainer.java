@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.widget.form.FormGroup;
+import org.activityinfo.ui.client.widget.form.ValidationStateType;
 
 /**
  * Simple field container which displays the label, input, and help text in a vertical
@@ -28,6 +29,7 @@ public class VerticalFieldContainer implements FieldContainer {
         formGroup = new FormGroup()
                 .label(formField.getLabel())
                 .description(formField.getDescription())
+                .validationStateType(ValidationStateType.ERROR)
                 .addWidget(fieldWidget);
 
     }

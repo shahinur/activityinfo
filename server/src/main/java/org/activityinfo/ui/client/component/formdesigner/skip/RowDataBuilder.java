@@ -38,11 +38,15 @@ import org.activityinfo.model.type.enumerated.EnumType;
 
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author yuriyz on 7/28/14.
  */
 public class RowDataBuilder {
+
+    private static final Logger LOGGER = Logger.getLogger(RowDataBuilder.class.getName());
 
     public static final ExprFunction DEFAULT_JOIN_FUNCTION = BooleanFunctions.AND;
 
@@ -54,10 +58,18 @@ public class RowDataBuilder {
     }
 
     public List<RowData> build(String skipExpression) {
-        ExprLexer lexer = new ExprLexer(skipExpression);
-        ExprParser parser = new ExprParser(lexer);
-        ExprNode node = parser.parse();
-        parse(node, DEFAULT_JOIN_FUNCTION);
+        try {
+            ExprLexer lexer = new ExprLexer(skipExpression);
+            ExprParser parser = new ExprParser(lexer);
+            ExprNode node = parser.parse();
+            parse(node, DEFAULT_JOIN_FUNCTION);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            // 1. FormField was removed ?
+            // 2. other reason ?
+            // we don't want to block user, show dialog without rows.
+            return Lists.newArrayList();
+        }
         return rows;
     }
 

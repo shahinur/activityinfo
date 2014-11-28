@@ -58,6 +58,10 @@ public class QuantityType implements ParametrizedFieldType {
     public QuantityType() {
     }
 
+    public QuantityType(String units) {
+        this.units = units;
+    }
+
     public String getUnits() {
         return units;
     }
