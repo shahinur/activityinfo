@@ -82,7 +82,7 @@ public class FormResourceTest extends CommandTestCase2 {
 
         formResource = new FormResource(resourceLocator, authProvider, fieldFactory, tokenService);
         formSubmissionResource = new FormSubmissionResource(
-                getDispatcherSync(), resourceLocator, tokenService, blobstore, backupService);
+                getDispatcherSync(), resourceLocator, tokenService, null, null, blobstore, backupService);
     }
 
     @Test

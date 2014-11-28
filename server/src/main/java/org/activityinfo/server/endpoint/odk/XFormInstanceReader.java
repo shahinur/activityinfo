@@ -6,10 +6,10 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.server.endpoint.odk.FieldValueParser;
-import org.activityinfo.server.endpoint.odk.FieldValueParserFactory;
 
 import java.util.LinkedHashMap;
+
+import static org.activityinfo.server.endpoint.odk.FieldValueParserFactory.fromFieldType;
 
 public class XFormInstanceReader {
     final private LinkedHashMap<String, Object> array[];
@@ -31,7 +31,7 @@ public class XFormInstanceReader {
         }
 
         for (FormField formField : formClass.getFields()) {
-            final FieldValueParser fieldValueParser = FieldValueParserFactory.fromFieldType(formField.getType(), false);
+            final FieldValueParser fieldValueParser = fromFieldType(formField.getType(), false, false);
             final String code = formField.getCode();
 
             for (int i = 0; i < length; i++) {

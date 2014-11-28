@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 
 /**
- * Provides methods to access the contents of a submitted XFormInstance
+ * After {@link LegacyXFormInstance} is eliminated, this class can be merged with {@link XFormInstance} again
  */
 public class XFormInstanceImpl implements XFormInstance {
 
@@ -104,7 +104,7 @@ public class XFormInstanceImpl implements XFormInstance {
         throw new WebApplicationException(Response.status(BAD_REQUEST).build());
     }
 
-    private Element findElement(Element parent, String tagName) {
+    static Element findElement(Element parent, String tagName) {
         NodeList children = parent.getChildNodes();
         for(int i=0;i!=children.getLength();++i) {
             Node child = children.item(i);

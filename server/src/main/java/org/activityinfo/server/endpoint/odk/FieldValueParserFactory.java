@@ -13,12 +13,16 @@ import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.time.LocalDateType;
 
 public class FieldValueParserFactory {
-    static public FieldValueParser fromFieldType(FieldType fieldType, boolean odk) {
+    static public FieldValueParser fromFieldType(FieldType fieldType, boolean odk, boolean legacy) {
         if (fieldType instanceof BarcodeType) return new BarcodeFieldValueParser();
         if (fieldType instanceof BooleanType) return new BooleanFieldValueParser();
         if (fieldType instanceof EnumType) {
             if (odk) {
-                return new IdEnumFieldValueParser((EnumType) fieldType);
+                if (legacy) {
+                    return new LegacyEnumFieldValueParser((EnumType) fieldType);
+                } else {
+                    return new IdEnumFieldValueParser((EnumType) fieldType);
+                }
             } else {
                 return new CodeEnumFieldValueParser((EnumType) fieldType);
             }
@@ -26,9 +30,21 @@ public class FieldValueParserFactory {
         if (fieldType instanceof GeoPointType) return new GeoPointFieldValueParser();
         if (fieldType instanceof ImageType) return new ImageFieldValueParser();
         if (fieldType instanceof LocalDateType) return new LocalDateFieldValueParser();
-        if (fieldType instanceof NarrativeType) return new NarrativeFieldValueParser();
+        if (fieldType instanceof NarrativeType) {
+            if (legacy) {
+                return new TextFieldValueParser();
+            } else {
+                return new NarrativeFieldValueParser();
+            }
+        }
         if (fieldType instanceof QuantityType) return new QuantityFieldValueParser((QuantityType) fieldType);
-        if (fieldType instanceof ReferenceType) return new ReferenceFieldValueParser();
+        if (fieldType instanceof ReferenceType) {
+            if (legacy) {
+                return new LegacyReferenceFieldValueParser(((ReferenceType) fieldType).getRange());
+            } else {
+                return new ReferenceFieldValueParser();
+            }
+        }
         if (fieldType instanceof TextType) return new TextFieldValueParser();
 
         // If this happens, it means this class needs to be expanded to support the new FieldType class.
