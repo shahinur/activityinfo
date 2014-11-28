@@ -8,6 +8,7 @@ import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.number.Quantity;
 
 import java.util.List;
 
@@ -48,15 +49,14 @@ public class FieldColumn extends Column<Projection, String> {
 
     @Override
     public String getValue(Projection projection) {
-        final Object valueAsObject = getFieldValue(projection);
+        final FieldValue fieldValue = getFieldValue(projection);
 
-        if (valueAsObject instanceof Double) {
-            Double value = (Double) valueAsObject;
-            if (!value.isNaN()) {
-                return value.toString();
-            }
-        } else if (valueAsObject != null) {
-            return valueAsObject.toString();
+        if (fieldValue instanceof Quantity) {
+            Double value = ((Quantity) fieldValue).getValue();
+            return value.toString();
+
+        } else if (fieldValue != null) {
+            return fieldValue.toString();
         }
 
         return NON_BREAKING_SPACE;
