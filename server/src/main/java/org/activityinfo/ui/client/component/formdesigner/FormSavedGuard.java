@@ -73,6 +73,8 @@ public class FormSavedGuard implements HasNavigationCallback {
                     callback.onDecided(false);
                 }
             });
+        } else {
+            callback.onDecided(true);
         }
     }
 
