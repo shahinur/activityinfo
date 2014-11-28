@@ -91,7 +91,7 @@ public class LocationForm extends LayoutContainer {
         adminPresenter.addListener(AdminSelectionChangedEvent.TYPE, new Listener<AdminSelectionChangedEvent>() {
             @Override
             public void handleEvent(AdminSelectionChangedEvent be) {
-                search();
+                searchPresenter.updateAdminFilter(adminPresenter.getAdminEntityIds());
                 coordinateFields.validate();
                 forceBoundsUpdate();
             }
@@ -116,7 +116,7 @@ public class LocationForm extends LayoutContainer {
 
             @Override
             public void run() {
-                search();
+                searchPresenter.searchByName(nameField.getRawValue());
             }
         };
     }
@@ -262,7 +262,4 @@ public class LocationForm extends LayoutContainer {
         layout(true);
     }
 
-    private void search() {
-        searchPresenter.search(nameField.getRawValue(), adminPresenter.getAdminEntityIds(), adminPresenter.getBounds());
-    }
 }

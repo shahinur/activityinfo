@@ -32,6 +32,7 @@ import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.CommandResult;
 import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.model.legacy.CuidAdapter;
 
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +50,7 @@ public class SchemaCache implements DispatchListener {
     private SchemaDTO schema = null;
     private Set<String> schemaEntityTypes = Sets.newHashSet();
     private Map<Integer, ActivityFormDTO> activityMap = Maps.newHashMap();
-    
+
 
     @Inject
     public SchemaCache(DispatchEventSource source) {
@@ -63,6 +64,7 @@ public class SchemaCache implements DispatchListener {
         source.registerListener(RequestChange.class, this);
         source.registerListener(BatchCommand.class, this);
         source.registerListener(CloneDatabase.class, this);
+        source.registerListener(UpdateFormClass.class, this);
         source.registerListener(Delete.class, this);
 
         schemaEntityTypes.add("UserDatabase");
@@ -79,16 +81,22 @@ public class SchemaCache implements DispatchListener {
 
     @Override
     public void beforeDispatched(Command command) {
-        if (command instanceof UpdateEntity) {
+        if (command instanceof UpdateEntity || command instanceof CreateEntity || command instanceof Delete) {
             clearCache();
+
         } else if (command instanceof CloneDatabase) {
             clearCache();
-        } else if (command instanceof CreateEntity || command instanceof Delete) {
-            clearCache();
+
         } else if (command instanceof AddPartner || command instanceof RemovePartner) {
             clearCache();
+
         } else if (command instanceof RequestChange && isSchemaEntity(((RequestChange) command).getEntityType())) {
             clearCache();
+
+        } else if (command instanceof UpdateFormClass) {
+            String formClassId = ((UpdateFormClass) command).getFormClassId();
+            activityMap.remove(CuidAdapter.getLegacyIdFromCuid(formClassId));
+
         } else if (command instanceof BatchCommand) {
             for (Command element : ((BatchCommand) command).getCommands()) {
                 beforeDispatched(element);
@@ -147,7 +155,7 @@ public class SchemaCache implements DispatchListener {
 
         @Override
         public void clear() {
-
+            clearCache();
         }
     }
 }
