@@ -116,10 +116,9 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
 
         List<Promise<Void>> promises = new ArrayList<>();
 
-        // 3. copy form data
-        if (command.isCopyData()) {
-            promises.add(copyFormData(context));
-        }
+        // 3. copy forms and form data
+        promises.add(copyFormData(context));
+
 
         Promise.waitAll(promises).then(new AsyncCallback<Void>() {
             @Override
@@ -183,9 +182,11 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
             // copy form class
             copyPromises.add(copyFormClass(context, sourceFormClass, targetFormClass));
 
-            // site form instances
-            // todo : commenting it temporary until we have nice idea how to implement it in scalable manner. (AI-787)
-//            copyPromises.add(copySiteFormInstances(context, activity, newActivity));
+            if (command.isCopyData()) {
+                // site form instances
+                // todo : commenting it temporary until we have nice idea how to implement it in scalable manner. (AI-787)
+                // copyPromises.add(copySiteFormInstances(context, activity, newActivity));
+            }
         }
         return Promise.waitAll(copyPromises);
     }

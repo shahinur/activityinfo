@@ -112,9 +112,8 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         assertEquals(targetDb.getName(), "PearClone");
         assertEquals(targetDb.getFullName(), "PearClone Description");
 
-        if (cloneDatabase.isCopyData()) {
-            assertDataCloned(sourceDb, targetDb);
-        }
+        assertFormClassesCloned(sourceDb, targetDb);
+        
         if (cloneDatabase.isCopyPartners()) {
             assertPropertyForEach(sourceDb.getPartners(), targetDb.getPartners(),
                     "name", "fullName");
@@ -122,10 +121,13 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         if (cloneDatabase.isCopyUserPermissions()) {
             // todo
         }
+        if (cloneDatabase.isCopyData()) {
+            // todo assert data
+        }
         return targetDb;
     }
 
-    private void assertDataCloned(UserDatabaseDTO sourceDb, UserDatabaseDTO targetDb) {
+    private void assertFormClassesCloned(UserDatabaseDTO sourceDb, UserDatabaseDTO targetDb) {
         assertEquals(sourceDb.getActivities().size(), targetDb.getActivities().size());
         for (ActivityDTO activityDTO : sourceDb.getActivities()) {
             ActivityFormDTO sourceActivity = execute(new GetActivityForm(activityDTO.getId()));
