@@ -67,6 +67,7 @@ import org.activityinfo.ui.client.page.config.DbPageState;
 import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
+import org.activityinfo.ui.client.page.instance.InstancePage;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
 
 import javax.annotation.Nullable;
@@ -266,13 +267,13 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             ResourceId formClassId = getSelectedActivity(view.getSelection()).getFormClassId();
             eventBus.fireEvent(new NavigationEvent(
                     NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClassId, "design")));
+                    new InstancePlace(formClassId, InstancePage.DESIGN_PAGE_ID)));
 
         } else if(UIActions.OPEN_TABLE.equals(actionId)) {
             IsFormClass formClass = (IsFormClass) view.getSelection();
             eventBus.fireEvent(new NavigationEvent(
                     NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClass.getResourceId())));
+                    new InstancePlace(formClass.getResourceId(), InstancePage.TABLE_PAGE_ID)));
         }
     }
 
@@ -377,7 +378,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
                     eventBus.fireEvent(new NavigationEvent(
                             NavigationHandler.NAVIGATION_REQUESTED,
-                            new InstancePlace(newActivity.getResourceId(), "design")));
+                            new InstancePlace(newActivity.getResourceId(), InstancePage.DESIGN_PAGE_ID)));
                 }
             });
 

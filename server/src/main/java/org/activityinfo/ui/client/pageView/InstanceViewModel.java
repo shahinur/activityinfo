@@ -1,21 +1,23 @@
 package org.activityinfo.ui.client.pageView;
 
 import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.ui.client.page.PageId;
 
 public class InstanceViewModel {
-    private FormInstance instance;
-    private String path;
 
-    public InstanceViewModel(FormInstance instance, String path) {
+    private FormInstance instance;
+    private PageId pageId;
+
+    public InstanceViewModel(FormInstance instance, PageId pageId) {
         this.instance = instance;
-        this.path = path;
+        this.pageId = pageId;
     }
 
     public FormInstance getInstance() {
         return instance;
     }
 
-    public String getPath() {
-        return path;
+    public PageId getPageId() {
+        return pageId;
     }
 }

@@ -95,12 +95,16 @@ public class FormSavedGuard implements HasNavigationCallback {
             return true;
         }
         if (widget instanceof HasOneWidget) {
-            callNavigationCallback(((HasOneWidget) widget).getWidget(), callback);
+            if (callNavigationCallback(((HasOneWidget) widget).getWidget(), callback)) {
+                return true;
+            }
         } else if (widget instanceof IndexedPanel) {
             IndexedPanel indexedPanel = (IndexedPanel) widget;
             for (int i = 0; i<indexedPanel.getWidgetCount(); i++) {
                 Widget w = indexedPanel.getWidget(i);
-                callNavigationCallback(w, callback);
+                if (callNavigationCallback(w, callback)) {
+                    return true;
+                }
             }
         }
         return false;
