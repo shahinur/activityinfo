@@ -75,6 +75,7 @@ public class FormSubmissionResource {
     final private ServerSideAuthProvider authProvider;                  // Necessary for 2.8 XForms, remove afterwards
     final private EntityManagerProvider entityManager;                  // Necessary for 2.8 XForms, remove afterwards
     final private BlobFieldStorageService blobFieldStorageService;
+    final private InstanceIdService instanceIdService;
     final private SubmissionArchiver submissionArchiver;
 
     @Inject
@@ -84,6 +85,7 @@ public class FormSubmissionResource {
                                   ServerSideAuthProvider authProvider,  // Necessary for 2.8 XForms, remove afterwards
                                   EntityManagerProvider entityManager,  // Necessary for 2.8 XForms, remove afterwards
                                   BlobFieldStorageService blobFieldStorageService,
+                                  InstanceIdService instanceIdService,
                                   SubmissionArchiver submissionArchiver) {
         this.dispatcher = dispatcher;
         this.locator = locator;
@@ -91,6 +93,7 @@ public class FormSubmissionResource {
         this.authProvider = authProvider;                               // Necessary for 2.8 XForms, remove afterwards
         this.entityManager = entityManager;                             // Necessary for 2.8 XForms, remove afterwards
         this.blobFieldStorageService = blobFieldStorageService;
+        this.instanceIdService = instanceIdService;
         this.submissionArchiver = submissionArchiver;
     }
 
@@ -123,6 +126,7 @@ public class FormSubmissionResource {
 
         ResourceId formId = newLegacyFormInstanceId(formClass.getId());
         FormInstance formInstance = new FormInstance(formId, formClass.getId());
+        String instanceId = instance.getId();
 
         LOGGER.log(Level.INFO, "Saving XForm " + instance.getId() + " as " + formId);
 
@@ -150,12 +154,16 @@ public class FormSubmissionResource {
             }
         }
 
-        for (FieldValue fieldValue : formInstance.getFieldValueMap().values()) {
-            if (fieldValue instanceof ImageValue) {
-                persistImageData(user, instance, (ImageValue) fieldValue);
+        if (!instanceIdService.exists(instanceId)) {
+            for (FieldValue fieldValue : formInstance.getFieldValueMap().values()) {
+                if (fieldValue instanceof ImageValue) {
+                    persistImageData(user, instance, (ImageValue) fieldValue);
+                }
             }
+
+            locator.persist(formInstance);
+            instanceIdService.submit(instanceId);
         }
-        locator.persist(formInstance);
 
         // Backup the original XForm in case something went wrong with processing
         submissionArchiver.backup(formClass.getId(), formId, ByteSource.wrap(bytes));

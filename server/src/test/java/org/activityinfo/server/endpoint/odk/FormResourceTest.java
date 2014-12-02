@@ -77,12 +77,13 @@ public class FormResourceTest extends CommandTestCase2 {
         AuthTokenProvider tokenService = new AuthTokenProvider();
 
         TestBlobstoreService blobstore = new TestBlobstoreService();
+        TestInstanceIdService idService = new TestInstanceIdService();
         SubmissionArchiver backupService = new SubmissionArchiver(
                 new DeploymentConfiguration(new Properties()));
 
         formResource = new FormResource(resourceLocator, authProvider, fieldFactory, tokenService);
         formSubmissionResource = new FormSubmissionResource(
-                getDispatcherSync(), resourceLocator, tokenService, null, null, blobstore, backupService);
+                getDispatcherSync(), resourceLocator, tokenService, null, null, blobstore, idService, backupService);
     }
 
     @Test
@@ -236,6 +237,20 @@ public class FormResourceTest extends CommandTestCase2 {
                 return user;
             }
             throw new AssertionError("Not authenticated");
+        }
+    }
+
+    private static class TestInstanceIdService implements InstanceIdService {
+        final private Set<String> set = Sets.newHashSet();
+
+        @Override
+        public boolean exists(String instanceId) {
+            return set.contains(instanceId);
+        }
+
+        @Override
+        public void submit(String instanceId) {
+            set.add(instanceId);
         }
     }
 }
