@@ -238,11 +238,6 @@ public class FormResourceTest extends CommandTestCase2 {
             }
             throw new AssertionError("Not authenticated");
         }
-
-        @Override
-        public long getLong(String authenticationToken) {
-            return AuthenticationTokenServiceImpl.staticLong(authenticationToken);
-        }
     }
 
     private static class TestInstanceIdService implements InstanceIdService {
