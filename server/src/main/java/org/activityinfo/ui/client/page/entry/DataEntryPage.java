@@ -73,6 +73,8 @@ import org.activityinfo.ui.client.page.entry.form.SiteDialogLauncher;
 import org.activityinfo.ui.client.page.entry.grouping.GroupingComboBox;
 import org.activityinfo.ui.client.page.entry.place.DataEntryPlace;
 import org.activityinfo.ui.client.page.entry.sitehistory.SiteHistoryTab;
+import org.activityinfo.ui.client.page.instance.InstancePage;
+import org.activityinfo.ui.client.page.instance.InstancePlace;
 import org.activityinfo.ui.client.page.report.ExportDialog;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
@@ -199,6 +201,8 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
         toolBar.addDeleteButton(I18N.CONSTANTS.deleteSite());
 
         toolBar.add(new SeparatorToolItem());
+        toolBar.addButton(UIActions.OPEN_TABLE, I18N.CONSTANTS.openTable(), IconImageBundle.ICONS.table());
+        toolBar.add(new SeparatorToolItem());
 
         if (IMPORT_FUNCTION_ENABLED) {
             toolBar.addImportButton();
@@ -240,6 +244,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
         boolean permissionToEdit = activity.isAllowedToEdit(site);
         toolBar.setActionEnabled(UIActions.EDIT, permissionToEdit && !site.isLinked());
         toolBar.setActionEnabled(UIActions.DELETE, permissionToEdit && !site.isLinked());
+        toolBar.setActionEnabled(UIActions.OPEN_TABLE, site != null);
 
         detailTab.setSite(site);
         attachmentsTab.setSite(site);
@@ -259,6 +264,7 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
     private void onNoSelection() {
         toolBar.setActionEnabled(UIActions.EDIT, false);
         toolBar.setActionEnabled(UIActions.DELETE, false);
+        toolBar.setActionEnabled(UIActions.OPEN_TABLE, false);
         monthlyPanel.onNoSelection();
     }
 
@@ -389,6 +395,11 @@ public class DataEntryPage extends LayoutContainer implements Page, ActionListen
                     gridPanel.refresh();
                 }
             });
+        }else if (UIActions.OPEN_TABLE.equals(actionId)) {
+            final SiteDTO selection = gridPanel.getSelection();
+            eventBus.fireEvent(new NavigationEvent(
+                    NavigationHandler.NAVIGATION_REQUESTED,
+                    new InstancePlace(selection.getFormClassId(), InstancePage.TABLE_PAGE_ID)));
         } else if (UIActions.DELETE.equals(actionId)) {
             MessageBox.confirm(ClientContext.getAppTitle(),
                     I18N.MESSAGES.confirmDeleteSite(),
