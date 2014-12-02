@@ -11,5 +11,4 @@ public interface AuthenticationTokenService {
 
     AuthenticatedUser authenticate(String authenticationToken);
 
-    long getLong(String authenticationToken);
 }

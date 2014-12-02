@@ -59,7 +59,6 @@ import static org.activityinfo.model.legacy.CuidAdapter.GPS_FIELD;
 import static org.activityinfo.model.legacy.CuidAdapter.LOCATION_FIELD;
 import static org.activityinfo.model.legacy.CuidAdapter.LOCATION_NAME_FIELD;
 import static org.activityinfo.model.legacy.CuidAdapter.field;
-import static org.activityinfo.model.legacy.CuidAdapter.getLegacyFormInstanceId;
 import static org.activityinfo.model.legacy.CuidAdapter.getLegacyIdFromCuid;
 import static org.activityinfo.model.legacy.CuidAdapter.locationInstanceId;
 import static org.activityinfo.model.legacy.CuidAdapter.newLegacyFormInstanceId;
@@ -76,6 +75,7 @@ public class FormSubmissionResource {
     final private ServerSideAuthProvider authProvider;                  // Necessary for 2.8 XForms, remove afterwards
     final private EntityManagerProvider entityManager;                  // Necessary for 2.8 XForms, remove afterwards
     final private BlobFieldStorageService blobFieldStorageService;
+    final private InstanceIdService instanceIdService;
     final private SubmissionArchiver submissionArchiver;
 
     @Inject
@@ -85,6 +85,7 @@ public class FormSubmissionResource {
                                   ServerSideAuthProvider authProvider,  // Necessary for 2.8 XForms, remove afterwards
                                   EntityManagerProvider entityManager,  // Necessary for 2.8 XForms, remove afterwards
                                   BlobFieldStorageService blobFieldStorageService,
+                                  InstanceIdService instanceIdService,
                                   SubmissionArchiver submissionArchiver) {
         this.dispatcher = dispatcher;
         this.locator = locator;
@@ -92,6 +93,7 @@ public class FormSubmissionResource {
         this.authProvider = authProvider;                               // Necessary for 2.8 XForms, remove afterwards
         this.entityManager = entityManager;                             // Necessary for 2.8 XForms, remove afterwards
         this.blobFieldStorageService = blobFieldStorageService;
+        this.instanceIdService = instanceIdService;
         this.submissionArchiver = submissionArchiver;
     }
 
@@ -103,15 +105,11 @@ public class FormSubmissionResource {
         AuthenticatedUser user;
         XFormInstance instance;
         FormClass formClass;
-        ResourceId formId;
 
         try {
             instance = new XFormInstanceImpl(bytes);
-            String authenticationToken = instance.getAuthenticationToken();
-            long id = authenticationTokenService.getLong(authenticationToken);
-            user = authenticationTokenService.authenticate(authenticationToken);
+            user = authenticationTokenService.authenticate(instance.getAuthenticationToken());
             formClass = locator.getFormClass(instance.getFormClassId());
-            formId = getLegacyFormInstanceId(formClass.getId(), KeyGenerator.longToInt(id));
         } catch (IllegalStateException illegalStateException) {         // Necessary for 2.8 XForms, remove afterwards
             if ("Cannot find element userID".equals(illegalStateException.getMessage())) {
                 LOGGER.log(Level.INFO, "User ID not found, trying to parse submission as legacy form instance");
@@ -121,13 +119,14 @@ public class FormSubmissionResource {
                 authProvider.set(owner);
                 user = new AuthenticatedUser("", (int) owner.getId(), "@");
                 formClass = locator.getFormClass(instance.getFormClassId());
-                formId = newLegacyFormInstanceId(formClass.getId());
             } else throw illegalStateException;                         // Legacy code ends here
         }
 
         legacy = instance instanceof LegacyXFormInstance;               // Necessary for 2.8 XForms, remove afterwards
 
+        ResourceId formId = newLegacyFormInstanceId(formClass.getId());
         FormInstance formInstance = new FormInstance(formId, formClass.getId());
+        String instanceId = instance.getId();
 
         LOGGER.log(Level.INFO, "Saving XForm " + instance.getId() + " as " + formId);
 
@@ -155,7 +154,7 @@ public class FormSubmissionResource {
             }
         }
 
-        if (locator.getFormInstance(formId) == null) {
+        if (!instanceIdService.exists(instanceId)) {
             for (FieldValue fieldValue : formInstance.getFieldValueMap().values()) {
                 if (fieldValue instanceof ImageValue) {
                     persistImageData(user, instance, (ImageValue) fieldValue);
@@ -163,6 +162,7 @@ public class FormSubmissionResource {
             }
 
             locator.persist(formInstance);
+            instanceIdService.submit(instanceId);
         }
 
         // Backup the original XForm in case something went wrong with processing

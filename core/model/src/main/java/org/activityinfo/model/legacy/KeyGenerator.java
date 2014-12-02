@@ -41,11 +41,4 @@ public class KeyGenerator {
     public int generateInt() {
         return random.nextInt(Integer.MAX_VALUE - MIN_KEY) + MIN_KEY;
     }
-
-    /**
-     * @return a 32-bit integer key based on a 64-bit value that was generated earlier (at random), ignoring modulo bias
-     */
-    public static int longToInt(long input) {
-        return (int) (Math.abs(input) % (Integer.MAX_VALUE - MIN_KEY) + MIN_KEY);
-    }
 }

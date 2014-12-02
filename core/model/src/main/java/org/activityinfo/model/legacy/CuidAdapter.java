@@ -77,19 +77,6 @@ public class CuidAdapter {
     private CuidAdapter() {
     }
 
-    public static ResourceId getLegacyFormInstanceId(ResourceId formClassId, int id) {
-        switch (formClassId != null ? formClassId.getDomain() : 0) {
-            case ACTIVITY_DOMAIN:
-                return cuid(SITE_DOMAIN, id);
-            case LOCATION_TYPE_DOMAIN:
-                return locationInstanceId(id);
-            case ATTRIBUTE_GROUP_DOMAIN:
-                return attributeId(id);
-            default:
-                return cuid(COUNTRY_DOMAIN, id);
-        }
-    }
-
     public static ResourceId newLegacyFormInstanceId(ResourceId formClassId) {
         if (formClassId != null) {
             final int newId = new KeyGenerator().generateInt();
