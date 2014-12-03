@@ -6,8 +6,8 @@ import org.activityinfo.model.expr.*;
 import org.activityinfo.model.expr.functions.ExprFunction;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.server.endpoint.odk.OdkField;
 
@@ -34,7 +34,7 @@ public class XPathBuilder {
             symbolMap.put(field.getModel().getId().asString(), field.getAbsoluteFieldName());
             if(field.getModel().getType() instanceof EnumType) {
                 EnumType type = (EnumType) field.getModel().getType();
-                for (EnumValue item : type.getValues()) {
+                for (EnumItem item : type.getValues()) {
                     symbolMap.put(item.getId().asString(), quote(item.getId().asString()));
                 }
             }

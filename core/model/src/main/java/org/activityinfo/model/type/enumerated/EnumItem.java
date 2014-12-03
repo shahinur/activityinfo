@@ -8,12 +8,12 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
-public class EnumValue implements FieldValue, IsRecord {
+public class EnumItem implements FieldValue, IsRecord {
     private ResourceId id;
     private String label;
     private String code;
 
-    public EnumValue(ResourceId id, String label) {
+    public EnumItem(ResourceId id, String label) {
         this.id = id;
         this.label = label;
     }
@@ -34,8 +34,8 @@ public class EnumValue implements FieldValue, IsRecord {
         this.label = label;
     }
 
-    public static EnumValue fromRecord(Record record) {
-        return new EnumValue(ResourceId.valueOf(record.getString("id")), record.getString("label"))
+    public static EnumItem fromRecord(Record record) {
+        return new EnumItem(ResourceId.valueOf(record.getString("id")), record.getString("label"))
                 .setCode(record.isString("code"));
     }
 
@@ -43,7 +43,7 @@ public class EnumValue implements FieldValue, IsRecord {
         return code;
     }
 
-    public EnumValue setCode(String code) {
+    public EnumItem setCode(String code) {
         this.code = code;
         return this;
     }
@@ -73,9 +73,9 @@ public class EnumValue implements FieldValue, IsRecord {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        EnumValue enumValue = (EnumValue) o;
+        EnumItem enumItem = (EnumItem) o;
 
-        if (id != null ? !id.equals(enumValue.id) : enumValue.id != null) return false;
+        if (id != null ? !id.equals(enumItem.id) : enumItem.id != null) return false;
 
         return true;
     }

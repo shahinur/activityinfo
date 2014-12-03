@@ -40,8 +40,8 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.server.command.CommandTestCase2;
@@ -374,8 +374,8 @@ public class CustomerCalcIndicatorTest extends CommandTestCase2 {
 
         FormField typeField = new FormField(quantityId());
         typeField.setType(new EnumType(Cardinality.SINGLE,
-                Arrays.asList(new EnumValue(EnumValue.generateId(), "Budgeted"),
-                        new EnumValue(EnumValue.generateId(), "Spent"))));
+                Arrays.asList(new EnumItem(EnumItem.generateId(), "Budgeted"),
+                        new EnumItem(EnumItem.generateId(), "Spent"))));
         typeField.setLabel("Typology");
         formClass.addElement(typeField);
 

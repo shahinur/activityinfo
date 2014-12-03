@@ -28,8 +28,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 
 /**
  * @author yuriyz on 8/6/14.
@@ -65,8 +65,8 @@ public class ImageType implements ParametrizedFieldType {
         @Override
         public FormClass getParameterFormClass() {
             EnumType cardinalityType = (EnumType) EnumType.TYPE_CLASS.createType();
-            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("single"), "Single"));
-            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("multiple"), "Multiple"));
+            cardinalityType.getValues().add(new EnumItem(ResourceId.valueOf("single"), "Single"));
+            cardinalityType.getValues().add(new EnumItem(ResourceId.valueOf("multiple"), "Multiple"));
 
             FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("image"));
             formClass.addElement(new FormField(ResourceId.valueOf("cardinality"))

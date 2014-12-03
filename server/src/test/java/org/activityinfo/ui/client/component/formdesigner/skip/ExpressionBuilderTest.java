@@ -31,8 +31,8 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.junit.Before;
@@ -54,10 +54,10 @@ public class ExpressionBuilderTest {
     private static final ResourceId PREGNANT_FIELD_ID = ResourceId.valueOf("test_f2");
     private static final ResourceId TEXT_FIELD_ID = ResourceId.valueOf("test_text");
 
-    private static final EnumValue MALE = new EnumValue(ResourceId.valueOf("test_ev1"), "Male");
-    private static final EnumValue FEMALE = new EnumValue(ResourceId.valueOf("test_ev2"), "Female");
-    private static final EnumValue PREGNANT_YES = new EnumValue(ResourceId.valueOf("test_ev3"), "Yes");
-    private static final EnumValue PREGNANT_NO = new EnumValue(ResourceId.valueOf("test_ev4"), "No");
+    private static final EnumItem MALE = new EnumItem(ResourceId.valueOf("test_ev1"), "Male");
+    private static final EnumItem FEMALE = new EnumItem(ResourceId.valueOf("test_ev2"), "Female");
+    private static final EnumItem PREGNANT_YES = new EnumItem(ResourceId.valueOf("test_ev3"), "Yes");
+    private static final EnumItem PREGNANT_NO = new EnumItem(ResourceId.valueOf("test_ev4"), "No");
 
     FormClass formClass;
 
@@ -121,9 +121,9 @@ public class ExpressionBuilderTest {
         assertEquals(builtExpression, rowList, createRows);
     }
 
-    private EnumValue enumValue(ResourceId formField, String label) {
+    private EnumItem enumValue(ResourceId formField, String label) {
         EnumType enumType = (EnumType) formClass.getField(formField).getType();
-        for (EnumValue value : enumType.getValues()) {
+        for (EnumItem value : enumType.getValues()) {
             if (value.getLabel().equalsIgnoreCase(label)) {
                 return value;
             }

@@ -28,11 +28,10 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.junit.Assert;
@@ -122,9 +121,9 @@ public class SkipExpressionTest {
                 Casting.toBoolean(expr.evaluate(new FormEvalContext(formClass, instance))));
     }
 
-    private EnumValue enumValue(ResourceId formField, String label) {
+    private EnumItem enumValue(ResourceId formField, String label) {
         EnumType enumType = (EnumType) formClass.getField(formField).getType();
-        for (EnumValue value : enumType.getValues()) {
+        for (EnumItem value : enumType.getValues()) {
             if (value.getLabel().equalsIgnoreCase(label)) {
                 return value;
             }
@@ -138,11 +137,11 @@ public class SkipExpressionTest {
 
 
     private static FormClass createFormClass() {
-        EnumValue male = new EnumValue(ResourceId.generateId(), "Male");
-        EnumValue female = new EnumValue(ResourceId.generateId(), "Female");
+        EnumItem male = new EnumItem(ResourceId.generateId(), "Male");
+        EnumItem female = new EnumItem(ResourceId.generateId(), "Female");
 
-        EnumValue pregnantYes = new EnumValue(ResourceId.generateId(), "Yes");
-        EnumValue pregnantNo = new EnumValue(ResourceId.generateId(), "No");
+        EnumItem pregnantYes = new EnumItem(ResourceId.generateId(), "Yes");
+        EnumItem pregnantNo = new EnumItem(ResourceId.generateId(), "No");
 
         FormField genderField = new FormField(GENDER_FIELD_ID);
         genderField.setLabel("Gender");

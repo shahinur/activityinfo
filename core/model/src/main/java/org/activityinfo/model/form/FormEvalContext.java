@@ -2,15 +2,12 @@ package org.activityinfo.model.form;
 
 import com.google.common.collect.Maps;
 import org.activityinfo.model.expr.eval.*;
-import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 
 import java.util.Map;
@@ -42,7 +39,7 @@ public class FormEvalContext implements EvalContext {
 
         for (FormField field : formClass.getFields()) {
             if (field.getType() instanceof EnumType) {
-                for (EnumValue item : ((EnumType) field.getType()).getValues()) {
+                for (EnumItem item : ((EnumType) field.getType()).getValues()) {
                     symbolMap.put(item.getId().asString(), new ConstantValue(new EnumFieldValue(item.getId())));
                 }
             }

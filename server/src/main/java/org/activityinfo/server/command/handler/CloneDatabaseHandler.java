@@ -42,8 +42,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.ParametrizedFieldType;
 import org.activityinfo.model.type.ReferenceType;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.time.LocalDateType;
@@ -300,12 +300,12 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         if (fieldType instanceof EnumType) {
             if (sourceField.getId().getDomain() == CuidAdapter.ATTRIBUTE_GROUP_FIELD_DOMAIN) {
                 EnumType sourceEnumType = (EnumType) fieldType;
-                List<EnumValue> targetValues = Lists.newArrayList();
+                List<EnumItem> targetValues = Lists.newArrayList();
 
-                for (EnumValue sourceValue : sourceEnumType.getValues()) {
+                for (EnumItem sourceValue : sourceEnumType.getValues()) {
 
                     ResourceId targetValueId = CuidAdapter.cuid(sourceValue.getId().getDomain(), generator.generateInt());
-                    targetValues.add(new EnumValue(targetValueId, sourceValue.getLabel()));
+                    targetValues.add(new EnumItem(targetValueId, sourceValue.getLabel()));
                 }
                 return new EnumType(sourceEnumType.getCardinality(), targetValues);
             }

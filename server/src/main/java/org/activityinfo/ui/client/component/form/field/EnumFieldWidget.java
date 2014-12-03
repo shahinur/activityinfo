@@ -22,8 +22,8 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.widget.RadioButton;
 
@@ -76,7 +76,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
             }
         };
 
-        for (final EnumValue instance : enumType.getValues()) {
+        for (final EnumItem instance : enumType.getValues()) {
             CheckBox checkBox = createControl(instance);
             checkBox.addValueChangeHandler(changeHandler);
             boxPanel.add(checkBox);
@@ -114,17 +114,17 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
     private void addOption() {
         String newLabel = Window.prompt("Enter a new label for this option", "");
         if(!Strings.isNullOrEmpty(newLabel)) {
-            EnumValue newValue = new EnumValue(EnumValue.generateId(), newLabel);
+            EnumItem newValue = new EnumItem(EnumItem.generateId(), newLabel);
             enumType.getValues().add(newValue);
             boxPanel.add(createControl(newValue));
         }
     }
 
     private void editLabel(ResourceId id) {
-        EnumValue enumValue = enumValueForId(id);
-        String newLabel = Window.prompt("Enter a new label for this option", enumValue.getLabel());
+        EnumItem enumItem = enumValueForId(id);
+        String newLabel = Window.prompt("Enter a new label for this option", enumItem.getLabel());
         if(!Strings.isNullOrEmpty(newLabel)) {
-            enumValue.setLabel(newLabel);
+            enumItem.setLabel(newLabel);
             controlForId(id).setHTML(TEMPLATES.designLabel(newLabel));
         }
     }
@@ -138,8 +138,8 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
         throw new IllegalArgumentException(id.asString());
     }
 
-    private EnumValue enumValueForId(ResourceId id) {
-        for(EnumValue value : enumType.getValues()) {
+    private EnumItem enumValueForId(ResourceId id) {
+        for(EnumItem value : enumType.getValues()) {
             if(value.getId().equals(id)) {
                 return value;
             }
@@ -165,7 +165,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumFieldValue> {
         return fieldWidgetMode == FieldWidgetMode.DESIGN ? TEMPLATES.designLabel(label) : TEMPLATES.normalLabel(label);
     }
 
-    private CheckBox createControl(EnumValue instance) {
+    private CheckBox createControl(EnumItem instance) {
         CheckBox checkBox;
         if(enumType.getCardinality() == Cardinality.SINGLE) {
             checkBox = new RadioButton(groupName, label(instance.getLabel()));

@@ -5,8 +5,8 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 
 import java.util.List;
 import java.util.Map;
@@ -15,12 +15,12 @@ import static org.activityinfo.model.legacy.CuidAdapter.attributeField;
 import static org.activityinfo.model.legacy.CuidAdapter.getLegacyIdFromCuid;
 
 public class LegacyEnumFieldValueParser implements FieldValueParser {
-    final private Map<Integer, EnumValue> values;
+    final private Map<Integer, EnumItem> values;
 
     LegacyEnumFieldValueParser(EnumType enumType) {
         values = Maps.newHashMapWithExpectedSize(enumType.getValues().size());
 
-        for (EnumValue value : enumType.getValues()) {
+        for (EnumItem value : enumType.getValues()) {
             values.put(getLegacyIdFromCuid(value.getId()), value);
         }
     }

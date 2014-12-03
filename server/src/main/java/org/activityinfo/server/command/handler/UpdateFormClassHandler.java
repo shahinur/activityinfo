@@ -18,8 +18,8 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.barcode.BarcodeType;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
@@ -258,7 +258,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
 
         // add/update present attributes
         int sortOrder = 1;
-        for(EnumValue item : type.getValues()) {
+        for(EnumItem item : type.getValues()) {
             Attribute attribute = attributeMap.get(item.getId());
             if(attribute == null) {
                 attribute = new Attribute();
@@ -278,7 +278,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
 
         // remove deleted
         Set<ResourceId> deleted = Sets.newHashSet(attributeMap.keySet());
-        for(EnumValue item : type.getValues()) {
+        for(EnumItem item : type.getValues()) {
             deleted.remove(item.getId());
         }
         for (ResourceId deletedAttribute : deleted) {

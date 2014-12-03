@@ -6,21 +6,21 @@ import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 
 import java.util.List;
 import java.util.Map;
 
 class IdEnumFieldValueParser implements FieldValueParser {
     final private Cardinality cardinality;
-    final private Map<ResourceId, EnumValue> values;
+    final private Map<ResourceId, EnumItem> values;
 
     IdEnumFieldValueParser(EnumType enumType) {
         this.cardinality = enumType.getCardinality();
         values = Maps.newHashMapWithExpectedSize(enumType.getValues().size());
 
-        for (EnumValue value : enumType.getValues()) {
+        for (EnumItem value : enumType.getValues()) {
             values.put(value.getId(), value);
         }
     }
