@@ -5,10 +5,8 @@ import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.FieldTypeClass;
-import org.activityinfo.model.type.FieldValue;
 
-public class EnumItem implements FieldValue, IsRecord {
+public class EnumItem implements IsRecord {
     private ResourceId id;
     private String label;
     private String code;
@@ -54,18 +52,11 @@ public class EnumItem implements FieldValue, IsRecord {
     }
 
     @Override
-    public FieldTypeClass getTypeClass() {
-        return EnumType.TYPE_CLASS;
-    }
-
-    @Override
     public Record asRecord() {
-        Record record = new Record();
-        record.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId())
+        return new Record()
                 .set("label", label)
                 .set("code", code)
                 .set("id", id.asString());
-        return record;
     }
 
     @Override
