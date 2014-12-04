@@ -107,7 +107,6 @@ public class FormResource {
                 .build());
 
         XFormManifest manifest = new XFormManifest();
-        manifest.getMediaFiles().add(itemSet);
 
         return OpenRosaResponse.build(manifest);
     }

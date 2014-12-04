@@ -19,9 +19,9 @@ public class FieldValueParserFactory {
         if (fieldType instanceof EnumType) {
             if (odk) {
                 if (legacy) {
-                    return new LegacyEnumFieldValueParser((EnumType) fieldType);
+                    return new LegacyEnumFieldValueParser();
                 } else {
-                    return new IdEnumFieldValueParser((EnumType) fieldType);
+                    return new IdEnumFieldValueParser();
                 }
             } else {
                 return new CodeEnumFieldValueParser((EnumType) fieldType);
