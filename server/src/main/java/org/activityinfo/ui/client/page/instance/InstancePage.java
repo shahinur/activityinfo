@@ -13,8 +13,8 @@ import org.activityinfo.ui.client.page.NavigationCallback;
 import org.activityinfo.ui.client.page.Page;
 import org.activityinfo.ui.client.page.PageId;
 import org.activityinfo.ui.client.page.PageState;
-import org.activityinfo.ui.client.pageView.InstancePageViewFactory;
-import org.activityinfo.ui.client.pageView.InstanceViewModel;
+import org.activityinfo.ui.client.pageView.formClass.DesignTab;
+import org.activityinfo.ui.client.pageView.formClass.TableTab;
 import org.activityinfo.ui.client.style.Icons;
 import org.activityinfo.ui.client.widget.LoadingPanel;
 import org.activityinfo.ui.client.widget.loading.PageLoadingPanel;
@@ -32,7 +32,7 @@ public class InstancePage implements Page {
     // scrollpanel.bs > div.container > loadingPanel
     private final ScrollPanel scrollPanel;
     private final SimplePanel container;
-    private final LoadingPanel<InstanceViewModel> loadingPanel;
+    private final LoadingPanel<FormInstance> loadingPanel;
 
     private final PageId pageId;
     private final ResourceLocator locator;
@@ -80,18 +80,17 @@ public class InstancePage implements Page {
     public boolean navigate(PageState place) {
         final InstancePlace instancePlace = (InstancePlace) place;
 
-        this.loadingPanel.setDisplayWidgetProvider(new InstancePageViewFactory(locator, eventBus));
-        this.loadingPanel.show(new Provider<Promise<InstanceViewModel>>() {
+        if (instancePlace.getPageId() == InstancePage.DESIGN_PAGE_ID) {
+            loadingPanel.setDisplayWidget(new DesignTab(locator));
+        } else if (instancePlace.getPageId() == InstancePage.TABLE_PAGE_ID) {
+            loadingPanel.setDisplayWidget(new TableTab(locator));
+        } else {
+            throw new UnsupportedOperationException("Unknown page id:" + instancePlace.getPageId());
+        }
+        this.loadingPanel.show(new Provider<Promise<FormInstance>>() {
             @Override
-            public Promise<InstanceViewModel> get() {
-                return locator.getFormInstance(instancePlace.getInstanceId())
-                        .then(new Function<FormInstance, InstanceViewModel>() {
-                            @Nullable
-                            @Override
-                            public InstanceViewModel apply(@Nullable FormInstance input) {
-                                return new InstanceViewModel(input, instancePlace.getPageId());
-                            }
-                        });
+            public Promise<FormInstance> get() {
+                return locator.getFormInstance(instancePlace.getInstanceId());
             }
         });
         return true;

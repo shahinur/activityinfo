@@ -12,9 +12,7 @@ import org.activityinfo.ui.client.widget.DisplayWidget;
 
 import javax.annotation.Nullable;
 
-/**
- * This is page view for designing a FormClass. It is shown for the /design url
- *
+/** *
  * Created by Mithun on 4/3/2014.
  */
 public class DesignTab implements DisplayWidget<FormInstance> {

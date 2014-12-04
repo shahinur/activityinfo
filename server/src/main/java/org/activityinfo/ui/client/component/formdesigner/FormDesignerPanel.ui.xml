@@ -11,6 +11,7 @@
   <ui:with field="style" type="org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles"/>
 
   <g:HTMLPanel ui:field="containerPanel">
+    <br/>
     <div class="row">
       <div class="col-xs-4">
         <g:HTMLPanel height="100%">
