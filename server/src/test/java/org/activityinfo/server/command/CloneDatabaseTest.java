@@ -49,12 +49,13 @@ import static org.junit.Assert.assertNotEquals;
  * @author yuriyz on 11/26/2014.
  */
 @RunWith(InjectionSupport.class)
+@OnDataSet("/dbunit/clone-database.db.xml")
 public class CloneDatabaseTest extends CommandTestCase2 {
 
     public static final int PEAR_DATABASE_ID = 1;
+    public static final int UKRAINE_COUNTRY_ID = 2;
 
     @Test
-    @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void fullClone() throws CommandException {
 
         SchemaDTO schema = execute(new GetSchema());
@@ -78,7 +79,6 @@ public class CloneDatabaseTest extends CommandTestCase2 {
     }
 
     @Test
-    @OnDataSet("/dbunit/sites-simple1.db.xml")
     public void cloneWithoutDataCopy() throws CommandException {
 
         SchemaDTO schema = execute(new GetSchema());
@@ -90,6 +90,36 @@ public class CloneDatabaseTest extends CommandTestCase2 {
                 .setCopyPartners(true)
                 .setCopyUserPermissions(true)
                 .setCountryId(pearDb.getCountry().getId())
+                .setName("PearClone")
+                .setDescription("PearClone Description");
+
+        CreateResult cloneResult = execute(cloneDatabase);
+        assertNotEquals(cloneResult.getNewId(), pearDb.getId());
+
+        assertDbCloned(cloneResult.getNewId(), pearDb.getId(), cloneDatabase);
+    }
+
+    // https://bedatadriven.atlassian.net/browse/AI-315
+//    it seems that the problem occurs when there is a classic form with a "Village" location. If you change countries,
+//    you need to change the locationTypeId to a location type in the new country. Users can change the location type afterwards,
+//    so I would suggest that we apply a simple rule:
+//
+//    1. If there is a location type with the same name in the new country, use that location Type
+//    2. if the source locationtype is bound to an adminlevel, choose the first root adminlevel in the new country
+//    3. If the source locationtype is the null location type ( = Country) then the use the corresponding null locationtype in the new form
+//    4. Otherwise use the "Village" location type in the target country.
+    @Test
+    public void cloneWithDifferentCountry() throws CommandException {
+
+        SchemaDTO schema = execute(new GetSchema());
+        UserDatabaseDTO pearDb = schema.getDatabaseById(PEAR_DATABASE_ID);
+
+        CloneDatabase cloneDatabase = new CloneDatabase()
+                .setSourceDatabaseId(pearDb.getId())
+                .setCopyData(false)
+                .setCopyPartners(true)
+                .setCopyUserPermissions(true)
+                .setCountryId(UKRAINE_COUNTRY_ID)
                 .setName("PearClone")
                 .setDescription("PearClone Description");
 
@@ -111,7 +141,7 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         assertEquals(targetDb.getFullName(), "PearClone Description");
 
         assertFormClassesCloned(sourceDb, targetDb);
-        
+
         if (cloneDatabase.isCopyPartners()) {
             assertPropertyForEach(sourceDb.getPartners(), targetDb.getPartners(),
                     "name", "fullName");
@@ -195,7 +225,7 @@ public class CloneDatabaseTest extends CommandTestCase2 {
         }
     }
 
-    private static <T extends BaseModelData> void assertPropertyForEach(List<T> sourceList, List<T> targetList,  String... properties) {
+    private static <T extends BaseModelData> void assertPropertyForEach(List<T> sourceList, List<T> targetList, String... properties) {
         assertEquals(sourceList.size(), targetList.size());
         for (T sourceItem : sourceList) {
             T targetTarget = entityByName(targetList, (String) sourceItem.get("name"));

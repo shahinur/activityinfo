@@ -3,21 +3,19 @@ package org.activityinfo.ui.client.pageView.formClass;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.client.form.tree.AsyncFormTreeBuilder;
-import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.formTree.FormTree;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.table.FieldColumn;
 import org.activityinfo.ui.client.component.table.InstanceTableView;
 import org.activityinfo.ui.client.widget.DisplayWidget;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -44,8 +42,8 @@ public class TableTab implements DisplayWidget<FormInstance> {
         return new AsyncFormTreeBuilder(resourceLocator)
         .apply(instance.getId())
         .join(new Function<FormTree, Promise<Void>>() {
-         @Override
-            public Promise<Void> apply(@Nullable FormTree input) {
+            @Override
+            public Promise<Void> apply(FormTree input) {
                 formTree = input;
                 enumerateColumns();
 

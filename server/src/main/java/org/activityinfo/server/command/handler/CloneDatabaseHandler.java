@@ -23,6 +23,7 @@ package org.activityinfo.server.command.handler;
 
 import com.google.api.client.util.Lists;
 import com.google.api.client.util.Maps;
+import com.google.api.client.util.Strings;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -95,13 +96,6 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
 
         if (!permissionOracle.isViewAllowed(sourceDb, user)) {
             throw new IllegalAccessCommandException();
-        }
-
-        // if the new countryId of the target database is different than the countryId of sourceDatabase,
-        // copyData must be false -> skip copy
-        if (sourceDb.getCountry().getId() != targetDb.getCountry().getId()) {
-            callback.onSuccess(new CreateResult(targetDb.getId()));
-            return;
         }
 
         // 1. copy partners and keep mapping between old and new partners
@@ -182,7 +176,9 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
             // copy form class
             copyPromises.add(copyFormClass(context, sourceFormClass, targetFormClass));
 
-            if (command.isCopyData()) {
+            // if the new countryId of the target database is different than the countryId of sourceDatabase,
+            // copyData must be false -> skip data copy
+            if (command.isCopyData() && sourceDb.getCountry().getId() == targetDb.getCountry().getId()) {
                 // site form instances
                 // todo : commenting it temporary until we have nice idea how to implement it in scalable manner. (AI-787)
                 // copyPromises.add(copySiteFormInstances(context, activity, newActivity));
@@ -363,10 +359,57 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         // target db
         newActivity.setDatabase(targetDb);
 
+        setLocationTypeForNewActivity(sourceActivity, newActivity);
+
         em.persist(newActivity); // persist to get id of new activity
         activityMapping.put(sourceActivity.getId(), newActivity);
 
         return newActivity;
+    }
+
+    private void setLocationTypeForNewActivity(Activity sourceActivity, Activity newActivity) {
+        // location type -> change it only if sourceCountry != targetCountry
+        if (sourceActivity.getLocationType() != null && sourceDb.getCountry().getId() != targetDb.getCountry().getId()) {
+
+            boolean locationTypeCreated = false;
+
+            //1. If there is a location type with the same name in the new country, use that location Type
+            String sourceName = sourceActivity.getLocationType().getName();
+            if (!Strings.isNullOrEmpty(sourceName)) {
+                List<LocationType> locationTypes = em.createQuery("SELECT d FROM LocationType d WHERE Name = :activityName AND CountryId = :countryId")
+                        .setParameter("activityName", sourceName)
+                        .setParameter("countryId", targetDb.getCountry().getId())
+                        .getResultList();
+                if (!locationTypes.isEmpty()) {
+                    newActivity.setLocationType(locationTypes.get(0));
+                    locationTypeCreated = true;
+                }
+            }
+
+            //2. if the source locationtype is bound to an adminlevel, choose the first root adminlevel in the new country
+            if (!locationTypeCreated && sourceActivity.getLocationType().getBoundAdminLevel() != null) {
+                List<LocationType> locationTypes = em.createQuery("SELECT d FROM LocationType d WHERE CountryId = :countryId")
+                        .setParameter("countryId", targetDb.getCountry().getId())
+                        .getResultList();
+                if (!locationTypes.isEmpty()) {
+                    newActivity.setLocationType(locationTypes.get(0));
+                    locationTypeCreated = true;
+                }
+            }
+
+            //3. Otherwise create new location type in the target country.
+            if (!locationTypeCreated) {
+                LocationType newLocationType = new LocationType();
+                newLocationType.setName(sourceActivity.getLocationType().getName());
+                newLocationType.setCountry(targetDb.getCountry());
+                newLocationType.setWorkflowId(sourceActivity.getLocationType().getWorkflowId());
+                newLocationType.setReuse(sourceActivity.getLocationType().isReuse());
+
+                em.persist(newLocationType);
+
+                newActivity.setLocationType(newLocationType);
+            }
+        }
     }
 
     private UserDatabase createDatabase(CloneDatabase command, User user) {
