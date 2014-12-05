@@ -29,6 +29,7 @@ public class LocationTypeForm extends AbstractDesignForm {
         TextField<String> nameField = new TextField<String>();
         nameField.setFieldLabel(I18N.CONSTANTS.name());
         nameField.setMaxLength(LocationTypeDTO.NAME_MAX_LENGTH);
+        nameField.setAllowBlank(false);
         binding.addFieldBinding(new OnlyValidFieldBinding(nameField, "name"));
         add(nameField);
 
