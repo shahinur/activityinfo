@@ -356,4 +356,7 @@ public interface UiMessages extends com.google.gwt.i18n.client.Messages {
 
     @DefaultMessage("Invalid value. Please enter date in following format: {0}")
     String dateFieldInvalidValue(String format);
+
+    @DefaultMessage("Please enter a number. For example: {0} or {1} or {2}")
+    String quantityFieldInvalidValue(int integer, double doubleWithoutPoint, double doubleWithPoint);
 }

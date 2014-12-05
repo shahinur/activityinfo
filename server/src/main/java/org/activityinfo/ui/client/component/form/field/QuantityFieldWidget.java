@@ -98,11 +98,15 @@ public class QuantityFieldWidget implements FormFieldWidget<Quantity> {
             // http://stackoverflow.com/questions/18852244/how-to-get-the-raw-value-an-input-type-number-field
             // SOLUTION : if we know that user typed something and value is null then browser sanitized it for us -> input invalid
             if (onKeyUp && box.getValue() == null) {
-                eventBus.fireEvent(new FieldMessageEvent(fieldId, I18N.CONSTANTS.quantityFieldInvalidValue()));
+                eventBus.fireEvent(new FieldMessageEvent(fieldId, invalidErrorMessage()));
             }
             box.getValueOrThrow();
         } catch (ParseException e) {
-            eventBus.fireEvent(new FieldMessageEvent(fieldId, I18N.CONSTANTS.quantityFieldInvalidValue()));
+            eventBus.fireEvent(new FieldMessageEvent(fieldId, invalidErrorMessage()));
         }
+    }
+
+    private String invalidErrorMessage() {
+        return I18N.MESSAGES.quantityFieldInvalidValue(15, 2000, 1.5);
     }
 }
