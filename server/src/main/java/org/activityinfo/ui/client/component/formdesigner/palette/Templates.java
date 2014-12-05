@@ -10,11 +10,11 @@ import org.activityinfo.model.type.primitive.TextType;
 
 import java.util.List;
 
-public class FieldTemplates {
+public class Templates {
 
 
-    public static List<FieldTemplate> list() {
-        List<FieldTemplate> items = Lists.newArrayList();
+    public static List<Template> list() {
+        List<Template> items = Lists.newArrayList();
 
         // use only types supported by backend for the moment
 

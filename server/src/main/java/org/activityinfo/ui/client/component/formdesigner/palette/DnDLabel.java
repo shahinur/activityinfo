@@ -21,18 +21,24 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
  * #L%
  */
 
-import org.activityinfo.model.form.FormField;
+import com.google.gwt.user.client.ui.Label;
+import org.activityinfo.ui.client.component.formdesigner.Metrics;
 
 /**
- *
- * An item within the Field Palette Panel
- *
- * @author yuriyz on 07/07/2014.
+ * @author yuriyz on 12/05/2014.
  */
-public interface FieldTemplate extends Template<FormField> {
+public class DnDLabel extends Label {
 
-    public String getLabel();
+    private final Template template;
 
-    public FormField create();
+    public DnDLabel(Template template) {
+        super(template.getLabel());
+        this.template = template;
+        setStyleName(Metrics.DEFAULT_STYLE_NAME);
+        setWidth(Metrics.SOURCE_CONTROL_WIDTH_PX + "px");
+    }
 
+    public Template getTemplate() {
+        return template;
+    }
 }

@@ -35,8 +35,9 @@ import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.event.PanelUpdatedEvent;
-import org.activityinfo.ui.client.component.formdesigner.palette.FieldLabel;
+import org.activityinfo.ui.client.component.formdesigner.palette.DnDLabel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldTemplate;
+import org.activityinfo.ui.client.component.formdesigner.palette.Template;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -60,7 +61,7 @@ public class DropPanelDropController extends FlowPanelDropController implements 
     public void onPreviewDrop(DragContext context) throws VetoDragException {
         super.onPreviewDrop(context); // important ! - calculates drop index
 
-        if (context.draggable instanceof FieldLabel) {
+        if (context.draggable instanceof DnDLabel) {
             previewDropNewWidget(context);
         } else {
             drop(context.draggable, context);
@@ -76,34 +77,37 @@ public class DropPanelDropController extends FlowPanelDropController implements 
     }
 
     private void previewDropNewWidget(final DragContext context) throws VetoDragException {
-        final FieldTemplate fieldTemplate = ((FieldLabel) context.draggable).getFieldTemplate();
-        final FormField formField = fieldTemplate.createField();
+        final Template template = ((DnDLabel) context.draggable).getTemplate();
+        if (template instanceof FieldTemplate) {
+            final FormField formField = ((FieldTemplate)template).create();
 
-        formDesigner.getFormFieldWidgetFactory().createWidget(formDesigner.getFormClass(), formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
-            @Nullable
-            @Override
-            public Void apply(@Nullable FormFieldWidget formFieldWidget) {
-                final FieldWidgetContainer fieldWidgetContainer = new FieldWidgetContainer(formDesigner, formFieldWidget, formField);
-                final Widget containerWidget = fieldWidgetContainer.asWidget();
+            formDesigner.getFormFieldWidgetFactory().createWidget(formDesigner.getFormClass(), formField, NullValueUpdater.INSTANCE).then(new Function<FormFieldWidget, Void>() {
+                @Nullable
+                @Override
+                public Void apply(@Nullable FormFieldWidget formFieldWidget) {
+                    final FieldWidgetContainer fieldWidgetContainer = new FieldWidgetContainer(formDesigner, formFieldWidget, formField);
+                    final Widget containerWidget = fieldWidgetContainer.asWidget();
 
-                drop(containerWidget, context);
+                    drop(containerWidget, context);
 
-                formDesigner.getEventBus().fireEvent(new PanelUpdatedEvent(fieldWidgetContainer, PanelUpdatedEvent.EventType.ADDED));
-                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-                    @Override
-                    public void execute() {
-                        int widgetIndex = dropTarget.getWidgetIndex(containerWidget);
+                    formDesigner.getEventBus().fireEvent(new PanelUpdatedEvent(fieldWidgetContainer, PanelUpdatedEvent.EventType.ADDED));
+                    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                        @Override
+                        public void execute() {
+                            int widgetIndex = dropTarget.getWidgetIndex(containerWidget);
 
-                        // update model
-                        formDesigner.getFormClass().insertElement(widgetIndex, formField);
-                        formDesigner.getDragController().makeDraggable(containerWidget, fieldWidgetContainer.getDragHandle());
+                            // update model
+                            formDesigner.getFormClass().insertElement(widgetIndex, formField);
+                            formDesigner.getDragController().makeDraggable(containerWidget, fieldWidgetContainer.getDragHandle());
 
-                        removePositioner();
-                    }
-                });
-                return null;
-            }
-        });
+                            removePositioner();
+                        }
+                    });
+                    return null;
+                }
+            });
+        }
+
 
         // forbid drop of source control widget
         throw new VetoDragException();

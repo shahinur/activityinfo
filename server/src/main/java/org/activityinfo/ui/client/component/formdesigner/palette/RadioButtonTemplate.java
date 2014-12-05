@@ -17,7 +17,7 @@ public class RadioButtonTemplate implements FieldTemplate {
     }
 
     @Override
-    public FormField createField() {
+    public FormField create() {
         List<EnumItem> values = Lists.newArrayList();
         values.add(new EnumItem(EnumItem.generateId(), "Choice 1"));
         values.add(new EnumItem(EnumItem.generateId(), "Choice 2"));
