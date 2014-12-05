@@ -29,9 +29,9 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
-import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
+import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.junit.Assert;
@@ -78,7 +78,7 @@ public class SkipExpressionTest {
         eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
 
         // enum with 2 values
-        instance.set(GENDER_FIELD_ID,  new EnumFieldValue(enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()));
+        instance.set(GENDER_FIELD_ID,  new EnumValue(enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()));
 
         eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
 
@@ -120,9 +120,9 @@ public class SkipExpressionTest {
                 Casting.toBoolean(expr.evaluate(new FormEvalContext(formClass, instance))));
     }
 
-    private EnumValue enumValue(ResourceId formField, String label) {
+    private EnumItem enumValue(ResourceId formField, String label) {
         EnumType enumType = (EnumType) formClass.getField(formField).getType();
-        for (EnumValue value : enumType.getValues()) {
+        for (EnumItem value : enumType.getValues()) {
             if (value.getLabel().equalsIgnoreCase(label)) {
                 return value;
             }
@@ -130,17 +130,17 @@ public class SkipExpressionTest {
         throw new IllegalArgumentException("Unable to find enumValue with label: " + label);
     }
 
-    private EnumFieldValue enumFieldValue(ResourceId formField, String label) {
-        return new EnumFieldValue(enumValue(formField, label).getId());
+    private EnumValue enumFieldValue(ResourceId formField, String label) {
+        return new EnumValue(enumValue(formField, label).getId());
     }
 
 
     private static FormClass createFormClass() {
-        EnumValue male = new EnumValue(ResourceId.generateId(), "Male");
-        EnumValue female = new EnumValue(ResourceId.generateId(), "Female");
+        EnumItem male = new EnumItem(ResourceId.generateId(), "Male");
+        EnumItem female = new EnumItem(ResourceId.generateId(), "Female");
 
-        EnumValue pregnantYes = new EnumValue(ResourceId.generateId(), "Yes");
-        EnumValue pregnantNo = new EnumValue(ResourceId.generateId(), "No");
+        EnumItem pregnantYes = new EnumItem(ResourceId.generateId(), "Yes");
+        EnumItem pregnantNo = new EnumItem(ResourceId.generateId(), "No");
 
         FormField genderField = new FormField(GENDER_FIELD_ID);
         genderField.setLabel("Gender");

@@ -21,18 +21,21 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
  * #L%
  */
 
-import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormSection;
+import org.activityinfo.model.resource.ResourceId;
 
 /**
- *
- * An item within the Field Palette Panel
- *
- * @author yuriyz on 07/07/2014.
+ * @author yuriyz on 12/05/2014.
  */
-public interface FieldTemplate extends Template<FormField> {
+public class SectionTemplate implements Template<FormSection> {
 
-    public String getLabel();
+    @Override
+    public String getLabel() {
+        return "Section";
+    }
 
-    public FormField create();
-
+    @Override
+    public FormSection create() {
+        return new FormSection(ResourceId.generateId());
+    }
 }

@@ -21,18 +21,11 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
  * #L%
  */
 
-import org.activityinfo.model.form.FormField;
-
 /**
- *
- * An item within the Field Palette Panel
- *
- * @author yuriyz on 07/07/2014.
+ * @author yuriyz on 12/05/2014.
  */
-public interface FieldTemplate extends Template<FormField> {
-
+public interface Template<T> {
     public String getLabel();
 
-    public FormField create();
-
+    public T create();
 }

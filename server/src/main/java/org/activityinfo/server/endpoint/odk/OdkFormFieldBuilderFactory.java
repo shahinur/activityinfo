@@ -7,8 +7,8 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.barcode.BarcodeType;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -104,10 +104,10 @@ public class OdkFormFieldBuilderFactory {
     private SelectOptions enumOptions(EnumType enumType) {
         Cardinality cardinality = enumType.getCardinality();
         List<Item> items = Lists.newArrayListWithCapacity(enumType.getValues().size());
-        for (EnumValue enumValue : enumType.getValues()) {
+        for (EnumItem enumItem : enumType.getValues()) {
             Item item = new Item();
-            item.setLabel(enumValue.getLabel());
-            item.setValue(enumValue.getId().asString());
+            item.setLabel(enumItem.getLabel());
+            item.setValue(enumItem.getId().asString());
             items.add(item);
         }
         return new SelectOptions(cardinality, items);

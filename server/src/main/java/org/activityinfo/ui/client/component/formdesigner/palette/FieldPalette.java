@@ -66,12 +66,12 @@ public class FieldPalette implements IsWidget {
         };
         dragController.setBehaviorMultipleSelection(false);
 
-        List<FieldTemplate> templates = FieldTemplates.list();
+        List<Template> templates = Templates.list();
         for (int i = 0; i != templates.size(); ++i) {
             int row = (i / NUM_COLUMNS);
             int column = (i % NUM_COLUMNS);
 
-            FieldLabel draggableLabel = new FieldLabel(templates.get(i));
+            DnDLabel draggableLabel = new DnDLabel(templates.get(i));
             dragController.makeDraggable(draggableLabel);
             panel.add(draggableLabel, calculateLeft(column), calculateTop(row));
         }

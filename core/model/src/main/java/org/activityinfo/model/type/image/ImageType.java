@@ -27,9 +27,9 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
-import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
+import org.activityinfo.model.type.enumerated.EnumType;
 
 /**
  * @author yuriyz on 8/6/14.
@@ -58,15 +58,15 @@ public class ImageType implements ParametrizedFieldType {
 
         @Override
         public ImageType deserializeType(Record typeParameters) {
-            EnumFieldValue enumFieldValue = (EnumFieldValue) EnumType.TYPE_CLASS.deserialize(typeParameters.getRecord("cardinality"));
+            EnumValue enumFieldValue = (EnumValue) EnumType.TYPE_CLASS.deserialize(typeParameters.getRecord("cardinality"));
             return new ImageType(Cardinality.valueOf(enumFieldValue.getValueId().asString()));
         }
 
         @Override
         public FormClass getParameterFormClass() {
             EnumType cardinalityType = (EnumType) EnumType.TYPE_CLASS.createType();
-            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("single"), "Single"));
-            cardinalityType.getValues().add(new EnumValue(ResourceId.valueOf("multiple"), "Multiple"));
+            cardinalityType.getValues().add(new EnumItem(ResourceId.valueOf("single"), "Single"));
+            cardinalityType.getValues().add(new EnumItem(ResourceId.valueOf("multiple"), "Multiple"));
 
             FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("image"));
             formClass.addElement(new FormField(ResourceId.valueOf("cardinality"))
@@ -99,7 +99,7 @@ public class ImageType implements ParametrizedFieldType {
     public Record getParameters() {
         return new Record()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
-                .set("cardinality", new EnumFieldValue(ResourceId.valueOf(cardinality.name())).asRecord());
+                .set("cardinality", new EnumValue(ResourceId.valueOf(cardinality.name())).asRecord());
     }
 
     @Override
