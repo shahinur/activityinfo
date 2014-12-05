@@ -93,6 +93,7 @@ public class NewDbDialog {
         } else {
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("name", dialogData.getCommand().getName());
+            properties.put("description", dialogData.getCommand().getDescription());
             properties.put("countryId", dialogData.getCommand().getCountryId());
             return new CreateEntity("UserDatabase", properties);
         }
