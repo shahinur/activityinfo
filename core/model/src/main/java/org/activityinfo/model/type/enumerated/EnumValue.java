@@ -16,21 +16,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class EnumFieldValue implements FieldValue, IsRecord, HasSetFieldValue {
+public class EnumValue implements FieldValue, IsRecord, HasSetFieldValue {
 
-    public static final EnumFieldValue EMPTY = new EnumFieldValue(Collections.<ResourceId>emptySet());
+    public static final EnumValue EMPTY = new EnumValue(Collections.<ResourceId>emptySet());
 
     private final Set<ResourceId> valueIds;
 
-    public EnumFieldValue(ResourceId valueId) {
+    public EnumValue(ResourceId valueId) {
         this.valueIds = ImmutableSet.of(valueId);
     }
 
-    public EnumFieldValue(ResourceId... valueIds) {
+    public EnumValue(ResourceId... valueIds) {
         this.valueIds = ImmutableSet.copyOf(valueIds);
     }
 
-    public EnumFieldValue(Iterable<ResourceId> valueIds) {
+    public EnumValue(Iterable<ResourceId> valueIds) {
         this.valueIds = ImmutableSet.copyOf(valueIds);
     }
 
@@ -64,21 +64,21 @@ public class EnumFieldValue implements FieldValue, IsRecord, HasSetFieldValue {
         return strings;
     }
 
-    public static EnumFieldValue fromRecord(Record record) {
+    public static EnumValue fromRecord(Record record) {
         String id = record.isString("value");
         if(id != null) {
-            return new EnumFieldValue(ResourceId.valueOf(id));
+            return new EnumValue(ResourceId.valueOf(id));
         }
         id = record.isString("id"); // ugly workaround for inconsistent data that appears on production db
         if(id != null) {
-            return new EnumFieldValue(ResourceId.valueOf(id));
+            return new EnumValue(ResourceId.valueOf(id));
         }
         List<String> strings = record.getStringList("value");
         Set<ResourceId> ids = Sets.newHashSet();
         for(String string : strings) {
             ids.add(ResourceId.valueOf(string));
         }
-        return new EnumFieldValue(ids);
+        return new EnumValue(ids);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class EnumFieldValue implements FieldValue, IsRecord, HasSetFieldValue {
             return false;
         }
 
-        EnumFieldValue that = (EnumFieldValue) o;
+        EnumValue that = (EnumValue) o;
 
         if (!valueIds.equals(that.valueIds)) {
             return false;

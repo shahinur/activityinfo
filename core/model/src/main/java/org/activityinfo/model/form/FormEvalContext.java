@@ -5,7 +5,7 @@ import org.activityinfo.model.expr.eval.*;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
@@ -40,7 +40,7 @@ public class FormEvalContext implements EvalContext {
         for (FormField field : formClass.getFields()) {
             if (field.getType() instanceof EnumType) {
                 for (EnumItem item : ((EnumType) field.getType()).getValues()) {
-                    symbolMap.put(item.getId().asString(), new ConstantValue(new EnumFieldValue(item.getId())));
+                    symbolMap.put(item.getId().asString(), new ConstantValue(new EnumValue(item.getId())));
                 }
             }
         }

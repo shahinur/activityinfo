@@ -2,8 +2,6 @@ package org.activityinfo.model.type;
 
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.Resource;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
-import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;

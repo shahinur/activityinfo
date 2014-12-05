@@ -27,7 +27,7 @@ import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
 
@@ -58,7 +58,7 @@ public class ImageType implements ParametrizedFieldType {
 
         @Override
         public ImageType deserializeType(Record typeParameters) {
-            EnumFieldValue enumFieldValue = (EnumFieldValue) EnumType.TYPE_CLASS.deserialize(typeParameters.getRecord("cardinality"));
+            EnumValue enumFieldValue = (EnumValue) EnumType.TYPE_CLASS.deserialize(typeParameters.getRecord("cardinality"));
             return new ImageType(Cardinality.valueOf(enumFieldValue.getValueId().asString()));
         }
 
@@ -99,7 +99,7 @@ public class ImageType implements ParametrizedFieldType {
     public Record getParameters() {
         return new Record()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
-                .set("cardinality", new EnumFieldValue(ResourceId.valueOf(cardinality.name())).asRecord());
+                .set("cardinality", new EnumValue(ResourceId.valueOf(cardinality.name())).asRecord());
     }
 
     @Override
