@@ -21,6 +21,8 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.BiFunction;
 import org.activityinfo.promise.Promise;
 
@@ -214,10 +216,10 @@ class Joiner implements Function<InstanceQuery, Promise<List<Projection>>> {
                 Projection projection = new Projection(instance.getId(), instance.getClassId());
 
                 for (FieldPath classPath : map.get(ApplicationProperties.CLASS_PROPERTY)) {
-                    projection.setValue(classPath, instance.getClassId());
+                    projection.setValue(classPath, new ReferenceValue(instance.getClassId()));
                 }
 
-                for (Map.Entry<ResourceId, Object> entry : instance.getValueMap().entrySet()) {
+                for (Map.Entry<ResourceId, FieldValue> entry : instance.getFieldValueMap().entrySet()) {
                     for (FieldPath targetPath : map.get(entry.getKey())) {
                         projection.setValue(targetPath, entry.getValue());
                     }
@@ -309,7 +311,7 @@ class Joiner implements Function<InstanceQuery, Promise<List<Projection>>> {
         }
 
         private void populateReferencedFields(Projection projection, FormInstance referencedInstance) {
-            for (Map.Entry<ResourceId, Object> entry : referencedInstance.getValueMap().entrySet()) {
+            for (Map.Entry<ResourceId, FieldValue> entry : referencedInstance.getFieldValueMap().entrySet()) {
                 FieldPath path = new FieldPath(referenceField, entry.getKey());
                 if (fields.contains(path)) {
                     projection.setValue(path, entry.getValue());

@@ -33,16 +33,20 @@ import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.HasSetFieldValue;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.enumerated.EnumType;
 
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author yuriyz on 7/28/14.
  */
 public class RowDataBuilder {
+
+    private static final Logger LOGGER = Logger.getLogger(RowDataBuilder.class.getName());
 
     public static final ExprFunction DEFAULT_JOIN_FUNCTION = BooleanFunctions.AND;
 
@@ -54,10 +58,18 @@ public class RowDataBuilder {
     }
 
     public List<RowData> build(String skipExpression) {
-        ExprLexer lexer = new ExprLexer(skipExpression);
-        ExprParser parser = new ExprParser(lexer);
-        ExprNode node = parser.parse();
-        parse(node, DEFAULT_JOIN_FUNCTION);
+        try {
+            ExprLexer lexer = new ExprLexer(skipExpression);
+            ExprParser parser = new ExprParser(lexer);
+            ExprNode node = parser.parse();
+            parse(node, DEFAULT_JOIN_FUNCTION);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, e.getMessage(), e);
+            // 1. FormField was removed ?
+            // 2. other reason ?
+            // we don't want to block user, show dialog without rows.
+            return Lists.newArrayList();
+        }
         return rows;
     }
 
@@ -162,7 +174,7 @@ public class RowDataBuilder {
         if (type instanceof ReferenceType) {
             row.setValue(new ReferenceValue(resourceIdSet));
         } else if (type instanceof EnumType) {
-            row.setValue(new EnumFieldValue(resourceIdSet));
+            row.setValue(new EnumValue(resourceIdSet));
         } else {
             throw new UnsupportedOperationException("Unknown value type for function: " + functionCallNode.getFunction().getId());
         }
@@ -210,13 +222,13 @@ public class RowDataBuilder {
                 Set<ResourceId> newValue = Sets.newHashSet(oldValue.getResourceIds());
                 newValue.add(newItem);
                 if (row.getFormField().getType() instanceof EnumType) {
-                    row.setValue(new EnumFieldValue(newValue));
+                    row.setValue(new EnumValue(newValue));
                 } else if (row.getFormField().getType() instanceof ReferenceType) {
                     row.setValue(new ReferenceValue(newValue));
                 }
             } else { // create value
                 if (row.getFormField().getType() instanceof EnumType) {
-                    row.setValue(new EnumFieldValue(newItem));
+                    row.setValue(new EnumValue(newItem));
                 } else if (row.getFormField().getType() instanceof ReferenceType) {
                     row.setValue(new ReferenceValue(newItem));
                 } else {

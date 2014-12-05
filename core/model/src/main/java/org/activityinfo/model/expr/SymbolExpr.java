@@ -22,6 +22,7 @@ package org.activityinfo.model.expr;
  */
 
 import org.activityinfo.model.expr.eval.EvalContext;
+import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.FieldValue;
 
@@ -37,6 +38,10 @@ public class SymbolExpr extends ExprNode {
 
     public SymbolExpr(@Nonnull String name) {
         this.name = name;
+    }
+
+    public SymbolExpr(ResourceId id) {
+        this(id.asString());
     }
 
     @Override
@@ -73,6 +78,11 @@ public class SymbolExpr extends ExprNode {
 
     public String asExpression() {
         return "{" + name + "}";
+    }
+
+    @Override
+    public <T> T accept(ExprVisitor<T> visitor) {
+        return visitor.visitSymbol(this);
     }
 
     @Override

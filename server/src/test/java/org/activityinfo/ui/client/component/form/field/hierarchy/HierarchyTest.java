@@ -58,10 +58,9 @@ public class HierarchyTest extends CommandTestCase2 {
 
         Set<ResourceId> fieldValue = Collections.singleton(entity(325703));
 
-        Hierarchy tree = assertResolves(Hierarchy
-                .get(resourceLocator, (ReferenceType) adminField.getType()));
-
+        Hierarchy tree = assertResolves(Hierarchy.get(resourceLocator, (ReferenceType) adminField.getType()));
         prettyPrintTree(tree);
+
         assertThat(tree.getRoots(), hasSize(1));
 
         createWidgets(tree);

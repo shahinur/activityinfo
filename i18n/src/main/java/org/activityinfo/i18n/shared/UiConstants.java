@@ -3673,4 +3673,17 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Do you want to retry deletion?")
     String retryDeletion();
+
+    @DefaultStringValue("Users may add new locations during data entry.")
+    String openWorkflow();
+
+    @DefaultStringValue("Users must choose from existing locations")
+    String closedWorkflow();
+
+    @DefaultStringValue("Permissions")
+    String permissions();
+
+    @DefaultStringValue("Quantity field contains invalid value. Please enter valid double value (e.g. 1, 1.3)")
+    String quantityFieldInvalidValue();
 }
+

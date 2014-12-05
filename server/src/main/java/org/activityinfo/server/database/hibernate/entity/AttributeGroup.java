@@ -63,6 +63,17 @@ public class AttributeGroup implements Serializable, Deleteable, Orderable, Form
 
     }
 
+    public AttributeGroup(AttributeGroup group) {
+        this.name = group.name;
+        this.sortOrder = group.sortOrder;
+        this.multipleAllowed = group.multipleAllowed;
+        this.category = group.category;
+        this.dateDeleted = group.dateDeleted;
+        this.mandatory = group.mandatory;
+        this.defaultValue = group.defaultValue;
+        this.workflow = group.workflow;
+    }
+
     @Id
     @Column(name = "AttributeGroupId")
     public int getId() {

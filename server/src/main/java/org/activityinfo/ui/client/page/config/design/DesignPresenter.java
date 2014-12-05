@@ -67,6 +67,7 @@ import org.activityinfo.ui.client.page.config.DbPageState;
 import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImportDialog;
 import org.activityinfo.ui.client.page.config.design.importer.SchemaImporter;
+import org.activityinfo.ui.client.page.instance.InstancePage;
 import org.activityinfo.ui.client.page.instance.InstancePlace;
 
 import javax.annotation.Nullable;
@@ -149,9 +150,9 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                 ModelData sel = DesignPresenter.this.view.getSelection();
                 ActivityDTO activity = DesignPresenter.this.getSelectedActivity(sel);
 
-                DesignPresenter.this.view.getNewAttributeGroup().setEnabled(sel != null && activity.getClassicView());
-                DesignPresenter.this.view.getNewAttribute().setEnabled((sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) && activity.getClassicView());
-                DesignPresenter.this.view.getNewIndicator().setEnabled(sel != null && activity.getClassicView());
+                DesignPresenter.this.view.getNewAttributeGroup().setEnabled(activity != null && activity.getClassicView());
+                DesignPresenter.this.view.getNewAttribute().setEnabled(activity != null && (sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) && activity.getClassicView());
+                DesignPresenter.this.view.getNewIndicator().setEnabled(activity != null && activity.getClassicView());
             }
         });
     }
@@ -266,13 +267,13 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             ResourceId formClassId = getSelectedActivity(view.getSelection()).getFormClassId();
             eventBus.fireEvent(new NavigationEvent(
                     NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClassId, "design")));
+                    new InstancePlace(formClassId, InstancePage.DESIGN_PAGE_ID)));
 
         } else if(UIActions.OPEN_TABLE.equals(actionId)) {
             IsFormClass formClass = (IsFormClass) view.getSelection();
             eventBus.fireEvent(new NavigationEvent(
                     NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClass.getResourceId())));
+                    new InstancePlace(formClass.getResourceId(), InstancePage.TABLE_PAGE_ID)));
         }
     }
 
@@ -377,7 +378,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
 
                     eventBus.fireEvent(new NavigationEvent(
                             NavigationHandler.NAVIGATION_REQUESTED,
-                            new InstancePlace(newActivity.getResourceId(), "design")));
+                            new InstancePlace(newActivity.getResourceId(), InstancePage.DESIGN_PAGE_ID)));
                 }
             });
 
@@ -505,7 +506,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     public void onSelectionChanged(ModelData selectedItem) {
         view.setActionEnabled(UIActions.EDIT, this.db.isDesignAllowed() && canEditWithFormDesigner(selectedItem));
         view.setActionEnabled(UIActions.DELETE, this.db.isDesignAllowed() && selectedItem instanceof EntityDTO);
-        view.setActionEnabled(UIActions.OPEN_TABLE, selectedItem instanceof IsFormClass);
+        view.setActionEnabled(UIActions.OPEN_TABLE, getSelectedActivity(selectedItem) != null);
     }
 
     private boolean canEditWithFormDesigner(ModelData selectedItem) {
@@ -518,7 +519,9 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             return (ActivityDTO) selectedItem;
         } else if (selectedItem instanceof AttributeGroupFolder ||
                 selectedItem instanceof IndicatorFolder ||
+                selectedItem instanceof AttributeGroupDTO ||
                 selectedItem instanceof IndicatorDTO ||
+                selectedItem instanceof LocationTypeDTO ||
                 selectedItem instanceof AttributeDTO) {
             return getSelectedActivity(treeStore.getParent(selectedItem));
         }

@@ -1,56 +1,84 @@
 package org.activityinfo.model.type.enumerated;
 
-import org.activityinfo.model.legacy.CuidAdapter;
-import org.activityinfo.model.legacy.KeyGenerator;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.activityinfo.model.resource.IsRecord;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.HasSetFieldValue;
 
-public class EnumValue implements FieldValue, IsRecord {
-    private ResourceId id;
-    private String label;
-    private String code;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
-    public EnumValue(ResourceId id, String label) {
-        this.id = id;
-        this.label = label;
+public class EnumValue implements FieldValue, IsRecord, HasSetFieldValue {
+
+    public static final EnumValue EMPTY = new EnumValue(Collections.<ResourceId>emptySet());
+
+    private final Set<ResourceId> valueIds;
+
+    public EnumValue(ResourceId valueId) {
+        this.valueIds = ImmutableSet.of(valueId);
     }
 
-    public ResourceId getId() {
-        return id;
+    public EnumValue(ResourceId... valueIds) {
+        this.valueIds = ImmutableSet.copyOf(valueIds);
     }
 
-    public void setId(ResourceId id) {
-        this.id = id;
+    public EnumValue(Iterable<ResourceId> valueIds) {
+        this.valueIds = ImmutableSet.copyOf(valueIds);
     }
 
-    public String getLabel() {
-        return label;
+    public Set<ResourceId> getResourceIds() {
+        return valueIds;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public static EnumValue fromRecord(Record record) {
-        return new EnumValue(ResourceId.valueOf(record.getString("id")), record.getString("label"))
-                .setCode(record.isString("code"));
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public EnumValue setCode(String code) {
-        this.code = code;
-        return this;
+    public ResourceId getValueId() {
+        Preconditions.checkState(valueIds.size() == 1);
+        return valueIds.iterator().next();
     }
 
     @Override
-    public String toString() {
-        return id + ":" + label;
+    public Record asRecord() {
+        Record record = new Record();
+        record.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId());
+
+        if(valueIds.size() == 1) {
+            record.set("value", valueIds.iterator().next().asString());
+        } else if(valueIds.size() > 1) {
+            record.set("value", toStringList(valueIds));
+        }
+        return record;
+    }
+
+    private List<String> toStringList(Set<ResourceId> resourceIds) {
+        List<String> strings = Lists.newArrayList();
+        for(ResourceId resourceId : resourceIds) {
+            strings.add(resourceId.asString());
+        }
+        return strings;
+    }
+
+    public static EnumValue fromRecord(Record record) {
+        String id = record.isString("value");
+        if(id != null) {
+            return new EnumValue(ResourceId.valueOf(id));
+        }
+        id = record.isString("id"); // ugly workaround for inconsistent data that appears on production db
+        if(id != null) {
+            return new EnumValue(ResourceId.valueOf(id));
+        }
+        List<String> strings = record.getStringList("value");
+        Set<ResourceId> ids = Sets.newHashSet();
+        for(String string : strings) {
+            ids.add(ResourceId.valueOf(string));
+        }
+        return new EnumValue(ids);
     }
 
     @Override
@@ -59,34 +87,30 @@ public class EnumValue implements FieldValue, IsRecord {
     }
 
     @Override
-    public Record asRecord() {
-        Record record = new Record();
-        record.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId())
-                .set("label", label)
-                .set("code", code)
-                .set("id", id.asString());
-        return record;
-    }
-
-    @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
-        EnumValue enumValue = (EnumValue) o;
+        EnumValue that = (EnumValue) o;
 
-        if (id != null ? !id.equals(enumValue.id) : enumValue.id != null) return false;
+        if (!valueIds.equals(that.valueIds)) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return valueIds.hashCode();
     }
 
-    public static ResourceId generateId() {
-        KeyGenerator generator = new KeyGenerator();
-        return CuidAdapter.attributeField(generator.generateInt());
+    @Override
+    public String toString() {
+        return "EnumFieldValue[" + Joiner.on(", ").join(valueIds) + "]";
     }
 }

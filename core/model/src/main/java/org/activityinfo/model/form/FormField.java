@@ -2,7 +2,6 @@ package org.activityinfo.model.form;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
@@ -36,6 +35,10 @@ public class FormField extends FormElement {
 
     public ResourceId getId() {
         return id;
+    }
+
+    public String getName() {
+        return id.asString();
     }
 
     /**

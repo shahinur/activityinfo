@@ -47,6 +47,13 @@ public class Attribute implements Serializable, Deleteable, Orderable {
 
     }
 
+    public Attribute(Attribute attribute) {
+        this.group = attribute.group;
+        this.name = attribute.name;
+        this.sortOrder = attribute.sortOrder;
+        this.dateDeleted = attribute.dateDeleted;
+    }
+
     @Id
     @Column(name = "AttributeId", unique = true, nullable = false)
     public int getId() {

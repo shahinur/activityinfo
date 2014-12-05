@@ -74,6 +74,10 @@ public class NavigationHandler {
         Log.debug("PageManager: connected to EventBus and listening.");
     }
 
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
     private void onNavigationRequested(NavigationEvent be) {
         if (activeNavigation == null
                 || !activeNavigation.getPlace().equals(be.getPlace())) {

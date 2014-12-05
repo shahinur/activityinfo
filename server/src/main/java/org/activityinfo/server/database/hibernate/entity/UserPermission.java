@@ -65,8 +65,8 @@ public class UserPermission implements Serializable {
     }
 
     public UserPermission(UserPermission sourcePermission) {
-        this.partner = sourcePermission.getPartner();
-        this.database = sourcePermission.getDatabase();
+        this.partner = sourcePermission.partner;
+        this.database = sourcePermission.database;
         this.user = sourcePermission.user;
         this.allowView = sourcePermission.allowView;
         this.allowViewAll = sourcePermission.allowViewAll;

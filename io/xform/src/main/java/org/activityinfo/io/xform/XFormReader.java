@@ -8,8 +8,8 @@ import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.geo.GeoPointType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
@@ -137,14 +137,14 @@ public class XFormReader {
         throw new IllegalArgumentException(binding.getType().name());
     }
 
-    private List<EnumValue> enumItems(SelectElement element) {
-        List<EnumValue> enumValues = Lists.newArrayList();
+    private List<EnumItem> enumItems(SelectElement element) {
+        List<EnumItem> enumItems = Lists.newArrayList();
         for (Item item : element.getItems()) {
-            EnumValue enumItem = new EnumValue(EnumValue.generateId(), item.getLabel());
+            EnumItem enumItem = new EnumItem(EnumItem.generateId(), item.getLabel());
             enumItem.setCode(item.getValue());
-            enumValues.add(enumItem);
+            enumItems.add(enumItem);
         }
-        return enumValues;
+        return enumItems;
     }
 
     private StringBuilder buildCode(InstanceElement instanceElement, InstanceElement parentInstanceElement) {

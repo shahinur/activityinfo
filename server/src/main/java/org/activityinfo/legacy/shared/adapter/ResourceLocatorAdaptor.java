@@ -17,6 +17,7 @@ import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.UpdateFormClass;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.ActivityFormDTO;
+import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
@@ -55,14 +56,44 @@ public class ResourceLocatorAdaptor implements ResourceLocator {
                 @Nullable
                 @Override
                 public Promise<ActivityFormDTO> apply(@Nullable SiteResult input) {
-                    return dispatcher.execute(new GetActivityForm(input.getData().get(0).getActivityId()));
+                    if (input != null) {
+                        List<SiteDTO> data = input.getData();
+                        if (data != null && !data.isEmpty()) {
+                            SiteDTO siteDTO = data.get(0);
+                            if (siteDTO != null) {
+                                return dispatcher.execute(new GetActivityForm(siteDTO.getActivityId()));
+                            }
+                        }
+                    }
+
+                    return Promise.resolved(null);
                 }
             });
             return Promise.waitAll(site, form).then(new Function<Void, FormInstance>() {
+                @Nullable
                 @Override
                 public FormInstance apply(@Nullable Void input) {
-                    SiteBinding binding = new SiteBindingFactory().apply(form.get());
-                    return binding.newInstance(site.get().getData().get(0));
+                    if (form != null) {
+                        ActivityFormDTO activityFormDTO = form.get();
+                        if (activityFormDTO != null) {
+                            SiteBinding binding = new SiteBindingFactory().apply(activityFormDTO);
+                            if (site != null) {
+                                SiteResult siteResult = site.get();
+                                if (siteResult != null) {
+                                    List<SiteDTO> data = siteResult.getData();
+                                    if (data != null && !data.isEmpty()) {
+                                        SiteDTO siteDTO = data.get(0);
+                                        if (siteDTO != null) {
+                                            return binding.newInstance(siteDTO);
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    return null;
                 }
             });
         }

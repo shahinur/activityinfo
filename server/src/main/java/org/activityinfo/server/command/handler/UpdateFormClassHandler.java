@@ -18,8 +18,8 @@ import org.activityinfo.model.resource.Resources;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.NarrativeType;
 import org.activityinfo.model.type.barcode.BarcodeType;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
@@ -69,9 +69,15 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
             activity.setFormClass(json);
             activity.setGzFormClass(null);
         }
-        activity.setClassicView(false);
 
-        syncEntities(activity, formClass);
+        // we should not set it instead of user (looks very weird for end user if mode is changed because of some backend function)
+//        activity.setClassicView(false);
+
+        if (cmd.isSyncActivityEntities()) {
+            syncEntities(activity, formClass);
+        } else {
+            entityManager.get().persist(activity);
+        }
 
         return new VoidResult();
     }
@@ -123,7 +129,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
         }
 
         Set<ResourceId> builtinFields = Sets.newHashSet();
-        for(int fieldIndex : FormClassTrash.BUILTIN_FIELDS) {
+        for(int fieldIndex : CuidAdapter.BUILTIN_FIELDS) {
             builtinFields.add(CuidAdapter.field(formClass.getId(), fieldIndex));
         }
 
@@ -186,7 +192,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
         indicator.setSkipExpression(field.getRelevanceConditionExpression());
         indicator.setCalculatedAutomatically(field.getType() instanceof CalculatedFieldType);
 
-        if(field.getType() instanceof QuantityType) {
+        if (field.getType() instanceof QuantityType) {
             indicator.setType(QuantityType.TYPE_CLASS.getId());
             indicator.setUnits(((QuantityType) field.getType()).getUnits());
 
@@ -252,7 +258,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
 
         // add/update present attributes
         int sortOrder = 1;
-        for(EnumValue item : type.getValues()) {
+        for(EnumItem item : type.getValues()) {
             Attribute attribute = attributeMap.get(item.getId());
             if(attribute == null) {
                 attribute = new Attribute();
@@ -272,7 +278,7 @@ public class UpdateFormClassHandler implements CommandHandler<UpdateFormClass> {
 
         // remove deleted
         Set<ResourceId> deleted = Sets.newHashSet(attributeMap.keySet());
-        for(EnumValue item : type.getValues()) {
+        for(EnumItem item : type.getValues()) {
             deleted.remove(item.getId());
         }
         for (ResourceId deletedAttribute : deleted) {

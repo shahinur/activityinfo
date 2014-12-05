@@ -25,6 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.widget.form.FormGroup;
+import org.activityinfo.ui.client.widget.form.ValidationStateType;
 
 /**
  * @author yuriyz on 11/11/2014.
@@ -53,6 +54,7 @@ public class HorizontalFieldContainer implements FieldContainer {
                 .label(formField.getLabel())
                 .description(formField.getDescription())
                 .addWidget(fieldWidget)
+                .validationStateType(ValidationStateType.ERROR)
                 .columnLabelWidth(columnWidth);
 
     }

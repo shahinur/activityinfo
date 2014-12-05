@@ -25,6 +25,7 @@ import org.activityinfo.core.shared.Projection;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.legacy.shared.model.ProjectDTO;
+import org.activityinfo.model.type.primitive.TextValue;
 
 /**
  * @author yuriyz on 4/23/14.
@@ -47,7 +48,7 @@ public class ProjectProjectionUpdater<T> implements ProjectionUpdater<ProjectDTO
 
         switch (fieldIndex) {
             case CuidAdapter.NAME_FIELD:
-                projection.setValue(path, dto.getName());
+                projection.setValue(path, TextValue.valueOf(dto.getName()));
                 break;
         }
     }

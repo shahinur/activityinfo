@@ -58,17 +58,17 @@ public class ActivityFormClassBuilder {
         .setVisible(activity.getProjects().size() > 0);
         siteForm.addElement(projectField);
 
-        FormField endDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.END_DATE_FIELD))
-        .setLabel(I18N.CONSTANTS.endDate())
-        .setType(LocalDateType.INSTANCE)
-        .setRequired(true);
-        siteForm.addElement(endDateField);
-
         FormField startDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.START_DATE_FIELD))
         .setLabel(I18N.CONSTANTS.startDate())
         .setType(LocalDateType.INSTANCE)
         .setRequired(true);
         siteForm.addElement(startDateField);
+
+        FormField endDateField = new FormField(CuidAdapter.field(classId, CuidAdapter.END_DATE_FIELD))
+                .setLabel(I18N.CONSTANTS.endDate())
+                .setType(LocalDateType.INSTANCE)
+                .setRequired(true);
+        siteForm.addElement(endDateField);
 
         if(!activity.getLocationType().isNationwide()) {
             FormField locationField = new FormField(CuidAdapter.locationField(activity.getId()))

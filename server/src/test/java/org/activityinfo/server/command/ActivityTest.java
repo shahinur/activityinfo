@@ -36,8 +36,8 @@ import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.server.database.OnDataSet;
@@ -173,8 +173,8 @@ public class ActivityTest extends CommandTestCase2 {
 
         FormField newGenderField = new FormField(ResourceId.generateFieldId(EnumType.TYPE_CLASS));
         newGenderField.setLabel("Gender");
-        EnumValue male = new EnumValue(EnumValue.generateId(), "Male");
-        EnumValue female = new EnumValue(EnumValue.generateId(), "Female");
+        EnumItem male = new EnumItem(EnumItem.generateId(), "Male");
+        EnumItem female = new EnumItem(EnumItem.generateId(), "Female");
         newGenderField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(male, female)));
         formClass.addElement(newGenderField);
 
@@ -238,9 +238,9 @@ public class ActivityTest extends CommandTestCase2 {
         System.out.println(reform.getFields().toString());
         assertThat(reform.getFields(), hasSize(8));
 
-        List<EnumValue> values = Lists.newArrayList();
-        values.add(new EnumValue(EnumValue.generateId(), "Option 1"));
-        values.add(new EnumValue(EnumValue.generateId(), "Option 2"));
+        List<EnumItem> values = Lists.newArrayList();
+        values.add(new EnumItem(EnumItem.generateId(), "Option 1"));
+        values.add(new EnumItem(EnumItem.generateId(), "Option 2"));
     }
 
     @Test
@@ -251,8 +251,8 @@ public class ActivityTest extends CommandTestCase2 {
 
         FormField newField = new FormField(ResourceId.generateFieldId(EnumType.TYPE_CLASS));
         newField.setLabel("New Group");
-        EnumValue yes = new EnumValue(EnumValue.generateId(), "Yes");
-        EnumValue no = new EnumValue(EnumValue.generateId(), "No");
+        EnumItem yes = new EnumItem(EnumItem.generateId(), "Yes");
+        EnumItem no = new EnumItem(EnumItem.generateId(), "No");
         newField.setType(new EnumType(Cardinality.SINGLE, Arrays.asList(yes, no)));
 
         formClass.getElements().add(newField);

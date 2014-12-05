@@ -1,5 +1,6 @@
 package org.activityinfo.model.expr;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.activityinfo.model.expr.eval.EvalContext;
 import org.activityinfo.model.expr.functions.ExprFunction;
@@ -28,7 +29,6 @@ public class FunctionCallNode extends ExprNode {
         this(function, Arrays.asList(arguments));
     }
 
-
     @Override
     public FieldValue evaluate(EvalContext context) {
         List<FieldValue> evaluatedArguments = Lists.newArrayList();
@@ -44,7 +44,7 @@ public class FunctionCallNode extends ExprNode {
         for (ExprNode expr : arguments) {
             argumentTypes.add(expr.resolveType(context));
         }
-        return function.getResultType(argumentTypes);
+        return function.resolveResultType(argumentTypes);
     }
 
     @Nonnull
@@ -59,7 +59,7 @@ public class FunctionCallNode extends ExprNode {
 
     @Override
     public String toString() {
-        return asExpression();
+        return "(" + function.getId() + " " + Joiner.on(" ").join(arguments) + ")";
     }
 
     @Override
@@ -76,6 +76,11 @@ public class FunctionCallNode extends ExprNode {
         } else {
             return arguments.get(0).asExpression() + "" + function.getId() + "" + arguments.get(1).asExpression();
         }
+    }
+
+    @Override
+    public <T> T accept(ExprVisitor<T> visitor) {
+        return visitor.visitFunctionCall(this);
     }
 
     @Override

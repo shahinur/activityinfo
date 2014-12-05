@@ -9,6 +9,7 @@ public class UpdateFormClass implements Command<VoidResult> {
 
     private String formClassId;
     private String json;
+    private boolean syncActivityEntities = true;
 
     public UpdateFormClass() {
     }
@@ -32,5 +33,14 @@ public class UpdateFormClass implements Command<VoidResult> {
 
     public void setJson(String json) {
         this.json = json;
+    }
+
+    public boolean isSyncActivityEntities() {
+        return syncActivityEntities;
+    }
+
+    public UpdateFormClass setSyncActivityEntities(boolean syncActivityEntities) {
+        this.syncActivityEntities = syncActivityEntities;
+        return this;
     }
 }

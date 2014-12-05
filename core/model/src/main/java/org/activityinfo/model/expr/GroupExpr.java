@@ -22,7 +22,12 @@ public class GroupExpr extends ExprNode {
     }
 
     public String asExpression() {
-        return "(" + expr.toString() + ")";
+        return "(" + expr.asExpression() + ")";
+    }
+
+    @Override
+    public <T> T accept(ExprVisitor<T> visitor) {
+        return visitor.visitGroup(this);
     }
 
     @Override

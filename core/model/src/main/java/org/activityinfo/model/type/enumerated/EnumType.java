@@ -25,12 +25,12 @@ public class EnumType implements ParametrizedFieldType {
 
             Cardinality cardinality = Cardinality.valueOf(typeParameters.getString("cardinality"));
 
-            List<EnumValue> enumValues = Lists.newArrayList();
+            List<EnumItem> enumItems = Lists.newArrayList();
             List<Record> enumValueRecords = typeParameters.getRecordList("values");
             for(Record record : enumValueRecords) {
-                enumValues.add(EnumValue.fromRecord(record));
+                enumItems.add(EnumItem.fromRecord(record));
             }
-            return new EnumType(cardinality, enumValues);
+            return new EnumType(cardinality, enumItems);
         }
 
         @Override
@@ -44,34 +44,34 @@ public class EnumType implements ParametrizedFieldType {
         }
 
         @Override
-        public EnumFieldValue deserialize(Record record) {
-            return EnumFieldValue.fromRecord(record);
+        public EnumValue deserialize(Record record) {
+            return EnumValue.fromRecord(record);
         }
     };
 
     private final Cardinality cardinality;
-    private final List<EnumValue> values;
-    private final List<EnumValue> defaultValues = Lists.newArrayList();
+    private final List<EnumItem> values;
+    private final List<EnumItem> defaultValues = Lists.newArrayList();
 
     public EnumType() {
         this.cardinality = Cardinality.SINGLE;
         this.values = Lists.newArrayList();
     }
 
-    public EnumType(Cardinality cardinality, List<EnumValue> values) {
+    public EnumType(Cardinality cardinality, List<EnumItem> values) {
         this.cardinality = cardinality;
-        this.values = values != null ? values : new ArrayList<EnumValue>();
+        this.values = values != null ? values : new ArrayList<EnumItem>();
     }
 
     public Cardinality getCardinality() {
         return cardinality;
     }
 
-    public List<EnumValue> getValues() {
+    public List<EnumItem> getValues() {
         return values;
     }
 
-    public List<EnumValue> getDefaultValues() {
+    public List<EnumItem> getDefaultValues() {
         return defaultValues;
     }
 
@@ -84,8 +84,8 @@ public class EnumType implements ParametrizedFieldType {
     public Record getParameters() {
 
         List<Record> enumValueRecords = Lists.newArrayList();
-        for(EnumValue enumValue : getValues()) {
-            enumValueRecords.add(enumValue.asRecord());
+        for(EnumItem enumItem : getValues()) {
+            enumValueRecords.add(enumItem.asRecord());
         }
 
         return new Record()

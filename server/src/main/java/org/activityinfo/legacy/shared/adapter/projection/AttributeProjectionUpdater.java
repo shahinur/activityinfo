@@ -24,6 +24,7 @@ package org.activityinfo.legacy.shared.adapter.projection;
 import org.activityinfo.core.shared.Projection;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.legacy.shared.model.AttributeDTO;
+import org.activityinfo.model.type.primitive.TextValue;
 
 /**
  * @author yuriyz on 5/6/14.
@@ -38,6 +39,6 @@ public class AttributeProjectionUpdater implements ProjectionUpdater<AttributeDT
 
     @Override
     public void update(Projection projection, AttributeDTO value) {
-        projection.setValue(path, value.getName());
+        projection.setValue(path, TextValue.valueOf(value.getName()));
     }
 }

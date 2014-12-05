@@ -252,8 +252,14 @@ public class GetSchemaHandler implements CommandHandlerAsync<GetSchema, SchemaDT
                             db.setDesignAllowed(row.getBoolean("allowDesign"));
                             db.setMyPartnerId(row.getInt("partnerId"));
                         }
-                        databaseMap.put(db.getId(), db);
-                        databaseList.add(db);
+
+                        // todo fix query !!! sometimes it returns duplicates
+                        if (!databaseMap.containsKey(db.getId())) {
+                            databaseMap.put(db.getId(), db);
+                            databaseList.add(db);
+                        } else {
+                            continue;
+                        }
                     }
 
 

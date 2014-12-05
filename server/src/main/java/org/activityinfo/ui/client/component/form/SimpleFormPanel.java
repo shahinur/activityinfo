@@ -1,23 +1,24 @@
 package org.activityinfo.ui.client.component.form;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.*;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.promise.Promise;
+import org.activityinfo.ui.client.component.form.event.FieldMessageEvent;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidgetFactory;
 import org.activityinfo.ui.client.widget.DisplayWidget;
@@ -38,6 +39,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
     private final FlowPanel panel;
     private final ScrollPanel scrollPanel;
     private final boolean withScroll;
+    private final EventBus eventBus = new SimpleEventBus();
 
     private final Map<ResourceId, FieldContainer> containers = Maps.newHashMap();
 
@@ -79,6 +81,26 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
         panel = new FlowPanel();
         panel.setStyleName(FormPanelStyles.INSTANCE.formPanel());
         scrollPanel = new ScrollPanel(panel);
+
+        bindEvents();
+    }
+
+    private void bindEvents() {
+        eventBus.addHandler(FieldMessageEvent.TYPE, new FieldMessageEvent.Handler() {
+            @Override
+            public void handle(FieldMessageEvent event) {
+                showFieldMessage(event);
+            }
+        });
+    }
+
+    private void showFieldMessage(FieldMessageEvent event) {
+        FieldContainer container = containers.get(event.getFieldId());
+        if (event.isClearMessage()) {
+            container.setValid();
+        } else {
+            container.setInvalid(event.getMessage());
+        }
     }
 
     public FormInstance getInstance() {
@@ -139,7 +161,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
                         public void update(FieldValue value) {
                             onFieldUpdated(field, value);
                         }
-                    }, validationFormClass).then(new Function<FormFieldWidget, Void>() {
+                    }, validationFormClass, eventBus).then(new Function<FormFieldWidget, Void>() {
                         @Override
                         public Void apply(@Nullable FormFieldWidget widget) {
                             containers.put(field.getId(), containerFactory.createContainer(field, widget, 4));

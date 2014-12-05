@@ -31,7 +31,7 @@
 
     <g:HTMLPanel ui:field="optionsContainer">
       <f:FormGroup label="{i18n.options}" columnLabelWidth="3">
-        <a:CheckBox ui:field="copyData" text="{i18n.copyDataAsWellAsForms}"/>
+        <a:CheckBox ui:field="copyData" text="{i18n.copyDataAsWellAsForms}" visible="false"/>
         <a:CheckBox ui:field="copyPartners" text="{i18n.copyPartners}"/>
         <a:CheckBox ui:field="copyUser" text="{i18n.copyUserPermissions}"/>
       </f:FormGroup>
