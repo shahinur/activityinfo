@@ -1,10 +1,11 @@
 package org.activityinfo.ui.client.page.instance;
 
-import com.google.common.base.Function;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.inject.Provider;
 import org.activityinfo.core.client.ResourceLocator;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.EventBus;
@@ -18,8 +19,6 @@ import org.activityinfo.ui.client.pageView.formClass.TableTab;
 import org.activityinfo.ui.client.style.Icons;
 import org.activityinfo.ui.client.widget.LoadingPanel;
 import org.activityinfo.ui.client.widget.loading.PageLoadingPanel;
-
-import javax.annotation.Nullable;
 
 /**
  * Adapter that hosts a view of a given instance.
@@ -73,6 +72,12 @@ public class InstancePage implements Page {
 
     @Override
     public String beforeWindowCloses() {
+//        FormSavedGuard guard = FormSavedGuard.getGuard(scrollPanel);
+//        if (guard.isSaved()) {
+//            return null;
+//        } else {
+//            return I18N.CONSTANTS.unsavedChangesWarning();
+//        }
         return null;
     }
 
