@@ -220,15 +220,15 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
             workingInstance.set(field.getId(), newValue);
             relevanceHandler.onValueChange(); // skip handler must be applied after workingInstance is updated
         }
-        validateField(field);
+        validateField(containers.get(field.getId()));
     }
 
-    private boolean validateField(FormField field) {
+    private boolean validateField(FieldContainer container) {
+        FormField field = container.getField();
         FieldValue value = getCurrentValue(field);
         if (value != null && value.getTypeClass() != field.getType().getTypeClass()) {
             value = null;
         }
-        FieldContainer container = containers.get(field.getId());
         if (field.isRequired() && value == null && field.isVisible()) { // if field is not visible user doesn't have chance to fix it
             container.setInvalid(I18N.CONSTANTS.requiredFieldMessage());
             return false;
@@ -240,8 +240,8 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     public boolean validate() {
         boolean valid = true;
-        for (FormField formField : formClass.getFields()) {
-            if (!validateField(formField)) {
+        for (FieldContainer container : this.containers.values()) {
+            if (!validateField(container)) {
                 valid = false;
             }
         }
