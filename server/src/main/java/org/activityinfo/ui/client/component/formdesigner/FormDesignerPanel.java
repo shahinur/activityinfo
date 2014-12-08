@@ -61,7 +61,10 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Main Form designer panel. Must be created via FormDesigner class
+ *
  * @author yuriyz on 07/04/2014.
+ * @see org.activityinfo.ui.client.component.formdesigner.FormDesigner
  */
 public class FormDesignerPanel extends Composite implements ScrollHandler, HasNavigationCallback {
 
@@ -95,7 +98,13 @@ public class FormDesignerPanel extends Composite implements ScrollHandler, HasNa
     @UiField
     HTML paletteSpacer;
 
-    public FormDesignerPanel(final ResourceLocator resourceLocator, @Nonnull final FormClass formClass) {
+    /**
+     * Panel must be created via FormDesigner
+     *
+     * @param resourceLocator resource locator
+     * @param formClass form class
+     */
+    protected FormDesignerPanel(final ResourceLocator resourceLocator, @Nonnull final FormClass formClass, final FormDesigner formDesigner) {
         FormDesignerStyles.INSTANCE.ensureInjected();
         initWidget(uiBinder.createAndBindUi(this));
         propertiesPanel.setVisible(false);
@@ -110,14 +119,13 @@ public class FormDesignerPanel extends Composite implements ScrollHandler, HasNa
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
-                final FormDesigner formDesigner = new FormDesigner(FormDesignerPanel.this, resourceLocator, formClass);
                 savedGuard = formDesigner.getSavedGuard();
                 List<Promise<Void>> promises = Lists.newArrayList();
                 buildWidgetContainers(formDesigner, formClass, 0, promises);
                 Promise.waitAll(promises).then(new AsyncCallback<Void>() {
                     @Override
                     public void onFailure(Throwable caught) {
-                        // ugly but we still have exception like: unsupportedoperationexception: domain is not supported.
+                        // ugly but we still have exceptions like: unsupportedoperationexception: domain is not supported.
                         fillPanel(formClass, formDesigner);
                     }
 

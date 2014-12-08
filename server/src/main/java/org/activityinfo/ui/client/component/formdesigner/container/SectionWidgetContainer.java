@@ -25,7 +25,6 @@ import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormSection;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
@@ -39,14 +38,12 @@ public class SectionWidgetContainer implements WidgetContainer {
     private FormDesigner formDesigner;
     private FormSection formSection;
     private final WidgetContainerPanel widgetContainer;
-    private final HTML html = new HTML();
 
     public SectionWidgetContainer(final FormDesigner formDesigner, final FormSection formSection) {
         this.formDesigner = formDesigner;
         this.formSection = formSection;
 
         widgetContainer = new WidgetContainerPanel(formDesigner);
-        widgetContainer.getWidgetContainer().add(html);
         widgetContainer.getRemoveButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -63,7 +60,7 @@ public class SectionWidgetContainer implements WidgetContainer {
     }
 
     public void syncWithModel() {
-        widgetContainer.getLabel().setHTML("<h3>" + SafeHtmlUtils.fromString(Strings.nullToEmpty(formSection.getLabel())) + "</h3>");
+        widgetContainer.getLabel().setHTML("<h3>" + SafeHtmlUtils.fromString(Strings.nullToEmpty(formSection.getLabel())).asString() + "</h3>");
     }
 
     public Widget asWidget() {

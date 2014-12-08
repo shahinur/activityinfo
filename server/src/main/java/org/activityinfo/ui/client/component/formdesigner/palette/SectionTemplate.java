@@ -36,6 +36,7 @@ public class SectionTemplate implements Template<FormSection> {
 
     @Override
     public FormSection create() {
-        return new FormSection(ResourceId.generateId());
+        return new FormSection(ResourceId.generateId())
+                .setLabel(getLabel());
     }
 }

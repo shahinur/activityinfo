@@ -30,13 +30,18 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormSection;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 import org.activityinfo.ui.client.component.formdesigner.container.FieldWidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.SectionWidgetContainer;
+import org.activityinfo.ui.client.component.formdesigner.container.WidgetContainer;
 import org.activityinfo.ui.client.component.formdesigner.event.PanelUpdatedEvent;
 import org.activityinfo.ui.client.component.formdesigner.palette.DnDLabel;
 import org.activityinfo.ui.client.component.formdesigner.palette.FieldTemplate;
+import org.activityinfo.ui.client.component.formdesigner.palette.SectionTemplate;
 import org.activityinfo.ui.client.component.formdesigner.palette.Template;
 
 import javax.annotation.Nullable;
@@ -86,26 +91,17 @@ public class DropPanelDropController extends FlowPanelDropController implements 
                 @Override
                 public Void apply(@Nullable FormFieldWidget formFieldWidget) {
                     final FieldWidgetContainer fieldWidgetContainer = new FieldWidgetContainer(formDesigner, formFieldWidget, formField);
-                    final Widget containerWidget = fieldWidgetContainer.asWidget();
 
-                    drop(containerWidget, context);
+                    drop(fieldWidgetContainer, context, formField);
 
-                    formDesigner.getEventBus().fireEvent(new PanelUpdatedEvent(fieldWidgetContainer, PanelUpdatedEvent.EventType.ADDED));
-                    Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-                        @Override
-                        public void execute() {
-                            int widgetIndex = dropTarget.getWidgetIndex(containerWidget);
-
-                            // update model
-                            formDesigner.getFormClass().insertElement(widgetIndex, formField);
-                            formDesigner.getDragController().makeDraggable(containerWidget, fieldWidgetContainer.getDragHandle());
-
-                            removePositioner();
-                        }
-                    });
                     return null;
                 }
             });
+        } else if (template instanceof SectionTemplate) {
+            final FormSection formSection = ((SectionTemplate)template).create();
+
+            SectionWidgetContainer widgetContainer = new SectionWidgetContainer(formDesigner, formSection);
+            drop(widgetContainer, context, formSection);
         }
 
 
@@ -113,14 +109,32 @@ public class DropPanelDropController extends FlowPanelDropController implements 
         throw new VetoDragException();
     }
 
-    private void drop(Widget containerWidget, DragContext context) {
+    private void drop(final Widget widget, DragContext context) {
         // hack ! - replace original selected widget with our container, drop it and then restore selection
         final List<Widget> originalSelectedWidgets = context.selectedWidgets;
-        context.selectedWidgets = Lists.newArrayList(containerWidget);
+        context.selectedWidgets = Lists.newArrayList(widget);
         DropPanelDropController.super.onDrop(context); // drop container
         context.selectedWidgets = originalSelectedWidgets; // restore state;
 
         formDesigner.getSavedGuard().setSaved(false);
+    }
+
+    private void drop(final WidgetContainer widgetContainer, DragContext context, final FormElement formElement) {
+        drop(widgetContainer.asWidget(), context);
+
+        formDesigner.getEventBus().fireEvent(new PanelUpdatedEvent(widgetContainer, PanelUpdatedEvent.EventType.ADDED));
+        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+            @Override
+            public void execute() {
+                int widgetIndex = dropTarget.getWidgetIndex(widgetContainer.asWidget());
+
+                // update model
+                formDesigner.getFormClass().insertElement(widgetIndex, formElement);
+                formDesigner.getDragController().makeDraggable(widgetContainer.asWidget(), widgetContainer.getDragHandle());
+
+                removePositioner();
+            }
+        });
     }
 
     @Override

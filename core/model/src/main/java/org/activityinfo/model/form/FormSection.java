@@ -32,8 +32,9 @@ public class FormSection extends FormElement implements FormElementContainer {
         return label;
     }
 
-    public void setLabel(String label) {
+    public FormSection setLabel(String label) {
         this.label = label;
+        return this;
     }
 
     public List<FormElement> getElements() {
