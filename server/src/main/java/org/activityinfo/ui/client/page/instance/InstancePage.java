@@ -73,7 +73,7 @@ public class InstancePage implements Page {
     @Override
     public String beforeWindowCloses() {
         FormSavedGuard guard = FormSavedGuard.getGuard(scrollPanel);
-        if (guard.isSaved()) {
+        if (guard == null || guard.isSaved()) {
             return null;
         } else {
             return I18N.CONSTANTS.unsavedChangesWarning();

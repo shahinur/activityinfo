@@ -25,6 +25,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.geo.AiLatLng;
 import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.model.type.number.Quantity;
@@ -279,7 +280,9 @@ public class FormInstance implements IsResource {
         FieldValue value = get(fieldId);
         if(value instanceof ReferenceValue) {
             return ((ReferenceValue) value).getResourceIds();
-        } else {
+        } else if(value instanceof EnumValue) {
+            return ((EnumValue) value).getResourceIds();
+        }else {
             return Collections.emptySet();
         }
     }
