@@ -50,9 +50,10 @@ public class ReferenceType implements ParametrizedFieldType {
 
         @Override
         public FormClass getParameterFormClass() {
-            return new FormClass(ResourceIdPrefixType.TYPE.id("ref"));
+            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("ref"));
+            return formClass;
         }
-    }
+    };
 
     public static final TypeClass TYPE_CLASS = new TypeClass();
 
