@@ -42,8 +42,17 @@ import org.activityinfo.legacy.shared.command.Filter;
 import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.expr.eval.FieldReader;
+import org.activityinfo.model.expr.eval.FormSymbolTable;
+import org.activityinfo.model.expr.eval.PartialEvaluator;
+import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormFieldType;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.expr.CalculatedFieldType;
+import org.activityinfo.model.type.number.Quantity;
+import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.promise.Promise;
 
 import java.util.ArrayList;
@@ -195,49 +204,49 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
         if(command.isFetchAllReportingPeriods()) {
             query.appendColumn("period.Date1", "Date1")
-                    .appendColumn("period.Date2", "Date2")
-                    .appendColumn("period.ReportingPeriodId", "PeriodId");
+                 .appendColumn("period.Date2", "Date2")
+                 .appendColumn("period.ReportingPeriodId", "PeriodId");
 
             query.from(Tables.REPORTING_PERIOD, "period")
-                    .leftJoin(Tables.SITE, "site").on("site.SiteId=period.SiteId");
+                .leftJoin(Tables.SITE, "site").on("site.SiteId=period.SiteId");
 
 
         } else {
             query.from(Tables.SITE);
             query.appendColumn("site.Date1", "Date1")
-                    .appendColumn("site.Date2", "Date2");
+                 .appendColumn("site.Date2", "Date2");
         }
 
         query
-                .whereTrue("site.dateDeleted is null")
-                .leftJoin(Tables.ACTIVITY)
-                .on("site.ActivityId = activity.ActivityId")
-                .leftJoin(Tables.USER_DATABASE, "db")
-                .on("activity.DatabaseId = db.DatabaseId")
-                .leftJoin(Tables.PARTNER)
-                .on("site.PartnerId = partner.PartnerId")
-                .leftJoin(Tables.PROJECT)
-                .on("site.ProjectId = project.ProjectId");
+            .whereTrue("site.dateDeleted is null")
+            .leftJoin(Tables.ACTIVITY)
+            .on("site.ActivityId = activity.ActivityId")
+            .leftJoin(Tables.USER_DATABASE, "db")
+            .on("activity.DatabaseId = db.DatabaseId")
+            .leftJoin(Tables.PARTNER)
+            .on("site.PartnerId = partner.PartnerId")
+            .leftJoin(Tables.PROJECT)
+            .on("site.ProjectId = project.ProjectId");
 
 
         if(command.isFetchPartner()) {
             query.appendColumn("partner.PartnerId", "PartnerId")
-                    .appendColumn("partner.name", "PartnerName");
+                 .appendColumn("partner.name", "PartnerName");
         }
 
         if(command.isFetchLocation()) {
             query.appendColumn("location.locationId", "LocationId")
-                    .appendColumn("location.name", "LocationName")
-                    .appendColumn("location.axe", "LocationAxe")
-                    .appendColumn("locationType.name", "LocationTypeName")
-                    .appendColumn("location.x", "x")
-                    .appendColumn("location.y", "y");
+                .appendColumn("location.name", "LocationName")
+                .appendColumn("location.axe", "LocationAxe")
+                .appendColumn("locationType.name", "LocationTypeName")
+                .appendColumn("location.x", "x")
+                .appendColumn("location.y", "y");
 
         }
         if(locationJoinRequired(command)) {
             query
-                    .leftJoin(Tables.LOCATION).on("site.LocationId = location.LocationId")
-                    .leftJoin(Tables.LOCATION_TYPE, "locationType").on("location.LocationTypeId = locationType.LocationTypeId");
+                .leftJoin(Tables.LOCATION).on("site.LocationId = location.LocationId")
+                .leftJoin(Tables.LOCATION_TYPE, "locationType").on("location.LocationTypeId = locationType.LocationTypeId");
         }
 
         applyPermissions(query, context);
@@ -246,6 +255,8 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         if (command.getFilter().isRestricted(DimensionType.Indicator)) {
             applyPrimaryIndicatorFilter(query, command.getFilter());
         }
+
+        System.out.println(query.sql());
 
         return query;
     }
@@ -273,18 +284,18 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
         if (command.isFetchPartner()) {
             query
-                    .appendColumn("partner.PartnerId", "PartnerId")
-                    .appendColumn("partner.name", "PartnerName");
+            .appendColumn("partner.PartnerId", "PartnerId")
+            .appendColumn("partner.name", "PartnerName");
         }
 
         if (command.isFetchLocation()) {
             query
-                    .appendColumn("location.locationId", "LocationId")
-                    .appendColumn("location.name", "LocationName")
-                    .appendColumn("location.axe", "LocationAxe")
-                    .appendColumn("locationType.name", "LocationTypeName")
-                    .appendColumn("location.x", "x")
-                    .appendColumn("location.y", "y");
+            .appendColumn("location.locationId", "LocationId")
+            .appendColumn("location.name", "LocationName")
+            .appendColumn("location.axe", "LocationAxe")
+            .appendColumn("locationType.name", "LocationTypeName")
+            .appendColumn("location.x", "x")
+            .appendColumn("location.y", "y");
         }
 
         if (command.getFilter().isRestricted(DimensionType.Indicator)) {
@@ -326,10 +337,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
 
         if(locationJoinRequired(command)) {
             query
-                    .leftJoin(Tables.LOCATION)
-                    .on("site.LocationId = location.LocationId")
-                    .leftJoin(Tables.LOCATION_TYPE, "locationType")
-                    .on("location.LocationTypeId = locationType.LocationTypeId");
+            .leftJoin(Tables.LOCATION)
+                .on("site.LocationId = location.LocationId")
+                .leftJoin(Tables.LOCATION_TYPE, "locationType")
+                .on("location.LocationTypeId = locationType.LocationTypeId");
         }
 
         applyPermissions(query, context);
@@ -351,13 +362,13 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         if (context.isRemote()) {
             query.whereTrue("activity.DateDeleted IS NULL").and("db.DateDeleted IS NULL");
             query.whereTrue("(db.OwnerUserId = ? OR " +
-                    "db.DatabaseId in " +
-                    "(SELECT p.DatabaseId from userpermission p where p.UserId = ? and p.AllowViewAll) or " +
-                    "db.DatabaseId in " +
-                    "(select p.DatabaseId from userpermission p where (p.UserId = ?) and p.AllowView and p" +
-                    ".PartnerId = site.PartnerId) " +
-                    " OR (select count(*) from activity pa where pa.published>0 and pa.ActivityId = site" +
-                    ".ActivityId) > 0 )");
+                            "db.DatabaseId in " +
+                            "(SELECT p.DatabaseId from userpermission p where p.UserId = ? and p.AllowViewAll) or " +
+                            "db.DatabaseId in " +
+                            "(select p.DatabaseId from userpermission p where (p.UserId = ?) and p.AllowView and p" +
+                            ".PartnerId = site.PartnerId) " +
+                            " OR (select count(*) from activity pa where pa.published>0 and pa.ActivityId = site" +
+                            ".ActivityId) > 0 )");
 
             query.appendParameter(context.getUser().getId());
             query.appendParameter(context.getUser().getId());
@@ -510,9 +521,9 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
     }
 
     private Promise<Void> queryTotalLength(SqlTransaction tx,
-                                           GetSites command,
-                                           ExecutionContext context,
-                                           final SiteResult result) {
+                                  GetSites command,
+                                  ExecutionContext context,
+                                  final SiteResult result) {
 
         final Promise<Void> promise = new Promise<>();
         if (isMySql()) {
@@ -741,39 +752,80 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
         }
 
         SqlQuery query = SqlQuery.select()
-                .appendColumn("I.IndicatorId")
-                .appendColumn("I.ActivityId")
-                .appendColumn("I.Type")
-                .appendColumn("I.Expression")
-                .appendColumn("I.nameInExpression")
-                .appendColumn("I.calculatedAutomatically")
+                .appendColumn("I.IndicatorId", "indicatorId")
+                .appendColumn("I.Name", "indicatorName")
+                .appendColumn("I.ActivityId", "activityId")
+                .appendColumn("I.Type", "type")
+                .appendColumn("I.Expression", "expression")
+                .appendColumn("I.nameInExpression", "code")
+                .appendColumn("I.calculatedAutomatically", "calculatedAutomatically")
                 .from(Tables.INDICATOR, "I")
                 .where("I.ActivityId")
                 .in(activityIds)
                 .and("I.dateDeleted IS NULL")
                 .orderBy("I.SortOrder");
-        //                .and("I.Expression IS NOT NULL");
 
         Log.info(query.toString());
 
         query.execute(tx, new SqlResultCallback() {
             @Override
             public void onSuccess(SqlTransaction tx, final SqlResultSet results) {
-                Log.trace("Received results for join indicators");
-// TODO: replace with partialevaluator
-//                for(int activityId : activityIds) {
-//                    IndicatorSymbolResolver symbolResolver = new IndicatorSymbolResolver(activityId, results);
-//                    for (SiteDTO site : siteMap.values()) {
-//                        if (site.getActivityId() == symbolResolver.getActivityId()) {
-//                            symbolResolver.setSite(site);
-//                            symbolResolver.populateCalculatedIndicators();
-//                        }
-//                    }
-//                }
-//
+                List<FormField> fields = Lists.newArrayList();
+                for(SqlResultSetRow row : results.getRows()) {
+                    fields.add(createField(row));
+                }
+
+                FormSymbolTable symbolTable = new FormSymbolTable(fields);
+                PartialEvaluator<SiteDTO> evaluator = new PartialEvaluator<>(symbolTable, new SiteFieldReaderFactory());
+
+                List<CalculatedIndicatorReader> readers = Lists.newArrayList();
+                for(FormField field : fields) {
+                    if(field.getType() instanceof CalculatedFieldType) {
+                        FieldReader<SiteDTO> reader = evaluator.partiallyEvaluate(field);
+                        if(reader.getType() instanceof QuantityType) {
+                            readers.add(new CalculatedIndicatorReader(field, reader));
+                        }
+                    }
+                }
+
+                for(SiteDTO site : siteMap.values()) {
+                    for(CalculatedIndicatorReader reader : readers) {
+                        reader.read(site);
+                    }
+                }
                 complete.onSuccess(null);
             }
         });
+    }
+
+    private FormField createField(SqlResultSetRow rs) {
+        IndicatorDTO indicator = new IndicatorDTO();
+        indicator.setId(rs.getInt("indicatorId"));
+        indicator.setName("indicatorName");
+        indicator.setTypeId(rs.getString("type"));
+        indicator.setExpression(rs.getString("expression"));
+        indicator.setSkipExpression(rs.getString("skipExpression"));
+        indicator.setNameInExpression(rs.getString("code"));
+        indicator.setCalculatedAutomatically(rs.getBoolean("calculatedAutomatically"));
+        indicator.setUnits(rs.getString("units"));
+        return indicator.asFormField();
+    }
+
+    private static class CalculatedIndicatorReader {
+        private String propertyName;
+        private FieldReader<SiteDTO> reader;
+
+        private CalculatedIndicatorReader(FormField field, FieldReader<SiteDTO> reader) {
+            this.propertyName = IndicatorDTO.getPropertyName(CuidAdapter.getLegacyIdFromCuid(field.getId()));
+            this.reader = reader;
+        }
+
+        public void read(SiteDTO site) {
+            FieldValue value = reader.readField(site);
+            if(value instanceof Quantity) {
+                site.set(propertyName, ((Quantity) value).getValue());
+            }
+        }
     }
 
     private Promise<Void> joinAttributeValues(GetSites command, SqlTransaction tx, final Multimap<Integer, SiteDTO> siteMap) {
