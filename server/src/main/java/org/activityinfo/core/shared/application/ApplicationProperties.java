@@ -30,8 +30,6 @@ public class ApplicationProperties {
 
     public static final ResourceId HIERARCHIAL = ResourceId.valueOf("_multiLevel");
 
-    public static final ResourceId SUB_FORM = ResourceId.valueOf("_sub_form");
-
     public static final ResourceId COUNTRY_CLASS = ResourceId.valueOf("_country");
 
     public static final ResourceId COUNTRY_NAME_FIELD = ResourceId.valueOf("_country_name");
