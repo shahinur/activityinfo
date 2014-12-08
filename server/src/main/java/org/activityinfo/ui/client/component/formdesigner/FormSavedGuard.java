@@ -21,11 +21,9 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.AsyncMonitor;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.ui.client.page.HasNavigationCallback;
@@ -48,14 +46,6 @@ public class FormSavedGuard implements HasNavigationCallback {
 
     public FormSavedGuard(FormDesigner formDesigner) {
         this.formDesigner = formDesigner;
-        Window.addWindowClosingHandler(new Window.ClosingHandler() {
-            @Override
-            public void onWindowClosing(Window.ClosingEvent event) {
-                if (!isSaved()) {
-                    event.setMessage(I18N.CONSTANTS.unsavedChangesWarning());
-                }
-            }
-        });
     }
 
     @Override
