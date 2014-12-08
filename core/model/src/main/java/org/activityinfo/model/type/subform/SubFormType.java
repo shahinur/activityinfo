@@ -22,17 +22,11 @@ package org.activityinfo.model.type.subform;
  */
 
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 import org.activityinfo.model.type.*;
-import org.activityinfo.model.type.enumerated.EnumFieldValue;
-import org.activityinfo.model.type.enumerated.EnumType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.Quantity;
-
-import java.util.ArrayList;
 
 /**
  * @author yuriyz on 12/03/2014.
@@ -58,16 +52,12 @@ public class SubFormType implements ParametrizedFieldType {
         public SubFormType deserializeType(Record typeParameters) {
             return new SubFormType()
                     .setClassReference((ReferenceType) ReferenceType.TYPE_CLASS.deserializeType(typeParameters.getRecord("classReference")))
-                    .setSelector((EnumFieldValue) EnumType.TYPE_CLASS.deserialize(typeParameters.getRecord("selector")));
+                    .setDataOwnerClass(ResourceId.valueOf(typeParameters.getString("dataOwnerClass")));
         }
 
         @Override
         public FormClass getParameterFormClass() {
-            final FormField selector = new FormField(ResourceId.valueOf("_selector"))
-                    .setLabel("Selector for subform (time period, territory)")
-                    .setType(new EnumType(Cardinality.MULTIPLE, new ArrayList<EnumValue>()));
-            return new FormClass(ResourceIdPrefixType.TYPE.id("subform"))
-                    .addElement(selector);
+            return new FormClass(ResourceIdPrefixType.TYPE.id("subform"));
         }
 
         @Override
@@ -79,14 +69,14 @@ public class SubFormType implements ParametrizedFieldType {
     public static final TypeClass TYPE_CLASS = new TypeClass();
 
     private ReferenceType classReference;
-    private EnumFieldValue selector;
+    private ResourceId dataOwnerClass; // refers to owner FormClass
 
     public SubFormType() {
     }
 
-    public SubFormType(ReferenceType classReference, EnumFieldValue selector) {
+    public SubFormType(ReferenceType classReference, ResourceId subFormOf) {
         this.classReference = classReference;
-        this.selector = selector;
+        this.dataOwnerClass = subFormOf;
     }
 
     public ReferenceType getClassReference() {
@@ -98,12 +88,12 @@ public class SubFormType implements ParametrizedFieldType {
         return this;
     }
 
-    public EnumFieldValue getSelector() {
-        return selector;
+    public ResourceId getDataOwnerClass() {
+        return dataOwnerClass;
     }
 
-    public SubFormType setSelector(EnumFieldValue selector) {
-        this.selector = selector;
+    public SubFormType setDataOwnerClass(ResourceId dataOwnerClass) {
+        this.dataOwnerClass = dataOwnerClass;
         return this;
     }
 
@@ -117,7 +107,7 @@ public class SubFormType implements ParametrizedFieldType {
         return new Record()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
                 .set("classReference", classReference.getParameters())
-                .set("selector", selector.asRecord());
+                .set("dataOwnerClass", dataOwnerClass.asString());
     }
 
     @Override
