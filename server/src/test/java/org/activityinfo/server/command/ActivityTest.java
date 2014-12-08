@@ -111,6 +111,19 @@ public class ActivityTest extends CommandTestCase2 {
 
     }
 
+
+    @Test
+    @OnDataSet("/dbunit/schema2.db.xml")
+    public void testActivityFormWithAdminLocationType() throws CommandException {
+
+
+        ActivityFormDTO form = execute(new GetActivityForm(1));
+
+        assertEquals("name", "NFI", form.getName());
+        assertThat("locationType", form.getLocationType().isAdminLevel(), equalTo(true));
+
+    }
+
     @Test
     public void updateSortOrderTest() throws Throwable {
 
