@@ -25,24 +25,17 @@ package org.activityinfo.ui.client.component.report.editor.chart;
 import com.extjs.gxt.ui.client.data.BaseListLoadResult;
 import com.extjs.gxt.ui.client.data.ListLoadResult;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
-import org.activityinfo.legacy.shared.command.*;
-import org.activityinfo.legacy.shared.command.result.AdminLevelResult;
-import org.activityinfo.legacy.shared.command.result.AttributeGroupResult;
-import org.activityinfo.legacy.shared.model.AdminLevelDTO;
-import org.activityinfo.legacy.shared.model.AttributeGroupDTO;
-import org.activityinfo.legacy.shared.model.CountryDTO;
-import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.command.DimensionType;
 import org.activityinfo.legacy.shared.reports.model.DateUnit;
 import org.activityinfo.legacy.shared.reports.model.PivotChartReportElement;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.component.report.editor.pivotTable.DimensionModel;
 
 import java.util.List;
-import java.util.Set;
 
 public class DimensionProxy extends RpcProxy<ListLoadResult<DimensionModel>> {
 
@@ -77,7 +70,16 @@ public class DimensionProxy extends RpcProxy<ListLoadResult<DimensionModel>> {
             callback.onSuccess(new BaseListLoadResult<>(list));
 
         } else {
-
+            Dimensions.loadDimensions(dispatcher, model)
+            .then(new Function<Dimensions, ListLoadResult<DimensionModel>>() {
+                @Override
+                public ListLoadResult<DimensionModel> apply(Dimensions input) {
+                    list.addAll(input.getAttributeDimensions());
+                    list.addAll(input.getAdminLevelDimensions());
+                    return new BaseListLoadResult<>(list);
+                }
+            })
+            .then(callback);
         }
     }
 
