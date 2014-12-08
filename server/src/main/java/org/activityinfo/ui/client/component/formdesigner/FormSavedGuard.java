@@ -21,9 +21,11 @@ package org.activityinfo.ui.client.component.formdesigner;
  * #L%
  */
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasOneWidget;
 import com.google.gwt.user.client.ui.IndexedPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.AsyncMonitor;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.ui.client.page.HasNavigationCallback;
@@ -36,12 +38,24 @@ import org.activityinfo.ui.client.page.common.dialog.SavePromptMessageBox;
  */
 public class FormSavedGuard implements HasNavigationCallback {
 
+    public interface HasSavedGuard {
+        HasNavigationCallback getSavedGuard();
+    }
+
     private final FormDesigner formDesigner;
 
     private boolean saved = true;
 
     public FormSavedGuard(FormDesigner formDesigner) {
         this.formDesigner = formDesigner;
+        Window.addWindowClosingHandler(new Window.ClosingHandler() {
+            @Override
+            public void onWindowClosing(Window.ClosingEvent event) {
+                if (!isSaved()) {
+                    event.setMessage(I18N.CONSTANTS.unsavedChangesWarning());
+                }
+            }
+        });
     }
 
     @Override
@@ -86,6 +100,26 @@ public class FormSavedGuard implements HasNavigationCallback {
         this.saved = saved;
     }
 
+    public static FormSavedGuard getGuard(Widget widget) {
+        if (widget instanceof FormSavedGuard.HasSavedGuard) {
+            return (FormSavedGuard) ((HasSavedGuard) widget).getSavedGuard();
+        }
+        if (widget instanceof HasOneWidget) {
+            return getGuard(((HasOneWidget) widget).getWidget());
+        } else if (widget instanceof IndexedPanel) {
+            IndexedPanel indexedPanel = (IndexedPanel) widget;
+            for (int i = 0; i < indexedPanel.getWidgetCount(); i++) {
+                Widget w = indexedPanel.getWidget(i);
+                FormSavedGuard guard = getGuard(w);
+                if (guard != null) {
+                    return guard;
+                }
+            }
+        }
+        return null;
+    }
+
+
     /**
      * @return true HasNavigationCallback was found, otherwise false
      */
@@ -100,7 +134,7 @@ public class FormSavedGuard implements HasNavigationCallback {
             }
         } else if (widget instanceof IndexedPanel) {
             IndexedPanel indexedPanel = (IndexedPanel) widget;
-            for (int i = 0; i<indexedPanel.getWidgetCount(); i++) {
+            for (int i = 0; i < indexedPanel.getWidgetCount(); i++) {
                 Widget w = indexedPanel.getWidget(i);
                 if (callNavigationCallback(w, callback)) {
                     return true;

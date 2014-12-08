@@ -63,7 +63,7 @@ import java.util.Set;
 /**
  * @author yuriyz on 07/04/2014.
  */
-public class FormDesignerPanel extends Composite implements ScrollHandler, HasNavigationCallback {
+public class FormDesignerPanel extends Composite implements ScrollHandler, HasNavigationCallback, FormSavedGuard.HasSavedGuard {
 
     private final static OurUiBinder uiBinder = GWT
             .create(OurUiBinder.class);
