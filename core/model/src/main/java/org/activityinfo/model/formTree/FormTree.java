@@ -192,6 +192,15 @@ public class FormTree {
         return rootFields;
     }
 
+    public List<FieldPath> getRootPaths() {
+        List<FieldPath> paths = Lists.newArrayList();
+        for (Node node : rootFields) {
+            paths.add(node.getPath());
+        }
+        return paths;
+
+    }
+
     public Map<ResourceId, FormClass> getRootFormClasses() {
         Map<ResourceId, FormClass> map = Maps.newHashMap();
         for(Node node : rootFields) {
