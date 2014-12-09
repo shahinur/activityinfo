@@ -24,7 +24,7 @@ import org.activityinfo.legacy.shared.Log;
 
 import java.util.List;
 
-import static org.activityinfo.core.shared.application.ApplicationProperties.LABEL_PROPERTY;
+import static org.activityinfo.model.system.ApplicationProperties.LABEL_PROPERTY;
 
 /**
  * A single level within the label

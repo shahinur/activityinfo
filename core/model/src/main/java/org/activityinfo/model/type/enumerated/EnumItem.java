@@ -2,8 +2,9 @@ package org.activityinfo.model.type.enumerated;
 
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 
 public class EnumItem implements IsRecord {
@@ -53,10 +54,11 @@ public class EnumItem implements IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
                 .set("label", label)
                 .set("code", code)
-                .set("id", id.asString());
+                .set("id", id.asString())
+                .build();
     }
 
     @Override

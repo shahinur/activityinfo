@@ -1,7 +1,8 @@
 package org.activityinfo.model.type.expr;
 
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -27,9 +28,10 @@ public class ExprValue implements FieldValue, IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
                 .set(FieldValue.TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
-                .set("value", expression);
+                .set("value", expression)
+                .build();
     }
 
     public static ExprValue valueOf(String value) {

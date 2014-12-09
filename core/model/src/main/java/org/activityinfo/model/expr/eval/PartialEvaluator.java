@@ -8,16 +8,9 @@ import org.activityinfo.model.expr.diagnostic.ExprException;
 import org.activityinfo.model.expr.diagnostic.ExprSyntaxException;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.*;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
-import org.activityinfo.model.type.number.Quantity;
-import org.activityinfo.model.type.number.QuantityType;
-import org.activityinfo.model.type.primitive.BooleanFieldValue;
-import org.activityinfo.model.type.primitive.BooleanType;
-import org.activityinfo.model.type.primitive.TextType;
-import org.activityinfo.model.type.primitive.TextValue;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -147,7 +140,7 @@ public class PartialEvaluator<InstanceT> {
             stack.add(field);
             try {
                 CalculatedFieldType calculatedType = (CalculatedFieldType) field.getType();
-                ExprNode calculatedNode = ExprParser.parse(calculatedType.getExpression().getExpression());
+                ExprNode calculatedNode = ExprParser.parse(calculatedType.getExpression());
                 return calculatedNode.accept(this);
 
             } finally {

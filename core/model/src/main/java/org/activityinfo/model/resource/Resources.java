@@ -1,6 +1,7 @@
 package org.activityinfo.model.resource;
 
 import com.google.gson.*;
+import org.activityinfo.model.record.Record;
 
 import java.util.ArrayList;
 import java.util.List;

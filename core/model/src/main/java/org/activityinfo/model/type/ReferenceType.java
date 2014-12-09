@@ -3,7 +3,7 @@ package org.activityinfo.model.type;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 

@@ -1,8 +1,8 @@
 package org.activityinfo.model.type;
 
 import com.google.common.base.Strings;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.type.primitive.HasStringValue;
 
 public class NarrativeValue implements FieldValue, IsRecord, HasStringValue {

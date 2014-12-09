@@ -14,8 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.activityinfo.core.shared.application.ApplicationProperties.LABEL_PROPERTY;
-import static org.activityinfo.core.shared.application.ApplicationProperties.PARENT_PROPERTY;
+import static org.activityinfo.model.system.ApplicationProperties.LABEL_PROPERTY;
+import static org.activityinfo.model.system.ApplicationProperties.PARENT_PROPERTY;
 
 class InitialSelection {
 

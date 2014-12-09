@@ -1,13 +1,21 @@
 package org.activityinfo.model.form;
 
 import com.google.common.collect.Maps;
-import org.activityinfo.model.expr.eval.*;
+import org.activityinfo.model.expr.eval.CalculatedField;
+import org.activityinfo.model.expr.eval.ConstantValue;
+import org.activityinfo.model.expr.eval.EvalContext;
+import org.activityinfo.model.expr.eval.FieldValueSource;
+import org.activityinfo.model.expr.eval.StaticField;
+import org.activityinfo.model.expr.eval.ValueSource;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.*;
-import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.ErrorValue;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.expr.CalculatedFieldType;
 
 import java.util.Map;
@@ -20,14 +28,14 @@ public class FormEvalContext implements EvalContext {
      */
     private final Map<String, ValueSource> symbolMap = Maps.newHashMap();
 
-    private final Map<String, ValueSource> fieldMap = Maps.newHashMap();
+    private final Map<String, FieldValueSource> fieldMap = Maps.newHashMap();
 
 
     private Resource formInstance;
 
     public FormEvalContext(FormClass formClass) {
         for (FormField field : formClass.getFields()) {
-            ValueSource source = createValueSource(field);
+            FieldValueSource source = createFieldValueSource(field);
             if (field.hasCode()) {
                 symbolMap.put(field.getCode(), source);
             }
@@ -82,7 +90,7 @@ public class FormEvalContext implements EvalContext {
         return getFieldValue(fieldId.asString());
     }
 
-    private ValueSource createValueSource(FormField field) {
+    private FieldValueSource createFieldValueSource(FormField field) {
 
         if (field.getType() instanceof CalculatedFieldType) {
             return new CalculatedField(field);

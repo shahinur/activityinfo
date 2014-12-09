@@ -2,9 +2,16 @@ package org.activityinfo.model.form;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.TypeRegistry;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
@@ -202,7 +209,7 @@ public class FormField extends FormElement {
     public Record asRecord() {
         assert type != null : id + " has no type";
 
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("id", id.asString());
         record.set("code", code);
         record.set("description", description);
@@ -216,16 +223,16 @@ public class FormField extends FormElement {
             record.set("superProperties", new ReferenceValue(superProperties).asRecord());
         }
 
-        return record;
+        return record.build();
     }
 
     private Record toRecord(FieldType type) {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set("typeClass", type.getTypeClass().getId());
         if(type instanceof ParametrizedFieldType) {
             record.set("parameters", ((ParametrizedFieldType)type).getParameters());
         }
-        return record;
+        return record.build();
     }
 
     public static FormField fromRecord(Record record) {

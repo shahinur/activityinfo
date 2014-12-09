@@ -3,7 +3,7 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.application.FolderClass;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;

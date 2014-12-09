@@ -9,7 +9,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.SimpleEventBus;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.application.ApplicationProperties;
+import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.adapter.LocationClassAdapter;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;

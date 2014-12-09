@@ -1,6 +1,6 @@
 package org.activityinfo.model.type;
 
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 
 /**
  * A {@code FieldType} with parameters that further specialize

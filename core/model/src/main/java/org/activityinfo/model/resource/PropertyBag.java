@@ -3,6 +3,8 @@ package org.activityinfo.model.resource;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;

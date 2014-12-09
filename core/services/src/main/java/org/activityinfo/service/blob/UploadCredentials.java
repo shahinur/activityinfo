@@ -1,9 +1,9 @@
 package org.activityinfo.service.blob;
 
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.IsRecord;
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.resource.PropertyBag;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 
 import java.util.Map;
 

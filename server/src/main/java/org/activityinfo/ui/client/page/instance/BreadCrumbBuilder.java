@@ -12,7 +12,7 @@ import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.application.ApplicationProperties;
+import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.IdCriteria;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.promise.Promise;

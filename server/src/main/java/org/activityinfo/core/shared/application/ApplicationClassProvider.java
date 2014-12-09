@@ -4,6 +4,8 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.model.system.FolderClass;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.ParametrizedFieldTypeClass;
 import org.activityinfo.model.type.TypeRegistry;

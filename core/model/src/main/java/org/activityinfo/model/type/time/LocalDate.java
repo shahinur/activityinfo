@@ -1,8 +1,8 @@
 package org.activityinfo.model.type.time;
 
 import com.bedatadriven.rebar.time.CalendricalException;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 

@@ -14,8 +14,8 @@ import org.activityinfo.ui.client.widget.DisplayWidget;
 
 import java.util.List;
 
-import static org.activityinfo.core.shared.application.ApplicationProperties.DESCRIPTION_PROPERTY;
-import static org.activityinfo.core.shared.application.ApplicationProperties.LABEL_PROPERTY;
+import static org.activityinfo.model.system.ApplicationProperties.DESCRIPTION_PROPERTY;
+import static org.activityinfo.model.system.ApplicationProperties.LABEL_PROPERTY;
 
 /**
  * Displays a list of instances
