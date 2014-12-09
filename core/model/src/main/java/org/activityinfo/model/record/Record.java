@@ -1,4 +1,6 @@
-package org.activityinfo.model.resource;
+package org.activityinfo.model.record;
+
+import org.activityinfo.model.resource.PropertyBag;
 
 /**
  * A record is a collection of named properties that

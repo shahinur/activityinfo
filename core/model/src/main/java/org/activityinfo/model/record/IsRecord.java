@@ -1,4 +1,4 @@
-package org.activityinfo.model.resource;
+package org.activityinfo.model.record;
 
 /**
  * Marker for objects that serialize to an underlying {@code Resource}
