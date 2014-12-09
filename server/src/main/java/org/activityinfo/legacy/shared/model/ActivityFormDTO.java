@@ -228,6 +228,11 @@ public final class ActivityFormDTO extends BaseModelData implements EntityDTO, H
         return get("classicView", true);
     }
 
+    @Override
+    public ResourceId getFormClassId() {
+        return CuidAdapter.activityFormClass(getId());
+    }
+
 
     /**
      * Sets the ReportingFrequency of this Activity, either
