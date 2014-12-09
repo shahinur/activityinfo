@@ -148,7 +148,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
             public void handleEvent(BaseEvent be) {
 
                 ModelData sel = DesignPresenter.this.view.getSelection();
-                ActivityDTO activity = DesignPresenter.this.getSelectedActivity(sel);
+                IsActivityDTO activity = DesignPresenter.this.getSelectedActivity(sel);
 
                 DesignPresenter.this.view.getNewAttributeGroup().setEnabled(activity != null && activity.getClassicView());
                 DesignPresenter.this.view.getNewAttribute().setEnabled(activity != null && (sel instanceof AttributeGroupDTO || sel instanceof AttributeDTO) && activity.getClassicView());
@@ -510,13 +510,13 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     }
 
     private boolean canEditWithFormDesigner(ModelData selectedItem) {
-        ActivityDTO activity = getSelectedActivity(selectedItem);
+        IsActivityDTO activity = getSelectedActivity(selectedItem);
         return activity != null && activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE;
     }
 
-    private ActivityDTO getSelectedActivity(ModelData selectedItem) {
-        if (selectedItem instanceof ActivityDTO) {
-            return (ActivityDTO) selectedItem;
+    private IsActivityDTO getSelectedActivity(ModelData selectedItem) {
+        if (selectedItem instanceof IsActivityDTO) {
+            return (IsActivityDTO) selectedItem;
         } else if (selectedItem instanceof AttributeGroupFolder ||
                 selectedItem instanceof IndicatorFolder ||
                 selectedItem instanceof AttributeGroupDTO ||
