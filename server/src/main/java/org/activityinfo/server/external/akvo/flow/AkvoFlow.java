@@ -112,6 +112,8 @@ public class AkvoFlow {
 
             System.out.println(survey.instanceCount);
             System.out.println(survey.keyId);
+            System.out.println(survey.status);
+            System.out.println(survey.questionGroupList);
 
             for (QuestionGroup questionGroup : questionGroups) {
                 System.out.println("\t(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
@@ -124,6 +126,7 @@ public class AkvoFlow {
                 System.out.println("\t" + questionGroup.surveyId);
                 System.out.println("\t" + questionGroup.order);
                 System.out.println("\t" + questionGroup.keyId);
+                System.out.println("\t" + questionGroup.sourceId);
                 System.out.println("\t)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))");
             }
 
@@ -151,6 +154,21 @@ public class AkvoFlow {
                 System.out.println("\t" + question.questionOptions);
                 System.out.println("\t" + question.surveyId);
                 System.out.println("\t" + question.order);
+                System.out.println("\t" + question.path);
+                System.out.println("\t" + question.immutable);
+                System.out.println("\t" + question.questionDependency);
+                System.out.println("\t" + question.sourceId);
+                System.out.println("\t" + question.optionList);
+                System.out.println("\t" + question.collapseable);
+                System.out.println("\t" + question.allowExternalSources);
+                System.out.println("\t" + question.isName);
+                System.out.println("\t" + question.metricId);
+                System.out.println("\t" + question.questionId);
+                System.out.println("\t" + question.translationMap);
+                System.out.println("\t" + question.optionContainerDto);
+                System.out.println("\t" + question.questionHelpList);
+                System.out.println("\t" + question.text);
+                System.out.println("\t" + question.keyId);
                 System.out.println("\t}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}");
             }
 
@@ -171,6 +189,7 @@ public class AkvoFlow {
                 System.out.println("\t" + surveyInstance.keyId);
                 System.out.println("\t" + surveyInstance.surveyedLocaleIdentifier);
                 System.out.println("\t" + surveyInstance.surveyedLocaleId);
+                System.out.println("\t" + surveyInstance.surveyedLocaleDisplayName);
 
                 for (QuestionAnswer questionAnswer : questionAnswers) {
                     System.out.println("\t\t\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
@@ -184,6 +203,8 @@ public class AkvoFlow {
                     System.out.println("\t\t" + questionAnswer.collectionDate);
                     System.out.println("\t\t" + questionAnswer.surveyInstanceId);
                     System.out.println("\t\t" + questionAnswer.keyId);
+                    System.out.println("\t\t" + questionAnswer.textualQuestionId);
+                    System.out.println("\t\t" + questionAnswer.questionID);
                     System.out.println("\t\t////////////////////////////////////");
                 }
                 System.out.println("\t)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))");

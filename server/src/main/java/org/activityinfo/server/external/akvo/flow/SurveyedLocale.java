@@ -5,6 +5,7 @@ import java.util.List;
 final public class SurveyedLocale {
     static final public class Array {
         public SurveyedLocale surveyed_locales[];
+        public Object meta;
     }
 
     static final public class Single {

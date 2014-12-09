@@ -3,6 +3,7 @@ package org.activityinfo.server.external.akvo.flow;
 final public class SurveyInstance {
     static final public class Array {
         public SurveyInstance survey_instances[];
+        public Object meta;
     }
 
     static final public class Single {
@@ -22,4 +23,5 @@ final public class SurveyInstance {
     public Integer keyId;
     public String surveyedLocaleIdentifier;
     public String surveyedLocaleId;
+    public String surveyedLocaleDisplayName;
 }

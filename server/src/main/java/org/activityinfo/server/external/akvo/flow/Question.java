@@ -5,6 +5,8 @@ import java.util.List;
 final public class Question {
     static final public class Array {
         public Question questions[];
+        public Object questionOptions;
+        public Object meta;
     }
 
     static final public class Single {
@@ -34,4 +36,19 @@ final public class Question {
     public List<Integer> questionOptions;
     public Integer surveyId;
     public Integer order;
+    public String path;
+    public String immutable;
+    public String questionDependency;
+    public String sourceId;
+    public String optionList;
+    public String collapseable;
+    public String allowExternalSources;
+    public String isName;
+    public String metricId;
+    public String questionId;
+    public String translationMap;
+    public String optionContainerDto;
+    public String questionHelpList;
+    public String text;
+    public String keyId;
 }

@@ -19,4 +19,6 @@ final public class QuestionAnswer {
     public Long collectionDate;
     public Integer surveyInstanceId;
     public Integer keyId;
+    public String textualQuestionId;
+    public String questionID;           // Presumably a miscapitalization of questionId
 }

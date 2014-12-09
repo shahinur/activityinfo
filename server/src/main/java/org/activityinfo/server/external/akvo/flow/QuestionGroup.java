@@ -3,6 +3,7 @@ package org.activityinfo.server.external.akvo.flow;
 final public class QuestionGroup {
     static final public class Array {
         public QuestionGroup question_groups[];
+        public Object meta;
     }
 
     static final public class Single {
@@ -18,4 +19,5 @@ final public class QuestionGroup {
     public Integer surveyId;
     public Integer order;
     public Integer keyId;
+    public String sourceId;
 }

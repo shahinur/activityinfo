@@ -25,4 +25,6 @@ final public class Survey {
     public Integer surveyGroupId;
     public Integer instanceCount;
     public Integer keyId;
+    public String status;
+    public String questionGroupList;
 }
