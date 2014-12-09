@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.promise.Promise;
@@ -31,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class EnumFieldWidget implements FormFieldWidget<EnumValue> {
+public class EnumFieldWidget implements FormFieldWidget<EnumItem> {
 
 
     public interface Templates extends SafeHtmlTemplates {
@@ -61,7 +60,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumValue> {
     private final List<CheckBox> controls;
     private final FieldWidgetMode fieldWidgetMode;
 
-    public EnumFieldWidget(EnumType enumType, final ValueUpdater<EnumValue> valueUpdater, FieldWidgetMode fieldWidgetMode) {
+    public EnumFieldWidget(EnumType enumType, final ValueUpdater<EnumItem> valueUpdater, FieldWidgetMode fieldWidgetMode) {
         this.enumType = enumType;
         this.groupName = "group" + (nextId++);
         this.fieldWidgetMode = fieldWidgetMode;
@@ -185,18 +184,18 @@ public class EnumFieldWidget implements FormFieldWidget<EnumValue> {
         }
     }
 
-    private EnumValue updatedValue() {
+    private EnumItem updatedValue() {
         final Set<ResourceId> value = Sets.newHashSet();
         for (CheckBox control : controls) {
             if(control.getValue()) {
                 value.add(ResourceId.valueOf(control.getFormValue()));
             }
         }
-        return new EnumValue(value);
+        return new EnumItem(value);
     }
 
     @Override
-    public Promise<Void> setValue(EnumValue value) {
+    public Promise<Void> setValue(EnumItem value) {
         for (CheckBox entry : controls) {
             entry.setValue(containsIgnoreCase(value.getResourceIds(), entry.getFormValue()));
         }
@@ -220,7 +219,7 @@ public class EnumFieldWidget implements FormFieldWidget<EnumValue> {
 
     @Override
     public void clearValue() {
-        setValue(EnumValue.EMPTY);
+        setValue(EnumItem.EMPTY);
     }
 
     @Override

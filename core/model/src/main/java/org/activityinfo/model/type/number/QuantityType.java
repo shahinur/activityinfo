@@ -3,9 +3,13 @@ package org.activityinfo.model.type.number;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
+import org.activityinfo.model.type.RecordFieldTypeClass;
+import org.activityinfo.model.type.Types;
+import org.activityinfo.model.type.primitive.TextType;
 
 /**
  * A value types that describes a real-valued quantity and its units.
@@ -36,9 +40,9 @@ public class QuantityType implements ParametrizedFieldType {
 
         @Override
         public FormClass getParameterFormClass() {
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("quantity"));
+            FormClass formClass = new FormClass(Types.parameterFormClassId(this));
             formClass.addElement(new FormField(ResourceId.valueOf("units"))
-                    .setType(FREE_TEXT.createType())
+                    .setType(TextType.INSTANCE)
                     .setLabel("Units")
                     .setDescription("Describes the unit of measurement. For example: 'households', 'individuals'," +
                                     " 'meters', etc."));
@@ -46,10 +50,10 @@ public class QuantityType implements ParametrizedFieldType {
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public Quantity deserialize(Record record) {
             return Quantity.fromRecord(record);
         }
-    }
+    };
 
     public static final TypeClass TYPE_CLASS = new TypeClass();
 
@@ -78,9 +82,9 @@ public class QuantityType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record()
+        return Records.builder(getTypeClass())
                 .set("units", units)
-                .set("classId", getTypeClass().getParameterFormClass().getId());
+                .build();
     }
 
     @Override

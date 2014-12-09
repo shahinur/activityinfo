@@ -3,9 +3,12 @@ package org.activityinfo.model.type.expr;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
+import org.activityinfo.model.type.Types;
 
 /**
  * A Value Type that represents a value calculated from a symbolic expression,
@@ -26,12 +29,7 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
         @Override
         public FieldType deserializeType(Record parameters) {
-            CalculatedFieldType type = new CalculatedFieldType();
-            Record expr = parameters.isRecord("expression");
-            if(expr != null) {
-                type.setExpression(ExprValue.fromRecord(expr));
-            }
-            return type;
+            return new CalculatedFieldType(parameters.isString("expression"));
         }
 
         @Override
@@ -39,40 +37,31 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
             FormField exprField = new FormField(ResourceId.valueOf("expression"));
             exprField.setLabel("Expression");
-            exprField.setDescription("Example: A+B+(C/D)+[Volume A]");
+            exprField.setDescription("Set expression if you would like to calculate field value dynamically (otherwise leave blank). Example: {A}+{B}+({C}/{D})");
             exprField.setType(ExprFieldType.INSTANCE);
 
-            FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id(getId()));
+            FormClass formClass = new FormClass(Types.parameterFormClassId(this));
             formClass.addElement(exprField);
 
             return formClass;
         }
     };
 
-
-    private ExprValue expression;
+    private String expression;
 
     public CalculatedFieldType() {
     }
 
     public CalculatedFieldType(String expression) {
-        this.expression = ExprValue.valueOf(expression);
-    }
-
-    public CalculatedFieldType(ExprValue expression) {
         this.expression = expression;
     }
 
-    public ExprValue getExpression() {
+    public String getExpression() {
         return expression;
     }
 
     public void setExpression(String expression) {
-        this.expression = ExprValue.valueOf(expression);
-    }
-
-    private void setExpression(ExprValue exprValue) {
-        this.expression = exprValue;
+        this.expression = expression;
     }
 
     @Override
@@ -82,12 +71,9 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        Record record = new Record();
-        record.set("classId", getTypeClass().getParameterFormClass().getId());
-        if(expression != null) {
-            record.set("expression", expression.asRecord());
-        }
-        return record;
+        return Records.builder(getTypeClass())
+                .set("expression", expression)
+                .build();
     }
 
     @Override

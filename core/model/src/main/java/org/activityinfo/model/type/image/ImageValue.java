@@ -22,8 +22,9 @@ package org.activityinfo.model.type.image;
  */
 
 import com.google.common.collect.Lists;
-import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -64,9 +65,10 @@ public class ImageValue implements FieldValue, IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
                 .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
-                .set("values", getValuesAsRecords());
+                .set("values", getValuesAsRecords())
+                .build();
     }
 
     public static FieldValue fromRecord(Record record) {

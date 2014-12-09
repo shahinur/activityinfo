@@ -1,10 +1,14 @@
 package org.activityinfo.model.resource;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.TextValue;
@@ -163,14 +167,6 @@ public class PropertyBag<T extends PropertyBag> {
         return ResourceId.valueOf(value);
     }
 
-    public ResourceId isResourceId(String propertyName) {
-        Object value = properties.get(propertyName);
-        if(value instanceof ResourceId) {
-            return (ResourceId) value;
-        }
-        return null;
-    }
-
     /**
      * @return the value of this field as a {@code double}
      * @throws java.lang.ClassCastException if the value of the property is not a Number
@@ -207,21 +203,24 @@ public class PropertyBag<T extends PropertyBag> {
 
     public PropertyBag<T> set(@NotNull ResourceId fieldId, FieldValue fieldValue) {
         Preconditions.checkNotNull(fieldId);
+        return set(fieldId.asString(), fieldValue);
+    }
+
+    public PropertyBag<T> set(String propertyName, FieldValue fieldValue) {
+        Preconditions.checkNotNull(propertyName);
+
         if (fieldValue == null) {
-            remove(fieldId.asString());
-
+            remove(propertyName);
         } else if (fieldValue instanceof TextValue) {
-            set(fieldId.asString(), ((TextValue) fieldValue).toString());
-
+            set(propertyName, (fieldValue).toString());
         } else if (fieldValue instanceof BooleanFieldValue) {
-            set(fieldId.asString(), fieldValue == BooleanFieldValue.TRUE);
-
+            set(propertyName, fieldValue == BooleanFieldValue.TRUE);
         } else if(fieldValue instanceof IsRecord) {
-            set(fieldId.asString(), ((IsRecord) fieldValue).asRecord());
-
+            set(propertyName, ((IsRecord) fieldValue).asRecord());
         } else {
-            throw new UnsupportedOperationException(fieldId + " = " + fieldValue);
+            throw new UnsupportedOperationException(propertyName + " = " + fieldValue);
         }
+
         return this;
     }
 
@@ -318,9 +317,12 @@ public class PropertyBag<T extends PropertyBag> {
         } else if(value instanceof ResourceId) {
             properties.put(propertyName, ((ResourceId) value).asString());
 
+        } else if(value instanceof Map) {
+            throw new UnsupportedOperationException();
+
         } else {
             assert validPropertyValue(value) : "Invalid " + propertyName + " = " + value +
-                                               " (" + value.getClass().getName() + ")";
+                " (" + value.getClass().getName() + ")";
 
             properties.put(propertyName, value);
 
@@ -339,9 +341,9 @@ public class PropertyBag<T extends PropertyBag> {
 
         } else {
             return value instanceof String ||
-                   value instanceof Number ||
-                   value instanceof Record ||
-                   value instanceof Boolean;
+                value instanceof Number ||
+                value instanceof Record ||
+                value instanceof Boolean;
         }
     }
 
@@ -358,8 +360,16 @@ public class PropertyBag<T extends PropertyBag> {
         properties.putAll(propertyBag.properties);
     }
 
+    @JsonGetter
     public Map<String, Object> getProperties() {
         return properties;
+    }
+
+    @JsonSetter
+    protected void setProperties(Map<String, Object> properties) {
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            set(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
@@ -384,5 +394,28 @@ public class PropertyBag<T extends PropertyBag> {
     @Override
     public String toString() {
         return properties.toString();
+    }
+
+    public Record toRecord(ResourceId classId) {
+        RecordBuilder record = Records.builder(classId);
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if(value instanceof String) {
+                record.set(key, (String)value);
+            } else if(value instanceof Double) {
+                record.set(key, (Double)value);
+            } else if(value instanceof Record) {
+                record.set(key, (Record)value);
+            } else if(value instanceof Boolean) {
+                record.set(key, (Boolean) value);
+            } else if(value instanceof List) {
+                record.set(key, (List)value);
+            } else {
+                throw new IllegalArgumentException(value.getClass().getName());
+            }
+        }
+        return record.build();
     }
 }

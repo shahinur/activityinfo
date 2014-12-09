@@ -1,5 +1,6 @@
 package org.activityinfo.model.system;
 
+import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.resource.ResourceId;
 
 /**
@@ -12,7 +13,7 @@ public class ApplicationProperties {
      * Application-defined property that provides a human-readable name for
      * a given form instance.
      */
-    public static final ResourceId LABEL_PROPERTY = ResourceId.valueOf("_label");
+    public static final ResourceId LABEL_PROPERTY = ResourceId.valueOf("label");
 
     public static final ResourceId PARENT_PROPERTY = ResourceId.valueOf("_parent");
 
@@ -30,11 +31,25 @@ public class ApplicationProperties {
 
     public static final ResourceId HIERARCHIAL = ResourceId.valueOf("_multiLevel");
 
-    public static final ResourceId SUB_FORM = ResourceId.valueOf("_sub_form");
 
-    public static final ResourceId COUNTRY_CLASS = ResourceId.valueOf("_country");
+    public static String getLabelPropertyName(ResourceId classId) {
+        if (FormClass.CLASS_ID.equals(classId)) {
+            return FormClass.LABEL_FIELD_ID;
 
-    public static final ResourceId COUNTRY_NAME_FIELD = ResourceId.valueOf("_country_name");
+        } else if (FolderClass.CLASS_ID.equals(classId)) {
+            return FolderClass.LABEL_FIELD_NAME;
+        }
 
-    public static final ResourceId GEOREF_PROPERTY = ResourceId.valueOf("_georef");
+        return null;
+    }
+
+    /**
+     *
+     * @return {@code true} if resources with class {@code formClassId} should be
+     * displayed within a folder
+     */
+    public static boolean isFolderItem(ResourceId formClassId) {
+        return formClassId.equals(FormClass.CLASS_ID) ||
+            formClassId.equals(FolderClass.CLASS_ID);
+    }
 }

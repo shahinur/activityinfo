@@ -23,9 +23,14 @@ package org.activityinfo.model.type.subform;
 
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
+import org.activityinfo.model.type.RecordFieldTypeClass;
+import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.number.Quantity;
 
 /**
@@ -104,10 +109,11 @@ public class SubFormType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record()
+        return Records.builder()
                 .set("classId", getTypeClass().getParameterFormClass().getId())
                 .set("classReference", classReference.getParameters())
-                .set("dataOwnerClass", dataOwnerClass.asString());
+                .set("dataOwnerClass", dataOwnerClass.asString())
+                .build();
     }
 
     @Override

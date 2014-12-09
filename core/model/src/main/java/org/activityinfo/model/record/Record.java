@@ -15,7 +15,6 @@ import java.util.Map;
  * required to have a stable, globally unique identity.
  */
 public interface Record extends FieldValue, IsRecord {
-
     public ResourceId getClassId();
 
     public Object get(String fieldName);
@@ -58,5 +57,4 @@ public interface Record extends FieldValue, IsRecord {
      * @return an immutable {@code Map} view of this {@code Record}
      */
     Map<String, Object> asMap();
-
 }

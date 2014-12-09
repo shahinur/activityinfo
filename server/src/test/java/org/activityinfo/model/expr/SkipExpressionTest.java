@@ -29,7 +29,6 @@ import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.number.QuantityType;
@@ -78,7 +77,7 @@ public class SkipExpressionTest {
         eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
 
         // enum with 2 values
-        instance.set(GENDER_FIELD_ID,  new EnumValue(enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()));
+        instance.set(GENDER_FIELD_ID,  new EnumItem(enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()));
 
         eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
 
@@ -130,8 +129,8 @@ public class SkipExpressionTest {
         throw new IllegalArgumentException("Unable to find enumValue with label: " + label);
     }
 
-    private EnumValue enumFieldValue(ResourceId formField, String label) {
-        return new EnumValue(enumValue(formField, label).getId());
+    private EnumItem enumFieldValue(ResourceId formField, String label) {
+        return new EnumItem(enumValue(formField, label).getId());
     }
 
 

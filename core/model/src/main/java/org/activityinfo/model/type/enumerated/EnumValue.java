@@ -5,8 +5,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
@@ -45,7 +47,7 @@ public class EnumValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
+        RecordBuilder record = Records.builder();
         record.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId());
 
         if(valueIds.size() == 1) {
@@ -53,7 +55,7 @@ public class EnumValue implements FieldValue, IsRecord, HasSetFieldValue {
         } else if(valueIds.size() > 1) {
             record.set("value", toStringList(valueIds));
         }
-        return record;
+        return record.build();
     }
 
     private List<String> toStringList(Set<ResourceId> resourceIds) {
@@ -111,6 +113,6 @@ public class EnumValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     @Override
     public String toString() {
-        return "EnumFieldValue[" + Joiner.on(", ").join(valueIds) + "]";
+        return "EnumValue[" + Joiner.on(", ").join(valueIds) + "]";
     }
 }

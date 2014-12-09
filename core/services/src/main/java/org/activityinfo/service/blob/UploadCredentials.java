@@ -1,9 +1,12 @@
 package org.activityinfo.service.blob;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.record.IsRecord;
-import org.activityinfo.model.resource.PropertyBag;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.record.IsRecord;
 
 import java.util.Map;
 
@@ -12,9 +15,18 @@ import java.util.Map;
  */
 public class UploadCredentials implements IsRecord {
 
+    @JsonProperty
     private String url;
+
+    @JsonProperty
     private String method;
+
+    @JsonProperty
     private Map<String, String> formFields = Maps.newHashMap();
+
+    @JsonCreator
+    private UploadCredentials() {
+    }
 
     public UploadCredentials(String url, String method, Map<String, String> formFields) {
         this.url = url;
@@ -31,7 +43,7 @@ public class UploadCredentials implements IsRecord {
 
     /**
      *
-     * @returnt the method (POST or PUT) that the fiel should be submitted.
+     * @return the method (POST or PUT) that the file should be submitted.
      */
     public String getMethod() {
         return method;
@@ -57,23 +69,16 @@ public class UploadCredentials implements IsRecord {
         return form.toString();
     }
 
+    @Override
     public Record asRecord() {
-        Record formFieldsRecord = new Record();
+        RecordBuilder formFieldsRecord = Records.builder();
         for (Map.Entry<String,String> entry : formFields.entrySet()) {
             formFieldsRecord.set(entry.getKey(), entry.getValue());
         }
-        return new Record()
+        return Records.builder()
                 .set("url", url)
                 .set("method", method)
-                .set("formFields", formFieldsRecord);
-    }
-
-    public static UploadCredentials fromRecord(PropertyBag<? extends PropertyBag> record) {
-        Map<String, String> formFields = Maps.newHashMap();
-        Record formFieldRecord = record.getRecord("formFields");
-        for (Map.Entry<String,Object> property : formFieldRecord.getProperties().entrySet()) {
-            formFields.put(property.getKey(), (String) property.getValue());
-        }
-        return new UploadCredentials(record.getString("url"), record.getString("method"), formFields);
+                .set("formFields", formFieldsRecord.build())
+                .build();
     }
 }

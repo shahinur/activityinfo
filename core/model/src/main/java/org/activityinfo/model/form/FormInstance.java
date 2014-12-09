@@ -26,17 +26,12 @@ import com.google.common.collect.Maps;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.*;
 import org.activityinfo.model.type.*;
-import org.activityinfo.model.type.geo.AiLatLng;
-import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.model.type.number.Quantity;
-import org.activityinfo.model.type.primitive.BooleanFieldValue;
-import org.activityinfo.model.type.primitive.TextValue;
 import org.activityinfo.model.type.time.LocalDate;
 
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,6 +39,8 @@ import java.util.Set;
  *
  * Wrapper for a {@code Record} or {@code Resource} that exposes its properties
  * as {@code FieldValue}s
+ *
+ * TODO Either rewrite this class so that it has reference semantics, or make it clear that it does not!
  *
  * @author yuriyz on 1/29/14.
  */
@@ -74,18 +71,8 @@ public class FormInstance implements IsResource {
         return id;
     }
 
-    public FormInstance setId(ResourceId id) {
-        this.id = id;
-        return this;
-    }
-
-    public FormInstance setClassId(ResourceId classId) {
-        this.classId = classId;
-        return this;
-    }
-
     public static FormInstance fromResource(Resource resource) {
-        FormInstance instance = new FormInstance(resource.getId(), resource.getResourceId("classId"));
+        FormInstance instance = new FormInstance(resource.getId(), resource.getValue().getClassId());
         if (resource.getOwnerId() != null) { // owner may be null for FieldTypes
             instance.setOwnerId(resource.getOwnerId());
         }
@@ -164,11 +151,6 @@ public class FormInstance implements IsResource {
         return this;
     }
 
-
-    public FormInstance set(String fieldId, String name) {
-        return set(ResourceId.valueOf(fieldId), name);
-    }
-
     public FormInstance set(@NotNull ResourceId fieldId, double value) {
         return set(fieldId, new Quantity(value));
     }
@@ -183,64 +165,8 @@ public class FormInstance implements IsResource {
         return this;
     }
 
-    public FormInstance set(@NotNull ResourceId fieldId, AiLatLng latLng) {
-        propertyBag.set(fieldId, new GeoPoint(latLng.getLat(), latLng.getLng()));
-        return this;
-    }
-
-
-    public void set(@NotNull ResourceId fieldId, Set<ResourceId> references) {
-        set(fieldId, new ReferenceValue(references));
-    }
-
-    public FieldValue get(ResourceId fieldId, FieldType fieldType) {
-        Object value = propertyBag.get(fieldId.asString());
-        if (value instanceof String && fieldType instanceof NarrativeType) {
-            return NarrativeValue.valueOf((String) value);
-        }
-        return get(fieldId);
-    }
-
     public FieldValue get(ResourceId fieldId) {
-        Object value = propertyBag.get(fieldId.asString());
-        if(value == null) {
-            return null;
-        } else if(value instanceof String) {
-            return TextValue.valueOf((String) value);
-        } else if(value instanceof Boolean) {
-            Boolean booleanValue = (Boolean) value;
-            return BooleanFieldValue.valueOf(booleanValue);
-        } else if(value instanceof Record) {
-            Record record = (Record)value;
-            return TypeRegistry.get().deserializeFieldValue(record);
-        }else if(value instanceof Double) {
-            return new Quantity((Double) value);
-        } else {
-            throw new UnsupportedOperationException(fieldId.asString() + " = " + value);
-        }
-    }
-
-
-    public void set(ResourceId fieldId, Object value) {
-        if(value instanceof Date) {
-            set(fieldId, new LocalDate((Date)value));
-        } else if(value instanceof com.bedatadriven.rebar.time.calendar.LocalDate) {
-            com.bedatadriven.rebar.time.calendar.LocalDate rebarDate = (com.bedatadriven.rebar.time.calendar.LocalDate) value;
-            set(fieldId, new LocalDate(rebarDate.getYear(), rebarDate.getMonthOfYear(), rebarDate.getDayOfMonth()));
-        } else if(value instanceof String) {
-            set(fieldId, (String)value);
-        } else if(value instanceof Number) {
-            set(fieldId, ((Number)value).doubleValue());
-        } else if(value instanceof AiLatLng) {
-            AiLatLng latLng = (AiLatLng) value;
-            set(fieldId, new GeoPoint(latLng.getLat(), latLng.getLng()));
-        } else if(value instanceof Boolean) {
-            set(fieldId, value == Boolean.TRUE);
-        } else if(value instanceof FieldValue) {
-            set(fieldId, (FieldValue)value);
-        } else {
-            throw new UnsupportedOperationException(value.getClass().getName());
-        }
+        return Types.read(propertyBag.toRecord(classId), fieldId.asString());
     }
 
     /**
@@ -295,17 +221,9 @@ public class FormInstance implements IsResource {
 
     public FormInstance copy() {
         final FormInstance copy = new FormInstance(getId(), getClassId());
+        copy.setOwnerId(getOwnerId());
         copy.propertyBag.setAll(propertyBag);
         return copy;
-    }
-
-    public AiLatLng getPoint(ResourceId fieldId) {
-        FieldValue value = get(fieldId);
-        if(value instanceof GeoPoint) {
-            GeoPoint geoPoint = (GeoPoint) value;
-            return new AiLatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-        }
-        return null;
     }
 
     @Override

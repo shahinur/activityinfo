@@ -53,6 +53,11 @@
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.activityinfo</groupId>
       <artifactId>activityinfo-i18n</artifactId>
       <version>${project.version}</version>

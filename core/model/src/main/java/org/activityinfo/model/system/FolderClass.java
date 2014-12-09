@@ -1,32 +1,60 @@
 package org.activityinfo.model.system;
 
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBeanClass;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.resource.ResourceId;
 
-/**
- * Defines a system-level FormClass of folders
- */
-public class FolderClass {
+public final class FolderClass implements RecordBeanClass<Folder> {
 
     public static final ResourceId CLASS_ID = ResourceId.valueOf("_folder");
 
-    public static final ResourceId LABEL_FIELD_ID = ResourceId.valueOf("_folder_label");
+    public static final FolderClass INSTANCE = new FolderClass();
 
-    public static final ResourceId DESCRIPTION_FIELD_ID = ResourceId.valueOf("_folder_description");
+    private FolderClass() { }
 
-    public static final FormClass get() {
+    public static final String DESCRIPTION_FIELD_NAME = "description";
 
-        FormField labelField = new FormField(LABEL_FIELD_ID);
-        labelField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
+    public static final ResourceId DESCRIPTION_FIELD_ID = ResourceId.valueOf("description");
 
-        FormField descriptionField = new FormField(DESCRIPTION_FIELD_ID);
-        descriptionField.setSuperProperty(ApplicationProperties.DESCRIPTION_PROPERTY);
+    public static final String LABEL_FIELD_NAME = "label";
 
+    public static final ResourceId LABEL_FIELD_ID = ResourceId.valueOf("label");
+
+
+    @Override
+    public ResourceId getClassId() { return CLASS_ID; }
+
+    @Override
+    public Folder toBean(Record record) {
+        Folder bean = new Folder();
+            bean.setDescription(record.isString("description"));
+                bean.setLabel(record.isString("label"));
+            return bean;
+    }
+
+    @Override
+    public Record toRecord(Folder bean) {
+        RecordBuilder record = Records.builder(CLASS_ID);
+            record.set("description", bean.getDescription());
+                record.set("label", bean.getLabel());
+            return record.build();
+    }
+
+    @Override
+    public FormClass get() {
         FormClass formClass = new FormClass(CLASS_ID);
-        formClass.addElement(labelField);
-        formClass.addElement(descriptionField);
 
+        formClass.addElement(new FormField(ResourceId.valueOf("description"))
+        .setLabel("description")
+        .setType(org.activityinfo.model.type.primitive.TextType.INSTANCE));
+
+        formClass.addElement(new FormField(ResourceId.valueOf("label"))
+        .setLabel("label")
+        .setType(org.activityinfo.model.type.primitive.TextType.INSTANCE));
         return formClass;
     }
 }

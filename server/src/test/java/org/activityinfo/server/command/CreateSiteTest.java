@@ -35,7 +35,7 @@ import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.server.database.OnDataSet;
@@ -97,7 +97,7 @@ public class CreateSiteTest extends CommandTestCase2 {
         instance.set(field(formClassId, START_DATE_FIELD), new LocalDate(2008, 12, 1));
         instance.set(field(formClassId, END_DATE_FIELD), new LocalDate(2009, 1, 3));
         instance.set(indicatorField(1), 996.0);
-        instance.set(attributeField(1), new EnumValue(CuidAdapter.attributeId(1), CuidAdapter.attributeField(2)));
+        instance.set(attributeField(1), new EnumItem(CuidAdapter.attributeId(1), CuidAdapter.attributeField(2)));
         instance.set(commentsField(1), "objection!");
         instance.set(field(formClassId, PROJECT_FIELD), CuidAdapter.cuid(PROJECT_DOMAIN, 1));
         assertResolves(locator.persist(instance));

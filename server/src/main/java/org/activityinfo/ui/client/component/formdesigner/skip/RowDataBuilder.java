@@ -33,7 +33,7 @@ import org.activityinfo.model.type.FieldType;
 import org.activityinfo.model.type.HasSetFieldValue;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.ReferenceValue;
-import org.activityinfo.model.type.enumerated.EnumValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
 
 import java.util.List;
@@ -174,7 +174,7 @@ public class RowDataBuilder {
         if (type instanceof ReferenceType) {
             row.setValue(new ReferenceValue(resourceIdSet));
         } else if (type instanceof EnumType) {
-            row.setValue(new EnumValue(resourceIdSet));
+            row.setValue(new EnumItem(resourceIdSet));
         } else {
             throw new UnsupportedOperationException("Unknown value type for function: " + functionCallNode.getFunction().getId());
         }
@@ -222,13 +222,13 @@ public class RowDataBuilder {
                 Set<ResourceId> newValue = Sets.newHashSet(oldValue.getResourceIds());
                 newValue.add(newItem);
                 if (row.getFormField().getType() instanceof EnumType) {
-                    row.setValue(new EnumValue(newValue));
+                    row.setValue(new EnumItem(newValue));
                 } else if (row.getFormField().getType() instanceof ReferenceType) {
                     row.setValue(new ReferenceValue(newValue));
                 }
             } else { // create value
                 if (row.getFormField().getType() instanceof EnumType) {
-                    row.setValue(new EnumValue(newItem));
+                    row.setValue(new EnumItem(newItem));
                 } else if (row.getFormField().getType() instanceof ReferenceType) {
                     row.setValue(new ReferenceValue(newItem));
                 } else {
