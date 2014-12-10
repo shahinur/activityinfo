@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 public final class ActivityDTO extends BaseModelData implements EntityDTO, ProvidesKey,
-        LockedPeriodDTO.HasLockedPeriod, IsActivityDTO, IsFormClass {
+        LockedPeriodDTO.HasLockedPeriod, IsActivityDTO {
 
     public static final String ENTITY_NAME = "Activity";
 

@@ -2,11 +2,12 @@ package org.activityinfo.legacy.shared.adapter.bindings;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.type.enumerated.EnumValue;
 
 import java.util.Map;
 import java.util.Set;
@@ -82,7 +83,7 @@ public class SiteBindingFactory implements Function<ActivityFormDTO, SiteBinding
                 }
             }
             if (!references.isEmpty()) {
-                instance.set(fieldId, references);
+                instance.set(fieldId, new EnumValue(references));
             }
         }
 

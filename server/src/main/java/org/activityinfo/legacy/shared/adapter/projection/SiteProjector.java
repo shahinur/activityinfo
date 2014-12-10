@@ -42,7 +42,7 @@ public class SiteProjector implements Function<ListResult<SiteDTO>, List<Project
             } else if (fieldId.getDomain() == CuidAdapter.ACTIVITY_DOMAIN) {
                 int fieldIndex = CuidAdapter.getBlock(fieldId, 1);
                 siteProjectors.add(new SiteProjectionUpdater(path, fieldIndex));
-            } else if (fieldId.getDomain() == CuidAdapter.ATTRIBUTE_GROUP_DOMAIN) {
+            } else if (fieldId.getDomain() == CuidAdapter.ATTRIBUTE_GROUP_FIELD_DOMAIN) {
                 attributeProjectors.add(new AttributeProjectionUpdater(path));
             } else if (fieldId.getDomain() == CuidAdapter.PROJECT_CLASS_DOMAIN) {
                 int fieldIndex = CuidAdapter.getBlock(fieldId, 1);

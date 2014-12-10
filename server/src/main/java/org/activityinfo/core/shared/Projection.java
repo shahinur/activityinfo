@@ -6,6 +6,7 @@ import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.primitive.TextValue;
 
 import java.util.Collections;
@@ -53,10 +54,12 @@ public class Projection {
 
     public Set<ResourceId> getReferenceValue(FieldPath path) {
         Object value = values.get(path);
-        if(value == null) {
+        if (value == null) {
             return Collections.emptySet();
-        } else if(value instanceof ReferenceValue) {
-            return ((ReferenceValue)value).getResourceIds();
+        } else if (value instanceof ReferenceValue) {
+            return ((ReferenceValue) value).getResourceIds();
+        } else if (value instanceof EnumValue) {
+            return ((EnumValue) value).getResourceIds();
         } else {
             return Collections.singleton((ResourceId) value);
         }

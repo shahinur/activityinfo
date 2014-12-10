@@ -207,8 +207,8 @@ public class GetActivityFormHandler implements CommandHandlerAsync<GetActivityFo
                     locationType.setCountryBounds(countryBounds);
                     locationType.setWorkflowId(row.getString("locationTypeWorkflowId"));
 
-                    if(!row.isNull("locationTypeAdminLevelId")) {
-                        locationType.setBoundAdminLevelId(row.getInt("locationTypeAdminLevelId"));
+                    if(!row.isNull("locationTypeLevelId")) {
+                        locationType.setBoundAdminLevelId(row.getInt("locationTypeLevelId"));
                     }
                     if(!row.isNull("locationTypeDatabaseId")) {
                         locationType.setDatabaseId(row.getInt("locationTypeDatabaseId"));

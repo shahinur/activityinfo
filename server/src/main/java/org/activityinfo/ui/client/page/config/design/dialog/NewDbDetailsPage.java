@@ -130,7 +130,7 @@ public class NewDbDetailsPage extends WizardPageAdapter {
                 for (CountryDTO countryDTO : result.getData()) {
                     country.addItem(countryDTO.getName(), Integer.toString(countryDTO.getId()));
                 }
-                country.forceRedraw();
+                country.update();
             }
         });
     }

@@ -21,9 +21,17 @@ package org.activityinfo.legacy.shared.model;
  * #L%
  */
 
+import org.activityinfo.model.resource.ResourceId;
+
 /**
  * @author yuriyz on 11/19/2014.
  */
-public interface IsActivityDTO {
+public interface IsActivityDTO extends IsFormClass {
     public int getId();
+
+    public int getReportingFrequency();
+
+    public boolean getClassicView();
+
+    public ResourceId getFormClassId();
 }
