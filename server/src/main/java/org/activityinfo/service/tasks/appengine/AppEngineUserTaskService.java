@@ -22,12 +22,10 @@ public class AppEngineUserTaskService implements UserTaskService {
     private static final Logger LOGGER = Logger.getLogger(AppEngineUserTaskService.class.getName());
 
     private final TaskStore store;
-    private final TaskExecutors executors;
 
     @Inject
-    public AppEngineUserTaskService(TaskStore store, TaskExecutors executors) {
+    public AppEngineUserTaskService(TaskStore store) {
         this.store = store;
-        this.executors = executors;
     }
 
     @POST
@@ -51,21 +49,8 @@ public class AppEngineUserTaskService implements UserTaskService {
     UserTask createTask(AuthenticatedUser user, String taskId, Record taskModelRecord) {
 
         // Deserialize task model
-        TaskExecutor executor = executors.get(taskModelRecord);
-        TaskModel taskModel = executors.deserializeModel(taskModelRecord);
-
         // Create a new task record
         try {
-            String description;
-            try {
-                description = executor.describe(taskModel);
-            } catch (IllegalArgumentException e) {
-                LOGGER.log(Level.SEVERE, "Invalid task model", e);
-                throw new WebApplicationException(Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage()).build());
-            }
-
             UserTask task = new UserTask();
             task.setId(taskId);
             task.setStatus(UserTaskStatus.RUNNING);

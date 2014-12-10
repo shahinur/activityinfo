@@ -6,27 +6,40 @@ import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.sun.jersey.api.core.InjectParam;
-import org.activityinfo.model.analysis.PivotTableModel;
 import org.activityinfo.model.auth.AccessControlRule;
 import org.activityinfo.model.auth.AuthenticatedUser;
-import org.activityinfo.model.resource.*;
-import org.activityinfo.model.table.Bucket;
-import org.activityinfo.model.table.TableData;
-import org.activityinfo.model.table.TableModel;
-import org.activityinfo.service.cubes.CubeBuilder;
+import org.activityinfo.model.resource.FolderProjection;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.ResourceNode;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.resource.UserResource;
 import org.activityinfo.service.store.FolderRequest;
 import org.activityinfo.service.store.ResourceStore;
 import org.activityinfo.service.store.StoreLoader;
 import org.activityinfo.service.store.UpdateResult;
-import org.activityinfo.service.tables.TableBuilder;
 import org.activityinfo.store.hrd.cache.WorkspaceCache;
-import org.activityinfo.store.hrd.dao.*;
-import org.activityinfo.store.hrd.entity.workspace.*;
+import org.activityinfo.store.hrd.dao.BulkLoader;
+import org.activityinfo.store.hrd.dao.ResourceExistsException;
+import org.activityinfo.store.hrd.dao.ResourceQuery;
+import org.activityinfo.store.hrd.dao.WorkspaceCreation;
+import org.activityinfo.store.hrd.dao.WorkspaceQuery;
+import org.activityinfo.store.hrd.dao.WorkspaceUpdate;
+import org.activityinfo.store.hrd.entity.workspace.LatestVersion;
+import org.activityinfo.store.hrd.entity.workspace.LatestVersionKey;
+import org.activityinfo.store.hrd.entity.workspace.Snapshot;
+import org.activityinfo.store.hrd.entity.workspace.SnapshotKey;
+import org.activityinfo.store.hrd.entity.workspace.WorkspaceEntityGroup;
 import org.activityinfo.store.hrd.index.WorkspaceIndex;
 import org.activityinfo.store.hrd.tx.ReadTx;
 
 import javax.inject.Inject;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -166,34 +179,6 @@ public class HrdResourceStore implements ResourceStore {
             return new FolderProjection(rootNode);
         }
     }
-
-    @Override
-    public TableData queryTable(@InjectParam AuthenticatedUser user, TableModel tableModel) {
-        TableBuilder builder = new TableBuilder(new HrdStoreAccessor(context, user));
-        try {
-            return builder.buildTable(tableModel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public HrdStoreAccessor createAccessor(AuthenticatedUser user) {
-        return new HrdStoreAccessor(context, user);
-    }
-
-    @POST
-    @Path("query/cube")
-    @Consumes("application/json")
-    @Produces("application/json")
-    public List<Bucket> queryCube(@InjectParam AuthenticatedUser user, PivotTableModel tableModel) {
-        CubeBuilder builder = new CubeBuilder(new HrdStoreAccessor(context, user));
-        try {
-            return builder.buildCube(tableModel);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
     @Override
     public List<ResourceNode> getOwnedOrSharedWorkspaces(@InjectParam AuthenticatedUser user) {

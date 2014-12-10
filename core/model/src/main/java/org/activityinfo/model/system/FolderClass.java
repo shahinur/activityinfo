@@ -46,6 +46,10 @@ public final class FolderClass implements RecordBeanClass<Folder> {
 
     @Override
     public FormClass get() {
+        return getFormClass();
+    }
+
+    public static FormClass getFormClass() {
         FormClass formClass = new FormClass(CLASS_ID);
 
         formClass.addElement(new FormField(ResourceId.valueOf("description"))

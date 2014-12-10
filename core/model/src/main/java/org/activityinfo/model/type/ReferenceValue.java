@@ -12,6 +12,7 @@ import org.activityinfo.model.record.RecordBuilder;
 import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import java.util.Set;
  */
 public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
 
+    public static final ReferenceValue EMPTY = new ReferenceValue(Collections.<ResourceId>emptySet());
 
     private final Set<ResourceId> resourceIds;
 

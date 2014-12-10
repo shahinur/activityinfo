@@ -36,8 +36,9 @@ public class FormClass implements IsResource, FormElementContainer {
      * FormField id. It is defined at the application level to be a subproperty of
                                      * {@code _label}
                                      */
-    public static final String LABEL_FIELD_ID = "_class_label";
+    public static final String LABEL_FIELD_NAME = "_class_label";
 
+    public static final ResourceId LABEL_FIELD_ID = ResourceId.valueOf(LABEL_FIELD_NAME);
 
     @NotNull
     private ResourceId id;
@@ -208,7 +209,7 @@ public class FormClass implements IsResource, FormElementContainer {
     public static FormClass fromResource(Resource resource) {
         FormClass formClass = new FormClass(resource.getId());
         formClass.setOwnerId(resource.getOwnerId());
-        formClass.setLabel(Strings.nullToEmpty(resource.getValue().isString(LABEL_FIELD_ID)));
+        formClass.setLabel(Strings.nullToEmpty(resource.getValue().isString(LABEL_FIELD_NAME)));
         formClass.elements.addAll(fromRecords(resource.getValue().getRecordList("elements")));
         return formClass;
     }
@@ -230,7 +231,7 @@ public class FormClass implements IsResource, FormElementContainer {
 
     public Resource asResource() {
         RecordBuilder record = Records.builder(CLASS_ID);
-        record.set(LABEL_FIELD_ID, label);
+        record.set(LABEL_FIELD_NAME, label);
         record.set("elements", FormElement.asRecordList(elements));
 
         Resource resource = Resources.createResource();

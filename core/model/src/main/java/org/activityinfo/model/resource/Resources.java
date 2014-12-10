@@ -1,9 +1,19 @@
 package org.activityinfo.model.resource;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
 import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class Resources {
 
@@ -50,5 +60,146 @@ public class Resources {
         resource.setValue(value.asRecord());
         resource.setVersion(0L);
         return resource;
+    }
+
+    public static Resource fromJson(String json) {
+        JsonParser parser = new JsonParser();
+        JsonObject resourceObject = parser.parse(json).getAsJsonObject();
+
+        return fromJson(resourceObject);
+    }
+
+    public static Resource fromJson(JsonObject resourceObject) {
+        Resource resource = Resources.createResource();
+        for (Map.Entry<String, JsonElement> property : resourceObject.entrySet()) {
+            String name = property.getKey();
+            switch (name) {
+                case "@id":
+                    resource.setId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    break;
+                case "@owner":
+                    resource.setOwnerId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    break;
+                default:
+                    // normal value
+                    if (!property.getValue().isJsonNull()) {
+                        resource.set(property.getKey(), propertyFromJson(property.getValue()));
+                    }
+                    break;
+            }
+        }
+
+        return resource;
+    }
+
+    private static Object propertyFromJson(JsonElement propertyValue) {
+        assert !propertyValue.isJsonNull();
+
+        if(propertyValue.isJsonPrimitive()) {
+            JsonPrimitive value = propertyValue.getAsJsonPrimitive();
+            if(value.isString()) {
+                return value.getAsString();
+            } else if(value.isNumber()) {
+                return value.getAsDouble();
+            } else if(value.isBoolean()) {
+                return value.getAsBoolean();
+            } else {
+                throw new UnsupportedOperationException("value: " + value);
+            }
+        } else if(propertyValue.isJsonArray()) {
+            return arrayFromJson(propertyValue);
+
+        } else if(propertyValue.isJsonObject()) {
+            return recordFromJson(propertyValue.getAsJsonObject());
+        } else {
+            throw new UnsupportedOperationException("value: " + propertyValue);
+        }
+    }
+
+    private static Object arrayFromJson(JsonElement propertyValue) {
+        List list = new ArrayList();
+        JsonArray array = propertyValue.getAsJsonArray();
+        for(int i=0;i!=array.size();++i) {
+            list.add(propertyFromJson(array.get(i)));
+        }
+        return list;
+    }
+
+    private static Record recordFromJson(JsonObject jsonObject) {
+        RecordBuilder record = Records.builder();
+
+        for(Map.Entry<String, JsonElement> field : jsonObject.entrySet()) {
+            if(!field.getValue().isJsonNull()) {
+                Object property = propertyFromJson(field.getValue());
+                if (property instanceof String) {
+                    record.set(field.getKey(), (String) property);
+                } else if (property instanceof Double) {
+                    record.set(field.getKey(), (Double) property);
+                } else if (property instanceof Boolean) {
+                    record.set(field.getKey(), (Boolean) property);
+                } else if (property instanceof Record) {
+                    record.set(field.getKey(), (Record) property);
+                } else if (property instanceof List) {
+                    record.set(field.getKey(), (List) property);
+                } else {
+                    throw new UnsupportedOperationException("value: " + property);
+                }
+            }
+        }
+
+        return record.build();
+    }
+
+    public static String toJson(Resource resource) {
+        JsonObject resourceObject = toJsonObject(resource);
+
+        return resourceObject.toString();
+    }
+
+    public static JsonObject toJsonObject(Resource resource) {
+        JsonObject resourceObject = new JsonObject();
+        resourceObject.addProperty("@id", resource.getId().asString());
+        resourceObject.addProperty("@owner", resource.getOwnerId().asString());
+
+        for(Map.Entry<String, Object> property : resource.getProperties().entrySet()) {
+            if(property.getValue() != null) {
+                resourceObject.add(property.getKey(), propertyValueToJson(property.getValue()));
+            }
+        }
+        return resourceObject;
+    }
+
+    private static JsonElement propertyValueToJson(Object value) {
+        if(value instanceof String) {
+            return new JsonPrimitive((String)value);
+        } else if(value instanceof Number) {
+            return new JsonPrimitive((Number)value);
+        } else if(value instanceof Boolean) {
+            return new JsonPrimitive((Boolean)value);
+        } else if(value instanceof List) {
+            return toJsonArray((List)value);
+        } else if(value instanceof Record) {
+            return toJsonObject((Record)value);
+        } else {
+            throw new UnsupportedOperationException("value: " + value + " (" + value.getClass().getName() + ")") ;
+        }
+    }
+
+    public static JsonElement toJsonObject(Record value) {
+        JsonObject jsonObject = new JsonObject();
+        for(Map.Entry<String, Object> property :  value.asMap().entrySet()) {
+            if(property.getValue() != null) {
+                jsonObject.add(property.getKey(), propertyValueToJson(property.getValue()));
+            }
+        }
+        return jsonObject;
+    }
+
+    private static JsonElement toJsonArray(List array) {
+        JsonArray jsonArray = new JsonArray();
+        for(Object element : array) {
+            jsonArray.add(propertyValueToJson(element));
+        }
+        return jsonArray;
     }
 }

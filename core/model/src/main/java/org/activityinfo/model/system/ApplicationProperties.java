@@ -31,10 +31,13 @@ public class ApplicationProperties {
 
     public static final ResourceId HIERARCHIAL = ResourceId.valueOf("_multiLevel");
 
+    public static final ResourceId COUNTRY_CLASS = ResourceId.valueOf("_country");
+
+    public static final ResourceId COUNTRY_NAME_FIELD = ResourceId.valueOf("_country_name");
 
     public static String getLabelPropertyName(ResourceId classId) {
         if (FormClass.CLASS_ID.equals(classId)) {
-            return FormClass.LABEL_FIELD_ID;
+            return FormClass.LABEL_FIELD_NAME;
 
         } else if (FolderClass.CLASS_ID.equals(classId)) {
             return FolderClass.LABEL_FIELD_NAME;

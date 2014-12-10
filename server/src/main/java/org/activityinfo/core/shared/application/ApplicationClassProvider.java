@@ -22,7 +22,7 @@ public class ApplicationClassProvider {
     public ApplicationClassProvider() {
 
         classMap.put(FormClass.CLASS_ID, createFormClassClass());
-        classMap.put(FolderClass.CLASS_ID, FolderClass.get());
+        classMap.put(FolderClass.CLASS_ID, FolderClass.getFormClass());
 
         for (FieldTypeClass fieldTypeClass : TypeRegistry.get().getTypeClasses()) {
             if(fieldTypeClass instanceof ParametrizedFieldTypeClass) {
@@ -33,7 +33,7 @@ public class ApplicationClassProvider {
     }
 
     private FormClass createFormClassClass() {
-        FormField labelField = new FormField(ResourceId.valueOf(FormClass.LABEL_FIELD_ID));
+        FormField labelField = new FormField(FormClass.LABEL_FIELD_ID);
         labelField.setSuperProperty(ApplicationProperties.LABEL_PROPERTY);
 
         FormClass formClass = new FormClass(FormClass.CLASS_ID);

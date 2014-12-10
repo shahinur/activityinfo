@@ -6,7 +6,6 @@ import org.activityinfo.service.tasks.UserTaskService;
 import org.activityinfo.service.tasks.appengine.AppEngineContextProvider;
 import org.activityinfo.service.tasks.appengine.AppEngineUserTaskService;
 import org.activityinfo.service.tasks.appengine.TaskContextProvider;
-import org.activityinfo.store.migrate.MigrateService;
 
 public class HrdResourceStoreModule extends ServletModule {
 

@@ -165,6 +165,28 @@ public class FormInstance implements IsResource {
         return this;
     }
 
+    public void set(@NotNull ResourceId fieldId, Set<ResourceId> references) {
+        set(fieldId, new ReferenceValue(references));
+    }
+
+    public void set(ResourceId fieldId, Object value) {
+        if (value instanceof ResourceId) {
+            set(fieldId, (ResourceId) value);
+        } else if (value instanceof String) {
+            set(fieldId, (String) value);
+        } else if (value instanceof Double) {
+            set(fieldId, ((Double) value).doubleValue());
+        } else if (value instanceof Boolean) {
+            set(fieldId, ((Boolean) value).booleanValue());
+        } else if (value instanceof FieldValue) {
+            set(fieldId, (FieldValue) value);
+        } else if (value instanceof Set) {
+            set(fieldId, (Set) value);
+        } else if (value != null) {
+            throw new IllegalArgumentException(value.getClass().toString());
+        }
+    }
+
     public FieldValue get(ResourceId fieldId) {
         return Types.read(propertyBag.toRecord(classId), fieldId.asString());
     }

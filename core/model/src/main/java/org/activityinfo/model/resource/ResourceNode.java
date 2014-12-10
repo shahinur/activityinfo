@@ -51,7 +51,7 @@ public class ResourceNode {
         if(classId.equals(FolderClass.CLASS_ID)) {
             this.label = resource.getValue().getString(FolderClass.LABEL_FIELD_ID.asString());
         } else if(classId.equals(FormClass.CLASS_ID)) {
-            this.label = resource.getValue().getString(FormClass.LABEL_FIELD_ID);
+            this.label = resource.getValue().getString(FormClass.LABEL_FIELD_NAME);
         }
 
     }

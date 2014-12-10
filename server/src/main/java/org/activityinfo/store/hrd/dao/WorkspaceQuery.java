@@ -67,7 +67,7 @@ public class WorkspaceQuery implements AutoCloseable {
     }
 
     private boolean isAncestorDeleted(LatestVersion latestVersion) {
-        if(latestVersion.getOwnerId().equals(Resources.ROOT_RESOURCE_ID)) {
+        if(latestVersion.getOwnerId().equals(Resources.ROOT_ID)) {
             return false;
         }
         LatestVersion owner = tx.getOrThrow(latestVersion.getOwnerLatestVersionKey());

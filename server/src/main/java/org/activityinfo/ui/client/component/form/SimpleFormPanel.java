@@ -181,7 +181,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
         for (FieldContainer container : containers.values()) {
             FormField field = container.getField();
-            FieldValue value = workingInstance.get(field.getId(), field.getType());
+            FieldValue value = workingInstance.get(field.getId(), field.getType().getTypeClass());
 
             if(value != null && value.getTypeClass() == field.getType().getTypeClass()) {
                 tasks.add(container.getFieldWidget().setValue(value));

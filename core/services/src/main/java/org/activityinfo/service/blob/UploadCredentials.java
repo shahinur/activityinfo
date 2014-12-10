@@ -3,10 +3,11 @@ package org.activityinfo.service.blob;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Maps;
+import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.RecordBuilder;
 import org.activityinfo.model.record.Records;
-import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.resource.PropertyBag;
 
 import java.util.Map;
 
@@ -80,5 +81,14 @@ public class UploadCredentials implements IsRecord {
                 .set("method", method)
                 .set("formFields", formFieldsRecord.build())
                 .build();
+    }
+
+    public static UploadCredentials fromRecord(PropertyBag<? extends PropertyBag> record) {
+        Map<String, String> formFields = Maps.newHashMap();
+        Record formFieldRecord = record.getRecord("formFields");
+        for (Map.Entry<String, Object> property : formFieldRecord.asMap().entrySet()) {
+            formFields.put(property.getKey(), (String) property.getValue());
+        }
+        return new UploadCredentials(record.getString("url"), record.getString("method"), formFields);
     }
 }

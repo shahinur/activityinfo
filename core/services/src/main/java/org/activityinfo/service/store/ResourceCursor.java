@@ -2,10 +2,7 @@ package org.activityinfo.service.store;
 
 import org.activityinfo.model.resource.Resource;
 
-public interface ResourceCursor {
+import java.util.Iterator;
 
-    boolean next();
-
-    Resource getResource();
-
+public interface ResourceCursor extends Iterator<Resource>, AutoCloseable {
 }

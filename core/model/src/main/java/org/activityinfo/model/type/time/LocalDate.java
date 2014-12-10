@@ -198,4 +198,8 @@ public class LocalDate implements FieldValue, IsRecord {
     public static LocalDate fromRecord(Record record) {
         return LocalDate.parse(record.getString("value"));
     }
+
+    public static LocalDate valueOf(com.bedatadriven.rebar.time.calendar.LocalDate rebarDate) {
+        return new LocalDate(rebarDate.getYear(), rebarDate.getMonthOfYear(), rebarDate.getDayOfMonth());
+    }
 }
