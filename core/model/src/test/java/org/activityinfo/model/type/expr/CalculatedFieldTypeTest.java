@@ -25,7 +25,7 @@ public class CalculatedFieldTypeTest {
         assertThat(read.getType(), instanceOf(CalculatedFieldType.class));
 
         CalculatedFieldType readType = (CalculatedFieldType) read.getType();
-        assertThat(readType.getExpression().getExpression(), equalTo("A+B"));
+        assertThat(readType.getExpression(), equalTo("A+B"));
     }
 
 
