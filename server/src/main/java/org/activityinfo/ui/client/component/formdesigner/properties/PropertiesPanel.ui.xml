@@ -3,6 +3,7 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:a="urn:import:org.activityinfo.ui.client.widget"
              xmlns:f="urn:import:org.activityinfo.ui.client.widget.form"
+             xmlns:chzn="urn:import:com.watopi.chosen.client.gwt"
         >
 
   <ui:with field="i18n" type="org.activityinfo.i18n.shared.UiConstants"/>
@@ -72,5 +73,32 @@
         <span class="hide help-block" ui:field="relevanceExpression"/>
       </div>
     </g:HTMLPanel>
+
+    <f:FormGroup label="FIETs" columnLabelWidth="4" columnWidgetWidth="2">
+      <chzn:ChosenListBox multipleSelect="false" allowSingleDeselect="true">
+        <g:item value="F">Financial</g:item>
+        <g:item value="I">Institutional</g:item>
+        <g:item value="E">Environmental</g:item>
+        <g:item value="T">Technical</g:item>
+        <g:item value="T">Social</g:item>
+      </chzn:ChosenListBox>
+    </f:FormGroup>
+
+    <f:FormGroup label="Sector" columnLabelWidth="4" columnWidgetWidth="2">
+      <chzn:ChosenListBox multipleSelect="false" allowSingleDeselect="true">
+        <g:item value="W">Water</g:item>
+        <g:item value="H">Hygiene</g:item>
+      </chzn:ChosenListBox>
+    </f:FormGroup>
+
+
+    <f:FormGroup label="Level" columnLabelWidth="4" columnWidgetWidth="2">
+      <chzn:ChosenListBox multipleSelect="false" allowSingleDeselect="true">
+        <g:item value="U">User</g:item>
+        <g:item value="O">Operator</g:item>
+        <g:item value="R">Regulator</g:item>
+        <g:item value="L">Policy-maker</g:item>
+      </chzn:ChosenListBox>
+    </f:FormGroup>
   </g:HTMLPanel>
 </ui:UiBinder>
