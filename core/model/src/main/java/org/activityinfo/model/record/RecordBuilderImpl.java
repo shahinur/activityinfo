@@ -21,8 +21,8 @@ class RecordBuilderImpl implements RecordBuilder {
     }
 
     public RecordBuilderImpl(Record record) {
-        this.classId = record.getClassId();
-        this.bag.putAll(record.asMap());
+        this(record.getClassId());
+        setAll(record);
     }
 
     @Override
@@ -122,6 +122,12 @@ class RecordBuilderImpl implements RecordBuilder {
     @Override
     public RecordBuilder set(String fieldName, Enum<?> enumValue) {
         bag.put(fieldName, enumValue.name());
+        return this;
+    }
+
+    @Override
+    public RecordBuilder setAll(Record record) {
+        bag.putAll(record.asMap());
         return this;
     }
 

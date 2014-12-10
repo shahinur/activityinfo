@@ -91,6 +91,8 @@ public interface RecordBuilder {
 
     RecordBuilder set(String fieldName, Enum<?> enumValue);
 
+    RecordBuilder setAll(Record record);
+
     Record build();
 
 }

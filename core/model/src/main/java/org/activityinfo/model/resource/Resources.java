@@ -83,9 +83,10 @@ public class Resources {
                 default:
                     // normal value
                     if (!property.getValue().isJsonNull()) {
-                        resource.set(property.getKey(), propertyFromJson(property.getValue()));
+                        RecordBuilder recordBuilder = Records.buildCopyOf(resource.getValue());
+                        set(recordBuilder, property.getKey(), propertyFromJson(property.getValue()));
+                        resource.setValue(recordBuilder.build());
                     }
-                    break;
             }
         }
 
@@ -131,23 +132,27 @@ public class Resources {
         for(Map.Entry<String, JsonElement> field : jsonObject.entrySet()) {
             if(!field.getValue().isJsonNull()) {
                 Object property = propertyFromJson(field.getValue());
-                if (property instanceof String) {
-                    record.set(field.getKey(), (String) property);
-                } else if (property instanceof Double) {
-                    record.set(field.getKey(), (Double) property);
-                } else if (property instanceof Boolean) {
-                    record.set(field.getKey(), (Boolean) property);
-                } else if (property instanceof Record) {
-                    record.set(field.getKey(), (Record) property);
-                } else if (property instanceof List) {
-                    record.set(field.getKey(), (List) property);
-                } else {
-                    throw new UnsupportedOperationException("value: " + property);
-                }
+                set(record, field.getKey(), property);
             }
         }
 
         return record.build();
+    }
+
+    private static void set(RecordBuilder recordBuilder, String key, Object property) {
+        if (property instanceof String) {
+            recordBuilder.set(key, (String) property);
+        } else if (property instanceof Double) {
+            recordBuilder.set(key, (Double) property);
+        } else if (property instanceof Boolean) {
+            recordBuilder.set(key, (Boolean) property);
+        } else if (property instanceof Record) {
+            recordBuilder.set(key, (Record) property);
+        } else if (property instanceof List) {
+            recordBuilder.set(key, (List) property);
+        } else {
+            throw new UnsupportedOperationException("value: " + property);
+        }
     }
 
     public static String toJson(Resource resource) {
@@ -161,7 +166,7 @@ public class Resources {
         resourceObject.addProperty("@id", resource.getId().asString());
         resourceObject.addProperty("@owner", resource.getOwnerId().asString());
 
-        for(Map.Entry<String, Object> property : resource.getProperties().entrySet()) {
+        for(Map.Entry<String, Object> property : resource.getValue().asMap().entrySet()) {
             if(property.getValue() != null) {
                 resourceObject.add(property.getKey(), propertyValueToJson(property.getValue()));
             }

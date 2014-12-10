@@ -24,7 +24,7 @@ import static org.activityinfo.model.record.Records.deepEquals;
  * Resources have zero or more, named properties.
  *
  */
-public final class Resource extends PropertyBag<Resource> {
+public final class Resource {
 
     private ResourceId id;
     private ResourceId ownerId;

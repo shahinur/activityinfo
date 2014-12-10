@@ -114,7 +114,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     public Promise<Void> show(final Resource instance) {
         this.instance = instance;
-        return locator.getFormClass(instance.getResourceId("classId")).join(new Function<FormClass, Promise<Void>>() {
+        return locator.getFormClass(instance.getClassId()).join(new Function<FormClass, Promise<Void>>() {
             @Nullable
             @Override
             public Promise<Void> apply(@Nullable FormClass formClass) {

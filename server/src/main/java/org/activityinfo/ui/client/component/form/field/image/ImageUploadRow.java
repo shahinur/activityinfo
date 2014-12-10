@@ -176,7 +176,7 @@ public class ImageUploadRow extends Composite {
                 public void onResponseReceived(Request request, Response response) {
                     String json = response.getText();
                     Resource resource = Resources.fromJson(json);
-                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource);
+                    UploadCredentials uploadCredentials = UploadCredentials.fromRecord(resource.getValue());
 
                     // Remove the old hidden fields before adding the new ones
                     List<Hidden> hidden = Lists.newArrayListWithCapacity(formFieldsContainer.getWidgetCount());

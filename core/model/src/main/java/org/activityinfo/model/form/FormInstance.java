@@ -24,8 +24,17 @@ package org.activityinfo.model.form;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.activityinfo.model.record.Record;
-import org.activityinfo.model.resource.*;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.TypeRegistry;
+import org.activityinfo.model.type.Types;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
 
@@ -45,11 +54,9 @@ import java.util.Set;
  * @author yuriyz on 1/29/14.
  */
 public class FormInstance implements IsResource {
-
-    private ResourceId id;
-    private ResourceId classId;
+    final private ResourceId id;
     private ResourceId ownerId;
-    private PropertyBag propertyBag;
+    private Record record;
 
     /**
      * Constructs a new FormInstance. To obtain an id for a new instance
@@ -61,9 +68,8 @@ public class FormInstance implements IsResource {
     public FormInstance(@Nonnull ResourceId id, @Nonnull ResourceId classId) {
         Preconditions.checkNotNull(id, classId);
         this.id = id;
-        this.classId = classId;
         this.ownerId = classId;
-        this.propertyBag = new PropertyBag();
+        this.record = Records.builder(classId).build();
     }
 
     @Override
@@ -76,7 +82,7 @@ public class FormInstance implements IsResource {
         if (resource.getOwnerId() != null) { // owner may be null for FieldTypes
             instance.setOwnerId(resource.getOwnerId());
         }
-        instance.propertyBag.setAll(resource);
+        instance.setAll(resource.getValue());
         return instance;
     }
 
@@ -85,13 +91,12 @@ public class FormInstance implements IsResource {
         Resource resource = Resources.createResource();
         resource.setId(id);
         resource.setOwnerId(ownerId);
-        resource.set("classId", classId);
-        resource.setAll(propertyBag);
+        resource.setValue(record);
         return resource;
     }
 
     public ResourceId getClassId() {
-        return classId;
+        return record.getClassId();
     }
 
     public FormInstance setOwnerId(ResourceId ownerId) {
@@ -106,10 +111,10 @@ public class FormInstance implements IsResource {
 
     public Map<ResourceId, Object> getValueMap() {
         Map<ResourceId, Object> valueMap = Maps.newHashMap();
-        for(Object key : propertyBag.getProperties().keySet()) {
+        for(Object key : record.asMap().keySet()) {
             String fieldName = (String)key;
             ResourceId fieldId = ResourceId.valueOf(fieldName);
-            Object value = propertyBag.get(fieldName);
+            Object value = record.get(fieldName);
 
             if(value instanceof String) {
                 valueMap.put(fieldId, value);
@@ -125,7 +130,7 @@ public class FormInstance implements IsResource {
 
     public Map<ResourceId, FieldValue> getFieldValueMap() {
         Map<ResourceId, FieldValue> valueMap = Maps.newHashMap();
-        for(Object key : propertyBag.getProperties().keySet()) {
+        for(Object key : record.asMap().keySet()) {
             ResourceId fieldId = ResourceId.valueOf((String) key);
             valueMap.put(fieldId, get(fieldId));
         }
@@ -133,9 +138,13 @@ public class FormInstance implements IsResource {
     }
 
     public void removeAll(Set<ResourceId> fieldIds) {
+        RecordBuilder recordBuilder = Records.buildCopyOf(this.record);
+
         for (ResourceId fieldId : fieldIds) {
-            propertyBag.remove(fieldId.asString());
+            recordBuilder.set(fieldId.asString(), (String) null);
         }
+
+        this.record = recordBuilder.build();
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, ResourceId referenceId) {
@@ -143,25 +152,22 @@ public class FormInstance implements IsResource {
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, String value) {
-        if(value == null) {
-            propertyBag.remove(fieldId.asString());
-        } else {
-            propertyBag.set(fieldId.asString(), value);
-        }
+        this.record = Records.buildCopyOf(this.record).set(fieldId.asString(), value).build();
         return this;
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, double value) {
-        return set(fieldId, new Quantity(value));
+        this.record = Records.buildCopyOf(this.record).set(fieldId.asString(), value).build();
+        return this;
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, boolean value) {
-        propertyBag.set(fieldId.asString(), value);
+        this.record = Records.buildCopyOf(this.record).set(fieldId.asString(), value).build();
         return this;
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, FieldValue fieldValue) {
-        propertyBag.set(fieldId, fieldValue);
+        this.record = Records.buildCopyOf(this.record).setFieldValue(fieldId.asString(), fieldValue).build();
         return this;
     }
 
@@ -188,7 +194,7 @@ public class FormInstance implements IsResource {
     }
 
     public FieldValue get(ResourceId fieldId) {
-        return Types.read(propertyBag.toRecord(classId), fieldId.asString());
+        return Types.read(record, fieldId.asString());
     }
 
     /**
@@ -213,7 +219,7 @@ public class FormInstance implements IsResource {
     }
 
     public String getString(ResourceId fieldId) {
-        return propertyBag.isString(fieldId.asString());
+        return record.isString(fieldId.asString());
     }
 
     public LocalDate getDate(ResourceId fieldId) {
@@ -244,7 +250,7 @@ public class FormInstance implements IsResource {
     public FormInstance copy() {
         final FormInstance copy = new FormInstance(getId(), getClassId());
         copy.setOwnerId(getOwnerId());
-        copy.propertyBag.setAll(propertyBag);
+        copy.setAll(record);
         return copy;
     }
 
@@ -252,9 +258,11 @@ public class FormInstance implements IsResource {
     public String toString() {
         return "FormInstance{" +
                 "id=" + id +
-                ", classId=" + classId +
-                ", valueMap=" + propertyBag +
+                ", record=" + record +
                 '}';
     }
 
+    private void setAll(Record record) {
+        this.record = Records.buildCopyOf(this.record).setAll(record).build();
+    }
 }

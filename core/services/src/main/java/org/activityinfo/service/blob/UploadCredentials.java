@@ -7,7 +7,6 @@ import org.activityinfo.model.record.IsRecord;
 import org.activityinfo.model.record.Record;
 import org.activityinfo.model.record.RecordBuilder;
 import org.activityinfo.model.record.Records;
-import org.activityinfo.model.resource.PropertyBag;
 
 import java.util.Map;
 
@@ -83,7 +82,7 @@ public class UploadCredentials implements IsRecord {
                 .build();
     }
 
-    public static UploadCredentials fromRecord(PropertyBag<? extends PropertyBag> record) {
+    public static UploadCredentials fromRecord(Record record) {
         Map<String, String> formFields = Maps.newHashMap();
         Record formFieldRecord = record.getRecord("formFields");
         for (Map.Entry<String, Object> property : formFieldRecord.asMap().entrySet()) {
