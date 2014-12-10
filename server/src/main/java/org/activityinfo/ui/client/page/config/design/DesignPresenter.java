@@ -96,6 +96,8 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         public MenuItem getNewAttribute();
 
         public MenuItem getNewIndicator();
+
+        public void showForm(ModelData model);
     }
 
     private final EventBus eventBus;
@@ -169,6 +171,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                     public void onSuccess(SchemaDTO result) {
                         db = result.getDatabaseById(db.getId());
                         fillStore(messages);
+                        DesignPresenter.this.view.showForm(DesignPresenter.this.view.getSelection());
                     }
                 });
     }
@@ -541,5 +544,6 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     @Override
     protected void onSaved() {
         eventBus.fireEvent(AppEvents.SCHEMA_CHANGED);
+        refresh();
     }
 }
