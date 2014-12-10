@@ -33,6 +33,7 @@ import org.codehaus.jackson.map.annotate.JsonView;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,7 +48,7 @@ public final class LocationTypeDTO extends BaseModelData implements EntityDTO, I
 
     public static int NAME_MAX_LENGTH = 50;
     private Integer databaseId;
-    private List<AdminLevelDTO> adminLevels;
+    private List<AdminLevelDTO> adminLevels = new ArrayList<>();
     private Extents countryBounds;
 
     public LocationTypeDTO() {

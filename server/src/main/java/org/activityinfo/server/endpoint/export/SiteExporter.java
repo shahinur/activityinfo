@@ -273,10 +273,12 @@ public class SiteExporter {
         }
 
         levels = new ArrayList<>();
-        for (AdminLevelDTO level : activity.getAdminLevels()) {
-            createHeaderCell(headerRow2, column++, "Code " + level.getName());
-            createHeaderCell(headerRow2, column++, level.getName());
-            levels.add(level.getId());
+        if (activity.getAdminLevels() != null) {
+            for (AdminLevelDTO level : activity.getAdminLevels()) {
+                createHeaderCell(headerRow2, column++, "Code " + level.getName());
+                createHeaderCell(headerRow2, column++, level.getName());
+                levels.add(level.getId());
+            }
         }
         int latColumn = column++;
         int lngColumn = column++;
