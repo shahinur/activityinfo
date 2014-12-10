@@ -86,6 +86,11 @@ public class MockDesignTree implements DesignPresenter.View {
         return new MenuItem();
     }
 
+    @Override
+    public void showForm(ModelData model) {
+
+    }
+
     protected void mockEditEntity(EntityDTO entity) {
 
     }
