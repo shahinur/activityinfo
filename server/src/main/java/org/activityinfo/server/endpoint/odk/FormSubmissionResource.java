@@ -3,6 +3,7 @@ package org.activityinfo.server.endpoint.odk;
 import com.google.api.client.util.Maps;
 import com.google.appengine.api.images.Image;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Iterables;
 import com.google.common.io.ByteSource;
 import com.google.common.io.ByteStreams;
@@ -192,6 +193,7 @@ public class FormSubmissionResource {
     }
 
     private Optional<GeoPoint> parseLocation(Optional<Element> element, boolean legacy) {
+        Preconditions.checkNotNull(element);
         if (element.isPresent()) {
             try {
                 OdkFieldValueParser odkFieldValueParser = fromFieldType(GeoPointType.INSTANCE, legacy);
@@ -233,6 +235,7 @@ public class FormSubmissionResource {
     }
 
     private VoidResult createLocation(int id, int locationTypeId, String name, Optional<GeoPoint> geoPoint) {
+        Preconditions.checkNotNull(name, geoPoint);
         Map<String, Object> properties = Maps.newHashMap();
 
         properties.put("id", id);
