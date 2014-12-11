@@ -56,6 +56,18 @@ public class EnumValue implements FieldValue, IsRecord, HasSetFieldValue {
         return record;
     }
 
+    public Set<EnumItem> getValuesAsItems(EnumType enumType) {
+        Set<EnumItem> items = Sets.newHashSet();
+        for (final ResourceId resourceId : getResourceIds()) {
+            for (EnumItem enumItem : enumType.getValues()) {
+                if (enumItem.getId().equals(resourceId)) {
+                    items.add(enumItem);
+                }
+            }
+        }
+        return items;
+    }
+
     private List<String> toStringList(Set<ResourceId> resourceIds) {
         List<String> strings = Lists.newArrayList();
         for(ResourceId resourceId : resourceIds) {
@@ -111,6 +123,6 @@ public class EnumValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     @Override
     public String toString() {
-        return "EnumFieldValue[" + Joiner.on(", ").join(valueIds) + "]";
+        return "EnumValue[" + Joiner.on(", ").join(valueIds) + "]";
     }
 }
