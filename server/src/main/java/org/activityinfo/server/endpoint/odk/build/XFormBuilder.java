@@ -215,6 +215,7 @@ public class XFormBuilder {
         Bind bind = new Bind();
         bind.setNodeSet("/data/field_" + locationNameFieldId.asString());
         bind.setType(BindingType.STRING);
+        bind.setRequired(XPathBuilder.TRUE);
         return bind;
     }
 
