@@ -35,6 +35,8 @@ import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.model.type.TypeRegistry;
 import org.activityinfo.model.type.Types;
+import org.activityinfo.model.type.geo.AiLatLng;
+import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.model.type.number.Quantity;
 import org.activityinfo.model.type.time.LocalDate;
 
@@ -179,6 +181,10 @@ public class FormInstance implements IsResource {
         set(fieldId, new LocalDate(date));
     }
 
+    public void set(@NotNull ResourceId fieldId, AiLatLng aiLatLng) {
+        set(fieldId, new GeoPoint(aiLatLng));
+    }
+
     public void set(ResourceId fieldId, Object value) {
         if (value instanceof ResourceId) {
             set(fieldId, (ResourceId) value);
@@ -194,6 +200,8 @@ public class FormInstance implements IsResource {
             set(fieldId, (Set) value);
         } else if (value instanceof Date) {
             set(fieldId, (Date) value);
+        } else if (value instanceof AiLatLng) {
+            set(fieldId, (AiLatLng) value);
         } else if (value != null) {
             throw new IllegalArgumentException(value.getClass().toString());
         }

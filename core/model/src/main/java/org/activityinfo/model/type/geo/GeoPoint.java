@@ -20,6 +20,11 @@ public class GeoPoint implements FieldValue, IsRecord {
         this.longitude = longitude;
     }
 
+    public GeoPoint(AiLatLng aiLatLng) {
+        latitude = aiLatLng.getLat();
+        longitude = aiLatLng.getLng();
+    }
+
     public double getLatitude() {
         return latitude;
     }
