@@ -1,5 +1,6 @@
 package org.activityinfo.ui.client.component.table;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.user.cellview.client.Column;
@@ -8,9 +9,13 @@ import org.activityinfo.core.shared.criteria.Criteria;
 import org.activityinfo.model.formTree.FieldPath;
 import org.activityinfo.model.formTree.FormTree;
 import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.enumerated.EnumItem;
+import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.Quantity;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Column that displays the value of a given field
@@ -55,8 +60,18 @@ public class FieldColumn extends Column<Projection, String> {
             Double value = ((Quantity) fieldValue).getValue();
             return value.toString();
 
+        } else if (fieldValue instanceof EnumValue) {
+            EnumValue enumValue = (EnumValue) fieldValue;
+            Set<EnumItem> items = enumValue.getValuesAsItems((EnumType) node.getField().getType());
+            final List<String> values = Lists.newArrayList();
+            for (final EnumItem item : items) {
+                values.add(item.getLabel());
+            }
+            return Joiner.on(", ").join(values);
+
         } else if (fieldValue != null) {
             return fieldValue.toString();
+
         }
 
         return NON_BREAKING_SPACE;
