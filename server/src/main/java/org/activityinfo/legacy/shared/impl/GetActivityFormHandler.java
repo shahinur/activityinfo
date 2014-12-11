@@ -286,7 +286,7 @@ public class GetActivityFormHandler implements CommandHandlerAsync<GetActivityFo
             AdminLevelDTO level = adminLevels.get(type.getBoundAdminLevelId());
 
             if (level == null) {
-                return null;
+                return new ArrayList<>();
             }
 
             while (true) {
