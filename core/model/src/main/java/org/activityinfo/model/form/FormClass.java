@@ -230,14 +230,13 @@ public class FormClass implements IsResource, FormElementContainer {
     }
 
     public Resource asResource() {
-        RecordBuilder record = Records.builder(CLASS_ID);
-        record.set(LABEL_FIELD_NAME, label);
-        record.set("elements", FormElement.asRecordList(elements));
+        RecordBuilder recordBuilder = Records.builder(CLASS_ID);
+        recordBuilder.set(LABEL_FIELD_NAME, label);
+        recordBuilder.set("elements", FormElement.asRecordList(elements));
 
-        Resource resource = Resources.createResource();
+        Resource resource = Resources.createResource(recordBuilder);
         resource.setId(id);
         resource.setOwnerId(ownerId);
-        resource.setValue(record.build());
         return resource;
     }
 }

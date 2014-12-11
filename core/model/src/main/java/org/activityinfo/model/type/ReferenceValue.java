@@ -22,9 +22,13 @@ import java.util.Set;
  */
 public class ReferenceValue implements FieldValue, IsRecord, HasSetFieldValue {
 
-    public static final ReferenceValue EMPTY = new ReferenceValue(Collections.<ResourceId>emptySet());
+    public static final ReferenceValue EMPTY = new ReferenceValue();
 
     private final Set<ResourceId> resourceIds;
+
+    private ReferenceValue() {
+        resourceIds = Collections.emptySet();
+    }
 
     public ReferenceValue(ResourceId resourceId) {
         assert resourceId != null;

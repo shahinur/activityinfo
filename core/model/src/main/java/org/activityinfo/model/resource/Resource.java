@@ -89,8 +89,9 @@ public final class Resource {
         return version;
     }
 
-    public void setVersion(long version) {
+    public Resource setVersion(long version) {
         this.version = version;
+        return this;
     }
 
     public void setVersionInt(int version) {

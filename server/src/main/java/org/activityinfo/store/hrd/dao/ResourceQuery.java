@@ -32,11 +32,10 @@ public class ResourceQuery {
     }
 
     public UserResource asUserResource() {
-        Resource resource = Resources.createResource();
+        Resource resource = Resources.createResource(latestVersion.getRecord());
         resource.setId(latestVersion.getResourceId());
         resource.setVersion(versionOf(latestVersion));
         resource.setOwnerId(latestVersion.getOwnerId());
-        resource.setValue(latestVersion.getRecord());
 
         UserResource userResource = new UserResource();
         userResource.setResource(resource);

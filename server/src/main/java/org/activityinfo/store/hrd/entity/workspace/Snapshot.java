@@ -179,11 +179,10 @@ public class Snapshot implements IsEntity {
     }
 
     public Resource toResource() {
-        Resource resource = Resources.createResource();
+        Resource resource = Resources.createResource(getValue());
         resource.setId(getResourceId());
         resource.setOwnerId(getOwnerId());
         resource.setVersion(getVersion());
-        resource.setValue(getValue());
         return resource;
     }
 

@@ -197,13 +197,12 @@ public class LatestVersion implements IsEntity, ResourceVersion {
     }
 
     public Resource toResource() {
-        Resource resource = Resources.createResource();
+        Resource resource = Resources.createResource(getRecord());
         resource.setId(getResourceId());
         resource.setOwnerId(getOwnerId());
         if(hasVersion()) {
             resource.setVersion(getVersion());
         }
-        resource.setValue(getRecord());
         return resource;
     }
 

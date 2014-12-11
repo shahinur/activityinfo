@@ -88,10 +88,9 @@ public class FormInstance implements IsResource {
 
     @Override
     public Resource asResource() {
-        Resource resource = Resources.createResource();
+        Resource resource = Resources.createResource(record);
         resource.setId(id);
         resource.setOwnerId(ownerId);
-        resource.setValue(record);
         return resource;
     }
 

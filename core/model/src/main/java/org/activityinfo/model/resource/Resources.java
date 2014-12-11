@@ -31,15 +31,15 @@ public class Resources {
 
     public static long COUNTER = 1;
 
-    public static Resource createResource() {
-        return new Resource();
-    }
-
     public static Resource createResource(Record record) {
         Resource resource = new Resource();
         resource.setId(generateId());
         resource.setValue(record);
         return resource;
+    }
+
+    public static Resource createResource(RecordBuilder recordBuilder) {
+        return createResource(recordBuilder.build());
     }
 
     public static ResourceId generateId() {
@@ -70,27 +70,28 @@ public class Resources {
     }
 
     public static Resource fromJson(JsonObject resourceObject) {
-        Resource resource = Resources.createResource();
+        RecordBuilder recordBuilder = Records.builder();
+        ResourceId id = null;
+        ResourceId ownerId = null;
+
         for (Map.Entry<String, JsonElement> property : resourceObject.entrySet()) {
             String name = property.getKey();
             switch (name) {
                 case "@id":
-                    resource.setId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    id = ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString());
                     break;
                 case "@owner":
-                    resource.setOwnerId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    ownerId = ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString());
                     break;
                 default:
                     // normal value
                     if (!property.getValue().isJsonNull()) {
-                        RecordBuilder recordBuilder = Records.buildCopyOf(resource.getValue());
                         set(recordBuilder, property.getKey(), propertyFromJson(property.getValue()));
-                        resource.setValue(recordBuilder.build());
                     }
             }
         }
 
-        return resource;
+        return Resources.createResource(recordBuilder).setId(id).setOwnerId(ownerId);
     }
 
     private static Object propertyFromJson(JsonElement propertyValue) {

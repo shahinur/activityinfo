@@ -25,8 +25,10 @@ public class ResourceDeserializer extends JsonDeserializer<Resource> {
     public static Resource deserialize(JsonParser reader) throws IOException {
         Preconditions.checkState(reader.getCurrentToken() == JsonToken.START_OBJECT);
 
-        Resource resource = Resources.createResource();
         RecordBuilder recordBuilder = Records.builder();
+        ResourceId id = null;
+        ResourceId ownerId = null;
+        long version = 0L;
 
         while(reader.nextToken() == JsonToken.FIELD_NAME) {
             String propertyName = reader.getCurrentName();
@@ -35,16 +37,16 @@ public class ResourceDeserializer extends JsonDeserializer<Resource> {
             reader.nextToken();
 
             if (propertyName.equals("@id")) {
-                resource.setId(ResourceId.valueOf(reader.getText()));
+                id = ResourceId.valueOf(reader.getText());
 
             } else if (propertyName.equals("@owner")) {
-                resource.setOwnerId(ResourceId.valueOf(reader.getText()));
+                ownerId = ResourceId.valueOf(reader.getText());
 
             } else if (propertyName.equals("@version")) {
                 if(reader.getCurrentToken() == JsonToken.VALUE_NUMBER_INT) {
-                    resource.setVersion(reader.getNumberValue().longValue());
+                    version = reader.getNumberValue().longValue();
                 } else if(reader.getCurrentToken() == JsonToken.VALUE_STRING) {
-                    resource.setVersion(Long.parseLong(reader.getValueAsString()));
+                    version = Long.parseLong(reader.getValueAsString());
                 } else {
                     throw new UnsupportedOperationException("@version = " + reader.getCurrentToken().name());
                 }
@@ -54,9 +56,6 @@ public class ResourceDeserializer extends JsonDeserializer<Resource> {
             }
         }
 
-        resource.setValue(recordBuilder.build());
-
-        return resource;
+        return Resources.createResource(recordBuilder).setId(id).setOwnerId(ownerId).setVersion(version);
     }
-
 }

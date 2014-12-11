@@ -107,20 +107,19 @@ public class AccessControlRule implements IsResource {
 
     @Override
     public Resource asResource() {
-        RecordBuilder record = Records.builder(CLASS_ID);
-        record.set("principal", new ReferenceValue(principalId).asRecord());
+        RecordBuilder recordBuilder = Records.builder(CLASS_ID);
+        recordBuilder.set("principal", new ReferenceValue(principalId).asRecord());
         if(owner) {
-            record.set("owner", true);
+            recordBuilder.set("owner", true);
         } else {
-            record.set("owner", false);
-            record.set("view", viewCondition.asRecord());
-            record.set("edit", editCondition.asRecord());
+            recordBuilder.set("owner", false);
+            recordBuilder.set("view", viewCondition.asRecord());
+            recordBuilder.set("edit", editCondition.asRecord());
         }
 
-        Resource resource = Resources.createResource();
+        Resource resource = Resources.createResource(recordBuilder);
         resource.setId(id);
         resource.setOwnerId(resourceId);
-        resource.setValue(record.build());
 
         return resource;
     }
