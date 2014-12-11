@@ -41,6 +41,7 @@ import org.activityinfo.model.type.time.LocalDate;
 import javax.annotation.Nonnull;
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -174,6 +175,10 @@ public class FormInstance implements IsResource {
         set(fieldId, new ReferenceValue(references));
     }
 
+    public void set(@NotNull ResourceId fieldId, Date date) {
+        set(fieldId, new LocalDate(date));
+    }
+
     public void set(ResourceId fieldId, Object value) {
         if (value instanceof ResourceId) {
             set(fieldId, (ResourceId) value);
@@ -187,6 +192,8 @@ public class FormInstance implements IsResource {
             set(fieldId, (FieldValue) value);
         } else if (value instanceof Set) {
             set(fieldId, (Set) value);
+        } else if (value instanceof Date) {
+            set(fieldId, (Date) value);
         } else if (value != null) {
             throw new IllegalArgumentException(value.getClass().toString());
         }
