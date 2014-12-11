@@ -52,6 +52,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.google.appengine.api.images.ImagesServiceFactory.makeImage;
+import static com.google.common.base.Optional.absent;
+import static com.google.common.base.Optional.of;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
@@ -139,14 +141,14 @@ public class FormSubmissionResource {
                 Optional<Element> gpsField = instance.getFieldContent(field(formClass.getId(), GPS_FIELD));
                 Optional<Element> nameField = instance.getFieldContent(field(formClass.getId(), LOCATION_NAME_FIELD));
 
-                if (fieldType instanceof ReferenceType && gpsField.isPresent() && nameField.isPresent()) {
+                if (fieldType instanceof ReferenceType && nameField.isPresent()) {
                     ResourceId locationFieldId = field(formClass.getId(), LOCATION_FIELD);
                     int newLocationId = new KeyGenerator().generateInt();
                     ResourceId locationFormClassId = Iterables.getOnlyElement(((ReferenceType) fieldType).getRange());
                     int locationTypeId = getLegacyIdFromCuid(locationFormClassId);
                     FieldValue fieldValue = new ReferenceValue(locationInstanceId(newLocationId));
                     String name = OdkHelper.extractText(nameField.get());
-                    GeoPoint geoPoint = parseLocation(gpsField.get(), legacy);
+                    Optional<GeoPoint> geoPoint = parseLocation(gpsField, legacy);
 
                     formInstance.set(locationFieldId, fieldValue);
                     createLocation(newLocationId, locationTypeId, name, geoPoint);
@@ -189,13 +191,17 @@ public class FormSubmissionResource {
         return null;
     }
 
-    private GeoPoint parseLocation(Element element, boolean legacy) {
-        try {
-            OdkFieldValueParser odkFieldValueParser = fromFieldType(GeoPointType.INSTANCE, legacy);
-            return (GeoPoint) odkFieldValueParser.parse(element);
-        } catch (Exception e) {
-            return null;
+    private Optional<GeoPoint> parseLocation(Optional<Element> element, boolean legacy) {
+        if (element.isPresent()) {
+            try {
+                OdkFieldValueParser odkFieldValueParser = fromFieldType(GeoPointType.INSTANCE, legacy);
+                return of((GeoPoint) odkFieldValueParser.parse(element.get()));
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Can't parse form submission location data", e);
+            }
         }
+
+        return absent();
     }
 
     private void persistImageData(AuthenticatedUser user, XFormInstance instance, ImageValue fieldValue) {
@@ -226,16 +232,16 @@ public class FormSubmissionResource {
         }
     }
 
-    private VoidResult createLocation(int id, int locationTypeId, String name, GeoPoint geoPoint) {
+    private VoidResult createLocation(int id, int locationTypeId, String name, Optional<GeoPoint> geoPoint) {
         Map<String, Object> properties = Maps.newHashMap();
 
         properties.put("id", id);
         properties.put("locationTypeId", locationTypeId);
         properties.put("name", name);
 
-        if (geoPoint != null) {
-            properties.put("latitude", geoPoint.getLatitude());
-            properties.put("longitude", geoPoint.getLongitude());
+        if (geoPoint.isPresent()) {
+            properties.put("latitude", geoPoint.get().getLatitude());
+            properties.put("longitude", geoPoint.get().getLongitude());
         }
 
         return dispatcher.execute(new CreateLocation(properties));
