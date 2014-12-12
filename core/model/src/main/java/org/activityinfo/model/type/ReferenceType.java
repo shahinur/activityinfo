@@ -1,9 +1,11 @@
 package org.activityinfo.model.type;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
 
@@ -18,7 +20,8 @@ import java.util.Set;
 public class ReferenceType implements ParametrizedFieldType {
 
 
-    public static class TypeClass implements ParametrizedFieldTypeClass, RecordFieldTypeClass {
+    public static class TypeClass implements ParametrizedFieldTypeClass,
+        RecordFieldTypeClass {
 
         private TypeClass() {
         }
@@ -38,19 +41,39 @@ public class ReferenceType implements ParametrizedFieldType {
         @Override
         public FieldType deserializeType(Record parameters) {
             ReferenceType type = new ReferenceType();
-            type.setCardinality(Cardinality.valueOf(parameters.getString("cardinality")));
-            type.setRange(parameters.getStringList("range"));
+            String cardinalityEncoded = parameters.isString("cardinality");
+            if(cardinalityEncoded == null) {
+                type.setCardinality(Cardinality.SINGLE);
+            } else {
+                type.setCardinality(Cardinality.valueOf(cardinalityEncoded));
+            }
+            Record record = parameters.isRecord("range");
+            if(record != null) {
+                ReferenceValue referenceValue = ReferenceValue.fromRecord(record);
+                type.setRange(referenceValue.getResourceIds());
+            } else {
+                // previous encoding
+                type.setRange(parameters.getStringList("range"));
+            }
             return type;
         }
 
         @Override
-        public FieldValue deserialize(Record record) {
+        public ReferenceValue deserialize(Record record) {
             return ReferenceValue.fromRecord(record);
         }
 
         @Override
         public FormClass getParameterFormClass() {
+            FormField rangeField = new FormField(ResourceId.valueOf("range"));
+            rangeField.setLabel("Other Form");
+            rangeField.setDescription("Choose the form to which the field should be linked. " +
+                                      "When filling out the form, you will be able to choose from " +
+                                      "among the submissions to that form.");
+            rangeField.setType(ReferenceType.single(FormClass.CLASS_ID));
+
             FormClass formClass = new FormClass(ResourceIdPrefixType.TYPE.id("ref"));
+            formClass.addElement(rangeField);
             return formClass;
         }
     };
@@ -58,7 +81,7 @@ public class ReferenceType implements ParametrizedFieldType {
     public static final TypeClass TYPE_CLASS = new TypeClass();
 
     private Cardinality cardinality;
-    private Set<ResourceId> range;
+    private Set<ResourceId> range = Collections.emptySet();
 
     public ReferenceType() {
     }
@@ -105,26 +128,18 @@ public class ReferenceType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        return new Record()
-                .set("classId", getTypeClass().getParameterFormClass().getId())
-                .set("range", toArray(range))
-                .set("cardinality", cardinality);
+        RecordBuilder recordBuilder = Records.builder(getTypeClass());
+        recordBuilder.set("cardinality", cardinality);
+        if(!range.isEmpty()) {
+            recordBuilder.set("range", new ReferenceValue(range).asRecord());
+        }
+        return recordBuilder.build();
     }
 
     @Override
     public boolean isValid() {
         return true;
     }
-
-    private List<String> toArray(Set<ResourceId> range) {
-        List<String> ids = Lists.newArrayList();
-        for(ResourceId id : range) {
-            ids.add(id.asString());
-        }
-        return ids;
-    }
-
-
     /**
      * Convenience constructor for ReferenceTypes with single cardinality
      * @param formClassId the id of the form class which is the range of this field
@@ -146,6 +161,13 @@ public class ReferenceType implements ParametrizedFieldType {
         ReferenceType type = new ReferenceType();
         type.setCardinality(Cardinality.SINGLE);
         type.setRange(Sets.newHashSet(formClassIds));
+        return type;
+    }
+
+    public static FieldType multiple(ResourceId formClassId) {
+        ReferenceType type = new ReferenceType();
+        type.setCardinality(Cardinality.MULTIPLE);
+        type.setRange(Sets.newHashSet(formClassId));
         return type;
     }
 

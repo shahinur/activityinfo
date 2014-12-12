@@ -1,11 +1,18 @@
 package org.activityinfo.model.resource;
 
-import com.google.gson.*;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class Resources {
 
@@ -15,44 +22,38 @@ public class Resources {
      * All registered users are resources owned by this
      * resource.
      */
-    public static final String USER_DATABASE_ID = "_users";
+    public static final ResourceId USER_DATABASE_ID = ResourceId.valueOf("_users");
 
+    public static final int RADIX = 10;
 
-    public static final String ROOT_RESOURCE_ID = "_root";
+    public static final ResourceId ROOT_ID = ResourceId.valueOf("_root");
 
-    public static Resource createResource() {
-        return new Resource();
-    }
+    public static long COUNTER = 1;
 
     public static Resource createResource(Record record) {
         Resource resource = new Resource();
         resource.setId(ResourceId.generateId());
-        resource.getProperties().putAll(record.getProperties());
+        resource.setValue(record);
         return resource;
     }
 
-    /**
-     * @return  {@code} true if {@code x} and {@code y} have the same identity
-     * and have equal properties
-     */
-    public static boolean deepEquals(Resource x, Resource y) {
-        if(x == y) {
-            return true;
-        }
-        if(!Objects.equals(x.getId(), y.getId()) ||
-           !Objects.equals(x.getOwnerId(), y.getOwnerId())) {
-            return false;
-        }
+    public static Resource createResource(RecordBuilder recordBuilder) {
+        return createResource(recordBuilder.build());
+    }
 
-        if(x.getProperties().size() != y.getProperties().size()) {
-            return false;
-        }
-        for(String propertyName : x.getProperties().keySet()) {
-            if(!Objects.equals(x.get(propertyName), y.get(propertyName))) {
-                return false;
-            }
-        }
-        return true;
+    /**
+     * Creates a new resource with the given
+     * @param parentId
+     * @param value
+     * @return
+     */
+    public static Resource newResource(ResourceId parentId, IsRecord value) {
+        Resource resource = new Resource();
+        resource.setId(ResourceId.generateId());
+        resource.setOwnerId(parentId);
+        resource.setValue(value.asRecord());
+        resource.setVersion(0L);
+        return resource;
     }
 
     public static Resource fromJson(String json) {
@@ -63,26 +64,28 @@ public class Resources {
     }
 
     public static Resource fromJson(JsonObject resourceObject) {
-        Resource resource = Resources.createResource();
-        for(Map.Entry<String, JsonElement> property : resourceObject.entrySet()) {
+        RecordBuilder recordBuilder = Records.builder();
+        ResourceId id = null;
+        ResourceId ownerId = null;
+
+        for (Map.Entry<String, JsonElement> property : resourceObject.entrySet()) {
             String name = property.getKey();
             switch (name) {
                 case "@id":
-                    resource.setId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    id = ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString());
                     break;
                 case "@owner":
-                    resource.setOwnerId(ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString()));
+                    ownerId = ResourceId.valueOf(resourceObject.getAsJsonPrimitive(name).getAsString());
                     break;
                 default:
                     // normal value
                     if (!property.getValue().isJsonNull()) {
-                        resource.set(property.getKey(), propertyFromJson(property.getValue()));
+                        set(recordBuilder, property.getKey(), propertyFromJson(property.getValue()));
                     }
-                    break;
             }
         }
 
-        return resource;
+        return createResource(recordBuilder).setId(id).setOwnerId(ownerId);
     }
 
     private static Object propertyFromJson(JsonElement propertyValue) {
@@ -119,13 +122,31 @@ public class Resources {
     }
 
     private static Record recordFromJson(JsonObject jsonObject) {
-        Record record = new Record();
+        RecordBuilder recordBuilder = Records.builder();
+
         for(Map.Entry<String, JsonElement> field : jsonObject.entrySet()) {
             if(!field.getValue().isJsonNull()) {
-                record.set(field.getKey(), propertyFromJson(field.getValue()));
+                set(recordBuilder, field.getKey(), propertyFromJson(field.getValue()));
             }
         }
-        return record;
+
+        return recordBuilder.build();
+    }
+
+    private static void set(RecordBuilder recordBuilder, String key, Object property) {
+        if (property instanceof String) {
+            recordBuilder.set(key, (String) property);
+        } else if (property instanceof Double) {
+            recordBuilder.set(key, (Double) property);
+        } else if (property instanceof Boolean) {
+            recordBuilder.set(key, (Boolean) property);
+        } else if (property instanceof Record) {
+            recordBuilder.set(key, (Record) property);
+        } else if (property instanceof List) {
+            recordBuilder.set(key, (List) property);
+        } else {
+            throw new UnsupportedOperationException("value: " + property);
+        }
     }
 
     public static String toJson(Resource resource) {
@@ -139,7 +160,7 @@ public class Resources {
         resourceObject.addProperty("@id", resource.getId().asString());
         resourceObject.addProperty("@owner", resource.getOwnerId().asString());
 
-        for(Map.Entry<String, Object> property : resource.getProperties().entrySet()) {
+        for(Map.Entry<String, Object> property : resource.getValue().asMap().entrySet()) {
             if(property.getValue() != null) {
                 resourceObject.add(property.getKey(), propertyValueToJson(property.getValue()));
             }
@@ -165,7 +186,7 @@ public class Resources {
 
     public static JsonElement toJsonObject(Record value) {
         JsonObject jsonObject = new JsonObject();
-        for(Map.Entry<String, Object> property :  value.getProperties().entrySet()) {
+        for(Map.Entry<String, Object> property :  value.asMap().entrySet()) {
             if(property.getValue() != null) {
                 jsonObject.add(property.getKey(), propertyValueToJson(property.getValue()));
             }

@@ -21,17 +21,17 @@ package org.activityinfo.model.expr;
  * #L%
  */
 
+import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.expr.functions.Casting;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.form.FormEvalContext;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.TextType;
 import org.junit.Assert;
@@ -44,7 +44,6 @@ import java.util.Arrays;
  * @author yuriyz on 7/24/14.
  */
 
-@SuppressWarnings("NonJREEmulationClassesInClientCode")
 public class SkipExpressionTest {
 
     private static final ResourceId GENDER_FIELD_ID = ResourceId.generateId();
@@ -62,34 +61,34 @@ public class SkipExpressionTest {
     @Test
     public void enumType() {
         FormInstance instance = new FormInstance(ResourceId.generateId(), formClass.getId());
-        instance.set(GENDER_FIELD_ID, enumFieldValue(GENDER_FIELD_ID, "Male"));
+        instance.set(GENDER_FIELD_ID, enumValue(GENDER_FIELD_ID, "Male"));
 
-        eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
-        eval(String.format("{%s}!={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), false, instance);
-        eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
-        eval(String.format("({%s}=={%s})&&({%s}!={%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId(), GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), true, instance);
+        eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId()), true, instance);
+        eval(String.format("{%s}!={%s}", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId()), false, instance);
+        eval(String.format("{%s}=={%s}", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Female").getId()), false, instance);
+        eval(String.format("({%s}=={%s})&&({%s}!={%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId(), GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Female").getId()), true, instance);
 
         // contains all
-        eval(String.format("containsAll({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
-        eval(String.format("containsAll({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
-        eval(String.format("containsAll({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()), true, instance);
+        eval(String.format("containsAll({%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId()), true, instance);
+        eval(String.format("containsAll({%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Female").getId()), false, instance);
+        eval(String.format("containsAll({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId(), enumItem(GENDER_FIELD_ID, "Female").getId()), true, instance);
 
-        eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
-        eval(String.format("containsAny({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()), true, instance);
-        eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
+        eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId()), true, instance);
+        eval(String.format("containsAny({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId(), enumItem(GENDER_FIELD_ID, "Female").getId()), true, instance);
+        eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Female").getId()), false, instance);
 
         // enum with 2 values
-        instance.set(GENDER_FIELD_ID,  new EnumValue(enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()));
+        instance.set(GENDER_FIELD_ID,  new EnumValue(enumItem(GENDER_FIELD_ID, "Male").getId(), enumItem(GENDER_FIELD_ID, "Female").getId()));
 
-        eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
+        eval(String.format("containsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId()), true, instance);
 
-        eval(String.format("containsAll({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()), true, instance);
+        eval(String.format("containsAll({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId(), enumItem(GENDER_FIELD_ID, "Female").getId()), true, instance);
 
-        eval(String.format("notContainsAll({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), true, instance);
-        eval(String.format("notContainsAll({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
+        eval(String.format("notContainsAll({%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId()), true, instance);
+        eval(String.format("notContainsAll({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId(), enumItem(GENDER_FIELD_ID, "Female").getId()), false, instance);
 
-        eval(String.format("notContainsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId()), false, instance);
-        eval(String.format("notContainsAny({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumValue(GENDER_FIELD_ID, "Male").getId(), enumValue(GENDER_FIELD_ID, "Female").getId()), false, instance);
+        eval(String.format("notContainsAny({%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId()), false, instance);
+        eval(String.format("notContainsAny({%s},{%s},{%s})", GENDER_FIELD_ID.asString(), enumItem(GENDER_FIELD_ID, "Male").getId(), enumItem(GENDER_FIELD_ID, "Female").getId()), false, instance);
 
     }
 
@@ -121,18 +120,18 @@ public class SkipExpressionTest {
                 Casting.toBoolean(expr.evaluate(new FormEvalContext(formClass, instance))));
     }
 
-    private EnumItem enumValue(ResourceId formField, String label) {
+    private EnumItem enumItem(ResourceId formField, String label) {
         EnumType enumType = (EnumType) formClass.getField(formField).getType();
         for (EnumItem value : enumType.getValues()) {
             if (value.getLabel().equalsIgnoreCase(label)) {
                 return value;
             }
         }
-        throw new IllegalArgumentException("Unable to find enumValue with label: " + label);
+        throw new IllegalArgumentException("Unable to find enumItem with label: " + label);
     }
 
-    private EnumValue enumFieldValue(ResourceId formField, String label) {
-        return new EnumValue(enumValue(formField, label).getId());
+    private EnumValue enumValue(ResourceId formField, String label) {
+        return new EnumValue(enumItem(formField, label).getId());
     }
 
 

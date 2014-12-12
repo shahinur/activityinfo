@@ -3,21 +3,29 @@ package org.activityinfo.legacy.shared.adapter;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.activityinfo.core.shared.application.FolderClass;
 import org.activityinfo.core.shared.criteria.Criteria;
-import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.CountryDTO;
+import org.activityinfo.legacy.shared.model.LocationTypeDTO;
+import org.activityinfo.legacy.shared.model.SchemaDTO;
+import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
 import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.FolderClass;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.activityinfo.model.legacy.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.DATABASE_DOMAIN;
+import static org.activityinfo.model.legacy.CuidAdapter.activityCategoryFolderId;
+import static org.activityinfo.model.legacy.CuidAdapter.activityFormClass;
+import static org.activityinfo.model.legacy.CuidAdapter.cuid;
+import static org.activityinfo.model.legacy.CuidAdapter.databaseId;
 
 /**
  * Extracts a list of databases as a list of folders

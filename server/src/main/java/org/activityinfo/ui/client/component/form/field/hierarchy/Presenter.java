@@ -10,16 +10,20 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.ClassCriteria;
 import org.activityinfo.core.shared.criteria.CriteriaIntersection;
 import org.activityinfo.core.shared.criteria.FieldCriteria;
 import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.ApplicationProperties;
 import org.activityinfo.model.type.ReferenceValue;
 import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Models the selection of hierarchy

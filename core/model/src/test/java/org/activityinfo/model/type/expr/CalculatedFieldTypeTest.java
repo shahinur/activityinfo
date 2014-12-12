@@ -1,14 +1,14 @@
 package org.activityinfo.model.type.expr;
 
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.ResourceId;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class CalculatedFieldTypeTest {
 

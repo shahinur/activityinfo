@@ -5,8 +5,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
@@ -45,15 +47,15 @@ public class EnumValue implements FieldValue, IsRecord, HasSetFieldValue {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
-        record.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId());
+        RecordBuilder recordBuilder = Records.builder();
+        recordBuilder.set(TYPE_CLASS_FIELD_NAME, EnumType.TYPE_CLASS.getId());
 
         if(valueIds.size() == 1) {
-            record.set("value", valueIds.iterator().next().asString());
+            recordBuilder.set("value", valueIds.iterator().next().asString());
         } else if(valueIds.size() > 1) {
-            record.set("value", toStringList(valueIds));
+            recordBuilder.set("value", toStringList(valueIds));
         }
-        return record;
+        return recordBuilder.build();
     }
 
     public Set<EnumItem> getValuesAsItems(EnumType enumType) {

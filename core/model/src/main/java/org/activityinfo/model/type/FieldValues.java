@@ -1,6 +1,6 @@
 package org.activityinfo.model.type;
 
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.type.primitive.BooleanFieldValue;
 import org.activityinfo.model.type.primitive.BooleanType;
@@ -14,7 +14,7 @@ public class FieldValues {
      * field value matches the given {@code typeClass}, otherwise {@code null}
      *
      */
-    public static <T extends FieldValue> T readFieldValueIfType(Resource resource,
+    public static <T extends FieldValue> T readFieldValueIfType(Record resource,
                                                                 String fieldName,
                                                                 RecordFieldTypeClass typeClass) {
 
@@ -27,7 +27,7 @@ public class FieldValues {
         return null;
     }
 
-    public static FieldValue readFieldValueIfType(Resource instance, String fieldName, FieldTypeClass typeClass) {
+    public static FieldValue readFieldValueIfType(Record instance, String fieldName, FieldTypeClass typeClass) {
         if(typeClass == TextType.TYPE_CLASS) {
             return TextValue.valueOf(instance.isString(fieldName));
 
@@ -40,5 +40,9 @@ public class FieldValues {
         } else {
             throw new UnsupportedOperationException(typeClass.getId());
         }
+    }
+
+    public static FieldValue readFieldValueIfType(Resource instance, String fieldName, FieldTypeClass typeClass) {
+        return readFieldValueIfType(instance.getValue(), fieldName, typeClass);
     }
 }

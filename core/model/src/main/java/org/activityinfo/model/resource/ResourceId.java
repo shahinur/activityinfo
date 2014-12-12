@@ -1,7 +1,7 @@
 package org.activityinfo.model.resource;
 
 
-import org.activityinfo.model.form.annotation.Field;
+import com.fasterxml.jackson.annotation.JsonValue;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.type.FieldTypeClass;
@@ -36,7 +36,7 @@ public final class ResourceId {
 
     public static ResourceId generateId() {
         return valueOf("c" + Long.toString(new Date().getTime(), Character.MAX_RADIX) +
-                       Long.toString(COUNTER++, Character.MAX_RADIX));
+                Long.toString(COUNTER++, Character.MAX_RADIX));
     }
 
 
@@ -44,6 +44,7 @@ public final class ResourceId {
         this.text = text;
     }
 
+    @JsonValue
     public String asString() {
         return this.text;
     }
@@ -62,6 +63,7 @@ public final class ResourceId {
         }
 
         ResourceId resourceId = (ResourceId) o;
+
         return text.equals(resourceId.text);
     }
 
@@ -77,10 +79,14 @@ public final class ResourceId {
 
     public static ResourceId generateFieldId(FieldTypeClass typeClass) {
         KeyGenerator generator = new KeyGenerator();
-        if(typeClass == EnumType.TYPE_CLASS) {
+        if (typeClass == EnumType.TYPE_CLASS) {
             return CuidAdapter.attributeGroupField(generator.generateInt());
         } else {
             return CuidAdapter.indicatorField(generator.generateInt());
         }
+    }
+
+    public boolean isApplicationDefined() {
+        return text.startsWith("_");
     }
 }

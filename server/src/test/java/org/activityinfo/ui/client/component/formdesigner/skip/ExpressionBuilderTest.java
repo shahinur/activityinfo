@@ -30,9 +30,9 @@ import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
-import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
+import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.primitive.TextType;
 import org.activityinfo.model.type.primitive.TextValue;
 import org.junit.Before;
@@ -71,13 +71,13 @@ public class ExpressionBuilderTest {
         RowData row = new RowData();
         row.setFormField(formClass.getField(GENDER_FIELD_ID));
         row.setFunction(BooleanFunctions.EQUAL);
-        row.setValue(new EnumValue(Sets.newHashSet(enumValue(GENDER_FIELD_ID, "Male").getId())));
+        row.setValue(new EnumValue(Sets.newHashSet(enumItem(GENDER_FIELD_ID, "Male").getId())));
         row.setJoinFunction(BooleanFunctions.AND);
 
         RowData row2 = new RowData();
         row2.setFormField(formClass.getField(PREGNANT_FIELD_ID));
         row2.setFunction(BooleanFunctions.NOT_EQUAL);
-        row2.setValue(new EnumValue(Sets.newHashSet(enumValue(PREGNANT_FIELD_ID, "No").getId())));
+        row2.setValue(new EnumValue(Sets.newHashSet(enumItem(PREGNANT_FIELD_ID, "No").getId())));
         row2.setJoinFunction(BooleanFunctions.OR);
 
         assertCorrectRoundTripTranslation("{test_f1}=={test_ev1}", row);
@@ -87,8 +87,8 @@ public class ExpressionBuilderTest {
         assertCorrectRoundTripTranslation("({test_f1}=={test_ev1})&&({test_f2}!={test_ev4})", row, row2);
 
         row2.setValue(new EnumValue(Sets.newHashSet(
-                enumValue(PREGNANT_FIELD_ID, "Yes").getId(),
-                enumValue(PREGNANT_FIELD_ID, "No").getId())));
+                enumItem(PREGNANT_FIELD_ID, "Yes").getId(),
+                enumItem(PREGNANT_FIELD_ID, "No").getId())));
         assertCorrectRoundTripTranslation("(({test_f2}!={test_ev3})&&({test_f2}!={test_ev4}))", row2);
         assertCorrectRoundTripTranslation("({test_f1}=={test_ev1})&&(({test_f2}!={test_ev3})&&({test_f2}!={test_ev4}))", row, row2);
 
@@ -121,14 +121,14 @@ public class ExpressionBuilderTest {
         assertEquals(builtExpression, rowList, createRows);
     }
 
-    private EnumItem enumValue(ResourceId formField, String label) {
+    private EnumItem enumItem(ResourceId formField, String label) {
         EnumType enumType = (EnumType) formClass.getField(formField).getType();
         for (EnumItem value : enumType.getValues()) {
             if (value.getLabel().equalsIgnoreCase(label)) {
                 return value;
             }
         }
-        throw new IllegalArgumentException("Unable to find enumValue with label: " + label);
+        throw new IllegalArgumentException("Unable to find EnumItem with label: " + label);
     }
 
 

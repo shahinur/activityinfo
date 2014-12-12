@@ -13,7 +13,12 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.core.client.ResourceLocator;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.model.form.*;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormElement;
+import org.activityinfo.model.form.FormElementContainer;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.form.FormSection;
 import org.activityinfo.model.resource.Resource;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.FieldValue;
@@ -114,7 +119,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
     public Promise<Void> show(final Resource instance) {
         this.instance = instance;
-        return locator.getFormClass(instance.getResourceId("classId")).join(new Function<FormClass, Promise<Void>>() {
+        return locator.getFormClass(instance.getClassId()).join(new Function<FormClass, Promise<Void>>() {
             @Nullable
             @Override
             public Promise<Void> apply(@Nullable FormClass formClass) {
@@ -181,7 +186,7 @@ public class SimpleFormPanel implements DisplayWidget<FormInstance> {
 
         for (FieldContainer container : containers.values()) {
             FormField field = container.getField();
-            FieldValue value = workingInstance.get(field.getId(), field.getType());
+            FieldValue value = workingInstance.get(field.getId(), field.getType().getTypeClass());
 
             if(value != null && value.getTypeClass() == field.getType().getTypeClass()) {
                 tasks.add(container.getFieldWidget().setValue(value));

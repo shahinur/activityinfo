@@ -2,9 +2,14 @@ package org.activityinfo.model.type.enumerated;
 
 import com.google.common.collect.Lists;
 import org.activityinfo.model.form.FormClass;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.Cardinality;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
+import org.activityinfo.model.type.RecordFieldTypeClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,10 +93,10 @@ public class EnumType implements ParametrizedFieldType {
             enumValueRecords.add(enumItem.asRecord());
         }
 
-        return new Record()
-                .set("classId", getTypeClass().getParameterFormClass().getId())
+        return Records.builder(getTypeClass())
                 .set("cardinality", cardinality.name())
-                .set("values", enumValueRecords);
+                .set("values", enumValueRecords)
+                .build();
     }
 
     @Override

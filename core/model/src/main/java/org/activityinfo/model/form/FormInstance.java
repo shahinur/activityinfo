@@ -23,8 +23,17 @@ package org.activityinfo.model.form;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import org.activityinfo.model.resource.*;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
+import org.activityinfo.model.resource.IsResource;
+import org.activityinfo.model.resource.Resource;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.resource.Resources;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.FieldValue;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.TypeRegistry;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.geo.AiLatLng;
 import org.activityinfo.model.type.geo.GeoPoint;
@@ -45,14 +54,14 @@ import java.util.Set;
  * Wrapper for a {@code Record} or {@code Resource} that exposes its properties
  * as {@code FieldValue}s
  *
+ * TODO Either rewrite this class so that it has reference semantics, or make it clear that it does not!
+ *
  * @author yuriyz on 1/29/14.
  */
 public class FormInstance implements IsResource {
-
-    private ResourceId id;
-    private ResourceId classId;
+    final private ResourceId id;
     private ResourceId ownerId;
-    private PropertyBag propertyBag;
+    private Record record;
 
     /**
      * Constructs a new FormInstance. To obtain an id for a new instance
@@ -64,9 +73,8 @@ public class FormInstance implements IsResource {
     public FormInstance(@Nonnull ResourceId id, @Nonnull ResourceId classId) {
         Preconditions.checkNotNull(id, classId);
         this.id = id;
-        this.classId = classId;
         this.ownerId = classId;
-        this.propertyBag = new PropertyBag();
+        this.record = Records.builder(classId).build();
     }
 
     @Override
@@ -74,37 +82,25 @@ public class FormInstance implements IsResource {
         return id;
     }
 
-    public FormInstance setId(ResourceId id) {
-        this.id = id;
-        return this;
-    }
-
-    public FormInstance setClassId(ResourceId classId) {
-        this.classId = classId;
-        return this;
-    }
-
     public static FormInstance fromResource(Resource resource) {
-        FormInstance instance = new FormInstance(resource.getId(), resource.getResourceId("classId"));
+        FormInstance instance = new FormInstance(resource.getId(), resource.getValue().getClassId());
         if (resource.getOwnerId() != null) { // owner may be null for FieldTypes
             instance.setOwnerId(resource.getOwnerId());
         }
-        instance.propertyBag.setAll(resource);
+        instance.setAll(resource.getValue());
         return instance;
     }
 
     @Override
     public Resource asResource() {
-        Resource resource = Resources.createResource();
+        Resource resource = Resources.createResource(record);
         resource.setId(id);
         resource.setOwnerId(ownerId);
-        resource.set("classId", classId);
-        resource.setAll(propertyBag);
         return resource;
     }
 
     public ResourceId getClassId() {
-        return classId;
+        return record.getClassId();
     }
 
     public FormInstance setOwnerId(ResourceId ownerId) {
@@ -119,10 +115,10 @@ public class FormInstance implements IsResource {
 
     public Map<ResourceId, Object> getValueMap() {
         Map<ResourceId, Object> valueMap = Maps.newHashMap();
-        for(Object key : propertyBag.getProperties().keySet()) {
+        for(Object key : record.asMap().keySet()) {
             String fieldName = (String)key;
             ResourceId fieldId = ResourceId.valueOf(fieldName);
-            Object value = propertyBag.get(fieldName);
+            Object value = record.get(fieldName);
 
             if(value instanceof String) {
                 valueMap.put(fieldId, value);
@@ -138,7 +134,7 @@ public class FormInstance implements IsResource {
 
     public Map<ResourceId, FieldValue> getFieldValueMap() {
         Map<ResourceId, FieldValue> valueMap = Maps.newHashMap();
-        for(Object key : propertyBag.getProperties().keySet()) {
+        for(Object key : record.asMap().keySet()) {
             ResourceId fieldId = ResourceId.valueOf((String) key);
             valueMap.put(fieldId, get(fieldId));
         }
@@ -146,9 +142,13 @@ public class FormInstance implements IsResource {
     }
 
     public void removeAll(Set<ResourceId> fieldIds) {
+        RecordBuilder recordBuilder = Records.buildCopyOf(this.record);
+
         for (ResourceId fieldId : fieldIds) {
-            propertyBag.remove(fieldId.asString());
+            recordBuilder.set(fieldId.asString(), (String) null);
         }
+
+        this.record = recordBuilder.build();
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, ResourceId referenceId) {
@@ -156,90 +156,87 @@ public class FormInstance implements IsResource {
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, String value) {
-        if(value == null) {
-            propertyBag.remove(fieldId.asString());
-        } else {
-            propertyBag.set(fieldId.asString(), value);
-        }
+        this.record = Records.buildCopyOf(this.record).set(fieldId.asString(), value).build();
         return this;
     }
 
-
-    public FormInstance set(String fieldId, String name) {
-        return set(ResourceId.valueOf(fieldId), name);
-    }
-
     public FormInstance set(@NotNull ResourceId fieldId, double value) {
-        return set(fieldId, new Quantity(value));
+        this.record = Records.buildCopyOf(this.record).set(fieldId.asString(), value).build();
+        return this;
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, boolean value) {
-        propertyBag.set(fieldId.asString(), value);
+        this.record = Records.buildCopyOf(this.record).set(fieldId.asString(), value).build();
         return this;
     }
 
     public FormInstance set(@NotNull ResourceId fieldId, FieldValue fieldValue) {
-        propertyBag.set(fieldId, fieldValue);
+        this.record = Records.buildCopyOf(this.record).setFieldValue(fieldId.asString(), fieldValue).build();
         return this;
     }
-
-    public FormInstance set(@NotNull ResourceId fieldId, AiLatLng latLng) {
-        propertyBag.set(fieldId, new GeoPoint(latLng.getLat(), latLng.getLng()));
-        return this;
-    }
-
 
     public void set(@NotNull ResourceId fieldId, Set<ResourceId> references) {
         set(fieldId, new ReferenceValue(references));
     }
 
-    public FieldValue get(ResourceId fieldId, FieldType fieldType) {
-        Object value = propertyBag.get(fieldId.asString());
-        if (value instanceof String && fieldType instanceof NarrativeType) {
-            return NarrativeValue.valueOf((String) value);
+    public void set(@NotNull ResourceId fieldId, Date date) {
+        set(fieldId, new LocalDate(date));
+    }
+
+    public void set(@NotNull ResourceId fieldId, com.bedatadriven.rebar.time.calendar.LocalDate rebarDate) {
+        set(fieldId, LocalDate.valueOf(rebarDate));
+    }
+
+    public void set(@NotNull ResourceId fieldId, AiLatLng aiLatLng) {
+        set(fieldId, new GeoPoint(aiLatLng));
+    }
+
+    public void set(ResourceId fieldId, Object value) {
+        if (value instanceof ResourceId) {
+            set(fieldId, (ResourceId) value);
+        } else if (value instanceof String) {
+            set(fieldId, (String) value);
+        } else if (value instanceof Double) {
+            set(fieldId, ((Double) value).doubleValue());
+        } else if (value instanceof Boolean) {
+            set(fieldId, ((Boolean) value).booleanValue());
+        } else if (value instanceof FieldValue) {
+            set(fieldId, (FieldValue) value);
+        } else if (value instanceof Set) {
+            set(fieldId, (Set) value);
+        } else if (value instanceof Date) {
+            set(fieldId, (Date) value);
+        } else if (value instanceof com.bedatadriven.rebar.time.calendar.LocalDate) {
+            set(fieldId, (com.bedatadriven.rebar.time.calendar.LocalDate) value);
+        } else if (value instanceof AiLatLng) {
+            set(fieldId, (AiLatLng) value);
+        } else if (value != null) {
+            throw new IllegalArgumentException(value.getClass().toString());
         }
-        return get(fieldId);
     }
 
     public FieldValue get(ResourceId fieldId) {
-        Object value = propertyBag.get(fieldId.asString());
-        if(value == null) {
+        Object value = record.get(fieldId.asString());
+
+        if (value == null) {
             return null;
-        } else if(value instanceof String) {
+        } else if (value instanceof String) {
             return TextValue.valueOf((String) value);
-        } else if(value instanceof Boolean) {
+        } else if (value instanceof Boolean) {
             Boolean booleanValue = (Boolean) value;
             return BooleanFieldValue.valueOf(booleanValue);
-        } else if(value instanceof Record) {
-            Record record = (Record)value;
-            return TypeRegistry.get().deserializeFieldValue(record);
-        }else if(value instanceof Double) {
+        } else if (value instanceof Record) {
+            Record record = (Record) value;
+
+            try {
+                return TypeRegistry.get().deserializeFieldValue(record);
+            } catch (Exception e) {
+                throw new RuntimeException("Exception thrown while reading property '" + fieldId + "' from " + value);
+            }
+        } else if (value instanceof Double) {
             return new Quantity((Double) value);
         } else {
-            throw new UnsupportedOperationException(fieldId.asString() + " = " + value);
-        }
-    }
-
-
-    public void set(ResourceId fieldId, Object value) {
-        if(value instanceof Date) {
-            set(fieldId, new LocalDate((Date)value));
-        } else if(value instanceof com.bedatadriven.rebar.time.calendar.LocalDate) {
-            com.bedatadriven.rebar.time.calendar.LocalDate rebarDate = (com.bedatadriven.rebar.time.calendar.LocalDate) value;
-            set(fieldId, new LocalDate(rebarDate.getYear(), rebarDate.getMonthOfYear(), rebarDate.getDayOfMonth()));
-        } else if(value instanceof String) {
-            set(fieldId, (String)value);
-        } else if(value instanceof Number) {
-            set(fieldId, ((Number)value).doubleValue());
-        } else if(value instanceof AiLatLng) {
-            AiLatLng latLng = (AiLatLng) value;
-            set(fieldId, new GeoPoint(latLng.getLat(), latLng.getLng()));
-        } else if(value instanceof Boolean) {
-            set(fieldId, value == Boolean.TRUE);
-        } else if(value instanceof FieldValue) {
-            set(fieldId, (FieldValue)value);
-        } else {
-            throw new UnsupportedOperationException(value.getClass().getName());
+            throw new UnsupportedOperationException(fieldId + " = " + value);
         }
     }
 
@@ -265,7 +262,7 @@ public class FormInstance implements IsResource {
     }
 
     public String getString(ResourceId fieldId) {
-        return propertyBag.isString(fieldId.asString());
+        return record.isString(fieldId.asString());
     }
 
     public LocalDate getDate(ResourceId fieldId) {
@@ -297,26 +294,20 @@ public class FormInstance implements IsResource {
 
     public FormInstance copy() {
         final FormInstance copy = new FormInstance(getId(), getClassId());
-        copy.propertyBag.setAll(propertyBag);
+        copy.setOwnerId(getOwnerId());
+        copy.setAll(record);
         return copy;
-    }
-
-    public AiLatLng getPoint(ResourceId fieldId) {
-        FieldValue value = get(fieldId);
-        if(value instanceof GeoPoint) {
-            GeoPoint geoPoint = (GeoPoint) value;
-            return new AiLatLng(geoPoint.getLatitude(), geoPoint.getLongitude());
-        }
-        return null;
     }
 
     @Override
     public String toString() {
         return "FormInstance{" +
                 "id=" + id +
-                ", classId=" + classId +
-                ", valueMap=" + propertyBag +
+                ", record=" + record +
                 '}';
     }
 
+    private void setAll(Record record) {
+        this.record = Records.buildCopyOf(this.record).setAll(record).build();
+    }
 }

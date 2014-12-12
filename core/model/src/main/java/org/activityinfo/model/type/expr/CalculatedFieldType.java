@@ -2,10 +2,13 @@ package org.activityinfo.model.type.expr;
 
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormField;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.resource.ResourceIdPrefixType;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
 
 /**
  * A Value Type that represents a value calculated from a symbolic expression,
@@ -82,12 +85,9 @@ public class CalculatedFieldType implements ParametrizedFieldType {
 
     @Override
     public Record getParameters() {
-        Record record = new Record();
-        record.set("classId", getTypeClass().getParameterFormClass().getId());
-        if(expression != null) {
-            record.set("expression", expression.asRecord());
-        }
-        return record;
+        return Records.builder(getTypeClass())
+                .set("expression", expression)
+                .build();
     }
 
     @Override

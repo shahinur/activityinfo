@@ -2,10 +2,12 @@ package org.activityinfo.model.form;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
@@ -27,7 +29,7 @@ public class FormSection extends FormElement implements FormElementContainer {
         return id;
     }
 
-    @NotNull
+    @Nonnull
     public String getLabel() {
         return label;
     }
@@ -49,12 +51,12 @@ public class FormSection extends FormElement implements FormElementContainer {
 
     @Override
     public Record asRecord() {
-        Record record = new Record();
-        record.set("id", id.asString());
-        record.set("label", label);
-        record.set("type", "section");
-        record.set("elements", asRecordList(getElements()));
-        return record;
+        RecordBuilder recordBuilder = Records.builder();
+        recordBuilder.set("id", id.asString());
+        recordBuilder.set("label", label);
+        recordBuilder.set("type", "section");
+        recordBuilder.set("elements", asRecordList(getElements()));
+        return recordBuilder.build();
     }
 
     @Override

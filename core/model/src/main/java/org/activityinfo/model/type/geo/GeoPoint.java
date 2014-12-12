@@ -1,7 +1,8 @@
 package org.activityinfo.model.type.geo;
 
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 
@@ -19,6 +20,11 @@ public class GeoPoint implements FieldValue, IsRecord {
         this.longitude = longitude;
     }
 
+    public GeoPoint(AiLatLng aiLatLng) {
+        latitude = aiLatLng.getLat();
+        longitude = aiLatLng.getLng();
+    }
+
     public double getLatitude() {
         return latitude;
     }
@@ -34,10 +40,11 @@ public class GeoPoint implements FieldValue, IsRecord {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
             .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
             .set("latitude", latitude)
-            .set("longitude", longitude);
+            .set("longitude", longitude)
+            .build();
     }
 
     public static GeoPoint fromRecord(Record record) {

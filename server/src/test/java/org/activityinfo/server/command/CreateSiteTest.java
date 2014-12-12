@@ -8,21 +8,22 @@ package org.activityinfo.server.command;
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the 
+ * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public 
+ *
+ * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
 
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.legacy.shared.command.CreateSite;
@@ -30,16 +31,19 @@ import org.activityinfo.legacy.shared.command.GetSites;
 import org.activityinfo.legacy.shared.command.exception.NotAuthorizedException;
 import org.activityinfo.legacy.shared.command.result.CreateResult;
 import org.activityinfo.legacy.shared.exception.CommandException;
-import org.activityinfo.legacy.shared.model.*;
-import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.legacy.shared.model.AdminEntityDTO;
+import org.activityinfo.legacy.shared.model.LocationDTO;
+import org.activityinfo.legacy.shared.model.PartnerDTO;
+import org.activityinfo.legacy.shared.model.ProjectDTO;
+import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.enumerated.EnumValue;
 import org.activityinfo.model.type.geo.GeoPoint;
 import org.activityinfo.model.type.time.LocalDate;
 import org.activityinfo.server.database.OnDataSet;
-import org.activityinfo.model.legacy.KeyGenerator;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -48,7 +52,16 @@ import org.junit.runner.RunWith;
 import java.util.GregorianCalendar;
 
 import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
-import static org.activityinfo.model.legacy.CuidAdapter.*;
+import static org.activityinfo.model.legacy.CuidAdapter.END_DATE_FIELD;
+import static org.activityinfo.model.legacy.CuidAdapter.LOCATION_FIELD;
+import static org.activityinfo.model.legacy.CuidAdapter.PARTNER_FIELD;
+import static org.activityinfo.model.legacy.CuidAdapter.PROJECT_DOMAIN;
+import static org.activityinfo.model.legacy.CuidAdapter.PROJECT_FIELD;
+import static org.activityinfo.model.legacy.CuidAdapter.START_DATE_FIELD;
+import static org.activityinfo.model.legacy.CuidAdapter.attributeField;
+import static org.activityinfo.model.legacy.CuidAdapter.commentsField;
+import static org.activityinfo.model.legacy.CuidAdapter.field;
+import static org.activityinfo.model.legacy.CuidAdapter.indicatorField;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;

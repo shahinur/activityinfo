@@ -1,8 +1,9 @@
 package org.activityinfo.model.type;
 
 import com.google.common.base.Strings;
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.type.primitive.HasStringValue;
 
 public class NarrativeValue implements FieldValue, IsRecord, HasStringValue {
@@ -33,9 +34,10 @@ public class NarrativeValue implements FieldValue, IsRecord, HasStringValue {
 
     @Override
     public Record asRecord() {
-        return new Record()
+        return Records.builder()
                 .set(TYPE_CLASS_FIELD_NAME, getTypeClass().getId())
-                .set("text", text);
+                .set("text", text)
+                .build();
     }
 
     @Override
@@ -43,8 +45,8 @@ public class NarrativeValue implements FieldValue, IsRecord, HasStringValue {
         return text;
     }
 
-    public static FieldValue fromRecord(Record record) {
-        return valueOf(record.getString("text"));
+    public static NarrativeValue fromRecord(Record record) {
+        return new NarrativeValue(record.getString("text"));
     }
 
     @Override

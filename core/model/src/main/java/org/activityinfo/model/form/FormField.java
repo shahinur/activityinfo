@@ -2,9 +2,16 @@ package org.activityinfo.model.form;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.RecordBuilder;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.*;
+import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.FieldTypeClass;
+import org.activityinfo.model.type.ParametrizedFieldType;
+import org.activityinfo.model.type.ParametrizedFieldTypeClass;
+import org.activityinfo.model.type.ReferenceValue;
+import org.activityinfo.model.type.TypeRegistry;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
@@ -202,30 +209,30 @@ public class FormField extends FormElement {
     public Record asRecord() {
         assert type != null : id + " has no type";
 
-        Record record = new Record();
-        record.set("id", id.asString());
-        record.set("code", code);
-        record.set("description", description);
-        record.set("label", label);
-        record.set("type", toRecord(type));
-        record.set("required", required);
-        record.set("visible", visible);
-        record.set("relevanceConditionExpression", relevanceConditionExpression);
+        RecordBuilder recordBuilder = Records.builder();
+        recordBuilder.set("id", id.asString());
+        recordBuilder.set("code", code);
+        recordBuilder.set("description", description);
+        recordBuilder.set("label", label);
+        recordBuilder.set("type", toRecord(type));
+        recordBuilder.set("required", required);
+        recordBuilder.set("visible", visible);
+        recordBuilder.set("relevanceConditionExpression", relevanceConditionExpression);
 
         if(!superProperties.isEmpty()) {
-            record.set("superProperties", new ReferenceValue(superProperties).asRecord());
+            recordBuilder.set("superProperties", new ReferenceValue(superProperties).asRecord());
         }
 
-        return record;
+        return recordBuilder.build();
     }
 
     private Record toRecord(FieldType type) {
-        Record record = new Record();
-        record.set("typeClass", type.getTypeClass().getId());
+        RecordBuilder recordBuilder = Records.builder();
+        recordBuilder.set("typeClass", type.getTypeClass().getId());
         if(type instanceof ParametrizedFieldType) {
-            record.set("parameters", ((ParametrizedFieldType)type).getParameters());
+            recordBuilder.set("parameters", ((ParametrizedFieldType) type).getParameters());
         }
-        return record;
+        return recordBuilder.build();
     }
 
     public static FormField fromRecord(Record record) {

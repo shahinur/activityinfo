@@ -21,8 +21,9 @@ package org.activityinfo.model.type.expr;
  * #L%
  */
 
-import org.activityinfo.model.resource.IsRecord;
-import org.activityinfo.model.resource.Record;
+import org.activityinfo.model.record.IsRecord;
+import org.activityinfo.model.record.Record;
+import org.activityinfo.model.record.Records;
 import org.activityinfo.model.type.FieldTypeClass;
 import org.activityinfo.model.type.FieldValue;
 import org.activityinfo.model.type.number.Quantity;
@@ -49,7 +50,7 @@ public class CalculatedValue implements FieldValue, IsRecord {
         if (value instanceof IsRecord) {
             return ((IsRecord)value).asRecord();
         }
-        return new Record();
+        return Records.builder().build();
     }
 
     public String asString() {

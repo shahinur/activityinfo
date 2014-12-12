@@ -10,13 +10,13 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.safehtml.shared.UriUtils;
 import org.activityinfo.core.client.InstanceQuery;
 import org.activityinfo.core.client.ResourceLocator;
-import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.core.shared.Projection;
-import org.activityinfo.core.shared.application.ApplicationProperties;
 import org.activityinfo.core.shared.criteria.IdCriteria;
-import org.activityinfo.model.form.FormInstance;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.model.form.FormInstance;
+import org.activityinfo.model.resource.ResourceId;
+import org.activityinfo.model.system.ApplicationProperties;
+import org.activityinfo.promise.Promise;
 
 import javax.annotation.Nullable;
 import java.util.List;

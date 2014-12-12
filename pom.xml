@@ -16,6 +16,7 @@
     <rebarVersion>2.4.1</rebarVersion>
     <gae.version>1.9.6</gae.version>
     <jersey.version>1.17</jersey.version>
+    <jackson.version>2.4.1</jackson.version>
     <appengine.export.version>0.1.1</appengine.export.version>
     <netbeans.hint.license>gpl3</netbeans.hint.license>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
