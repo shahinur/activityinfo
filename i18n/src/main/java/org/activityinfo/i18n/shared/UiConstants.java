@@ -3164,14 +3164,6 @@ public interface UiConstants extends Constants {
     @Key("addSection")
     String addSection();
 
-    @DefaultStringValue("Section")
-    @Key("section")
-    String section();
-
-    @DefaultStringValue("Sub Form")
-    @Key("subForm")
-    String subForm();
-
     @DefaultStringValue("Add new field")
     @Key("addField")
     String addField();
@@ -3690,5 +3682,11 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Permissions")
     String permissions();
+
+    @DefaultStringValue("Quantity field contains invalid value. Please enter valid double value (e.g. 1, 1.3)")
+    String quantityFieldInvalidValue();
+
+    @DefaultStringValue("Load")
+    String load();
 }
 
