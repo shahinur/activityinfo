@@ -11,6 +11,7 @@ import org.activityinfo.model.type.image.ImageType;
 import org.activityinfo.model.type.number.QuantityType;
 import org.activityinfo.model.type.primitive.BooleanType;
 import org.activityinfo.model.type.primitive.TextType;
+import org.activityinfo.model.type.subform.SubFormType;
 import org.activityinfo.model.type.time.LocalDateIntervalType;
 import org.activityinfo.model.type.time.LocalDateType;
 
@@ -24,7 +25,7 @@ public class TypeRegistry {
     private static TypeRegistry INSTANCE;
 
     public static TypeRegistry get() {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new TypeRegistry();
         }
         return INSTANCE;
@@ -46,15 +47,19 @@ public class TypeRegistry {
         register(BooleanType.TYPE_CLASS);
         register(BarcodeType.TYPE_CLASS);
         register(ImageType.TYPE_CLASS);
+        register(SubFormType.TYPE_CLASS);
     }
 
     private void register(FieldTypeClass typeClass) {
+        if (typeMap.containsKey(typeClass.getId())) {
+            throw new RuntimeException("Type already registered: " + typeClass);
+        }
         typeMap.put(typeClass.getId(), typeClass);
     }
 
     public FieldTypeClass getTypeClass(String typeId) {
         FieldTypeClass typeClass = typeMap.get(typeId);
-        if(typeClass == null) {
+        if (typeClass == null) {
             throw new RuntimeException("Unknown type: " + typeId);
         }
         return typeClass;
@@ -67,7 +72,7 @@ public class TypeRegistry {
     public FieldValue deserializeFieldValue(Record record) {
         String typeClassId = record.getString(FieldValue.TYPE_CLASS_FIELD_NAME);
         FieldTypeClass typeClass = getTypeClass(typeClassId);
-        if(typeClass instanceof RecordFieldTypeClass) {
+        if (typeClass instanceof RecordFieldTypeClass) {
             return ((RecordFieldTypeClass) typeClass).deserialize(record);
         } else {
             throw new UnsupportedOperationException(typeClassId + " cannot be deserialized from a Record");
@@ -77,11 +82,11 @@ public class TypeRegistry {
 
     public static FieldValue readField(Record record, String name, FieldTypeClass typeClass) {
         Record fieldValue = record.isRecord(name);
-        if(fieldValue == null) {
+        if (fieldValue == null) {
             return null;
         }
         String typeClassId = fieldValue.isString(FieldValue.TYPE_CLASS_FIELD_NAME);
-        if(!typeClass.getId().equals(typeClassId)) {
+        if (!typeClass.getId().equals(typeClassId)) {
             return null;
         }
         return ((RecordFieldTypeClass) typeClass).deserialize(record);
