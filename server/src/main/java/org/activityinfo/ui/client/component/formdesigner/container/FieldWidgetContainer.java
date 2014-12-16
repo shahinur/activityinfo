@@ -33,14 +33,13 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.ui.client.component.form.field.FormFieldWidget;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerConstants;
 import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 
 /**
  * @author yuriyz on 7/14/14.
  */
 public class FieldWidgetContainer implements WidgetContainer {
-
-    public static final String DATA_FIELD_ID = "data-field-id";
 
     public interface LabelTemplate extends SafeHtmlTemplates {
         @Template("<span style='color: red;'> *</span>")
@@ -74,7 +73,7 @@ public class FieldWidgetContainer implements WidgetContainer {
         });
         // Workaround(alex): store field id with widget so we can update model order after
         // drag and drop
-        widgetContainer.asWidget().getElement().setAttribute(DATA_FIELD_ID, formField.getId().asString());
+        widgetContainer.asWidget().getElement().setAttribute(FormDesignerConstants.DATA_FIELD_ID, formField.getId().asString());
         syncWithModel();
     }
 

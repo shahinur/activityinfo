@@ -25,9 +25,11 @@ import com.google.common.base.Strings;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormSection;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerConstants;
 import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 
 /**
@@ -48,6 +50,7 @@ public class SectionWidgetContainer implements WidgetContainer {
             @Override
             public void onClick(ClickEvent event) {
                 formDesigner.getFormClass().remove(formSection);
+                formDesigner.getDropControllerRegistry().unregister(formSection.getId());
             }
         });
         widgetContainer.getFocusPanel().addClickHandler(new ClickHandler() {
@@ -56,7 +59,18 @@ public class SectionWidgetContainer implements WidgetContainer {
                 formDesigner.getEventBus().fireEvent(new WidgetContainerSelectionEvent(SectionWidgetContainer.this));
             }
         });
+        widgetContainer.getWidgetContainer().add(createDropPanel());
         syncWithModel();
+    }
+
+    private Widget createDropPanel() {
+        FlowPanel dropPanel = new FlowPanel();
+        dropPanel.setHeight((FormDesignerConstants.SOURCE_CONTROL_HEIGHT_PX * 2) + "px");
+        dropPanel.setWidth("100%");
+
+        formDesigner.getDropControllerRegistry().register(formSection.getId(), dropPanel, formDesigner);
+
+        return dropPanel ;
     }
 
     public void syncWithModel() {

@@ -24,7 +24,7 @@ package org.activityinfo.ui.client.component.formdesigner;
 /**
  * @author yuriyz on 07/07/2014.
  */
-public class Metrics {
+public class FormDesignerConstants {
 
     public static final int SOURCE_CONTROL_INITIAL_LEFT = 4;
     public static final int SOURCE_CONTROL_INITIAL_TOP = 5;
@@ -35,12 +35,9 @@ public class Metrics {
 
     public static final int MAX_VERTICAL_SCROLL_POSITION = 20;
 
-    public static final int EXPECTED_MAX_CHILD_HEIGHT = 200;
-    public static final int PANEL_HEIGHT_INCREASE_CORRECTION = 300;
-    public static final int HEIGHT_DIFF_BETWEEN_DROPPANEL_AND_CONTAINER_ABSOLUTE_PANEL = 100;
-
     public static final String DEFAULT_STYLE_NAME = "btn btn-primary btn-xs";
+    public static final String DATA_FIELD_ID = "data-field-id";
 
-    private Metrics() {
+    private FormDesignerConstants() {
     }
 }

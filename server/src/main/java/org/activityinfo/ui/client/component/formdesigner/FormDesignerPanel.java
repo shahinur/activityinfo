@@ -219,8 +219,8 @@ public class FormDesignerPanel extends Composite implements ScrollHandler, HasNa
 
     private void calcSpacerHeight() {
         int verticalScrollPosition = scrollAncestor.getVerticalScrollPosition();
-        if (verticalScrollPosition > Metrics.MAX_VERTICAL_SCROLL_POSITION) {
-            int height = verticalScrollPosition - Metrics.MAX_VERTICAL_SCROLL_POSITION;
+        if (verticalScrollPosition > FormDesignerConstants.MAX_VERTICAL_SCROLL_POSITION) {
+            int height = verticalScrollPosition - FormDesignerConstants.MAX_VERTICAL_SCROLL_POSITION;
 
 //            int selectedWidgetTop = 0;
 //            if (selectedWidgetContainer != null) {

@@ -22,20 +22,21 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
  */
 
 import com.google.gwt.user.client.ui.Label;
-import org.activityinfo.ui.client.component.formdesigner.Metrics;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerConstants;
+import org.activityinfo.ui.client.component.formdesigner.drag.IsDraggable;
 
 /**
  * @author yuriyz on 12/05/2014.
  */
-public class DnDLabel extends Label {
+public class DnDLabel extends Label implements IsDraggable {
 
     private final Template template;
 
     public DnDLabel(Template template) {
         super(template.getLabel());
         this.template = template;
-        setStyleName(Metrics.DEFAULT_STYLE_NAME);
-        setWidth(Metrics.SOURCE_CONTROL_WIDTH_PX + "px");
+        setStyleName(FormDesignerConstants.DEFAULT_STYLE_NAME);
+        setWidth(FormDesignerConstants.SOURCE_CONTROL_WIDTH_PX + "px");
     }
 
     public Template getTemplate() {

@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner.drop;
+package org.activityinfo.ui.client.component.formdesigner.drag;
 /*
  * #%L
  * ActivityInfo Server
@@ -21,26 +21,12 @@ package org.activityinfo.ui.client.component.formdesigner.drop;
  * #L%
  */
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.activityinfo.ui.client.component.formdesigner.FormDesignerConstants;
-import org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles;
 
 /**
- * @author yuriyz on 7/8/14.
+ * Marker interface to mark widget draggable.
+ *
+ * @author yuriyz on 12/16/2014.
  */
-public class Positioner implements IsWidget {
-
-    private final HTML widget = new HTML();
-
-    public Positioner() {
-        widget.addStyleName(FormDesignerStyles.INSTANCE.spacer());
-        widget.setHeight(FormDesignerConstants.SOURCE_CONTROL_HEIGHT_PX + "px");
-    }
-
-    @Override
-    public Widget asWidget() {
-        return widget;
-    }
+public interface IsDraggable extends IsWidget {
 }

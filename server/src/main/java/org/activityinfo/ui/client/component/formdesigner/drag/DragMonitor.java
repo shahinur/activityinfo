@@ -1,4 +1,4 @@
-package org.activityinfo.ui.client.component.formdesigner.palette;
+package org.activityinfo.ui.client.component.formdesigner.drag;
 /*
  * #%L
  * ActivityInfo Server
@@ -24,8 +24,9 @@ package org.activityinfo.ui.client.component.formdesigner.palette;
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.google.gwt.event.shared.EventBus;
-import org.activityinfo.ui.client.component.formdesigner.drop.ForwardDropController;
+import org.activityinfo.ui.client.component.formdesigner.drop.DropControllerExtended;
 import org.activityinfo.ui.client.component.formdesigner.event.PanelUpdatedEvent;
+import org.activityinfo.ui.client.component.formdesigner.palette.DnDLabel;
 
 /**
  * Used to check whether widget was dropped after Drag gesture. If it was not dropped then
@@ -35,14 +36,10 @@ import org.activityinfo.ui.client.component.formdesigner.event.PanelUpdatedEvent
  */
 public class DragMonitor {
 
-    private final ForwardDropController dropController;
-
     private boolean widgetAdded = false;
     private DragContext dragContext = null;
 
-    public DragMonitor(EventBus eventBus, ForwardDropController dropController) {
-        this.dropController = dropController;
-
+    public DragMonitor(EventBus eventBus) {
         eventBus.addHandler(PanelUpdatedEvent.TYPE, new PanelUpdatedEvent.Handler() {
             @Override
             public void handle(PanelUpdatedEvent event) {
@@ -63,9 +60,9 @@ public class DragMonitor {
         dragContext = null;
     }
 
-    public void dragEnd() {
+    public void dragEnd(DropControllerExtended dropController) {
         try {
-            if (!widgetAdded && dragContext != null && dragContext.draggable instanceof DnDLabel) {
+            if (dropController != null && !widgetAdded && dragContext != null && dragContext.draggable instanceof DnDLabel) {
                 dropController.onEnter(dragContext); // force to create positioner
                 dropController.setPositionerToEnd(); // set it to end
                 dropController.onPreviewDrop(dragContext); // drop
