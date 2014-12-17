@@ -3688,5 +3688,8 @@ public interface UiConstants extends Constants {
 
     @DefaultStringValue("Load")
     String load();
+
+    @DefaultStringValue("Please specify 'From' date before 'To' date.")
+    String fromDateIsBeforeToDate();
 }
 
