@@ -32,7 +32,6 @@ import com.bedatadriven.rebar.time.calendar.LocalDate;
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.SortInfo;
 import com.google.common.base.Functions;
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -235,18 +234,10 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .appendColumn("location.y", "y");
 
         }
-
         if(locationJoinRequired(command)) {
             query
                 .leftJoin(Tables.LOCATION).on("site.LocationId = location.LocationId")
                 .leftJoin(Tables.LOCATION_TYPE, "locationType").on("location.LocationTypeId = locationType.LocationTypeId");
-        }
-
-        Optional<Integer> adminLevelId = adminLevelId(command.getSortInfo().getSortField());
-        if (command.isFetchAdminEntities() && adminLevelId.isPresent() ) {
-            query.appendColumn("derived.name", "adminName");
-            query.leftJoin(locationToAdminTable(adminLevelId.get()), "derived")
-                    .on("derived.locationId = location.LocationId");
         }
 
         applyPermissions(query, context);
@@ -256,17 +247,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
             applyPrimaryIndicatorFilter(query, command.getFilter());
         }
 
-        return query;
-    }
-
-    private SqlQuery locationToAdminTable(int adminLevelId) {
-        SqlQuery query = SqlQuery
-                .select("k.locationId", "e.name")
-                .from(Tables.LOCATION_ADMIN_LINK, "k")
-                .leftJoin(Tables.ADMIN_ENTITY, "e")
-                .on("k.adminentityid = e.adminentityid")
-                .whereTrue("e.adminlevelid = ?");
-        query.appendParameter(adminLevelId);
         return query;
     }
 
@@ -352,14 +332,6 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                 .on("location.LocationTypeId = locationType.LocationTypeId");
         }
 
-
-        Optional<Integer> adminLevelId = adminLevelId(command.getSortInfo().getSortField());
-        if (command.isFetchAdminEntities() && adminLevelId.isPresent()) {
-            query.appendColumn("derived.name", "adminName");
-            query.leftJoin(locationToAdminTable(adminLevelId.get()), "derived")
-                    .on("derived.locationId = location.LocationId");
-        }
-
         applyPermissions(query, context);
         applyFilter(query, command.getFilter());
 
@@ -416,21 +388,12 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
                         .on("v.ReportingPeriodId=r.ReportingPeriodId")
                         .whereTrue("v.IndicatorId=" + indicatorId)
                         .and("r.SiteId=u.SiteId"), ascending);
-            } else if (adminLevelId(field).isPresent()) {
-                query.orderBy("adminName", ascending);
             } else if (field.equals("DateEdited")) {
                 query.orderBy("DateEdited", ascending);
             } else {
                 Log.error("Unimplemented sort on GetSites: '" + field + "");
             }
         }
-    }
-
-    public static Optional<Integer> adminLevelId(String sortField) {
-        if (sortField.startsWith("E") && sortField.length() > 1) {
-            return Optional.of(Integer.parseInt(sortField.substring("E".length())));
-        }
-        return Optional.absent();
     }
 
     private void applyFilter(SqlQuery query, Filter filter) {
