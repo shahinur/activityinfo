@@ -2,13 +2,10 @@ package org.activityinfo.server.endpoint.rest;
 
 
 import com.google.api.client.util.Maps;
-import com.google.common.collect.Iterables;
 import org.activityinfo.legacy.shared.command.CreateLocation;
 import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormInstance;
 import org.activityinfo.model.resource.ResourceId;
-import org.activityinfo.model.type.FieldType;
-import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.command.ResourceLocatorSync;
 import org.activityinfo.server.command.ResourceLocatorSyncImpl;
@@ -32,24 +29,18 @@ import static javax.ws.rs.core.Response.Status.CREATED;
 import static org.activityinfo.model.legacy.CuidAdapter.LOCATION_FIELD;
 import static org.activityinfo.model.legacy.CuidAdapter.activityFormClass;
 import static org.activityinfo.model.legacy.CuidAdapter.field;
-import static org.activityinfo.model.legacy.CuidAdapter.getLegacyIdFromCuid;
 
 public class FormResource {
     private final DispatcherSync dispatcherSync;
     private final ResourceLocatorSync locator;
     private final FormClass formClass;
-    private final int typeId;
+    private final int typeId = 1;
     private final InstanceIdService instanceIdService;
 
     public FormResource(DispatcherSync dispatcher, int id, InstanceIdService idService) {
         dispatcherSync = dispatcher;
         locator = new ResourceLocatorSyncImpl(dispatcherSync);
         formClass = locator.getFormClass(activityFormClass(id));
-
-        FieldType fieldType = formClass.getField(field(formClass.getId(), LOCATION_FIELD)).getType();
-        ResourceId locationFormClassId = Iterables.getOnlyElement(((ReferenceType) fieldType).getRange());
-
-        typeId = getLegacyIdFromCuid(locationFormClassId);
         instanceIdService = idService;
     }
 

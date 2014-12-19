@@ -71,7 +71,6 @@ public class XFormReader {
         findBindings();
 
         addFieldElements(formClass, xForm.getBody().getElements());
-        formClass.addElement(createLocationField(formClass.getId()));
 
         return formClass;
     }
