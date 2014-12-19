@@ -51,7 +51,6 @@ import org.junit.runner.RunWith;
 import javax.persistence.EntityManager;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -354,6 +353,38 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
         entityManager.close();
 
+    }
+
+    // AI-864 : check maybe sql fails because of unicode in names (must be properly escaped)
+    @Test
+    @OnDataSet("/dbunit/sites-simple-with-unicode.db.xml")
+    public void syncWithUnicodeInNames() throws SQLException, InterruptedException {
+        synchronizeFirstTime();
+
+        Collector<Date> lastUpdate = Collector.newCollector();
+        syncHistoryTable.get(lastUpdate);
+
+        assertThat(queryString("select Name from Location where LocationId=8"),
+                equalTo("Shabunda_é_'_"));
+
+        assertThat(queryInt("select adminEntityId from locationAdminLink where LocationId=8"),
+                equalTo(3));
+
+        assertThat(lastUpdate.getResult(), is(not(nullValue())));
+
+        assertThat(
+                queryString("select Name from Indicator where IndicatorId=103"),
+                equalTo("Nb. of distributions"));
+        assertThat(
+                queryString("select Name from AdminLevel where AdminLevelId=1"),
+                equalTo("Province"));
+        assertThat(
+                queryString("select Name from AdminEntity where AdminEntityId=21"),
+                equalTo("Irumu"));
+        assertThat(queryString("select Name from Location where LocationId=7"),
+                equalTo("Shabunda"));
+        assertThat(queryInt("select value from IndicatorValue where ReportingPeriodId=601 and IndicatorId=6"),
+                equalTo(35));
     }
 
     private void addLocationsToServerDatabase(int count) {
