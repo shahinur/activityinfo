@@ -426,7 +426,7 @@ public class GetSitesHandler implements CommandHandlerAsync<GetSites, SiteResult
     }
 
     public static Optional<Integer> adminLevelId(String sortField) {
-        if (sortField.startsWith("E") && sortField.length() > 1) {
+        if (sortField != null && sortField.startsWith("E") && sortField.length() > 1) {
             return Optional.of(Integer.parseInt(sortField.substring("E".length())));
         }
         return Optional.absent();
