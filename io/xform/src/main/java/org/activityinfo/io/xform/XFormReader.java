@@ -2,12 +2,24 @@ package org.activityinfo.io.xform;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import org.activityinfo.io.xform.form.*;
-import org.activityinfo.model.form.*;
+import org.activityinfo.io.xform.form.Bind;
+import org.activityinfo.io.xform.form.BodyElement;
+import org.activityinfo.io.xform.form.Group;
+import org.activityinfo.io.xform.form.InstanceElement;
+import org.activityinfo.io.xform.form.Item;
+import org.activityinfo.io.xform.form.SelectElement;
+import org.activityinfo.io.xform.form.XForm;
+import org.activityinfo.model.form.FormClass;
+import org.activityinfo.model.form.FormElement;
+import org.activityinfo.model.form.FormElementContainer;
+import org.activityinfo.model.form.FormField;
+import org.activityinfo.model.form.FormSection;
 import org.activityinfo.model.legacy.CuidAdapter;
+import org.activityinfo.model.legacy.KeyGenerator;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.model.type.Cardinality;
 import org.activityinfo.model.type.FieldType;
+import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.enumerated.EnumItem;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.model.type.geo.GeoPointType;
@@ -20,15 +32,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static org.activityinfo.model.legacy.CuidAdapter.LOCATION_FIELD;
+import static org.activityinfo.model.legacy.CuidAdapter.field;
+import static org.activityinfo.model.legacy.CuidAdapter.locationFormClass;
+
 /**
  * Creates a {@link org.activityinfo.model.form.FormClass} from an XForm Document.
  */
 public class XFormReader {
-
+    private static final ResourceId LOCATION_ID = locationFormClass(1);
     private static final Logger LOGGER = Logger.getLogger(XFormReader.class.getName());
 
     private XForm xForm;
-    private FormClass formClass = new FormClass(ResourceId.generateId());
+    private FormClass formClass = new FormClass(CuidAdapter.activityFormClass(new KeyGenerator().generateInt()));
 
     private Map<String, Bind> bindings = new HashMap<>();
     private Map<String, InstanceElement> instanceElements = new HashMap<>();
@@ -55,6 +71,7 @@ public class XFormReader {
         findBindings();
 
         addFieldElements(formClass, xForm.getBody().getElements());
+        formClass.addElement(createLocationField(formClass.getId()));
 
         return formClass;
     }
@@ -96,6 +113,13 @@ public class XFormReader {
         FormSection section = new FormSection(ResourceId.generateId());
         section.setLabel(element.getLabel());
         return section;
+    }
+
+    private FormField createLocationField(ResourceId formClassId) {
+        FormField formField = new FormField(field(formClassId, LOCATION_FIELD));
+        formField.setLabel("Location");
+        formField.setType(ReferenceType.single(LOCATION_ID));
+        return formField;
     }
 
     private FormElement createField(BodyElement element) {

@@ -33,13 +33,17 @@ import org.activityinfo.server.command.DispatcherSync;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.AdminLevel;
 import org.activityinfo.server.database.hibernate.entity.Country;
+import org.activityinfo.server.endpoint.odk.InstanceIdService;
 import org.activityinfo.service.DeploymentConfiguration;
 import org.codehaus.jackson.map.annotate.JsonView;
 
 import javax.persistence.EntityManager;
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
 
@@ -49,15 +53,18 @@ public class RootResource {
     private Provider<EntityManager> entityManager;
     private DispatcherSync dispatcher;
     private DeploymentConfiguration config;
+    private InstanceIdService instanceIdService;
 
     @Inject
     public RootResource(Provider<EntityManager> entityManager,
                         DispatcherSync dispatcher,
-                        DeploymentConfiguration config) {
+                        DeploymentConfiguration config,
+                        InstanceIdService instanceIdService) {
         super();
         this.entityManager = entityManager;
         this.dispatcher = dispatcher;
         this.config = config;
+        this.instanceIdService = instanceIdService;
     }
 
     @Path("/adminEntity/{id}")
@@ -127,7 +134,7 @@ public class RootResource {
     }
 
     @Path("/form/{id}")
-    public FormResource getForm(@PathParam("id") String id) {
-        return new FormResource(id);
+    public FormResource getForm(@PathParam("id") int id) {
+        return new FormResource(dispatcher, id, instanceIdService);
     }
 }
