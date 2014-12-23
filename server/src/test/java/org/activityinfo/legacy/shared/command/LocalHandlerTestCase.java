@@ -62,7 +62,7 @@ import static org.easymock.EasyMock.replay;
 @Modules({AuthenticationModuleStub.class})
 public abstract class LocalHandlerTestCase {
     @Inject
-    private CommandServlet servlet;
+    protected CommandServlet servlet;
     @Inject
     protected EntityManagerFactory serverEntityManagerFactory;
 
@@ -106,8 +106,8 @@ public abstract class LocalHandlerTestCase {
     }
 
     protected void setUser(int userId) {
-        AuthenticationModuleStub.setUserId(userId);
-        remoteDispatcher = new RemoteDispatcherStub();
+       AuthenticationModuleStub.setUserId(userId);
+        remoteDispatcher = new RemoteDispatcherStub(servlet);
 
         Injector clientSideInjector = Guice.createInjector(
                 new LocalModuleStub(AuthenticationModuleStub.getCurrentUser(),
@@ -156,7 +156,13 @@ public abstract class LocalHandlerTestCase {
         serverEm.clear();
     }
 
-    private class RemoteDispatcherStub extends AbstractDispatcher {
+    public static class RemoteDispatcherStub extends AbstractDispatcher {
+
+        private CommandServlet servlet;
+
+        public RemoteDispatcherStub(CommandServlet servlet) {
+            this.servlet = servlet;
+        }
 
         @Override
         public <T extends CommandResult> void execute(final Command<T> command,
@@ -189,7 +195,7 @@ public abstract class LocalHandlerTestCase {
         }
     }
 
-    private <T> AsyncCallback<T> throwOnFailure() {
+    public static <T> AsyncCallback<T> throwOnFailure() {
         return new AsyncCallback<T>() {
 
             @Override

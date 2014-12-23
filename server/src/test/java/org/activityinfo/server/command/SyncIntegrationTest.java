@@ -22,13 +22,22 @@ package org.activityinfo.server.command;
  * #L%
  */
 
+import com.bedatadriven.rebar.async.NullCallback;
+import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import org.activityinfo.fixtures.InjectionSupport;
 import org.activityinfo.fixtures.MockHibernateModule;
 import org.activityinfo.fixtures.Modules;
+import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.KeyGenerator;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
+import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.MonthlyReportResult;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
@@ -36,13 +45,21 @@ import org.activityinfo.legacy.shared.model.AttributeDTO;
 import org.activityinfo.legacy.shared.model.IndicatorRowDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.util.Collector;
+import org.activityinfo.promise.Promise;
+import org.activityinfo.server.authentication.AuthenticationModuleStub;
 import org.activityinfo.server.command.handler.sync.TimestampHelper;
 import org.activityinfo.server.database.OnDataSet;
+import org.activityinfo.server.database.TestSqliteDatabase;
 import org.activityinfo.server.database.hibernate.entity.AdminEntity;
 import org.activityinfo.server.database.hibernate.entity.Location;
 import org.activityinfo.server.database.hibernate.entity.LocationType;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.util.logging.LoggingModule;
+import org.activityinfo.ui.client.local.LocalModuleStub;
+import org.activityinfo.ui.client.local.command.LocalDispatcher;
+import org.activityinfo.ui.client.local.sync.SyncHistoryTable;
+import org.activityinfo.ui.client.local.sync.pipeline.InstallPipeline;
+import org.activityinfo.ui.client.local.sync.pipeline.SyncPipeline;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +69,7 @@ import javax.persistence.EntityManager;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -212,7 +230,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         synchronize();
 
         assertThat(queryString("select name from Location where LocationId = "
-                + locationId),
+                        + locationId),
                 equalTo("Bukavu"));
     }
 
@@ -253,10 +271,10 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         // Update locally
 
         executeLocally(new UpdateMonthlyReports(siteId, Lists.newArrayList(
-            new Change(men.getIndicatorId(), new Month(2009, 1), 221d),
-            new Change(men.getIndicatorId(), new Month(2009, 3), 444d),
-            new Change(women.getIndicatorId(), new Month(2009, 5), 200d),
-            new Change(men.getIndicatorId(), new Month(2009, 5), 522d))));
+                new Change(men.getIndicatorId(), new Month(2009, 1), 221d),
+                new Change(men.getIndicatorId(), new Month(2009, 3), 444d),
+                new Change(women.getIndicatorId(), new Month(2009, 5), 200d),
+                new Change(men.getIndicatorId(), new Month(2009, 5), 522d))));
 
         result = executeLocally(new GetMonthlyReports(siteId, new Month(2009, 1), 12));
 
@@ -300,8 +318,8 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
         // REmote update
         executeRemotely(new UpdateMonthlyReports(siteId, Lists.newArrayList(
-            new Change(men.getIndicatorId(), new Month(2009, 1), 40d),
-            new Change(women.getIndicatorId(), new Month(2009, 3), 6000d))));
+                new Change(men.getIndicatorId(), new Month(2009, 1), 40d),
+                new Change(women.getIndicatorId(), new Month(2009, 3), 6000d))));
 
         newRequest();
 
@@ -315,7 +333,6 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
         assertThat(women.getValue(2009, 1), CoreMatchers.equalTo(300d));  // unchanged
 
         assertThat(women.getValue(2009, 3), equalTo(6000d));
-
 
 
     }
@@ -353,6 +370,76 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
 
         entityManager.close();
 
+    }
+
+    // AI-864 : we know that
+    // 1) on customer side location is present but locationadminlink entry is absent.
+    // 2) location and locationadminlink are updated with single SyncRegion
+    // Conclusion: the only possible bug is that location was updated but locationadminlink failed to update
+    // due to some weird problem (network connection failure)
+    // Test: in this test we will try to emulate connection failure
+    @Test
+    @OnDataSet("/dbunit/sites-simple-with-unicode.db.xml")
+    public void syncWithSqliteConnFail() throws SQLException, InterruptedException {
+        String databaseName = "target/localdbtest"
+                + new java.util.Date().getTime();
+
+        final AtomicBoolean forceFail = new AtomicBoolean(true);
+
+        final TestSqliteDatabase localDatabase = new TestSqliteDatabase(databaseName) {
+            @Override
+            public String adjustExecuteUpdates(String json) {
+                JsonParser parser = new JsonParser();
+                JsonArray list = parser.parse(json).getAsJsonArray();
+
+                if (list.size() == 2 && json.contains("location") && json.contains("locationadminlink") && forceFail.get()) {
+                    forceFail.set(false);
+                    throw new RuntimeException("Forced to fail locationadminlink update");
+                }
+                return json;
+            }
+        };
+
+        Dispatcher remoteDispatcher = new RemoteDispatcherStub(servlet);
+
+        Injector clientSideInjector = Guice.createInjector(new LocalModuleStub(
+                AuthenticationModuleStub.getCurrentUser(),
+                localDatabase,
+                remoteDispatcher));
+
+//        LocalDispatcher localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);
+//        SyncPipeline synchronizer = clientSideInjector.getInstance(SyncPipeline.class);
+        final InstallPipeline installer = clientSideInjector.getInstance(InstallPipeline.class);
+
+        // sync with failure
+        newRequest();
+        installer.start();
+        localDatabase.processEventQueue();
+
+        Thread.sleep(1000);
+
+        // try again (now without failure)
+        JdbcScheduler.get().forceCleanup();
+        newRequest();
+        installer.start();
+        localDatabase.processEventQueue();
+
+        assertThat(localDatabase.selectString("select Name from Location where LocationId=7"),
+                equalTo("Shabunda"));
+
+        assertThat(localDatabase.selectString(adminEntityBy(7, 1)),
+                equalTo("3"));
+
+        assertThat(localDatabase.selectString(adminEntityBy(7, 2)),
+                equalTo("12"));
+    }
+
+    private String adminEntityBy(int locationId, int adminLevel) {
+        return "SELECT e.AdminEntityId " +
+                "FROM locationadminlink k " +
+                "left join adminentity e on k.AdminEntityId = e.AdminEntityId " +
+                "where e.AdminLevelId=" + adminLevel +
+                " and k.locationId=" + locationId;
     }
 
     // AI-864 : check maybe sql fails because of unicode in names (must be properly escaped)
