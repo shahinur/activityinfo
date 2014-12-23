@@ -22,7 +22,6 @@ package org.activityinfo.server.command;
  * #L%
  */
 
-import com.bedatadriven.rebar.async.NullCallback;
 import com.bedatadriven.rebar.sql.server.jdbc.JdbcScheduler;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -36,8 +35,6 @@ import org.activityinfo.fixtures.MockHibernateModule;
 import org.activityinfo.fixtures.Modules;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.KeyGenerator;
-import org.activityinfo.legacy.client.callback.SuccessCallback;
-import org.activityinfo.legacy.shared.Log;
 import org.activityinfo.legacy.shared.command.*;
 import org.activityinfo.legacy.shared.command.result.MonthlyReportResult;
 import org.activityinfo.legacy.shared.command.result.SiteResult;
@@ -45,7 +42,6 @@ import org.activityinfo.legacy.shared.model.AttributeDTO;
 import org.activityinfo.legacy.shared.model.IndicatorRowDTO;
 import org.activityinfo.legacy.shared.model.SiteDTO;
 import org.activityinfo.legacy.shared.util.Collector;
-import org.activityinfo.promise.Promise;
 import org.activityinfo.server.authentication.AuthenticationModuleStub;
 import org.activityinfo.server.command.handler.sync.TimestampHelper;
 import org.activityinfo.server.database.OnDataSet;
@@ -56,10 +52,7 @@ import org.activityinfo.server.database.hibernate.entity.LocationType;
 import org.activityinfo.server.endpoint.gwtrpc.GwtRpcModule;
 import org.activityinfo.server.util.logging.LoggingModule;
 import org.activityinfo.ui.client.local.LocalModuleStub;
-import org.activityinfo.ui.client.local.command.LocalDispatcher;
-import org.activityinfo.ui.client.local.sync.SyncHistoryTable;
 import org.activityinfo.ui.client.local.sync.pipeline.InstallPipeline;
-import org.activityinfo.ui.client.local.sync.pipeline.SyncPipeline;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -380,7 +373,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
     // Test: in this test we will try to emulate connection failure
     @Test
     @OnDataSet("/dbunit/sites-simple-with-unicode.db.xml")
-    public void syncWithSqliteConnFail() throws SQLException, InterruptedException {
+    public void failResume() throws SQLException, InterruptedException {
         String databaseName = "target/localdbtest"
                 + new java.util.Date().getTime();
 
@@ -392,6 +385,7 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
                 JsonParser parser = new JsonParser();
                 JsonArray list = parser.parse(json).getAsJsonArray();
 
+                // ugly : better way to identify when to fail ?
                 if (list.size() == 2 && json.contains("location") && json.contains("locationadminlink") && forceFail.get()) {
                     forceFail.set(false);
                     throw new RuntimeException("Forced to fail locationadminlink update");
@@ -407,16 +401,12 @@ public class SyncIntegrationTest extends LocalHandlerTestCase {
                 localDatabase,
                 remoteDispatcher));
 
-//        LocalDispatcher localDispatcher = clientSideInjector.getInstance(LocalDispatcher.class);
-//        SyncPipeline synchronizer = clientSideInjector.getInstance(SyncPipeline.class);
         final InstallPipeline installer = clientSideInjector.getInstance(InstallPipeline.class);
 
         // sync with failure
         newRequest();
         installer.start();
         localDatabase.processEventQueue();
-
-        Thread.sleep(1000);
 
         // try again (now without failure)
         JdbcScheduler.get().forceCleanup();
