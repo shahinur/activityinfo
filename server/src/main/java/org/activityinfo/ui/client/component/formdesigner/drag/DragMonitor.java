@@ -23,7 +23,7 @@ package org.activityinfo.ui.client.component.formdesigner.drag;
 
 import com.allen_sauer.gwt.dnd.client.DragContext;
 import com.allen_sauer.gwt.dnd.client.VetoDragException;
-import com.google.gwt.event.shared.EventBus;
+import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 import org.activityinfo.ui.client.component.formdesigner.drop.DropControllerExtended;
 import org.activityinfo.ui.client.component.formdesigner.event.PanelUpdatedEvent;
 import org.activityinfo.ui.client.component.formdesigner.palette.DnDLabel;
@@ -36,11 +36,14 @@ import org.activityinfo.ui.client.component.formdesigner.palette.DnDLabel;
  */
 public class DragMonitor {
 
+    private final FormDesigner formDesigner;
+
     private boolean widgetAdded = false;
     private DragContext dragContext = null;
 
-    public DragMonitor(EventBus eventBus) {
-        eventBus.addHandler(PanelUpdatedEvent.TYPE, new PanelUpdatedEvent.Handler() {
+    public DragMonitor(FormDesigner formDesigner) {
+        this.formDesigner = formDesigner;
+        this.formDesigner.getEventBus().addHandler(PanelUpdatedEvent.TYPE, new PanelUpdatedEvent.Handler() {
             @Override
             public void handle(PanelUpdatedEvent event) {
                 if (event.getType() == PanelUpdatedEvent.EventType.ADDED) {
@@ -60,9 +63,10 @@ public class DragMonitor {
         dragContext = null;
     }
 
-    public void dragEnd(DropControllerExtended dropController) {
+    public void dragEnd() {
         try {
-            if (dropController != null && !widgetAdded && dragContext != null && dragContext.draggable instanceof DnDLabel) {
+            if (!widgetAdded && dragContext != null && dragContext.draggable instanceof DnDLabel) {
+                DropControllerExtended dropController = formDesigner.getDropControllerRegistry().getRootDropController();
                 dropController.onEnter(dragContext); // force to create positioner
                 dropController.setPositionerToEnd(); // set it to end
                 dropController.onPreviewDrop(dragContext); // drop

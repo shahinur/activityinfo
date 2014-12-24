@@ -63,7 +63,7 @@ public class FormDesigner {
         this.resourceLocator = resourceLocator;
         this.formClass = formClass;
 
-        this.dropControllerRegistry = new DropControllerRegistry(eventBus);
+        this.dropControllerRegistry = new DropControllerRegistry(this);
         this.formDesignerPanel = new FormDesignerPanel(resourceLocator, formClass, this);
         this.formDesignerPanel.getFieldPalette().makeDraggable(dropControllerRegistry.getDragController());
 

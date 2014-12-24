@@ -57,7 +57,7 @@ public class FieldWidgetContainer implements WidgetContainer {
         this.formDesigner = formDesigner;
         this.formFieldWidget = formFieldWidget;
         this.formField = formField;
-        widgetContainer = new WidgetContainerPanel(formDesigner);
+        widgetContainer = new WidgetContainerPanel(formDesigner, true);
         widgetContainer.getWidgetContainer().add(formFieldWidget);
         widgetContainer.getRemoveButton().addClickHandler(new ClickHandler() {
             @Override
@@ -65,12 +65,13 @@ public class FieldWidgetContainer implements WidgetContainer {
                 formDesigner.getFormClass().remove(formField);
             }
         });
-        widgetContainer.getFocusPanel().addClickHandler(new ClickHandler() {
+        widgetContainer.setClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 formDesigner.getEventBus().fireEvent(new WidgetContainerSelectionEvent(FieldWidgetContainer.this));
             }
         });
+
         // Workaround(alex): store field id with widget so we can update model order after
         // drag and drop
         widgetContainer.asWidget().getElement().setAttribute(FormDesignerConstants.DATA_FIELD_ID, formField.getId().asString());
@@ -105,7 +106,6 @@ public class FieldWidgetContainer implements WidgetContainer {
     public Widget getDragHandle() {
         return widgetContainer.getDragHandle();
     }
-
 
     public FormFieldWidget getFormFieldWidget() {
         return formFieldWidget;

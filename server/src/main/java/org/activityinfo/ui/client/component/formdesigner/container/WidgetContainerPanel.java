@@ -47,6 +47,8 @@ public class WidgetContainerPanel {
     }
 
     private final FormDesigner formDesigner;
+    private final boolean selectable;
+    private ClickHandler clickHandler;
 
     @UiField
     Button removeButton;
@@ -59,8 +61,9 @@ public class WidgetContainerPanel {
     @UiField
     Label dragHandle;
 
-    public WidgetContainerPanel(FormDesigner formDesigner) {
+    public WidgetContainerPanel(FormDesigner formDesigner, boolean selectable) {
         uiBinder.createAndBindUi(this);
+
         this.formDesigner = formDesigner;
         this.formDesigner.getEventBus().addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
             @Override
@@ -74,8 +77,9 @@ public class WidgetContainerPanel {
                 setSelected(false);
             }
         });
+        this.selectable = selectable;
 
-        focusPanel.addClickHandler(new ClickHandler() {
+        this.focusPanel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 WidgetContainerPanel.this.onClick();
@@ -85,22 +89,24 @@ public class WidgetContainerPanel {
 
     @UiHandler("removeButton")
     public void onRemove(ClickEvent clickEvent) {
-        ConfirmDialog.confirm(new DeleteFormFieldAction(focusPanel, formDesigner));
+        ConfirmDialog.confirm(new DeleteWidgetContainerAction(focusPanel, formDesigner));
     }
 
     public Button getRemoveButton() {
         return removeButton;
     }
 
-    public FocusPanel getFocusPanel() {
-        return focusPanel;
-    }
-
     private void onClick() {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             @Override
             public void execute() {
+                if (selectable) {
+                    return;
+                }
                 setSelected(true);
+                if (clickHandler != null) {
+                    clickHandler.onClick(null);
+                }
             }
         });
     }
@@ -128,4 +134,14 @@ public class WidgetContainerPanel {
             focusPanel.removeStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
         }
     }
+
+    public ClickHandler getClickHandler() {
+        return clickHandler;
+    }
+
+    public void setClickHandler(ClickHandler clickHandler) {
+        this.clickHandler = clickHandler;
+    }
 }
+
+

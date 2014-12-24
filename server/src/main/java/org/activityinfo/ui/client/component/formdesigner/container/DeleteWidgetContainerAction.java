@@ -31,14 +31,14 @@ import org.activityinfo.ui.client.widget.ConfirmDialog;
 /**
  * @author yuriyz on 11/25/2014.
  */
-public class DeleteFormFieldAction implements ConfirmDialog.Action {
+public class DeleteWidgetContainerAction implements ConfirmDialog.Action {
 
 //    private static final Logger LOGGER = Logger.getLogger(DeleteFormFieldAction.class.getName());
 
     private final FocusPanel focusPanel;
     private final FormDesigner formDesigner;
 
-    public DeleteFormFieldAction(FocusPanel focusPanel, FormDesigner formDesigner) {
+    public DeleteWidgetContainerAction(FocusPanel focusPanel, FormDesigner formDesigner) {
         this.focusPanel = focusPanel;
         this.formDesigner = formDesigner;
     }

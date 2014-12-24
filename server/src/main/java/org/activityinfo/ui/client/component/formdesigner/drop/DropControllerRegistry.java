@@ -24,11 +24,12 @@ package org.activityinfo.ui.client.component.formdesigner.drop;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.resource.ResourceId;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerConstants;
 import org.activityinfo.ui.client.component.formdesigner.drag.DragMonitor;
 
 import java.util.Map;
@@ -46,9 +47,12 @@ public class DropControllerRegistry {
     // simulate "click" and drop widget at the end of the form.
     private final DragMonitor dragMonitor;
 
-    public DropControllerRegistry(EventBus eventBus) {
-        dragMonitor = new DragMonitor(eventBus);
-        dragController = createDragController();
+    private final FormDesigner formDesigner;
+
+    public DropControllerRegistry(FormDesigner formDesigner) {
+        this.formDesigner = formDesigner;
+        this.dragMonitor = new DragMonitor(formDesigner);
+        this.dragController = createDragController();
     }
 
     private PickupDragController createDragController() {
@@ -61,8 +65,7 @@ public class DropControllerRegistry {
 
             @Override
             public void dragEnd() {
-                DropControllerExtended dropController = null; // TODO ???
-                dragMonitor.dragEnd(dropController); // monitor must finished drag end first while context is still valid
+                dragMonitor.dragEnd(); // monitor must finish drag end first while context is still valid
                 super.dragEnd();
             }
         };
@@ -87,7 +90,19 @@ public class DropControllerRegistry {
         dropControllerMap.put(resourceId, controller);
         dragController.registerDropController(controller);
 
+        // store owner id with drop target (to be able reference dropController from dropTarget)
+        controller.getDropTarget().getElement().setAttribute(FormDesignerConstants.OWNER_ID, resourceId.asString());
+
         return controller;
+    }
+
+    public DropControllerExtended getRootDropController() {
+        return getDropController(formDesigner.getFormClass().getId());
+    }
+
+    public DropControllerExtended getDropController(Widget dropTarget) {
+        String ownerId = dropTarget.getElement().getAttribute(FormDesignerConstants.OWNER_ID);
+        return getDropController(ResourceId.valueOf(ownerId));
     }
 
     public DropControllerExtended getDropController(ResourceId resourceId) {

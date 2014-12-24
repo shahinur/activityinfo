@@ -30,7 +30,6 @@ import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormSection;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 import org.activityinfo.ui.client.component.formdesigner.FormDesignerConstants;
-import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 
 /**
  * @author yuriyz on 7/14/14.
@@ -45,7 +44,7 @@ public class SectionWidgetContainer implements WidgetContainer {
         this.formDesigner = formDesigner;
         this.formSection = formSection;
 
-        widgetContainer = new WidgetContainerPanel(formDesigner);
+        widgetContainer = new WidgetContainerPanel(formDesigner, false);
         widgetContainer.getRemoveButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -53,12 +52,7 @@ public class SectionWidgetContainer implements WidgetContainer {
                 formDesigner.getDropControllerRegistry().unregister(formSection.getId());
             }
         });
-        widgetContainer.getFocusPanel().addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                formDesigner.getEventBus().fireEvent(new WidgetContainerSelectionEvent(SectionWidgetContainer.this));
-            }
-        });
+
         widgetContainer.getWidgetContainer().add(createDropPanel());
         syncWithModel();
     }

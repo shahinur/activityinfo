@@ -37,6 +37,7 @@ public class FormDesignerConstants {
 
     public static final String DEFAULT_STYLE_NAME = "btn btn-primary btn-xs";
     public static final String DATA_FIELD_ID = "data-field-id";
+    public static final String OWNER_ID = "owner-id";
 
     private FormDesignerConstants() {
     }
