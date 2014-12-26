@@ -23,6 +23,8 @@ package org.activityinfo.server.command;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import org.activityinfo.fixtures.InjectionSupport;
+import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.legacy.shared.adapter.ResourceLocatorAdaptor;
 import org.activityinfo.legacy.shared.command.CloneDatabase;
 import org.activityinfo.legacy.shared.command.GetActivityForm;
 import org.activityinfo.legacy.shared.command.GetFormClass;
@@ -34,14 +36,17 @@ import org.activityinfo.model.form.FormClass;
 import org.activityinfo.model.form.FormElement;
 import org.activityinfo.model.form.FormField;
 import org.activityinfo.model.form.FormSection;
+import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.type.ReferenceType;
 import org.activityinfo.model.type.enumerated.EnumType;
 import org.activityinfo.server.database.OnDataSet;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import static org.activityinfo.core.client.PromiseMatchers.assertResolves;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -53,7 +58,27 @@ import static org.junit.Assert.assertNotEquals;
 public class CloneDatabaseTest extends CommandTestCase2 {
 
     public static final int PEAR_DATABASE_ID = 1;
+
     public static final int UKRAINE_COUNTRY_ID = 2;
+
+    @Before
+    public final void setup() {
+
+        ActivityFormDTO activity = execute(new GetActivityForm(1));
+        ResourceLocatorAdaptor resourceLocator = new ResourceLocatorAdaptor(getDispatcher());
+
+        FormClass formClass = assertResolves(resourceLocator.getFormClass(activity.getFormClassId()));
+
+        FormField partnerField = new FormField(CuidAdapter.field(activity.getFormClassId(), CuidAdapter.PARTNER_FIELD))
+                .setLabel(I18N.CONSTANTS.partner())
+                .setType(ReferenceType.single(CuidAdapter.partnerFormClass(activity.getDatabaseId())))
+                .setVisible(activity.isEditAllAllowed() && activity.getPartnerRange().size() > 1)
+                .setRequired(true);
+        formClass.addElement(partnerField);
+
+        assertResolves(resourceLocator.persist(formClass));
+    }
+
 
     @Test
     public void fullClone() throws CommandException {
