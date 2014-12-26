@@ -131,4 +131,8 @@ public abstract class AbstractGridView<M extends ModelData, P extends GridPresen
     public void refresh() {
         grid.getView().refresh(false);
     }
+
+    public ActionToolBar getToolBar() {
+        return toolBar;
+    }
 }

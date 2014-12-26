@@ -32,6 +32,7 @@ import org.activityinfo.legacy.client.AsyncMonitor;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.ui.client.page.common.grid.ConfirmCallback;
+import org.activityinfo.ui.client.page.common.toolbar.ActionToolBar;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,8 +56,7 @@ public class MockDesignTree implements DesignPresenter.View {
                                         FormDialogCallback callback) {
 
         for (String property : newEntityProperties.keySet()) {
-            ((ModelData) entity).set(property,
-                    newEntityProperties.get(property));
+            entity.set(property, newEntityProperties.get(property));
         }
 
         FormDialogTether tether = createNiceMock(FormDialogTether.class);
@@ -91,10 +91,6 @@ public class MockDesignTree implements DesignPresenter.View {
 
     }
 
-    protected void mockEditEntity(EntityDTO entity) {
-
-    }
-
     @Override
     public void setActionEnabled(String actionId, boolean enabled) {
 
@@ -123,5 +119,10 @@ public class MockDesignTree implements DesignPresenter.View {
     @Override
     public void refresh() {
 
+    }
+
+    @Override
+    public ActionToolBar getToolBar() {
+        return null;
     }
 }

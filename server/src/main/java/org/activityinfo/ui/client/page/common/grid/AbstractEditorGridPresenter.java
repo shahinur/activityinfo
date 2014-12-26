@@ -104,7 +104,7 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData> extends A
     }
 
     /**
-     * Responds to an explict user action to save
+     * Responds to an explicit user action to save
      */
     protected void onSave() {
 
@@ -118,7 +118,7 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData> extends A
             @Override
             public void onSuccess(Object result) {
                 getStore().commitChanges();
-
+                AbstractEditorGridPresenter.this.view.getToolBar().setDirty(false);
                 onSaved();
             }
         });
