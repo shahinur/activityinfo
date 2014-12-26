@@ -30,14 +30,17 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.activityinfo.i18n.shared.I18N;
+import org.activityinfo.legacy.client.AsyncMonitor;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.loader.CommandLoadEvent;
 import org.activityinfo.legacy.client.state.StateProvider;
 import org.activityinfo.legacy.shared.command.Command;
-import org.activityinfo.legacy.shared.command.result.BatchResult;
 import org.activityinfo.ui.client.EventBus;
 import org.activityinfo.ui.client.page.NavigationCallback;
 import org.activityinfo.ui.client.page.PageState;
+import org.activityinfo.ui.client.page.common.dialog.SaveChangesCallback;
+import org.activityinfo.ui.client.page.common.dialog.SavePromptMessageBox;
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 
 import java.util.HashMap;
@@ -138,30 +141,43 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData> extends A
     }
 
     /*
-     * The user has chosen to navigate away from this page We will automatically
-     * try to save any unsaved changes, but if it fails, we give the user a
-     * choice between retrying and and discarding changes
+     * The user has chosen to navigate away from this page. We will ask user whether he/she
+     * wants to save all unsaved changes.
      */
-
     @Override
     public void requestToNavigateAway(PageState place, final NavigationCallback callback) {
 
         if (getModifiedRecords().size() == 0) {
             callback.onDecided(true);
         } else {
-            service.execute(createSaveCommand(), view.getSavingMonitor(), new AsyncCallback<BatchResult>() {
+            final SavePromptMessageBox box = new SavePromptMessageBox();
+            box.show(new SaveChangesCallback() {
 
                 @Override
-                public void onSuccess(BatchResult result) {
-                    getStore().commitChanges();
+                public void save(final AsyncMonitor monitor) {
+                    service.execute(createSaveCommand(), view.getSavingMonitor(), new SuccessCallback() {
+                        @Override
+                        public void onSuccess(Object o) {
+                            box.hide();
+                            getStore().commitChanges();
+                            callback.onDecided(true);
+                        }
+                    });
+                }
+
+                @Override
+                public void discard() {
+                    box.hide();
                     callback.onDecided(true);
                 }
 
                 @Override
-                public void onFailure(Throwable caught) {
-                    // TODO
+                public void cancel() {
+                    box.hide();
+                    callback.onDecided(false);
                 }
             });
+
         }
     }
 
