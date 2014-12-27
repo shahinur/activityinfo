@@ -28,7 +28,7 @@
 
             <h3>${label.chooseNewPassword}</h3>
 
-            <form class="form" method="post" action="changePassword" method="post">
+            <form class="form" method="post" id="changePasswordForm" action="changePassword" method="post">
                 <input type="hidden" name="key" value="${user.changePasswordKey}"></input>
 
                 <div class="control-group">
@@ -47,6 +47,17 @@
                 </div>
 
                 <div class="control-group">
+                    <div class="alert alert-error hide" id="alertLength">
+                        ${label.passwordHelp}
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="alert alert-error hide" id="alertNotMatch">
+                        ${label.passwordDoNotMatch}
+                    </div>
+                </div>
+
+                <div class="control-group">
                     <div class="controls">
 
                         <button type="submit" class="btn btn-primary btn-large">${label.continue}  &raquo;</button>
@@ -58,5 +69,29 @@
     </@content>
 
     <@footer/>
-    <@scripts/>
+    <@scripts>
+    <script type="text/javascript">
+        $("#changePasswordForm").submit(function( event ) {
+
+            $("#alertLength").addClass( "hide" );
+            $("#alertNotMatch").addClass( "hide" );
+
+            var val1 = $("#newPasswordInput").val();
+            var val2 = $("#newPasswordInput2").val();
+
+            if (val1.length < 6) { // minimal length of password is 6
+                $("#alertLength").removeClass("hide");
+                event.preventDefault();
+                return;
+            }
+
+            if (val1 != val2) { // check whether passwords equals
+                $("#alertNotMatch").removeClass("hide");
+                event.preventDefault();
+                return;
+            }
+
+        });
+    </script>
+    </@scripts>
 </@scaffolding>
