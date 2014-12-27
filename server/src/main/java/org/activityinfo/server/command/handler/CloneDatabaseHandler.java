@@ -27,6 +27,7 @@ import com.google.api.client.util.Strings;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import org.activityinfo.legacy.shared.command.AddPartner;
 import org.activityinfo.legacy.shared.command.CloneDatabase;
 import org.activityinfo.legacy.shared.command.GetFormClass;
 import org.activityinfo.legacy.shared.command.UpdateFormClass;
@@ -36,6 +37,7 @@ import org.activityinfo.legacy.shared.command.result.VoidResult;
 import org.activityinfo.legacy.shared.exception.IllegalAccessCommandException;
 import org.activityinfo.legacy.shared.impl.CommandHandlerAsync;
 import org.activityinfo.legacy.shared.impl.ExecutionContext;
+import org.activityinfo.legacy.shared.model.PartnerDTO;
 import org.activityinfo.model.form.*;
 import org.activityinfo.model.legacy.CuidAdapter;
 import org.activityinfo.model.legacy.KeyGenerator;
@@ -420,6 +422,18 @@ public class CloneDatabaseHandler implements CommandHandlerAsync<CloneDatabase, 
         db.setOwner(user);
 
         em.persist(db);
+
+        addDefaultPartner(db.getId(), user);
+
         return db;
+    }
+
+    private void addDefaultPartner(int databaseId, User user) {
+        PartnerDTO partner = new PartnerDTO();
+        partner.setName("Default");
+
+        AddPartner command = new AddPartner(databaseId, partner);
+
+        new AddPartnerHandler(em).execute(command, user);
     }
 }
