@@ -28,17 +28,20 @@ import com.extjs.gxt.ui.client.binding.FormBinding;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.form.*;
+import com.google.common.base.Function;
 import com.google.gwt.user.client.ui.Anchor;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.shared.model.ActivityFormDTO;
 import org.activityinfo.legacy.shared.model.LocationTypeDTO;
 import org.activityinfo.legacy.shared.model.Published;
 import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
 import org.activityinfo.ui.client.widget.legacy.OnlyValidFieldBinding;
+
+import javax.annotation.Nullable;
 
 /**
  * FormClass for editing ActivityDTO
@@ -47,7 +50,7 @@ class ActivityForm extends AbstractDesignForm {
 
     private FormBinding binding;
 
-    public ActivityForm(Dispatcher service, UserDatabaseDTO database) {
+    public ActivityForm(Promise<UserDatabaseDTO> database) {
         super();
 
         binding = new FormBinding(this);
@@ -77,9 +80,17 @@ class ActivityForm extends AbstractDesignForm {
         add(categoryField);
 
         final MappingComboBox<Integer> locationTypeCombo = new MappingComboBox<Integer>();
-        for (LocationTypeDTO type : database.getCountry().getLocationTypes()) {
-            locationTypeCombo.add(type.getId(), type.getName());
-        }
+        database.then(new Function<UserDatabaseDTO, Object>() {
+            @Nullable
+            @Override
+            public Object apply(UserDatabaseDTO userDatabaseDTO) {
+                for (LocationTypeDTO type : userDatabaseDTO.getCountry().getLocationTypes()) {
+                    locationTypeCombo.add(type.getId(), type.getName());
+                }
+                return null;
+            }
+        });
+
         locationTypeCombo.setAllowBlank(false);
         locationTypeCombo.setFieldLabel(I18N.CONSTANTS.locationType());
         this.add(locationTypeCombo);

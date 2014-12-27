@@ -49,11 +49,14 @@ import com.extjs.gxt.ui.client.widget.treegrid.CellTreeGridSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.EditorTreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridCellRenderer;
+import com.google.common.base.Function;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.shared.command.GetSchema;
 import org.activityinfo.legacy.shared.model.*;
+import org.activityinfo.promise.Promise;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogImpl;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
@@ -62,6 +65,7 @@ import org.activityinfo.ui.client.page.common.grid.ImprovedCellTreeGridSelection
 import org.activityinfo.ui.client.page.common.toolbar.UIActions;
 import org.activityinfo.ui.client.style.legacy.icon.IconImageBundle;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,6 +131,16 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
         super.init(presenter, store);
 
         createFormContainer();
+    }
+
+    public Promise<UserDatabaseDTO> getDb() {
+        return service.execute(new GetSchema()).then(new Function<SchemaDTO, UserDatabaseDTO>() {
+            @Nullable
+            @Override
+            public UserDatabaseDTO apply(SchemaDTO schemaDTO) {
+                return schemaDTO.getDatabaseById(db.getId());
+            }
+        });
     }
 
     @Override
@@ -334,7 +348,7 @@ public class DesignView extends AbstractEditorTreeGridView<ModelData, DesignPres
 
     protected AbstractDesignForm createForm(ModelData sel) {
         if (sel instanceof IsActivityDTO) {
-            return new ActivityForm(service, db);
+            return new ActivityForm(getDb());
         } else if (sel instanceof AttributeGroupDTO) {
             return new AttributeGroupForm();
         } else if (sel instanceof AttributeDTO) {
