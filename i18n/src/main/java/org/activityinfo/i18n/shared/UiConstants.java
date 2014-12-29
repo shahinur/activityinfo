@@ -3023,6 +3023,10 @@ public interface UiConstants extends Constants {
     @Key("versionChecking")
     String versionChecking();
 
+
+    @DefaultStringValue("Are you sure want to delete attachment(s)?")
+    String confirmDeleteAttachment();
+
     /**
      * Translated "No connection.".
      *
