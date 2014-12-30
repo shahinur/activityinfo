@@ -22,7 +22,6 @@ package org.activityinfo.ui.client.component.formdesigner.container;
  */
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -32,22 +31,19 @@ import com.google.gwt.user.client.ui.*;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
 import org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles;
 import org.activityinfo.ui.client.component.formdesigner.event.HeaderSelectionEvent;
-import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 import org.activityinfo.ui.client.widget.ConfirmDialog;
 
 /**
  * @author yuriyz on 7/8/14.
  */
-public class WidgetContainerPanel {
+public class FieldPanel {
 
-    private static OurUiBinder uiBinder = GWT
-            .create(OurUiBinder.class);
+    private static OurUiBinder uiBinder = GWT.create(OurUiBinder.class);
 
-    interface OurUiBinder extends UiBinder<Widget, WidgetContainerPanel> {
+    interface OurUiBinder extends UiBinder<Widget, FieldPanel> {
     }
 
     private final FormDesigner formDesigner;
-    private final boolean selectable;
     private ClickHandler clickHandler;
 
     @UiField
@@ -61,28 +57,21 @@ public class WidgetContainerPanel {
     @UiField
     Label dragHandle;
 
-    public WidgetContainerPanel(FormDesigner formDesigner, boolean selectable) {
+    public FieldPanel(FormDesigner formDesigner) {
         uiBinder.createAndBindUi(this);
 
         this.formDesigner = formDesigner;
-        this.formDesigner.getEventBus().addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
-            @Override
-            public void handle(WidgetContainerSelectionEvent event) {
-                setSelected(false);
-            }
-        });
         this.formDesigner.getEventBus().addHandler(HeaderSelectionEvent.TYPE, new HeaderSelectionEvent.Handler() {
             @Override
             public void handle(HeaderSelectionEvent event) {
                 setSelected(false);
             }
         });
-        this.selectable = selectable;
 
         this.focusPanel.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                WidgetContainerPanel.this.onClick();
+                FieldPanel.this.onClick();
             }
         });
     }
@@ -97,18 +86,10 @@ public class WidgetContainerPanel {
     }
 
     private void onClick() {
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-            @Override
-            public void execute() {
-                if (selectable) {
-                    return;
-                }
-                setSelected(true);
-                if (clickHandler != null) {
-                    clickHandler.onClick(null);
-                }
-            }
-        });
+        setSelected(true);
+        if (clickHandler != null) {
+            clickHandler.onClick(null);
+        }
     }
 
     public HTML getLabel() {
@@ -127,11 +108,15 @@ public class WidgetContainerPanel {
         return widgetContainer;
     }
 
+    public String getSelectedClassName() {
+        return FormDesignerStyles.INSTANCE.widgetContainerSelected();
+    }
+
     public void setSelected(boolean selected) {
         if (selected) {
-            focusPanel.addStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
+            focusPanel.addStyleName(getSelectedClassName());
         } else {
-            focusPanel.removeStyleName(FormDesignerStyles.INSTANCE.widgetContainerSelected());
+            focusPanel.removeStyleName(getSelectedClassName());
         }
     }
 

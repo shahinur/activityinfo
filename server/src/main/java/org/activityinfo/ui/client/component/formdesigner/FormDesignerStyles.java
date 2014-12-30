@@ -48,5 +48,14 @@ public interface FormDesignerStyles extends Stylesheet{
     @ClassName("main-panel")
     String mainPanel();
 
+    @ClassName("section-widget-container")
+    String sectionWidgetContainer();
+
+    @ClassName("section-widget-container-selected")
+    String sectionWidgetContainerSelected();
+
+    @ClassName("section-label")
+    String sectionLabel();
+
 
 }

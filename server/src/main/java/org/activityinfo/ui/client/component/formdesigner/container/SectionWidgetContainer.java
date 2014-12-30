@@ -29,7 +29,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.activityinfo.model.form.FormSection;
 import org.activityinfo.ui.client.component.formdesigner.FormDesigner;
-import org.activityinfo.ui.client.component.formdesigner.FormDesignerConstants;
+import org.activityinfo.ui.client.component.formdesigner.FormDesignerStyles;
+import org.activityinfo.ui.client.component.formdesigner.event.WidgetContainerSelectionEvent;
 
 /**
  * @author yuriyz on 7/14/14.
@@ -38,29 +39,43 @@ public class SectionWidgetContainer implements WidgetContainer {
 
     private FormDesigner formDesigner;
     private FormSection formSection;
-    private final WidgetContainerPanel widgetContainer;
+    private final SectionPanel sectionPanel;
 
     public SectionWidgetContainer(final FormDesigner formDesigner, final FormSection formSection) {
         this.formDesigner = formDesigner;
         this.formSection = formSection;
 
-        widgetContainer = new WidgetContainerPanel(formDesigner, false);
-        widgetContainer.getRemoveButton().addClickHandler(new ClickHandler() {
+        sectionPanel = new SectionPanel(formDesigner);
+        sectionPanel.getPanel().getRemoveButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 formDesigner.getFormClass().remove(formSection);
                 formDesigner.getDropControllerRegistry().unregister(formSection.getId());
             }
         });
+        sectionPanel.getPanel().setClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                formDesigner.getEventBus().fireEvent(new WidgetContainerSelectionEvent(SectionWidgetContainer.this));
+            }
+        });
+        formDesigner.getEventBus().addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
+            @Override
+            public void handle(WidgetContainerSelectionEvent event) {
+                WidgetContainer selectedItem = event.getSelectedItem();
+                if (selectedItem instanceof SectionWidgetContainer) {
+                    sectionPanel.getPanel().setSelected(selectedItem.asWidget().equals(sectionPanel.asWidget()));
+                }
+            }
+        });
 
-        widgetContainer.getWidgetContainer().add(createDropPanel());
+        sectionPanel.getPanel().getWidgetContainer().add(createDropPanel());
         syncWithModel();
     }
 
     private Widget createDropPanel() {
         FlowPanel dropPanel = new FlowPanel();
-        dropPanel.setHeight((FormDesignerConstants.SOURCE_CONTROL_HEIGHT_PX * 2) + "px");
-        dropPanel.setWidth("100%");
+        dropPanel.addStyleName(FormDesignerStyles.INSTANCE.sectionWidgetContainer());
 
         formDesigner.getDropControllerRegistry().register(formSection.getId(), dropPanel, formDesigner);
 
@@ -68,16 +83,16 @@ public class SectionWidgetContainer implements WidgetContainer {
     }
 
     public void syncWithModel() {
-        widgetContainer.getLabel().setHTML("<h3>" + SafeHtmlUtils.fromString(Strings.nullToEmpty(formSection.getLabel())).asString() + "</h3>");
+        sectionPanel.getPanel().getLabel().setHTML("<h3>" + SafeHtmlUtils.fromString(Strings.nullToEmpty(formSection.getLabel())).asString() + "</h3>");
     }
 
     public Widget asWidget() {
-        return widgetContainer.asWidget();
+        return sectionPanel.asWidget();
     }
 
     @Override
     public Widget getDragHandle() {
-        return widgetContainer.getDragHandle();
+        return sectionPanel.getDragHandle();
     }
 
     public FormDesigner getFormDesigner() {

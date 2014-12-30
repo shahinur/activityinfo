@@ -51,30 +51,40 @@ public class FieldWidgetContainer implements WidgetContainer {
     private FormDesigner formDesigner;
     private FormFieldWidget formFieldWidget;
     private FormField formField;
-    private final WidgetContainerPanel widgetContainer;
+    private final FieldPanel fieldPanel;
 
     public FieldWidgetContainer(final FormDesigner formDesigner, FormFieldWidget formFieldWidget, final FormField formField) {
         this.formDesigner = formDesigner;
         this.formFieldWidget = formFieldWidget;
         this.formField = formField;
-        widgetContainer = new WidgetContainerPanel(formDesigner, true);
-        widgetContainer.getWidgetContainer().add(formFieldWidget);
-        widgetContainer.getRemoveButton().addClickHandler(new ClickHandler() {
+
+        fieldPanel = new FieldPanel(formDesigner);
+        fieldPanel.getWidgetContainer().add(formFieldWidget);
+        fieldPanel.getRemoveButton().addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 formDesigner.getFormClass().remove(formField);
             }
         });
-        widgetContainer.setClickHandler(new ClickHandler() {
+        fieldPanel.setClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 formDesigner.getEventBus().fireEvent(new WidgetContainerSelectionEvent(FieldWidgetContainer.this));
             }
         });
+        this.formDesigner.getEventBus().addHandler(WidgetContainerSelectionEvent.TYPE, new WidgetContainerSelectionEvent.Handler() {
+            @Override
+            public void handle(WidgetContainerSelectionEvent event) {
+                WidgetContainer selectedItem = event.getSelectedItem();
+                if (selectedItem instanceof FieldWidgetContainer) {
+                    fieldPanel.setSelected(selectedItem.asWidget().equals(fieldPanel.asWidget()));
+                }
+            }
+        });
 
         // Workaround(alex): store field id with widget so we can update model order after
         // drag and drop
-        widgetContainer.asWidget().getElement().setAttribute(FormDesignerConstants.DATA_FIELD_ID, formField.getId().asString());
+        fieldPanel.asWidget().getElement().setAttribute(FormDesignerConstants.DATA_FIELD_ID, formField.getId().asString());
         syncWithModel();
     }
 
@@ -95,16 +105,16 @@ public class FieldWidgetContainer implements WidgetContainer {
         if (!formField.isVisible()) {
             labelHtml = "<del>" + labelHtml + "</del>";
         }
-        widgetContainer.getLabel().setHTML(labelHtml);
+        fieldPanel.getLabel().setHTML(labelHtml);
         formFieldWidget.setType(formField.getType());
     }
 
     public Widget asWidget() {
-        return widgetContainer.asWidget();
+        return fieldPanel.asWidget();
     }
 
     public Widget getDragHandle() {
-        return widgetContainer.getDragHandle();
+        return fieldPanel.getDragHandle();
     }
 
     public FormFieldWidget getFormFieldWidget() {
