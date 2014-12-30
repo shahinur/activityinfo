@@ -42,17 +42,17 @@
                     <label class="control-label" for="newPasswordInput">${label.confirmNewPassword}</label>
 
                     <div class="controls">
-                        <input type="password" id="newPasswordInput2">
+                        <input type="password" name="password2" id="newPasswordInput2">
                     </div>
                 </div>
 
                 <div class="control-group">
-                    <div class="alert alert-error hide" id="alertLength">
+                    <div class="alert alert-error <#if !passwordLengthInvalid> hide </#if>" id="alertLength">
                         ${label.passwordHelp}
                     </div>
                 </div>
                 <div class="control-group">
-                    <div class="alert alert-error hide" id="alertNotMatch">
+                    <div class="alert alert-error <#if !passwordsNotMatched> hide </#if>" id="alertNotMatch">
                         ${label.passwordDoNotMatch}
                     </div>
                 </div>
