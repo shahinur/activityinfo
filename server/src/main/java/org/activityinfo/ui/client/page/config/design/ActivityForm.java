@@ -23,25 +23,31 @@ package org.activityinfo.ui.client.page.config.design;
  */
 
 import com.extjs.gxt.ui.client.Style.Scroll;
+import com.extjs.gxt.ui.client.binding.Converter;
 import com.extjs.gxt.ui.client.binding.FieldBinding;
 import com.extjs.gxt.ui.client.binding.FormBinding;
-import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.google.common.base.Function;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import org.activityinfo.i18n.shared.I18N;
-import org.activityinfo.legacy.shared.model.ActivityFormDTO;
-import org.activityinfo.legacy.shared.model.LocationTypeDTO;
-import org.activityinfo.legacy.shared.model.Published;
-import org.activityinfo.legacy.shared.model.UserDatabaseDTO;
-import org.activityinfo.promise.Promise;
+import org.activityinfo.legacy.client.Dispatcher;
+import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
+import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.ui.client.page.config.design.dialog.NewFormDialog;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBox;
 import org.activityinfo.ui.client.widget.legacy.MappingComboBoxBinding;
 import org.activityinfo.ui.client.widget.legacy.OnlyValidFieldBinding;
+import org.activityinfo.ui.client.widget.legacy.RemoteComboBox;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * FormClass for editing ActivityDTO
@@ -49,9 +55,13 @@ import javax.annotation.Nullable;
 class ActivityForm extends AbstractDesignForm {
 
     private FormBinding binding;
+    private Dispatcher dispatcher;
+    private int dbId;
 
-    public ActivityForm(Promise<UserDatabaseDTO> database) {
+    public ActivityForm(Dispatcher dispatcher, int dbId) {
         super();
+        this.dispatcher = dispatcher;
+        this.dbId = dbId;
 
         binding = new FormBinding(this);
 
@@ -79,23 +89,39 @@ class ActivityForm extends AbstractDesignForm {
         binding.addFieldBinding(new OnlyValidFieldBinding(categoryField, "category"));
         add(categoryField);
 
-        final MappingComboBox<Integer> locationTypeCombo = new MappingComboBox<Integer>();
-        database.then(new Function<UserDatabaseDTO, Object>() {
-            @Nullable
+
+        final RemoteComboBox<LocationTypeDTO> locationTypeCombo = new RemoteComboBox<LocationTypeDTO>();
+        BaseListLoader loader = new BaseListLoader(new Proxy(locationTypeCombo));
+        locationTypeCombo.setStore(new ListStore<LocationTypeDTO>(loader));
+        locationTypeCombo.setAllowBlank(false);
+        locationTypeCombo.setValueField("id");
+        locationTypeCombo.setDisplayField("name");
+        locationTypeCombo.setFieldLabel(I18N.CONSTANTS.locationType());
+        locationTypeCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
+        this.add(locationTypeCombo);
+
+        loader.load(); // force load, we need it on form selection to show activity details without user click
+        locationTypeCombo.getStore().addListener(Store.DataChanged, new Listener<BaseEvent>() {
             @Override
-            public Object apply(UserDatabaseDTO userDatabaseDTO) {
-                for (LocationTypeDTO type : userDatabaseDTO.getCountry().getLocationTypes()) {
-                    locationTypeCombo.add(type.getId(), type.getName());
-                }
-                return null;
+            public void handleEvent(BaseEvent be) {
+                Integer locationTypeId = binding.getModel().get("locationTypeId");
+                locationTypeCombo.select(getLocationType(locationTypeCombo.getStore(), locationTypeId));
             }
         });
 
-        locationTypeCombo.setAllowBlank(false);
-        locationTypeCombo.setFieldLabel(I18N.CONSTANTS.locationType());
-        this.add(locationTypeCombo);
+        FieldBinding locationTypeBinding = new FieldBinding(locationTypeCombo, "locationTypeId");
+        locationTypeBinding.setConverter(new Converter() {
+            @Override
+            public Object convertModelValue(Object value) {
+                return getLocationType(locationTypeCombo.getStore(), (Integer)value);
+            }
 
-        binding.addFieldBinding(new MappingComboBoxBinding(locationTypeCombo, "locationTypeId"));
+            @Override
+            public Object convertFieldValue(Object value) {
+                return value instanceof LocationTypeDTO ? ((LocationTypeDTO) value).getId() : value;
+            }
+        });
+        binding.addFieldBinding(locationTypeBinding);
 
         final MappingComboBox frequencyCombo = new MappingComboBox();
         frequencyCombo.setAllowBlank(false);
@@ -177,4 +203,45 @@ class ActivityForm extends AbstractDesignForm {
     private boolean isSaved(ModelData model) {
         return model.get("id") != null;
     }
+
+    private static LocationTypeDTO getLocationType(ListStore<LocationTypeDTO> store, @Nullable Integer locationTypeId) {
+        if (locationTypeId != null) {
+            for (LocationTypeDTO dto : store.getModels()) {
+                if (dto.getId() == locationTypeId) {
+                    return dto;
+                }
+            }
+        }
+        return null;
+    }
+
+    protected class Proxy implements DataProxy {
+
+        private final Component component;
+
+        public Proxy(Component component) {
+            this.component = component;
+        }
+
+        @Override
+        public void load(DataReader dataReader, Object loadConfig, final AsyncCallback callback) {
+            dispatcher.execute(new GetSchema(), new MaskingAsyncMonitor(component, I18N.CONSTANTS.loading()), new AsyncCallback<SchemaDTO>() {
+                @Override
+                public void onFailure(Throwable caught) {
+                    callback.onFailure(caught);
+                }
+
+                @Override
+                public void onSuccess(SchemaDTO schema) {
+                    UserDatabaseDTO db = schema.getDatabaseById(dbId);
+                    List<LocationTypeDTO> locationTypes = new ArrayList<>();
+                    for (LocationTypeDTO type : db.getCountry().getLocationTypes()) {
+                        locationTypes.add(type);
+                    }
+                    callback.onSuccess(new BaseListLoadResult<LocationTypeDTO>(locationTypes));
+                }
+            });
+        }
+    }
+
 }
