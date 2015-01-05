@@ -42,6 +42,7 @@ import com.google.inject.ImplementedBy;
 import com.google.inject.Inject;
 import org.activityinfo.i18n.shared.I18N;
 import org.activityinfo.i18n.shared.UiConstants;
+import org.activityinfo.legacy.client.AsyncMonitor;
 import org.activityinfo.legacy.client.Dispatcher;
 import org.activityinfo.legacy.client.callback.SuccessCallback;
 import org.activityinfo.legacy.client.monitor.MaskingAsyncMonitor;
@@ -98,6 +99,8 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
         public MenuItem getNewIndicator();
 
         public void showForm(ModelData model);
+
+        AsyncMonitor getLoadingMonitor();
     }
 
     private final EventBus eventBus;
@@ -160,7 +163,7 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     }
 
     public void refresh() {
-        service.execute(new GetSchema(), new MaskingAsyncMonitor((ContentPanel)view, I18N.CONSTANTS.loading()),
+        service.execute(new GetSchema(), view.getLoadingMonitor(),
                 new AsyncCallback<SchemaDTO>() {
                     @Override
                     public void onFailure(Throwable caught) {
