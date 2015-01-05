@@ -270,16 +270,23 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
                 }
             });
         } else if(UIActions.EDIT.equals(actionId)) {
-            ResourceId formClassId = getSelectedActivity(view.getSelection()).getFormClassId();
             eventBus.fireEvent(new NavigationEvent(
                     NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClassId, InstancePage.DESIGN_PAGE_ID)));
+                    new InstancePlace(getSelectedFormClassId(), InstancePage.DESIGN_PAGE_ID)));
 
         } else if(UIActions.OPEN_TABLE.equals(actionId)) {
-            IsFormClass formClass = (IsFormClass) view.getSelection();
             eventBus.fireEvent(new NavigationEvent(
                     NavigationHandler.NAVIGATION_REQUESTED,
-                    new InstancePlace(formClass.getResourceId(), InstancePage.TABLE_PAGE_ID)));
+                    new InstancePlace(getSelectedFormClassId(), InstancePage.TABLE_PAGE_ID)));
+        }
+    }
+
+    public ResourceId getSelectedFormClassId() {
+        if (view.getSelection() instanceof IsFormClass) {
+            IsFormClass formClass = (IsFormClass) view.getSelection();
+            return formClass.getResourceId();
+        } else {
+            return getSelectedActivity(view.getSelection()).getFormClassId();
         }
     }
 
@@ -512,12 +519,16 @@ public class DesignPresenter extends AbstractEditorGridPresenter<ModelData> impl
     public void onSelectionChanged(ModelData selectedItem) {
         view.setActionEnabled(UIActions.EDIT, this.db.isDesignAllowed() && canEditWithFormDesigner(selectedItem));
         view.setActionEnabled(UIActions.DELETE, this.db.isDesignAllowed() && selectedItem instanceof EntityDTO);
-        view.setActionEnabled(UIActions.OPEN_TABLE, getSelectedActivity(selectedItem) != null);
+        view.setActionEnabled(UIActions.OPEN_TABLE, getSelectedActivity(selectedItem) != null || selectedItem instanceof IsFormClass);
     }
 
     private boolean canEditWithFormDesigner(ModelData selectedItem) {
         IsActivityDTO activity = getSelectedActivity(selectedItem);
-        return activity != null && activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE;
+        if (activity != null) {
+            return  activity.getReportingFrequency() == ActivityFormDTO.REPORT_ONCE;
+        } else {
+            return selectedItem instanceof IsFormClass;
+        }
     }
 
     private IsActivityDTO getSelectedActivity(ModelData selectedItem) {
