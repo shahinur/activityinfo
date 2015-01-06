@@ -118,7 +118,9 @@ public abstract class AbstractEditorGridPresenter<M extends ModelData> extends A
             @Override
             public void onSuccess(Object result) {
                 getStore().commitChanges();
-                AbstractEditorGridPresenter.this.view.getToolBar().setDirty(false);
+                if (AbstractEditorGridPresenter.this.view.getToolBar() != null) {
+                    AbstractEditorGridPresenter.this.view.getToolBar().setDirty(false);
+                }
                 onSaved();
             }
         });

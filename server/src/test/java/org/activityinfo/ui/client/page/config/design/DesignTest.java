@@ -22,17 +22,19 @@ package org.activityinfo.ui.client.page.config.design;
  * #L%
  */
 
-import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.store.Record;
 import com.extjs.gxt.ui.client.store.TreeStore;
-import com.google.gwt.junit.GWTMockUtilities;
 import org.activityinfo.i18n.shared.UiConstants;
 import org.activityinfo.legacy.client.state.StateManagerStub;
-import org.activityinfo.legacy.shared.command.*;
-import org.activityinfo.legacy.shared.command.result.CreateResult;
+import org.activityinfo.legacy.shared.command.Delete;
+import org.activityinfo.legacy.shared.command.GetActivityForm;
+import org.activityinfo.legacy.shared.command.GetSchema;
+import org.activityinfo.legacy.shared.command.UpdateEntity;
 import org.activityinfo.legacy.shared.command.result.VoidResult;
-import org.activityinfo.legacy.shared.model.*;
 import org.activityinfo.legacy.shared.model.ActivityDTO;
+import org.activityinfo.legacy.shared.model.ActivityFormDTO;
+import org.activityinfo.legacy.shared.model.DTOs;
+import org.activityinfo.legacy.shared.model.SchemaDTO;
 import org.activityinfo.ui.client.MockEventBus;
 import org.activityinfo.ui.client.dispatch.DispatcherStub;
 import org.activityinfo.ui.client.page.NavigationCallback;
@@ -42,8 +44,6 @@ import org.activityinfo.ui.client.page.entry.place.DataEntryPlace;
 import org.easymock.IAnswer;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.easymock.EasyMock.*;
 
@@ -65,8 +65,7 @@ public class DesignTest {
         service.setResult(UpdateEntity.class, new VoidResult());
 
         // Collaborator
-        DesignPresenter.View view = createNiceMock(DesignPresenter.View.class);
-        replay(view);
+        DesignPresenter.View view = new MockDesignTree();
 
         // Localisation resources
         UiConstants constants = createNiceMock(UiConstants.class);
