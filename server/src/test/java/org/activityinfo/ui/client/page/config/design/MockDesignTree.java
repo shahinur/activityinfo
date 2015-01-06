@@ -32,6 +32,7 @@ import org.activityinfo.legacy.client.AsyncMonitor;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogCallback;
 import org.activityinfo.ui.client.page.common.dialog.FormDialogTether;
 import org.activityinfo.ui.client.page.common.grid.ConfirmCallback;
+import org.activityinfo.ui.client.page.common.toolbar.ActionToolBar;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -91,6 +92,11 @@ public class MockDesignTree implements DesignPresenter.View {
 
     }
 
+    @Override
+    public AsyncMonitor getLoadingMonitor() {
+        return null;
+    }
+
     protected void mockEditEntity(EntityDTO entity) {
 
     }
@@ -123,5 +129,10 @@ public class MockDesignTree implements DesignPresenter.View {
     @Override
     public void refresh() {
 
+    }
+
+    @Override
+    public ActionToolBar getToolBar() {
+        return null;
     }
 }
