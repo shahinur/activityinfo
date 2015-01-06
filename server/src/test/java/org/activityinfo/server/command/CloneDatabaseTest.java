@@ -142,8 +142,8 @@ public class CloneDatabaseTest extends CommandTestCase2 {
 
         assertFormClassesCloned(sourceDb, targetDb);
 
-        if (cloneDatabase.isCopyPartners()) {
-            assertPropertyForEach(sourceDb.getPartners(), targetDb.getPartners(),
+        if (cloneDatabase.isCopyPartners()) { // don't check size with partners : during cloning we add 'Default' partner.
+            assertPropertyForEach(false, sourceDb.getPartners(), targetDb.getPartners(),
                     "name", "fullName");
         }
         if (cloneDatabase.isCopyUserPermissions()) {
@@ -226,7 +226,14 @@ public class CloneDatabaseTest extends CommandTestCase2 {
     }
 
     private static <T extends BaseModelData> void assertPropertyForEach(List<T> sourceList, List<T> targetList, String... properties) {
-        assertEquals(sourceList.size(), targetList.size());
+        assertPropertyForEach(true, sourceList, targetList, properties);
+    }
+
+
+    private static <T extends BaseModelData> void assertPropertyForEach(boolean checkSize, List<T> sourceList, List<T> targetList, String... properties) {
+        if (checkSize) {
+            assertEquals(sourceList.size(), targetList.size());
+        }
         for (T sourceItem : sourceList) {
             T targetTarget = entityByName(targetList, (String) sourceItem.get("name"));
 
